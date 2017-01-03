@@ -2,7 +2,6 @@
     <info name="Init" author="Chenko" type="gamemode" />
     
 	<assembly ref="System.Data.dll"/>
-	<assembly ref="MySql.Data.dll"/>
 	<assembly ref="MongoDB.Bson.dll"/>
 	<assembly ref="MongoDB.Driver.dll"/>
 	<assembly ref="MongoDB.Driver.Core.dll"/>
@@ -10,23 +9,25 @@
 	
 	<script src="Init.cs" type="server" lang="csharp"/>
 	
-	<script src="core\DebugManager.cs" type="server" lang="csharp"/>
-	<script src="core\ChatManager.cs" type="server" lang="csharp"/>
+	<script src="core/DebugManager.cs" type="server" lang="csharp"/>
+	<script src="core/ChatManager.cs" type="server" lang="csharp"/>
 	
-	<script src="database_manager\DatabaseManager.cs" type="server" lang="csharp"/>
+	<script src="database_manager/DatabaseManager.cs" type="server" lang="csharp"/>
 	
-	<script src="player_manager\Account.cs" type="server" lang="csharp"/>
-	<script src="player_manager\Character.cs" type="server" lang="csharp"/>
-	<script src="player_manager\PlayerManager.cs" type="server" lang="csharp"/>
-	<script src="player_manager\LoginManager.cs" type="server" lang="csharp"/>
-	<script src="player_manager\LoginManager.js" type="client" lang="javascript"/>
+	<script src="player_manager/Account.cs" type="server" lang="csharp"/>
+	<script src="player_manager/Character.cs" type="server" lang="csharp"/>
+	<script src="player_manager/PlayerManager.cs" type="server" lang="csharp"/>
+	<script src="player_manager/LoginManager.cs" type="server" lang="csharp"/>
+	<script src="player_manager/LoginManager.js" type="client" lang="javascript"/>
+	<script src="player_manager/CharacterMenu.js" type="client" lang="javascript"/>
+	<script src="player_manager/CharacterMenu.cs" type="server" lang="csharp"/>
 	
-	<script src="vehicle_manager\Vehicle.cs" type="server" lang="csharp"/>
-	<script src="vehicle_manager\VehicleManager.cs" type="server" lang="csharp"/>
-	<script src="vehicle_manager\VehicleMenu.cs" type="server" lang="csharp"/>
-	<script src="vehicle_manager\VehicleMenu.js" type="client" lang="javascript"/>
+	<script src="vehicle_manager/Vehicle.cs" type="server" lang="csharp"/>
+	<script src="vehicle_manager/VehicleManager.cs" type="server" lang="csharp"/>
+	<script src="vehicle_manager/VehicleMenu.cs" type="server" lang="csharp"/>
+	<script src="vehicle_manager/VehicleMenu.js" type="client" lang="javascript"/>
 	
-	<file src="stylesheet\bootstrap.css" />
-	<file src="stylesheet\bootstrap.js" />
+	<file src="stylesheet/bootstrap.css" />
+	<file src="stylesheet/bootstrap.js" />
 	<file src="jquery.js" />
 </meta>

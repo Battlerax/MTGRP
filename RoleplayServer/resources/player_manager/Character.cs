@@ -10,7 +10,7 @@ namespace RoleplayServer
     public class Character
     {
         public int _id { get; set; }
-        public int account_id { get; set; }
+        public string account_id { get; set; }
 
         public string character_name { get; set; }
        
@@ -53,11 +53,11 @@ namespace RoleplayServer
             DatabaseManager.character_table.ReplaceOneAsync(filter, this);
         }
 
-        public static bool IsNameRegistered(string name)
+        public static bool IsCharacterRegistered(string name)
         {
-            FilterDefinition<Account> filter = Builders<Account>.Filter.Eq("account_name", name);
+            FilterDefinition<Character> filter = Builders<Character>.Filter.Eq("character_name", name);
 
-            if (DatabaseManager.account_table.Find(filter).Count() > 0)
+            if (DatabaseManager.character_table.Find(filter).Count() > 0)
             {
                 return true;
             }

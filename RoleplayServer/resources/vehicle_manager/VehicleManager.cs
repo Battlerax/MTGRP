@@ -14,7 +14,6 @@ using System;
 using GTANetworkServer;
 using GTANetworkShared;
 using System.Collections.Generic;
-using MySql.Data.MySqlClient;
 using MongoDB.Driver;
 
 namespace RoleplayServer
