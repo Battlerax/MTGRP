@@ -47,6 +47,15 @@ namespace RoleplayServer
             }
         }
 
+        public float GetDistanceBetweenPlayers(Client player1, Client player2)
+        {
+            Vector3 Player1Pos = API.getEntityPosition(player1);
+            Vector3 Player2Pos = API.getEntityPosition(player2);
+            float dis = floatsqroot((Player2Pos.X - Player1Pos.X) * (Player2Pos.X - Player1Pos.X) + (Player2Pos.Y - Player1Pos.Y) * (Player2Pos.Y - Player1Pos.Y) + (Player2Pos.Z - Player1Pos.Z) * (Player2Pos.Z - Player1Pos.Z));
+            return floatround(dis);
+        }
+
+
         [Command("me")]
         public void me_cmd(Client player, string action)
         {
@@ -111,13 +120,16 @@ namespace RoleplayServer
         [Command("w")]
         public void w_cmd(Client player, Client receiver, string text)
         {
-            Character playerchar = API.shared.getEntityData(player.handle, "Character");
-            Character receiverid = API.shared.getEntityData(receiver.handle, "Character");
-            string messagetoplayer = "Whisper sent to "+receiverid.character_name + " : " + text;
-            API.sendChatMessageToPlayer(player, messagetoplayer);
-            string messagetoreceiver = "Whisper from " + playerchar.character_name + " : " + text;
-            API.sendChatMessageToPlayer(receiver, messagetoreceiver);
-            string autome = playerchar.character_name + " has whispered something to " + receiverid.character_name + ".";
+            if(GetDistanceBetweenPlayers(player,receiver) < 7)
+            {
+                Character playerchar = API.shared.getEntityData(player.handle, "Character");
+                Character receiverid = API.shared.getEntityData(receiver.handle, "Character");
+                string messagetoplayer = "Whisper sent to " + receiverid.character_name + " : " + text;
+                API.sendChatMessageToPlayer(player, messagetoplayer);
+                string messagetoreceiver = "Whisper from " + playerchar.character_name + " : " + text;
+                API.sendChatMessageToPlayer(receiver, messagetoreceiver);
+                string autome = playerchar.character_name + " has whispered something to " + receiverid.character_name + ".";
+            }
         }
 
 
@@ -144,6 +156,12 @@ namespace RoleplayServer
                 return;
             }
 
+            if (GetDistanceBetweenPlayers(player, receiver) > 7)
+            {
+                API.sendChatMessageToPlayer(player, "That player is far from you.");
+                return;
+            }
+
             string messagetoplayer = "You have paid $" + amount + " to " + receiverid.character_name + ".";
             API.sendChatMessageToPlayer(player, messagetoplayer);
             string messagetoreceiver = "You have been paid $" + amount + " by" + playerid.character_name + ".";
@@ -163,6 +181,12 @@ namespace RoleplayServer
             if (playerid.bank_balance < amount)
             {
                 API.sendChatMessageToPlayer(player, "You don't have that amount in your bank account");
+                return;
+            }
+
+            if (GetDistanceBetweenPlayers(player, receiver) > 7)
+            {
+                API.sendChatMessageToPlayer(player, "That player is far from you.");
                 return;
             }
 
