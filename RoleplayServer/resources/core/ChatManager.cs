@@ -56,31 +56,31 @@ namespace RoleplayServer
         }
 
 
-        [Command("me")]
+        [Command("me", GreedyArg = true)]
         public void me_cmd(Client player, string action)
         {
             Character playerchar = API.shared.getEntityData(player.handle, "Character");
             RoleplayMessage(playerchar, action, ROLEPLAY_ME, 10);
         }
 
-        [Command("ame")]
+        [Command("ame", GreedyArg = true)]
         public void ame_cmd(Client player, string action)
         {
             Character playerchar = API.shared.getEntityData(player.handle, "Character");
             string ame = playerchar.character_name + action;
             Vector3 PlayerPos = API.getEntityPosition(player);
             var textlabel = API.createTextLabel(ame, PlayerPos, 20, 3);
-            API.attachEntityToEntity(player, textlabel, "head", PlayerPos , 0);
+            API.attachEntityToEntity(player, textlabel, "head", PlayerPos , 0,0,0);
         }
 
-        [Command("do")]
+        [Command("do", GreedyArg = true)]
         public void do_cmd(Client player, string action)
         {
             Character playerchar = API.shared.getEntityData(player.handle, "Character");
             RoleplayMessage(playerchar, action, ROLEPLAY_DO, 10);
         }
 
-        [Command("shout")]
+        [Command("shout", Alias = "s", GreedyArg = true)]
         public void shout_cmd(Client player, string text)
         {
             Character playerchar = API.shared.getEntityData(player.handle, "Character");
@@ -88,7 +88,7 @@ namespace RoleplayServer
             NearbyMessage(player, 25, msg);
         }
 
-        [Command("b")]
+        [Command("b", GreedyArg = true)]
         public void b_cmd(Client player, string text)
         {
             Character playerchar = API.shared.getEntityData(player.handle, "Character");
@@ -97,7 +97,7 @@ namespace RoleplayServer
         }
 
 
-        [Command("low")]
+        [Command("low", GreedyArg = true)]
         public void low_cmd(Client player, string text)
         {
             Character playerchar = API.shared.getEntityData(player.handle, "Character");
@@ -106,7 +106,7 @@ namespace RoleplayServer
         }
 
 
-        [Command("rp")]
+        [Command("rp", GreedyArg = true)]
         public void rp_cmd(Client player, Client receiver, string text)
         {
             Character playerchar = API.shared.getEntityData(player.handle, "Character");
@@ -117,7 +117,7 @@ namespace RoleplayServer
             API.sendChatMessageToPlayer(receiver, messagetoreceiver);
         }
 
-        [Command("w")]
+        [Command("whisper", Alias = "w", GreedyArg = true)]
         public void w_cmd(Client player, Client receiver, string text)
         {
             if(GetDistanceBetweenPlayers(player,receiver) < 7)
@@ -133,7 +133,7 @@ namespace RoleplayServer
         }
 
 
-        [Command("pm")]
+        [Command("pm", GreedyArg = true)]
         public void pm_cmd(Client player, Client receiver, string text)
         {
             Character playerchar = API.shared.getEntityData(player.handle, "Character");
@@ -145,7 +145,7 @@ namespace RoleplayServer
         }
 
 
-        [Command("pay")]
+        [Command("pay", GreedyArg = true)]
         public void pay_cmd(Client player, Client receiver, int amount)
         {
             Character playerid = API.shared.getEntityData(player.handle, "Character");
@@ -173,7 +173,7 @@ namespace RoleplayServer
         }
 
 
-        [Command("givecheck")]
+        [Command("givecheck", GreedyArg = true)]
         public void givecheck_cmd(Client player, Client receiver, int amount)
         {
             Character playerid = API.shared.getEntityData(player.handle, "Character");
