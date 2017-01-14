@@ -27,6 +27,8 @@ namespace RoleplayServer
             e.Cancel = true;
         }
 
+
+
         public void OnClientEventTrigger(Client player, string eventName, params object[] arguments)
         {
             if(eventName == "NearbyMessage")
@@ -43,6 +45,162 @@ namespace RoleplayServer
             {
                 API.shared.sendChatMessageToPlayer(i, msg);
             }
+        }
+
+        public float GetDistanceBetweenPlayers(Client player1, Client player2)
+        {
+            Vector3 Player1Pos = API.getEntityPosition(player1);
+            Vector3 Player2Pos = API.getEntityPosition(player2);
+            float dis = floatsqroot((Player2Pos.X - Player1Pos.X) * (Player2Pos.X - Player1Pos.X) + (Player2Pos.Y - Player1Pos.Y) * (Player2Pos.Y - Player1Pos.Y) + (Player2Pos.Z - Player1Pos.Z) * (Player2Pos.Z - Player1Pos.Z));
+            return floatround(dis);
+        }
+
+
+        [Command("me", GreedyArg = true)]
+        public void me_cmd(Client player, string action)
+        {
+            Character playerchar = API.shared.getEntityData(player.handle, "Character");
+            RoleplayMessage(playerchar, action, ROLEPLAY_ME, 10);
+        }
+
+        [Command("ame", GreedyArg = true)]
+        public void ame_cmd(Client player, string action)
+        {
+            Character playerchar = API.shared.getEntityData(player.handle, "Character");
+            string ame = playerchar.character_name + action;
+            Vector3 PlayerPos = API.getEntityPosition(player);
+            var textlabel = API.createTextLabel(ame, PlayerPos, 20, 3);
+            API.attachEntityToEntity(player, textlabel, "head", PlayerPos , 0,0,0);
+        }
+
+        [Command("do", GreedyArg = true)]
+        public void do_cmd(Client player, string action)
+        {
+            Character playerchar = API.shared.getEntityData(player.handle, "Character");
+            RoleplayMessage(playerchar, action, ROLEPLAY_DO, 10);
+        }
+
+        [Command("shout", Alias = "s", GreedyArg = true)]
+        public void shout_cmd(Client player, string text)
+        {
+            Character playerchar = API.shared.getEntityData(player.handle, "Character");
+            string msg = playerchar.character_name + " shouts: " + text;
+            NearbyMessage(player, 25, msg);
+        }
+
+        [Command("b", GreedyArg = true)]
+        public void b_cmd(Client player, string text)
+        {
+            Character playerchar = API.shared.getEntityData(player.handle, "Character");
+            string msg = "((" + playerchar.character_name + ": " + text + "))";
+            NearbyMessage(player, 10, msg);
+        }
+
+
+        [Command("low", GreedyArg = true)]
+        public void low_cmd(Client player, string text)
+        {
+            Character playerchar = API.shared.getEntityData(player.handle, "Character");
+            string msg = playerchar.character_name + " whispers: " + text;
+            NearbyMessage(player, 5, msg);
+        }
+
+
+        [Command("rp", GreedyArg = true)]
+        public void rp_cmd(Client player, Client receiver, string text)
+        {
+            Character playerchar = API.shared.getEntityData(player.handle, "Character");
+            Character receiverid = API.shared.getEntityData(receiver.handle, "Character");
+            string messagetoplayer = "RP To " + receiverid.character_name + ": " + text;
+            API.sendChatMessageToPlayer(player, messagetoplayer);
+            string messagetoreceiver = "RP From " + playerchar.character_name + ": " + text;
+            API.sendChatMessageToPlayer(receiver, messagetoreceiver);
+        }
+
+        [Command("whisper", Alias = "w", GreedyArg = true)]
+        public void w_cmd(Client player, Client receiver, string text)
+        {
+            if(GetDistanceBetweenPlayers(player,receiver) < 7)
+            {
+                Character playerchar = API.shared.getEntityData(player.handle, "Character");
+                Character receiverid = API.shared.getEntityData(receiver.handle, "Character");
+                string messagetoplayer = "Whisper sent to " + receiverid.character_name + " : " + text;
+                API.sendChatMessageToPlayer(player, messagetoplayer);
+                string messagetoreceiver = "Whisper from " + playerchar.character_name + " : " + text;
+                API.sendChatMessageToPlayer(receiver, messagetoreceiver);
+                string autome = playerchar.character_name + " has whispered something to " + receiverid.character_name + ".";
+            }
+        }
+
+
+        [Command("pm", GreedyArg = true)]
+        public void pm_cmd(Client player, Client receiver, string text)
+        {
+            Character playerchar = API.shared.getEntityData(player.handle, "Character");
+            Character receiverid = API.shared.getEntityData(receiver.handle, "Character");
+            string messagetoplayer = "PM To " + receiverid.character_name + ": " + text;
+            API.sendChatMessageToPlayer(player, messagetoplayer);
+            string messagetoreceiver = "PM From " + playerchar.character_name + ": " + text;
+            API.sendChatMessageToPlayer(receiver, messagetoreceiver);
+        }
+
+
+        [Command("pay", GreedyArg = true)]
+        public void pay_cmd(Client player, Client receiver, int amount)
+        {
+            Character playerid = API.shared.getEntityData(player.handle, "Character");
+            Character receiverid = API.shared.getEntityData(receiver.handle, "Character");
+            if (playerid.money < amount)
+            {
+                API.sendChatMessageToPlayer(player, "You don't have that amount on you.");
+                return;
+            }
+
+            if (GetDistanceBetweenPlayers(player, receiver) > 7)
+            {
+                API.sendChatMessageToPlayer(player, "That player is far from you.");
+                return;
+            }
+
+            string messagetoplayer = "You have paid $" + amount + " to " + receiverid.character_name + ".";
+            API.sendChatMessageToPlayer(player, messagetoplayer);
+            string messagetoreceiver = "You have been paid $" + amount + " by" + playerid.character_name + ".";
+            API.sendChatMessageToPlayer(receiver, messagetoreceiver);
+            string autome = playerid.character_name + " has paid " + receiverid.character_name + " some money.";
+            NearbyMessage(player, 10, autome);
+            playerid.money -= amount;
+            receiverid.money += amount;
+        }
+
+
+        [Command("givecheck", GreedyArg = true)]
+        public void givecheck_cmd(Client player, Client receiver, int amount)
+        {
+            Character playerid = API.shared.getEntityData(player.handle, "Character");
+            Character receiverid = API.shared.getEntityData(receiver.handle, "Character");
+            if (playerid.bank_balance < amount)
+            {
+                API.sendChatMessageToPlayer(player, "You don't have that amount in your bank account");
+                return;
+            }
+
+            if (GetDistanceBetweenPlayers(player, receiver) > 7)
+            {
+                API.sendChatMessageToPlayer(player, "That player is far from you.");
+                return;
+            }
+
+
+            string messagetoplayer = "You have given $" + amount + " to " + receiverid.character_name + ". This has been taken from your bank balance.";
+            API.sendChatMessageToPlayer(player, messagetoplayer);
+            string messagetoreceiver = "You have been given a check for $" + amount + " from " + playerid.character_name + ".";
+            API.sendChatMessageToPlayer(receiver, messagetoreceiver);
+            API.sendChatMessageToPlayer(receiver, "You must visit the bank and use /redeemcheck to redeem the check balance.");
+            string autome = playerid.character_name + " signs a check and gives it to " + receiverid.character_name + ".";
+            NearbyMessage(player, 10, autome);
+            playerid.bank_balance -= amount;
+            receiverid.checks += amount;
+
         }
 
         public const int ROLEPLAY_ME = 0;
