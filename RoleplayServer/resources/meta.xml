@@ -16,6 +16,7 @@
 	
 	<script src="player_manager/Account.cs" type="server" lang="csharp"/>
 	<script src="player_manager/Character.cs" type="server" lang="csharp"/>
+	<script src="player_manager/Model.cs" type="server" lang="csharp"/>
 	<script src="player_manager/PlayerManager.cs" type="server" lang="csharp"/>
 	<script src="player_manager/LoginManager.cs" type="server" lang="csharp"/>
 	<script src="player_manager/LoginManager.js" type="client" lang="javascript"/>
@@ -26,6 +27,11 @@
 	<script src="vehicle_manager/VehicleManager.cs" type="server" lang="csharp"/>
 	<script src="vehicle_manager/VehicleMenu.cs" type="server" lang="csharp"/>
 	<script src="vehicle_manager/VehicleMenu.js" type="client" lang="javascript"/>
+	
+	<script src="component_manager/Component.cs" type="server" lang="csharp"/>
+	<script src="component_manager/ComponentManager.cs" type="server" lang="csharp"/>
+	
+	<include resource="gtaocharacter"/>
 	
 	<file src="stylesheet/bootstrap.css" />
 	<file src="stylesheet/bootstrap.js" />

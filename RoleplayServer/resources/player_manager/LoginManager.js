@@ -9,7 +9,6 @@ API.onServerEventTrigger.connect(function (eventName, args) {
         API.setActiveCamera(login_view);
 
         //Show CEF browser
-        API.sendNotification("LOGIN BOX TEST TEST TEST TEST");  
     }
     else if (eventName == "login_finished") {
         API.setActiveCamera(null);

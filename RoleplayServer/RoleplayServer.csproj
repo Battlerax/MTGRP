@@ -72,15 +72,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="resources\component_manager\ComponentManager.cs" />
     <Compile Include="resources\core\ChatManager.cs" />
     <Compile Include="resources\core\DebugManager.cs" />
     <Compile Include="resources\database_manager\DatabaseManager.cs" />
     <Compile Include="resources\Init.cs" />
     <Compile Include="resources\player_manager\Account.cs" />
+    <Compile Include="resources\player_manager\CharacterMenu.cs" />
+    <Compile Include="resources\component_manager\Component.cs" />
     <Compile Include="resources\player_manager\LoginManager.cs" />
     <Compile Include="resources\player_manager\Character.cs" />
+    <Compile Include="resources\player_manager\Model.cs" />
     <Compile Include="resources\player_manager\PlayerManager.cs" />
     <Compile Include="resources\vehicle_manager\Vehicle.cs" />
     <Compile Include="resources\vehicle_manager\VehicleManager.cs" />
@@ -91,7 +94,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="resources\player_manager\Login.html" />
+    <Content Include="resources\player_manager\CharacterMenu.js" />
     <Content Include="resources\player_manager\LoginManager.js" />
     <Content Include="resources\vehicle_manager\VehicleMenu.js" />
   </ItemGroup>

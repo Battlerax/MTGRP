@@ -2,6 +2,7 @@
 using MongoDB.Driver;
 using MongoDB.Bson;
 
+
 namespace RoleplayServer
 {
     public static class DatabaseManager
@@ -10,11 +11,11 @@ namespace RoleplayServer
         private static IMongoDatabase database = null;
 
         private static IMongoCollection<BsonDocument> counters_table = null;
-
         public static IMongoCollection<Vehicle> vehicle_table = null;
         public static IMongoCollection<Account> account_table = null; 
         public static IMongoCollection<Character> character_table = null;
-
+        public static IMongoCollection<Component> component_table = null;
+       
         public static void DatabaseManagerInit()
         {
             DebugManager.debugMessage("[DatabaseM] Initalizing database manager...");
@@ -25,7 +26,8 @@ namespace RoleplayServer
             vehicle_table = database.GetCollection<Vehicle>("vehicles");
             account_table = database.GetCollection<Account>("accounts");
             character_table = database.GetCollection<Character>("characters");
-
+            component_table = database.GetCollection<Component>("components");
+           
             DebugManager.debugMessage("[DatabaseM] Database Manager initalized!");
         }
 

@@ -19,7 +19,7 @@ namespace RoleplayServer
 
             API.onPlayerConnected += OnPlayerConnected;
             API.onPlayerFinishedDownload += OnPlayerFinishedDownload;
-
+            
             DebugManager.debugMessage("[LoginM] Login Manager initalized.");
         }
 
@@ -31,7 +31,7 @@ namespace RoleplayServer
         public void OnPlayerFinishedDownload(Client player)
         {
             Account account = API.getEntityData(player.handle, "Account");
-
+      
             API.setEntityDimension(player.handle, LOGIN_DIMENSION);
             
             if(account.is_registered() == true)
