@@ -4,14 +4,17 @@ var vehicle_menu = null;
 var door_index = 0;
 
 API.onPlayerExitVehicle.connect(function (player, vehicle) {
-    if (vehicle_menu.Visible == true) {
-        vehicle_menu.Visible = false;
+    if (vehicle_menu != null) {
+        if (vehicle_menu.Visible == true) {
+            vehicle_menu.Visible = false;
+        }
     }
 });
 
 API.onKeyDown.connect(function(Player, args){
     if(args.KeyCode == Keys.N && !API.isChatOpen()) {
         if (vehicle_menu == null || vehicle_menu.Visible == false) {
+            
             var player = API.getLocalPlayer();
 
             if (API.isPlayerInAnyVehicle(player) == false)
@@ -40,7 +43,7 @@ API.onKeyDown.connect(function(Player, args){
                     park_car_item = API.createMenuItem("Park Car", "Save the vehicles spawn point to its current location");
                 }
                 else {
-                    if (API.getEngineStatus(player_veh) == false) {
+                    if (API.getEngineStatus(player_veh) == true) {
                         engine_state_item = API.createMenuItem("Attempt Hotwire", "Attempt to hotwire the vehicle.");
                     }
                     else {
@@ -61,26 +64,37 @@ API.onKeyDown.connect(function(Player, args){
 
             door_item = API.createListItem("Door Options", "Open and close the vehicle doors.", door_list, 0);
 
-            vehicle_menu.AddItem(engine_state_item);
+            if (player_seat == -1) {
+                vehicle_menu.AddItem(engine_state_item);
+            }
+
             vehicle_menu.AddItem(lock_state_item);
-            vehicle_menu.AddItem(park_car_item);
+
+            if (player_seat == -1 && player_owns_veh == true) {
+                vehicle_menu.AddItem(park_car_item);
+            }
+
             vehicle_menu.AddItem(door_item);
 
             menu_pool.Add(vehicle_menu);
             vehicle_menu.Visible = true;
 
             //Send this shit to the server cause we can't trust client side for owner information... frickin cheaters
-            engine_state_item.Activated.connect(function (menu, item) {
-                API.triggerServerEvent("OnVehicleMenuTrigger", player_veh, "engine");
-            });
+            if (player_seat == -1) {
+                engine_state_item.Activated.connect(function (menu, item) {
+                    API.triggerServerEvent("OnVehicleMenuTrigger", player_veh, "engine");
+                });
+            }
 
             lock_state_item.Activated.connect(function (menu, item) {
                 API.triggerServerEvent("OnVehicleMenuTrigger", player_veh, "lock");
             });
 
-            park_car_item.Activated.connect(function (menu, item) {
-                API.triggerServerEvent("OnVehicleMenuTrigger", player_veh, "park");
-            });
+            if (player_seat == -1 && player_owns_veh == true) {
+                park_car_item.Activated.connect(function (menu, item) {
+                    API.triggerServerEvent("OnVehicleMenuTrigger", player_veh, "park");
+                });
+            }
 
             door_item.Activated.connect(function (menu, item) {
                 API.triggerServerEvent("OnVehicleMenuTrigger", player_veh, "door", door_index);

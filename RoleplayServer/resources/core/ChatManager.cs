@@ -37,30 +37,40 @@ namespace RoleplayServer
             }
         }
 
+        public static void NearbyMessage(Client player, float radius, string msg, string color)
+        {
+            List<Client> players = API.shared.getPlayersInRadiusOfPlayer(radius, player);
+           
+            foreach(Client i in players)
+            {
+                API.shared.sendChatMessageToPlayer(i, color, msg);
+            }
+        }
+
+
         public static void NearbyMessage(Client player, float radius, string msg)
         {
             List<Client> players = API.shared.getPlayersInRadiusOfPlayer(radius, player);
 
-            foreach(Client i in players)
+            foreach (Client i in players)
             {
                 API.shared.sendChatMessageToPlayer(i, msg);
             }
         }
 
+
         public float GetDistanceBetweenPlayers(Client player1, Client player2)
         {
-            Vector3 Player1Pos = API.getEntityPosition(player1);
-            Vector3 Player2Pos = API.getEntityPosition(player2);
-            float dis = floatsqroot((Player2Pos.X - Player1Pos.X) * (Player2Pos.X - Player1Pos.X) + (Player2Pos.Y - Player1Pos.Y) * (Player2Pos.Y - Player1Pos.Y) + (Player2Pos.Z - Player1Pos.Z) * (Player2Pos.Z - Player1Pos.Z));
-            return floatround(dis);
+            return player1.position.DistanceTo(player2.position);
         }
 
+        
 
         [Command("me", GreedyArg = true)]
         public void me_cmd(Client player, string action)
         {
             Character playerchar = API.shared.getEntityData(player.handle, "Character");
-            RoleplayMessage(playerchar, action, ROLEPLAY_ME, 10);
+            RoleplayMessage(playerchar, action, ROLEPLAY_ME, 10, 0);
         }
 
         [Command("ame", GreedyArg = true)]
@@ -70,14 +80,14 @@ namespace RoleplayServer
             string ame = playerchar.character_name + action;
             Vector3 PlayerPos = API.getEntityPosition(player);
             var textlabel = API.createTextLabel(ame, PlayerPos, 20, 3);
-            API.attachEntityToEntity(player, textlabel, "head", PlayerPos , 0,0,0);
+            API.attachEntityToEntity(player, textlabel, "head", PlayerPos , new Vector3(0, 0, 0.5));
         }
 
         [Command("do", GreedyArg = true)]
         public void do_cmd(Client player, string action)
         {
             Character playerchar = API.shared.getEntityData(player.handle, "Character");
-            RoleplayMessage(playerchar, action, ROLEPLAY_DO, 10);
+            RoleplayMessage(playerchar, action, ROLEPLAY_DO, 10, 0);
         }
 
         [Command("shout", Alias = "s", GreedyArg = true)]
@@ -107,45 +117,60 @@ namespace RoleplayServer
 
 
         [Command("rp", GreedyArg = true)]
-        public void rp_cmd(Client player, Client receiver, string text)
+        public void rp_cmd(Client player, string id, string text)
         {
-            Character playerchar = API.shared.getEntityData(player.handle, "Character");
-            Character receiverid = API.shared.getEntityData(receiver.handle, "Character");
-            string messagetoplayer = "RP To " + receiverid.character_name + ": " + text;
-            API.sendChatMessageToPlayer(player, messagetoplayer);
-            string messagetoreceiver = "RP From " + playerchar.character_name + ": " + text;
-            API.sendChatMessageToPlayer(receiver, messagetoreceiver);
+            Client receiver = PlayerManager.parseClient(id);
+
+            if (receiver == null)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
+            }
+
+            API.sendChatMessageToPlayer(player, Color.LongDistanceRoleplay, "RP to " + PlayerManager.getName(receiver) + ": " + text);
+            API.sendChatMessageToPlayer(receiver, Color.LongDistanceRoleplay, "RP from " + PlayerManager.getName(player) + ": " + text);
         }
 
         [Command("whisper", Alias = "w", GreedyArg = true)]
-        public void w_cmd(Client player, Client receiver, string text)
+        public void w_cmd(Client player, string id, string text)
         {
-            if(GetDistanceBetweenPlayers(player,receiver) < 7)
+            Client receiver = PlayerManager.parseClient(id);
+
+            if (receiver == null)
             {
-                Character playerchar = API.shared.getEntityData(player.handle, "Character");
-                Character receiverid = API.shared.getEntityData(receiver.handle, "Character");
-                string messagetoplayer = "Whisper sent to " + receiverid.character_name + " : " + text;
-                API.sendChatMessageToPlayer(player, messagetoplayer);
-                string messagetoreceiver = "Whisper from " + playerchar.character_name + " : " + text;
-                API.sendChatMessageToPlayer(receiver, messagetoreceiver);
-                string autome = playerchar.character_name + " has whispered something to " + receiverid.character_name + ".";
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
             }
+
+            if(GetDistanceBetweenPlayers(player, receiver) > 4)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ You are too far away from that player.");
+                return;
+            }
+
+            API.sendChatMessageToPlayer(player, Color.Whisper, "Whisper to " + PlayerManager.getName(receiver) + ": " + text);
+            API.sendChatMessageToPlayer(receiver, Color.Whisper, "Whisper from " + PlayerManager.getName(player) + ": " + text);
+            RoleplayMessage(player, "whispers to " + PlayerManager.getName(receiver), ROLEPLAY_ME, 10);
         }
 
 
         [Command("pm", GreedyArg = true)]
-        public void pm_cmd(Client player, Client receiver, string text)
+        public void pm_cmd(Client player, string id, string text)
         {
-            Character playerchar = API.shared.getEntityData(player.handle, "Character");
-            Character receiverid = API.shared.getEntityData(receiver.handle, "Character");
-            string messagetoplayer = "PM To " + receiverid.character_name + ": " + text;
-            API.sendChatMessageToPlayer(player, messagetoplayer);
-            string messagetoreceiver = "PM From " + playerchar.character_name + ": " + text;
-            API.sendChatMessageToPlayer(receiver, messagetoreceiver);
+            Client receiver = PlayerManager.parseClient(id);
+
+            if (receiver == null)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
+            }
+
+            API.sendChatMessageToPlayer(player, Color.PM, "PM to " + PlayerManager.getName(receiver) + ": " + text);
+            API.sendChatMessageToPlayer(receiver, Color.PM, "PM from " + PlayerManager.getName(player) + ": " + text);
         }
 
 
-        [Command("pay", GreedyArg = true)]
+        /*[Command("pay", GreedyArg = true)]
         public void pay_cmd(Client player, Client receiver, int amount)
         {
             Character playerid = API.shared.getEntityData(player.handle, "Character");
@@ -200,13 +225,12 @@ namespace RoleplayServer
             NearbyMessage(player, 10, autome);
             playerid.bank_balance -= amount;
             receiverid.checks += amount;
-
-        }
+        }*/
 
         public const int ROLEPLAY_ME = 0;
         public const int ROLEPLAY_DO = 1;
 
-        public static void RoleplayMessage(Character character, string action, int type, float radius = 10)
+        public static void RoleplayMessage(Character character, string action, int type, float radius = 10, int auto = 1)
         {
             string roleplay_msg = null;
 
@@ -220,7 +244,44 @@ namespace RoleplayServer
                     break;
             }
 
-            NearbyMessage(character.client, radius, roleplay_msg);
+            string color = "";
+            if(auto == 1)
+            {
+                color = Color.AutoRoleplay;
+            }
+            else
+            {
+                color = Color.PlayerRoleplay;
+            }
+
+            NearbyMessage(character.client, radius, roleplay_msg, color);
+        }
+
+        public static void RoleplayMessage(Client player, string action, int type, float radius = 10, int auto = 1)
+        {
+            string roleplay_msg = null;
+
+            switch (type)
+            {
+                case 0: //ME
+                    roleplay_msg = "* " + PlayerManager.getName(player) + " " + action;
+                    break;
+                case 1: //DO
+                    roleplay_msg = "* " + action + " ((" + PlayerManager.getName(player) + "))";
+                    break;
+            }
+
+            string color = "";
+            if (auto == 1)
+            {
+                color = Color.AutoRoleplay;
+            }
+            else
+            {
+                color = Color.PlayerRoleplay;
+            }
+
+            NearbyMessage(player, radius, roleplay_msg, color);
         }
     }
 }

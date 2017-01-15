@@ -47,6 +47,9 @@ namespace RoleplayServer
         [BsonIgnore]
         private bool is_spawned { get; set; }
 
+        [BsonIgnore]
+        public NetHandle blip { get; set; }
+
         public Vehicle()
         {
             _id = 0;
@@ -104,6 +107,13 @@ namespace RoleplayServer
             is_spawned = true;
             net_handle = API.shared.createVehicle(veh_model, pos, spawn_rot, spawn_colors[0], spawn_colors[1], spawn_dimension);
             API.shared.setVehicleNumberPlate(net_handle, "ABC123");
+
+            blip = API.shared.createBlip(net_handle);
+            API.shared.setBlipColor(blip, 40);
+            API.shared.setBlipSprite(blip, 225);
+            API.shared.setBlipScale(blip, (float)(0.7));
+            API.shared.setBlipShortRange(blip, true);
+
             return 1; // Successful spawn
         }
 
@@ -114,6 +124,7 @@ namespace RoleplayServer
                 return 0; // Vehicle is not spawned
 
             API.shared.deleteEntity(net_handle);
+            API.shared.deleteEntity(blip);
             is_spawned = false;
             return 1; // Successful despawn
         }

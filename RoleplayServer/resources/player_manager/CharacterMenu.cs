@@ -13,27 +13,10 @@ namespace RoleplayServer
             API.onClientEventTrigger += OnClientEventTrigger;
         }
 
-        [Command("naked")]
-        public void NakedCommand(Client sender)
+        [Command("test")]
+        public void test(Client sender)
         {
-            Character c = API.getEntityData(sender.handle, "Character");
-            API.setPlayerClothes(sender, 3, 15, 0);
-            c.model.undershirt_style = 15;
-            c.model.undershirt_var = 0;
-            c.model.top_style = 15;
-            c.model.top_var = 0;
-            c.update_ped(sender.handle);
-
-            //API.setPlayerClothes(sender, 4, 15, 0);
-            //API.setPlayerClothes(sender, 8, 15, 0);
-            //API.setPlayerClothes(sender, 11, 15, 0);
-
-        }
-
-        [Command("reset")]
-        public void reset(Client sender)
-        {
-            API.setPlayerDefaultClothes(sender);
+            API.setEntityPosition(sender.handle, new Vector3(-30.680381774902344,  -728.7491455078125,  44.271934509277344));
         }
 
         public void OnClientEventTrigger(Client player, string eventName, params object[] arguments)
@@ -126,11 +109,13 @@ namespace RoleplayServer
                     }
 
                     character.update_ped(player.handle);
+                    character.update_nametag();
 
                     API.setEntityPosition(player.handle, character.last_pos);
                     API.setEntityRotation(player.handle, character.last_rot);
-                    API.setEntityDimension(player.handle, 0);
+                    API.setEntityDimension(player.handle, character.last_dimension);
                     API.sendChatMessageToPlayer(player, "You have successfully loaded your character: " + char_name);
+                    
                     API.triggerClientEvent(player, "login_finished");
                 }
 
@@ -296,6 +281,7 @@ namespace RoleplayServer
                 }
 
                 character.update_ped(player.handle);
+                character.update_nametag();
 
                 API.setEntityPosition(player.handle, character.last_pos);
                 API.setEntityRotation(player.handle, character.last_rot);

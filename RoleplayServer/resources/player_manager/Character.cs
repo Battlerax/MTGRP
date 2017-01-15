@@ -25,6 +25,7 @@ namespace RoleplayServer
 
         public Vector3 last_pos { get; set; }
         public Vector3 last_rot { get; set; }
+        public int last_dimension { get; set; }
 
         public int money { get; set; }
         public int bank_balance { get; set; }
@@ -121,7 +122,8 @@ namespace RoleplayServer
 
             API.shared.sendNativeToAllPlayers(Hash.SET_PED_HEAD_OVERLAY, handle, 9, this.model.moles_freckles, 1.0f);
 
-          
+
+            API.shared.setPlayerClothes(client, 1, 0, 0);
             API.shared.setPlayerClothes(client, 4, this.model.pants_style, this.model.pants_var - 1); // Pants
             API.shared.setPlayerClothes(client, 6, this.model.shoe_style, this.model.shoe_var - 1); // Shoes
             API.shared.setPlayerClothes(client, 7, this.model.accessory_style, this.model.accessory_var - 1); // Accessories
@@ -129,9 +131,14 @@ namespace RoleplayServer
             API.shared.setPlayerClothes(client, 11, this.model.top_style, this.model.top_var - 1); //top
 
             API.shared.setPlayerAccessory(client, 0, this.model.hat_style, this.model.hat_var - 1); // hats
-            API.shared.setPlayerAccessory(client, 1, this.model.glasses_style, this.model.glasses_var - 1); // glasses
+            //API.shared.setPlayerAccessory(client, 1, this.model.glasses_style, this.model.glasses_var - 1); // glasses
             API.shared.setPlayerAccessory(client, 2, this.model.ear_style, this.model.ear_var - 1); // earings
        
+        }
+
+        public void update_nametag()
+        {
+            API.shared.setPlayerNametag(this.client, this.character_name + " (" + PlayerManager.getPlayerId(this) + ")");
         }
     }
 }

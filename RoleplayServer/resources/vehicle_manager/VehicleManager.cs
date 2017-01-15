@@ -128,6 +128,9 @@ namespace RoleplayServer
             // Admin check in future
 
             Vehicle veh = getVehFromNetHandle(vehicle_handle);
+            API.setBlipTransparency(veh.blip, 0);
+
+
             Character character = API.getEntityData(player.handle, "Player");
 
             API.sendChatMessageToPlayer(player, "~w~[VehicleM] You have entered vehicle ~r~" + vehicles.IndexOf(veh) + "(Owned by: " + veh.owner_name + ")");
@@ -143,6 +146,7 @@ namespace RoleplayServer
         public void OnPlayerExitVehicle(Client player, NetHandle vehicle_handle)
         {
             Vehicle veh = getVehFromNetHandle(vehicle_handle);
+            API.setBlipTransparency(veh.blip, 100);
 
             if(veh == null)
             {
