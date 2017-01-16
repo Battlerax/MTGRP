@@ -7,6 +7,11 @@ namespace RoleplayServer
 {
     public class ChatManager : Script
     {
+        public bool newbie_status = true;
+        public bool ooc_status = true;
+        public bool vip_status = true;
+
+
         public ChatManager()
         {
             DebugManager.debugMessage("[ChatM] Initalizing chat manager...");
@@ -15,19 +20,108 @@ namespace RoleplayServer
             API.onClientEventTrigger += OnClientEventTrigger;
 
             DebugManager.debugMessage("[ChatM] Chat Manager initalized.");
-        }
+        } 
 
         public void OnChatMessage(Client player, string msg, CancelEventArgs e)
         {
-            Character character = API.getEntityData(player, "Character");
+            Account account = API.getEntityData(player.handle, "Account");
+            Character character = API.getEntityData(player.handle, "Character");
             
             //Local Chat
-            msg = character.character_name + " says: " + msg;
-            NearbyMessage(player, 15, msg);
+            if(account.admin_duty == 0)
+            {
+                msg = character.character_name + " says: " + msg;
+                NearbyMessage(player, 15, msg);
+            }
+            else
+            {
+                b_cmd(player, msg);
+            }
+           
             e.Cancel = true;
         }
 
+        [Command("newbiechat", Alias = "n", GreedyArg = true)]
+        public void newbie_cmd(Client player, string message)
+        {
+            Account account = API.getEntityData(player.handle, "Account");
 
+            if (newbie_status == false && account.admin_level == 0)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~Newbie chat is currently disabled.");
+                return;
+            }
+
+            Character c = API.getEntityData(player.handle, "Character");
+
+            if(c.newbie_cooldown > new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds())
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~You must wait 60 seconds before using newbie chat again.");
+                return;
+            }
+
+            API.sendChatMessageToAll(Color.NewbieChat, "[N] " + c.character_name + ": " + message);
+            if(account.admin_level == 0)
+            {
+                c.newbie_cooldown = (new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds() + 60);
+            }
+        }
+
+        [Command("ooc", Alias = "o", GreedyArg = true)]
+        public void ooc_cmd(Client player, string message)
+        {
+            Account account = API.getEntityData(player.handle, "Account");
+
+            if (ooc_status == false && account.admin_level)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~Global OOC chat is currently disabled.");
+                return;
+            }
+
+            Character c = API.getEntityData(player.handle, "Character");
+
+            if (c.ooc_cooldown > new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds())
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~You must wait 60 seconds before using global OOC chat again.");
+                return;
+            }
+
+            API.sendChatMessageToAll(Color.GlobalOOC, "[OOC] " + c.character_name + ": " + message);
+            if (account.admin_level == 0)
+            {
+                c.ooc_cooldown = (new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds() + 60);
+            }
+        }
+
+        [Command("vip", Alias ="v", GreedyArg =true)]
+        public void vip_chat(Client player, string message)
+        {
+            Account account = API.getEntityData(player.handle, "Account");
+
+            if (vip_status == false && account.admin_level == 0)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~VIP chat is currently disabled.");
+                return;
+            }
+
+            if(account.vip_level == 0)
+            {
+                API.sendNotificationToPlayer(player, "~y~You must be a VIP to use VIP chat.");
+                return;
+            }
+
+            Character c = API.getEntityData(player.handle, "Character");
+
+            List<Client> players = API.getAllPlayers();
+            foreach(Client p in players)
+            {
+                Account p_account = API.getEntityData(p.handle, "Account");
+                if(p_account.vip_level > 0)
+                {
+                    API.sendChatMessageToPlayer(p, Color.VIPChat, "[V] " + c.character_name + ": " + message);
+                }
+            }
+        }
 
         public void OnClientEventTrigger(Client player, string eventName, params object[] arguments)
         {
@@ -76,11 +170,31 @@ namespace RoleplayServer
         [Command("ame", GreedyArg = true)]
         public void ame_cmd(Client player, string action)
         {
-            Character playerchar = API.shared.getEntityData(player.handle, "Character");
-            string ame = playerchar.character_name + action;
-            Vector3 PlayerPos = API.getEntityPosition(player);
-            var textlabel = API.createTextLabel(ame, PlayerPos, 20, 3);
-            API.attachEntityToEntity(player, textlabel, "head", PlayerPos , new Vector3(0, 0, 0.5));
+            Character character = API.getEntityData(player.handle, "Character");
+
+            if (API.doesEntityExist(character.ame_text))
+            {
+                API.deleteEntity(character.ame_text);
+                character.ame_timer.Stop();
+            }
+
+            character.ame_text = API.createTextLabel(Color.PlayerRoleplay + character.character_name + " " + action, player.position, 15, (float)(0.5), false, player.dimension);
+            API.setTextLabelColor(character.ame_text, 194, 162, 218, 255);
+            API.attachEntityToEntity(character.ame_text, player.handle, "SKEL_Head", new Vector3(0.0, 0.0, 1.3), new Vector3(0, 0, 0));
+
+            character.ame_timer = new System.Timers.Timer();
+            character.ame_timer.Interval = 8000;
+            character.ame_timer.Elapsed += delegate { RemoveAmeText(character); };
+            character.ame_timer.Start();
+        }
+
+        public void RemoveAmeText(Character c)
+        {
+            if (API.doesEntityExist(c.ame_text))
+            {
+                API.deleteEntity(c.ame_text);
+            }
+            c.ame_timer.Stop();
         }
 
         [Command("do", GreedyArg = true)]
@@ -93,29 +207,29 @@ namespace RoleplayServer
         [Command("shout", Alias = "s", GreedyArg = true)]
         public void shout_cmd(Client player, string text)
         {
-            Character playerchar = API.shared.getEntityData(player.handle, "Character");
-            string msg = playerchar.character_name + " shouts: " + text;
-            NearbyMessage(player, 25, msg);
+            NearbyMessage(player, 25, PlayerManager.getName(player) + " shouts: " + text);
+        }
+
+        [Command("low", GreedyArg = true)]
+        public void low_cmd(Client player, string text)
+        {
+            NearbyMessage(player, 5, PlayerManager.getName(player) + " whispers: " + text, Color.Grey);
         }
 
         [Command("b", GreedyArg = true)]
         public void b_cmd(Client player, string text)
         {
-            Character playerchar = API.shared.getEntityData(player.handle, "Character");
-            string msg = "((" + playerchar.character_name + ": " + text + "))";
-            NearbyMessage(player, 10, msg);
+            Account account = API.getEntityData(player.handle, "Account");
+            if(account.admin_duty == 0)
+            {
+                NearbyMessage(player, 10, "(( " + PlayerManager.getName(player) + ": " + text + " ))", Color.OOC);
+            }
+            else
+            {
+                NearbyMessage(player, 10, "(( " + PlayerManager.getAdminName(player) + ": " + text + " ))", Color.AdminOrange);
+            }
         }
-
-
-        [Command("low", GreedyArg = true)]
-        public void low_cmd(Client player, string text)
-        {
-            Character playerchar = API.shared.getEntityData(player.handle, "Character");
-            string msg = playerchar.character_name + " whispers: " + text;
-            NearbyMessage(player, 5, msg);
-        }
-
-
+        
         [Command("rp", GreedyArg = true)]
         public void rp_cmd(Client player, string id, string text)
         {

@@ -19,8 +19,20 @@ namespace RoleplayServer
 
             API.onPlayerConnected += OnPlayerConnected;
             API.onPlayerFinishedDownload += OnPlayerFinishedDownload;
-            
+
+            //API.onChatCommand += OnChatCommandHandler;
+            API.onChatMessage += OnPlayerChat;
+
             DebugManager.debugMessage("[LoginM] Login Manager initalized.");
+        }
+
+        public void OnPlayerChat(Client player, string message, CancelEventArgs e)
+        {
+            Account account = API.getEntityData(player, "Account");
+            if(account.is_logged_in == false)
+            {
+                e.Cancel = true;
+            }
         }
 
         public void OnPlayerConnected(Client player)
@@ -84,6 +96,12 @@ namespace RoleplayServer
                 API.sendChatMessageToPlayer(player, "~g~ You have successfully logged in!");
 
                 account.is_logged_in = true;
+
+                if (account.admin_level > 0)
+                {
+                    API.sendChatMessageToPlayer(player, Color.AdminOrange, "Welcome back Admin " + account.admin_name);
+                }
+
                 prepare_character_menu(player);
             }
             else

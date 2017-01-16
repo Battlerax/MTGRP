@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
+using System;
 using System.Collections.Generic;
 
 namespace RoleplayServer
@@ -11,8 +12,16 @@ namespace RoleplayServer
 
         public string account_name { get; set; }
         public int admin_level { get; set; }
+        public string admin_name { get; set; }
+        public int admin_duty { get; set; }
+        public int dev_level { get; set; }
         public string password { get; set; }
         public string salt { get; set; }
+
+        public int vip_level { get; set; }
+        public DateTime vip_expiration_date { get; set; }
+
+        public string last_ip { get; set; }
 
         [BsonIgnore]
         public bool is_logged_in { get; set; }
@@ -34,8 +43,16 @@ namespace RoleplayServer
             {
                 this._id = a._id;
                 this.admin_level = a.admin_level;
+                this.admin_name = a.admin_name;
+                this.admin_duty = a.admin_duty;
+                this.dev_level = a.dev_level;
                 this.password = a.password;
                 this.salt = a.salt;
+
+                this.vip_level = a.vip_level;
+                this.vip_expiration_date = a.vip_expiration_date;
+
+                this.last_ip = a.last_ip;
 
                 break;
             }

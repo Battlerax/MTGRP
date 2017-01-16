@@ -16,7 +16,20 @@ namespace RoleplayServer
             API.onPlayerConnected += OnPlayerConnected;
             API.onPlayerDisconnected += OnPlayerDisconnected;
 
+            API.onClientEventTrigger += API_onClientEventTrigger;
+
             DebugManager.debugMessage("[PlayerM] Player Manager initalized.");
+        }
+
+        private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
+        {
+            if(eventName == "update_ped_for_client")
+            {
+                var player = (NetHandle)arguments[0];
+
+                Character c = API.getEntityData(player, "Character");
+                c.update_ped();
+            }
         }
 
         public void OnPlayerConnected(Client player)
@@ -34,10 +47,21 @@ namespace RoleplayServer
 
             character.last_pos = player.position;
             character.last_rot = player.rotation;
+            character.getTimePlayed();//Update time played before save.
             character.save();
 
             API.resetEntityData(player.handle, "Character");
             players.Remove(character);
+
+            updatePlayerNametags();//IDs change when a player logs off
+        }
+
+        public static void updatePlayerNametags()
+        {
+            foreach(Character c in players)
+            {
+                c.update_nametag();
+            }
         }
 
         public static Client getPlayerByName(string name)
@@ -92,8 +116,28 @@ namespace RoleplayServer
 
         public static string getName(Client player)
         {
-            Character c = API.shared.getEntityData(player, "Character");
+            Character c = API.shared.getEntityData(player.handle, "Character");
             return c.character_name;
+        }
+
+        public static string getAdminName(Client player)
+        {
+            Account account = API.shared.getEntityData(player.handle, "Account");
+            return account.admin_name;
+        }
+
+        [Command("getid", GreedyArg = true, Alias = "id")]
+        public void getid_cmd(Client sender, string player_name)
+        {
+            API.sendChatMessageToPlayer(sender, Color.White, "----------- Searching for: " + player_name + " -----------");
+            foreach(Character c in players)
+            {
+                if(c.character_name.StartsWith(player_name, StringComparison.OrdinalIgnoreCase))
+                {
+                    API.sendChatMessageToPlayer(sender, Color.Grey, c.character_name + " - ID " + PlayerManager.getPlayerId(c));
+                }
+            }
+            API.sendChatMessageToPlayer(sender, Color.White, "-----------------------------------------------------------------------------");
         }
     }
 }

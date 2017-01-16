@@ -19,6 +19,7 @@
 	<script src="player_manager/Character.cs" type="server" lang="csharp"/>
 	<script src="player_manager/Model.cs" type="server" lang="csharp"/>
 	<script src="player_manager/PlayerManager.cs" type="server" lang="csharp"/>
+	<script src="player_manager/PlayerManager.js" type="client" lang="javascript"/>
 	<script src="player_manager/LoginManager.cs" type="server" lang="csharp"/>
 	<script src="player_manager/LoginManager.js" type="client" lang="javascript"/>
 	<script src="player_manager/CharacterMenu.js" type="client" lang="javascript"/>
@@ -32,7 +33,7 @@
 	<script src="component_manager/Component.cs" type="server" lang="csharp"/>
 	<script src="component_manager/ComponentManager.cs" type="server" lang="csharp"/>
 	
-	<file src="stylesheet/bootstrap.css" />
-	<file src="stylesheet/bootstrap.js" />
+
+	
 	<file src="jquery.js" />
 </meta>

@@ -93,7 +93,7 @@ namespace RoleplayServer
                     if(character.is_created == false)
                     {
                         API.sendChatMessageToPlayer(player, "Welcome back, " + character.character_name + "! Let's finish figuring out what you look like!");
-                        character.update_ped(player.handle);
+                        character.update_ped();
                         API.freezePlayer(player, true);
                         API.triggerClientEvent(player, "show_character_creation_menu");
                         return;
@@ -108,14 +108,15 @@ namespace RoleplayServer
                         API.setPlayerSkin(player, PedHash.FreemodeFemale01);
                     }
 
-                    character.update_ped(player.handle);
+                    character.update_ped();
                     character.update_nametag();
+                    character.startTrackingTimePlayed();
 
                     API.setEntityPosition(player.handle, character.last_pos);
                     API.setEntityRotation(player.handle, character.last_rot);
                     API.setEntityDimension(player.handle, character.last_dimension);
                     API.sendChatMessageToPlayer(player, "You have successfully loaded your character: " + char_name);
-                    
+                   
                     API.triggerClientEvent(player, "login_finished");
                 }
 
@@ -144,7 +145,7 @@ namespace RoleplayServer
                     character.model.setDefault();
                 }
 
-                character.update_ped(player.handle);
+                character.update_ped();
                 character.save();
             }
             else if(eventName == "change_facial_features")
@@ -174,7 +175,7 @@ namespace RoleplayServer
                 character.model.lipstick = (int)arguments[12];
                 character.model.lipstick_color = (int)arguments[13];
                 character.model.moles_freckles = (int)arguments[14];
-                character.update_ped(player.handle);
+                character.update_ped();
                 character.save();
             }
             else if(eventName == "change_clothes")
@@ -259,7 +260,7 @@ namespace RoleplayServer
                     }
                 }
 
-                character.update_ped(player.handle);
+                character.update_ped();
                 character.save();
             }
             else if(eventName == "finish_character_creation")
@@ -280,7 +281,7 @@ namespace RoleplayServer
                     character.last_rot = new Vector3(0, 0, 90);
                 }
 
-                character.update_ped(player.handle);
+                character.update_ped();
                 character.update_nametag();
 
                 API.setEntityPosition(player.handle, character.last_pos);
@@ -291,6 +292,7 @@ namespace RoleplayServer
                 API.sendChatMessageToPlayer(player, "~g~If you have any questions please use /n(ewbie) chat or /ask for moderator assitance.");
 
                 character.is_created = true;
+                character.startTrackingTimePlayed();
                 character.save();
 
                 API.triggerClientEvent(player, "login_finished");

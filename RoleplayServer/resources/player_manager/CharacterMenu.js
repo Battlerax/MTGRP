@@ -602,11 +602,11 @@ function next_character_creation_step(player, step) {
             var shoe_variation = 0;
             var accessory_index = 0;
             var accessory_variation = 0;
-            var undershirt_style = 0;
+            var undershirt_style = 15;
             var undershirt_variation = 0;
             var top_style = 0;
             var top_variation = 0;
-            var hat_style = -1;
+            var hat_index = -1;
             var hat_variation = 0;
             var glasses_style = -1;
             var glasses_variation = 0;

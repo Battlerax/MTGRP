@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Bson.Serialization.Attributes;
+using System.Timers;
 
 namespace RoleplayServer
 {
@@ -42,7 +43,20 @@ namespace RoleplayServer
         public string birthplace { get; set; }
 
         [BsonIgnore]
+        private long time_logged_in { get; set; }
+        public long time_played { get; set; }
+
+        [BsonIgnore]
         public Client client { get; set; }
+        [BsonIgnore]
+        public NetHandle ame_text { get; set; }
+        [BsonIgnore]
+        public Timer ame_timer { get; set; }
+
+        [BsonIgnore]
+        public long newbie_cooldown { get; set; }
+        [BsonIgnore]
+        public long ooc_cooldown { get; set; }
         
         public Character()
         {
@@ -88,57 +102,77 @@ namespace RoleplayServer
             }
         }
 
-        public void update_ped(NetHandle handle)
+        public void update_ped()
         {
-            API.shared.sendNativeToAllPlayers(Hash.SET_PED_HEAD_BLEND_DATA, handle, this.model.father_id, this.model.mother_id, 0, this.model.father_id, this.model.mother_id, 0, this.model.parent_lean, this.model.parent_lean, 0, false);
+            API.shared.sendNativeToAllPlayers(Hash.SET_PED_HEAD_BLEND_DATA, client.handle, this.model.father_id, this.model.mother_id, 0, this.model.father_id, this.model.mother_id, 0, this.model.parent_lean, this.model.parent_lean, 0, false);
 
             API.shared.setPlayerClothes(client, 2, this.model.hair_style, 0);
-            API.shared.sendNativeToAllPlayers(Hash._SET_PED_HAIR_COLOR, handle, this.model.hair_color);
+            API.shared.sendNativeToAllPlayers(Hash._SET_PED_HAIR_COLOR, client.handle, this.model.hair_color);
             
-            //API.shared.sendNativeToAllPlayers(Hash._SET_PED_EYE_COLOR, handle, this.model.eye_color);
+            //API.shared.sendNativeToAllPlayers(Hash._SET_PED_EYE_COLOR, client.handle, this.model.eye_color);
 
-            API.shared.sendNativeToAllPlayers(Hash.SET_PED_HEAD_OVERLAY, handle, 2, this.model.eyebrows, 1.0f);
-            API.shared.sendNativeToAllPlayers(Hash._SET_PED_HEAD_OVERLAY_COLOR, handle, 2, 1, this.model.hair_color, this.model.hair_color);
+            API.shared.sendNativeToAllPlayers(Hash.SET_PED_HEAD_OVERLAY, client.handle, 2, this.model.eyebrows, 1.0f);
+            API.shared.sendNativeToAllPlayers(Hash._SET_PED_HEAD_OVERLAY_COLOR, client.handle, 2, 1, this.model.hair_color, this.model.hair_color);
 
-            API.shared.sendNativeToAllPlayers(Hash.SET_PED_HEAD_OVERLAY, handle, 0, this.model.blemishes, 1.0f);
+            API.shared.sendNativeToAllPlayers(Hash.SET_PED_HEAD_OVERLAY, client.handle, 0, this.model.blemishes, 1.0f);
 
-            API.shared.sendNativeToAllPlayers(Hash.SET_PED_HEAD_OVERLAY, handle, 1, this.model.facial_hair, 1.0f);
-            API.shared.sendNativeToAllPlayers(Hash._SET_PED_HEAD_OVERLAY_COLOR, handle, 1, 1, this.model.hair_color, this.model.hair_color);
+            API.shared.sendNativeToAllPlayers(Hash.SET_PED_HEAD_OVERLAY, client.handle, 1, this.model.facial_hair, 1.0f);
+            API.shared.sendNativeToAllPlayers(Hash._SET_PED_HEAD_OVERLAY_COLOR, client.handle, 1, 1, this.model.hair_color, this.model.hair_color);
 
-            API.shared.sendNativeToAllPlayers(Hash.SET_PED_HEAD_OVERLAY, handle, 3, this.model.ageing, 1.0f);
+            API.shared.sendNativeToAllPlayers(Hash.SET_PED_HEAD_OVERLAY, client.handle, 3, this.model.ageing, 1.0f);
 
-            API.shared.sendNativeToAllPlayers(Hash.SET_PED_HEAD_OVERLAY, handle, 8, this.model.lipstick, 1.0f);
-            API.shared.sendNativeToAllPlayers(Hash._SET_PED_HEAD_OVERLAY_COLOR, handle, 8, 2, this.model.lipstick_color, this.model.lipstick_color);
+            API.shared.sendNativeToAllPlayers(Hash.SET_PED_HEAD_OVERLAY, client.handle, 8, this.model.lipstick, 1.0f);
+            API.shared.sendNativeToAllPlayers(Hash._SET_PED_HEAD_OVERLAY_COLOR, client.handle, 8, 2, this.model.lipstick_color, this.model.lipstick_color);
 
-            API.shared.sendNativeToAllPlayers(Hash.SET_PED_HEAD_OVERLAY, handle, 4, this.model.makeup, 1.0f);
-            API.shared.sendNativeToAllPlayers(Hash._SET_PED_HEAD_OVERLAY_COLOR, handle, 4, 0, this.model.makeup_color, this.model.makeup_color);
+            API.shared.sendNativeToAllPlayers(Hash.SET_PED_HEAD_OVERLAY, client.handle, 4, this.model.makeup, 1.0f);
+            API.shared.sendNativeToAllPlayers(Hash._SET_PED_HEAD_OVERLAY_COLOR, client.handle, 4, 0, this.model.makeup_color, this.model.makeup_color);
 
-            API.shared.sendNativeToAllPlayers(Hash.SET_PED_HEAD_OVERLAY, handle, 5, this.model.blush, 1.0f);
-            API.shared.sendNativeToAllPlayers(Hash._SET_PED_HEAD_OVERLAY_COLOR, handle, 5, 2, this.model.blush_color, this.model.blush_color);
+            API.shared.sendNativeToAllPlayers(Hash.SET_PED_HEAD_OVERLAY, client.handle, 5, this.model.blush, 1.0f);
+            API.shared.sendNativeToAllPlayers(Hash._SET_PED_HEAD_OVERLAY_COLOR, client.handle, 5, 2, this.model.blush_color, this.model.blush_color);
 
-            API.shared.sendNativeToAllPlayers(Hash.SET_PED_HEAD_OVERLAY, handle, 6, this.model.complexion, 1.0f);
+            API.shared.sendNativeToAllPlayers(Hash.SET_PED_HEAD_OVERLAY, client.handle, 6, this.model.complexion, 1.0f);
 
-            API.shared.sendNativeToAllPlayers(Hash.SET_PED_HEAD_OVERLAY, handle, 7, this.model.sun_damage, 1.0f);
+            API.shared.sendNativeToAllPlayers(Hash.SET_PED_HEAD_OVERLAY, client.handle, 7, this.model.sun_damage, 1.0f);
 
-            API.shared.sendNativeToAllPlayers(Hash.SET_PED_HEAD_OVERLAY, handle, 9, this.model.moles_freckles, 1.0f);
+            API.shared.sendNativeToAllPlayers(Hash.SET_PED_HEAD_OVERLAY, client.handle, 9, this.model.moles_freckles, 1.0f);
 
-
-            API.shared.setPlayerClothes(client, 1, 0, 0);
             API.shared.setPlayerClothes(client, 4, this.model.pants_style, this.model.pants_var - 1); // Pants
             API.shared.setPlayerClothes(client, 6, this.model.shoe_style, this.model.shoe_var - 1); // Shoes
             API.shared.setPlayerClothes(client, 7, this.model.accessory_style, this.model.accessory_var - 1); // Accessories
             API.shared.setPlayerClothes(client, 8, this.model.undershirt_style, this.model.undershirt_var - 1); //undershirt
             API.shared.setPlayerClothes(client, 11, this.model.top_style, this.model.top_var - 1); //top
 
-            API.shared.setPlayerAccessory(client, 0, this.model.hat_style, this.model.hat_var - 1); // hats
+            //API.shared.setPlayerAccessory(client, 0, this.model.hat_style, this.model.hat_var - 1); // hats
             //API.shared.setPlayerAccessory(client, 1, this.model.glasses_style, this.model.glasses_var - 1); // glasses
-            API.shared.setPlayerAccessory(client, 2, this.model.ear_style, this.model.ear_var - 1); // earings
-       
+            //API.shared.setPlayerAccessory(client, 2, this.model.ear_style, this.model.ear_var - 1); // earings
+
+            //Work around until setPlayerAccessory is fixed.
+            API.shared.sendNativeToAllPlayers(Hash.SET_PED_PROP_INDEX, client.handle, 0, this.model.hat_style, this.model.hat_var - 1, true);
+            API.shared.sendNativeToAllPlayers(Hash.SET_PED_PROP_INDEX, client.handle, 1, this.model.glasses_style, this.model.glasses_var - 1, true);
+            API.shared.sendNativeToAllPlayers(Hash.SET_PED_PROP_INDEX, client.handle, 2, this.model.ear_style, this.model.ear_var - 1, true);
+
         }
 
         public void update_nametag()
         {
             API.shared.setPlayerNametag(this.client, this.character_name + " (" + PlayerManager.getPlayerId(this) + ")");
+        }
+
+        public void startTrackingTimePlayed()
+        {
+            time_logged_in = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds();
+        }
+
+        public long getTimePlayed()
+        {
+            this.time_played += new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds() - time_logged_in;
+            return this.time_played;
+        }
+
+        public int getPlayingHours()
+        {
+            this.time_played += new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds() - time_logged_in;
+            return (int)this.time_played / 3600;
         }
     }
 }

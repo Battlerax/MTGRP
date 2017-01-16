@@ -8,9 +8,9 @@ API.onServerEventTrigger.connect(function (eventName, args) {
         //Set camera to login_view
         API.setActiveCamera(login_view);
 
-        //Show CEF browser
     }
     else if (eventName == "login_finished") {
         API.setActiveCamera(null);
     }
 });
+

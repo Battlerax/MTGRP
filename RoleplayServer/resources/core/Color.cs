@@ -15,6 +15,16 @@ namespace RoleplayServer
         public const string Whisper = "~#FFDD00~";
         public const string PM = "~#FFFF00~";
 
+        public const string NewbieChat = "~#BAFFE0~";
+        public const string VIPChat = "~#F7D9D0~";  
+        public const string GlobalOOC = "~#CADBED~";
+        public const string AdminChat = "~#B3D0FF~";
 
+        public const string OOC = "~#AFAFAF~";
+
+        public const string AdminOrange = "~#F6970C~";
+
+        public const string Grey = "~#CECECE~";
+        public const string White = "~#FFFFFF~";
     }
 }
