@@ -36,6 +36,60 @@ namespace RoleplayServer
 
         }
 
+        [Command("agiveweapon", GreedyArg = true)]
+        public void agiveweapon_cmd(Client player, string id, WeaponHash weaponHash, int ammo)
+        {
+            Client receiver = PlayerManager.parseClient(id);
+            Account account = API.getEntityData(player.handle, "Account");
+
+            if (account.admin_level == 0)
+                return;
+
+            if (receiver == null)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
+            }
+            API.givePlayerWeapon(receiver, weaponHash, ammo, true, true);
+            API.sendChatMessageToPlayer(player, "You have given Player ID:" + id + " a weapon.");
+        }
+
+        [Command("sethealth", GreedyArg = true)]
+        public void sethealth_cmd(Client player, string id, int health)
+        {
+            Client receiver = PlayerManager.parseClient(id);
+            Account account = API.getEntityData(player.handle, "Account");
+
+            if (account.admin_level == 0)
+                return;
+
+            if (receiver == null)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
+            }
+            API.setPlayerHealth(receiver, health);
+            API.sendChatMessageToPlayer(player, "You have set Player ID:" + id + "'s health to " + health + ".");
+        }
+
+        [Command("setarmour", GreedyArg = true)]
+        public void setarmour_cmd(Client player, string id, int armour)
+        {
+            Client receiver = PlayerManager.parseClient(id);
+            Account account = API.getEntityData(player.handle, "Account");
+
+            if (account.admin_level == 0)
+                return;
+
+            if (receiver == null)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
+            }
+            API.setPlayerArmor(receiver, armour);
+            API.sendChatMessageToPlayer(player, "You have set Player ID:" + id + "'s armour to " + armour + ".")
+        }
+
         [Command("spec", GreedyArg = true)]
         public void spec_cmd(Client player, string id)
         {
@@ -66,7 +120,7 @@ namespace RoleplayServer
 
             if (account.is_spectating == false)
             {
-                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ You are not spec'ing anyone.");
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ You are not specing anyone.");
                 return;
             }
             account.is_spectating = false;
