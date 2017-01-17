@@ -25,6 +25,7 @@ namespace RoleplayServer
 
         [BsonIgnore]
         public bool is_logged_in { get; set; }
+        public bool is_spectating { get; set; }
 
         public Account()
         {
