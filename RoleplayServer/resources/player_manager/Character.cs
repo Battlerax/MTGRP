@@ -28,7 +28,23 @@ namespace RoleplayServer
         public Vector3 last_rot { get; set; }
         public int last_dimension { get; set; }
 
-        public int money { get; set; }
+        private int Money = 0;
+        public int money
+        {
+            get
+            {
+                return Money;
+            }
+            set
+            {
+                if (client != null)
+                    API.shared.triggerClientEvent(client, "update_money_display", value);
+
+                Money = value;
+            }
+        }
+        
+
         public int bank_balance { get; set; }
 
         public PedHash skin { get; set; }
@@ -43,21 +59,50 @@ namespace RoleplayServer
         public string birthplace { get; set; }
 
         [BsonIgnore]
+        public Client client { get; set; }
+
+        //Jobs
+        public int job_one_id { get; set; }
+        [BsonIgnore]
+        public Job job_one { get; set; }
+
+        //Playing time
+        [BsonIgnore]
         private long time_logged_in { get; set; }
         public long time_played { get; set; }
 
-        [BsonIgnore]
-        public Client client { get; set; }
+        //AME 
         [BsonIgnore]
         public NetHandle ame_text { get; set; }
         [BsonIgnore]
         public Timer ame_timer { get; set; }
 
+        //Chat cooldowns
         [BsonIgnore]
         public long newbie_cooldown { get; set; }
         [BsonIgnore]
         public long ooc_cooldown { get; set; }
         
+        //Job zone related
+        [BsonIgnore]
+        public int job_zone { get; set; }
+        [BsonIgnore]
+        public int job_zone_type { get; set; }
+
+        //Taxi Related
+        [BsonIgnore]
+        public Character taxi_passenger { get; set; }
+        [BsonIgnore]
+        public Character taxi_driver { get; set; }
+        public int taxi_fare { get; set; }
+
+        [BsonIgnore]
+        public Vector3 taxi_start { get; set; }
+        [BsonIgnore]
+        public int total_fare { get; set; }
+        [BsonIgnore]
+        public Timer taxi_timer { get; set; }
+
         public Character()
         {
             _id = 0;
@@ -74,6 +119,10 @@ namespace RoleplayServer
             skin = PedHash.FreemodeMale01;
 
             client = null;
+
+            taxi_fare = TaxiJob.MIN_FARE;
+            taxi_passenger = null;
+            taxi_driver = null;
         }
 
         public void insert()
@@ -173,6 +222,11 @@ namespace RoleplayServer
         {
             this.time_played += new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds() - time_logged_in;
             return (int)this.time_played / 3600;
+        }
+
+        public string rp_name()
+        {
+            return this.character_name.Replace("_", " ");
         }
     }
 }

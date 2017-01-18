@@ -72,7 +72,7 @@ namespace RoleplayServer
         {
             Account account = API.getEntityData(player.handle, "Account");
 
-            if (ooc_status == false && account.admin_level)
+            if (ooc_status == false && account.admin_level == 0)
             {
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~Global OOC chat is currently disabled.");
                 return;

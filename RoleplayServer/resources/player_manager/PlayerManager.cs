@@ -79,6 +79,11 @@ namespace RoleplayServer
 
         public static Client getPlayerById(int id)
         {
+            if (id < 0 || id > players.Count - 1)
+            {
+                return null;
+            }
+
             Character c = (Character) players.ToArray().GetValue(id);
 
             if (c.client != null)
@@ -137,7 +142,7 @@ namespace RoleplayServer
                     API.sendChatMessageToPlayer(sender, Color.Grey, c.character_name + " - ID " + PlayerManager.getPlayerId(c));
                 }
             }
-            API.sendChatMessageToPlayer(sender, Color.White, "-----------------------------------------------------------------------------");
+            API.sendChatMessageToPlayer(sender, Color.White, "------------------------------------------------------------");
         }
     }
 }

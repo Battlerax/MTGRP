@@ -16,6 +16,7 @@ using GTANetworkShared;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Bson.Serialization.Attributes;
+using System.Timers;
 
 namespace RoleplayServer
 {
@@ -38,7 +39,14 @@ namespace RoleplayServer
         public string license_plate { get; set; }
 
         public int respawn_delay { get; set; }
+        [BsonIgnore]
+        public Timer respawn_timer { get; set; }
+
         public int veh_type { get; set; }
+
+        public int job_id { get; set; }
+        [BsonIgnore]
+        public Job job { get; set; }
 
         [BsonIgnore]
         public NetHandle net_handle { get; private set; }
@@ -49,6 +57,9 @@ namespace RoleplayServer
 
         [BsonIgnore]
         public NetHandle blip { get; set; }
+
+        [BsonIgnore]
+        public Character driver { get; set; }
 
         public Vehicle()
         {
@@ -68,6 +79,9 @@ namespace RoleplayServer
             net_handle = new NetHandle();
             owner_client = null;
             is_spawned = false;
+            driver = null;
+
+            job_id = 0;
         }
 
 

@@ -26,5 +26,6 @@ namespace RoleplayServer
 
         public const string Grey = "~#CECECE~";
         public const string White = "~#FFFFFF~";
+        public const string Yellow = "~#FFFF00~";
     }
 }

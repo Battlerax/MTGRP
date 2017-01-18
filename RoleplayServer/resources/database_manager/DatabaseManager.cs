@@ -14,7 +14,7 @@ namespace RoleplayServer
         public static IMongoCollection<Vehicle> vehicle_table = null;
         public static IMongoCollection<Account> account_table = null; 
         public static IMongoCollection<Character> character_table = null;
-        public static IMongoCollection<Component> component_table = null;
+        public static IMongoCollection<Job> job_table = null;
        
         public static void DatabaseManagerInit()
         {
@@ -26,7 +26,7 @@ namespace RoleplayServer
             vehicle_table = database.GetCollection<Vehicle>("vehicles");
             account_table = database.GetCollection<Account>("accounts");
             character_table = database.GetCollection<Character>("characters");
-            component_table = database.GetCollection<Component>("components");
+            job_table = database.GetCollection<Job>("jobs");
            
             DebugManager.debugMessage("[DatabaseM] Database Manager initalized!");
         }

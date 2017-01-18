@@ -111,6 +111,9 @@ namespace RoleplayServer
                     character.update_ped();
                     character.update_nametag();
                     character.startTrackingTimePlayed();
+                    character.money = 1000;
+
+                    character.job_one = JobManager.getJobById(character.job_one_id);
 
                     API.setEntityPosition(player.handle, character.last_pos);
                     API.setEntityRotation(player.handle, character.last_rot);

@@ -78,8 +78,12 @@
     <Compile Include="resources\core\ChatManager.cs" />
     <Compile Include="resources\core\Color.cs" />
     <Compile Include="resources\core\DebugManager.cs" />
+    <Compile Include="resources\core\MarkerZone.cs" />
     <Compile Include="resources\database_manager\DatabaseManager.cs" />
     <Compile Include="resources\Init.cs" />
+    <Compile Include="resources\job_manager\Job.cs" />
+    <Compile Include="resources\job_manager\JobManager.cs" />
+    <Compile Include="resources\job_manager\taxi\TaxiJob.cs" />
     <Compile Include="resources\player_manager\Account.cs" />
     <Compile Include="resources\player_manager\CharacterMenu.cs" />
     <Compile Include="resources\component_manager\Component.cs" />
@@ -96,8 +100,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="resources\job_manager\taxi\TaxiJob.js" />
     <Content Include="resources\player_manager\CharacterMenu.js" />
     <Content Include="resources\player_manager\LoginManager.js" />
+    <Content Include="resources\player_manager\PlayerManager.js" />
     <Content Include="resources\vehicle_manager\VehicleMenu.js" />
   </ItemGroup>
   <ItemGroup>

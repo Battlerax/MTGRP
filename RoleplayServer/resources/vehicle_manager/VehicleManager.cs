@@ -131,7 +131,7 @@ namespace RoleplayServer
             API.setBlipTransparency(veh.blip, 0);
 
 
-            Character character = API.getEntityData(player.handle, "Player");
+            Character character = API.getEntityData(player.handle, "Character");
 
             API.sendChatMessageToPlayer(player, "~w~[VehicleM] You have entered vehicle ~r~" + vehicles.IndexOf(veh) + "(Owned by: " + veh.owner_name + ")");
 
@@ -141,6 +141,12 @@ namespace RoleplayServer
             string veh_info = API.getVehicleDisplayName(veh.veh_model) + " - " + veh.license_plate;
             API.setEntitySyncedData(player.handle, "CurrentVehicleInfo", veh_info);
             API.setEntitySyncedData(player.handle, "OwnsVehicle", (bool)(DoesPlayerHaveVehicleAccess(player, veh)));
+
+            if (API.getPlayerVehicleSeat(player) == -1)
+            {
+                veh.driver = character;
+                API.sendChatMessageToPlayer(player, veh.driver.rp_name());
+            }
         }
 
         public void OnPlayerExitVehicle(Client player, NetHandle vehicle_handle)
@@ -161,6 +167,9 @@ namespace RoleplayServer
 
                 API.sendNotificationToPlayer(player, "Your vehicle was deleted on exit because it was temporary.", false);
             }
+
+            if (veh.driver == API.getEntityData(player, "Character"))
+                veh.driver = null;
         }
 
         public void OnVehicleDeath(NetHandle vehicle_handle)
@@ -201,9 +210,9 @@ namespace RoleplayServer
             vehicles.Remove(veh);
         }
 
-        public Vehicle getVehFromNetHandle(NetHandle handle)
+        public static Vehicle getVehFromNetHandle(NetHandle handle)
         {
-            return API.getEntityData(handle, "Vehicle");
+            return API.shared.getEntityData(handle, "Vehicle");
         }
 
         public int spawn_vehicle(Vehicle veh, Vector3 pos)
@@ -257,7 +266,7 @@ namespace RoleplayServer
             if (account.admin_level >= 3) { return true; }
             if (character._id == vehicle.owner_id) { return true; }
             //faction check
-            //job check
+            if(character.job_one == vehicle.job) { return true; }
             //gang check
 
             return false;
@@ -270,6 +279,7 @@ namespace RoleplayServer
 
             foreach (Vehicle v in unowned_vehicles)
             {
+                v.job = JobManager.getJobById(v.job_id);
                 spawn_vehicle(v);
                 vehicles.Add(v);
             }
