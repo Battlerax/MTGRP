@@ -137,8 +137,8 @@ namespace RoleplayServer
             if (is_spawned == false)
                 return 0; // Vehicle is not spawned
 
-            API.shared.deleteEntity(net_handle);
             API.shared.deleteEntity(blip);
+            API.shared.deleteEntity(net_handle);
             is_spawned = false;
             return 1; // Successful despawn
         }

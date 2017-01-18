@@ -30,7 +30,7 @@ namespace RoleplayServer
             //Local Chat
             if(account.admin_duty == 0)
             {
-                msg = character.character_name + " says: " + msg;
+                msg = character.rp_name() + " says: " + msg;
                 NearbyMessage(player, 15, msg);
             }
             else

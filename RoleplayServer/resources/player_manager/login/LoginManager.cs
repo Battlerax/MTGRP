@@ -19,11 +19,100 @@ namespace RoleplayServer
 
             API.onPlayerConnected += OnPlayerConnected;
             API.onPlayerFinishedDownload += OnPlayerFinishedDownload;
+            API.onClientEventTrigger += API_onClientEventTrigger;
 
             //API.onChatCommand += OnChatCommandHandler;
             API.onChatMessage += OnPlayerChat;
 
             DebugManager.debugMessage("[LoginM] Login Manager initalized.");
+        }
+
+        private void API_onClientEventTrigger(Client player, string eventName, params object[] arguments)
+        {
+            switch (eventName)
+            {
+                case "attempt_login":
+                    string input_pass = (string)arguments[0];
+
+
+                    if (input_pass.Length < 8)
+                    {
+                        API.triggerClientEvent(player, "login_error", "Password entered is too short.");
+                        return;
+                    }
+
+                    Account account = API.getEntityData(player.handle, "Account");
+
+                    if (account.is_registered())
+                    {
+                        if (account.is_logged_in)
+                        {
+                            API.triggerClientEvent(player, "login_error", "You are already logged in.");
+                            return;
+                        }
+
+                        account.load_by_name();
+
+                        input_pass = input_pass + account.salt;
+
+                        //Hash password
+                        byte[] password = System.Text.Encoding.UTF8.GetBytes(input_pass);
+                        password = new SHA256Managed().ComputeHash(password);
+                        string hashed_pass = System.Text.Encoding.UTF8.GetString(password);
+
+                        if (hashed_pass == account.password)
+                        {
+                            API.sendChatMessageToPlayer(player, "~g~ You have successfully logged in!");
+
+                            account.is_logged_in = true;
+
+                            if (account.admin_level > 0)
+                            {
+                                API.sendChatMessageToPlayer(player, Color.AdminOrange, "Welcome back Admin " + account.admin_name);
+                            }
+
+                            prepare_character_menu(player);
+                        }
+                        else
+                        {
+                            API.triggerClientEvent(player, "login_error", "Incorrect password");
+                        }
+                    }
+                    else
+                    {
+                        if (input_pass.Length < 8)
+                        {
+                            API.triggerClientEvent(player, "Please choose a password that is at least 8 characters long.");
+                            return;
+                        }
+
+                        if (account.is_logged_in)
+                        {
+                            API.triggerClientEvent(player, "ERROR: You are already logged in!");
+                            return;
+                        }
+
+                        //Get a random salt
+                        byte[] salt = new byte[32];
+                        randomizer.GetBytes(salt);
+
+                        //Add salt to the end of input_pass
+                        input_pass = input_pass + System.Text.Encoding.UTF8.GetString(salt);
+
+                        //Convert inputted password to bytes
+                        byte[] password = System.Text.Encoding.UTF8.GetBytes(input_pass);
+                        password = new SHA256Managed().ComputeHash(password);
+
+                        account.password = System.Text.Encoding.UTF8.GetString(password);
+                        account.salt = System.Text.Encoding.UTF8.GetString(salt);
+
+                        account.register();
+
+                        API.sendChatMessageToPlayer(player, "You have successfully registered! Please select a character slot below to get started!");
+                        prepare_character_menu(player);
+                    }
+                    break;
+            }
         }
 
         public void OnPlayerChat(Client player, string message, CancelEventArgs e)
@@ -55,7 +144,7 @@ namespace RoleplayServer
                 API.sendChatMessageToPlayer(player, "This account is unregistered! Use /register [password] to register it.");
             }
 
-            API.triggerClientEvent(player, "onPlayerConnectedEx");
+            API.triggerClientEvent(player, "onPlayerConnectedEx", account.is_registered());
         }
 
        
@@ -159,6 +248,8 @@ namespace RoleplayServer
 
         public static void prepare_character_menu(Client player)
         {
+            API.shared.triggerClientEvent(player, "hide_login_browser");
+
             Account account = API.shared.getEntityData(player.handle, "Account");
 
             FilterDefinition<Character> filter = Builders<Character>.Filter.Eq("account_id", account._id.ToString());

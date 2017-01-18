@@ -145,7 +145,6 @@ namespace RoleplayServer
             if (API.getPlayerVehicleSeat(player) == -1)
             {
                 veh.driver = character;
-                API.sendChatMessageToPlayer(player, veh.driver.rp_name());
             }
         }
 

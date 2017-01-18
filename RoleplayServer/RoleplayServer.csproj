@@ -98,12 +98,32 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="resources\stylesheet\fonts\metro.eot" />
+    <None Include="resources\stylesheet\fonts\metro.ttf" />
+    <None Include="resources\stylesheet\fonts\metro.woff" />
+    <None Include="resources\stylesheet\fonts\selection.json" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="resources\job_manager\taxi\TaxiJob.js" />
     <Content Include="resources\player_manager\CharacterMenu.js" />
+    <Content Include="resources\player_manager\Login.html" />
     <Content Include="resources\player_manager\LoginManager.js" />
     <Content Include="resources\player_manager\PlayerManager.js" />
+    <Content Include="resources\stylesheet\css\metro-colors.css" />
+    <Content Include="resources\stylesheet\css\metro-colors.min.css" />
+    <Content Include="resources\stylesheet\css\metro-icons.css" />
+    <Content Include="resources\stylesheet\css\metro-icons.min.css" />
+    <Content Include="resources\stylesheet\css\metro-responsive.css" />
+    <Content Include="resources\stylesheet\css\metro-responsive.min.css" />
+    <Content Include="resources\stylesheet\css\metro-rtl.css" />
+    <Content Include="resources\stylesheet\css\metro-rtl.min.css" />
+    <Content Include="resources\stylesheet\css\metro-schemes.css" />
+    <Content Include="resources\stylesheet\css\metro-schemes.min.css" />
+    <Content Include="resources\stylesheet\css\metro.css" />
+    <Content Include="resources\stylesheet\css\metro.min.css" />
+    <Content Include="resources\stylesheet\fonts\metro.svg" />
+    <Content Include="resources\stylesheet\js\metro.js" />
+    <Content Include="resources\stylesheet\js\metro.min.js" />
     <Content Include="resources\vehicle_manager\VehicleMenu.js" />
   </ItemGroup>
   <ItemGroup>
