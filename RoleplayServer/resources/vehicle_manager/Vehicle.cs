@@ -118,15 +118,17 @@ namespace RoleplayServer
             if (is_spawned == true)
                 return 0; // Vehicle is already spawned
 
-            is_spawned = true;
-            net_handle = API.shared.createVehicle(veh_model, pos, spawn_rot, spawn_colors[0], spawn_colors[1], spawn_dimension);
-            API.shared.setVehicleNumberPlate(net_handle, "ABC123");
+           
+            this.net_handle = API.shared.createVehicle(veh_model, pos, spawn_rot, spawn_colors[0], spawn_colors[1], spawn_dimension);
+            API.shared.setVehicleNumberPlate(this.net_handle, this.license_plate);
 
-            blip = API.shared.createBlip(net_handle);
+            this.blip = API.shared.createBlip(this.net_handle);
             API.shared.setBlipColor(blip, 40);
             API.shared.setBlipSprite(blip, 225);
             API.shared.setBlipScale(blip, (float)(0.7));
             API.shared.setBlipShortRange(blip, true);
+
+            is_spawned = true;
 
             return 1; // Successful spawn
         }

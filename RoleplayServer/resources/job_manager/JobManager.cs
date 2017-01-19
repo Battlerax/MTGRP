@@ -114,7 +114,7 @@ namespace RoleplayServer
 
         public static Job getJobById(int id)
         {
-            if (id == 0)
+            if (id == 0 || id > jobs.Count )
                 return null;
 
             return (Job)jobs.ToArray().GetValue(id - 1);

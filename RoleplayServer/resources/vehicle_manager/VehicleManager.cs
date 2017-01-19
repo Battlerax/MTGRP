@@ -117,6 +117,7 @@ namespace RoleplayServer
             API.sendChatMessageToPlayer(player, "teleported");
         }
 
+
         /*
         * 
         * ========== CALLBACKS =========
@@ -151,13 +152,14 @@ namespace RoleplayServer
         public void OnPlayerExitVehicle(Client player, NetHandle vehicle_handle)
         {
             Vehicle veh = getVehFromNetHandle(vehicle_handle);
-            API.setBlipTransparency(veh.blip, 100);
 
-            if(veh == null)
+            if (veh == null)
             {
                 DebugManager.debugMessage("[VehicleVM] OnPlayerExitVehicle received null Vehicle.");
                 return;
             }
+
+            API.setBlipTransparency(veh.blip, 100);
 
             if (veh.veh_type == Vehicle.VEH_TYPE_TEMP)
             {
@@ -214,45 +216,46 @@ namespace RoleplayServer
             return API.shared.getEntityData(handle, "Vehicle");
         }
 
-        public int spawn_vehicle(Vehicle veh, Vector3 pos)
+        public static int spawn_vehicle(Vehicle veh, Vector3 pos)
         {
             int return_code = veh.spawn(pos);
- 
+
             if (return_code == 1)
             {
-                API.setEntityData(veh.net_handle, "Vehicle", veh);
+                API.shared.setEntityData(veh.net_handle, "Vehicle", veh);
             }
-            API.setVehicleEngineStatus(veh.net_handle, false);
+            
+            API.shared.setVehicleEngineStatus(veh.net_handle, false);
             return return_code;
         }
 
-        public int spawn_vehicle(Vehicle veh)
+        public static int spawn_vehicle(Vehicle veh)
         {
             return spawn_vehicle(veh, veh.spawn_pos);
         }
 
-        public int despawn_vehicle(Vehicle veh)
+        public static int despawn_vehicle(Vehicle veh)
         {
             int return_code = veh.despawn();
 
             if (return_code == 1)
             {
-                API.resetEntityData(veh.net_handle, "Vehicle");
+                API.shared.resetEntityData(veh.net_handle, "Vehicle");
             }
 
             return return_code;
         }
 
-        public int respawn_vehicle(Vehicle veh, Vector3 pos)
+        public static int respawn_vehicle(Vehicle veh, Vector3 pos)
         {
-            if (API.hasEntityData(veh.net_handle, "Vehicle"))
+            if (API.shared.hasEntityData(veh.net_handle, "Vehicle"))
             {
                 despawn_vehicle(veh);
             }
             return spawn_vehicle(veh, pos);
         }
 
-        public int respawn_vehicle(Vehicle veh)
+        public static int respawn_vehicle(Vehicle veh)
         {
             return respawn_vehicle(veh, veh.spawn_pos);
         }

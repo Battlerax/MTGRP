@@ -40,36 +40,39 @@ namespace RoleplayServer
             Character character = API.getEntityData(player.handle, "Character");
             Vehicle veh = VehicleManager.getVehFromNetHandle(vehicle);
 
-            if (on_duty_drivers.Contains(character) && veh.job.type == JobManager.TaxiJob)
+            if(veh != null)
             {
-                API.sendChatMessageToPlayer(player, Color.Yellow, "[TAXI] You have left your taxi. Please return to it within 60 seconds or you will be taken off-duty and it will respawn.");
-
-                veh.respawn_timer = new System.Timers.Timer();
-                veh.respawn_timer.Interval = 1000 * 60;
-                veh.respawn_timer.Elapsed += delegate { RespawnTaxi(character, veh); };
-                veh.respawn_timer.Start();
-            }
-
-            if(veh.driver != null && character.taxi_driver != null)
-            {
-                if (veh.driver == character.taxi_driver)
+                if (on_duty_drivers.Contains(character) && veh.job.type == JobManager.TaxiJob)
                 {
-                    veh.driver.money += character.total_fare;
-                    character.money -= character.total_fare;
+                    API.sendChatMessageToPlayer(player, Color.Yellow, "[TAXI] You have left your taxi. Please return to it within 60 seconds or you will be taken off-duty and it will respawn.");
 
-                    veh.driver.save();
-                    character.save();
+                    veh.respawn_timer = new System.Timers.Timer();
+                    veh.respawn_timer.Interval = 1000 * 60;
+                    veh.respawn_timer.Elapsed += delegate { RespawnTaxi(character, veh); };
+                    veh.respawn_timer.Start();
+                }
 
-                    API.sendChatMessageToPlayer(player, "~y~[TAXI] You have been charged $" + character.total_fare + " for your taxi ride.");
-                    API.sendChatMessageToPlayer(veh.driver.client, "~y~[TAXI] You have been paid $" + character.total_fare + " for your services.");
+                if(veh.driver != null && character.taxi_driver != null)
+                {
+                    if (veh.driver == character.taxi_driver)
+                    {
+                        veh.driver.money += character.total_fare;
+                        character.money -= character.total_fare;
 
-                    API.triggerClientEvent(player, "update_fare_display", 0, 0, "");
-                    API.triggerClientEvent(veh.driver.client, "update_fare_display", 0, 0, "");
+                        veh.driver.save();
+                        character.save();
 
-                    veh.driver.taxi_passenger = null;
-                    character.taxi_driver = null;
-                    character.taxi_timer.Stop();
-                    character.total_fare = 0;
+                        API.sendChatMessageToPlayer(player, "~y~[TAXI] You have been charged $" + character.total_fare + " for your taxi ride.");
+                        API.sendChatMessageToPlayer(veh.driver.client, "~y~[TAXI] You have been paid $" + character.total_fare + " for your services.");
+
+                        API.triggerClientEvent(player, "update_fare_display", 0, 0, "");
+                        API.triggerClientEvent(veh.driver.client, "update_fare_display", 0, 0, "");
+
+                        veh.driver.taxi_passenger = null;
+                        character.taxi_driver = null;
+                        character.taxi_timer.Stop();
+                        character.total_fare = 0;
+                    }
                 }
             }
         }
@@ -153,8 +156,8 @@ namespace RoleplayServer
             }
 
             API.setVehicleEngineStatus(veh.net_handle, false);
-            veh.respawn();
             veh.respawn_timer.Stop();
+            VehicleManager.respawn_vehicle(veh);
         }
 
         [Command("taxiduty")]

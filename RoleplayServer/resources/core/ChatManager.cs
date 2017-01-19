@@ -269,18 +269,18 @@ namespace RoleplayServer
 
 
         [Command("pm", GreedyArg = true)]
-        public void pm_cmd(Client player, string id, string text)
+        public static void pm_cmd(Client player, string id, string text)
         {
             Client receiver = PlayerManager.parseClient(id);
 
             if (receiver == null)
             {
-                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                API.shared.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
 
-            API.sendChatMessageToPlayer(player, Color.PM, "PM to " + PlayerManager.getName(receiver) + ": " + text);
-            API.sendChatMessageToPlayer(receiver, Color.PM, "PM from " + PlayerManager.getName(player) + ": " + text);
+            API.shared.sendChatMessageToPlayer(player, Color.PM, "PM to " + PlayerManager.getName(receiver) + ": " + text);
+            API.shared.sendChatMessageToPlayer(receiver, Color.PM, "PM from " + PlayerManager.getName(player) + ": " + text);
         }
 
 
