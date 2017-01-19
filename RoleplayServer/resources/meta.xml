@@ -18,6 +18,13 @@
 	<!-- DATABASE -->
 	<script src="database_manager/DatabaseManager.cs" type="server" lang="csharp"/>
 	
+	<!-- ADMIN -->
+	<script src="AdminSystem/AdminCommands.cs" type="server" lang="csharp"/>
+	
+	<!-- BANK -->
+	<script src="rp_scripts/BankMenu.cs" type="server" lang="csharp"/>
+	<script src="rp_scripts/BankMenu.js" type="client" lang="javascript"/>
+	
 	<!-- PLAYER -->
 	<script src="player_manager/Account.cs" type="server" lang="csharp"/>
 	<script src="player_manager/Character.cs" type="server" lang="csharp"/>
@@ -25,6 +32,10 @@
 	
 	<script src="player_manager/PlayerManager.cs" type="server" lang="csharp"/>
 	<script src="player_manager/PlayerManager.js" type="client" lang="javascript"/>
+	
+	<script src="player_manager/player_list/PlayerList.cs" type="server" lang="csharp"/>
+	<script src="player_manager/player_list/PlayerList.js" type="client" lang="javascript"/>
+	<file src="player_manager/player_list/PlayerList.html" />
 	
 	<script src="player_manager/login/LoginManager.cs" type="server" lang="csharp"/>
 	<script src="player_manager/login/LoginManager.js" type="client" lang="javascript"/>
@@ -44,6 +55,9 @@
 	<script src="vehicle_manager/VehicleManager.cs" type="server" lang="csharp"/>
 	<script src="vehicle_manager/VehicleMenu.cs" type="server" lang="csharp"/>
 	<script src="vehicle_manager/VehicleMenu.js" type="client" lang="javascript"/>
+	<script src="vehicle_manager/vehicle_editor/VehicleEditor.cs" type="server" lang="csharp"/>
+	<script src="vehicle_manager/vehicle_editor/VehicleEdit.js" type="client" lang="javascript"/>
+	<file src="vehicle_manager/vehicle_editor/VehicleEdit.html"/>
 	
 	
 	<!-- COMPONENT -->
@@ -55,6 +69,8 @@
 	<file src="stylesheet/js/metro.js"/>
 	<file src="jquery.js"/>
 	<file src="stylesheet/fonts/metro.ttf"/>
+	<file src="stylesheet/fonts/housescript.woff"/>
+	<file src="stylesheet/fonts/housescript.woff2"/>
 	<file src="stylesheet/css/metro-icons.css"/>
 
 	<!-- CORE -->
