@@ -10,17 +10,20 @@
  * */
 
 
-using System;
+using System.Collections.Generic;
 using GTANetworkServer;
 using GTANetworkShared;
-using System.Collections.Generic;
 using MongoDB.Driver;
+using RoleplayServer.resources.core;
+using RoleplayServer.resources.database_manager;
+using RoleplayServer.resources.job_manager;
+using RoleplayServer.resources.player_manager;
 
-namespace RoleplayServer
+namespace RoleplayServer.resources.vehicle_manager
 {
     public class VehicleManager : Script
     {
-        public static List<Vehicle> vehicles = new List<Vehicle>();
+        public static List<Vehicle> Vehicles = new List<Vehicle>();
        
         /*
         * 
@@ -30,7 +33,7 @@ namespace RoleplayServer
 
         public VehicleManager()
         {
-            DebugManager.debugMessage("[VehicleM] Initilizing vehicle manager...");
+            DebugManager.DebugMessage("[VehicleM] Initilizing vehicle manager...");
 
             // Register callbacks
             API.onPlayerEnterVehicle += OnPlayerEnterVehicle;
@@ -40,7 +43,7 @@ namespace RoleplayServer
             // Create vehicle table + 
             load_all_unowned_vehicles();
 
-            DebugManager.debugMessage("[VehicleM] Vehicle Manager initalized!");
+            DebugManager.DebugMessage("[VehicleM] Vehicle Manager initalized!");
         }
 
         /*
@@ -52,25 +55,24 @@ namespace RoleplayServer
         [Command("spawnveh")]
         public void spawnveh_cmd(Client player, VehicleHash model, int color1 = 0, int color2 = 0, int dimension = 0)
         {
-            Vector3 pos = player.position;
-            Vector3 rot = player.rotation;
+            var pos = player.position;
+            var rot = player.rotation;
 
-            Vehicle veh = createUnownedVehicle(model, pos, rot, color1, color2, dimension);
+            var veh = CreateUnownedVehicle(model, pos, rot, color1, color2, dimension);
             spawn_vehicle(veh);
             
-            API.setPlayerIntoVehicle(player, veh.net_handle, -1);
-            API.setVehicleEngineStatus(veh.net_handle, true);
+            API.setPlayerIntoVehicle(player, veh.NetHandle, -1);
+            API.setVehicleEngineStatus(veh.NetHandle, true);
 
             API.sendChatMessageToPlayer(player, "You have spawned a " + model);
             API.sendChatMessageToPlayer(player, "This vehicle is unsaved and may behave incorrectly.");
-            return;
         }
 
         [Command("savevehicle")]
         public void savevehicle_cmd(Client player)
         {
-            NetHandle veh_handle = API.getPlayerVehicle(player);
-            Vehicle veh = getVehFromNetHandle(veh_handle);
+            var vehHandle = API.getPlayerVehicle(player);
+            var veh = GetVehFromNetHandle(vehHandle);
 
             if(veh == null)
             {
@@ -78,40 +80,39 @@ namespace RoleplayServer
                 return;
             }
 
-            if(veh.veh_type != Vehicle.VEH_TYPE_TEMP)
+            if(veh.VehType != Vehicle.VehTypeTemp)
             {
                 API.sendNotificationToPlayer(player, "~r~ ERROR: You must be inside a temporary vehicle to save it.");
                 return;
             }
 
-            if(veh.is_saved() == true)
+            if(veh.is_saved())
             {
                 API.sendNotificationToPlayer(player, "~r~ ERROR: This vehicle is already saved into the database.");
                 return;
             }
 
             
-            veh.insert();
+            veh.Insert();
 
-            veh.veh_type = Vehicle.VEH_TYPE_PERM;
-            veh.save();
+            veh.VehType = Vehicle.VehTypePerm;
+            veh.Save();
 
-            API.sendChatMessageToPlayer(player, "You have saved vehicle " + vehicles.IndexOf(veh) + ". (SQL: " + veh._id + ")");
-            return;
+            API.sendChatMessageToPlayer(player, "You have saved vehicle " + Vehicles.IndexOf(veh) + ". (SQL: " + veh.Id + ")");
         }
 
         [Command("savepos")]
         public void savepos_cmd(Client player, int i)
         {
-            Vector3 pos = player.position;
-            Vector3 rot = player.rotation;
+            var pos = player.position;
+            var rot = player.rotation;
 
-            API.consoleOutput(i + " " + pos.ToString() + " " + rot.ToString());
+            API.consoleOutput(i + " " + pos + " " + rot);
             API.sendNotificationToPlayer(player, "Saved");
         }
 
         [Command("tele")]
-        public void tele(Client player)
+        public void Tele(Client player)
         {
             API.setEntityPosition(player.handle, new Vector3(403, -996, -99));
             API.sendChatMessageToPlayer(player, "teleported");
@@ -124,60 +125,60 @@ namespace RoleplayServer
         * 
         */
 
-        private void OnPlayerEnterVehicle(Client player, NetHandle vehicle_handle)
+        private void OnPlayerEnterVehicle(Client player, NetHandle vehicleHandle)
         {
             // Admin check in future
 
-            Vehicle veh = getVehFromNetHandle(vehicle_handle);
-            API.setBlipTransparency(veh.blip, 0);
+            var veh = GetVehFromNetHandle(vehicleHandle);
+            API.setBlipTransparency(veh.Blip, 0);
 
 
             Character character = API.getEntityData(player.handle, "Character");
 
-            API.sendChatMessageToPlayer(player, "~w~[VehicleM] You have entered vehicle ~r~" + vehicles.IndexOf(veh) + "(Owned by: " + veh.owner_name + ")");
+            API.sendChatMessageToPlayer(player, "~w~[VehicleM] You have entered vehicle ~r~" + Vehicles.IndexOf(veh) + "(Owned by: " + veh.OwnerName + ")");
 
             API.sendChatMessageToPlayer(player, "~y~ Press \"N\" on your keyboard to access the vehicle menu.");
 
             //Vehicle Interaction Menu Setup
-            string veh_info = API.getVehicleDisplayName(veh.veh_model) + " - " + veh.license_plate;
-            API.setEntitySyncedData(player.handle, "CurrentVehicleInfo", veh_info);
-            API.setEntitySyncedData(player.handle, "OwnsVehicle", (bool)(DoesPlayerHaveVehicleAccess(player, veh)));
+            var vehInfo = API.getVehicleDisplayName(veh.VehModel) + " - " + veh.LicensePlate;
+            API.setEntitySyncedData(player.handle, "CurrentVehicleInfo", vehInfo);
+            API.setEntitySyncedData(player.handle, "OwnsVehicle", DoesPlayerHaveVehicleAccess(player, veh));
 
             if (API.getPlayerVehicleSeat(player) == -1)
             {
-                veh.driver = character;
+                veh.Driver = character;
             }
         }
 
-        public void OnPlayerExitVehicle(Client player, NetHandle vehicle_handle)
+        public void OnPlayerExitVehicle(Client player, NetHandle vehicleHandle)
         {
-            Vehicle veh = getVehFromNetHandle(vehicle_handle);
+            var veh = GetVehFromNetHandle(vehicleHandle);
 
             if (veh == null)
             {
-                DebugManager.debugMessage("[VehicleVM] OnPlayerExitVehicle received null Vehicle.");
+                DebugManager.DebugMessage("[VehicleVM] OnPlayerExitVehicle received null Vehicle.");
                 return;
             }
 
-            API.setBlipTransparency(veh.blip, 100);
+            API.setBlipTransparency(veh.Blip, 100);
 
-            if (veh.veh_type == Vehicle.VEH_TYPE_TEMP)
+            if (veh.VehType == Vehicle.VehTypeTemp)
             {
                 despawn_vehicle(veh);
                 delete_vehicle(veh);
 
-                API.sendNotificationToPlayer(player, "Your vehicle was deleted on exit because it was temporary.", false);
+                API.sendNotificationToPlayer(player, "Your vehicle was deleted on exit because it was temporary.");
             }
 
-            if (veh.driver == API.getEntityData(player, "Character"))
-                veh.driver = null;
+            if (veh.Driver == API.getEntityData(player, "Character"))
+                veh.Driver = null;
         }
 
-        public void OnVehicleDeath(NetHandle vehicle_handle)
+        public void OnVehicleDeath(NetHandle vehicleHandle)
         {
-            Vehicle veh = getVehFromNetHandle(vehicle_handle);
-            API.consoleOutput("Vehicle " + vehicle_handle + " died");
-            API.delay(veh.respawn_delay, true, () =>
+            var veh = GetVehFromNetHandle(vehicleHandle);
+            API.consoleOutput("Vehicle " + vehicleHandle + " died");
+            API.delay(veh.RespawnDelay, true, () =>
             {
                 respawn_vehicle(veh);
             });
@@ -189,66 +190,66 @@ namespace RoleplayServer
         * 
         */
 
-        public Vehicle createUnownedVehicle(VehicleHash model, Vector3 pos, Vector3 rot, int color1 = 0, int color2 = 0, int dimension = 0)
+        public Vehicle CreateUnownedVehicle(VehicleHash model, Vector3 pos, Vector3 rot, int color1 = 0, int color2 = 0, int dimension = 0)
         {
-            Vehicle veh = new Vehicle();
+            var veh = new Vehicle();
 
-            veh.veh_model = model;
-            veh.spawn_pos = pos;
-            veh.spawn_rot = rot;
-            veh.spawn_colors[0] = color1;
-            veh.spawn_colors[1] = color2;
-            veh.spawn_dimension = dimension;
-            veh.license_plate = "ABC123";
+            veh.VehModel = model;
+            veh.SpawnPos = pos;
+            veh.SpawnRot = rot;
+            veh.SpawnColors[0] = color1;
+            veh.SpawnColors[1] = color2;
+            veh.SpawnDimension = dimension;
+            veh.LicensePlate = "ABC123";
 
-            vehicles.Add(veh);
+            Vehicles.Add(veh);
 
             return veh;
         }
 
         public void delete_vehicle(Vehicle veh)
         {
-            vehicles.Remove(veh);
+            Vehicles.Remove(veh);
         }
 
-        public static Vehicle getVehFromNetHandle(NetHandle handle)
+        public static Vehicle GetVehFromNetHandle(NetHandle handle)
         {
             return API.shared.getEntityData(handle, "Vehicle");
         }
 
         public static int spawn_vehicle(Vehicle veh, Vector3 pos)
         {
-            int return_code = veh.spawn(pos);
+            var returnCode = veh.Spawn(pos);
 
-            if (return_code == 1)
+            if (returnCode == 1)
             {
-                API.shared.setEntityData(veh.net_handle, "Vehicle", veh);
+                API.shared.setEntityData(veh.NetHandle, "Vehicle", veh);
             }
             
-            API.shared.setVehicleEngineStatus(veh.net_handle, false);
-            return return_code;
+            API.shared.setVehicleEngineStatus(veh.NetHandle, false);
+            return returnCode;
         }
 
         public static int spawn_vehicle(Vehicle veh)
         {
-            return spawn_vehicle(veh, veh.spawn_pos);
+            return spawn_vehicle(veh, veh.SpawnPos);
         }
 
         public static int despawn_vehicle(Vehicle veh)
         {
-            int return_code = veh.despawn();
+            var returnCode = veh.Despawn();
 
-            if (return_code == 1)
+            if (returnCode == 1)
             {
-                API.shared.resetEntityData(veh.net_handle, "Vehicle");
+                API.shared.resetEntityData(veh.NetHandle, "Vehicle");
             }
 
-            return return_code;
+            return returnCode;
         }
 
         public static int respawn_vehicle(Vehicle veh, Vector3 pos)
         {
-            if (API.shared.hasEntityData(veh.net_handle, "Vehicle"))
+            if (API.shared.hasEntityData(veh.NetHandle, "Vehicle"))
             {
                 despawn_vehicle(veh);
             }
@@ -257,7 +258,7 @@ namespace RoleplayServer
 
         public static int respawn_vehicle(Vehicle veh)
         {
-            return respawn_vehicle(veh, veh.spawn_pos);
+            return respawn_vehicle(veh, veh.SpawnPos);
         }
 
         public static bool DoesPlayerHaveVehicleAccess(Client player, Vehicle vehicle)
@@ -265,10 +266,10 @@ namespace RoleplayServer
             Account account = API.shared.getEntityData(player.handle, "Account");
             Character character = API.shared.getEntityData(player.handle, "Character");
 
-            if (account.admin_level >= 3) { return true; }
-            if (character._id == vehicle.owner_id) { return true; }
+            if (account.AdminLevel >= 3) { return true; }
+            if (character.Id == vehicle.OwnerId) { return true; }
             //faction check
-            if(character.job_one == vehicle.job) { return true; }
+            if(character.JobOne == vehicle.Job) { return true; }
             //gang check
 
             return false;
@@ -276,17 +277,17 @@ namespace RoleplayServer
 
         public void load_all_unowned_vehicles()
         {
-            FilterDefinition<Vehicle> filter = Builders<Vehicle>.Filter.Eq("owner_name", "None");
-            List<Vehicle> unowned_vehicles = DatabaseManager.vehicle_table.Find<Vehicle>(filter).ToList<Vehicle>();
+            var filter = Builders<Vehicle>.Filter.Eq("owner_name", "None");
+            var unownedVehicles = DatabaseManager.VehicleTable.Find(filter).ToList();
 
-            foreach (Vehicle v in unowned_vehicles)
+            foreach (var v in unownedVehicles)
             {
-                v.job = JobManager.getJobById(v.job_id);
+                v.Job = JobManager.GetJobById(v.JobId);
                 spawn_vehicle(v);
-                vehicles.Add(v);
+                Vehicles.Add(v);
             }
 
-            DebugManager.debugMessage("Loaded " + unowned_vehicles.Count + " unowned vehicles from the database.");
+            DebugManager.DebugMessage("Loaded " + unownedVehicles.Count + " unowned vehicles from the database.");
         }
 
     }

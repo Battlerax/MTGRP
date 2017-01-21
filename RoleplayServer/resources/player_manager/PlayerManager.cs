@@ -1,24 +1,25 @@
 ﻿using System;
+using System.Collections.Generic;
 using GTANetworkServer;
 using GTANetworkShared;
-using System.Collections.Generic;
+using RoleplayServer.resources.core;
 
-namespace RoleplayServer
+namespace RoleplayServer.resources.player_manager
 {
     class PlayerManager : Script
     {
-        public static List<Character> players = new List<Character>();
+        public static List<Character> Players = new List<Character>();
 
         public PlayerManager()
         {
-            DebugManager.debugMessage("[PlayerM] Initalizing player manager...");
+            DebugManager.DebugMessage("[PlayerM] Initalizing player manager...");
 
             API.onPlayerConnected += OnPlayerConnected;
             API.onPlayerDisconnected += OnPlayerDisconnected;
 
             API.onClientEventTrigger += API_onClientEventTrigger;
 
-            DebugManager.debugMessage("[PlayerM] Player Manager initalized.");
+            DebugManager.DebugMessage("[PlayerM] Player Manager initalized.");
         }
 
         private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
@@ -34,8 +35,8 @@ namespace RoleplayServer
 
         public void OnPlayerConnected(Client player)
         {
-            Account account = new Account();
-            account.account_name = player.socialClubName;
+            var account = new Account();
+            account.AccountName = player.socialClubName;
 
             API.setEntityData(player.handle, "Account", account);
         }
@@ -45,101 +46,97 @@ namespace RoleplayServer
             //Save data
             Character character = API.getEntityData(player.handle, "Character");
 
-            character.last_pos = player.position;
-            character.last_rot = player.rotation;
-            character.getTimePlayed();//Update time played before save.
-            character.save();
+            character.LastPos = player.position;
+            character.LastRot = player.rotation;
+            character.GetTimePlayed();//Update time played before save.
+            character.Save();
 
             API.resetEntityData(player.handle, "Character");
-            players.Remove(character);
+            Players.Remove(character);
 
-            updatePlayerNametags();//IDs change when a player logs off
+            UpdatePlayerNametags();//IDs change when a player logs off
         }
 
-        public static void updatePlayerNametags()
+        public static void UpdatePlayerNametags()
         {
-            foreach(Character c in players)
+            foreach(var c in Players)
             {
                 c.update_nametag();
             }
         }
 
-        public static Client getPlayerByName(string name)
+        public static Client GetPlayerByName(string name)
         {
-            foreach(Character c in players)
+            foreach(var c in Players)
             {
-                if(String.Equals(c.character_name, name, StringComparison.OrdinalIgnoreCase))
+                if(String.Equals(c.CharacterName, name, StringComparison.OrdinalIgnoreCase))
                 {
-                    return c.client;
+                    return c.Client;
                 }
             }
 
             return null;
         }
 
-        public static Client getPlayerById(int id)
+        public static Client GetPlayerById(int id)
         {
-            if (id < 0 || id > players.Count - 1)
+            if (id < 0 || id > Players.Count - 1)
             {
                 return null;
             }
 
-            Character c = (Character) players.ToArray().GetValue(id);
+            var c = (Character) Players.ToArray().GetValue(id);
 
-            if (c.client != null)
-                return c.client;
+            if (c.Client != null)
+                return c.Client;
 
             return null;
         }
 
-        public static int getPlayerId(Character c)
+        public static int GetPlayerId(Character c)
         {
-            if (players.Contains(c))
-                return players.IndexOf(c);
+            if (Players.Contains(c))
+                return Players.IndexOf(c);
             else
                 return -1;
         }
 
-        public static Client parseClient(string input)
+        public static Client ParseClient(string input)
         {
-            Client c = getPlayerByName(input);
+            var c = GetPlayerByName(input);
 
-            if(c == null)
+            if (c != null) return c;
+
+            var id = -1;
+            if(int.TryParse(input, out id))
             {
-                int id = -1;
-                if(Int32.TryParse(input, out id) == true)
-                {
-                    c = getPlayerById(id);
-                }
+                c = GetPlayerById(id);
             }
 
-            if (c != null)
-                return c;
-
-            return null;
+            return c;
         }
 
-        public static string getName(Client player)
+        public static string GetName(Client player)
         {
             Character c = API.shared.getEntityData(player.handle, "Character");
-            return c.character_name;
+            return c.CharacterName;
         }
 
-        public static string getAdminName(Client player)
+        public static string GetAdminName(Client player)
         {
             Account account = API.shared.getEntityData(player.handle, "Account");
-            return account.admin_name;
+            return account.AdminName;
         }
 
         [Command("getid", GreedyArg = true, Alias = "id")]
-        public void getid_cmd(Client sender, string player_name)
+        public void getid_cmd(Client sender, string playerName)
         {
-            API.sendChatMessageToPlayer(sender, Color.White, "----------- Searching for: " + player_name + " -----------");
-            foreach(Character c in players)
+            API.sendChatMessageToPlayer(sender, Color.White, "----------- Searching for: " + playerName + " -----------");
+            foreach(var c in Players)
             {
-                if(c.character_name.StartsWith(player_name, StringComparison.OrdinalIgnoreCase))
+                if(c.CharacterName.StartsWith(playerName, StringComparison.OrdinalIgnoreCase))
                 {
-                    API.sendChatMessageToPlayer(sender, Color.Grey, c.character_name + " - ID " + PlayerManager.getPlayerId(c));
+                    API.sendChatMessageToPlayer(sender, Color.Grey, c.CharacterName + " - ID " + GetPlayerId(c));
                 }
             }
             API.sendChatMessageToPlayer(sender, Color.White, "------------------------------------------------------------");

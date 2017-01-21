@@ -1,23 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using GTANetworkServer;
 using GTANetworkShared;
 using MongoDB.Driver;
+using RoleplayServer.resources.core;
+using RoleplayServer.resources.database_manager;
+using RoleplayServer.resources.player_manager;
+using RoleplayServer.resources.vehicle_manager;
 
-namespace RoleplayServer
+namespace RoleplayServer.resources.job_manager
 {
     public class JobManager : Script
     {
         public const int TaxiJob = 1;
 
-        public static List<Job> jobs = new List<Job>();
+        public static List<Job> Jobs = new List<Job>();
 
         public JobManager()
         {
-            DebugManager.debugMessage("[JobM] Initalizing job manager...");
+            DebugManager.DebugMessage("[JobM] Initalizing job manager...");
 
             API.onEntityEnterColShape += API_onEntityEnterColShape;
             API.onEntityExitColShape += API_onEntityExitColShape;
@@ -26,20 +26,20 @@ namespace RoleplayServer
 
             load_jobs();
 
-            DebugManager.debugMessage("[JobM] Job Manager initalized!");
+            DebugManager.DebugMessage("[JobM] Job Manager initalized!");
         }
 
         private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle)
         {
             Character character = API.getEntityData(player, "Character");
-            Vehicle veh = VehicleManager.getVehFromNetHandle(vehicle);
+            var veh = VehicleManager.GetVehFromNetHandle(vehicle);
 
-            if(veh.job_id != 0)
+            if(veh.JobId != 0)
             {
-                if (API.getPlayerVehicleSeat(player) == -1 && (veh.job != character.job_one))
+                if (API.getPlayerVehicleSeat(player) == -1 && veh.Job != character.JobOne)
                 {
                     API.warpPlayerOutOfVehicle(player, vehicle);
-                    API.sendPictureNotificationToPlayer(player, "This vehicle is only available to " + veh.job.name, "CHAR_BLOCKED", 0, 1, "Server", "~r~Vehicle Locked");
+                    API.sendPictureNotificationToPlayer(player, "This vehicle is only available to " + veh.Job.Name, "CHAR_BLOCKED", 0, 1, "Server", "~r~Vehicle Locked");
                 }
             }
         }
@@ -48,18 +48,18 @@ namespace RoleplayServer
         public void joinjob_cmd(Client player)
         {
             Character character = API.getEntityData(player, "Character");
-            if(character.job_zone_type != 1)
+            if(character.JobZoneType != 1)
             {
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~ You are not near a job joining location.");
                 return;
             }
 
-            Job job = getJobById(character.job_zone);
+            var job = GetJobById(character.JobZone);
 
-            character.job_one_id = job._id;
-            character.job_one = job;
-            character.save();
-            API.sendChatMessageToPlayer(player, Color.White, "You have become a " + job.name);
+            character.JobOneId = job.Id;
+            character.JobOne = job;
+            character.Save();
+            API.sendChatMessageToPlayer(player, Color.White, "You have become a " + job.Name);
         }
 
         [Command("quitjob")]
@@ -67,24 +67,23 @@ namespace RoleplayServer
         {
             Character character = API.getEntityData(player, "Character");
 
-            if(character.job_one_id == 0)
+            if(character.JobOneId == 0)
             {
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~You do not have a job to quit.");
                 return;
             }
 
-            API.sendChatMessageToPlayer(player, Color.Grey, "You have quit your job as a " + character.job_one.name);
-            character.job_one_id = 0;
-            character.job_one = null;
-            character.save();
-            return;
+            API.sendChatMessageToPlayer(player, Color.Grey, "You have quit your job as a " + character.JobOne.Name);
+            character.JobOneId = 0;
+            character.JobOne = null;
+            character.Save();
         }
 
         [Command("jobtypes")]
         public void jobtypes_cmd(Client player)
         {
             Account account = API.getEntityData(player.handle, "Account");
-            if (account.admin_level < 4)
+            if (account.AdminLevel < 4)
                 return;
 
             API.sendChatMessageToPlayer(player, Color.White, "-----------------------------------------");
@@ -96,54 +95,61 @@ namespace RoleplayServer
         public void createjob_cmd(Client player, int type, string name)
         {
             Account account = API.getEntityData(player.handle, "Account");
-            if (account.admin_level < 4)
+            if (account.AdminLevel < 4)
                 return;
 
-            Job job = new Job();
+            var job = new Job
+            {
+                Type = type,
+                Name = name,
+                JoinPos = new MarkerZone(player.position, player.rotation, player.dimension)
+                {
+                    LabelText = name + "~n~/joinjob"
+                }
+            };
 
-            job.type = type;
-            job.name = name;
 
-            job.join_pos = new MarkerZone(player.position, player.rotation, player.dimension);
-            job.join_pos.label_text = name + "~n~/joinjob";
-            job.join_pos.create();
+            job.JoinPos.Create();
 
-            job.insert();
-            API.sendChatMessageToPlayer(player, Color.Grey, "You have created job " + job._id + " ( " + job.name + ", Type: " + job.type + " ). Use /editjob to edit it.");
+            job.Insert();
+            API.sendChatMessageToPlayer(player, Color.Grey, "You have created job " + job.Id + " ( " + job.Name + ", Type: " + job.Type + " ). Use /editjob to edit it.");
         }
 
-        public static Job getJobById(int id)
+        public static Job GetJobById(int id)
         {
-            if (id == 0 || id > jobs.Count )
+            if (id == 0 || id > Jobs.Count )
                 return null;
 
-            return (Job)jobs.ToArray().GetValue(id - 1);
+            return (Job)Jobs.ToArray().GetValue(id - 1);
         }
 
-        public static void sendPictureNotificationToJob(Job job, string body, string pic, int flash, int iconType, string sender, string subject)
+        public static void SendPictureNotificationToJob(Job job, string body, string pic, int flash, int iconType, string sender, string subject)
         {
-            foreach(Character c in PlayerManager.players)
+            foreach(var c in PlayerManager.Players)
             {
-                if(c.job_one == job)
+                if(c.JobOne == job)
                 {
-                    API.shared.sendPictureNotificationToPlayer(c.client, body, pic, flash, iconType, sender, subject);
+                    API.shared.sendPictureNotificationToPlayer(c.Client, body, pic, flash, iconType, sender, subject);
                 }
             }
         }
 
         public void load_jobs()
         {
-            jobs = DatabaseManager.job_table.Find<Job>(Builders<Job>.Filter.Empty).ToList<Job>();
+            Jobs = DatabaseManager.JobTable.Find(Builders<Job>.Filter.Empty).ToList();
 
-            foreach(Job j in jobs)
+            foreach(var j in Jobs)
             {
-                j.join_pos = new MarkerZone(j.join_pos.location, j.join_pos.rotation, j.join_pos.dimension, j.join_pos.col_zone_size);
-                j.join_pos.label_text = "~g~" + j.name + "~n~/joinjob";
-                j.join_pos.blip_sprite = j.sprite_type();
-                j.join_pos.create();
+                j.JoinPos = new MarkerZone(j.JoinPos.Location, j.JoinPos.Rotation, j.JoinPos.Dimension,
+                    j.JoinPos.ColZoneSize)
+                {
+                    LabelText = "~g~" + j.Name + "~n~/joinjob",
+                    BlipSprite = j.sprite_type()
+                };
+                j.JoinPos.Create();
             }
 
-            DebugManager.debugMessage("Loaded " + jobs.Count + " jobs from the database.");
+            DebugManager.DebugMessage("Loaded " + Jobs.Count + " jobs from the database.");
         }
 
         private void API_onEntityExitColShape(ColShape colshape, NetHandle entity)
@@ -151,27 +157,27 @@ namespace RoleplayServer
             if (API.getEntityType(entity) != EntityType.Player)
                 return;
 
-            foreach (Job j in jobs)
+            foreach (var j in Jobs)
             {
-                if (j.join_pos.col_zone == colshape)
+                if (j.JoinPos.ColZone == colshape)
                 {
                     Character c = API.getEntityData(entity, "Character");
-                    c.job_zone = j._id;
-                    c.job_zone_type = 1;
+                    c.JobZone = j.Id;
+                    c.JobZoneType = 1;
                     break;
                 }
-                else if (j.misc_one.col_zone == colshape)
+                else if (j.MiscOne.ColZone == colshape)
                 {
                     Character c = API.getEntityData(entity, "Character");
-                    c.job_zone = j._id;
-                    c.job_zone_type = 2;
+                    c.JobZone = j.Id;
+                    c.JobZoneType = 2;
                     break;
                 }
-                else if (j.misc_two.col_zone == colshape)
+                else if (j.MiscTwo.ColZone == colshape)
                 {
                     Character c = API.getEntityData(entity, "Character");
-                    c.job_zone = j._id;
-                    c.job_zone_type = 3;
+                    c.JobZone = j.Id;
+                    c.JobZoneType = 3;
                     break;
                 }
             }
@@ -182,13 +188,13 @@ namespace RoleplayServer
             if (API.getEntityType(entity) != EntityType.Player)
                 return;
 
-            foreach (Job j in jobs)
+            foreach (var j in Jobs)
             {
-                if (j.join_pos.col_zone == colshape || j.misc_one.col_zone == colshape || j.misc_two.col_zone == colshape)
+                if (j.JoinPos.ColZone == colshape || j.MiscOne.ColZone == colshape || j.MiscTwo.ColZone == colshape)
                 {
                     Character c = API.getEntityData(entity, "Character");
-                    c.job_zone = 0;
-                    c.job_zone_type = 0;
+                    c.JobZone = 0;
+                    c.JobZoneType = 0;
                     break;
                 }
             }

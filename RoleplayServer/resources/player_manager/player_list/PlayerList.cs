@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using GTANetworkServer;
-using GTANetworkShared;
+using RoleplayServer.resources.AdminSystem;
+using RoleplayServer.resources.core;
 
 namespace RoleplayServer.resources.player_manager.player_list
 {
@@ -20,25 +21,27 @@ namespace RoleplayServer.resources.player_manager.player_list
 
                     Account account = API.getEntityData(player.handle, "Account");
 
-                    List<string> player_list = new List<string>();
-                    int type = Convert.ToInt32(arguments[0]);
+                    var playerList = new List<string>();
+                    var type = Convert.ToInt32(arguments[0]);
 
-                    foreach(Character c in PlayerManager.players)
+                    foreach(var c in PlayerManager.Players)
                     {
                         if(type == 1)
                         {
-                            Account a = API.getEntityData(c.client.handle, "Account");
-                            if (a.admin_duty == 0)
+                            Account a = API.getEntityData(c.Client.handle, "Account");
+                            if (a.AdminDuty == 0)
                                 continue;
                         }
 
-                        Dictionary<string, object> dic = new Dictionary<string, object>();
-                        dic["name"] = c.character_name;
-                        dic["id"] = PlayerManager.getPlayerId(c);
-                        player_list.Add(API.toJson(dic));
+                        var dic = new Dictionary<string, object>
+                        {
+                            ["name"] = c.CharacterName,
+                            ["id"] = PlayerManager.GetPlayerId(c)
+                        };
+                        playerList.Add(API.toJson(dic));
                     }
 
-                    API.triggerClientEvent(player, "send_player_list", player_list, (account.admin_level == 0) ? (false) : (true));
+                    API.triggerClientEvent(player, "send_player_list", playerList, account.AdminLevel != 0);
                     break;
                 case "player_list_pm":
                     ChatManager.pm_cmd(player, Convert.ToString(arguments[0]), Convert.ToString(arguments[1]));

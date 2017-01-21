@@ -1,25 +1,25 @@
-﻿using System;
-using GTANetworkServer;
+﻿using GTANetworkServer;
 using GTANetworkShared;
-using System.Collections.Generic;
+using RoleplayServer.resources.core;
+using RoleplayServer.resources.player_manager;
 
-namespace RoleplayServer
+namespace RoleplayServer.resources.AdminSystem
 {
     public class AdminCommands : Script 
     {
 
         public AdminCommands()
         {
-            DebugManager.debugMessage("[AdminSys] Initalizing Admin System...");
+            DebugManager.DebugMessage("[AdminSys] Initalizing Admin System...");
 
 
-            DebugManager.debugMessage("[AdminSys] Admin System initalized.");
+            DebugManager.DebugMessage("[AdminSys] Admin System initalized.");
         }
 
         [Command("gotopos")]
         public void gotopos_cmd(Client player, double x, double y, double z)
         {
-            Vector3 pos = new Vector3(x, y, z);
+            var pos = new Vector3(x, y, z);
             API.setEntityPosition(player, pos);
             API.sendChatMessageToPlayer(player, "Teleported");
         }
@@ -27,10 +27,10 @@ namespace RoleplayServer
         [Command("goto")]
         public static void goto_cmd(Client player, string id)
         {
-            Client receiver = PlayerManager.parseClient(id);
+            var receiver = PlayerManager.ParseClient(id);
             Account account = API.shared.getEntityData(player.handle, "Account");
 
-            if (account.admin_level == 0)
+            if (account.AdminLevel == 0)
                 return;
 
             if (receiver == null)
@@ -38,19 +38,19 @@ namespace RoleplayServer
                 API.shared.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
-            Vector3 PlayerPos = API.shared.getEntityPosition(receiver);
-            API.shared.setEntityPosition(player, new Vector3(PlayerPos.X, PlayerPos.Y + 1, PlayerPos.Z));
-            API.shared.sendChatMessageToPlayer(player, "You have teleported to " + PlayerManager.getName(receiver) +" (ID:" + id +").");
+            var playerPos = API.shared.getEntityPosition(receiver);
+            API.shared.setEntityPosition(player, new Vector3(playerPos.X, playerPos.Y + 1, playerPos.Z));
+            API.shared.sendChatMessageToPlayer(player, "You have teleported to " + PlayerManager.GetName(receiver) +" (ID:" + id +").");
 
         }
 
         [Command("agiveweapon")]
         public void agiveweapon_cmd(Client player, string id, WeaponHash weaponHash, int ammo)
         {
-            Client receiver = PlayerManager.parseClient(id);
+            var receiver = PlayerManager.ParseClient(id);
             Account account = API.getEntityData(player.handle, "Account");
 
-            if (account.admin_level == 0)
+            if (account.AdminLevel == 0)
                 return;
 
             if (receiver == null)
@@ -65,10 +65,10 @@ namespace RoleplayServer
         [Command("sethealth")]
         public void sethealth_cmd(Client player, string id, int health)
         {
-            Client receiver = PlayerManager.parseClient(id);
+            var receiver = PlayerManager.ParseClient(id);
             Account account = API.getEntityData(player.handle, "Account");
 
-            if (account.admin_level == 0)
+            if (account.AdminLevel == 0)
                 return;
 
             if (receiver == null)
@@ -83,10 +83,10 @@ namespace RoleplayServer
         [Command("setarmour")]
         public void setarmour_cmd(Client player, string id, int armour)
         {
-            Client receiver = PlayerManager.parseClient(id);
+            var receiver = PlayerManager.ParseClient(id);
             Account account = API.getEntityData(player.handle, "Account");
 
-            if (account.admin_level == 0)
+            if (account.AdminLevel == 0)
                 return;
 
             if (receiver == null)
@@ -101,10 +101,10 @@ namespace RoleplayServer
         [Command("spec")]
         public static void spec_cmd(Client player, string id)
         {
-            Client target = PlayerManager.parseClient(id);
+            var target = PlayerManager.ParseClient(id);
             Account account = API.shared.getEntityData(player.handle, "Account");
 
-            if (account.admin_level == 0)
+            if (account.AdminLevel == 0)
                 return;
 
             if (target == null)
@@ -112,9 +112,9 @@ namespace RoleplayServer
                 API.shared.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
-            account.is_spectating = true;
+            account.IsSpectating = true;
             API.shared.setPlayerToSpectatePlayer(player, target);
-            API.shared.sendChatMessageToPlayer(player, "You are now spectating " + PlayerManager.getName(target) + " (ID:" + id + "). Use /specoff to stop spectating this player.");
+            API.shared.sendChatMessageToPlayer(player, "You are now spectating " + PlayerManager.GetName(target) + " (ID:" + id + "). Use /specoff to stop spectating this player.");
 
         }
 
@@ -123,15 +123,15 @@ namespace RoleplayServer
         {
             Account account = API.getEntityData(player.handle, "Account");
 
-            if (account.admin_level == 0)
+            if (account.AdminLevel == 0)
                 return;
 
-            if (account.is_spectating == false)
+            if (account.IsSpectating == false)
             {
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~ You are not specing anyone.");
                 return;
             }
-            account.is_spectating = false;
+            account.IsSpectating = false;
             API.unspectatePlayer(player);
             API.sendChatMessageToPlayer(player, "You are no longer spectating anyone.");
         }
@@ -139,10 +139,10 @@ namespace RoleplayServer
         [Command("slap")]
         public void slap_cmd(Client player, string id)
         {
-            Client receiver = PlayerManager.parseClient(id);
+            var receiver = PlayerManager.ParseClient(id);
             Account account = API.getEntityData(player.handle, "Account");
 
-            if (account.admin_level == 0)
+            if (account.AdminLevel == 0)
                 return;
 
             if (receiver == null)
@@ -150,8 +150,8 @@ namespace RoleplayServer
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
-            Vector3 PlayerPos = API.getEntityPosition(receiver);
-            API.setEntityPosition(receiver, new Vector3(PlayerPos.X, PlayerPos.Y, PlayerPos.Z + 5));
+            var playerPos = API.getEntityPosition(receiver);
+            API.setEntityPosition(receiver, new Vector3(playerPos.X, playerPos.Y, playerPos.Z + 5));
             API.sendChatMessageToPlayer(receiver, "You have been slapped by an admin");
         }
     }

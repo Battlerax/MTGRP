@@ -1,18 +1,19 @@
 ﻿using System;
 using GTANetworkServer;
-using GTANetworkShared;
+using RoleplayServer.resources.job_manager;
+using RoleplayServer.resources.player_manager;
 
-namespace RoleplayServer
+namespace RoleplayServer.resources.vehicle_manager.vehicle_editor
 {
     class VehicleEditor : Script
     {
 
         public VehicleEditor()
         {
-            API.onClientEventTrigger += onClientEventTrigger;
+            API.onClientEventTrigger += OnClientEventTrigger;
         }
 
-        private void onClientEventTrigger(Client player, string eventName, params object[] arguments)
+        private void OnClientEventTrigger(Client player, string eventName, params object[] arguments)
         {
             
             if(eventName == "vehicle_edit_change_spawn")
@@ -25,10 +26,10 @@ namespace RoleplayServer
                     return;
                 }
 
-                veh.spawn_pos = API.getEntityPosition(veh.net_handle);
-                veh.spawn_rot = API.getEntityRotation(veh.net_handle);
-                veh.spawn_dimension = API.getEntityDimension(veh.net_handle);
-                veh.save();
+                veh.SpawnPos = API.getEntityPosition(veh.NetHandle);
+                veh.SpawnRot = API.getEntityRotation(veh.NetHandle);
+                veh.SpawnDimension = API.getEntityDimension(veh.NetHandle);
+                veh.Save();
 
                 API.sendChatMessageToPlayer(player, "Vehicle position spawn saved to current location.");
             }
@@ -42,24 +43,24 @@ namespace RoleplayServer
                     return;
                 }
 
-                var veh_id = Convert.ToInt32(arguments[0]);
+                var vehId = Convert.ToInt32(arguments[0]);
                 var model = Convert.ToString(arguments[1]);
                 var owner = Convert.ToString(arguments[2]);
-                var license_plate = Convert.ToString(arguments[3]);
-                var color_1 = Convert.ToInt32(arguments[4]);
-                var color_2 = Convert.ToInt32(arguments[5]);
-                var respawn_delay = Convert.ToInt32(arguments[6]);
-                var job_id = Convert.ToInt32(arguments[7]);
+                var licensePlate = Convert.ToString(arguments[3]);
+                var color1 = Convert.ToInt32(arguments[4]);
+                var color2 = Convert.ToInt32(arguments[5]);
+                var respawnDelay = Convert.ToInt32(arguments[6]);
+                var jobId = Convert.ToInt32(arguments[7]);
 
-                if (veh._id != veh_id)
+                if (veh.Id != vehId)
                 {
                     API.sendChatMessageToPlayer(player, "~r~Vehicle editor error. Vehicle edit IDs are not equal.");
                     return;
                 }
 
-                VehicleHash model_hash = API.vehicleNameToModel((string)model);
+                var modelHash = API.vehicleNameToModel(model);
 
-                if(model_hash == 0)
+                if(modelHash == 0)
                 {
                     API.triggerClientEvent(player, "send_veh_edit_error", "Invalid vehicle model entered!");
                     return;
@@ -71,25 +72,25 @@ namespace RoleplayServer
                     return;
                 }
                                         
-                if (JobManager.getJobById(job_id) == null && job_id != 0)
+                if (JobManager.GetJobById(jobId) == null && jobId != 0)
                 {
                     API.triggerClientEvent(player, "send_veh_edit_error", "Invalid job ID entered!");
                     return;
                 }
 
-                veh.veh_model = model_hash;
-                veh.owner_name = owner;
-                veh.license_plate = license_plate;
-                veh.spawn_colors[0] = color_1;
-                veh.spawn_colors[1] = color_2;
-                veh.respawn_delay = respawn_delay;
-                veh.job_id = job_id;
-                veh.job = JobManager.getJobById(veh.job_id);
+                veh.VehModel = modelHash;
+                veh.OwnerName = owner;
+                veh.LicensePlate = licensePlate;
+                veh.SpawnColors[0] = color1;
+                veh.SpawnColors[1] = color2;
+                veh.RespawnDelay = respawnDelay;
+                veh.JobId = jobId;
+                veh.Job = JobManager.GetJobById(veh.JobId);
 
-                VehicleManager.respawn_vehicle(veh, API.getEntityPosition(veh.net_handle));
-                API.setPlayerIntoVehicle(player, veh.net_handle, -1);
+                VehicleManager.respawn_vehicle(veh, API.getEntityPosition(veh.NetHandle));
+                API.setPlayerIntoVehicle(player, veh.NetHandle, -1);
 
-                veh.save();
+                veh.Save();
                 API.sendChatMessageToPlayer(player, "Vehicle editor changes saved!");
                 API.triggerClientEvent(player, "finish_veh_edit");
             }
@@ -119,7 +120,7 @@ namespace RoleplayServer
         public void editvehicle_cmd(Client player)
         {
             Account account = API.getEntityData(player.handle, "Account");
-            if (account.admin_level < 4)
+            if (account.AdminLevel < 4)
                 return;
 
             if (!API.isPlayerInAnyVehicle(player))
@@ -128,7 +129,7 @@ namespace RoleplayServer
                 return;
             }
 
-            Vehicle veh = VehicleManager.getVehFromNetHandle(API.getPlayerVehicle(player));
+            var veh = VehicleManager.GetVehFromNetHandle(API.getPlayerVehicle(player));
 
             if(veh == null)
             {
@@ -143,7 +144,7 @@ namespace RoleplayServer
             }
 
             API.setEntityData(player.handle, "EDIT_VEH", veh);
-            API.triggerClientEvent(player, "show_vehicle_edit_menu", veh._id, API.getVehicleDisplayName(veh.veh_model), veh.owner_name, veh.license_plate, veh.spawn_colors[0], veh.spawn_colors[1], veh.respawn_delay, veh.job_id);
+            API.triggerClientEvent(player, "show_vehicle_edit_menu", veh.Id, API.getVehicleDisplayName(veh.VehModel), veh.OwnerName, veh.LicensePlate, veh.SpawnColors[0], veh.SpawnColors[1], veh.RespawnDelay, veh.JobId);
         }
     }
 }

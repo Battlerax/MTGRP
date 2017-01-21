@@ -2,61 +2,61 @@
 using GTANetworkShared;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace RoleplayServer
+namespace RoleplayServer.resources.core
 {
     public class MarkerZone
     {
-        public string label_text { get; set; }
+        public string LabelText { get; set; }
 
-        public Vector3 location { get; set; }
-        public Vector3 rotation { get; set; }
-        public int dimension { get; set; }
+        public Vector3 Location { get; set; }
+        public Vector3 Rotation { get; set; }
+        public int Dimension { get; set; }
 
-        public float col_zone_size { get; set; }
+        public float ColZoneSize { get; set; }
 
-        public int marker_type { get; set; }
-        public Vector3 scale { get; set; }
-        public int alpha { get; set; }
-        public int red { get; set; }
-        public int blue { get; set; }
-        public int green { get; set; }
+        public int MarkerType { get; set; }
+        public Vector3 Scale { get; set; }
+        public int Alpha { get; set; }
+        public int Red { get; set; }
+        public int Blue { get; set; }
+        public int Green { get; set; }
 
-        public int blip_sprite { get; set; }
+        public int BlipSprite { get; set; }
 
         [BsonIgnore]
-        public NetHandle marker { get; set; }
+        public NetHandle Marker { get; set; }
         [BsonIgnore]
-        public NetHandle label { get; set; }
+        public NetHandle Label { get; set; }
         [BsonIgnore]
-        public NetHandle blip { get; set; }
+        public NetHandle Blip { get; set; }
         [BsonIgnore]
-        public Rectangle2DColShape col_zone { get; set; }
+        public Rectangle2DColShape ColZone { get; set; }
 
-        public MarkerZone(Vector3 loc, Vector3 rot, int dimension = 0, float zone_size = 10.0f)
+        public MarkerZone(Vector3 loc, Vector3 rot, int dimension = 0, float zoneSize = 10.0f)
         {
-            this.location = loc;
-            this.rotation = rot;
-            this.dimension = dimension;
-            this.col_zone_size = zone_size;
+            Location = loc;
+            Rotation = rot;
+            Dimension = dimension;
+            ColZoneSize = zoneSize;
 
 
-            marker_type = 2;
-            alpha = 255;
-            red = 255;
-            green = 255;
-            blue = 0;
+            MarkerType = 2;
+            Alpha = 255;
+            Red = 255;
+            Green = 255;
+            Blue = 0;
 
-            scale = new Vector3(0.5, 0.5, 0.5);
+            Scale = new Vector3(0.5, 0.5, 0.5);
         }
 
-        public void create()
+        public void Create()
         {
-            this.marker = API.shared.createMarker(2, location, location, rotation, scale, alpha, red, green, blue, dimension);
-            this.label = API.shared.createTextLabel("~g~" + label_text, location.Add(new Vector3(0.0, 0.0, 0.5)), 25f, 0.5f, true, dimension);
-            this.col_zone = API.shared.create2DColShape(location.X, location.Y, col_zone_size, 5.0f);
+            Marker = API.shared.createMarker(2, Location, Location, Rotation, Scale, Alpha, Red, Green, Blue, Dimension);
+            Label = API.shared.createTextLabel("~g~" + LabelText, Location.Add(new Vector3(0.0, 0.0, 0.5)), 25f, 0.5f, true, Dimension);
+            ColZone = API.shared.create2DColShape(Location.X, Location.Y, ColZoneSize, 5.0f);
 
-            this.blip = API.shared.createBlip(this.marker);
-            API.shared.setBlipSprite(this.blip, blip_sprite);
+            Blip = API.shared.createBlip(Marker);
+            API.shared.setBlipSprite(Blip, BlipSprite);
         }
     }
 }

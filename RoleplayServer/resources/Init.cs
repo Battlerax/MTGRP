@@ -10,18 +10,18 @@
  * */
 
 
-using System;
 using GTANetworkServer;
-using GTANetworkShared;
+using RoleplayServer.resources.core;
+using RoleplayServer.resources.database_manager;
 
-namespace RoleplayServer
+namespace RoleplayServer.resources
 {
     public class Init : Script
     { 
         public Init()
         {
 
-            DebugManager.debugMessage("[INIT] Initalizing script...");
+            DebugManager.DebugMessage("[INIT] Initalizing script...");
 
             API.onResourceStart += OnResourceStartHandler;
 

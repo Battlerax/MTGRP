@@ -37,11 +37,13 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GTANetworkServer">
-      <HintPath>..\..\..\GTANetworkServer.exe</HintPath>
+    <Reference Include="GTANetworkServer, Version=0.1.363.417, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\GTANetworkServer.exe</HintPath>
     </Reference>
-    <Reference Include="GTANetworkShared">
-      <HintPath>..\..\..\GTANetworkShared.dll</HintPath>
+    <Reference Include="GTANetworkShared, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\GTANetworkShared.dll</HintPath>
     </Reference>
     <Reference Include="MongoDB.Bson, Version=2.4.0.70, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MongoDB.Bson.2.4.0\lib\net45\MongoDB.Bson.dll</HintPath>
@@ -140,6 +142,9 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="resources\job_manager\fisher\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

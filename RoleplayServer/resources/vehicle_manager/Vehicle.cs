@@ -10,161 +10,162 @@
  * */
 
 
-using System;
+using System.Timers;
 using GTANetworkServer;
 using GTANetworkShared;
-using MongoDB.Bson;
-using MongoDB.Driver;
 using MongoDB.Bson.Serialization.Attributes;
-using System.Timers;
+using MongoDB.Driver;
+using RoleplayServer.resources.database_manager;
+using RoleplayServer.resources.job_manager;
+using RoleplayServer.resources.player_manager;
 
-namespace RoleplayServer
+namespace RoleplayServer.resources.vehicle_manager
 {
     public class Vehicle
     {
         [BsonIgnore]
-        public const int VEH_TYPE_TEMP = 0;
+        public const int VehTypeTemp = 0;
         [BsonIgnore]
-        public const int VEH_TYPE_PERM = 1;
+        public const int VehTypePerm = 1;
 
-        public int _id { get; set; }
+        public int Id { get; set; }
        
-        public VehicleHash veh_model { get; set; }
-        public Vector3 spawn_pos { get; set; }
-        public Vector3 spawn_rot { get; set; }
-        public int[] spawn_colors = new int[2];
-        public int spawn_dimension { get; set; }
-        public string owner_name { get; set; }
-        public int owner_id { get; set; }
-        public string license_plate { get; set; }
+        public VehicleHash VehModel { get; set; }
+        public Vector3 SpawnPos { get; set; }
+        public Vector3 SpawnRot { get; set; }
+        public int[] SpawnColors = new int[2];
+        public int SpawnDimension { get; set; }
+        public string OwnerName { get; set; }
+        public int OwnerId { get; set; }
+        public string LicensePlate { get; set; }
 
-        public int respawn_delay { get; set; }
+        public int RespawnDelay { get; set; }
         [BsonIgnore]
-        public Timer respawn_timer { get; set; }
+        public Timer RespawnTimer { get; set; }
 
-        public int veh_type { get; set; }
+        public int VehType { get; set; }
 
-        public int job_id { get; set; }
+        public int JobId { get; set; }
         [BsonIgnore]
-        public Job job { get; set; }
-
-        [BsonIgnore]
-        public NetHandle net_handle { get; private set; }
-        [BsonIgnore]
-        private Client owner_client { get; set; }
-        [BsonIgnore]
-        private bool is_spawned { get; set; }
+        public Job Job { get; set; }
 
         [BsonIgnore]
-        public NetHandle blip { get; set; }
+        public NetHandle NetHandle { get; private set; }
+        [BsonIgnore]
+        private Client OwnerClient { get; set; }
+        [BsonIgnore]
+        private bool IsSpawned { get; set; }
 
         [BsonIgnore]
-        public Character driver { get; set; }
+        public NetHandle Blip { get; set; }
+
+        [BsonIgnore]
+        public Character Driver { get; set; }
 
         public Vehicle()
         {
-            _id = 0;
-            owner_id = 0;
+            Id = 0;
+            OwnerId = 0;
 
-            spawn_pos = new Vector3(0.0, 0.0, 0.0);
-            spawn_rot = new Vector3(0.0, 0.0, 0.0);
-            spawn_colors = new int[2];
-            spawn_dimension = 0;
-            owner_name = "None";
-            license_plate = "DEFAULT";
+            SpawnPos = new Vector3(0.0, 0.0, 0.0);
+            SpawnRot = new Vector3(0.0, 0.0, 0.0);
+            SpawnColors = new int[2];
+            SpawnDimension = 0;
+            OwnerName = "None";
+            LicensePlate = "DEFAULT";
 
-            respawn_delay = 600;
-            veh_type = VEH_TYPE_TEMP;
+            RespawnDelay = 600;
+            VehType = VehTypeTemp;
 
-            net_handle = new NetHandle();
-            owner_client = null;
-            is_spawned = false;
-            driver = null;
+            NetHandle = new NetHandle();
+            OwnerClient = null;
+            IsSpawned = false;
+            Driver = null;
 
-            job_id = 0;
+            JobId = 0;
         }
 
 
         /*  Respawns a vehicle at its default spawn */
-        public int respawn()
+        public int Respawn()
         {
-            if (is_spawned == true)
-                despawn();
-            spawn();
+            if (IsSpawned)
+                Despawn();
+            Spawn();
             return 1;
         }
 
         /* Respawns a vehicle at a given location */
-        public int respawn(Vector3 pos)
+        public int Respawn(Vector3 pos)
         {
-            if (is_spawned == true)
-                despawn();
-            spawn(pos);
+            if (IsSpawned)
+                Despawn();
+            Spawn(pos);
             return 1;
         }
 
         /*  Spawns a vehicle at its default spawn location. */
-        public int spawn()
+        public int Spawn()
         {
-            return spawn(spawn_pos);
+            return Spawn(SpawnPos);
         }
 
         /*  Spawns a vehicle at the given position in the world */
-        public int spawn(Vector3 pos)
+        public int Spawn(Vector3 pos)
         {
-            if (spawn_pos == null)
+            if (SpawnPos == null)
                 return -1; // No valid spawn position available
 
-            if (is_spawned == true)
+            if (IsSpawned)
                 return 0; // Vehicle is already spawned
 
            
-            this.net_handle = API.shared.createVehicle(veh_model, pos, spawn_rot, spawn_colors[0], spawn_colors[1], spawn_dimension);
-            API.shared.setVehicleNumberPlate(this.net_handle, this.license_plate);
+            NetHandle = API.shared.createVehicle(VehModel, pos, SpawnRot, SpawnColors[0], SpawnColors[1], SpawnDimension);
+            API.shared.setVehicleNumberPlate(NetHandle, LicensePlate);
 
-            this.blip = API.shared.createBlip(this.net_handle);
-            API.shared.setBlipColor(blip, 40);
-            API.shared.setBlipSprite(blip, 225);
-            API.shared.setBlipScale(blip, (float)(0.7));
-            API.shared.setBlipShortRange(blip, true);
+            Blip = API.shared.createBlip(NetHandle);
+            API.shared.setBlipColor(Blip, 40);
+            API.shared.setBlipSprite(Blip, 225);
+            API.shared.setBlipScale(Blip, (float)0.7);
+            API.shared.setBlipShortRange(Blip, true);
 
-            is_spawned = true;
+            IsSpawned = true;
 
             return 1; // Successful spawn
         }
 
         /*  Despawns a vehicle, removing it from the world  */
-        public int despawn()
+        public int Despawn()
         {
-            if (is_spawned == false)
+            if (IsSpawned == false)
                 return 0; // Vehicle is not spawned
 
-            API.shared.deleteEntity(blip);
-            API.shared.deleteEntity(net_handle);
-            is_spawned = false;
+            API.shared.deleteEntity(Blip);
+            API.shared.deleteEntity(NetHandle);
+            IsSpawned = false;
             return 1; // Successful despawn
         }
 
-        public void insert()
+        public void Insert()
         {
-            this._id = DatabaseManager.getNextId("vehicles");
-            DatabaseManager.vehicle_table.InsertOne(this);
+            Id = DatabaseManager.GetNextId("vehicles");
+            DatabaseManager.VehicleTable.InsertOne(this);
         }
 
-        public void save()
+        public void Save()
         {
-            FilterDefinition<Vehicle> filter = Builders<Vehicle>.Filter.Eq("_id", this._id);
-            DatabaseManager.vehicle_table.ReplaceOneAsync(filter, this);
+            var filter = Builders<Vehicle>.Filter.Eq("_id", Id);
+            DatabaseManager.VehicleTable.ReplaceOneAsync(filter, this);
         }
 
         public bool is_saved()
         {
-            if (this._id == 0)
+            if (Id == 0)
                 return false;
 
-            FilterDefinition<Vehicle> filter = Builders<Vehicle>.Filter.Eq("_id", this._id);
+            var filter = Builders<Vehicle>.Filter.Eq("_id", Id);
 
-            if (DatabaseManager.vehicle_table.Find(filter).Count() > 0)
+            if (DatabaseManager.VehicleTable.Find(filter).Count() > 0)
             {
                 return true;
             }

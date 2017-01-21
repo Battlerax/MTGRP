@@ -1,80 +1,80 @@
-﻿using MongoDB.Bson;
+﻿using System;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
+using RoleplayServer.resources.database_manager;
 
-namespace RoleplayServer
+namespace RoleplayServer.resources.player_manager
 {
     public class Account
     {
-        public ObjectId _id { get; set; }
+        public ObjectId Id { get; set; }
 
-        public string account_name { get; set; }
-        public int admin_level { get; set; }
-        public string admin_name { get; set; }
-        public int admin_duty { get; set; }
-        public int dev_level { get; set; }
-        public string password { get; set; }
-        public string salt { get; set; }
+        public string AccountName { get; set; }
+        public int AdminLevel { get; set; }
+        public string AdminName { get; set; }
+        public int AdminDuty { get; set; }
+        public int DevLevel { get; set; }
+        public string Password { get; set; }
+        public string Salt { get; set; }
 
-        public int vip_level { get; set; }
-        public DateTime vip_expiration_date { get; set; }
+        public int VipLevel { get; set; }
+        public DateTime VipExpirationDate { get; set; }
 
-        public string last_ip { get; set; }
+        public string LastIp { get; set; }
 
         [BsonIgnore]
-        public bool is_logged_in { get; set; }
-        public bool is_spectating { get; set; }
+        public bool IsLoggedIn { get; set; }
+        public bool IsSpectating { get; set; }
 
         public Account()
         {
-            account_name = "default_account";
-            admin_level = 0;
-            password = System.String.Empty;
-            salt = System.String.Empty;
+            AccountName = "default_account";
+            AdminLevel = 0;
+            Password = String.Empty;
+            Salt = String.Empty;
         }
 
         public void load_by_name()
         {
-            FilterDefinition<Account> filter = Builders<Account>.Filter.Eq("account_name", this.account_name);
-            List<Account> found_account = DatabaseManager.account_table.Find(filter).ToList<Account>();
+            var filter = Builders<Account>.Filter.Eq("account_name", AccountName);
+            var foundAccount = DatabaseManager.AccountTable.Find(filter).ToList();
 
-            foreach(Account a in found_account)
+            foreach(var a in foundAccount)
             {
-                this._id = a._id;
-                this.admin_level = a.admin_level;
-                this.admin_name = a.admin_name;
-                this.admin_duty = a.admin_duty;
-                this.dev_level = a.dev_level;
-                this.password = a.password;
-                this.salt = a.salt;
+                Id = a.Id;
+                AdminLevel = a.AdminLevel;
+                AdminName = a.AdminName;
+                AdminDuty = a.AdminDuty;
+                DevLevel = a.DevLevel;
+                Password = a.Password;
+                Salt = a.Salt;
 
-                this.vip_level = a.vip_level;
-                this.vip_expiration_date = a.vip_expiration_date;
+                VipLevel = a.VipLevel;
+                VipExpirationDate = a.VipExpirationDate;
 
-                this.last_ip = a.last_ip;
+                LastIp = a.LastIp;
 
                 break;
             }
         }
 
-        public void register()
+        public void Register()
         {
-            DatabaseManager.account_table.InsertOne(this);
+            DatabaseManager.AccountTable.InsertOne(this);
         }
 
-        public void save()
+        public void Save()
         {
-            FilterDefinition<Account> filter = Builders<Account>.Filter.Eq("_id", this._id);
-            DatabaseManager.account_table.ReplaceOneAsync(filter, this, new UpdateOptions { IsUpsert = true });
+            var filter = Builders<Account>.Filter.Eq("_id", Id);
+            DatabaseManager.AccountTable.ReplaceOneAsync(filter, this, new UpdateOptions { IsUpsert = true });
         }
 
         public bool is_registered()
         {
-            FilterDefinition<Account> filter = Builders<Account>.Filter.Eq("account_name", this.account_name);
+            var filter = Builders<Account>.Filter.Eq("account_name", AccountName);
 
-            if(DatabaseManager.account_table.Find(filter).Count() > 0)
+            if(DatabaseManager.AccountTable.Find(filter).Count() > 0)
             {
                 return true;
             }

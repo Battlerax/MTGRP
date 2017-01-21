@@ -1,21 +1,20 @@
-﻿using System;
+﻿using System.Security.Cryptography;
 using GTANetworkServer;
-using GTANetworkShared;
-using System.Security.Cryptography;
 using MongoDB.Driver;
-using System.Collections.Generic;
+using RoleplayServer.resources.core;
+using RoleplayServer.resources.database_manager;
 
-namespace RoleplayServer
+namespace RoleplayServer.resources.player_manager.login
 {
     class LoginManager : Script
     {
-        public static int LOGIN_DIMENSION = 100;
+        public static int LoginDimension = 100;
 
-        public static RNGCryptoServiceProvider randomizer = new RNGCryptoServiceProvider();
+        public static RNGCryptoServiceProvider Randomizer = new RNGCryptoServiceProvider();
 
         public LoginManager()
         {
-            DebugManager.debugMessage("[LoginM] Initalizing Login Manager...");
+            DebugManager.DebugMessage("[LoginM] Initalizing Login Manager...");
 
             API.onPlayerConnected += OnPlayerConnected;
             API.onPlayerFinishedDownload += OnPlayerFinishedDownload;
@@ -24,7 +23,7 @@ namespace RoleplayServer
             //API.onChatCommand += OnChatCommandHandler;
             API.onChatMessage += OnPlayerChat;
 
-            DebugManager.debugMessage("[LoginM] Login Manager initalized.");
+            DebugManager.DebugMessage("[LoginM] Login Manager initalized.");
         }
 
         private void API_onClientEventTrigger(Client player, string eventName, params object[] arguments)
@@ -32,10 +31,10 @@ namespace RoleplayServer
             switch (eventName)
             {
                 case "attempt_login":
-                    string input_pass = (string)arguments[0];
+                    var inputPass = (string)arguments[0];
 
 
-                    if (input_pass.Length < 8)
+                    if (inputPass.Length < 8)
                     {
                         API.triggerClientEvent(player, "login_error", "Password entered is too short.");
                         return;
@@ -45,7 +44,7 @@ namespace RoleplayServer
 
                     if (account.is_registered())
                     {
-                        if (account.is_logged_in)
+                        if (account.IsLoggedIn)
                         {
                             API.triggerClientEvent(player, "login_error", "You are already logged in.");
                             return;
@@ -53,22 +52,22 @@ namespace RoleplayServer
 
                         account.load_by_name();
 
-                        input_pass = input_pass + account.salt;
+                        inputPass = inputPass + account.Salt;
 
                         //Hash password
-                        byte[] password = System.Text.Encoding.UTF8.GetBytes(input_pass);
+                        var password = System.Text.Encoding.UTF8.GetBytes(inputPass);
                         password = new SHA256Managed().ComputeHash(password);
-                        string hashed_pass = System.Text.Encoding.UTF8.GetString(password);
+                        var hashedPass = System.Text.Encoding.UTF8.GetString(password);
 
-                        if (hashed_pass == account.password)
+                        if (hashedPass == account.Password)
                         {
                             API.sendChatMessageToPlayer(player, "~g~ You have successfully logged in!");
 
-                            account.is_logged_in = true;
+                            account.IsLoggedIn = true;
 
-                            if (account.admin_level > 0)
+                            if (account.AdminLevel > 0)
                             {
-                                API.sendChatMessageToPlayer(player, Color.AdminOrange, "Welcome back Admin " + account.admin_name);
+                                API.sendChatMessageToPlayer(player, Color.AdminOrange, "Welcome back Admin " + account.AdminName);
                             }
 
                             prepare_character_menu(player);
@@ -80,33 +79,33 @@ namespace RoleplayServer
                     }
                     else
                     {
-                        if (input_pass.Length < 8)
+                        if (inputPass.Length < 8)
                         {
                             API.triggerClientEvent(player, "Please choose a password that is at least 8 characters long.");
                             return;
                         }
 
-                        if (account.is_logged_in)
+                        if (account.IsLoggedIn)
                         {
                             API.triggerClientEvent(player, "ERROR: You are already logged in!");
                             return;
                         }
 
                         //Get a random salt
-                        byte[] salt = new byte[32];
-                        randomizer.GetBytes(salt);
+                        var salt = new byte[32];
+                        Randomizer.GetBytes(salt);
 
                         //Add salt to the end of input_pass
-                        input_pass = input_pass + System.Text.Encoding.UTF8.GetString(salt);
+                        inputPass = inputPass + System.Text.Encoding.UTF8.GetString(salt);
 
                         //Convert inputted password to bytes
-                        byte[] password = System.Text.Encoding.UTF8.GetBytes(input_pass);
+                        var password = System.Text.Encoding.UTF8.GetBytes(inputPass);
                         password = new SHA256Managed().ComputeHash(password);
 
-                        account.password = System.Text.Encoding.UTF8.GetString(password);
-                        account.salt = System.Text.Encoding.UTF8.GetString(salt);
+                        account.Password = System.Text.Encoding.UTF8.GetString(password);
+                        account.Salt = System.Text.Encoding.UTF8.GetString(salt);
 
-                        account.register();
+                        account.Register();
 
                         API.sendChatMessageToPlayer(player, "You have successfully registered! Please select a character slot below to get started!");
                         prepare_character_menu(player);
@@ -118,7 +117,7 @@ namespace RoleplayServer
         public void OnPlayerChat(Client player, string message, CancelEventArgs e)
         {
             Account account = API.getEntityData(player, "Account");
-            if(account.is_logged_in == false)
+            if(account.IsLoggedIn == false)
             {
                 e.Cancel = true;
             }
@@ -126,16 +125,16 @@ namespace RoleplayServer
 
         public void OnPlayerConnected(Client player)
         {
-            DebugManager.debugMessage("[LoginM] " + player.name + " has connected to the server. (IP: " + player.address + ")");
+            DebugManager.DebugMessage("[LoginM] " + player.name + " has connected to the server. (IP: " + player.address + ")");
         }
 
         public void OnPlayerFinishedDownload(Client player)
         {
             Account account = API.getEntityData(player.handle, "Account");
       
-            API.setEntityDimension(player.handle, LOGIN_DIMENSION);
+            API.setEntityDimension(player.handle, LoginDimension);
             
-            if(account.is_registered() == true)
+            if(account.is_registered())
             {
                 API.sendChatMessageToPlayer(player, "This account is already registered. Use /login [password] to continue to character selection.");
             }
@@ -149,9 +148,9 @@ namespace RoleplayServer
 
        
         [Command("login")]
-        public void login_cmd(Client player, string input_pass)
+        public void login_cmd(Client player, string inputPass)
         {
-            if (input_pass.Length < 8)
+            if (inputPass.Length < 8)
             {
                 API.sendChatMessageToPlayer(player, "The password you entered to log in is too short.");
                 return;
@@ -165,7 +164,7 @@ namespace RoleplayServer
                 return;
             }
 
-            if (account.is_logged_in)
+            if (account.IsLoggedIn)
             {
                 API.sendChatMessageToPlayer(player, "~r~ ERROR: You are already logged in!");
                 return;
@@ -173,22 +172,22 @@ namespace RoleplayServer
 
             account.load_by_name();
 
-            input_pass = input_pass + account.salt;
+            inputPass = inputPass + account.Salt;
 
             //Hash password
-            byte[] password = System.Text.Encoding.UTF8.GetBytes(input_pass);
+            var password = System.Text.Encoding.UTF8.GetBytes(inputPass);
             password = new SHA256Managed().ComputeHash(password);
-            string hashed_pass = System.Text.Encoding.UTF8.GetString(password);
+            var hashedPass = System.Text.Encoding.UTF8.GetString(password);
 
-            if (hashed_pass == account.password)
+            if (hashedPass == account.Password)
             {
                 API.sendChatMessageToPlayer(player, "~g~ You have successfully logged in!");
 
-                account.is_logged_in = true;
+                account.IsLoggedIn = true;
 
-                if (account.admin_level > 0)
+                if (account.AdminLevel > 0)
                 {
-                    API.sendChatMessageToPlayer(player, Color.AdminOrange, "Welcome back Admin " + account.admin_name);
+                    API.sendChatMessageToPlayer(player, Color.AdminOrange, "Welcome back Admin " + account.AdminName);
                 }
 
                 prepare_character_menu(player);
@@ -202,9 +201,9 @@ namespace RoleplayServer
 
 
         [Command("register", GreedyArg =true)]
-        public void register_cmd(Client player, string input_pass)
+        public void register_cmd(Client player, string inputPass)
         {
-            if(input_pass.Length < 8)
+            if(inputPass.Length < 8)
             {
                 API.sendChatMessageToPlayer(player, "Please choose a password that is at least 6 characters long.");
                 return;
@@ -218,31 +217,30 @@ namespace RoleplayServer
                 return;
             }
 
-            if (account.is_logged_in)
+            if (account.IsLoggedIn)
             {
                 API.sendChatMessageToPlayer(player, "~r~ ERROR: You are already logged in!");
                 return;
             }
 
             //Get a random salt
-            byte[] salt = new byte[32];
-            randomizer.GetBytes(salt);
+            var salt = new byte[32];
+            Randomizer.GetBytes(salt);
 
             //Add salt to the end of input_pass
-            input_pass = input_pass + System.Text.Encoding.UTF8.GetString(salt);
+            inputPass = inputPass + System.Text.Encoding.UTF8.GetString(salt);
 
             //Convert inputted password to bytes
-            byte[] password = System.Text.Encoding.UTF8.GetBytes(input_pass);
+            var password = System.Text.Encoding.UTF8.GetBytes(inputPass);
             password = new SHA256Managed().ComputeHash(password);
 
-            account.password = System.Text.Encoding.UTF8.GetString(password);
-            account.salt = System.Text.Encoding.UTF8.GetString(salt);
+            account.Password = System.Text.Encoding.UTF8.GetString(password);
+            account.Salt = System.Text.Encoding.UTF8.GetString(salt);
 
-            account.register();
+            account.Register();
 
             API.sendChatMessageToPlayer(player, "You have successfully registered! Please select a character slot below to get started!");
             prepare_character_menu(player);
-            return;
         }
 
 
@@ -252,23 +250,23 @@ namespace RoleplayServer
 
             Account account = API.shared.getEntityData(player.handle, "Account");
 
-            FilterDefinition<Character> filter = Builders<Character>.Filter.Eq("account_id", account._id.ToString());
-            List<Character> characters_found = DatabaseManager.character_table.Find(filter).ToList<Character>();
+            var filter = Builders<Character>.Filter.Eq("account_id", account.Id.ToString());
+            var charactersFound = DatabaseManager.CharacterTable.Find(filter).ToList();
 
-            int char_count = 0;
+            var charCount = 0;
 
-            foreach(Character c in characters_found)
+            foreach(var c in charactersFound)
             {
-                API.shared.setEntitySyncedData(player.handle, "char_name_" + char_count, c.character_name);
-                API.shared.setEntitySyncedData(player.handle, "char_info_" + char_count, "SQL: " + c._id);
-                char_count++;
+                API.shared.setEntitySyncedData(player.handle, "char_name_" + charCount, c.CharacterName);
+                API.shared.setEntitySyncedData(player.handle, "char_info_" + charCount, "SQL: " + c.Id);
+                charCount++;
             }
 
-            API.shared.setEntitySyncedData(player.handle, "char_name_" + char_count, "Create new character");
-            API.shared.setEntitySyncedData(player.handle, "char_info_" + char_count, "Begin the creation of a new character");
-            char_count++;
+            API.shared.setEntitySyncedData(player.handle, "char_name_" + charCount, "Create new character");
+            API.shared.setEntitySyncedData(player.handle, "char_info_" + charCount, "Begin the creation of a new character");
+            charCount++;
 
-            API.shared.setEntitySyncedData(player.handle, "char_count", char_count);
+            API.shared.setEntitySyncedData(player.handle, "char_count", charCount);
             API.shared.triggerClientEvent(player, "showCharacterSelection");
         }
     }

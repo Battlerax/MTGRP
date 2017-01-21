@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Timers;
 using GTANetworkServer;
 using GTANetworkShared;
-using System.Timers;
+using RoleplayServer.resources.core;
+using RoleplayServer.resources.player_manager;
+using RoleplayServer.resources.vehicle_manager;
+using Vehicle = RoleplayServer.resources.vehicle_manager.Vehicle;
 
-namespace RoleplayServer
+namespace RoleplayServer.resources.job_manager.taxi
 {
     public class TaxiJob : Script
     {
-        public const int MIN_FARE = 5;
-        public const int MAX_FARE = 50;
+        public const int MinFare = 5;
+        public const int MaxFare = 50;
 
-        public static List<Character> on_duty_drivers = new List<Character>();
-        public static List<Character> taxi_requests = new List<Character>();
+        public static List<Character> OnDutyDrivers = new List<Character>();
+        public static List<Character> TaxiRequests = new List<Character>();
 
         public TaxiJob()
         {
@@ -27,10 +31,10 @@ namespace RoleplayServer
             {
                 case "update_taxi_destination":
                     Character character = API.getEntityData(player.handle, "Character");
-                    API.triggerClientEvent(character.taxi_driver.client, "set_taxi_waypoint", (Vector3)arguments[0]);
+                    API.triggerClientEvent(character.TaxiDriver.Client, "set_taxi_waypoint", (Vector3)arguments[0]);
 
                     API.sendChatMessageToPlayer(player, Color.Yellow, "[TAXI] You have successfully set your destination.");
-                    API.sendChatMessageToPlayer(character.taxi_driver.client, "[TAXI] " + character.rp_name() + " has set the destination.");
+                    API.sendChatMessageToPlayer(character.TaxiDriver.Client, "[TAXI] " + character.rp_name() + " has set the destination.");
                     break;
             }
         }
@@ -38,40 +42,39 @@ namespace RoleplayServer
         private void API_onPlayerExitVehicle(Client player, NetHandle vehicle)
         {
             Character character = API.getEntityData(player.handle, "Character");
-            Vehicle veh = VehicleManager.getVehFromNetHandle(vehicle);
+            var veh = VehicleManager.GetVehFromNetHandle(vehicle);
 
             if(veh != null)
             {
-                if (on_duty_drivers.Contains(character) && veh.job.type == JobManager.TaxiJob)
+                if (OnDutyDrivers.Contains(character) && veh.Job.Type == JobManager.TaxiJob)
                 {
                     API.sendChatMessageToPlayer(player, Color.Yellow, "[TAXI] You have left your taxi. Please return to it within 60 seconds or you will be taken off-duty and it will respawn.");
 
-                    veh.respawn_timer = new System.Timers.Timer();
-                    veh.respawn_timer.Interval = 1000 * 60;
-                    veh.respawn_timer.Elapsed += delegate { RespawnTaxi(character, veh); };
-                    veh.respawn_timer.Start();
+                    veh.RespawnTimer = new Timer {Interval = 1000 * 60};
+                    veh.RespawnTimer.Elapsed += delegate { RespawnTaxi(character, veh); };
+                    veh.RespawnTimer.Start();
                 }
 
-                if(veh.driver != null && character.taxi_driver != null)
+                if(veh.Driver != null && character.TaxiDriver != null)
                 {
-                    if (veh.driver == character.taxi_driver)
+                    if (veh.Driver == character.TaxiDriver)
                     {
-                        veh.driver.money += character.total_fare;
-                        character.money -= character.total_fare;
+                        veh.Driver.Money += character.TotalFare;
+                        character.Money -= character.TotalFare;
 
-                        veh.driver.save();
-                        character.save();
+                        veh.Driver.Save();
+                        character.Save();
 
-                        API.sendChatMessageToPlayer(player, "~y~[TAXI] You have been charged $" + character.total_fare + " for your taxi ride.");
-                        API.sendChatMessageToPlayer(veh.driver.client, "~y~[TAXI] You have been paid $" + character.total_fare + " for your services.");
+                        API.sendChatMessageToPlayer(player, "~y~[TAXI] You have been charged $" + character.TotalFare + " for your taxi ride.");
+                        API.sendChatMessageToPlayer(veh.Driver.Client, "~y~[TAXI] You have been paid $" + character.TotalFare + " for your services.");
 
                         API.triggerClientEvent(player, "update_fare_display", 0, 0, "");
-                        API.triggerClientEvent(veh.driver.client, "update_fare_display", 0, 0, "");
+                        API.triggerClientEvent(veh.Driver.Client, "update_fare_display", 0, 0, "");
 
-                        veh.driver.taxi_passenger = null;
-                        character.taxi_driver = null;
-                        character.taxi_timer.Stop();
-                        character.total_fare = 0;
+                        veh.Driver.TaxiPassenger = null;
+                        character.TaxiDriver = null;
+                        character.TaxiTimer.Stop();
+                        character.TotalFare = 0;
                     }
                 }
             }
@@ -80,31 +83,31 @@ namespace RoleplayServer
         private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle)
         {
             Character character = API.getEntityData(player.handle, "Character");
-            Vehicle veh = VehicleManager.getVehFromNetHandle(vehicle);
+            var veh = VehicleManager.GetVehFromNetHandle(vehicle);
 
             //Cancel taxi car respawn 
-            if (on_duty_drivers.Contains(character) && veh.job.type == JobManager.TaxiJob)
+            if (OnDutyDrivers.Contains(character) && veh.Job.Type == JobManager.TaxiJob)
             {
-                if (veh.respawn_timer.Enabled == true && API.getPlayerVehicleSeat(player) == -1)
+                if (veh.RespawnTimer.Enabled && API.getPlayerVehicleSeat(player) == -1)
                 {
                     API.sendChatMessageToPlayer(player, Color.Yellow, "[TAXI] You have returned to your taxi and will no longer be taken off-duty.");
-                    veh.respawn_timer.Stop();
+                    veh.RespawnTimer.Stop();
                 }
             }
 
             //Check for passengers entering available cabs
             if (API.getPlayerVehicleSeat(player) != -1)
             {
-                if (veh.job.type == JobManager.TaxiJob)
+                if (veh.Job.Type == JobManager.TaxiJob)
                 {
-                    if (veh.driver == null)
+                    if (veh.Driver == null)
                     {
                         API.sendChatMessageToPlayer(player, Color.Yellow, "[TAXI] This taxi currently has no driver.");
                         API.warpPlayerOutOfVehicle(player, vehicle);
                         return;
                     }
 
-                    if (veh.driver.taxi_passenger == null && on_duty_drivers.Contains(veh.driver) && taxi_requests.Contains(character))
+                    if (veh.Driver.TaxiPassenger == null && OnDutyDrivers.Contains(veh.Driver) && TaxiRequests.Contains(character))
                     {
                         /*if (!taxi_requests.Contains(character))
                         {
@@ -120,21 +123,21 @@ namespace RoleplayServer
                         }*/
 
                        
-                        veh.driver.taxi_passenger = character;
-                        character.taxi_driver = veh.driver;
-                        taxi_requests.Remove(character);
+                        veh.Driver.TaxiPassenger = character;
+                        character.TaxiDriver = veh.Driver;
+                        TaxiRequests.Remove(character);
 
-                        taxiPictureNotification(player, veh.driver.rp_name() + " has accepted your taxi request.", subject: "~y~Request Accepted");
-                        sendMessageToOnDutyDrivers(veh.driver.rp_name() + " has accepted " + character.rp_name() + "'s taxi request.");
+                        TaxiPictureNotification(player, veh.Driver.rp_name() + " has accepted your taxi request.", subject: "~y~Request Accepted");
+                        SendMessageToOnDutyDrivers(veh.Driver.rp_name() + " has accepted " + character.rp_name() + "'s taxi request.");
                         API.sendChatMessageToPlayer(player, "[TAXI] Please set a destination on your map and then type: /setdestination");
 
-                        API.triggerClientEvent(player, "update_fare_display", veh.driver.taxi_fare, 0, "");
-                        API.triggerClientEvent(veh.driver.client, "update_fare_display", veh.driver.taxi_fare, 0, "");
+                        API.triggerClientEvent(player, "update_fare_display", veh.Driver.TaxiFare, 0, "");
+                        API.triggerClientEvent(veh.Driver.Client, "update_fare_display", veh.Driver.TaxiFare, 0, "");
                     }
-                    else if(veh.driver.taxi_passenger == character)
+                    else if(veh.Driver.TaxiPassenger == character)
                     {
-                        API.triggerClientEvent(player, "update_fare_display", veh.driver.taxi_fare, 0, "");
-                        API.triggerClientEvent(veh.driver.client, "update_fare_display", veh.driver.taxi_fare, 0, "");
+                        API.triggerClientEvent(player, "update_fare_display", veh.Driver.TaxiFare, 0, "");
+                        API.triggerClientEvent(veh.Driver.Client, "update_fare_display", veh.Driver.TaxiFare, 0, "");
 
                         API.sendChatMessageToPlayer(player, "[TAXI] Please set a destination on your map and then type: /setdestination");
                     }
@@ -144,19 +147,19 @@ namespace RoleplayServer
 
         public void RespawnTaxi(Character character, Vehicle veh)
         {
-            if (API.isPlayerConnected(character.client))
+            if (API.isPlayerConnected(character.Client))
             {
-                API.sendChatMessageToPlayer(character.client, Color.Yellow, "[TAXI] You were out of your taxi for too long and have taken off-duty. The taxi has been respawned.");
+                API.sendChatMessageToPlayer(character.Client, Color.Yellow, "[TAXI] You were out of your taxi for too long and have taken off-duty. The taxi has been respawned.");
 
-                if (on_duty_drivers.Contains(character))
+                if (OnDutyDrivers.Contains(character))
                 {
-                    on_duty_drivers.Remove(character);
+                    OnDutyDrivers.Remove(character);
                 }
-                sendMessageToOnDutyDrivers(character.rp_name() + " has gone off of taxi duty.");
+                SendMessageToOnDutyDrivers(character.rp_name() + " has gone off of taxi duty.");
             }
 
-            API.setVehicleEngineStatus(veh.net_handle, false);
-            veh.respawn_timer.Stop();
+            API.setVehicleEngineStatus(veh.NetHandle, false);
+            veh.RespawnTimer.Stop();
             VehicleManager.respawn_vehicle(veh);
         }
 
@@ -165,7 +168,7 @@ namespace RoleplayServer
         {
             Character character = API.getEntityData(player.handle, "Character");
 
-            if (character.job_one.type != JobManager.TaxiJob)
+            if (character.JobOne.Type != JobManager.TaxiJob)
             {
                 API.sendPictureNotificationToPlayer(player, "You must be a taxi driver to use this command.", "CHAR_BLOCKED", 0, 0, "Server", "~r~Command Error");
                 return;
@@ -183,60 +186,60 @@ namespace RoleplayServer
                 return;
             }
 
-            Vehicle veh = VehicleManager.getVehFromNetHandle(API.getPlayerVehicle(player));
+            var veh = VehicleManager.GetVehFromNetHandle(API.getPlayerVehicle(player));
 
-            if(veh.job == null)
+            if(veh.Job == null)
             {
                 API.sendPictureNotificationToPlayer(player, "You must be driving a taxi car to go on taxi duty.", "CHAR_BLOCKED", 0, 0, "Server", "~r~Command Error");
                 return;
             }
 
-            if (veh.job.type != JobManager.TaxiJob)
+            if (veh.Job.Type != JobManager.TaxiJob)
             {
                 API.sendPictureNotificationToPlayer(player, "You must be driving a taxi car to go on taxi duty.", "CHAR_BLOCKED", 0, 0, "Server", "~r~Command Error");
                 return;
             }
 
-            if (!on_duty_drivers.Contains(character))
+            if (!OnDutyDrivers.Contains(character))
             {
-                on_duty_drivers.Add(character);
-                sendMessageToOnDutyDrivers(character.rp_name() + " is now on taxi duty.");
+                OnDutyDrivers.Add(character);
+                SendMessageToOnDutyDrivers(character.rp_name() + " is now on taxi duty.");
                 API.sendChatMessageToPlayer(player, Color.Yellow, "[TAXI] You are now on taxi duty. If you leave your vehicle you will be taken off duty automatically.");
             }
             else
             {
-                on_duty_drivers.Remove(character);
-                sendMessageToOnDutyDrivers(character.rp_name() + " has gone off of taxi duty.");
+                OnDutyDrivers.Remove(character);
+                SendMessageToOnDutyDrivers(character.rp_name() + " has gone off of taxi duty.");
                 API.sendChatMessageToPlayer(player, Color.Yellow, "[TAXI] You have gone off of taxi duty.");
             }
         }
 
         [Command("setfare")]
-        public void setfare_cmd(Client player, int fare_price)
+        public void setfare_cmd(Client player, int farePrice)
         {
             Character character = API.getEntityData(player.handle, "Character");
 
-            if(character.job_one.type != JobManager.TaxiJob)
+            if(character.JobOne.Type != JobManager.TaxiJob)
             {
                 API.sendPictureNotificationToPlayer(player, "You must be a taxi driver to use this command.", "CHAR_BLOCKED", 0, 1, "Server", "~r~Command Error");
                 return;
             }
 
-            if(fare_price < MIN_FARE || fare_price > MAX_FARE)
+            if(farePrice < MinFare || farePrice > MaxFare)
             {
-                API.sendPictureNotificationToPlayer(player, "Your fair price must be between $" + MIN_FARE + " and $" + MAX_FARE + ".", "CHAR_BLOCKED", 0, 1, "Server", "~r~Command Error");
+                API.sendPictureNotificationToPlayer(player, "Your fair price must be between $" + MinFare + " and $" + MaxFare + ".", "CHAR_BLOCKED", 0, 1, "Server", "~r~Command Error");
                 return;
             }
 
-            if(character.taxi_passenger != null)
+            if(character.TaxiPassenger != null)
             {
                 API.sendPictureNotificationToPlayer(player, "You can't change your fare while you have a passenger!", "CHAR_BLOCKED", 0, 1, "Server", "~r~Command Error");
                 return;
             }
 
-            character.taxi_fare = fare_price;
-            character.save();
-            API.sendChatMessageToPlayer(player, Color.Yellow, "[TAXI] You have changed your taxi fare to $" + fare_price + ".");
+            character.TaxiFare = farePrice;
+            character.Save();
+            API.sendChatMessageToPlayer(player, Color.Yellow, "[TAXI] You have changed your taxi fare to $" + farePrice + ".");
         }
 
         [Command("requesttaxi")]
@@ -244,33 +247,31 @@ namespace RoleplayServer
         {
             Character character = API.getEntityData(player.handle, "Character");
 
-            if (taxi_requests.Contains(character))
+            if (TaxiRequests.Contains(character))
             {
-                taxiPictureNotification(player, "Our system shows you already have a taxi request submitted. If this is incorrect, use /canceltaxi");
+                TaxiPictureNotification(player, "Our system shows you already have a taxi request submitted. If this is incorrect, use /canceltaxi");
                 return;
             }
 
-            if(character.taxi_driver != null)
+            if(character.TaxiDriver != null)
             {
-                taxiPictureNotification(player, "Our logs show you are already riding in a taxi.");
+                TaxiPictureNotification(player, "Our logs show you are already riding in a taxi.");
                 return;
             }
 
-            if(on_duty_drivers.Count == 0)
+            if(OnDutyDrivers.Count == 0)
             {
-                taxiPictureNotification(player, "Downtown Cab Co currently has no on duty drivers. Sorry for the inconvience.");
+                TaxiPictureNotification(player, "Downtown Cab Co currently has no on duty drivers. Sorry for the inconvience.");
                 return;
             }
 
-            taxi_requests.Add(character);
-            taxiPictureNotification(player, "Your taxi request has been submitted. Please wait patiently for a response.");
+            TaxiRequests.Add(character);
+            TaxiPictureNotification(player, "Your taxi request has been submitted. Please wait patiently for a response.");
             
-            foreach(Character c in on_duty_drivers)
+            foreach(var c in OnDutyDrivers)
             {
-                taxiPictureNotification(c.client, character.rp_name() + " has requested a taxi. (" +  (c.client.position.DistanceTo(character.client.position) / 1000).ToString()+ "KM away) ((ID: " + PlayerManager.getPlayerId(character) + "))");
+                TaxiPictureNotification(c.Client, character.rp_name() + " has requested a taxi. (" +  (c.Client.position.DistanceTo(character.Client.position) / 1000)+ "KM away) ((ID: " + PlayerManager.GetPlayerId(character) + "))");
             }
-
-            return;
         }
 
         [Command("setdestination")]
@@ -283,9 +284,9 @@ namespace RoleplayServer
             }
 
             Character character = API.getEntityData(player.handle, "Character");
-            Vehicle veh = VehicleManager.getVehFromNetHandle(API.getPlayerVehicle(player));
+            var veh = VehicleManager.GetVehFromNetHandle(API.getPlayerVehicle(player));
 
-            if(veh.driver.taxi_passenger != character)
+            if(veh.Driver.TaxiPassenger != character)
             {
                 API.sendPictureNotificationToPlayer(player, "You are not inside a taxi which has accepted your ride request.", "CHAR_BLOCKED", 0, 1, "Server", "~r~Command Error");
                 return;
@@ -293,80 +294,79 @@ namespace RoleplayServer
 
             API.triggerClientEvent(player, "get_waypoint_position");
 
-            character.taxi_start = character.client.position;
+            character.TaxiStart = character.Client.position;
 
-            character.taxi_timer = new Timer();
-            character.taxi_timer.Interval = 2000;
-            character.taxi_timer.Elapsed += delegate { TaxiMeterTimer(character); };
-            character.taxi_timer.Start();
+            character.TaxiTimer = new Timer {Interval = 2000};
+            character.TaxiTimer.Elapsed += delegate { TaxiMeterTimer(character); };
+            character.TaxiTimer.Start();
         }
 
         public void TaxiMeterTimer(Character c)
         {
-            c.total_fare = (int)Math.Round(c.client.position.DistanceTo(c.taxi_start) / 100) * c.taxi_driver.taxi_fare;
-            string fare_msg = "";
+            c.TotalFare = (int)Math.Round(c.Client.position.DistanceTo(c.TaxiStart) / 100) * c.TaxiDriver.TaxiFare;
+            var fareMsg = "";
 
-            if(c.total_fare > c.money)
+            if(c.TotalFare > c.Money)
             {
-                c.total_fare = c.money;
-                fare_msg = "(Client money maxed out)";
+                c.TotalFare = c.Money;
+                fareMsg = "(Client money maxed out)";
             }
 
-            API.triggerClientEvent(c.client, "update_fare_display", c.taxi_driver.taxi_fare, c.total_fare, fare_msg);
-            API.triggerClientEvent(c.taxi_driver.client, "update_fare_display", c.taxi_driver.taxi_fare, c.total_fare, fare_msg);
+            API.triggerClientEvent(c.Client, "update_fare_display", c.TaxiDriver.TaxiFare, c.TotalFare, fareMsg);
+            API.triggerClientEvent(c.TaxiDriver.Client, "update_fare_display", c.TaxiDriver.TaxiFare, c.TotalFare, fareMsg);
         }
 
         [Command("acceptfare")]
         public void acceptfare_cmd(Client player, string id)
         {
             Character character = API.getEntityData(player.handle, "Character");
-            if(character.job_one.type != JobManager.TaxiJob)
+            if(character.JobOne.Type != JobManager.TaxiJob)
             {
                 API.sendPictureNotificationToPlayer(player, "You must be a taxi driver to use this command.", "CHAR_BLOCKED", 0, 1, "Server", "~r~Command Error");
                 return;
             }
 
-            Client passenger_client = PlayerManager.parseClient(id);
+            var passengerClient = PlayerManager.ParseClient(id);
 
-            if (passenger_client == null)
+            if (passengerClient == null)
             {
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
 
-            Character passenger = API.getEntityData(passenger_client.handle, "Character");
+            Character passenger = API.getEntityData(passengerClient.handle, "Character");
 
-            if (!taxi_requests.Contains(passenger))
+            if (!TaxiRequests.Contains(passenger))
             {
-                taxiPictureNotification(player, "This customer has already had their fare accepted or does not have an active fare.");
+                TaxiPictureNotification(player, "This customer has already had their fare accepted or does not have an active fare.");
                 return;
             }
 
-            character.taxi_passenger = passenger;
-            passenger.taxi_driver = character;
-            taxi_requests.Remove(passenger);
+            character.TaxiPassenger = passenger;
+            passenger.TaxiDriver = character;
+            TaxiRequests.Remove(passenger);
 
-            taxiPictureNotification(passenger.client, character.rp_name() + " has accepted your taxi request. Please stay at your current location.");
-            taxiPictureNotification(player, "You have accepted " + passenger.rp_name() + "'s taxi request. Follow your waypoint to their location.");
+            TaxiPictureNotification(passenger.Client, character.rp_name() + " has accepted your taxi request. Please stay at your current location.");
+            TaxiPictureNotification(player, "You have accepted " + passenger.rp_name() + "'s taxi request. Follow your waypoint to their location.");
 
-            API.triggerClientEvent(player, "set_taxi_waypoint", passenger.client.position);
+            API.triggerClientEvent(player, "set_taxi_waypoint", passenger.Client.position);
         }
 
-        public static bool isOnTaxiDuty(Character c)
+        public static bool IsOnTaxiDuty(Character c)
         {
-            return on_duty_drivers.Contains(c);
+            return OnDutyDrivers.Contains(c);
         }
 
-        public void taxiPictureNotification(Client player, string body, string sender = "Downton Cab Co", string subject = "Dispatch Message")
+        public void TaxiPictureNotification(Client player, string body, string sender = "Downton Cab Co", string subject = "Dispatch Message")
         {
             API.sendPictureNotificationToPlayer(player, body, "CHAR_TAXI", 0, 1, sender, subject);
         }
 
-        public void sendMessageToOnDutyDrivers(string body, string sender = "Downtown Cab Co", string subject = "Dispatch Message")
+        public void SendMessageToOnDutyDrivers(string body, string sender = "Downtown Cab Co", string subject = "Dispatch Message")
         {
-            foreach(Character c in on_duty_drivers)
+            foreach(var c in OnDutyDrivers)
             {
-                taxiPictureNotification(c.client, body, sender, subject);
+                TaxiPictureNotification(c.Client, body, sender, subject);
             }
         }
     }

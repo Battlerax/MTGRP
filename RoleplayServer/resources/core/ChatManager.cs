@@ -1,25 +1,25 @@
 ﻿using System;
 using GTANetworkServer;
 using GTANetworkShared;
-using System.Collections.Generic;
+using RoleplayServer.resources.player_manager;
 
-namespace RoleplayServer
+namespace RoleplayServer.resources.core
 {
     public class ChatManager : Script
     {
-        public bool newbie_status = true;
-        public bool ooc_status = true;
-        public bool vip_status = true;
+        public bool NewbieStatus = true;
+        public bool OocStatus = true;
+        public bool VipStatus = true;
 
 
         public ChatManager()
         {
-            DebugManager.debugMessage("[ChatM] Initalizing chat manager...");
+            DebugManager.DebugMessage("[ChatM] Initalizing chat manager...");
 
             API.onChatMessage += OnChatMessage;
             API.onClientEventTrigger += OnClientEventTrigger;
 
-            DebugManager.debugMessage("[ChatM] Chat Manager initalized.");
+            DebugManager.DebugMessage("[ChatM] Chat Manager initalized.");
         } 
 
         public void OnChatMessage(Client player, string msg, CancelEventArgs e)
@@ -28,7 +28,7 @@ namespace RoleplayServer
             Character character = API.getEntityData(player.handle, "Character");
             
             //Local Chat
-            if(account.admin_duty == 0)
+            if(account.AdminDuty == 0)
             {
                 msg = character.rp_name() + " says: " + msg;
                 NearbyMessage(player, 15, msg);
@@ -46,7 +46,7 @@ namespace RoleplayServer
         {
             Account account = API.getEntityData(player.handle, "Account");
 
-            if (newbie_status == false && account.admin_level == 0)
+            if (NewbieStatus == false && account.AdminLevel == 0)
             {
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~Newbie chat is currently disabled.");
                 return;
@@ -54,16 +54,16 @@ namespace RoleplayServer
 
             Character c = API.getEntityData(player.handle, "Character");
 
-            if(c.newbie_cooldown > new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds())
+            if(c.NewbieCooldown > new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds())
             {
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~You must wait 60 seconds before using newbie chat again.");
                 return;
             }
 
-            API.sendChatMessageToAll(Color.NewbieChat, "[N] " + c.character_name + ": " + message);
-            if(account.admin_level == 0)
+            API.sendChatMessageToAll(Color.NewbieChat, "[N] " + c.CharacterName + ": " + message);
+            if(account.AdminLevel == 0)
             {
-                c.newbie_cooldown = (new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds() + 60);
+                c.NewbieCooldown = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds() + 60;
             }
         }
 
@@ -72,7 +72,7 @@ namespace RoleplayServer
         {
             Account account = API.getEntityData(player.handle, "Account");
 
-            if (ooc_status == false && account.admin_level == 0)
+            if (OocStatus == false && account.AdminLevel == 0)
             {
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~Global OOC chat is currently disabled.");
                 return;
@@ -80,16 +80,16 @@ namespace RoleplayServer
 
             Character c = API.getEntityData(player.handle, "Character");
 
-            if (c.ooc_cooldown > new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds())
+            if (c.OocCooldown > new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds())
             {
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~You must wait 60 seconds before using global OOC chat again.");
                 return;
             }
 
-            API.sendChatMessageToAll(Color.GlobalOOC, "[OOC] " + c.character_name + ": " + message);
-            if (account.admin_level == 0)
+            API.sendChatMessageToAll(Color.GlobalOoc, "[OOC] " + c.CharacterName + ": " + message);
+            if (account.AdminLevel == 0)
             {
-                c.ooc_cooldown = (new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds() + 60);
+                c.OocCooldown = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds() + 60;
             }
         }
 
@@ -98,13 +98,13 @@ namespace RoleplayServer
         {
             Account account = API.getEntityData(player.handle, "Account");
 
-            if (vip_status == false && account.admin_level == 0)
+            if (VipStatus == false && account.AdminLevel == 0)
             {
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~VIP chat is currently disabled.");
                 return;
             }
 
-            if(account.vip_level == 0)
+            if(account.VipLevel == 0)
             {
                 API.sendNotificationToPlayer(player, "~y~You must be a VIP to use VIP chat.");
                 return;
@@ -112,13 +112,13 @@ namespace RoleplayServer
 
             Character c = API.getEntityData(player.handle, "Character");
 
-            List<Client> players = API.getAllPlayers();
-            foreach(Client p in players)
+            var players = API.getAllPlayers();
+            foreach(var p in players)
             {
-                Account p_account = API.getEntityData(p.handle, "Account");
-                if(p_account.vip_level > 0)
+                Account pAccount = API.getEntityData(p.handle, "Account");
+                if(pAccount.VipLevel > 0)
                 {
-                    API.sendChatMessageToPlayer(p, Color.VIPChat, "[V] " + c.character_name + ": " + message);
+                    API.sendChatMessageToPlayer(p, Color.VipChat, "[V] " + c.CharacterName + ": " + message);
                 }
             }
         }
@@ -133,9 +133,9 @@ namespace RoleplayServer
 
         public static void NearbyMessage(Client player, float radius, string msg, string color)
         {
-            List<Client> players = API.shared.getPlayersInRadiusOfPlayer(radius, player);
+            var players = API.shared.getPlayersInRadiusOfPlayer(radius, player);
            
-            foreach(Client i in players)
+            foreach(var i in players)
             {
                 API.shared.sendChatMessageToPlayer(i, color, msg);
             }
@@ -144,9 +144,9 @@ namespace RoleplayServer
 
         public static void NearbyMessage(Client player, float radius, string msg)
         {
-            List<Client> players = API.shared.getPlayersInRadiusOfPlayer(radius, player);
+            var players = API.shared.getPlayersInRadiusOfPlayer(radius, player);
 
-            foreach (Client i in players)
+            foreach (var i in players)
             {
                 API.shared.sendChatMessageToPlayer(i, msg);
             }
@@ -164,7 +164,7 @@ namespace RoleplayServer
         public void me_cmd(Client player, string action)
         {
             Character playerchar = API.shared.getEntityData(player.handle, "Character");
-            RoleplayMessage(playerchar, action, ROLEPLAY_ME, 10, 0);
+            RoleplayMessage(playerchar, action, RoleplayMe, 10, 0);
         }
 
         [Command("ame", GreedyArg = true)]
@@ -172,68 +172,68 @@ namespace RoleplayServer
         {
             Character character = API.getEntityData(player.handle, "Character");
 
-            if (API.doesEntityExist(character.ame_text))
+            if (API.doesEntityExist(character.AmeText))
             {
-                API.deleteEntity(character.ame_text);
-                character.ame_timer.Stop();
+                API.deleteEntity(character.AmeText);
+                character.AmeTimer.Stop();
             }
 
-            character.ame_text = API.createTextLabel(Color.PlayerRoleplay + character.character_name + " " + action, player.position, 15, (float)(0.5), false, player.dimension);
-            API.setTextLabelColor(character.ame_text, 194, 162, 218, 255);
-            API.attachEntityToEntity(character.ame_text, player.handle, "SKEL_Head", new Vector3(0.0, 0.0, 1.3), new Vector3(0, 0, 0));
+            character.AmeText = API.createTextLabel(Color.PlayerRoleplay + character.CharacterName + " " + action, player.position, 15, (float)0.5, false, player.dimension);
+            API.setTextLabelColor(character.AmeText, 194, 162, 218, 255);
+            API.attachEntityToEntity(character.AmeText, player.handle, "SKEL_Head", new Vector3(0.0, 0.0, 1.3), new Vector3(0, 0, 0));
 
-            character.ame_timer = new System.Timers.Timer();
-            character.ame_timer.Interval = 8000;
-            character.ame_timer.Elapsed += delegate { RemoveAmeText(character); };
-            character.ame_timer.Start();
+            character.AmeTimer = new System.Timers.Timer();
+            character.AmeTimer.Interval = 8000;
+            character.AmeTimer.Elapsed += delegate { RemoveAmeText(character); };
+            character.AmeTimer.Start();
         }
 
         public void RemoveAmeText(Character c)
         {
-            if (API.doesEntityExist(c.ame_text))
+            if (API.doesEntityExist(c.AmeText))
             {
-                API.deleteEntity(c.ame_text);
+                API.deleteEntity(c.AmeText);
             }
-            c.ame_timer.Stop();
+            c.AmeTimer.Stop();
         }
 
         [Command("do", GreedyArg = true)]
         public void do_cmd(Client player, string action)
         {
             Character playerchar = API.shared.getEntityData(player.handle, "Character");
-            RoleplayMessage(playerchar, action, ROLEPLAY_DO, 10, 0);
+            RoleplayMessage(playerchar, action, RoleplayDo, 10, 0);
         }
 
         [Command("shout", Alias = "s", GreedyArg = true)]
         public void shout_cmd(Client player, string text)
         {
-            NearbyMessage(player, 25, PlayerManager.getName(player) + " shouts: " + text);
+            NearbyMessage(player, 25, PlayerManager.GetName(player) + " shouts: " + text);
         }
 
         [Command("low", GreedyArg = true)]
         public void low_cmd(Client player, string text)
         {
-            NearbyMessage(player, 5, PlayerManager.getName(player) + " whispers: " + text, Color.Grey);
+            NearbyMessage(player, 5, PlayerManager.GetName(player) + " whispers: " + text, Color.Grey);
         }
 
         [Command("b", GreedyArg = true)]
         public void b_cmd(Client player, string text)
         {
             Account account = API.getEntityData(player.handle, "Account");
-            if(account.admin_duty == 0)
+            if(account.AdminDuty == 0)
             {
-                NearbyMessage(player, 10, "(( " + PlayerManager.getName(player) + ": " + text + " ))", Color.OOC);
+                NearbyMessage(player, 10, "(( " + PlayerManager.GetName(player) + ": " + text + " ))", Color.Ooc);
             }
             else
             {
-                NearbyMessage(player, 10, "(( " + PlayerManager.getAdminName(player) + ": " + text + " ))", Color.AdminOrange);
+                NearbyMessage(player, 10, "(( " + PlayerManager.GetAdminName(player) + ": " + text + " ))", Color.AdminOrange);
             }
         }
         
         [Command("rp", GreedyArg = true)]
         public void rp_cmd(Client player, string id, string text)
         {
-            Client receiver = PlayerManager.parseClient(id);
+            var receiver = PlayerManager.ParseClient(id);
 
             if (receiver == null)
             {
@@ -241,14 +241,14 @@ namespace RoleplayServer
                 return;
             }
 
-            API.sendChatMessageToPlayer(player, Color.LongDistanceRoleplay, "RP to " + PlayerManager.getName(receiver) + ": " + text);
-            API.sendChatMessageToPlayer(receiver, Color.LongDistanceRoleplay, "RP from " + PlayerManager.getName(player) + ": " + text);
+            API.sendChatMessageToPlayer(player, Color.LongDistanceRoleplay, "RP to " + PlayerManager.GetName(receiver) + ": " + text);
+            API.sendChatMessageToPlayer(receiver, Color.LongDistanceRoleplay, "RP from " + PlayerManager.GetName(player) + ": " + text);
         }
 
         [Command("whisper", Alias = "w", GreedyArg = true)]
         public void w_cmd(Client player, string id, string text)
         {
-            Client receiver = PlayerManager.parseClient(id);
+            var receiver = PlayerManager.ParseClient(id);
 
             if (receiver == null)
             {
@@ -262,16 +262,16 @@ namespace RoleplayServer
                 return;
             }
 
-            API.sendChatMessageToPlayer(player, Color.Whisper, "Whisper to " + PlayerManager.getName(receiver) + ": " + text);
-            API.sendChatMessageToPlayer(receiver, Color.Whisper, "Whisper from " + PlayerManager.getName(player) + ": " + text);
-            RoleplayMessage(player, "whispers to " + PlayerManager.getName(receiver), ROLEPLAY_ME, 10);
+            API.sendChatMessageToPlayer(player, Color.Whisper, "Whisper to " + PlayerManager.GetName(receiver) + ": " + text);
+            API.sendChatMessageToPlayer(receiver, Color.Whisper, "Whisper from " + PlayerManager.GetName(player) + ": " + text);
+            RoleplayMessage(player, "whispers to " + PlayerManager.GetName(receiver), RoleplayMe);
         }
 
 
         [Command("pm", GreedyArg = true)]
         public static void pm_cmd(Client player, string id, string text)
         {
-            Client receiver = PlayerManager.parseClient(id);
+            var receiver = PlayerManager.ParseClient(id);
 
             if (receiver == null)
             {
@@ -279,8 +279,8 @@ namespace RoleplayServer
                 return;
             }
 
-            API.shared.sendChatMessageToPlayer(player, Color.PM, "PM to " + PlayerManager.getName(receiver) + ": " + text);
-            API.shared.sendChatMessageToPlayer(receiver, Color.PM, "PM from " + PlayerManager.getName(player) + ": " + text);
+            API.shared.sendChatMessageToPlayer(player, Color.Pm, "PM to " + PlayerManager.GetName(receiver) + ": " + text);
+            API.shared.sendChatMessageToPlayer(receiver, Color.Pm, "PM from " + PlayerManager.GetName(player) + ": " + text);
         }
 
 
@@ -341,61 +341,44 @@ namespace RoleplayServer
             receiverid.checks += amount;
         }*/
 
-        public const int ROLEPLAY_ME = 0;
-        public const int ROLEPLAY_DO = 1;
+        public const int RoleplayMe = 0;
+        public const int RoleplayDo = 1;
 
         public static void RoleplayMessage(Character character, string action, int type, float radius = 10, int auto = 1)
         {
-            string roleplay_msg = null;
+            string roleplayMsg = null;
 
             switch (type)
             {
                 case 0: //ME
-                    roleplay_msg = "* " + character.character_name + " " + action; 
+                    roleplayMsg = "* " + character.CharacterName + " " + action; 
                     break;
                 case 1: //DO
-                    roleplay_msg = "* " + action + " ((" + character.character_name + "))";
+                    roleplayMsg = "* " + action + " ((" + character.CharacterName + "))";
                     break;
             }
 
-            string color = "";
-            if(auto == 1)
-            {
-                color = Color.AutoRoleplay;
-            }
-            else
-            {
-                color = Color.PlayerRoleplay;
-            }
+            var color = auto == 1 ? Color.AutoRoleplay : Color.PlayerRoleplay;
 
-            NearbyMessage(character.client, radius, roleplay_msg, color);
+            NearbyMessage(character.Client, radius, roleplayMsg, color);
         }
 
         public static void RoleplayMessage(Client player, string action, int type, float radius = 10, int auto = 1)
         {
-            string roleplay_msg = null;
+            string roleplayMsg = null;
 
             switch (type)
             {
                 case 0: //ME
-                    roleplay_msg = "* " + PlayerManager.getName(player) + " " + action;
+                    roleplayMsg = "* " + PlayerManager.GetName(player) + " " + action;
                     break;
                 case 1: //DO
-                    roleplay_msg = "* " + action + " ((" + PlayerManager.getName(player) + "))";
+                    roleplayMsg = "* " + action + " ((" + PlayerManager.GetName(player) + "))";
                     break;
             }
 
-            string color = "";
-            if (auto == 1)
-            {
-                color = Color.AutoRoleplay;
-            }
-            else
-            {
-                color = Color.PlayerRoleplay;
-            }
-
-            NearbyMessage(player, radius, roleplay_msg, color);
+            var color = auto == 1 ? Color.AutoRoleplay : Color.PlayerRoleplay;
+            NearbyMessage(player, radius, roleplayMsg, color);
         }
     }
 }
