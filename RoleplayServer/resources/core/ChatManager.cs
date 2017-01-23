@@ -171,31 +171,10 @@ namespace RoleplayServer.resources.core
         public void ame_cmd(Client player, string action)
         {
             Character character = API.getEntityData(player.handle, "Character");
-
-            if (API.doesEntityExist(character.AmeText))
-            {
-                API.deleteEntity(character.AmeText);
-                character.AmeTimer.Stop();
-            }
-
-            character.AmeText = API.createTextLabel(Color.PlayerRoleplay + character.CharacterName + " " + action, player.position, 15, (float)0.5, false, player.dimension);
-            API.setTextLabelColor(character.AmeText, 194, 162, 218, 255);
-            API.attachEntityToEntity(character.AmeText, player.handle, "SKEL_Head", new Vector3(0.0, 0.0, 1.3), new Vector3(0, 0, 0));
-
-            character.AmeTimer = new System.Timers.Timer {Interval = 8000};
-            character.AmeTimer.Elapsed += delegate { RemoveAmeText(character); };
-            character.AmeTimer.Start();
+            AmeLabelMessage(player, action, 8000);
         }
 
-        public void RemoveAmeText(Character c)
-        {
-            if (API.doesEntityExist(c.AmeText))
-            {
-                API.deleteEntity(c.AmeText);
-            }
-            c.AmeTimer.Stop();
-        }
-
+       
         [Command("do", GreedyArg = true)]
         public void do_cmd(Client player, string action)
         {
@@ -378,6 +357,33 @@ namespace RoleplayServer.resources.core
 
             var color = auto == 1 ? Color.AutoRoleplay : Color.PlayerRoleplay;
             NearbyMessage(player, radius, roleplayMsg, color);
+        }
+
+        public static void AmeLabelMessage(Client player, string action, int time)
+        {
+            Character character = API.shared.getEntityData(player.handle, "Character");
+            if (API.shared.doesEntityExist(character.AmeText))
+            {
+                API.shared.deleteEntity(character.AmeText);
+                character.AmeTimer.Stop();
+            }
+
+            character.AmeText = API.shared.createTextLabel(Color.PlayerRoleplay + character.CharacterName + action, player.position, 15, (float)(0.5), false, player.dimension);
+            API.shared.setTextLabelColor(character.AmeText, 194, 162, 218, 255);
+            API.shared.attachEntityToEntity(character.AmeText, player.handle, "SKEL_Head", new Vector3(0.0, 0.0, 1.3), new Vector3(0, 0, 0));
+
+            character.AmeTimer = new System.Timers.Timer {Interval = time};
+            character.AmeTimer.Elapsed += delegate { RemoveAmeText(character); };
+            character.AmeTimer.Start();
+        }
+
+        public static void RemoveAmeText(Character c)
+        {
+            if (API.shared.doesEntityExist(c.AmeText))
+            {
+                API.shared.deleteEntity(c.AmeText);
+            }
+            c.AmeTimer.Stop();
         }
     }
 }

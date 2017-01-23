@@ -1,7 +1,9 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
 using RoleplayServer.resources.core;
+using RoleplayServer.resources.group_manager;
 using RoleplayServer.resources.job_manager;
+using RoleplayServer.resources.phone_manager;
 using RoleplayServer.resources.player_manager;
 using RoleplayServer.resources.vehicle_manager;
 
@@ -17,7 +19,11 @@ namespace RoleplayServer.resources.database_manager
         public static IMongoCollection<Account> AccountTable; 
         public static IMongoCollection<Character> CharacterTable;
         public static IMongoCollection<Job> JobTable;
-       
+        public static IMongoCollection<Phone> PhoneTable;
+        public static IMongoCollection<PhoneContact> ContactTable;
+        public static IMongoCollection<Group> GroupTable;
+
+
         public static void DatabaseManagerInit()
         {
             DebugManager.DebugMessage("[DatabaseM] Initalizing database manager...");
@@ -29,7 +35,10 @@ namespace RoleplayServer.resources.database_manager
             AccountTable = _database.GetCollection<Account>("accounts");
             CharacterTable = _database.GetCollection<Character>("characters");
             JobTable = _database.GetCollection<Job>("jobs");
-           
+            PhoneTable = _database.GetCollection<Phone>("phones");
+            ContactTable = _database.GetCollection<PhoneContact>("phonecontacts");
+            GroupTable = _database.GetCollection<Group>("groups");
+
             DebugManager.DebugMessage("[DatabaseM] Database Manager initalized!");
         }
 
@@ -41,6 +50,5 @@ namespace RoleplayServer.resources.database_manager
 
             return result.GetValue("sequence").ToInt32();
         }
-
     }
 }

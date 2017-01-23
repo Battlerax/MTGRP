@@ -21,5 +21,9 @@
         public const string Grey = "~#CECECE~";
         public const string White = "~#FFFFFF~";
         public const string Yellow = "~#FFFF00~";
+
+        public const string Sms = "~#009933~";
+
+        public const string GroupChat = "~#006699~";
     }
 }

@@ -65,6 +65,16 @@
 	<script src="vehicle_manager/vehicle_editor/VehicleEdit.js" type="client" lang="javascript"/>
 	<file src="vehicle_manager/vehicle_editor/VehicleEdit.html"/>
 	
+	<!--- GROUPS -->
+	
+	<script src="group_manager/Group.cs" type="server" lang="csharp"/>
+	<script src="group_manager/GroupManager.cs" type="server" lang="csharp"/>
+	
+	<!--- PHONES -->
+	
+	<script src="phone_manager/Phone.cs" type="server" lang="csharp"/>
+	<script src="phone_manager/PhoneContact.cs" type="server" lang="csharp"/>
+	<script src="phone_manager/PhoneManager.cs" type="server" lang="csharp"/>
 	
 	<!-- COMPONENT -->
 	<script src="component_manager/Component.cs" type="server" lang="csharp"/>
@@ -80,7 +90,7 @@
 	<file src="stylesheet/css/metro-icons.css"/>
 
 	<!-- CORE -->
-	<file src="cef_resources/MTGamingLogo.png"/>
+	<file src="cef_resources/MTGVRP_LOGO_BIG.png"/>
 	
 	
 	<file src="jquery.js" />

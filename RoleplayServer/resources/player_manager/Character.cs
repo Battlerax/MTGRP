@@ -6,6 +6,7 @@ using GTANetworkShared;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using RoleplayServer.resources.database_manager;
+using RoleplayServer.resources.group_manager;
 using RoleplayServer.resources.job_manager;
 using RoleplayServer.resources.job_manager.fisher;
 using RoleplayServer.resources.job_manager.taxi;
@@ -120,6 +121,13 @@ namespace RoleplayServer.resources.player_manager
         public int PerfectCatchStrength { get; set; }
         public Dictionary<Fish, int> FishOnHand = new Dictionary<Fish,int>();
     
+        public int PhoneNumber { get; set; }
+
+        public int GroupId { get; set; }
+        public int GroupRank { get; set; }
+        [BsonIgnore]
+        public Group Group { get; set; }
+
 
         public Character()
         {

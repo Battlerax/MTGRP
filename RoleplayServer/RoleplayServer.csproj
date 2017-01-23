@@ -83,12 +83,17 @@
     <Compile Include="resources\core\DebugManager.cs" />
     <Compile Include="resources\core\MarkerZone.cs" />
     <Compile Include="resources\database_manager\DatabaseManager.cs" />
+    <Compile Include="resources\group_manager\Group.cs" />
+    <Compile Include="resources\group_manager\GroupManager.cs" />
     <Compile Include="resources\Init.cs" />
     <Compile Include="resources\job_manager\fisher\Fish.cs" />
     <Compile Include="resources\job_manager\fisher\Fisher.cs" />
     <Compile Include="resources\job_manager\Job.cs" />
     <Compile Include="resources\job_manager\JobManager.cs" />
     <Compile Include="resources\job_manager\taxi\TaxiJob.cs" />
+    <Compile Include="resources\phone_manager\Phone.cs" />
+    <Compile Include="resources\phone_manager\PhoneContact.cs" />
+    <Compile Include="resources\phone_manager\PhoneManager.cs" />
     <Compile Include="resources\player_manager\Account.cs" />
     <Compile Include="resources\player_manager\CharacterMenu.cs" />
     <Compile Include="resources\component_manager\Component.cs" />

@@ -48,6 +48,8 @@ namespace RoleplayServer.resources.core
             Green = 255;
             Blue = 0;
 
+            BlipSprite = -1;
+
             Scale = new Vector3(0.5, 0.5, 0.5);
         }
 
@@ -60,8 +62,11 @@ namespace RoleplayServer.resources.core
             Label = API.shared.createTextLabel("~g~" + LabelText, Location.Add(new Vector3(0.0, 0.0, 0.5)), 25f, 0.5f, true, Dimension);
             ColZone = API.shared.createSphereColShape(Location, ColZoneSize);
 
-            Blip = API.shared.createBlip(Marker);
-            API.shared.setBlipSprite(Blip, BlipSprite);
+            if (BlipSprite != -1)
+            {
+                Blip = API.shared.createBlip(Marker);
+                API.shared.setBlipSprite(Blip, BlipSprite);
+            }
         }
 
         public void Destroy()
