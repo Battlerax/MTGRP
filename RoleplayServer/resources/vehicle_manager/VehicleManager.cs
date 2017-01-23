@@ -172,6 +172,9 @@ namespace RoleplayServer.resources.vehicle_manager
 
             if (veh.Driver == API.getEntityData(player, "Character"))
                 veh.Driver = null;
+
+            Character character = API.getEntityData(player.handle, "Character");
+            character.LastVehicle = veh;
         }
 
         public void OnVehicleDeath(NetHandle vehicleHandle)
@@ -277,7 +280,7 @@ namespace RoleplayServer.resources.vehicle_manager
 
         public void load_all_unowned_vehicles()
         {
-            var filter = Builders<Vehicle>.Filter.Eq("owner_name", "None");
+            var filter = Builders<Vehicle>.Filter.Eq("OwnerName", "None");
             var unownedVehicles = DatabaseManager.VehicleTable.Find(filter).ToList();
 
             foreach (var v in unownedVehicles)

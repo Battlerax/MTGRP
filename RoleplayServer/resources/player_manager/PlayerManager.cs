@@ -46,15 +46,18 @@ namespace RoleplayServer.resources.player_manager
             //Save data
             Character character = API.getEntityData(player.handle, "Character");
 
-            character.LastPos = player.position;
-            character.LastRot = player.rotation;
-            character.GetTimePlayed();//Update time played before save.
-            character.Save();
+            if (character != null)
+            {
+                character.LastPos = player.position;
+                character.LastRot = player.rotation;
+                character.GetTimePlayed(); //Update time played before save.
+                character.Save();
 
-            API.resetEntityData(player.handle, "Character");
-            Players.Remove(character);
+                API.resetEntityData(player.handle, "Character");
+                Players.Remove(character);
 
-            UpdatePlayerNametags();//IDs change when a player logs off
+                UpdatePlayerNametags(); //IDs change when a player logs off
+            }
         }
 
         public static void UpdatePlayerNametags()

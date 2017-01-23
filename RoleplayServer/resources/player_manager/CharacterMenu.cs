@@ -63,7 +63,7 @@ namespace RoleplayServer.resources.player_manager
                     }
                     else
                     {
-                        var filter = Builders<Character>.Filter.Eq("character_name", charName);
+                        var filter = Builders<Character>.Filter.Eq("CharacterName", charName);
                         var foundCharacters = DatabaseManager.CharacterTable.Find(filter).ToList();
 
                         if(foundCharacters.Count > 1)

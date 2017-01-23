@@ -37,7 +37,7 @@ namespace RoleplayServer.resources.player_manager
 
         public void load_by_name()
         {
-            var filter = Builders<Account>.Filter.Eq("account_name", AccountName);
+            var filter = Builders<Account>.Filter.Eq("AccountName", AccountName);
             var foundAccount = DatabaseManager.AccountTable.Find(filter).ToList();
 
             foreach(var a in foundAccount)
@@ -72,7 +72,7 @@ namespace RoleplayServer.resources.player_manager
 
         public bool is_registered()
         {
-            var filter = Builders<Account>.Filter.Eq("account_name", AccountName);
+            var filter = Builders<Account>.Filter.Eq("AccountName", AccountName);
 
             if(DatabaseManager.AccountTable.Find(filter).Count() > 0)
             {

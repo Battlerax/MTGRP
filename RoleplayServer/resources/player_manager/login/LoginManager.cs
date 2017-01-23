@@ -132,7 +132,7 @@ namespace RoleplayServer.resources.player_manager.login
         {
             Account account = API.getEntityData(player.handle, "Account");
       
-            API.setEntityDimension(player.handle, LoginDimension);
+            API.setEntityDimension(player.handle, player.handle.Value);
             
             if(account.is_registered())
             {
@@ -250,7 +250,7 @@ namespace RoleplayServer.resources.player_manager.login
 
             Account account = API.shared.getEntityData(player.handle, "Account");
 
-            var filter = Builders<Character>.Filter.Eq("account_id", account.Id.ToString());
+            var filter = Builders<Character>.Filter.Eq("AccountId", account.Id.ToString());
             var charactersFound = DatabaseManager.CharacterTable.Find(filter).ToList();
 
             var charCount = 0;

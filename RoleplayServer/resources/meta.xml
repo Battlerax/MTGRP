@@ -47,8 +47,14 @@
 	<!-- JOBS -->
 	<script src="job_manager/Job.cs" type="server" lang="csharp"/>
 	<script src="job_manager/JobManager.cs" type="server" lang="csharp"/>
+	<script src="job_manager/JobManager.js" type="client" lang="javascript"/>
+
 	<script src="job_manager/taxi/TaxiJob.cs" type="server" lang="csharp"/>
 	<script src="job_manager/taxi/TaxiJob.js" type="client" lang="javascript"/>
+	
+	<script src="job_manager/fisher/Fish.cs" type="server" lang="csharp"/>
+	<script src="job_manager/fisher/Fisher.cs" type="server" lang="csharp"/>
+	<script src="job_manager/fisher/Fisher.js" type="client" lang="javascript"/>
 	
 	<!-- VEHICLE -->
 	<script src="vehicle_manager/Vehicle.cs" type="server" lang="csharp"/>

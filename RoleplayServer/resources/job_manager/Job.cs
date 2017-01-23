@@ -5,6 +5,8 @@ using MongoDB.Driver;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.database_manager;
 
+using RoleplayServer.resources.player_manager;
+
 namespace RoleplayServer.resources.job_manager
 {
     public class Job
@@ -23,7 +25,8 @@ namespace RoleplayServer.resources.job_manager
 
         public Job()
         {
-            
+            MiscOne = MarkerZone.None;
+            MiscTwo = MarkerZone.None;
         }
 
         public void add_job_route(List<Vector3> list)
@@ -36,14 +39,124 @@ namespace RoleplayServer.resources.job_manager
             JobRoutes.RemoveAt(index);
         }
 
-        public void add_job_zone(float x, float y, float width, float height)
+        public void add_job_zone(float x1, float y1, float width, float height)
         {
-            JobZones.Add(API.shared.create2DColShape(x, y, width, height));
+            JobZones.Add(API.shared.create2DColShape(x1, y1, width, height));
+        }
+
+        public void register_job_zone_events(int index)
+        {
+            JobZones[index].onEntityEnterColShape += (shape, entity) =>
+            {
+                foreach (var c in PlayerManager.Players)
+                {
+                    if (c.Client.handle != entity) continue;
+
+                    if (Type == JobManager.FisherJob)
+                    {
+                        c.IsInFishingZone = true;
+                    }
+                }
+            };
+
+            JobZones[index].onEntityExitColShape += (shape, entity) =>
+            {
+                foreach (var c in PlayerManager.Players)
+                {
+                    if (c.Client.handle != entity) continue;
+
+                    if (Type == JobManager.FisherJob)
+                    {
+                        c.IsInFishingZone = false;
+                    }
+                }
+            };
         }
 
         public void remove_job_zone(int index)
         {
             JobZones.RemoveAt(index);
+        }
+
+        public void register_job_marker_events()
+        {
+            JoinPos.ColZone.onEntityEnterColShape += (shape, entity) =>
+            {
+                foreach (var c in PlayerManager.Players)
+                {
+                    if (c.Client != entity) { continue;}
+
+                    c.JobZone = Id;
+                    c.JobZoneType = 1;
+                }
+            };
+
+            if (MiscOne != MarkerZone.None)
+            {
+                MiscOne.ColZone.onEntityEnterColShape += (shape, entity) =>
+                {
+                    foreach (var c in PlayerManager.Players)
+                    {
+                        if (c.Client != entity) { continue; }
+
+                        c.JobZone = Id;
+                        c.JobZoneType = 2;
+                    }
+                };
+            }
+
+            if (MiscTwo != MarkerZone.None)
+            {
+                MiscTwo.ColZone.onEntityEnterColShape += (shape, entity) =>
+                {
+                    foreach (var c in PlayerManager.Players)
+                    {
+                        if (c.Client != entity) { continue; }
+
+                        c.JobZone = Id;
+                        c.JobZoneType = 3;
+                    }
+                };
+            }
+
+            JoinPos.ColZone.onEntityExitColShape += (shape, entity) =>
+            {
+                foreach (var c in PlayerManager.Players)
+                {
+                    if (c.Client != entity) { continue; }
+
+                    c.JobZone = 0;
+                    c.JobZoneType = 0;
+                }
+            };
+
+            if (MiscOne != MarkerZone.None)
+            {
+                MiscOne.ColZone.onEntityExitColShape += (shape, entity) =>
+                {
+                    foreach (var c in PlayerManager.Players)
+                    {
+                        if (c.Client != entity) { continue; }
+
+                        c.JobZone = 0;
+                        c.JobZoneType = 0;
+                    }
+                };
+            }
+
+            if (MiscTwo != MarkerZone.None)
+            {
+                MiscTwo.ColZone.onEntityExitColShape += (shape, entity) =>
+                {
+                    foreach (var c in PlayerManager.Players)
+                    {
+                        if (c.Client != entity) { continue; }
+
+                        c.JobZone = 0;
+                        c.JobZoneType = 0;
+                    }
+                };
+            }
         }
 
         public void Insert()
@@ -63,6 +176,7 @@ namespace RoleplayServer.resources.job_manager
             switch (Type)
             {
                 case JobManager.TaxiJob: return 198;
+                case JobManager.FisherJob: return 410;
                 default: return 1;
             }
         }

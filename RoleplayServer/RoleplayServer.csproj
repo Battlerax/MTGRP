@@ -84,6 +84,8 @@
     <Compile Include="resources\core\MarkerZone.cs" />
     <Compile Include="resources\database_manager\DatabaseManager.cs" />
     <Compile Include="resources\Init.cs" />
+    <Compile Include="resources\job_manager\fisher\Fish.cs" />
+    <Compile Include="resources\job_manager\fisher\Fisher.cs" />
     <Compile Include="resources\job_manager\Job.cs" />
     <Compile Include="resources\job_manager\JobManager.cs" />
     <Compile Include="resources\job_manager\taxi\TaxiJob.cs" />
@@ -110,6 +112,7 @@
     <None Include="resources\stylesheet\fonts\metro.ttf" />
     <None Include="resources\stylesheet\fonts\metro.woff" />
     <None Include="resources\stylesheet\fonts\selection.json" />
+    <None Include="tsconfig.json" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="resources\cef_resources\MTGamingLogo.png" />
@@ -143,8 +146,20 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="resources\job_manager\fisher\" />
+    <TypeScriptCompile Include="resources\job_manager\fisher\Fisher.ts" />
+    <TypeScriptCompile Include="resources\job_manager\JobManager.ts" />
+    <TypeScriptCompile Include="types-gtanetwork\Declarations.d.ts" />
+    <TypeScriptCompile Include="types-gtanetwork\Enums.ts" />
+    <TypeScriptCompile Include="types-gtanetwork\GTANetwork.dll.d.ts" />
+    <TypeScriptCompile Include="types-gtanetwork\GTANetworkShared.dll.d.ts" />
+    <TypeScriptCompile Include="types-gtanetwork\index.d.ts" />
+    <TypeScriptCompile Include="types-gtanetwork\NativeUI.dll.d.ts" />
+    <TypeScriptCompile Include="types-gtanetwork\ScriptHookVDotNet.dll.d.ts" />
+    <TypeScriptCompile Include="types-gtanetwork\System.d.ts" />
+    <TypeScriptCompile Include="types-gtanetwork\System.Drawing.dll.d.ts" />
+    <TypeScriptCompile Include="types-gtanetwork\Xilium.CefGlue.dll.d.ts" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -6,6 +6,8 @@ namespace RoleplayServer.resources.core
 {
     public class MarkerZone
     {
+        public static readonly MarkerZone None = new MarkerZone(new Vector3(), new Vector3());
+
         public string LabelText { get; set; }
 
         public Vector3 Location { get; set; }
@@ -30,9 +32,9 @@ namespace RoleplayServer.resources.core
         [BsonIgnore]
         public NetHandle Blip { get; set; }
         [BsonIgnore]
-        public Rectangle2DColShape ColZone { get; set; }
+        public SphereColShape ColZone { get; set; }
 
-        public MarkerZone(Vector3 loc, Vector3 rot, int dimension = 0, float zoneSize = 10.0f)
+        public MarkerZone(Vector3 loc, Vector3 rot, int dimension = 0, float zoneSize = 2.0f)
         {
             Location = loc;
             Rotation = rot;
@@ -51,12 +53,29 @@ namespace RoleplayServer.resources.core
 
         public void Create()
         {
+            if (this == None)
+                return;
+
             Marker = API.shared.createMarker(2, Location, Location, Rotation, Scale, Alpha, Red, Green, Blue, Dimension);
             Label = API.shared.createTextLabel("~g~" + LabelText, Location.Add(new Vector3(0.0, 0.0, 0.5)), 25f, 0.5f, true, Dimension);
-            ColZone = API.shared.create2DColShape(Location.X, Location.Y, ColZoneSize, 5.0f);
+            ColZone = API.shared.createSphereColShape(Location, ColZoneSize);
 
             Blip = API.shared.createBlip(Marker);
             API.shared.setBlipSprite(Blip, BlipSprite);
+        }
+
+        public void Destroy()
+        {
+            if (API.shared.doesEntityExist(Marker)) { API.shared.deleteEntity(Marker);}
+            if (API.shared.doesEntityExist(Label)) { API.shared.deleteEntity(Label);}
+            API.shared.deleteColShape(ColZone);
+            if (API.shared.doesEntityExist(Blip)) { API.shared.deleteEntity(Blip);}
+        }
+
+        public void Refresh()
+        {
+            Destroy();
+            Create();
         }
     }
 }

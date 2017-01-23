@@ -7,6 +7,7 @@ using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using RoleplayServer.resources.database_manager;
 using RoleplayServer.resources.job_manager;
+using RoleplayServer.resources.job_manager.fisher;
 using RoleplayServer.resources.job_manager.taxi;
 using Vehicle = RoleplayServer.resources.vehicle_manager.Vehicle;
 
@@ -64,6 +65,8 @@ namespace RoleplayServer.resources.player_manager
         [BsonIgnore]
         public Client Client { get; set; }
 
+        public Vehicle LastVehicle { get; set; }
+
         //Jobs
         public int JobOneId { get; set; }
         [BsonIgnore]
@@ -106,6 +109,18 @@ namespace RoleplayServer.resources.player_manager
         [BsonIgnore]
         public Timer TaxiTimer { get; set; }
 
+        //Fisherman Related
+        [BsonIgnore]
+        public bool IsInFishingZone { get; set; }
+        [BsonIgnore]
+        public Timer CatchTimer { get; set; }
+        [BsonIgnore]
+        public Fish CatchingFish { get; set; }
+        [BsonIgnore] 
+        public int PerfectCatchStrength { get; set; }
+        public Dictionary<Fish, int> FishOnHand = new Dictionary<Fish,int>();
+    
+
         public Character()
         {
             Id = 0;
@@ -123,9 +138,14 @@ namespace RoleplayServer.resources.player_manager
 
             Client = null;
 
+            LastVehicle = null;
+
             TaxiFare = TaxiJob.MinFare;
             TaxiPassenger = null;
             TaxiDriver = null;
+
+            IsInFishingZone = false;
+            CatchingFish = Fish.None;
         }
 
         public void Insert()
@@ -142,7 +162,7 @@ namespace RoleplayServer.resources.player_manager
 
         public static bool IsCharacterRegistered(string name)
         {
-            var filter = Builders<Character>.Filter.Eq("character_name", name);
+            var filter = Builders<Character>.Filter.Eq("CharacterName", name);
 
             if (DatabaseManager.CharacterTable.Find(filter).Count() > 0)
             {

@@ -22,7 +22,7 @@ namespace RoleplayServer.resources.database_manager
         {
             DebugManager.DebugMessage("[DatabaseM] Initalizing database manager...");
 
-            _database = MongoClient.GetDatabase("test_db");
+            _database = MongoClient.GetDatabase("mtg_test");
 
             _countersTable = _database.GetCollection<BsonDocument>("counters");
             VehicleTable = _database.GetCollection<Vehicle>("vehicles");

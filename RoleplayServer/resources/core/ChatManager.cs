@@ -182,8 +182,7 @@ namespace RoleplayServer.resources.core
             API.setTextLabelColor(character.AmeText, 194, 162, 218, 255);
             API.attachEntityToEntity(character.AmeText, player.handle, "SKEL_Head", new Vector3(0.0, 0.0, 1.3), new Vector3(0, 0, 0));
 
-            character.AmeTimer = new System.Timers.Timer();
-            character.AmeTimer.Interval = 8000;
+            character.AmeTimer = new System.Timers.Timer {Interval = 8000};
             character.AmeTimer.Elapsed += delegate { RemoveAmeText(character); };
             character.AmeTimer.Start();
         }
