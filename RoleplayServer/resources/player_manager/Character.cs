@@ -16,6 +16,8 @@ namespace RoleplayServer.resources.player_manager
 {
     public class Character
     {
+        public static readonly Character None = new Character();
+
         [BsonIgnore]
         public static int GenderMale = 0;
         [BsonIgnore]
@@ -125,6 +127,8 @@ namespace RoleplayServer.resources.player_manager
 
         public int GroupId { get; set; }
         public int GroupRank { get; set; }
+        public int Division { get; set; }
+        public int DivisionRank { get; set; }
         [BsonIgnore]
         public Group Group { get; set; }
 
@@ -154,6 +158,8 @@ namespace RoleplayServer.resources.player_manager
 
             IsInFishingZone = false;
             CatchingFish = Fish.None;
+
+            Group = Group.None;
         }
 
         public void Insert()

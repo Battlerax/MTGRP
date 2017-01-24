@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using GTANetworkServer;
 using GTANetworkShared;
 using RoleplayServer.resources.core;
+using RoleplayServer.resources.group_manager;
 
 namespace RoleplayServer.resources.player_manager
 {
@@ -48,6 +49,13 @@ namespace RoleplayServer.resources.player_manager
 
             if (character != null)
             {
+                if (character.Group != Group.None)
+                {
+                    GroupManager.SendGroupMessage(player,
+                        character.CharacterName + " from your group has left the server. (" + reason + ")");
+                }
+
+
                 character.LastPos = player.position;
                 character.LastRot = player.rotation;
                 character.GetTimePlayed(); //Update time played before save.
@@ -72,7 +80,7 @@ namespace RoleplayServer.resources.player_manager
         {
             foreach(var c in Players)
             {
-                if(String.Equals(c.CharacterName, name, StringComparison.OrdinalIgnoreCase))
+                if(string.Equals(c.CharacterName, name, StringComparison.OrdinalIgnoreCase))
                 {
                     return c.Client;
                 }

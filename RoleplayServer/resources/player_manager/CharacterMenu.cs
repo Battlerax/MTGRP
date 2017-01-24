@@ -4,6 +4,7 @@ using GTANetworkShared;
 using MongoDB.Driver;
 using RoleplayServer.resources.component_manager;
 using RoleplayServer.resources.database_manager;
+using RoleplayServer.resources.group_manager;
 using RoleplayServer.resources.job_manager;
 
 namespace RoleplayServer.resources.player_manager
@@ -115,12 +116,19 @@ namespace RoleplayServer.resources.player_manager
                         character.Money = 1000;
 
                         character.JobOne = JobManager.GetJobById(character.JobOneId);
+                        character.Group = GroupManager.GetGroupById(character.GroupId);
 
                         API.setEntityPosition(player.handle, character.LastPos);
                         API.setEntityRotation(player.handle, character.LastRot);
                         API.setEntityDimension(player.handle, character.LastDimension);
+
+                        if (character.Group != Group.None)
+                        {
+                            GroupManager.SendGroupMessage(player,
+                                character.CharacterName + " from your group has logged in.");
+                        }
+
                         API.sendChatMessageToPlayer(player, "You have successfully loaded your character: " + charName);
-                   
                         API.triggerClientEvent(player, "login_finished");
                     }
                     break;

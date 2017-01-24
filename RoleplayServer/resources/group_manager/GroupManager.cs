@@ -18,37 +18,9 @@ namespace RoleplayServer.resources.group_manager
 
             load_groups(); 
 
-            API.onPlayerConnected += OnPlayerConnected;
-            API.onPlayerDisconnected += OnPlayerDisconnected;
-
             DebugManager.DebugMessage("[GroupM] Group Manager initalized!");
 
         }
-
-        public void OnPlayerConnected(Client player)
-        {
-            Character connected = API.getEntityData(player.handle, "Character");
-            foreach (var c in PlayerManager.Players)
-            {
-                if (c.GroupId == connected.GroupId)
-                {
-                    API.sendChatMessageToPlayer(c.Client, connected.CharacterName + "from your group has connected to the server.");
-                }
-            }
-        }
-
-        public void OnPlayerDisconnected(Client player, string reason)
-        {
-            Character disconnected = API.getEntityData(player.handle, "Character");
-            foreach (var c in PlayerManager.Players)
-            {
-                if (c.GroupId == disconnected.GroupId)
-                {
-                    API.sendChatMessageToPlayer(c.Client, disconnected.CharacterName + "from your group has disconnected ("+reason+").");
-                }
-            }
-        }
-
 
         [Command("listgroups")]
         public void listgroups_cmd(Client player)
@@ -58,14 +30,14 @@ namespace RoleplayServer.resources.group_manager
             if (acc.AdminLevel < 4)
                 return;
 
-            Groups = DatabaseManager.GroupTable.Find<Group>(Builders<Group>.Filter.Empty).ToList<Group>();
+            Groups = DatabaseManager.GroupTable.Find(Builders<Group>.Filter.Empty).ToList();
             API.sendChatMessageToPlayer(player, "-----------------------------------------------------------------------------------");
             foreach (var g in Groups)
             {
-                switch(g.GroupType)
+                switch(g.Type)
                 {
-                    case 1: API.sendChatMessageToPlayer(player, "Group Name: " + g.GroupName + "| Type: Faction | Command Type: " + g.GroupCommandType + "."); break;
-                    case 2: API.sendChatMessageToPlayer(player, "Group Name: " + g.GroupName + "| Type: Gang | Command Type: " + g.GroupCommandType + "."); break;
+                    case 1: API.sendChatMessageToPlayer(player, "Group Name: " + g.Name + " | Type: Faction | Command Type: " + g.CommandType + "."); break;
+                    case 2: API.sendChatMessageToPlayer(player, "Group Name: " + g.Name + " | Type: Gang | Command Type: " + g.CommandType + "."); break;
                 }
             }
             API.sendChatMessageToPlayer(player, "---------------------------------------------------------------------------------- ");
@@ -76,22 +48,22 @@ namespace RoleplayServer.resources.group_manager
         {
             Character sender = API.getEntityData(player.handle, "Character");
 
-            if (sender.GroupId > 0 && sender.GroupRank > 6)
-            {
-                var filter = Builders<Character>.Filter.Eq("CharacterName", playername);
-                var foundCharacters = DatabaseManager.CharacterTable.Find(filter).ToList();
+            GroupCommandPermCheck(sender, 6);
 
-                foreach (var c in foundCharacters)
+            var filter = Builders<Character>.Filter.Eq("CharacterName", playername);
+            var foundCharacters = DatabaseManager.CharacterTable.Find(filter).ToList();
+
+            foreach (var c in foundCharacters)
+            {
+                if (c.GroupId == sender.GroupId)
                 {
-                    if (c.GroupId == sender.GroupId)
-                    {
-                        c.GroupId = 0;
-                        c.Group = null;
-                        c.GroupRank = 0;
-                        c.Save();
-                    }
-                    API.sendChatMessageToPlayer(player, "You have remote-uninvited " + c.CharacterName + "from the " + sender.Group.GroupName + ".");
+                    c.GroupId = 0;
+                    c.Group = null;
+                    c.GroupRank = 0;
+                    c.Save();
                 }
+                API.sendChatMessageToPlayer(player, "You have remote-uninvited " + c.CharacterName + " from the " + sender.Group.Name + ".");
+                break;
             }
         }
 
@@ -99,29 +71,141 @@ namespace RoleplayServer.resources.group_manager
         public void setrank_cmd(Client player, string id, int rank)
         {
             var  receiver = PlayerManager.ParseClient(id);
-            Character member = API.getEntityData(receiver.handle, "Character");
-            Character sender = API.getEntityData(player.handle, "Character");
 
-            if(sender.GroupId == member.GroupId)
+            if (receiver == null)
             {
-                var oldrank = member.GroupRank;
-                if(oldrank > rank)
+                API.sendChatMessageToPlayer(player, Color.White, "That player is not connected.");
+                return;
+            }
+
+            Character sender = API.getEntityData(player.handle, "Character");
+            GroupCommandPermCheck(sender, 5);
+
+            Character member = API.getEntityData(receiver.handle, "Character");
+            if (sender.GroupRank >= member.GroupRank && sender.GroupRank > rank)
+            {
+                var oldRank = member.GroupRank;
+                if (oldRank > rank)
                 {
-                    API.sendChatMessageToPlayer(receiver, "You have been demoted to " + member.Group.GroupRankNames[rank] + " by " + sender.CharacterName + ".");
+                    API.sendChatMessageToPlayer(receiver,
+                        "You have been demoted to " + member.Group.RankNames[rank] + " by " + sender.CharacterName + ".");
                 }
                 else
                 {
-                    API.sendChatMessageToPlayer(receiver, "You have been promoted to " + member.Group.GroupRankNames[rank] + " by " + sender.CharacterName + ".");
+                    API.sendChatMessageToPlayer(receiver,
+                        "You have been promoted to " + member.Group.RankNames[rank] + " by " + sender.CharacterName +
+                        ".");
                 }
-                API.sendChatMessageToPlayer(player, "You have changed " + member.CharacterName + "'s rank to " + rank + " (was " + oldrank + ").");
+                API.sendChatMessageToPlayer(player,
+                    "You have changed " + member.CharacterName + "'s rank to " + rank + " (was " + oldRank + ").");
                 member.GroupRank = rank;
+                member.Save();
+            }
+            else
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "You cannot set the rank of a higher ranking member or set someone to a rank above yours.");
+            }
+        }
+
+        [Command("setdivision")]
+        public void setdivision_cmd(Client player, string id, int divId)
+        {
+            var receiver = PlayerManager.ParseClient(id);
+            if (receiver == null)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "That player is not connected.");
+                return;
+            }
+
+            if (divId < 0 || divId > 5)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "Valid division IDs are between 0 and 5.");
+                return;
+            }
+
+            Character character = API.getEntityData(player.handle, "Character");
+            GroupCommandPermCheck(character, 7);
+
+            Character receiverChar = API.getEntityData(receiver.handle, "Character");
+
+            receiverChar.Division = divId;
+            receiverChar.DivisionRank = 1;
+            receiverChar.Save();
+
+            if (divId != 0)
+            {
+                API.sendChatMessageToPlayer(receiver, Color.White,
+                    character.CharacterName + " has added you to the " + character.Group.Divisions[divId - 1] +
+                    " division.");
+
+                API.sendChatMessageToPlayer(player, Color.White, "You have added " + receiverChar.CharacterName + " to the " + character.Group.Divisions[divId - 1] + " division.");
+            }
+            else
+            {
+                API.sendChatMessageToPlayer(receiver, Color.White,
+                    character.CharacterName + " has removed your position in a division.");
+
+                API.sendChatMessageToPlayer(player, Color.White, "You have removed " + receiverChar.CharacterName + " from a division.");
+            }
+        }
+
+        [Command("setdivisionrank")]
+        public void setdivisionrank_cmd(Client player, string id, int rank)
+        {
+            var receiver = PlayerManager.ParseClient(id);
+            if (receiver == null)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "That player is not connected.");
+                return;
+            }
+
+            if (rank < 1 || rank > 5)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "Valid division ranks are between 1 and 5.");
+                return;
+            }
+
+            Character character = API.getEntityData(player.handle, "Character");
+            GroupCommandPermCheck(character, 7, true, 4);
+
+            Character receiverChar = API.getEntityData(receiver.handle, "Character");
+
+            if (receiverChar.DivisionRank <= character.DivisionRank && character.DivisionRank > rank)
+            {
+
+                if (rank > receiverChar.DivisionRank)
+                {
+                    API.sendChatMessageToPlayer(receiver, Color.White,
+                        "You have been promoted in your division to rank " + rank + " by " + character.CharacterName);
+
+                    API.sendChatMessageToPlayer(player, Color.White,
+                        "You have promoted " + receiverChar.CharacterName + " in their division to rank " + rank);
+                }
+                else if (rank <= receiverChar.DivisionRank)
+                {
+                    API.sendChatMessageToPlayer(receiver, Color.White,
+                        "You have been demoted in your division to rank " + rank + " by " + character.CharacterName);
+
+                    API.sendChatMessageToPlayer(player, Color.White,
+                        "You have demoted " + receiverChar.CharacterName + " in their division to rank " + rank);
+                }
+
+                receiverChar.DivisionRank = rank;
+                receiverChar.Save();
+            }
+            else
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "You cannot set the rank of a higher ranking member or set someone to a rank above yours.");
             }
         }
 
         [Command("group", Alias = "g", GreedyArg = true)]
         public void group_cmd(Client player, string message)
         {
-            SendGroupMessage(player, message);
+            GroupCommandPermCheck(API.getEntityData(player.handle, "Character"), 1);
+
+            Character character = API.getEntityData(player.handle, "Character");
+            SendGroupMessage(player, "[G][" + character.GroupRank + "] " + GetRankName(character) + " " + character.CharacterName + " : " + "~w~" + message);
         }
 
         [Command("accept")]
@@ -129,24 +213,24 @@ namespace RoleplayServer.resources.group_manager
         {
             if (option == "groupinvitation")
             {
-                Character sender = API.getEntityData(player.handle, "Character");
-                Character character = API.getEntityData(player.handle, "GroupInvitation");
+                Character character = API.getEntityData(player.handle, "Character");
+                Character inviteSender = API.getEntityData(player.handle, "GroupInvitation");
 
-                sender.GroupId = character.GroupId ;
-                sender.Group = character.Group;
-                sender.GroupRank = 1;
-                sender.Save();
-
-                API.sendChatMessageToPlayer(player, "You have joined " + sender.Group.GroupName + ".");
-
-                foreach (var c in PlayerManager.Players)
+                if (inviteSender == null)
                 {
-                    if (c.GroupId == sender.GroupId)
-                    {
-                        API.sendChatMessageToPlayer(c.Client, sender.CharacterName + "has joined the group (INVITATION).");
-
-                    }
+                    API.sendChatMessageToPlayer(player, Color.White, "You do not have an active group invitiation.");
+                    return;
                 }
+
+                character.GroupId = inviteSender.GroupId ;
+                character.Group = inviteSender.Group;
+                character.GroupRank = 1;
+                character.Save();
+
+                API.sendChatMessageToPlayer(player, "You have joined " + inviteSender.Group.Name + ".");
+
+                SendGroupMessage(player,
+                    character.CharacterName + " has joined the group. (Invited by: " + inviteSender.CharacterName + ")");
             }
         }
 
@@ -161,107 +245,144 @@ namespace RoleplayServer.resources.group_manager
                 return;
             }
 
-            API.sendChatMessageToPlayer(player, "You have left " + sender.Group.GroupName + ".");
-
-            foreach (var c in PlayerManager.Players)
-            {
-                if (c.GroupId == sender.GroupId)
-                {
-                    API.sendChatMessageToPlayer(c.Client, sender.CharacterName + "has left the group (QUIT).");
-
-                }
-            }
+            SendGroupMessage(player, sender.CharacterName + " has left the group. (Quit)");
 
             sender.GroupId = 0;
             sender.Group = null;
             sender.GroupRank = 0;
             sender.Save();
-
+            API.sendChatMessageToPlayer(player, "You have left " + sender.Group.Name + ".");
         }
         
-        [Command("scenario", GreedyArg = true)]
-        public void scenario_cmd(Client player, string scenarioName)
-        {
-            if(scenarioName == "off")
-            {
-                API.stopPlayerAnimation(player);
-            }
-            API.playPlayerScenario(player, scenarioName);
-        }
-
         [Command("invite")]
         public void invite_cmd(Client player, string id)
         {
             var invited = PlayerManager.ParseClient(id);
-            Character sender = API.getEntityData(player.handle, "Character");
-            Character invitedchar = API.getEntityData(invited.handle, "Character");
 
-            if ( sender.GroupId > 0 && sender.GroupRank > 6)
+            if (invited == null)
             {
-                API.setEntityData(invited.handle, "GroupInvitation", sender);
-
-                API.sendChatMessageToPlayer(invited, Color.Pm, "You have been invited to " + sender.Group.GroupName + ". Type /accept groupinvitation.");
-                API.sendChatMessageToPlayer(player, "You sent a group invitation to " + invitedchar.CharacterName + ".");
+                API.sendChatMessageToPlayer(player, Color.White, "That player is not connected.");
+                return;
             }
+
+            Character sender = API.getEntityData(player.handle, "Character");
+            GroupCommandPermCheck(sender, 6);
+
+            Character invitedchar = API.getEntityData(invited.handle, "Character");
+            API.setEntityData(invited.handle, "GroupInvitation", sender);
+
+            API.sendChatMessageToPlayer(invited, Color.Pm, "You have been invited to " + sender.Group.Name + ". Type /accept groupinvitation.");
+            API.sendChatMessageToPlayer(player, "You sent a group invitation to " + invitedchar.CharacterName + ".");
+            
         }
 
         [Command("setrankname", GreedyArg = true)]
-        public void setrankname_cmd(Client player, int rankid, string rankname)
+        public void setrankname_cmd(Client player, int rankId, string rankname)
         {
             Character character = API.getEntityData(player.handle, "Character");
-            Account account = API.getEntityData(player.handle, "Account");
-
-            if ((character.GroupId != 0 && character.GroupRank >= 8) || account.AdminLevel >= 5)
+            GroupCommandPermCheck(character, 5);
+               
+            
+            if (rankId < 1 || rankId > 10)
             {
-                character.Group.GroupRankNames.RemoveAt(rankid);
-                character.Group.GroupRankNames.Insert(rankid, rankname);
-                API.sendChatMessageToPlayer(player, "You have set Group ID " + character.Group.Id + " (" + character.Group.GroupName + ")'s Rank " + rankid + " to " + rankname + ".");
-                character.Group.Save();
+                API.sendChatMessageToPlayer(player, Color.White, "Valid ranks are between 1 and 10.");
+                return; 
             }
+
+            character.Group.RankNames.RemoveAt(rankId - 1);
+            character.Group.RankNames.Insert(rankId - 1, rankname);
+            API.sendChatMessageToPlayer(player, "You have set Group ID " + character.Group.Id + " (" + character.Group.Name + ")'s Rank " + rankId + " to " + rankname + ".");
+            character.Group.Save();
         }
 
         [Command("setdivisionname", GreedyArg = true)]
-        public void setdivisionname_cmd(Client player, int divid, string divname)
+        public void setdivisionname_cmd(Client player, int divId, string divname)
         {
             Character character = API.getEntityData(player.handle, "Character");
-            Account account = API.getEntityData(player.handle, "Account");
+            GroupCommandPermCheck(character, 5, true, 4);
 
-            if ((character.GroupId != 0 && character.GroupRank >= 8) || account.AdminLevel >= 5)
+          
+            if (divId < 1 || divId > character.Group.Divisions.Count)
             {
-                character.Group.GroupDivisions.RemoveAt(divid);
-                character.Group.GroupDivisions.Insert(divid, divname);
-                API.sendChatMessageToPlayer(player, "You have set Group ID " + character.Group.Id + " (" + character.Group.GroupName + ")'s Division " + divid + " to " + divname + ".");
-                character.Group.Save();
+                API.sendChatMessageToPlayer(player, Color.White, "Valid division IDs are between 1 and 5.");
+                return; 
             }
+
+            character.Group.Divisions.RemoveAt(divId - 1);
+            character.Group.Divisions.Insert(divId - 1, divname);
+            API.sendChatMessageToPlayer(player, "You have set Group ID " + character.Group.Id + " (" + character.Group.Name + ")'s Division " + divId + " to " + divname + ".");
+            character.Group.Save();
+        }
+
+        [Command("setdivisionrankname", GreedyArg = true)]
+        public void setdivisonrankname_cmd(Client player, int divId, int rankId, string rankName)
+        {
+            Character character = API.getEntityData(player.handle, "Character");
+            GroupCommandPermCheck(character, 5, true, 4);
+
+            if (divId < 1 || divId > 5)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "Valid divisions are between 1 and 5.");
+                return;
+            }
+
+            if (rankId < 1 || rankId > 5)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "Valid division ranks are between 1 and 5.");
+                return;
+            }
+
+            divId--;
+            rankId--;
+
+
+            character.Group.DivisionRanks[divId].RemoveAt(rankId);
+            character.Group.DivisionRanks[divId].Insert(rankId, rankName);
+            character.Group.Save();
+
+            API.sendChatMessageToPlayer(player, Color.White, "You have changed rank " + (rankId + 1) + "'s name in the " + character.Group.Divisions[divId] + " division to " + rankName);
         }
 
         [Command("set")]
         public void set_cmd(Client player, string id, string option, int amount)
         {
             var receiver = PlayerManager.ParseClient(id);
-            Account account = API.getEntityData(player.handle, "Account");
-            Character character = API.getEntityData(player.handle, "Character");
-
-            if (account.AdminLevel == 0)
-                return;
 
             if (receiver == null)
             {
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
-            if (option == "group")
+
+            Account account = API.getEntityData(player.handle, "Account");
+           
+            if (account.AdminLevel == 0)
+                return;
+
+            Character character = API.getEntityData(player.handle, "Character");
+
+            switch (option)
             {
-                character.GroupId = amount;
-                character.Group = GetGroupById(amount);
-                character.Save();
-                API.sendChatMessageToPlayer(player, "You have set " + PlayerManager.GetName(receiver) + "[" + id + "]" + "'s group to " + amount + ".");
-            }
-            else if (option == "grouprank")
-            {
-                character.GroupRank = amount;
-                character.Save();
-                API.sendChatMessageToPlayer(player, "You have set " + PlayerManager.GetName(receiver) + "[" + id + "]" + "'s group rank to " + amount + ".");
+                case "group":
+                    character.GroupId = amount;
+                    character.Group = GetGroupById(amount);
+                    character.Save();
+                    API.sendChatMessageToPlayer(player, "You have set " + PlayerManager.GetName(receiver) + "[" + id + "]" + "'s group to " + amount + ".");
+                    break;
+                case "grouprank":
+                    if (amount < 1 || amount > 10)
+                    {
+                        API.sendChatMessageToPlayer(player, Color.Grey, "Valid group ranks are between 1 and 10.");
+                        return;
+                    }
+
+                    character.GroupRank = amount;
+                    character.Save();
+                    API.sendChatMessageToPlayer(player, "You have set " + PlayerManager.GetName(receiver) + "[" + id + "]" + "'s group rank to " + amount + ".");
+                    break;
+                default:
+                    API.sendChatMessageToPlayer(player, Color.White, "Valid options are: group, grouprank");
+                    break;
             }
         }
 
@@ -274,36 +395,63 @@ namespace RoleplayServer.resources.group_manager
 
             var group = new Group();
 
-            group.GroupName = name;
-            group.GroupType = type;
+            group.Name = name;
+            group.Type = type;
             group.Insert();
 
-            API.sendChatMessageToPlayer(player, Color.Grey, "You have created group " + group.Id + " ( " + group.GroupName + ", Type: " + group.GroupType + " ). Use /editgroup to edit it.");
+            API.sendChatMessageToPlayer(player, Color.Grey, "You have created group " + group.Id + " ( " + group.Name + ", Type: " + group.Type + " ). Use /editgroup to edit it.");
         }
 
         public static Group GetGroupById(int id)
         {
             if (id == 0 || id > Groups.Count)
-                return null;
+                return Group.None;
 
             return (Group)Groups.ToArray().GetValue(id - 1);
         }
 
-        public void SendGroupMessage(Client player, string message)
+        public static void SendGroupMessage(Client player, string message, string color = Color.GroupChat)
         {
-            Character sender = API.getEntityData(player.handle, "Character");
+            Character sender = API.shared.getEntityData(player.handle, "Character");
             foreach (var c in PlayerManager.Players)
             {
                 if(c.GroupId == sender.GroupId)
                 {
-                    API.sendChatMessageToPlayer(c.Client, Color.GroupChat, "[G][" + sender.GroupRank +"] " + sender.Group.GroupRankNames[sender.GroupRank]+ " " +sender.CharacterName + " : " + "~w~" + message);
+                    API.shared.sendChatMessageToPlayer(c.Client, color, message);
                 }
             }
         }
 
+        public string GetRankName(Character c, bool ignoreDivision = false)
+        {
+            if (ignoreDivision == false)
+            {
+                return c.DivisionRank != 0 ? GetDivisonRankName(c) : c.Group.RankNames[c.GroupRank - 1];
+            }
+            return c.GroupRank == 0 ? "None" : c.Group.RankNames[c.GroupRank - 1];
+        }
+
+        public string GetDivisonRankName(Character c)
+        {
+            if (c.DivisionRank == 0) return "None";
+
+            return c.Group.DivisionRanks[c.Division - 1][c.DivisionRank - 1];
+        }
+
+        public bool GroupCommandPermCheck(Character c, int rank, bool isDivisionCmd = false, int divisionRank = 1)
+        {
+            if(isDivisionCmd == false)
+                if (c.Group != Group.None) return c.GroupRank >= rank;
+
+            if (c.Group != Group.None) return c.DivisionRank >= divisionRank || c.GroupRank >= rank;
+
+            API.sendChatMessageToPlayer(c.Client, "You do not have permission to perform this command.");
+            return false;
+        }
+
         public void load_groups()
         {
-            Groups = DatabaseManager.GroupTable.Find<Group>(Builders<Group>.Filter.Empty).ToList<Group>();
+            Groups = DatabaseManager.GroupTable.Find(Builders<Group>.Filter.Empty).ToList();
 
             foreach (var g in Groups)
             {

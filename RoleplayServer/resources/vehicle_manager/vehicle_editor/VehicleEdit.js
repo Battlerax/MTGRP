@@ -16,7 +16,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
             API.showCursor(true);
             API.setCanOpenChat(false);
             
-            API.sleep(500);
+            API.sleep(1000);
             vehicle_edit_browser.call("populate_fields", args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
             break;
         case "send_veh_edit_error":

@@ -125,7 +125,7 @@ namespace RoleplayServer.resources.vehicle_manager
 
             Blip = API.shared.createBlip(NetHandle);
             API.shared.setBlipColor(Blip, 40);
-            API.shared.setBlipSprite(Blip, 225);
+            API.shared.setBlipSprite(Blip, API.shared.getVehicleClass(VehModel) == 14 ? 410 : 225);
             API.shared.setBlipScale(Blip, (float)0.7);
             API.shared.setBlipShortRange(Blip, true);
 

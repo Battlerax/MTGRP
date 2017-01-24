@@ -46,6 +46,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 
         menu_pool.Add(character_menu);
         character_menu.Visible = true;
+        character_menu.CurrentSelection = 0;
 
         character_menu.OnItemSelect.connect(function (sender, item, index) {
             if (item.Text == "Create new character") {
