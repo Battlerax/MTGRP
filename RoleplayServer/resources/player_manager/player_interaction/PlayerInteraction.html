@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link href="../../stylesheet/css/metro.css" rel="stylesheet" />
+    <link href="../../stylesheet/css/metro-icons.css" rel="stylesheet" />
+    <link href="../../stylesheet/css/metro-schemes.css" rel="stylesheet"/>
+    <script src="../../jquery.js"></script>
+    <script src="../../stylesheet/js/metro.js"></script>
+
+</head>
+<body>
+
+<ul class="t-menu horizontal compact darcula">
+    <li id="follow_option" data-role="hint" data-hint="Follow|"><a href="#"><span class="icon mif-steps"></span></a></li>
+    <li id="view_description" data-role="hint" data-hint="View Description|"><a href="#"><span class="icon mif-eye"></span></a></li>
+    <li id="lspd_options" style="display:none">
+        <a href="#" style="background:blue" class="dropdown-toggle"><span class="icon mif-justice"></span></a>
+        <ul class="t-menu compact" data-role="dropdown">
+            <li id="cuff_option" data-role="hint" data-hint="Cuff|"><a href="#" style="background:blue"><span class="icon mif-security"></span></a></li>
+            <li id="drag_option" data-role="hint" data-hint="Drag|"><a href="#" style="background:blue"><span class="icon mif-link"></span></a></li>
+        </ul>
+    </li>
+
+    <li id="exit_option" data-role="hint" data-hint="Exit Menu|"><a href="#"><span class="icon mif-cancel"></span></a></li>
+</ul>
+
+</body>
+</html>
+
+<script>
+    
+    function display_lspd_options() {
+        $('#lspd_options').css("display", "block");
+    }
+
+    $('#follow_option').click(function () {
+        resourceCall("interaction_menu_click", "follow");
+    });
+
+    $('#view_description').click(function () {
+        resourceCall("interaction_menu_click", "view_description");
+    });
+
+    $('#cuff_option').click(function () {
+        resourceCall("interaction_menu_click", "cuff");
+    });
+
+    $('#drag_option').click(function () {
+        resourceCall("interaction_menu_click", "drag");
+    });
+
+    $('#exit_option').click(function () {
+        resourceCall("interaction_menu_click", "exit");
+    });
+
+</script>

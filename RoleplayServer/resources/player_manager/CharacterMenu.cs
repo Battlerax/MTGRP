@@ -126,6 +126,11 @@ namespace RoleplayServer.resources.player_manager
                         {
                             GroupManager.SendGroupMessage(player,
                                 character.CharacterName + " from your group has logged in.");
+
+                            if (character.Group.CommandType == Group.CommandTypeLspd)
+                            {
+                                API.setEntitySyncedData(character.Client.handle, "IsCop", true);
+                            }
                         }
 
                         API.sendChatMessageToPlayer(player, "You have successfully loaded your character: " + charName);

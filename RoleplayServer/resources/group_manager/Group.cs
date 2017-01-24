@@ -1,14 +1,20 @@
 using System;
 using System.Collections.Generic;
+using GTANetworkServer;
+using GTANetworkShared;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.Options;
 using MongoDB.Driver;
+using RoleplayServer.resources.core;
 using RoleplayServer.resources.database_manager;
+using RoleplayServer.resources.player_manager;
 
 namespace RoleplayServer.resources.group_manager
 {
     public class Group
     {
+        public static readonly int CommandTypeLspd = 1;
+
         public static readonly Group None = new Group();
 
         public int Id { get; set; }
@@ -33,6 +39,8 @@ namespace RoleplayServer.resources.group_manager
 
         public DateTime DisbandDate { get; set; }
 
+        public MarkerZone Locker { get; set; }
+
         public Group()
         {
             Id = 0;
@@ -40,6 +48,8 @@ namespace RoleplayServer.resources.group_manager
             Type = 0;
             CommandType = 0;
             Motd = "Welcome To Group";
+
+            Locker = MarkerZone.None;
         }
 
         public void Insert()
@@ -52,6 +62,40 @@ namespace RoleplayServer.resources.group_manager
         {
             var filter = Builders<Group>.Filter.Eq("Id", Id);
             DatabaseManager.GroupTable.ReplaceOne(filter, this);
+        }
+
+        public void register_markerzones()
+        {
+            if (Locker != MarkerZone.None)
+            {
+                Locker.ColZone.onEntityEnterColShape += (shape, entity) =>
+                {
+                    if (API.shared.getEntityType(entity) != EntityType.Player)
+                    {
+                        return;
+                    }
+                    foreach (var c in PlayerManager.Players)
+                    {
+                        if(c.Client != entity) { continue; }
+                        c.LockerZoneGroup = this;
+                    }
+                };
+                Locker.ColZone.onEntityExitColShape += (shape, entity) =>
+                {
+                    if (API.shared.getEntityType(entity) != EntityType.Player)
+                    {
+                        return;
+                    }
+                    foreach (var c in PlayerManager.Players)
+                    {
+                        if (c.Client != entity)
+                        {
+                            continue;
+                        }
+                        c.LockerZoneGroup = Group.None;
+                    }
+                };
+            }
         }
 
     }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using GTANetworkServer;
+using GTANetworkShared;
 using MongoDB.Driver;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.database_manager;
@@ -206,6 +207,14 @@ namespace RoleplayServer.resources.group_manager
 
             Character character = API.getEntityData(player.handle, "Character");
             SendGroupMessage(player, "[G][" + character.GroupRank + "] " + GetRankName(character) + " " + character.CharacterName + " : " + "~w~" + message);
+        }
+
+        [Command("gotopoint")]
+        public void gotopoint_cmd(Client player, float x, float y, float z, string ipl = "none")
+        {
+            API.requestIpl(ipl);
+            API.setEntityPosition(player.handle, new Vector3(x, y, z));
+            API.sendChatMessageToPlayer(player, "TPed");
         }
 
         [Command("accept")]
@@ -433,9 +442,7 @@ namespace RoleplayServer.resources.group_manager
 
         public string GetDivisonRankName(Character c)
         {
-            if (c.DivisionRank == 0) return "None";
-
-            return c.Group.DivisionRanks[c.Division - 1][c.DivisionRank - 1];
+            return c.DivisionRank == 0 ? "None" : c.Group.DivisionRanks[c.Division - 1][c.DivisionRank - 1];
         }
 
         public bool GroupCommandPermCheck(Character c, int rank, bool isDivisionCmd = false, int divisionRank = 1)
@@ -455,7 +462,7 @@ namespace RoleplayServer.resources.group_manager
 
             foreach (var g in Groups)
             {
-                
+                g.register_markerzones();
             }
 
             DebugManager.DebugMessage("Loaded " + Groups.Count + " groups from the database.");
