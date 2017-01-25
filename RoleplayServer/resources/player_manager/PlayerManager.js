@@ -20,5 +20,5 @@ API.onUpdate.connect(function () {
         API.drawText("~g~$~w~" + player_money, API.getScreenResolutionMantainRatio().Width - 15, 100, 1, 115, 186, 131, 255, 4, 2, false, true, 0);
     }
 
-    API.dxDrawTexture("/cef_resources/MTGVRP_LOGO_SMALL.png", new Point(API.getScreenResolutionMantainRatio().Width - 100, 0), new Size(100, 100), 0);
+    //API.dxDrawTexture("/cef_resources/MTGVRP_LOGO_SMALL.png", new Point(API.getScreenResolutionMantainRatio().Width - 100, 0), new Size(100, 100), 0);
 });

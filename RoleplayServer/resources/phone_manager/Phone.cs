@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
@@ -74,7 +75,7 @@ namespace RoleplayServer.resources.phone_manager
 
         public bool HasContactWithName(string name)
         {
-            return Contacts.Count(pc => pc.Name == name) > 0;
+            return Contacts.Count(pc => string.Equals(pc.Name, name, StringComparison.OrdinalIgnoreCase)) > 0;
         }
 
         public bool HasContactWithNumber(int number)
@@ -84,7 +85,7 @@ namespace RoleplayServer.resources.phone_manager
 
         public bool HasContact(string name, int number)
         {
-            return Contacts.Count(pc => pc.Number == number || pc.Name == name) > 0;
+            return Contacts.Count(pc => pc.Number == number || string.Equals(pc.Name, name, StringComparison.OrdinalIgnoreCase)) > 0;
         }
 
 

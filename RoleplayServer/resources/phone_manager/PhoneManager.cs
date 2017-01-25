@@ -49,13 +49,13 @@ namespace RoleplayServer.resources.phone_manager
 
             if (character.Phone.IsOn)
             {
-                ChatManager.RoleplayMessage(character, "turned their phone off.", ChatManager.RoleplayMe, 10);
+                ChatManager.RoleplayMessage(character, "turned their phone off.", ChatManager.RoleplayMe);
                 character.Phone.IsOn = false;
                 character.Phone.Save();
             }
             else
             {
-                ChatManager.RoleplayMessage(character, "turned their phone on.", ChatManager.RoleplayMe, 10);
+                ChatManager.RoleplayMessage(character, "turned their phone on.", ChatManager.RoleplayMe);
                 character.Phone.IsOn = true;
                 character.Phone.Save();
             }
@@ -156,7 +156,7 @@ namespace RoleplayServer.resources.phone_manager
                     return;
                 }
 
-                var contact = c.Phone.Contacts.Single(pc => pc.Name == name);
+                var contact = c.Phone.Contacts.Single(pc => string.Equals(pc.Name, name, StringComparison.OrdinalIgnoreCase));
                 API.sendChatMessageToPlayer(player, Color.White, "You have deleted " + name + " (" + contact.Number + ") from your contacts.");
                 c.Phone.DeleteContact(contact);
             }
@@ -263,7 +263,7 @@ namespace RoleplayServer.resources.phone_manager
                     return;
                 }
 
-                var contact = sender.Phone.Contacts.Find(pc => pc.Name == input);
+                var contact = sender.Phone.Contacts.Find(pc => string.Equals(pc.Name, input, StringComparison.OrdinalIgnoreCase));
                 var character = PlayerManager.Players.Find(c => c.Phone.Number == contact.Number);
 
                 if (character == null)
@@ -298,7 +298,7 @@ namespace RoleplayServer.resources.phone_manager
         public static Phone GetPhoneByNumber(int number)
         {
             var phoneFilter = Builders<Phone>.Filter.Eq("Number", number);
-            var foundPhones = DatabaseManager.PhoneTable.Find(phoneFilter).ToList<Phone>();
+            var foundPhones = DatabaseManager.PhoneTable.Find(phoneFilter).ToList();
             return foundPhones.Count > 0 ? foundPhones[0] : Phone.None;
         }
 
