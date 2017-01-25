@@ -10,6 +10,7 @@ using RoleplayServer.resources.group_manager;
 using RoleplayServer.resources.job_manager;
 using RoleplayServer.resources.job_manager.fisher;
 using RoleplayServer.resources.job_manager.taxi;
+using RoleplayServer.resources.phone_manager;
 using Vehicle = RoleplayServer.resources.vehicle_manager.Vehicle;
 
 namespace RoleplayServer.resources.player_manager
@@ -125,6 +126,8 @@ namespace RoleplayServer.resources.player_manager
     
         //Phone System
         public int PhoneNumber { get; set; }
+        [BsonIgnore]
+        public Phone Phone { get; set; }
 
         //Groups
         public int GroupId { get; set; }

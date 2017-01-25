@@ -96,6 +96,7 @@
 
 	<!-- CORE -->
 	<file src="cef_resources/MTGVRP_LOGO_BIG.png"/>
+	<file src="cef_resources/MTGVRP_LOGO_SMALL.png"/>
 	
 	
 	<file src="jquery.js" />

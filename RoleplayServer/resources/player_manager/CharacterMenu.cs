@@ -6,6 +6,7 @@ using RoleplayServer.resources.component_manager;
 using RoleplayServer.resources.database_manager;
 using RoleplayServer.resources.group_manager;
 using RoleplayServer.resources.job_manager;
+using RoleplayServer.resources.phone_manager;
 
 namespace RoleplayServer.resources.player_manager
 {
@@ -117,6 +118,9 @@ namespace RoleplayServer.resources.player_manager
 
                         character.JobOne = JobManager.GetJobById(character.JobOneId);
                         character.Group = GroupManager.GetGroupById(character.GroupId);
+
+                        character.Phone = PhoneManager.GetPhoneByNumber(character.PhoneNumber);
+                        character.Phone.LoadContacts();
 
                         API.setEntityPosition(player.handle, character.LastPos);
                         API.setEntityRotation(player.handle, character.LastRot);
