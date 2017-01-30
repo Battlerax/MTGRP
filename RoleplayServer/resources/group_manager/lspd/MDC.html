@@ -1,0 +1,214 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link href="../../stylesheet/css/metro.css" rel="stylesheet" />
+    <link href="../../stylesheet/css/metro-icons.css" rel="stylesheet" />
+    <script src="../../jquery.js"></script>
+    <script src="../../stylesheet/js/metro.js"></script>
+    
+    <style>
+
+        .main_container {
+            width: 1020px;
+            height: 600px;
+
+            position: absolute;
+            margin: -100px 0 0 -200px;
+            top: 25%;
+            left: 35%;
+
+            background-image: url("../../cef_resources/LSPDMDC.png");
+            background-size: cover;
+            background-repeat: no-repeat;
+
+            background-color: rgba(0, 0, 0, 0.25);
+        }
+
+        .inner_menu {
+            position: absolute;
+            margin-top: 20%;
+            margin-left: 50px;
+
+            font-family: BebasKai;
+            font-size: 30px;
+            color: white;
+        }
+
+        .inner_container {
+
+            position: absolute;
+            margin-top: 15%;
+            margin-left: 30%;
+
+            width: 650px;
+            height: 340px;
+
+            background-color: #0B1B34;
+
+            outline: #18325A solid thin;
+   
+        }
+
+        .menu_item {
+            padding: 5px;
+            user-select: none;
+            cursor: pointer;
+        }
+
+        .menu_item:hover {
+            color: #01AAD4;
+        }
+
+        .active_item {
+            color: #01AAD4;
+        }
+
+    </style>
+
+</head>
+<body>
+    
+<div class="panel main_container">
+        
+
+    <div class="inner_menu">
+            
+        <div id="announcement_menu" class="menu_item active_item">Announcements</div>
+        <div id="911_menu" class="menu_item">911 Center</div>
+        <div id="bolo_menu" class="menu_item">BOLO Center</div>
+        <div id="prism_menu" class="menu_item">PRISM Search</div>
+        <div id="highcommand_menu" class="menu_item">High Command</div>
+    </div>
+    
+    
+    <div class="inner_container shadow">
+        
+        <div id="announcement_content" style="padding: 25px">
+            <a style="color: #01AAD4; font-family: BebasKai;font-size:40px">Latest Announcement: </a>
+            <p style="color: white; font-family: BebasKai;font-size:25px"> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam a sapien nec augue commodo gravida. Donec fringilla tortor et ex fermentum laoreet. Vivamus lacinia ut nunc vel egestas. Nulla ut imperdiet lectus, non sollicitudin magna. Fusce dictum nisl sit amet massa posuere ultrices. Suspendisse hendrerit mi at rutrum mollis. Etiam lacinia tortor in scelerisque euismod. Quisque eleifend sed libero ut feugiat. Donec dapibus cursus turpis. Nulla facilisi. Quisque faucibus egestas fringilla. </p>
+        </div>
+        
+        <div id="911_content" style="padding: 25px;display: none">
+            
+            <table class="table border striped">
+                <thead>
+                    <tr>
+                        <th>Phone Number</th>
+                        <th>Time</th>
+                        <th>Report</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="success">
+                        <td style="color: black;font-family:BebasKai">123</td>
+                        <td style="color: black;font-family:BebasKai">4:15pm</td>
+                        <td style="color: black;font-family:BebasKai">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus mattis luctus neque, nec feugiat quam dapibus vel.</td>
+                    </tr>
+                    <tr class="success">
+                        <td style="color: black;font-family:BebasKai">456</td>
+                        <td style="color: black;font-family:BebasKai">4:15pm</td>
+                        <td style="color: black;font-family:BebasKai"> Fusce interdum porttitor tortor, sed rutrum ligula vulputate nec. Praesent ac nisi viverra, iaculis lorem vel, luctus arcu.</td>
+                    </tr>
+                    <tr class="success">
+                        <td style="color: black;font-family:BebasKai">789</td>
+                        <td style="color: black;font-family:BebasKai">4:15pm</td>
+                        <td style="color: black;font-family:BebasKai"> Sed vitae dictum turpis, id suscipit lorem. Vestibulum at euismod ex. Curabitur vitae posuere metus, a dictum massa. Duis sapien risus, egestas in leo sit amet, fringilla porta nisl.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div id="bolo_content" style="padding: 25px;display: none"> BOLO center </div>
+        
+        <div id="prism_content" style="padding: 25px;display: none"> 
+            <div class="panel place-left" style="width: 45%;">
+                <div class="heading">
+                    <span class="icon mif-users"></span>
+                    <span class="title">Citizen Search</span>
+                </div>
+                <div class="content">
+                    <div id="citizen_lookup" style="padding: 10px;">
+
+                        <a style="font-family: BebasKai;font-size:25px">Name</a><br />
+                        <div class="input-control text">
+                            <input id="name_input" type="text">
+                        </div>
+                        <button id="citizen_search" class="button success"><span class="mif-search"></span> Search</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel place-right" style="width: 45%; height: 90%;">
+                <div class="heading">
+                    <span class="icon mif-automobile"></span>
+                    <span class="title">Vehicle Search</span>
+                </div>
+                <div class="content">
+                    <div id="vehicle_lookup" style="padding: 10px;">
+                        <a style="font-family: BebasKai;font-size:25px">License Plate</a><br />
+                        <div class="input-control text">
+                            <input id="license_input" type="text">
+                        </div>
+                        <button id="vehicle_search" class="button success"><span class="mif-search"></span> Search</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="highcommand_content" style="padding: 25px;display: none"> High Command center </div>
+
+    </div>
+</div>
+
+
+</body>
+</html>
+
+<script>
+
+    $('#announcement_menu').click(() => {
+        hide_all();
+        set_active('#announcement_menu', '#announcement_content');
+    });
+
+    $('#911_menu').click(() => {
+        hide_all();
+        set_active('#911_menu', '#911_content');
+    });
+
+    $('#bolo_menu').click(() => {
+        hide_all();
+        set_active('#bolo_menu', '#bolo_content');
+    });
+
+    $('#prism_menu').click(() => {
+        hide_all();
+        set_active('#prism_menu', '#prism_content');
+    });
+
+    $('#highcommand_menu').click(() => {
+        hide_all();
+        set_active('#highcommand_menu', '#highcommand_content');
+    });
+
+    function hide_all() {
+        $('#announcement_content').css("display", "none");
+        $('#911_content').css("display", "none");
+        $('#bolo_content').css("display", "none");
+        $('#prism_content').css("display", "none");
+        $('#highcommand_content').css("display", "none");
+
+        $('#announcement_menu').removeClass("active_item");
+        $('#911_menu').removeClass("active_item");
+        $('#bolo_menu').removeClass("active_item");
+        $('#prism_menu').removeClass("active_item");
+        $('#highcommand_menu').removeClass("active_item");
+    }
+
+    function set_active(menu, content) {
+        $(content).css("display", "block");
+        $(menu).addClass("active_item");
+    }
+
+</script>

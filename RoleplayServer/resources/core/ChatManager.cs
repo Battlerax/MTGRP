@@ -346,7 +346,7 @@ namespace RoleplayServer.resources.core
             string roleplayMsg = null;
 
             switch (type)
-            {
+            { 
                 case 0: //ME
                     roleplayMsg = "* " + PlayerManager.GetName(player) + " " + action;
                     break;
@@ -368,7 +368,7 @@ namespace RoleplayServer.resources.core
                 character.AmeTimer.Stop();
             }
 
-            character.AmeText = API.shared.createTextLabel(Color.PlayerRoleplay + character.CharacterName + action, player.position, 15, (float)(0.5), false, player.dimension);
+            character.AmeText = API.shared.createTextLabel(Color.PlayerRoleplay + character.CharacterName + " " + action, player.position, 15, (float)(0.5), false, player.dimension);
             API.shared.setTextLabelColor(character.AmeText, 194, 162, 218, 255);
             API.shared.attachEntityToEntity(character.AmeText, player.handle, "SKEL_Head", new Vector3(0.0, 0.0, 1.3), new Vector3(0, 0, 0));
 

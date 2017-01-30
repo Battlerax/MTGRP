@@ -40,6 +40,7 @@ namespace RoleplayServer.resources.group_manager
         public DateTime DisbandDate { get; set; }
 
         public MarkerZone Locker { get; set; }
+        public MarkerZone ArrestLocation { get; set; }
 
         public Group()
         {
@@ -50,6 +51,7 @@ namespace RoleplayServer.resources.group_manager
             Motd = "Welcome To Group";
 
             Locker = MarkerZone.None;
+            ArrestLocation = MarkerZone.None;
         }
 
         public void Insert()

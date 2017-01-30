@@ -150,6 +150,71 @@ namespace RoleplayServer.resources.group_manager
             }
         }
 
+        [Command("setlockerpos")]
+        public void setlockerpos_cmd(Client player)
+        {
+            Character character = API.getEntityData(player.handle, "Character");
+
+            GroupCommandPermCheck(character, 10);
+
+            if (character.Group.Type != Group.CommandTypeLspd)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "Only the LSPD may use this command.");
+                return;
+            }
+
+            if (character.Group.Locker == MarkerZone.None)
+            {
+                character.Group.Locker = new MarkerZone(character.Client.position, character.Client.rotation,
+                    character.Client.dimension) {LabelText = "LSPD Locker Room~n~/locker"};
+
+                character.Group.Locker.Create();
+            }
+            else
+            {
+                character.Group.Locker.Location = character.Client.position;
+                character.Group.Locker.Rotation = character.Client.rotation;
+                character.Group.Locker.Dimension = character.Client.dimension;
+                character.Group.Locker.Refresh();
+            }
+          
+            API.sendChatMessageToPlayer(player, Color.White, "You have moved the LSPD locker location.");
+            return;
+        }
+
+        [Command("setarrestpos")]
+        public void setarrestpos_cmd(Client player)
+        {
+            Character character = API.getEntityData(player.handle, "Character");
+
+            GroupCommandPermCheck(character, 10);
+
+            if (character.Group.Type != Group.CommandTypeLspd)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "Only the LSPD may use this command.");
+                return;
+            }
+
+            if (character.Group.ArrestLocation == MarkerZone.None)
+            {
+                character.Group.ArrestLocation = new MarkerZone(character.Client.position, character.Client.rotation,
+                        character.Client.dimension)
+                    {LabelText = "Arrest Location~n~/arrest"};
+
+                character.Group.ArrestLocation.Create();
+            }
+            else
+            {
+                character.Group.ArrestLocation.Location = character.Client.position;
+                character.Group.ArrestLocation.Rotation = character.Client.rotation;
+                character.Group.ArrestLocation.Dimension = character.Client.dimension;
+                character.Group.ArrestLocation.Refresh();
+            }
+
+            API.sendChatMessageToPlayer(player, Color.White, "You have moved the LSPD arrest location.");
+        }
+
+
         [Command("setdivisionrank")]
         public void setdivisionrank_cmd(Client player, string id, int rank)
         {

@@ -7,6 +7,7 @@ using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using RoleplayServer.resources.database_manager;
 using RoleplayServer.resources.group_manager;
+using RoleplayServer.resources.group_manager.lspd;
 using RoleplayServer.resources.job_manager;
 using RoleplayServer.resources.job_manager.fisher;
 using RoleplayServer.resources.job_manager.taxi;
@@ -141,6 +142,7 @@ namespace RoleplayServer.resources.player_manager
 
         //LSPD Related
         public bool IsInPoliceUniform { get; set; }
+        public bool IsOnPoliceDuty { get; set; }
 
         //Player Interaction
         [BsonIgnore]
@@ -309,6 +311,20 @@ namespace RoleplayServer.resources.player_manager
         public string rp_name()
         {
             return CharacterName.Replace("_", " ");
+        }
+
+        //Criminal Records
+
+        public void RecordCrime(Crime crime, Character officer)
+        {
+            var record = new CriminalRecord(this.Id.ToString(), officer.Id.ToString(), crime);
+            record.Insert();
+        }
+
+        public List<CriminalRecord> GetCriminalRecord()
+        {
+            var filter = Builders<CriminalRecord>.Filter.Eq("CharacterId", Id.ToString());
+            return DatabaseManager.CriminalRecordTable.Find(filter).ToList();
         }
     }
 }

@@ -74,6 +74,9 @@
 	<script src="group_manager/Group.cs" type="server" lang="csharp"/>
 	<script src="group_manager/GroupManager.cs" type="server" lang="csharp"/>
 	
+	<script src="group_manager/lspd/Lspd.cs" type="server" lang="csharp"/>
+	<script src="group_manager/lspd/LspdLocker.js" type="client" lang="javascript"/>
+	
 	<!--- PHONES -->
 	
 	<script src="phone_manager/Phone.cs" type="server" lang="csharp"/>

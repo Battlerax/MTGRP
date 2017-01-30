@@ -2,6 +2,7 @@
 using MongoDB.Driver;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.group_manager;
+using RoleplayServer.resources.group_manager.lspd;
 using RoleplayServer.resources.job_manager;
 using RoleplayServer.resources.phone_manager;
 using RoleplayServer.resources.player_manager;
@@ -23,6 +24,9 @@ namespace RoleplayServer.resources.database_manager
         public static IMongoCollection<PhoneContact> ContactTable;
         public static IMongoCollection<Group> GroupTable;
 
+        public static IMongoCollection<Crime> CrimeTable;
+        public static IMongoCollection<CriminalRecord> CriminalRecordTable;
+
 
         public static void DatabaseManagerInit()
         {
@@ -38,6 +42,9 @@ namespace RoleplayServer.resources.database_manager
             PhoneTable = _database.GetCollection<Phone>("phones");
             ContactTable = _database.GetCollection<PhoneContact>("phonecontacts");
             GroupTable = _database.GetCollection<Group>("groups");
+
+            CrimeTable = _database.GetCollection<Crime>("crimes");
+            CriminalRecordTable = _database.GetCollection<CriminalRecord>("criminalrecords");
 
             DebugManager.DebugMessage("[DatabaseM] Database Manager initalized!");
         }
