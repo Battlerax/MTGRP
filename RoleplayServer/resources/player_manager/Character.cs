@@ -143,6 +143,12 @@ namespace RoleplayServer.resources.player_manager
 
         [BsonIgnore]
         public Phone Phone { get; set; }
+        [BsonIgnore]
+        public Character InCallWith { get; set; }
+        [BsonIgnore]
+        public Character BeingCalledBy { get; set; }
+        [BsonIgnore]
+        public Character CallingPlayer { get; set; }
 
         //Groups
         public int GroupId { get; set; }
@@ -204,6 +210,10 @@ namespace RoleplayServer.resources.player_manager
             Group = Group.None;
 
             FollowingPlayer = Character.None;
+
+            InCallWith = Character.None;
+            BeingCalledBy = Character.None;
+            CallingPlayer = Character.None;
         }
 
         public void Insert()
