@@ -14,202 +14,128 @@ namespace RoleplayServer.resources.group_manager.lspd
     {
         public LspdCommands()
         {
-            Vector3 ArrestPos = new Vector3(468.7845f, -1015.69f, 26.38641f);
-            ColShape ArrestShape;
-            ArrestShape = API.createCylinderColShape(ArrestPos, 2f, 3f);
+
         }
-
-        [Command("cuff")] // cuff command
-        public void cuff_cmd(Client player, Client target)
+        [Command("recordcrimes", GreedyArg = true)]
+        public void recordcrimes_cmd(Client player, string id, string crime)
         {
-            if (target == player){
-                API.sendChatMessageToPlayer(player, "~r~You can't cuff yourself!");
-                return;
-            }
+            var receiver = PlayerManager.ParseClient(id);
 
-            if (API.getEntityPosition(player).DistanceToSquared(API.getEntityPosition(target)) > 16f)
+            Character character = API.getEntityData(player.handle, "Character");
+            Character receiverCharacter = API.getEntityData(receiver.handle, "Character");
+
+            if (character.GroupId != 1)
             {
-                API.sendChatMessageToPlayer(player, "You're too far away from ~b~" + target.name + "~w~ to arrest them.");
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ You must be a member of the LSPD to use this command.");
                 return;
             }
 
-            API.sendChatMessageToPlayer(player, "You have handcuffed ~b~" + target.name + "~w~.");
-            API.sendChatMessageToPlayer(target, "You have been handcuffed by ~b~" + player.name + "~w~!");
-            API.playPlayerAnimation(target, 1, "mp_arresting", "idle");
-            API.setEntityData(target, "Tied", true);
+            if (receiver == null)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
+            }
+            API.sendNotificationToPlayer(player, "You have recorded " + receiver.name + " for committing a crime.");
+            API.sendNotificationToPlayer(receiver, player.name + " has recorded a crime you committed: ~r~" + crime + "~w~.");
+            API.setEntityData(receiver, "crimesRecorded", true);
+            character.playerCrimes += 1;
+
         }
-
-        [Command("uncuff")] // uncuff command
-        public void uncuff_cmd(Client player, Client target)
+        [Command("arrest", GreedyArg = true)] // arrest command
+        public void arrest_cmd(Client player, string id, int time)
         {
-            if (target == player){
-                API.sendChatMessageToPlayer(player, "~r~You can't cuff yourself!");
+
+            var receiver = PlayerManager.ParseClient(id);
+
+            Character character = API.getEntityData(player.handle, "Character");
+            Character receiverCharacter = API.getEntityData(receiver.handle, "Character");
+
+            if (character.GroupId != 1) {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ You must be a member of the LSPD to use this command.");
                 return;
             }
 
-            if (API.getEntityPosition(player).DistanceToSquared(API.getEntityPosition(target)) > 16f)
+            if (receiver == player)
             {
-                API.sendChatMessageToPlayer(player, "~r~You're too far away!");
+                API.sendNotificationToPlayer(player, "~r~You can't arrest yourself!");
                 return;
             }
 
-            if (API.getEntityData(target, "Tied") == false){
-                API.sendChatMessageToPlayer(player, "This player is already uncuffed.");
-            }
-
-            API.sendChatMessageToPlayer(player, "~g~You have uncuffed " + target.name + ".");
-            API.sendChatMessageToPlayer(target, "~g~You have been uncuffed by " + player.name + ".");
-            API.stopPlayerAnimation(target);
-            API.setEntityData(target, "Tied", false);
-        }
-
-        [Command("arrest")] // arrest command
-        public void arrest_cmd(Client player, Client target, int time)
-        {
-            if (target == player)
+            if(API.getEntityData(receiver, "crimesRecorded") == false)
             {
-                API.sendChatMessageToPlayer(player, "~r~You can't arrest yourself!");
+                API.sendChatMessageToPlayer(player, "You must record this player's crimes before they can be arrested.");
+            }
+            if (character.GroupId == receiverCharacter.GroupId)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ You cannot arrest a member of the LSPD.");
                 return;
             }
 
-            //check if crimes were recorded. If not, tell them to record crimes.
-
+            if (receiver == null)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
+            }
 
             if (!(bool)API.call("Lspd", "arrestPointCheck", player))
             {
-                API.sendChatMessageToPlayer(player, "~r~You are too far away from the arrest point.");
+                API.sendNotificationToPlayer(player, "~r~You are too far away from the arrest point.");
                 return;
             }
 
-            API.sendChatMessageToPlayer(player, "You have arrested ~b~" + target.name + "~w~.");
-            API.sendChatMessageToPlayer(target, "You have been arrested by ~b~" + target.name + "~w~.");
-            GroupManager.SendGroupMessage(player, player.name + " has placed " + target.name + " under arrest.");
+            API.sendNotificationToPlayer(player, "You have arrested ~b~" + receiver.name + "~w~.");
+            API.sendNotificationToPlayer(receiver, "You have been arrested by ~b~" + player.name + "~w~.");
+            GroupManager.SendGroupMessage(player, player.name + " has placed " + receiver.name + " under arrest.");
+            API.setEntityData(receiver, "crimesRecorded", false);
             API.call("Lspd", "jailControl", time);
-
-            
         }
 
-        [Command("frisk")]
-        public void frisk_cmd(Client player, Client target)
+        [Command("frisk", GreedyArg = true)]
+        public void frisk_cmd(Client player, string id)
         {
-            if (target == player)
-            {
-                API.sendChatMessageToPlayer(player, "~r~You can't frisk yourself!");
-            }
+            var receiver = PlayerManager.ParseClient(id);
 
-            if (API.getEntityPosition(player).DistanceToSquared(API.getEntityPosition(target)) > 16f)
+            Character character = API.getEntityData(player.handle, "Character");
+
+            if (character.GroupId != 1)
             {
-                API.sendChatMessageToPlayer(player, "~r~You're too far away!");
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ You must be a member of the LSPD to use this command.");
                 return;
             }
 
-            //check items on player (first implement inv system).
+            if (receiver == null)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
+            }
+
+            if (receiver == player)
+            {
+                API.sendNotificationToPlayer(player, "~r~You can't frisk yourself!");
+            }
+
+            if (API.getEntityPosition(player).DistanceToSquared(API.getEntityPosition(receiver)) > 16f)
+            {
+                API.sendNotificationToPlayer(player, "~r~You're too far away!");
+                return;
+            }
+
+            //check items on player (first implement inv system.
         }
 
-        [Command("detain")]
-        public void detainPlayer(Client sender, Client target, int seatNumber)
+        [Command("megaphone", Alias = "mp", GreedyArg = true)]
+        public void megaphone_cmd(Client player, string text)
         {
-            if (API.getEntityData(target, "Tied") == false)
+            Character character = API.getEntityData(player.handle, "Character");
+
+            if (character.GroupId != 1)
             {
-                API.sendChatMessageToPlayer(sender, "Players must be tied/cuffed before you can detain them.");
-                return;
-            }
-            if (seatNumber > 2)
-            {
-                API.sendChatMessageToPlayer(sender, "Seat number ranges from 0-2 (0 is the passenger seat).");
-                return;
-            }
-            if (API.isPlayerInAnyVehicle(sender) == false)
-            {
-                API.sendChatMessageToPlayer(sender, "You must be in a vehicle.");
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ You must be a member of the LSPD to use this command.");
                 return;
             }
 
-            if (API.getEntityPosition(sender).DistanceToSquared(API.getEntityPosition(target)) > 20f)
-            {
-                API.sendChatMessageToPlayer(sender, "~r~You're too far away!");
-                return;
-            }
-
-            API.sendChatMessageToPlayer(sender, "~g~You have detained " + target.name + " into a vehicle.");
-            API.sendChatMessageToPlayer(target, "~g~You were detained by " + sender.name + " into a vehicle.");
-            API.setPlayerIntoVehicle(target, sender.vehicle.handle, seatNumber);
-
-        }
-
-        [Command("shout", Alias = "s", GreedyArg = true)]
-        public void shout_cmd(Client player, string text)
-        {
-            ChatManager.NearbyMessage(player, 25, PlayerManager.GetName(player) + " shouts: " + text);
+            ChatManager.NearbyMessage(player, 30, PlayerManager.GetName(player) + " [MEGAPHONE]: " + text);
         }
   
     }
 }
-
-
-/*
--------------------------------------
-COMMANDS LIST:
--------------------------------------
-- /stun
-- /arrest
-- /frisk
-- /uncuff
-- /cuff
-- /detain
-- /recordcrime
-- /gate
-- /radio
-- /lspd
-- /megaphone
-- /recordcheck
-- /elevator
-- /door
-- /ticket
-- /confiscate
-- /listmyfaction
-- /fingerprint
-- /backup
-- /acceptbackup
-- /cancelbackup
-- /removeobject
-- /deploy
-- /breakin
-- /dep
-- /wanted
-- /quitfaction
-- /listranks
-- /mdc
-- /enterenf
-- /lockenf
-- /oocuncuff
-- /removeplayer
-- /checkeg
-- /rappel
-- /headphones
-- /plantbug
-- /removebug
-- /tunein
-- /ptazer
-- /houseinfo
-- /swatinv
-- /givebadge
-- /undercoverskins
-- /togglefactionchat
-- /gov
-- /listbugs
-- /removeallbugs
-- /editpaychecks
-- /invite
-- /uninvite
-- /motd
-- /safelocation
-- /changeranks
-- /factionsafewithdraw
-- /factionsafedeposit
-- /factionsafebalance
-- /changerank
-- /disbandfaction
-- /removewiretransfare
-- /removeuninvite
-*/

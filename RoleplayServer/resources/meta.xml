@@ -15,7 +15,6 @@
 	<script src="core/ChatManager.cs" type="server" lang="csharp"/>
 	<script src="core/MarkerZone.cs" type="server" lang="csharp"/>
 	<script src="core/DoorManager.cs" type="server" lang="csharp"/>
-	<script src="core/ServerwideEvents.cs" type="server" lang="csharp"/>
 	
 	
 	<!-- DATABASE -->

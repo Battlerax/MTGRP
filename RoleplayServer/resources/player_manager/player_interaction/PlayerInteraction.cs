@@ -145,19 +145,20 @@ namespace RoleplayServer.resources.player_manager.player_interaction
             };
         }
 
-        [Command("detain")]
+        [Command("detain", GreedyArg = true)]
         public void detainPlayer(Client player, string id, int seatNumber)
         {
 
             var receiver = PlayerManager.ParseClient(id);
-
+            Character character = API.getEntityData(player.handle, "Character");
+    
             if (receiver == null)
             {
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
 
-            if (API.getEntityData(receiver, "IsCuffed") == false)
+            if (character.IsCuffed == false)
             {
                 API.sendChatMessageToPlayer(player, "Players must be tied/cuffed before you can detain them.");
                 return;
@@ -185,7 +186,7 @@ namespace RoleplayServer.resources.player_manager.player_interaction
 
         }
 
-        [Command("eject")]
+        [Command("eject", GreedyArg = true)]
         public void ejectPlayer(Client player, string id, int seatNumber)
         {
             var receiver = PlayerManager.ParseClient(id);
