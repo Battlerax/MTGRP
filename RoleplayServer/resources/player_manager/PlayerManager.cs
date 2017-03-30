@@ -152,5 +152,27 @@ namespace RoleplayServer.resources.player_manager
             }
             API.sendChatMessageToPlayer(sender, Color.White, "------------------------------------------------------------");
         }
+
+        [Command("stats")]
+        public void getStatistics(Client sender)
+        {
+            API.sendChatMessageToPlayer(sender, "________________PLAYER STATS________________");
+            var playerMoney = API.getEntityData(sender, "Money");
+            var playerHours = API.getEntityData(sender, "playinghours");
+            API.sendChatMessageToPlayer(sender, string.Format("~g~General:~g~"));
+            API.sendChatMessageToPlayer(sender, string.Format("~h~Name:~h~ {0} ~h~Money:~h~ {1} ~h~Playing hours:~h~ {2}", sender.name, playerMoney, playerHours));
+            API.sendChatMessageToPlayer(sender, string.Format("~b~Faction:~b~"));
+            //API.sendChatMessageToPlayer(sender, string.Format("~h~Faction name:~h~ {0} ~h~Rank:~h~ {1}", factionRank, factionLevel));
+            API.sendChatMessageToPlayer(sender, string.Format("~r~Property:~r~"));
+            //API.sendChatMessageToPlayer(sender, string.Format("~h~Owned vehicle(s):~h~ {0} ~h~House number:~h~ {1} ~h~ More stuff..~h~ {2}", ownedCar, houseNo, morestuff));
+        }
+
+        [Command("time")]
+        public void checkTime(Client player)
+        {
+            var secondsLeft = 3600 - API.getEntityData(player, "playerseconds");
+            API.sendChatMessageToPlayer(player, "The current server time is: " + DateTime.Now.ToString("h:mm:ss tt"));
+            API.sendChatMessageToPlayer(player, string.Format("Time until next paycheck: {0}" + " minutes.", secondsLeft / 60));
+        }
     }
 }

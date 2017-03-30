@@ -14,6 +14,9 @@
 	<script src="core/Color.cs" type="server" lang="csharp"/>
 	<script src="core/ChatManager.cs" type="server" lang="csharp"/>
 	<script src="core/MarkerZone.cs" type="server" lang="csharp"/>
+	<script src="core/DoorManager.cs" type="server" lang="csharp"/>
+	<script src="core/ServerwideEvents.cs" type="server" lang="csharp"/>
+	
 	
 	<!-- DATABASE -->
 	<script src="database_manager/DatabaseManager.cs" type="server" lang="csharp"/>
@@ -73,6 +76,8 @@
 	
 	<script src="group_manager/Group.cs" type="server" lang="csharp"/>
 	<script src="group_manager/GroupManager.cs" type="server" lang="csharp"/>
+	<script src="group_manager/lspd/Lspd.cs" type="server" lang="csharp"/>
+	<script src="group_manager/lspd/LspdCommands.cs" type="server" lang="csharp"/>
 	
 	<!--- PHONES -->
 	
