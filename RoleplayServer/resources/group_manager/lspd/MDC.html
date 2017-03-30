@@ -56,6 +56,15 @@
             cursor: pointer;
         }
 
+        .submenu_item {
+            padding: 5px;
+            user-select: none;
+            cursor: pointer;
+
+            font-size: 25px;
+            margin-left: 30px;
+        }
+
         .menu_item:hover {
             color: #01AAD4;
         }
@@ -77,6 +86,13 @@
         <div id="announcement_menu" class="menu_item active_item">Announcements</div>
         <div id="911_menu" class="menu_item">911 Center</div>
         <div id="bolo_menu" class="menu_item">BOLO Center</div>
+        
+        <!--<div id="bolo_submenu" style="display: none"">
+            <div id="bolo_menu_view" class="submenu_item active_item">View BOLOs</div>
+            <div id="bolo_menu_view" class="submenu_item active_item">Create BOLOs</div>
+        </div>-->
+
+       
         <div id="prism_menu" class="menu_item">PRISM Search</div>
         <div id="highcommand_menu" class="menu_item">High Command</div>
     </div>
@@ -89,7 +105,7 @@
             <p style="color: white; font-family: BebasKai;font-size:25px"> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam a sapien nec augue commodo gravida. Donec fringilla tortor et ex fermentum laoreet. Vivamus lacinia ut nunc vel egestas. Nulla ut imperdiet lectus, non sollicitudin magna. Fusce dictum nisl sit amet massa posuere ultrices. Suspendisse hendrerit mi at rutrum mollis. Etiam lacinia tortor in scelerisque euismod. Quisque eleifend sed libero ut feugiat. Donec dapibus cursus turpis. Nulla facilisi. Quisque faucibus egestas fringilla. </p>
         </div>
         
-        <div id="911_content" style="padding: 25px;display: none">
+        <div id="911_content" style="padding: 25px; display: none; overflow: auto; max-height: 335px;">
             
             <table class="table border striped">
                 <thead>
@@ -99,29 +115,28 @@
                         <th>Report</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr class="success">
-                        <td style="color: black;font-family:BebasKai">123</td>
-                        <td style="color: black;font-family:BebasKai">4:15pm</td>
-                        <td style="color: black;font-family:BebasKai">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus mattis luctus neque, nec feugiat quam dapibus vel.</td>
-                    </tr>
-                    <tr class="success">
-                        <td style="color: black;font-family:BebasKai">456</td>
-                        <td style="color: black;font-family:BebasKai">4:15pm</td>
-                        <td style="color: black;font-family:BebasKai"> Fusce interdum porttitor tortor, sed rutrum ligula vulputate nec. Praesent ac nisi viverra, iaculis lorem vel, luctus arcu.</td>
-                    </tr>
-                    <tr class="success">
-                        <td style="color: black;font-family:BebasKai">789</td>
-                        <td style="color: black;font-family:BebasKai">4:15pm</td>
-                        <td style="color: black;font-family:BebasKai"> Sed vitae dictum turpis, id suscipit lorem. Vestibulum at euismod ex. Curabitur vitae posuere metus, a dictum massa. Duis sapien risus, egestas in leo sit amet, fringilla porta nisl.</td>
-                    </tr>
-                </tbody>
+                <tbody id="911_table_body"></tbody>
             </table>
         </div>
         
-        <div id="bolo_content" style="padding: 25px;display: none"> BOLO center </div>
+        <div id="bolo_content" style="padding: 25px; display: none; overflow: auto; max-height: 335px;"> 
+            
+            <button class="button">Add BOLO</button>
+            <table class="table border ">
+                <thead>
+                    <tr>
+                        <th>Reporting Officer</th>
+                        <th>Time</th>
+                        <th>Info</th>
+                        <th>Remove</th>
+                    </tr>
+                </thead>
+                <tbody id="bolo_table_body"></tbody>
+            </table>
+           
+        </div>
         
-        <div id="prism_content" style="padding: 25px;display: none"> 
+        <div id="prism_content" style="padding: 25px; display: none; overflow: auto; max-height: 335px;"> 
             <div class="panel place-left" style="width: 45%;">
                 <div class="heading">
                     <span class="icon mif-users"></span>
@@ -154,9 +169,42 @@
                     </div>
                 </div>
             </div>
+            
+            <br/>
+            <div class="panel" style="width: 100%; height: 90%; margin-top: 30%;">
+                <div class="heading">
+                    <span class="icon mif-search"></span>
+                    <span class="title"> Search Results</span>
+                </div>
+                <div id="prism_search_results" class="content padding10">
+                    
+                    <a style="color: #01AAD4; font-family: BebasKai;font-size:25px"> Name: <span style="color: black; font-family: BebasKai;font-size:25px"> Sergei Chenko</span></a> 
+                    
+                    <br/>
+
+                    <a style="color: #01AAD4; font-family: BebasKai;font-size:25px"> Birthday: <span style="color: black; font-family: BebasKai;font-size:25px"> Jan 01, 1997</span></a> 
+                    
+                    <br/>
+                    
+                    <a style="color: #01AAD4; font-family: BebasKai;font-size:25px"> Address: <span style="color: black; font-family: BebasKai;font-size:25px"> N/A</span></a> 
+                    
+                    <br/>
+                    <br/>
+
+                    <a style="color: #01AAD4; font-family: BebasKai;font-size:25px"> Registered Vehicles: <span style="color: black; font-family: BebasKai;font-size:25px"> <br/>123-ABC<br/>ABC-123</span></a> 
+
+                </div>
+            </div>
+
         </div>
         
-        <div id="highcommand_content" style="padding: 25px;display: none"> High Command center </div>
+        <div id="highcommand_content" style="padding: 25px; display: none">
+            <a style="color: #01AAD4; font-family: BebasKai;font-size:40px">Latest Announcement: </a>
+            <div class="input-control textarea" style="resize: none; overflow-y: hidden; height: 200px; width:600px">
+                <textarea></textarea>
+            </div>
+            <button id="update_announcement" class="button success"><span class="mif-checkmark"></span> Update</button>
+        </div>
 
     </div>
 </div>
@@ -175,11 +223,18 @@
     $('#911_menu').click(() => {
         hide_all();
         set_active('#911_menu', '#911_content');
+
+        add_911("12345", "5:44PM", "Physical altercation in alderwood mall.");
     });
 
     $('#bolo_menu').click(() => {
         hide_all();
         set_active('#bolo_menu', '#bolo_content');
+
+        add_bolo("Sergei Chenko",
+            "4:20PM",
+            "success",
+            "Black Sultan, one male occupant unarmed last seen in Los Santos");
     });
 
     $('#prism_menu').click(() => {
@@ -209,6 +264,29 @@
     function set_active(menu, content) {
         $(content).css("display", "block");
         $(menu).addClass("active_item");
+    }
+
+    function clear_bolo() {
+        $('#bolo_table_body').empty();
+    }
+
+    function clear_911() {
+        $('#911_table_body').empty();
+    }
+
+    function add_bolo(officer, time, priority, info) { 
+        $('#bolo_table_body').append('<tr class=\"' + priority + '\"> \
+                        <td style="color: black;font-family:BebasKai">' + officer + '</td> \
+                        <td style="color: black;font-family:BebasKai">' + time + '</td> \
+                        <td style="color: black;font-family:BebasKai">' + info + '</td>\
+                        <td><button class="square-button mini-button place-right warning"><span class="mif-cross"></span></button></tr>');
+    }
+
+    function add_911(number, time, info) {
+        $('#911_table_body').append('<tr class="info"> \
+                        <td style="color: black;font-family:BebasKai">' + number + '</td> \
+                        <td style="color: black;font-family:BebasKai">' + time + '</td> \
+                        <td style="color: black;font-family:BebasKai">' + info + '</td></tr>');
     }
 
 </script>
