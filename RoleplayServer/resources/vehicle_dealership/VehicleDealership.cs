@@ -126,7 +126,7 @@ namespace RoleplayServer.resources.vehicle_dealership
 
                 if (selectedCar == null) return;
 
-                if (character.Money > Convert.ToInt32(selectedCar[1]))
+                if (character.Money > Convert.ToInt32(selectedCar[2]))
                 {
                     //DEBUG.
                     API.sendChatMessageToPlayer(sender, "You CAN buy this car.");
