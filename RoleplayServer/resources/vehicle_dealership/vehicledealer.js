@@ -3,10 +3,10 @@
 var menu_pool;
 
 function VehicleJSONToMenu(json, type) {
-    var realArr = API.fromJson(json);
+    var realArr = JSON.parse(json);
     var list = API.createMenu("Vehicle Dealership", type, 0, 0, 6);
     for (var i = 0; i < realArr.length; i++) {
-        var item = API.createMenuItem(realArr[0], "This vehicle costs \$${realArr[2]}.");
+        var item = API.createMenuItem(realArr[i][0], `This vehicle costs \$${realArr[i][2]}.`);
         list.AddItem(item);
     }
     return list;
@@ -23,7 +23,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
             var motorsycles = API.createMenuItem("Motorsycles", "All 2 wheel vehicles."); vehDealerList.AddItem(motorsycles);
             var copues = API.createMenuItem("Copues", "Normal Class Vehicles."); vehDealerList.AddItem(copues);
             var trucksnvans = API.createMenuItem("Trucks and Vans", "Big vehicles."); vehDealerList.AddItem(trucksnvans);
-            var offroad = API.createMenuItem("Offroard", "Vehicles that can go offroard."); vehDealerList.AddItem(offroad);
+            var offroad = API.createMenuItem("Offroad", "Vehicles that can go offroard."); vehDealerList.AddItem(offroad);
             var musclecars = API.createMenuItem("Muscle Cars", "Powerful cars ?!."); vehDealerList.AddItem(musclecars);
             var suv = API.createMenuItem("SUV", "SUV."); vehDealerList.AddItem(suv);
             var supercars = API.createMenuItem("Supercars", "The best cars we have."); vehDealerList.AddItem(supercars);
@@ -43,9 +43,13 @@ API.onServerEventTrigger.connect((eventName, args) => {
                 menu_pool.Add(currentVehicleList);
                 currentVehicleList.Visible = true;
 
-                currentVehicleList.OnItemSelect.connect(function (sender, item, index) {
+                currentVehicleList.OnItemSelect.connect(function (csender, citem, cindex) {
                     //Send event to server about selected car.
-                    API.triggerServerEvent("vehicledealer_selectcar", sender.Text, item.Text);
+                    API.triggerServerEvent("vehicledealer_selectcar", item.Text, citem.Text);
+                });
+
+                currentVehicleList.OnMenuClose.connect(function (closesender) {
+                    vehDealerList.Visible = true;
                 });
             });
             break;
