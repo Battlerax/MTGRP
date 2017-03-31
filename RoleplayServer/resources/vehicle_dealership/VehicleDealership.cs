@@ -91,6 +91,8 @@ namespace RoleplayServer.resources.vehicle_dealership
 
         private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
         {
+            //DEBUG:
+            API.sendChatMessageToPlayer(sender, $"Selected Group: {arguments[0]} | Selected Vehicle: {arguments[1]}");
         }
 
         [Command("buyvehicle")]

@@ -30,6 +30,9 @@ API.onServerEventTrigger.connect((eventName, args) => {
             var supercars = API.createMenuItem("Supercars", "The best cars we have."); vehDealerList.AddItem(supercars);
             menu_pool.Add(vehDealerList);
 
+            //Setup submenu for showing rest of cars.
+            menu_pool.Add(currentVehicleList);
+
             //Show it.
             vehDealerList.Visible = true;
 
@@ -42,6 +45,12 @@ API.onServerEventTrigger.connect((eventName, args) => {
             });
             break;
     }
+});
+
+//On Vehicle select: 
+vehDealerList.OnItemSelect.connect(function (sender, item, index) {
+    //Send event to server about selected car.
+    API.triggerServerEvent("vehicledealer_selectcar", sender.Text, item.Text);
 });
 
 API.onUpdate.connect(function () {
