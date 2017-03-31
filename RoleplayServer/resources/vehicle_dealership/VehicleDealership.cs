@@ -93,7 +93,7 @@ namespace RoleplayServer.resources.vehicle_dealership
         {
             //DEBUG:
             if(eventName == "vehicledealer_selectcar")
-                API.sendChatMessageToPlayer(sender, $"Selected Group: {arguments[0]} | Selected Vehicle: {arguments[1]}");
+                API.sendChatMessageToPlayer(sender, $"Selected Group: {arguments[0].ToString()} | Selected Vehicle: {arguments[1]}");
         }
 
         [Command("buyvehicle")]

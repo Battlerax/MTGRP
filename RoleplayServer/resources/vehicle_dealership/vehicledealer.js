@@ -20,13 +20,21 @@ API.onServerEventTrigger.connect((eventName, args) => {
             menu_pool = API.getMenuPool();
             //TODO: proabably change this descriptions xD
             var vehDealerList = API.createMenu("Vehicle Dealership", "Welcome to the vehicler dealership.", 0, 0, 6);
-            var motorsycles = API.createMenuItem("Motorsycles", "All 2 wheel vehicles."); vehDealerList.AddItem(motorsycles);
-            var copues = API.createMenuItem("Copues", "Normal Class Vehicles."); vehDealerList.AddItem(copues);
-            var trucksnvans = API.createMenuItem("Trucks and Vans", "Big vehicles."); vehDealerList.AddItem(trucksnvans);
-            var offroad = API.createMenuItem("Offroad", "Vehicles that can go offroard."); vehDealerList.AddItem(offroad);
-            var musclecars = API.createMenuItem("Muscle Cars", "Powerful cars ?!."); vehDealerList.AddItem(musclecars);
-            var suv = API.createMenuItem("SUV", "SUV."); vehDealerList.AddItem(suv);
-            var supercars = API.createMenuItem("Supercars", "The best cars we have."); vehDealerList.AddItem(supercars);
+            var motorsycles = API.createMenuItem("Motorsycles", "All 2 wheel vehicles.");
+            var copues = API.createMenuItem("Copues", "Normal Class Vehicles.");
+            var trucksnvans = API.createMenuItem("Trucks and Vans", "Big vehicles.");
+            var offroad = API.createMenuItem("Offroad", "Vehicles that can go offroard.");
+            var musclecars = API.createMenuItem("Muscle Cars", "Powerful cars ?!.");
+            var suv = API.createMenuItem("SUV", "SUV.");
+            var supercars = API.createMenuItem("Supercars", "The best cars we have.");
+            //NOTE: THE ARRENGNEMENT IS SOOO IMPORTANT CAUSE I USE INDEX FOR KNOWING THE CURRENT GROUP AND NOT NAME.
+            vehDealerList.AddItem(motorsycles);
+            vehDealerList.AddItem(copues);
+            vehDealerList.AddItem(trucksnvans);
+            vehDealerList.AddItem(offroad);
+            vehDealerList.AddItem(musclecars);
+            vehDealerList.AddItem(suv);
+            vehDealerList.AddItem(supercars);
             menu_pool.Add(vehDealerList);
 
             //Show it.
@@ -45,7 +53,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
 
                 currentVehicleList.OnItemSelect.connect(function (csender, citem, cindex) {
                     //Send event to server about selected car.
-                    API.triggerServerEvent("vehicledealer_selectcar", item.Text, citem.Text);
+                    API.triggerServerEvent("vehicledealer_selectcar", index, citem.Text);
                 });
 
                 currentVehicleList.OnMenuClose.connect(function (closesender) {
