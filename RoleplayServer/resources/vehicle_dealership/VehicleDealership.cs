@@ -91,9 +91,49 @@ namespace RoleplayServer.resources.vehicle_dealership
 
         private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
         {
-            //DEBUG:
-            if(eventName == "vehicledealer_selectcar")
-                API.sendChatMessageToPlayer(sender, $"Selected Group: {arguments[0].ToString()} | Selected Vehicle: {arguments[1]}");
+            if (eventName == "vehicledealer_selectcar")
+            {
+                Character character = API.getEntityData(sender, "Character");
+
+                string[] selectedCar = null;
+                
+                #region Get Car Info.
+                switch ((int)arguments[0])
+                {
+                    case 0:
+                        selectedCar = _motorsycles[(int) arguments[1]];
+                        break;
+                    case 1:
+                        selectedCar = _copues[(int)arguments[1]];
+                        break;
+                    case 2:
+                        selectedCar = _trucksnvans[(int)arguments[1]];
+                        break;
+                    case 3:
+                        selectedCar = _offroad[(int)arguments[1]];
+                        break;
+                    case 4:
+                        selectedCar = _musclecars[(int)arguments[1]];
+                        break;
+                    case 5:
+                        selectedCar = _suv[(int)arguments[1]];
+                        break;
+                    case 6:
+                        selectedCar = _supercars[(int)arguments[1]];
+                        break;
+                }
+                #endregion
+
+                if (selectedCar == null) return;
+
+                if (character.Money > Convert.ToInt32(selectedCar[1]))
+                {
+                    //DEBUG.
+                    API.sendChatMessageToPlayer(sender, "You CAN buy this car.");
+                }
+                else
+                    API.sendChatMessageToPlayer(sender, $"You don't have enough money to buy the ~g~{selectedCar[0]}~w~.");
+            }
         }
 
         [Command("buyvehicle")]

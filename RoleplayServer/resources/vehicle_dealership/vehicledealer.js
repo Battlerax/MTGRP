@@ -53,7 +53,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
 
                 currentVehicleList.OnItemSelect.connect(function (csender, citem, cindex) {
                     //Send event to server about selected car.
-                    API.triggerServerEvent("vehicledealer_selectcar", index, citem.Text);
+                    API.triggerServerEvent("vehicledealer_selectcar", index, cindex);
                 });
 
                 currentVehicleList.OnMenuClose.connect(function (closesender) {
