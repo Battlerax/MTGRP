@@ -60,6 +60,10 @@ API.onServerEventTrigger.connect((eventName, args) => {
                     vehDealerList.Visible = true;
                 });
             });
+
+            vehDealerList.OnMenuClose.connect(function (closesender) {
+                API.setEntityPositionFrozen(API.getLocalPlayer(), false);
+            });
             break;
     }
 });
