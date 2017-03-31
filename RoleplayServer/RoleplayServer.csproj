@@ -127,6 +127,7 @@
     <Content Include="resources\cef_resources\MTGVRP_LOGO_SMALL.png" />
     <Content Include="resources\job_manager\taxi\TaxiJob.js" />
     <Content Include="resources\jquery.js" />
+    <Content Include="resources\meta.xml" />
     <Content Include="resources\player_manager\CharacterMenu.js" />
     <Content Include="resources\player_manager\login\Login.html" />
     <Content Include="resources\player_manager\login\LoginManager.js" />

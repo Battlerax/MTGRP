@@ -1,7 +1,6 @@
 ﻿/// <reference path="../types-gtanetwork/index.d.ts" />
 
 var menu_pool;
-var currentVehicleList;
 
 function VehicleJSONToMenu(json, type) {
     var realArr = API.fromJson(json);
@@ -30,27 +29,27 @@ API.onServerEventTrigger.connect((eventName, args) => {
             var supercars = API.createMenuItem("Supercars", "The best cars we have."); vehDealerList.AddItem(supercars);
             menu_pool.Add(vehDealerList);
 
-            //Setup submenu for showing rest of cars.
-            menu_pool.Add(currentVehicleList);
-
             //Show it.
             vehDealerList.Visible = true;
+
+            //Freeze.
+            API.setEntityPositionFrozen(API.getLocalPlayer(), true);
 
             //Listen for click: 
             vehDealerList.OnItemSelect.connect(function (sender, item, index) {
                 //Show apporpriate list depending on index.
                 vehDealerList.Visible = false;
-                currentVehicleList = VehicleJSONToMenu(args[index], item.Text);
+                var currentVehicleList = VehicleJSONToMenu(args[index], item.Text);
+                menu_pool.Add(currentVehicleList);
                 currentVehicleList.Visible = true;
+
+                currentVehicleList.OnItemSelect.connect(function (sender, item, index) {
+                    //Send event to server about selected car.
+                    API.triggerServerEvent("vehicledealer_selectcar", sender.Text, item.Text);
+                });
             });
             break;
     }
-});
-
-//On Vehicle select: 
-vehDealerList.OnItemSelect.connect(function (sender, item, index) {
-    //Send event to server about selected car.
-    API.triggerServerEvent("vehicledealer_selectcar", sender.Text, item.Text);
 });
 
 API.onUpdate.connect(function () {
