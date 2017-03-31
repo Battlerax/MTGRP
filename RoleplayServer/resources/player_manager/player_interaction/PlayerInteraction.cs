@@ -145,6 +145,82 @@ namespace RoleplayServer.resources.player_manager.player_interaction
             };
         }
 
+        [Command("detain", GreedyArg = true)]
+        public void detainPlayer(Client player, string id, int seatNumber)
+        {
+
+            var receiver = PlayerManager.ParseClient(id);
+            Character character = API.getEntityData(player.handle, "Character");
+
+            if (receiver == null)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
+            }
+
+            if (character.IsCuffed == false)
+            {
+                API.sendChatMessageToPlayer(player, "Players must be tied/cuffed before you can detain them.");
+                return;
+            }
+            if (seatNumber > 2)
+            {
+                API.sendChatMessageToPlayer(player, "Seat number ranges from 0-2 (0 is the passenger seat).");
+                return;
+            }
+            if (API.isPlayerInAnyVehicle(player) == false)
+            {
+                API.sendChatMessageToPlayer(player, "You must be in a vehicle.");
+                return;
+            }
+
+            if (API.getEntityPosition(player).DistanceToSquared(API.getEntityPosition(receiver)) > 20f)
+            {
+                API.sendChatMessageToPlayer(player, "~r~You're too far away!");
+                return;
+            }
+
+            API.sendChatMessageToPlayer(player, "~g~You have detained " + receiver.name + " into a vehicle.");
+            API.sendChatMessageToPlayer(receiver, "~g~You were detained by " + player.name + " into a vehicle.");
+            API.setPlayerIntoVehicle(receiver, player.vehicle.handle, seatNumber);
+
+        }
+
+        [Command("eject", GreedyArg = true)]
+        public void ejectPlayer(Client player, string id, int seatNumber)
+        {
+            var receiver = PlayerManager.ParseClient(id);
+
+            if (receiver == null)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
+            }
+
+            if (API.isPlayerInAnyVehicle(player) == false || API.getPlayerVehicleSeat(player) != 0)
+            {
+                API.sendChatMessageToPlayer(player, "You must be in the front seat of a vehicle to eject another player.");
+                return;
+            }
+
+            if (API.isPlayerInAnyVehicle(receiver) == false)
+            {
+                API.sendChatMessageToPlayer(player, "Players must be in a vehicle to be ejected from a vehicle.");
+                return;
+            }
+
+            if (API.getPlayerVehicle(player) != API.getPlayerVehicle(receiver))
+            {
+                API.sendChatMessageToPlayer(player, "You must be in the same vehicle as another player to eject them.");
+                return;
+            }
+
+            API.sendChatMessageToPlayer(player, "You have ejected ~b~" + receiver.name + "~w~ from your vehicle.");
+            API.sendChatMessageToPlayer(receiver, "~b~" + player.name + "~w~ has ejected you from their vehicle.");
+            API.setPlayerIntoVehicle(receiver, player.vehicle.handle, seatNumber);
+            API.warpPlayerOutOfVehicle(receiver, API.getPlayerVehicle(receiver));
+        }
+
         public void FollowPlayer(Character c, bool isDrag)
         {
             API.sendNativeToAllPlayers(Hash.TASK_FOLLOW_TO_OFFSET_OF_ENTITY, c.Client.handle,

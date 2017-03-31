@@ -16,7 +16,7 @@ namespace RoleplayServer.resources.group_manager.lspd
         public CriminalRecord(string characterId, string arrestingOfficerId, Crime crime)
         {
             CharacterId = characterId;
-            ArrestingOfficerId = arrestingOfficerId;
+            OfficerId = arrestingOfficerId;
             Crime = crime;
             DateTime = DateTime.Now;
         }
