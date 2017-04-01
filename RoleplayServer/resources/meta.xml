@@ -7,6 +7,9 @@
 	<assembly ref="MongoDB.Driver.Core.dll"/>
 	<assembly ref="System.Runtime.InteropServices.RuntimeInformation.dll"/>
 	
+	<!-- Door Manager -->
+	<include resource="doormanager" />
+	
 	<script src="../bin/Debug/RoleplayServer.dll" type="server" lang="compiled"/>
 	
 	<!-- BANK -->

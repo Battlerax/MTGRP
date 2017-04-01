@@ -81,12 +81,18 @@ namespace RoleplayServer.resources.vehicle_dealership
         //Vars: 
         private readonly Vector3[] _dealershipsLocations =
         {
-            new Vector3(106.5133f, -1941.29f, 20.80372f), //TODO: set this coords correctly.
+            new Vector3(-56.77422f,-1097.052f,26.42235f)
         };
 
         public VehicleDealership()
         {
             API.onClientEventTrigger += API_onClientEventTrigger;
+
+            //Setup dealership doors.
+            int i = API.exported.doormanager.registerDoor(1417577297, new Vector3(-60.54582, -1094.749, 26.88872));
+            API.exported.doormanager.setDoorState(i, false, 1);
+            i = API.exported.doormanager.registerDoor(2059227086, new Vector3(-59.89302, -1092.952, 26.88362));
+            API.exported.doormanager.setDoorState(i, false, 1);
         }
 
         private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
