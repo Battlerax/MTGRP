@@ -144,6 +144,15 @@ namespace RoleplayServer.resources.player_manager
         public bool IsInPoliceUniform { get; set; }
         public bool IsOnPoliceDuty { get; set; }
 
+        public Vector3 BeaconPosition { get; set; }
+        public bool BeaconSet { get; set; }
+        public Timer BeaconTimer { get; set; }
+        public Timer BeaconResetTimer { get; set; }
+        public Client BeaconCreator{ get; set; }
+
+        public Timer jailTimer { get; set; }
+        public bool isJailed { get; set; }
+
         //Player Interaction
         [BsonIgnore]
         public Character FollowingPlayer { get; set; }
@@ -315,9 +324,9 @@ namespace RoleplayServer.resources.player_manager
 
         //Criminal Records
 
-        public void RecordCrime(Crime crime, Character officer)
+        public void RecordCrime(string crime, Character officer, bool Activecrime)
         {
-            var record = new CriminalRecord(this.Id.ToString(), officer.Id.ToString(), crime);
+            var record = new CriminalRecord(this.Id.ToString(), officer.Id.ToString(), crime, Activecrime);
             record.Insert();
         }
 

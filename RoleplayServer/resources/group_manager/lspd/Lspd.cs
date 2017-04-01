@@ -1,5 +1,7 @@
 ﻿using GTANetworkServer;
 using GTANetworkShared;
+using System.Collections.Generic;
+using System.Linq;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.player_manager;
 
@@ -10,9 +12,39 @@ namespace RoleplayServer.resources.group_manager.lspd
 
         public Lspd()
         {
+            API.onResourceStart += startLspd;
             API.onClientEventTrigger += API_onClientEventTrigger;
         }
 
+        //arrest locatio. TODO: Make it work with MarkerZone!!!!
+        public static readonly Vector3 arrest_loc = new Vector3(468.7845f, -1015.69f, 26.38641f);
+
+        //Jails
+        public static readonly Vector3 jailOne = new Vector3(458.0021f, -1001.581f, 24.91485f);
+        public static readonly Vector3 jailTwo = new Vector3(458.7058f, -998.1188f, 24.91487f);
+        public static readonly Vector3 jailThree = new Vector3(459.6695f, -994.0704f, 24.91487f);
+
+        //Jail Shapes
+        public ColShape arrestShape;
+
+        public static readonly Vector3 freeJail = new Vector3(427.7434f, -976.0182f, 30.70999f);
+
+
+        public static Dictionary<Client, long> jailTimer = new Dictionary<Client, long>();
+
+
+        public void startLspd()
+        {
+
+            //Bounds
+            var jailShapeOne = API.createSphereColShape(jailOne, 3.7f);
+            var jailShapeTwo = API.createSphereColShape(jailTwo, 3.7f);
+            var jailShapeThree = API.createSphereColShape(jailThree, 3.7f);
+
+            arrestShape = API.createSphereColShape(arrest_loc, 3.7f);
+
+            API.createMarker(2, arrest_loc, new Vector3(), new Vector3(), new Vector3(0.5, 0.5, 0.5), 255, 255, 255, 255);
+        }
         private void API_onClientEventTrigger(Client player, string eventName, params object[] arguments)
         {
             switch (eventName)
@@ -77,11 +109,16 @@ namespace RoleplayServer.resources.group_manager.lspd
                     API.sendChatMessageToPlayer(player, Color.White, "You have been given the standard SWAT equipment.");
                     break;
                 }
+                case "toggle_megaphone_key":
+                    {
+                        megaphonetog_cmd(player);
+                        break;
+                    }
             }
         }
 
-        [Command("recordcrimes", GreedyArg = true)]
-        public void recordcrimes_cmd(Client player, string id, Crime crime)
+        [Command("recordcrime", GreedyArg = true)]
+        public void recordcrimes_cmd(Client player, string id, string crime)
         {
             var receiver = PlayerManager.ParseClient(id);
 
@@ -103,7 +140,7 @@ namespace RoleplayServer.resources.group_manager.lspd
 
             API.sendNotificationToPlayer(player, "You have recorded " + receiver.name + " for committing a crime.");
             API.sendNotificationToPlayer(receiver, player.name + " has recorded a crime you committed: ~r~" + crime + "~w~.");
-            API.setEntityData(receiver, "crimesRecorded", true);
+            criminalrecord.ActiveCrime = true;
             criminalrecord.Crime = crime;
             criminalrecord.CharacterId = id;
             criminalrecord.OfficerId = player.name;
@@ -119,10 +156,11 @@ namespace RoleplayServer.resources.group_manager.lspd
 
             Character character = API.getEntityData(player.handle, "Character");
             Character receiverCharacter = API.getEntityData(receiver.handle, "Character");
+            CriminalRecord criminalrecord = API.getEntityData(receiver.handle, "CriminalRecord");
 
-            if (character.GroupId != 1)
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
-                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ You must be a member of the LSPD to use this command.");
+                API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
                 return;
             }
 
@@ -132,7 +170,7 @@ namespace RoleplayServer.resources.group_manager.lspd
                 return;
             }
 
-            if (API.getEntityData(receiver, "crimesRecorded") == false)
+            if (criminalrecord.ActiveCrime == false)
             {
                 API.sendChatMessageToPlayer(player, "You must record this player's crimes before they can be arrested.");
             }
@@ -148,7 +186,7 @@ namespace RoleplayServer.resources.group_manager.lspd
                 return;
             }
 
-            if (!(bool)API.call("Lspd", "arrestPointCheck", player))
+            if (arrestPointCheck(player))
             {
                 API.sendNotificationToPlayer(player, "~r~You are too far away from the arrest point.");
                 return;
@@ -156,9 +194,9 @@ namespace RoleplayServer.resources.group_manager.lspd
 
             API.sendNotificationToPlayer(player, "You have arrested ~b~" + receiver.name + "~w~.");
             API.sendNotificationToPlayer(receiver, "You have been arrested by ~b~" + player.name + "~w~.");
-            GroupManager.SendGroupMessage(player, player.name + " has placed " + receiver.name + " under arrest.");
-            API.setEntityData(receiver, "crimesRecorded", false);
-            API.call("Lspd", "jailControl", time);
+            criminalrecord.ActiveCrime = false;
+            jailControl(receiver, time);
+
         }
 
         [Command("frisk", GreedyArg = true)]
@@ -168,9 +206,9 @@ namespace RoleplayServer.resources.group_manager.lspd
 
             Character character = API.getEntityData(player.handle, "Character");
 
-            if (character.GroupId != 1)
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
-                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ You must be a member of the LSPD to use this command.");
+                API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
                 return;
             }
 
@@ -191,22 +229,85 @@ namespace RoleplayServer.resources.group_manager.lspd
                 return;
             }
 
-            //check items on player (first implement inv system.
+            //TODO: check items on player (first implement inv system).
         }
 
-        [Command("megaphone", Alias = "mp", GreedyArg = true)]
-        public void megaphone_cmd(Client player, string text)
+        [Command("backupbeacon", GreedyArg = true)]
+        public void backupbeacon_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
 
-            if (character.GroupId != 1)
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
-                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ You must be a member of the LSPD to use this command.");
+                API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                return;
+            }
+            API.sendNotificationToPlayer(player, "~b~Backup beacon deployed~w~. Available officers have been notified.");
+
+            //Update beacon 5 seconds for 60 seconds. Reset beacon to false after 60.
+            character.BeaconSet = true;
+            character.BeaconCreator = player;
+            character.BeaconResetTimer = new System.Timers.Timer { Interval = 60 };
+            character.BeaconResetTimer.Elapsed += delegate { resetBeacon(player); };
+            character.BeaconResetTimer.Start();
+
+        }
+ 
+        [Command("acceptbeacon", GreedyArg = true)]
+        public void acceptbeacon_cmd(Client player)
+        {
+            Character character = API.shared.getEntityData(player.handle, "Character");
+            var beaconCreator = player;
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
                 return;
             }
 
-            ChatManager.NearbyMessage(player, 30, PlayerManager.GetName(player) + " [MEGAPHONE]: " + text);
+            foreach (var c in PlayerManager.Players)
+            {
+                if (c.GroupId == character.GroupId && c.BeaconSet == true)
+                {
+                    beaconCreator = c.BeaconCreator;
+                }
+
+            }
+
+            if (beaconCreator == player)
+            {
+                return;
+            }
+
+            API.sendNotificationToPlayer(player, "~b~Beacon accepted~w~. A marker has been added to your map.");
+            character.BeaconTimer = new System.Timers.Timer { Interval = 5 };
+            character.BeaconTimer.Elapsed += delegate { beaconDeployer(player, beaconCreator); };
+            character.BeaconTimer.Start();
         }
+
+        [Command("megaphonetoggle", Alias ="mp", GreedyArg = true)]
+        public void megaphonetog_cmd(Client player)
+        {
+            var playerPos = API.getEntityPosition(player);
+            Character character = API.getEntityData(player.handle, "Character");
+
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                return;
+            }
+            if (API.getEntityData(player, "MegaphoneStatus") != true)
+            {
+                API.sendNotificationToPlayer(player, "You are speaking through a megaphone", true);
+                API.setEntityData(player, "MegaphoneStatus", true);
+                var megaphone = API.createObject(API.getHashKey("prop_megaphone_01"), playerPos, new Vector3());
+                API.attachEntityToEntity(megaphone, player, "IK_R_Hand", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+
+            }
+            API.sendNotificationToPlayer(player, "You are no longer speaking through a megaphone.");
+            API.setEntityData(player, "MegaphoneStatus", false);
+            API.deleteObject(player, playerPos, API.getHashKey("prop_megaphone_01"));
+        }
+
 
         [Command("locker")]
         public void locker_cmd(Client player)
@@ -228,7 +329,7 @@ namespace RoleplayServer.resources.group_manager.lspd
 
             API.triggerClientEvent(player, "show_lspd_locker");
         }
-
+  
         public void GiveLspdEquipment(Client player, int type = 0)
         {
             API.removeAllPlayerWeapons(player);
@@ -257,5 +358,79 @@ namespace RoleplayServer.resources.group_manager.lspd
             API.setPlayerArmor(player, 100);
         }
 
+        public void jailControl(Client player, int seconds)
+        {
+            Character character = API.getEntityData(player.handle, "Character");
+
+            int jailOnePlayers = API.getPlayersInRadiusOfPosition(3.7f, jailOne).Count;
+            int jailTwoPlayers = API.getPlayersInRadiusOfPosition(3.7f, jailTwo).Count;
+            int jailThreePlayers = API.getPlayersInRadiusOfPosition(3.7f, jailThree).Count;
+            int smallest = API.getAllPlayers().Count;
+            int chosenCell = 0;
+            List<int> list = new List<int>(new int[] { jailOnePlayers, jailTwoPlayers, jailThreePlayers });
+
+
+            //Choose correct cell for player
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (list[i] < smallest)
+                {
+                    smallest = list[i];
+                    chosenCell = i;
+                }
+            }
+
+            if (chosenCell == 0)
+                API.setEntityPosition(player, jailOne);
+            else if (chosenCell == 1)
+                API.setEntityPosition(player, jailTwo);
+            else
+                API.setEntityPosition(player, jailThree);
+
+            API.removeAllPlayerWeapons(player);
+            character.isJailed = true;
+            API.sendChatMessageToPlayer(player, "You have been jailed for " + seconds / 60 + " minutes.");
+
+
+            character.jailTimer = new System.Timers.Timer { Interval = seconds };
+            character.jailTimer.Elapsed += delegate { setFree(player); };
+            character.jailTimer.Start();
+        }
+
+        public void beaconDeployer(Client player, Client beaconSender)
+        {
+            Character character = API.getEntityData(beaconSender.handle, "Character");
+            if (character.BeaconSet == false)
+            {
+                character.BeaconTimer.Stop();
+            }
+
+            var senderPosition = API.getEntityPosition(beaconSender);
+            API.triggerClientEvent(player, "update_beacon", senderPosition);
+
+        }
+
+        public void resetBeacon(Client player)
+        {
+            Character character = API.getEntityData(player.handle, "Character");
+            character.BeaconSet = false;
+            character.BeaconResetTimer.Stop();
+        }
+
+        public void setFree(Client player)
+        {
+            Character character = API.getEntityData(player.handle, "Character");
+            API.sendChatMessageToPlayer(player, "You have done time and are free to go.");
+            character.isJailed = false;
+            API.setEntityPosition(player, freeJail);
+            lock (jailTimer) jailTimer.Remove(player);
+            character.jailTimer.Stop();
+
+        }
+
+        public bool arrestPointCheck(NetHandle entity)
+        {
+            return arrestShape.containsEntity(entity);
+        }
     }
 }

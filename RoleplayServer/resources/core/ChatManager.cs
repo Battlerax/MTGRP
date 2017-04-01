@@ -26,9 +26,14 @@ namespace RoleplayServer.resources.core
         {
             Account account = API.getEntityData(player.handle, "Account");
             Character character = API.getEntityData(player.handle, "Character");
-            
+
             //Local Chat
-            if(account.AdminDuty == 0)
+            if (API.getEntityData(player, "MegaphoneStatus") == true)
+            {
+                msg = character.rp_name() + " [MEGAPHONE]: " + msg;
+                NearbyMessage(player, 30, msg);
+            }
+            if (account.AdminDuty == 0)
             {
                 msg = character.rp_name() + " says: " + msg;
                 NearbyMessage(player, 15, msg);
