@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using GTANetworkServer;
 using GTANetworkShared;
 using MongoDB.Driver;
@@ -16,6 +17,18 @@ namespace RoleplayServer.resources.player_manager
         {
             API.onClientEventTrigger += OnClientEventTrigger;
         }
+
+        //On Character Enter Event.
+        public class CharacterLoginEventArgs : EventArgs
+        {
+            public readonly Character character;
+
+            public CharacterLoginEventArgs(Character chr)
+            {
+                character = chr;
+            }
+        }
+        public static event EventHandler<CharacterLoginEventArgs> OnCharacterLogin;
 
         [Command("test")]
         public void Test(Client sender)
@@ -139,6 +152,7 @@ namespace RoleplayServer.resources.player_manager
 
                         API.sendChatMessageToPlayer(player, "You have successfully loaded your character: " + charName);
                         API.triggerClientEvent(player, "login_finished");
+                        OnCharacterLogin(this, new CharacterLoginEventArgs(character));
                     }
                     break;
                 case "change_parent_info":
