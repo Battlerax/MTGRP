@@ -160,7 +160,9 @@ namespace RoleplayServer.resources.vehicle_dealership
                         OwnerId = character.Id,
                         OwnerName = character.CharacterName,
                         SpawnPos = spawnPoss[randomPos],
-                        SpawnRot = new Vector3(0.1917319, 0.1198539, -177.1394)
+                        SpawnRot = new Vector3(0.1917319, 0.1198539, -177.1394),
+                        VehModel = (VehicleHash)Convert.ToInt32(selectedCar[1]),
+                        LicensePlate = "Unregistered"
                     };
 
                     //Add it to the players cars.
