@@ -126,6 +126,7 @@
     <Content Include="resources\cef_resources\LSPDMDC.png" />
     <Content Include="resources\cef_resources\MTGVRP_LOGO_BIG.png" />
     <Content Include="resources\cef_resources\MTGVRP_LOGO_SMALL.png" />
+    <Content Include="resources\group_manager\lspd\Lspd.js" />
     <Content Include="resources\group_manager\lspd\MDC.html" />
     <Content Include="resources\job_manager\taxi\TaxiJob.js" />
     <Content Include="resources\jquery.js" />

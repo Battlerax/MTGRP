@@ -118,13 +118,15 @@ namespace RoleplayServer.resources.group_manager.lspd
         }
 
         [Command("recordcrime", GreedyArg = true)]
-        public void recordcrimes_cmd(Client player, string id, string crime)
+        public void recordcrimes_cmd(Client player, string id, Crime crime)
         {
             var receiver = PlayerManager.ParseClient(id);
 
             Character character = API.getEntityData(player.handle, "Character");
             Character receiverCharacter = API.getEntityData(receiver.handle, "Character");
             CriminalRecord criminalrecord = API.getEntityData(receiver.handle, "CriminalRecord");
+
+            var FoundCrime = CrimeList.Find(c => c.Name == crime);
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
@@ -138,6 +140,11 @@ namespace RoleplayServer.resources.group_manager.lspd
                 return;
             }
 
+            if (FoundCrime == null)
+            {
+                var ClosestCrime = CrimeList.FirstOrDefault(c => c.Name.Contains(crime));
+            }
+     
             API.sendNotificationToPlayer(player, "You have recorded " + receiver.name + " for committing a crime.");
             API.sendNotificationToPlayer(receiver, player.name + " has recorded a crime you committed: ~r~" + crime + "~w~.");
             criminalrecord.ActiveCrime = true;
@@ -146,9 +153,8 @@ namespace RoleplayServer.resources.group_manager.lspd
             criminalrecord.OfficerId = player.name;
             criminalrecord.Insert();
 
-            
         }
-        [Command("arrest", GreedyArg = true)] // arrest command
+        [Command("arrest", GreedyArg = true)] // arrest command TODO: change fine, time, etc. depending on crime in the crimelist.
         public void arrest_cmd(Client player, string id, int time)
         {
 
@@ -277,11 +283,8 @@ namespace RoleplayServer.resources.group_manager.lspd
             {
                 return;
             }
-
             API.sendNotificationToPlayer(player, "~b~Beacon accepted~w~. A marker has been added to your map.");
-            character.BeaconTimer = new System.Timers.Timer { Interval = 5 };
-            character.BeaconTimer.Elapsed += delegate { beaconDeployer(player, beaconCreator); };
-            character.BeaconTimer.Start();
+            API.triggerClientEvent(player, "update_beacon", API.getEntityPosition(beaconCreator), beaconCreator);
         }
 
         [Command("megaphonetoggle", Alias ="mp", GreedyArg = true)]
@@ -326,10 +329,74 @@ namespace RoleplayServer.resources.group_manager.lspd
                 return;
             }
 
-
             API.triggerClientEvent(player, "show_lspd_locker");
         }
-  
+
+        [Command("listcrimes")]
+        public void listcrimes_cmd(Client player)
+        {
+            Character character = API.getEntityData(player.handle, "Character");
+            var FoundCrime = CrimeList.Find(c => c.Name == crime);
+
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                return;
+            }
+
+            //TODO: Display list of crimes from crimelist.
+        }
+
+        [Command("createcrime")]
+        public void createcrime_cmd(Client player, string crimeName)
+        {
+            Character character = API.getEntityData(player.handle, "Character");
+            var FoundCrime = CrimeList.Find(c => c.Name == crime);
+
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                return;
+            }
+
+            if (character.GroupRank < 7)
+            {
+                API.sendChatMessageToPlayer(player, "You do not have permission to use this command.");
+                return;
+            }
+
+            if (FoundCrime == crimeName)
+            {
+                API.sendChatMessageToPlayer(player, "This crime already exists!");
+            }
+            //TODO: Create a crime, add it to the db.
+        }
+
+        [Command("deletecrime")]
+        public void deletecrime_cmd(Client player, string crimeName)
+        {
+            Character character = API.getEntityData(player.handle, "Character");
+            var FoundCrime = CrimeList.Find(c => c.Name == crime);
+
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                return;
+            }
+
+            if (character.GroupRank < 7)
+            {
+                API.sendChatMessageToPlayer(player, "You do not have permission to use this command.");
+                return;
+            }
+
+            if (FoundCrime == null)
+            {
+                API.sendChatMessageToPlayer(player, "Crime not found.");
+            }
+            //TODO: Delete crime from db.
+        }
+
         public void GiveLspdEquipment(Client player, int type = 0)
         {
             API.removeAllPlayerWeapons(player);
@@ -397,23 +464,11 @@ namespace RoleplayServer.resources.group_manager.lspd
             character.jailTimer.Start();
         }
 
-        public void beaconDeployer(Client player, Client beaconSender)
-        {
-            Character character = API.getEntityData(beaconSender.handle, "Character");
-            if (character.BeaconSet == false)
-            {
-                character.BeaconTimer.Stop();
-            }
-
-            var senderPosition = API.getEntityPosition(beaconSender);
-            API.triggerClientEvent(player, "update_beacon", senderPosition);
-
-        }
-
         public void resetBeacon(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
             character.BeaconSet = false;
+            API.triggerClientEvent(player, "delete_beacon");
             character.BeaconResetTimer.Stop();
         }
 
