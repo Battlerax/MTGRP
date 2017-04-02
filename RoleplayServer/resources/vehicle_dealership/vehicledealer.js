@@ -40,8 +40,12 @@ API.onServerEventTrigger.connect((eventName, args) => {
             //Show it.
             vehDealerList.Visible = true;
 
-            //Freeze.
+            //Set.
+            var currentVeh;
             API.setEntityPositionFrozen(API.getLocalPlayer(), true);
+            var newCamera = API.createCamera(new Vector3(-45.71724, -1071.349, 30.54553), new Vector3(0, 0, 0));  //TODO: change this coords to somewhere nice for a preview
+            API.setActiveCamera(newCamera);
+            API.pointCameraAtPosition(newCamera, new Vector3(-45.72494, -1082.089, 26.71275));
 
             //Listen for click: 
             vehDealerList.OnItemSelect.connect(function (sender, item, index) {
@@ -56,6 +60,14 @@ API.onServerEventTrigger.connect((eventName, args) => {
                     API.triggerServerEvent("vehicledealer_selectcar", index, cindex);
                 });
 
+                currentVehicleList.OnIndexChange.connect(function (osender, oindex) {
+                    var realArr = JSON.parse(args[index]);
+                    if (currentVeh != null)
+                        API.deleteEntity(currentVeh);
+                    currentVeh = API.createVehicle(parseInt(realArr[oindex][1]), new Vector3(-45.72494, -1082.089, 26.71275), 0); //TODO: again position shall be changed..
+                    API.setEntityRotation(currentVeh, new Vector3(-1.08247, -1.095844, -110.0533));
+                });
+
                 currentVehicleList.OnMenuClose.connect(function (closesender) {
                     vehDealerList.Visible = true;
                 });
@@ -63,6 +75,9 @@ API.onServerEventTrigger.connect((eventName, args) => {
 
             vehDealerList.OnMenuClose.connect(function (closesender) {
                 API.setEntityPositionFrozen(API.getLocalPlayer(), false);
+                if (currentVeh != null)
+                    API.deleteEntity(currentVeh);
+                API.setActiveCamera(null);
             });
             break;
     }
