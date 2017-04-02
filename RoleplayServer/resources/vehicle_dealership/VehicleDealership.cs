@@ -103,32 +103,34 @@ namespace RoleplayServer.resources.vehicle_dealership
                 Character character = API.getEntityData(sender, "Character");
 
                 string[] selectedCar = null;
-                
+
                 #region Get Car Info.
-                switch ((int)arguments[0])
+
+                switch ((int) arguments[0])
                 {
                     case 0:
                         selectedCar = _motorsycles[(int) arguments[1]];
                         break;
                     case 1:
-                        selectedCar = _copues[(int)arguments[1]];
+                        selectedCar = _copues[(int) arguments[1]];
                         break;
                     case 2:
-                        selectedCar = _trucksnvans[(int)arguments[1]];
+                        selectedCar = _trucksnvans[(int) arguments[1]];
                         break;
                     case 3:
-                        selectedCar = _offroad[(int)arguments[1]];
+                        selectedCar = _offroad[(int) arguments[1]];
                         break;
                     case 4:
-                        selectedCar = _musclecars[(int)arguments[1]];
+                        selectedCar = _musclecars[(int) arguments[1]];
                         break;
                     case 5:
-                        selectedCar = _suv[(int)arguments[1]];
+                        selectedCar = _suv[(int) arguments[1]];
                         break;
                     case 6:
-                        selectedCar = _supercars[(int)arguments[1]];
+                        selectedCar = _supercars[(int) arguments[1]];
                         break;
                 }
+
                 #endregion
 
                 if (selectedCar == null) return;
@@ -138,27 +140,43 @@ namespace RoleplayServer.resources.vehicle_dealership
                     //Remove price.
                     character.Money -= Convert.ToInt32(selectedCar[2]);
 
+                    //Spawn positions.
+                    Vector3[] spawnPoss =
+                    {
+                        new Vector3(-42.44885, -1115.865, 25.86397),
+                        new Vector3(-45.04674, -1116.336, 25.86318),
+                        new Vector3(-47.77579, -1116.404, 25.86377),
+                        new Vector3(-50.53339, -1116.758, 25.86334),
+                        new Vector3(-53.56507, -1116.645, 25.86412),
+                        new Vector3(-56.42249, -1116.668, 25.8641),
+                        new Vector3(-59.06798, -1117.206, 25.86339),
+                        new Vector3(-61.86055, -1117.122, 25.8629)
+                    };
+                    var randomPos = new Random().Next(1, spawnPoss.Length) - 1;
+
                     //Create the vehicle.
                     vehicle_manager.Vehicle theVehicle = new vehicle_manager.Vehicle()
                     {
                         OwnerId = character.Id,
                         OwnerName = character.CharacterName,
-                        SpawnPos = new Vector3(),
-                        SpawnRot = new Vector3()
+                        SpawnPos = spawnPoss[randomPos],
+                        SpawnRot = new Vector3(0.1917319, 0.1198539, -177.1394)
                     };
-                    
+
                     //Add it to the players cars.
                     character.OwnedVehicles.Add(theVehicle);
 
                     //Spawn it.
-                    theVehicle.Spawn();
+                    VehicleManager.spawn_vehicle(theVehicle);
 
                     //Notify.
-                    API.sendChatMessageToPlayer(sender, $"You have sucessfully bought the ~g~{selectedCar[0]}~w~ for ${selectedCar[2]}.");
+                    API.sendChatMessageToPlayer(sender,
+                        $"You have sucessfully bought the ~g~{selectedCar[0]}~w~ for ${selectedCar[2]}.");
                     API.sendChatMessageToPlayer(sender, "Use /locatecar to find it.");
                 }
                 else
-                    API.sendChatMessageToPlayer(sender, $"You don't have enough money to buy the ~g~{selectedCar[0]}~w~.");
+                    API.sendChatMessageToPlayer(sender,
+                        $"You don't have enough money to buy the ~g~{selectedCar[0]}~w~.");
             }
         }
 
