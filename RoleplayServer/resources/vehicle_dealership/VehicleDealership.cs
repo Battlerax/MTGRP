@@ -135,7 +135,7 @@ namespace RoleplayServer.resources.vehicle_dealership
 
                 if (selectedCar == null) return;
 
-                if (character.Money > Convert.ToInt32(selectedCar[2]))
+                if (character.Money >= Convert.ToInt32(selectedCar[2]))
                 {
                     //Remove price.
                     character.Money -= Convert.ToInt32(selectedCar[2]);
