@@ -189,7 +189,7 @@ namespace RoleplayServer.resources.vehicle_dealership
         public void BuyVehicle(Client player)
         {
             var currentPos = API.getEntityPosition(player);
-            if (_dealershipsLocations.Any(dealer => currentPos.DistanceTo(dealer) < 10F))
+            if (_dealershipsLocations.Any(dealer => currentPos.DistanceTo(dealer) < 5F))
             {
                 API.triggerClientEvent(player, "dealership_showbuyvehiclemenu", API.toJson(_motorsycles),
                     API.toJson(_copues), API.toJson(_trucksnvans), API.toJson(_offroad), API.toJson(_musclecars),
