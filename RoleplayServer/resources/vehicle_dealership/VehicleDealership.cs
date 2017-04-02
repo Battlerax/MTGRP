@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using GTANetworkServer;
 using GTANetworkShared;
 using RoleplayServer.resources.player_manager;
+using RoleplayServer.resources.vehicle_manager;
 
 namespace RoleplayServer.resources.vehicle_dealership
 {
@@ -134,8 +135,27 @@ namespace RoleplayServer.resources.vehicle_dealership
 
                 if (character.Money > Convert.ToInt32(selectedCar[2]))
                 {
-                    //DEBUG.
-                    API.sendChatMessageToPlayer(sender, "You CAN buy this car.");
+                    //Remove price.
+                    character.Money -= Convert.ToInt32(selectedCar[2]);
+
+                    //Create the vehicle.
+                    vehicle_manager.Vehicle theVehicle = new vehicle_manager.Vehicle()
+                    {
+                        OwnerId = character.Id,
+                        OwnerName = character.CharacterName,
+                        SpawnPos = new Vector3(),
+                        SpawnRot = new Vector3()
+                    };
+                    
+                    //Add it to the players cars.
+                    character.OwnedVehicles.Add(theVehicle);
+
+                    //Spawn it.
+                    theVehicle.Spawn();
+
+                    //Notify.
+                    API.sendChatMessageToPlayer(sender, $"You have sucessfully bought the ~g~{selectedCar[0]}~w~ for ${selectedCar[2]}.");
+                    API.sendChatMessageToPlayer(sender, "Use /locatecar to find it.");
                 }
                 else
                     API.sendChatMessageToPlayer(sender, $"You don't have enough money to buy the ~g~{selectedCar[0]}~w~.");
