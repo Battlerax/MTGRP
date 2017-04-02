@@ -1,6 +1,7 @@
 ﻿/// <reference path="../types-gtanetwork/index.d.ts" />
 
-var menu_pool;
+var vehDealerList;
+var currentVehicleList;
 
 function VehicleJSONToMenu(json, type) {
     var realArr = JSON.parse(json);
@@ -17,9 +18,9 @@ API.onServerEventTrigger.connect((eventName, args) => {
     switch(eventName) {
         case "dealership_showbuyvehiclemenu":
             //Create main list.
-            menu_pool = API.getMenuPool();
+            //menu_pool = API.getMenuPool();
             //TODO: proabably change this descriptions xD
-            var vehDealerList = API.createMenu("Vehicle Dealership", "Welcome to the vehicler dealership.", 0, 0, 6);
+            vehDealerList = API.createMenu("Vehicle Dealership", "Welcome to the vehicle dealership.", 0, 0, 6);
             var motorsycles = API.createMenuItem("Motorsycles", "All 2 wheel vehicles.");
             var copues = API.createMenuItem("Copues", "Normal Class Vehicles.");
             var trucksnvans = API.createMenuItem("Trucks and Vans", "Big vehicles.");
@@ -35,7 +36,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
             vehDealerList.AddItem(musclecars);
             vehDealerList.AddItem(suv);
             vehDealerList.AddItem(supercars);
-            menu_pool.Add(vehDealerList);
+            //menu_pool.Add(vehDealerList);
 
             //Show it.
             vehDealerList.Visible = true;
@@ -51,8 +52,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
             vehDealerList.OnItemSelect.connect(function (sender, item, index) {
                 //Show apporpriate list depending on index.
                 vehDealerList.Visible = false;
-                var currentVehicleList = VehicleJSONToMenu(args[index], item.Text);
-                menu_pool.Add(currentVehicleList);
+                currentVehicleList = VehicleJSONToMenu(args[index], item.Text);
                 currentVehicleList.Visible = true;
 
                 currentVehicleList.OnItemSelect.connect(function (csender, citem, cindex) {
@@ -78,13 +78,16 @@ API.onServerEventTrigger.connect((eventName, args) => {
                 if (currentVeh != null)
                     API.deleteEntity(currentVeh);
                 API.setActiveCamera(null);
+                vehDealerList = null;
+                currentVehicleList = null;
             });
             break;
     }
 });
 
 API.onUpdate.connect(function () {
-    if (menu_pool != null) {
-        menu_pool.ProcessMenus();
-    }
+    if (vehDealerList != null)
+        API.drawMenu(vehDealerList);
+    if (currentVehicleList != null)
+        API.drawMenu(currentVehicleList);
 });
