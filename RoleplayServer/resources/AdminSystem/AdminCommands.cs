@@ -154,5 +154,27 @@ namespace RoleplayServer.resources.AdminSystem
             API.setEntityPosition(receiver, new Vector3(playerPos.X, playerPos.Y, playerPos.Z + 5));
             API.sendChatMessageToPlayer(receiver, "You have been slapped by an admin");
         }
+
+        [Command("setmymoney")]
+        public void setmymoney_cmd(Client player, int money)
+        {
+            Account account = API.getEntityData(player.handle, "Account");
+            Character character = API.getEntityData(player.handle, "Character");
+
+            if (account.AdminLevel == 0)
+                return;
+
+            character.Money = money;
+            API.sendChatMessageToPlayer(player, $"You have sucessfully changed your money to ${money}.");
+        }
+
+        //TODO: REMOVE THIS: 
+        [Command("makemeadmin")]
+        public void makemeadmin_cmd(Client player)
+        {
+            Account account = API.getEntityData(player.handle, "Account");
+            account.AdminLevel = 7;
+            API.sendChatMessageToPlayer(player, "You are now a king.");
+        }
     }
 }
