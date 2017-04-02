@@ -167,7 +167,8 @@ namespace RoleplayServer.resources.vehicle_dealership
                     character.OwnedVehicles.Add(theVehicle);
 
                     //Spawn it.
-                    VehicleManager.spawn_vehicle(theVehicle);
+                    if(VehicleManager.spawn_vehicle(theVehicle) != 1)
+                        API.sendChatMessageToPlayer(sender, "An error occured while spawning your vehicle.");
 
                     //Notify.
                     API.sendChatMessageToPlayer(sender,
