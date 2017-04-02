@@ -10,6 +10,7 @@
  * */
 
 
+using System;
 using System.Collections.Generic;
 using GTANetworkServer;
 using GTANetworkShared;
@@ -39,6 +40,10 @@ namespace RoleplayServer.resources.vehicle_manager
             API.onPlayerEnterVehicle += OnPlayerEnterVehicle;
             API.onVehicleDeath += OnVehicleDeath;
             API.onPlayerExitVehicle += OnPlayerExitVehicle;
+            API.onPlayerDisconnected += API_onPlayerDisconnected;
+
+            //Register for on character enter to show his cars.
+            CharacterMenu.OnCharacterLogin += CharacterMenu_OnCharacterLogin;
 
             // Create vehicle table + 
             load_all_unowned_vehicles();
@@ -124,6 +129,34 @@ namespace RoleplayServer.resources.vehicle_manager
         * ========== CALLBACKS =========
         * 
         */
+
+        private void CharacterMenu_OnCharacterLogin(object sender, CharacterMenu.CharacterLoginEventArgs e)
+        {
+            //Spawn his cars.
+            int i = 1;
+            foreach (var veh in e.character.OwnedVehicles)
+            {
+                i = spawn_vehicle(veh);
+            }
+
+            API.consoleOutput(i == 1
+                ? $"Spawned {e.character.CharacterName}'s Vehicles."
+                : $"There was an error spawning at least one of {e.character.CharacterName}'s vehicles.");
+        }
+
+        private void API_onPlayerDisconnected(Client player, string reason)
+        {
+            //DeSpawn his cars.
+            Character character = API.getEntityData(player.handle, "Character");
+            int i = 1;
+            foreach (var veh in character.OwnedVehicles)
+            {
+                i = despawn_vehicle(veh);
+            }
+            API.consoleOutput(i == 1
+                ? $"Depawned {character.CharacterName}'s Vehicles."
+                : $"There was an error despawning at least one of {character.CharacterName}'s vehicles.");
+        }
 
         private void OnPlayerEnterVehicle(Client player, NetHandle vehicleHandle)
         {
