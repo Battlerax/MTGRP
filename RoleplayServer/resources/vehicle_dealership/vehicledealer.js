@@ -18,7 +18,6 @@ API.onServerEventTrigger.connect((eventName, args) => {
     switch(eventName) {
         case "dealership_showbuyvehiclemenu":
             //Create main list.
-            //menu_pool = API.getMenuPool();
             //TODO: proabably change this descriptions xD
             vehDealerList = API.createMenu("Vehicle Dealership", "Welcome to the vehicle dealership.", 0, 0, 6);
             var motorsycles = API.createMenuItem("Motorsycles", "All 2 wheel vehicles.");
@@ -36,7 +35,6 @@ API.onServerEventTrigger.connect((eventName, args) => {
             vehDealerList.AddItem(musclecars);
             vehDealerList.AddItem(suv);
             vehDealerList.AddItem(supercars);
-            //menu_pool.Add(vehDealerList);
 
             //Show it.
             vehDealerList.Visible = true;
