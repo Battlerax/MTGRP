@@ -2,6 +2,7 @@
 
 var vehDealerList;
 var currentVehicleList;
+var currentVeh;
 
 function VehicleJSONToMenu(json, type) {
     var realArr = JSON.parse(json);
@@ -40,11 +41,10 @@ API.onServerEventTrigger.connect((eventName, args) => {
             vehDealerList.Visible = true;
 
             //Set.
-            var currentVeh;
             API.setEntityPositionFrozen(API.getLocalPlayer(), true);
-            var newCamera = API.createCamera(new Vector3(-45.71724, -1071.349, 30.54553), new Vector3(0, 0, 0));  //TODO: change this coords to somewhere nice for a preview
+            var newCamera = API.createCamera(new Vector3(223.5987, -990.639, -96.99989), new Vector3(0, 0, 0));
             API.setActiveCamera(newCamera);
-            API.pointCameraAtPosition(newCamera, new Vector3(-45.72494, -1082.089, 26.71275));
+            API.pointCameraAtPosition(newCamera, new Vector3(230.5009, -990.5709, -99.49818));
 
             //Listen for click: 
             vehDealerList.OnItemSelect.connect(function (sender, item, index) {
@@ -62,8 +62,8 @@ API.onServerEventTrigger.connect((eventName, args) => {
                     var realArr = JSON.parse(args[index]);
                     if (currentVeh != null)
                         API.deleteEntity(currentVeh);
-                    currentVeh = API.createVehicle(parseInt(realArr[oindex][1]), new Vector3(-45.72494, -1082.089, 26.71275), 0); //TODO: again position shall be changed..
-                    API.setEntityRotation(currentVeh, new Vector3(-1.08247, -1.095844, -110.0533));
+                    currentVeh = API.createVehicle(parseInt(realArr[oindex][1]), new Vector3(230.5009, -990.5709, -99.49818), 0);
+                    API.setEntityRotation(currentVeh, new Vector3(0.03913954, -0.07241886, 179.1236));
                 });
 
                 currentVehicleList.OnMenuClose.connect(function (closesender) {
