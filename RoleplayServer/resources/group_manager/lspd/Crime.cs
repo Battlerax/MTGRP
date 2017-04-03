@@ -14,14 +14,14 @@ namespace RoleplayServer.resources.group_manager.lspd
 
         public static ObjectId Id { get; set; }
 
-        public int Level { get; set; }
+        public string Type { get; set; }
         public string Name { get; set; }
         public int JailTime { get; set; }
         public int Fine { get; set; }
 
-        public Crime(int level, string name, int jailTime, int fine)
+        public Crime(string type, string name, int jailTime, int fine)
         {
-            Level = level;
+            Type = type;
             Name = name;
             JailTime = jailTime;
             Fine = fine;
@@ -45,9 +45,9 @@ namespace RoleplayServer.resources.group_manager.lspd
             DatabaseManager.CrimeTable.DeleteOne(filter);
         }
 
-        public static void InsertCrime(int level, string name, int jailTime, int fine)
+        public static void InsertCrime(string type, string name, int jailTime, int fine)
         {
-            var crime = new Crime(level, name, jailTime, fine);
+            var crime = new Crime(type, name, jailTime, fine);
             crime.Insert();
             Crimes.Add(crime);
         }

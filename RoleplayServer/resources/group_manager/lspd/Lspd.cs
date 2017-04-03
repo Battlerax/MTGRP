@@ -338,12 +338,12 @@ namespace RoleplayServer.resources.group_manager.lspd
 
             foreach (var i in Crime.Crimes)
             {
-                API.sendChatMessageToPlayer(player, i.Level + " | " + i.Name + " | " + i.JailTime + " | " + i.Fine ); //TODO: MAKE A CEF LIST FOR THIS
+                API.sendChatMessageToPlayer(player, i.Type + " | " + i.Name + " | " + i.JailTime + " | " + i.Fine ); //TODO: MAKE A CEF LIST FOR THIS
             }
         }
 
         [Command("createcrime")]
-        public void createcrime_cmd(Client player, int level, string crimeName, int jailTime, int fine)
+        public void createcrime_cmd(Client player, string type, string crimeName, int jailTime, int fine)
         {
             Character character = API.getEntityData(player.handle, "Character");
 
@@ -366,7 +366,7 @@ namespace RoleplayServer.resources.group_manager.lspd
                 API.sendChatMessageToPlayer(player, "This crime already exists!");
                 return;
             }
-            Crime.InsertCrime(level, crimeName, jailTime, fine);
+            Crime.InsertCrime(type, crimeName, jailTime, fine);
             API.sendChatMessageToPlayer(player, "Crime created and added to crime list.");
         }
 
