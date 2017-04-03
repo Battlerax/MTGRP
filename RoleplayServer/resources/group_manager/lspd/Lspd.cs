@@ -126,8 +126,6 @@ namespace RoleplayServer.resources.group_manager.lspd
             Character receiverCharacter = API.getEntityData(receiver.handle, "Character");
             CriminalRecord criminalrecord = API.getEntityData(receiver.handle, "CriminalRecord");
 
-            var FoundCrime = CrimeList.Find(c => c.Name == crime);
-
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
                 API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
@@ -139,11 +137,6 @@ namespace RoleplayServer.resources.group_manager.lspd
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
-
-            if (FoundCrime == null)
-            {
-                var ClosestCrime = CrimeList.FirstOrDefault(c => c.Name.Contains(crime));
-            }
      
             API.sendNotificationToPlayer(player, "You have recorded " + receiver.name + " for committing a crime.");
             API.sendNotificationToPlayer(receiver, player.name + " has recorded a crime you committed: ~r~" + crime + "~w~.");
@@ -154,7 +147,7 @@ namespace RoleplayServer.resources.group_manager.lspd
             criminalrecord.Insert();
 
         }
-        [Command("arrest", GreedyArg = true)] // arrest command TODO: change fine, time, etc. depending on crime in the crimelist.
+        [Command("arrest", GreedyArg = true)]
         public void arrest_cmd(Client player, string id, int time)
         {
 
@@ -304,7 +297,7 @@ namespace RoleplayServer.resources.group_manager.lspd
                 API.setEntityData(player, "MegaphoneStatus", true);
                 var megaphone = API.createObject(API.getHashKey("prop_megaphone_01"), playerPos, new Vector3());
                 API.attachEntityToEntity(megaphone, player, "IK_R_Hand", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
-
+                return;
             }
             API.sendNotificationToPlayer(player, "You are no longer speaking through a megaphone.");
             API.setEntityData(player, "MegaphoneStatus", false);
@@ -336,7 +329,6 @@ namespace RoleplayServer.resources.group_manager.lspd
         public void listcrimes_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
-            var FoundCrime = CrimeList.Find(c => c.Name == crime);
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
@@ -344,14 +336,18 @@ namespace RoleplayServer.resources.group_manager.lspd
                 return;
             }
 
-            //TODO: Display list of crimes from crimelist.
+            foreach (var i in Crime.Crimes)
+            {
+                API.sendChatMessageToPlayer(player, i.Level + " | " + i.Name + " | " + i.JailTime + " | " + i.Fine ); //TODO: MAKE A CEF LIST FOR THIS
+            }
         }
 
         [Command("createcrime")]
-        public void createcrime_cmd(Client player, string crimeName)
+        public void createcrime_cmd(Client player, int level, string crimeName, int jailTime, int fine)
         {
             Character character = API.getEntityData(player.handle, "Character");
-            var FoundCrime = CrimeList.Find(c => c.Name == crime);
+
+            var crimes = Crime.Crimes;
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
@@ -365,18 +361,19 @@ namespace RoleplayServer.resources.group_manager.lspd
                 return;
             }
 
-            if (FoundCrime == crimeName)
+            if (Crime.CrimeExists(crimeName))
             {
                 API.sendChatMessageToPlayer(player, "This crime already exists!");
+                return;
             }
-            //TODO: Create a crime, add it to the db.
+            Crime.InsertCrime(level, crimeName, jailTime, fine);
+            API.sendChatMessageToPlayer(player, "Crime created and added to crime list.");
         }
 
         [Command("deletecrime")]
-        public void deletecrime_cmd(Client player, string crimeName)
+        public void deletecrime_cmd(Client player, Crime crimeName)
         {
             Character character = API.getEntityData(player.handle, "Character");
-            var FoundCrime = CrimeList.Find(c => c.Name == crime);
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
@@ -390,11 +387,8 @@ namespace RoleplayServer.resources.group_manager.lspd
                 return;
             }
 
-            if (FoundCrime == null)
-            {
-                API.sendChatMessageToPlayer(player, "Crime not found.");
-            }
-            //TODO: Delete crime from db.
+            Crime.Delete(crimeName);
+            API.sendChatMessageToPlayer(player, "Crime deleted from crime list.");
         }
 
         public void GiveLspdEquipment(Client player, int type = 0)

@@ -1,5 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Driver;
 using RoleplayServer.resources.database_manager;
 
 namespace RoleplayServer.resources.group_manager.lspd
@@ -8,7 +12,7 @@ namespace RoleplayServer.resources.group_manager.lspd
     {
         public static List<Crime> Crimes = new List<Crime>();
 
-        public ObjectId Id { get; set; }
+        public static ObjectId Id { get; set; }
 
         public int Level { get; set; }
         public string Name { get; set; }
@@ -19,9 +23,8 @@ namespace RoleplayServer.resources.group_manager.lspd
         {
             Level = level;
             Name = name;
-            JailTime = JailTime;
+            JailTime = jailTime;
             Fine = fine;
-            Crimes.Add(this);
         }
 
         public void Update()
@@ -35,10 +38,23 @@ namespace RoleplayServer.resources.group_manager.lspd
             DatabaseManager.CrimeTable.InsertOne(this);
         }
 
-        public void Delete()
+        public static void Delete(Crime name)
         {
+            Crimes.Remove(name);
             var filter = MongoDB.Driver.Builders<Crime>.Filter.Eq("Id", Id);
             DatabaseManager.CrimeTable.DeleteOne(filter);
+        }
+
+        public static void InsertCrime(int level, string name, int jailTime, int fine)
+        {
+            var crime = new Crime(level, name, jailTime, fine);
+            crime.Insert();
+            Crimes.Add(crime);
+        }
+
+        public static bool CrimeExists(string crimeName)
+        {
+            return Crimes.Count(i => string.Equals(i.Name, crimeName, StringComparison.OrdinalIgnoreCase)) > 0;
         }
     }
 }
