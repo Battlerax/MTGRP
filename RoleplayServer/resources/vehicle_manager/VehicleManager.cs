@@ -133,29 +133,24 @@ namespace RoleplayServer.resources.vehicle_manager
         private void CharacterMenu_OnCharacterLogin(object sender, CharacterMenu.CharacterLoginEventArgs e)
         {
             //Spawn his cars.
-            int i = 1;
             foreach (var veh in e.character.OwnedVehicles)
             {
-                i = spawn_vehicle(veh);
+                if(spawn_vehicle(veh) != 1)
+                    API.consoleOutput($"There was an error spawning vehicle #{veh.Id} of {e.character.CharacterName}.");
             }
-
-            API.consoleOutput(i == 1
-                ? $"Spawned {e.character.CharacterName}'s Vehicles."
-                : $"There was an error spawning at least one of {e.character.CharacterName}'s vehicles.");
         }
 
         private void API_onPlayerDisconnected(Client player, string reason)
         {
             //DeSpawn his cars.
             Character character = API.getEntityData(player.handle, "Character");
-            int i = 1;
+            if (character == null)
+                return;
             foreach (var veh in character.OwnedVehicles)
             {
-                i = despawn_vehicle(veh);
+                if (despawn_vehicle(veh) != 1)
+                    API.consoleOutput($"There was an error despawning vehicle #{veh.Id} of {character.CharacterName}.");
             }
-            API.consoleOutput(i == 1
-                ? $"Depawned {character.CharacterName}'s Vehicles."
-                : $"There was an error despawning at least one of {character.CharacterName}'s vehicles.");
         }
 
         private void OnPlayerEnterVehicle(Client player, NetHandle vehicleHandle)
