@@ -168,6 +168,50 @@ namespace RoleplayServer.resources.AdminSystem
             API.sendChatMessageToPlayer(player, $"You have sucessfully changed your money to ${money}.");
         }
 
+        [Command("showplayercars")]
+        public void showplayercars_cmd(Client player, string id)
+        {
+            Account account = API.getEntityData(player.handle, "Account");
+            if (account.AdminLevel == 0)
+                return;
+
+            var receiver = PlayerManager.ParseClient(id);
+            if (receiver == null)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
+            }
+
+            Character character = API.getEntityData(player.handle, "Character");
+            API.sendChatMessageToPlayer(player, "----------------------------------------------");
+            API.sendChatMessageToPlayer(player, $"Vehicles Owned By {character.CharacterName}");
+            foreach (var car in character.OwnedVehicles)
+            {
+                API.sendChatMessageToPlayer(player, $"({API.getVehicleDisplayName(car.VehModel)}) - ID #{car.Id}");
+            }
+            API.sendChatMessageToPlayer(player, "----------------------------------------------");
+        }
+
+        [Command("getplayercar")]
+        public void getplayercar_cmd(Client player, string id, int carid)
+        {
+            Account account = API.getEntityData(player.handle, "Account");
+            if (account.AdminLevel == 0)
+                return;
+
+            var receiver = PlayerManager.ParseClient(id);
+            if (receiver == null)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
+            }
+
+            Character character = API.getEntityData(player.handle, "Character");
+            vehicle_manager.Vehicle car = character.OwnedVehicles.Find(x => x.Id == carid);
+            API.setEntityPosition(car.NetHandle, player.position);
+            API.sendChatMessageToPlayer(player, "Sucessfully teleported the car to you.");
+        }
+
         //TODO: REMOVE THIS: 
         [Command("makemeadmin")]
         public void makemeadmin_cmd(Client player)
