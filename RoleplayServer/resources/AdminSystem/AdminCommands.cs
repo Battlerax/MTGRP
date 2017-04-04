@@ -187,7 +187,7 @@ namespace RoleplayServer.resources.AdminSystem
             API.sendChatMessageToPlayer(player, $"Vehicles Owned By {character.CharacterName}");
             foreach (var car in character.OwnedVehicles)
             {
-                API.sendChatMessageToPlayer(player, $"({API.getVehicleDisplayName(car.VehModel)}) - ID #{car.Id}");
+                API.sendChatMessageToPlayer(player, $"({API.getVehicleDisplayName(car.VehModel)}) - ID #{car.NetHandle.Value}");
             }
             API.sendChatMessageToPlayer(player, "----------------------------------------------");
         }
@@ -207,7 +207,7 @@ namespace RoleplayServer.resources.AdminSystem
             }
 
             Character character = API.getEntityData(player.handle, "Character");
-            vehicle_manager.Vehicle car = character.OwnedVehicles.Find(x => x.Id == carid);
+            vehicle_manager.Vehicle car = character.OwnedVehicles.Find(x => x.NetHandle.Value == carid);
             API.setEntityPosition(car.NetHandle, player.position);
             API.sendChatMessageToPlayer(player, "Sucessfully teleported the car to you.");
         }
