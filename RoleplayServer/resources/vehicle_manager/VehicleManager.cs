@@ -133,10 +133,12 @@ namespace RoleplayServer.resources.vehicle_manager
         private void CharacterMenu_OnCharacterLogin(object sender, CharacterMenu.CharacterLoginEventArgs e)
         {
             //Spawn his cars.
-            foreach (var veh in e.character.OwnedVehicles)
+            var maxVehs = GetMaxOwnedVehicles(e.character.Client);
+            if (maxVehs > e.character.OwnedVehicles.Count) maxVehs = e.character.OwnedVehicles.Count;
+            for (int i = 0; i < maxVehs; i++)
             {
-                if(spawn_vehicle(veh) != 1)
-                    API.consoleOutput($"There was an error spawning vehicle #{veh.Id} of {e.character.CharacterName}.");
+                if (spawn_vehicle(e.character.OwnedVehicles[i]) != 1)
+                    API.consoleOutput($"There was an error spawning vehicle #{e.character.OwnedVehicles[i].Id} of {e.character.CharacterName}.");
             }
         }
 
@@ -146,10 +148,12 @@ namespace RoleplayServer.resources.vehicle_manager
             Character character = API.getEntityData(player.handle, "Character");
             if (character == null)
                 return;
-            foreach (var veh in character.OwnedVehicles)
+            var maxVehs = GetMaxOwnedVehicles(character.Client);
+            if (maxVehs > character.OwnedVehicles.Count) maxVehs = character.OwnedVehicles.Count;
+            for (int i = 0; i < maxVehs; i++)
             {
-                if (despawn_vehicle(veh) != 1)
-                    API.consoleOutput($"There was an error despawning vehicle #{veh.Id} of {character.CharacterName}.");
+                if (despawn_vehicle(character.OwnedVehicles[i]) != 1)
+                    API.consoleOutput($"There was an error despawning vehicle #{character.OwnedVehicles[i].Id} of {character.CharacterName}.");
             }
         }
 
@@ -221,7 +225,24 @@ namespace RoleplayServer.resources.vehicle_manager
         * 
         */
 
-        public Vehicle CreateUnownedVehicle(VehicleHash model, Vector3 pos, Vector3 rot, int color1 = 0, int color2 = 0, int dimension = 0)
+        public static int GetMaxOwnedVehicles(Client chr)
+        {
+            Account acc = API.shared.getEntityData(chr, "Account");
+            switch (acc.VipLevel)
+            {
+                case 0:
+                    return 2;
+                case 1:
+                    return 3;
+                case 2:
+                    return 4;
+                case 3:
+                    return 5;
+            }
+            return 0;
+        }
+
+    public Vehicle CreateUnownedVehicle(VehicleHash model, Vector3 pos, Vector3 rot, int color1 = 0, int color2 = 0, int dimension = 0)
         {
             var veh = new Vehicle();
 

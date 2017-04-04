@@ -13,6 +13,7 @@ namespace RoleplayServer.resources.vehicle_dealership
     class VehicleDealership : Script
     {
         #region Vehicle Info [NAME/HASH/PRICE]
+
         //Could be changed to dynamic later on.
         private readonly string[][] _motorsycles =
         {
@@ -77,12 +78,13 @@ namespace RoleplayServer.resources.vehicle_dealership
             new[] {"Coquette", "108773431", "150000"},
             new[] {"Lynx", "482197771", "165000"},
         };
-#endregion
+
+        #endregion
 
         //Vars: 
         private readonly Vector3[] _dealershipsLocations =
         {
-            new Vector3(-56.77422f,-1097.052f,26.42235f)
+            new Vector3(-56.77422f, -1097.052f, 26.42235f)
         };
 
         public VehicleDealership()
@@ -161,17 +163,17 @@ namespace RoleplayServer.resources.vehicle_dealership
                         OwnerName = character.CharacterName,
                         SpawnPos = spawnPoss[randomPos],
                         SpawnRot = new Vector3(0.1917319, 0.1198539, -177.1394),
-                        VehModel = (VehicleHash)Convert.ToInt32(selectedCar[1]),
+                        VehModel = (VehicleHash) Convert.ToInt32(selectedCar[1]),
                         LicensePlate = "Unregistered",
                         VehType = vehicle_manager.Vehicle.VehTypePerm,
-                        
+
                     };
 
                     //Add it to the players cars.
                     character.OwnedVehicles.Add(theVehicle);
 
                     //Spawn it.
-                    if(VehicleManager.spawn_vehicle(theVehicle) != 1)
+                    if (VehicleManager.spawn_vehicle(theVehicle) != 1)
                         API.sendChatMessageToPlayer(sender, "An error occured while spawning your vehicle.");
 
                     //Notify.
@@ -188,6 +190,15 @@ namespace RoleplayServer.resources.vehicle_dealership
         [Command("buyvehicle")]
         public void BuyVehicle(Client player)
         {
+            //Check if can buy more cars.
+            Character character = API.getEntityData(player, "Character");
+            if (character.OwnedVehicles.Count >= VehicleManager.GetMaxOwnedVehicles(player))
+            {
+                API.sendChatMessageToPlayer(player, "You can't own anymore vehicles.");
+                API.sendChatMessageToPlayer(player, "~g~NOTE: You can buy VIP to increase your vehicle slots.");
+                return;
+            }
+
             var currentPos = API.getEntityPosition(player);
             if (_dealershipsLocations.Any(dealer => currentPos.DistanceTo(dealer) < 5F))
             {
