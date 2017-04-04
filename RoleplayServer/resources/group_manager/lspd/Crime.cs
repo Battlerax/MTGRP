@@ -12,7 +12,8 @@ namespace RoleplayServer.resources.group_manager.lspd
     {
         public static List<Crime> Crimes = new List<Crime>();
 
-        public static ObjectId Id { get; set; }
+        public ObjectId Id { get; set; }
+
 
         public string Type { get; set; }
         public string Name { get; set; }
@@ -40,6 +41,7 @@ namespace RoleplayServer.resources.group_manager.lspd
 
         public static void Delete(Crime name)
         {
+            ObjectId Id = new ObjectId();
             Crimes.Remove(name);
             var filter = MongoDB.Driver.Builders<Crime>.Filter.Eq("Id", Id);
             DatabaseManager.CrimeTable.DeleteOne(filter);
