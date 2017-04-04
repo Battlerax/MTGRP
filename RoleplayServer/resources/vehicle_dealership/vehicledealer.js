@@ -46,6 +46,8 @@ API.onServerEventTrigger.connect((eventName, args) => {
             API.setActiveCamera(newCamera);
             API.pointCameraAtPosition(newCamera, new Vector3(230.5009, -990.5709, -99.49818));
 
+            API.sendChatMessage("~g~NOTE: You can use the PLUS and MINUS keys to rotate your vehicle!");
+
             //Listen for click: 
             vehDealerList.OnItemSelect.connect(function (sender, item, index) {
                 //Show apporpriate list depending on index.
@@ -80,6 +82,18 @@ API.onServerEventTrigger.connect((eventName, args) => {
                 currentVehicleList = null;
             });
             break;
+    }
+});
+
+API.onKeyDown.connect(function(sender, e) {
+    if (e.KeyCode == Keys.Oemplus && currentVeh != null) {
+        var rot = API.getEntityRotation(currentVeh).Add(new Vector3(0, 0, 4));
+        API.setEntityRotation(currentVeh, rot);
+
+    }
+    else if (e.KeyCode == Keys.OemMinus && currentVeh != null) {
+        var newRot = API.getEntityRotation(currentVeh).Add(new Vector3(0, 0, -4));
+        API.setEntityRotation(currentVeh, newRot);
     }
 });
 
