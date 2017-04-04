@@ -129,6 +129,9 @@ namespace RoleplayServer.resources.vehicle_manager
             API.shared.setBlipScale(Blip, (float)0.7);
             API.shared.setBlipShortRange(Blip, true);
 
+            //Set owner detials.
+            OwnerClient = PlayerManager.ParseClient(OwnerId.ToString());
+
             IsSpawned = true;
 
             return 1; // Successful spawn
