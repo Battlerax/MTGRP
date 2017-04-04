@@ -35,8 +35,9 @@
 	<script src="vehicle_manager/vehicle_editor/VehicleEdit.js" type="client" lang="javascript"/>
 	<file src="vehicle_manager/vehicle_editor/VehicleEdit.html"/>
 	
-  <!-- Dealership -->
-  <script src="vehicle_dealership/vehicledealer.js" type="client" lang="javascript"/>
+	<!-- Dealership -->
+	<script src="vehicle_dealership/vehicledealer.js" type="client" lang="javascript"/>
+	<script src="vehicle_manager/VehicleOwnership.js" type="client" lang="javascript"/>
   
 	<!-- CEF  -->
 	<file src="stylesheet/css/metro.css"/>

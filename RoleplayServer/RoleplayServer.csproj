@@ -109,6 +109,7 @@
     <Compile Include="resources\vehicle_manager\Vehicle.cs" />
     <Compile Include="resources\vehicle_manager\VehicleManager.cs" />
     <Compile Include="resources\vehicle_manager\VehicleMenu.cs" />
+    <Compile Include="resources\vehicle_manager\VehicleOwnership.cs" />
     <Compile Include="resources\vehicle_manager\vehicle_editor\VehicleEditor.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -152,6 +153,7 @@
     <Content Include="resources\stylesheet\js\metro.js" />
     <Content Include="resources\stylesheet\js\metro.min.js" />
     <Content Include="resources\vehicle_dealership\vehicledealer.js" />
+    <Content Include="resources\vehicle_manager\VehicleOwnership.js" />
     <Content Include="resources\vehicle_manager\vehicle_editor\VehicleEdit.js" />
     <Content Include="resources\vehicle_manager\vehicle_editor\VehicleEdit.html" />
     <Content Include="resources\vehicle_manager\VehicleMenu.js" />
