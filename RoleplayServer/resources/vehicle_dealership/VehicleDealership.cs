@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GTANetworkServer;
 using GTANetworkShared;
+using RoleplayServer.resources.database_manager;
 using RoleplayServer.resources.player_manager;
 using RoleplayServer.resources.vehicle_manager;
 
@@ -159,6 +160,7 @@ namespace RoleplayServer.resources.vehicle_dealership
                     //Create the vehicle.
                     vehicle_manager.Vehicle theVehicle = new vehicle_manager.Vehicle()
                     {
+                        Id = DatabaseManager.GetNextId("vehicles"),
                         OwnerId = character.Id,
                         OwnerName = character.CharacterName,
                         SpawnPos = spawnPoss[randomPos],
