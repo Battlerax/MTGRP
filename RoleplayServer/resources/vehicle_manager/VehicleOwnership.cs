@@ -18,15 +18,23 @@ namespace RoleplayServer.resources.vehicle_manager
 
         private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
         {
+            Character character = API.getEntityData(sender, "Character");
             switch (eventName)
             {
                 case "myvehicles_locatecar":
-                    Character character = API.getEntityData(sender, "Character");
-                    vehicle_manager.Vehicle veh =
+                    vehicle_manager.Vehicle lcVeh =
                         character.OwnedVehicles.Single(x => x.NetHandle.Value == Convert.ToInt32(arguments[0]));
-                    Vector3 loc = API.getEntityPosition(veh.NetHandle);
+                    Vector3 loc = API.getEntityPosition(lcVeh.NetHandle);
                     API.triggerClientEvent(sender, "myvehicles_setCheckpointToCar", loc.X, loc.Y, loc.Z);
                     API.sendChatMessageToPlayer(sender, "A checkpoint has been set to the vehicle.");
+                    break;
+
+                case "myvehicles_abandoncar":
+                    vehicle_manager.Vehicle acVeh =
+                        character.OwnedVehicles.Single(x => x.Id == Convert.ToInt32(arguments[0]));
+                    VehicleManager.despawn_vehicle(acVeh);
+                    character.OwnedVehicles.Remove(acVeh);
+                    API.sendChatMessageToPlayer(sender, $"You have sucessfully abandoned your ~r~{API.getVehicleDisplayName(acVeh.VehModel)}~w~");
                     break;
             }
         }

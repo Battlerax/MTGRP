@@ -24,6 +24,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
             var actionsMenu = API.createMenu("Manage Vehicle", `Select an action to do your vehicle.`, 0, 0, 4);
             actionsMenu.AddItem(API.createMenuItem("Locate", "Set a checkpoint to the location of your car."));
             actionsMenu.AddItem(API.createMenuItem("Sell", "Sell your car."));
+            actionsMenu.AddItem(API.createMenuItem("Abandon", "Abandon your car."));
             menuPool.Add(actionsMenu);
 
             actionsMenu.OnMenuClose.connect(function (closesender) {
@@ -49,6 +50,17 @@ API.onServerEventTrigger.connect((eventName, args) => {
                             break;
                         case 1:
                             API.sendChatMessage("Sell pressed.");
+                            break;
+                        case 2:
+                            API.sendChatMessage("Write ~r~ABANDON~w~ to confirm that you would like to abandon this car.");
+                            API.sendChatMessage("~r~This action CANNOT be undone.");
+                            var string = API.getUserInput("", 7);
+                            if (string === "ABANDON") {
+                                API.triggerServerEvent("myvehicles_abandoncar", carsList[currentSelectedCar][1]);
+                                actionsMenu.Visible = false;
+                                myCars.Visible = false;
+                                currentSelectedCar = -1;
+                            }
                             break;
                     }
                 }
