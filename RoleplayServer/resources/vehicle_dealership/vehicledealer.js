@@ -82,6 +82,15 @@ API.onServerEventTrigger.connect((eventName, args) => {
                 currentVehicleList = null;
             });
             break;
+
+        case "dealership_exitdealermenu":
+            API.setEntityPositionFrozen(API.getLocalPlayer(), false);
+            if (currentVeh != null)
+                API.deleteEntity(currentVeh);
+            API.setActiveCamera(null);
+            vehDealerList = null;
+            currentVehicleList = null;
+            break;
     }
 });
 

@@ -178,7 +178,10 @@ namespace RoleplayServer.resources.vehicle_dealership
                     //Notify.
                     API.sendChatMessageToPlayer(sender,
                         $"You have sucessfully bought the ~g~{selectedCar[0]}~w~ for ${selectedCar[2]}.");
-                    API.sendChatMessageToPlayer(sender, "Use /locatecar to find it.");
+                    API.sendChatMessageToPlayer(sender, "Use /myvehicles to manage it.");
+
+                    //Exit.
+                    API.triggerClientEvent(sender, "dealership_exitdealermenu");
                 }
                 else
                     API.sendChatMessageToPlayer(sender,
