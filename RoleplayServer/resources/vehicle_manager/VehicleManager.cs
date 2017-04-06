@@ -47,7 +47,8 @@ namespace RoleplayServer.resources.vehicle_manager
             CharacterMenu.OnCharacterLogin += CharacterMenu_OnCharacterLogin;
 
             // Create vehicle table + 
-            load_all_unowned_vehicles();
+            load_all_vehicles();
+            spawn_unowned_vehicles();
 
             DebugManager.DebugMessage("[VehicleM] Vehicle Manager initalized!");
         }
@@ -345,20 +346,23 @@ namespace RoleplayServer.resources.vehicle_manager
             return false;
         }
 
-        public void load_all_unowned_vehicles()
+        public void load_all_vehicles()
         {
-            var filter = Builders<Vehicle>.Filter.Eq("OwnerName", "None");
-            var unownedVehicles = DatabaseManager.VehicleTable.Find(filter).ToList();
+            var allvehs = DatabaseManager.VehicleTable.Find(x => x.Id != 0).ToList();
 
-            foreach (var v in unownedVehicles)
+            foreach (var v in allvehs)
             {
                 v.Job = JobManager.GetJobById(v.JobId);
-                spawn_vehicle(v);
                 Vehicles.Add(v);
             }
 
-            DebugManager.DebugMessage("Loaded " + unownedVehicles.Count + " unowned vehicles from the database.");
+            DebugManager.DebugMessage("Loaded " + allvehs.Count + " vehicles from the database.");
         }
 
+        public void spawn_unowned_vehicles()
+        {
+            foreach (var v in Vehicles.Where(x => x.OwnerId == 0))
+                spawn_vehicle(v);
+        }
     }
 }
