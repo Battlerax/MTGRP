@@ -174,12 +174,13 @@ namespace RoleplayServer.resources.group_manager.lspd
             var players = API.getAllPlayers();
 
             API.sendChatMessageToPlayer(player, "---------------------WANTED LIST---------------------");
-            foreach (var c in players)
+
+
+            foreach (var c in PlayerManager.Players)
             {
-                CriminalRecord criminalrecord = API.getEntityData(c, "CriminalRecord");
-                if (criminalrecord.ActiveCrime == true)
+                if (c.activeCrime == true)
                 {
-                    API.sendChatMessageToPlayer(player, c.name + " is wanted for " + criminalrecord.Crime);
+                    API.sendChatMessageToPlayer(player, c.CharacterName + " is wanted for " + c.GetCriminalRecord());
                 }
 
             }
@@ -458,7 +459,10 @@ namespace RoleplayServer.resources.group_manager.lspd
             API.sendChatMessageToPlayer(target, player.name + " is offering to hand you a ticket. Use /accept copticket to accept it.");
             API.sendChatMessageToPlayer(player, "You offer to hand " + target.name + " a ticket.");
             character.sentTicketAmount = amount;
-            
+            character.TicketTimer = new System.Timers.Timer { Interval = 10 };
+            character.TicketTimer.Elapsed += delegate { resetTicket(player); };
+            character.TicketTimer.Start();
+
         }
 
         [Command("accept")]
@@ -469,7 +473,7 @@ namespace RoleplayServer.resources.group_manager.lspd
                 Character character = API.getEntityData(player.handle, "Character");
                 Character ticketPlayer = API.getEntityData(player.handle, "TicketSent");
 
-                if (ticketPlayer == null)
+                if (ticketPlayer.sentTicket == false)
                 {
                     API.sendChatMessageToPlayer(player, Color.White, "No active tickets to accept.");
                     return;
@@ -584,7 +588,13 @@ namespace RoleplayServer.resources.group_manager.lspd
             API.setPlayerHealth(player, 100);
             API.setPlayerArmor(player, 100);
         }
-
+        
+        public void resetTicket(Client player)
+        {
+            Character character = API.getEntityData(player.handle, "Character");
+            character.sentTicket = false;
+            character.BeaconResetTimer.Stop();
+        }
 
         public void jailControl(Client player, int seconds)
         {

@@ -154,6 +154,8 @@ namespace RoleplayServer.resources.player_manager
         public bool isJailed { get; set; }
         public int sentTicketAmount { get; set; }
 
+        public Timer TicketTimer { get; set; }
+        public bool sentTicket { get; set; }
         public int ticketBalance { get; set; }
         public int unpaidTickets { get; set; }
 
