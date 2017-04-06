@@ -47,8 +47,7 @@ namespace RoleplayServer.resources.vehicle_manager
             CharacterMenu.OnCharacterLogin += CharacterMenu_OnCharacterLogin;
 
             // Create vehicle table + 
-            load_all_vehicles();
-            spawn_unowned_vehicles();
+            load_all_unowned_vehicles();
 
             DebugManager.DebugMessage("[VehicleM] Vehicle Manager initalized!");
         }
@@ -134,13 +133,16 @@ namespace RoleplayServer.resources.vehicle_manager
 
         private void CharacterMenu_OnCharacterLogin(object sender, CharacterMenu.CharacterLoginEventArgs e)
         {
+            //Load them.
+            Vehicles.AddRange(DatabaseManager.VehicleTable.Find(x => x.OwnerId == e.character.Id).ToList());
+
             //Spawn his cars.
             var maxVehs = GetMaxOwnedVehicles(e.character.Client);
             if (maxVehs > e.character.OwnedVehicles.Count) maxVehs = e.character.OwnedVehicles.Count;
             for (int i = 0; i < maxVehs; i++)
             {
                 var car =
-                    VehicleManager.Vehicles.SingleOrDefault(
+                    Vehicles.SingleOrDefault(
                         x => x.Id == e.character.OwnedVehicles[i] && x.OwnerId == e.character.Id);
                 if (car == null)
                     continue;
@@ -161,7 +163,7 @@ namespace RoleplayServer.resources.vehicle_manager
             for (int i = 0; i < maxVehs; i++)
             {
                 var car =
-                    VehicleManager.Vehicles.SingleOrDefault(
+                    Vehicles.SingleOrDefault(
                         x => x.Id == character.OwnedVehicles[i] && x.OwnerId == character.Id);
                 if (car == null)
                     continue;
@@ -169,6 +171,9 @@ namespace RoleplayServer.resources.vehicle_manager
                 if (despawn_vehicle(car) != 1)
                     API.consoleOutput($"There was an error despawning vehicle #{car.Id} of {character.CharacterName}.");
             }
+
+            //Delete.
+            Vehicles.RemoveAll(x => x.OwnerId == character.Id);
         }
 
         private void OnPlayerEnterVehicle(Client player, NetHandle vehicleHandle)
@@ -346,23 +351,19 @@ namespace RoleplayServer.resources.vehicle_manager
             return false;
         }
 
-        public void load_all_vehicles()
+        public void load_all_unowned_vehicles()
         {
-            var allvehs = DatabaseManager.VehicleTable.Find(x => x.Id != 0).ToList();
+            var filter = Builders<Vehicle>.Filter.Eq("OwnerName", "None");
+            var unownedVehicles = DatabaseManager.VehicleTable.Find(filter).ToList();
 
-            foreach (var v in allvehs)
+            foreach (var v in unownedVehicles)
             {
                 v.Job = JobManager.GetJobById(v.JobId);
+                spawn_vehicle(v);
                 Vehicles.Add(v);
             }
 
-            DebugManager.DebugMessage("Loaded " + allvehs.Count + " vehicles from the database.");
-        }
-
-        public void spawn_unowned_vehicles()
-        {
-            foreach (var v in Vehicles.Where(x => x.OwnerId == 0))
-                spawn_vehicle(v);
+            DebugManager.DebugMessage("Loaded " + unownedVehicles.Count + " unowned vehicles from the database.");
         }
     }
 }
