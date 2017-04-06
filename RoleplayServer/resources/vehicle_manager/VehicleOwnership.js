@@ -5,15 +5,13 @@ var menuPool;
 API.onServerEventTrigger.connect((eventName, args) => {
     switch(eventName) {
         case "myvehicles_showmenu":
+            //carsList contents: 
+            //[i][0] = Name | [i][1] = ID | [i][2] = NetHandle
             menuPool = API.getMenuPool();
             var myCars = API.createMenu("Your Vehicles", "Select a vehicle to manage.", 0, 0, 4);
             var carsList = JSON.parse(args[0]);
             for (var i = 0; i < carsList.length; i++) {
-                var car;
-                if (carsList[i][2] == "0")
-                    car = API.createMenuItem(carsList[i][0] + " - Unspawned(VIP)", `NetHandle: #${carsList[i][2]} | ID: #${carsList[i][1]}`);
-                else
-                    car = API.createMenuItem(carsList[i][0], `NetHandle: #${carsList[i][2]} | ID: #${carsList[i][1]}`);
+                var car = API.createMenuItem(carsList[i][0] + (carsList[i][2] == "0" ? " - Unspawned (VIP Slot)" : ""), `NetHandle: #${carsList[i][2]} | ID: #${carsList[i][1]}`);
                 myCars.AddItem(car);
             }
 
@@ -60,7 +58,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
                             break;
                         case 2:
                             API.sendChatMessage("Write ~r~ABANDON~w~ to confirm that you would like to abandon this car.");
-                            API.sendChatMessage("~r~This action CANNOT be undone.");
+                            API.sendChatMessage("~r~This action cannot be undone.");
                             var string = API.getUserInput("", 7);
                             if (string === "ABANDON") {
                                 API.triggerServerEvent("myvehicles_abandoncar", carsList[currentSelectedCar][1]);

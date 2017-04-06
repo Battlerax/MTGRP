@@ -20,8 +20,10 @@ namespace RoleplayServer.resources.player_manager
     {
         public static readonly Character None = new Character();
 
-        [BsonIgnore] public static int GenderMale = 0;
-        [BsonIgnore] public static int GenderFemale = 1;
+        [BsonIgnore]
+        public static int GenderMale = 0;
+        [BsonIgnore]
+        public static int GenderFemale = 1;
 
         public int Id { get; set; }
         public string AccountId { get; set; }

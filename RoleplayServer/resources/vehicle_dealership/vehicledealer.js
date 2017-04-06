@@ -22,7 +22,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
             //TODO: proabably change this descriptions xD
             vehDealerList = API.createMenu("Vehicle Dealership", "Welcome to the vehicle dealership.", 0, 0, 6);
             var motorsycles = API.createMenuItem("Motorsycles", "All 2 wheel vehicles.");
-            var copues = API.createMenuItem("Copues", "Normal Class Vehicles.");
+            var coupes = API.createMenuItem("Coupes", "Normal Class Vehicles.");
             var trucksnvans = API.createMenuItem("Trucks and Vans", "Big vehicles.");
             var offroad = API.createMenuItem("Offroad", "Vehicles that can go offroard.");
             var musclecars = API.createMenuItem("Muscle Cars", "Powerful cars ?!.");
@@ -30,7 +30,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
             var supercars = API.createMenuItem("Supercars", "The best cars we have.");
             //NOTE: THE ARRENGNEMENT IS SOOO IMPORTANT CAUSE I USE INDEX FOR KNOWING THE CURRENT GROUP AND NOT NAME.
             vehDealerList.AddItem(motorsycles);
-            vehDealerList.AddItem(copues);
+            vehDealerList.AddItem(coupes);
             vehDealerList.AddItem(trucksnvans);
             vehDealerList.AddItem(offroad);
             vehDealerList.AddItem(musclecars);
