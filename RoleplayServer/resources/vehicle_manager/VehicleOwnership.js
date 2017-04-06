@@ -49,7 +49,14 @@ API.onServerEventTrigger.connect((eventName, args) => {
                                 API.sendChatMessage("You can't locate an unspawned car.");
                             break;
                         case 1:
-                            API.sendChatMessage("Sell pressed.");
+                            API.sendNotification("Enter the id of the player you would like to sell to.");
+                            var id = API.getUserInput("", 10);
+                            API.sendNotification("Enter the price.");
+                            var price = API.getUserInput("", 10);
+                            API.triggerServerEvent("myvehicles_sellcar", carsList[currentSelectedCar][1], id, price);
+                            actionsMenu.Visible = false;
+                            myCars.Visible = false;
+                            currentSelectedCar = -1;
                             break;
                         case 2:
                             API.sendChatMessage("Write ~r~ABANDON~w~ to confirm that you would like to abandon this car.");

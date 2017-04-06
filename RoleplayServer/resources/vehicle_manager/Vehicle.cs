@@ -53,7 +53,7 @@ namespace RoleplayServer.resources.vehicle_manager
         [BsonIgnore]
         private Client OwnerClient { get; set; }
         [BsonIgnore]
-        private bool IsSpawned { get; set; }
+        public bool IsSpawned { get; set; }
 
         [BsonIgnore]
         public NetHandle Blip { get; set; }
