@@ -158,21 +158,18 @@ namespace RoleplayServer.resources.vehicle_dealership
                     var randomPos = new Random().Next(1, spawnPoss.Length) - 1;
 
                     //Create the vehicle.
-                    vehicle_manager.Vehicle theVehicle = new vehicle_manager.Vehicle()
-                    {
-                        Id = DatabaseManager.GetNextId("vehicles"),
-                        OwnerId = character.Id,
-                        OwnerName = character.CharacterName,
-                        SpawnPos = spawnPoss[randomPos],
-                        SpawnRot = new Vector3(0.1917319, 0.1198539, -177.1394),
-                        VehModel = (VehicleHash) Convert.ToInt32(selectedCar[1]),
-                        LicensePlate = "Unregistered",
-                        VehType = vehicle_manager.Vehicle.VehTypePerm,
-
-                    };
+                    var theVehicle = VehicleManager.CreateVehicle(
+                        (VehicleHash)Convert.ToInt32(selectedCar[1]),
+                        spawnPoss[randomPos],
+                        new Vector3(0.1917319, 0.1198539, -177.1394),
+                        "Unregistered",
+                        character.Id,
+                        vehicle_manager.Vehicle.VehTypePerm
+                    );
 
                     //Add it to the players cars.
-                    character.OwnedVehicles.Add(theVehicle);
+                    theVehicle.Insert();
+                    character.OwnedVehicles.Add(theVehicle.Id);
 
                     //Spawn it.
                     if (VehicleManager.spawn_vehicle(theVehicle) != 1)

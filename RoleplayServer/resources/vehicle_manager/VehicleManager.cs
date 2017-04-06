@@ -12,6 +12,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using GTANetworkServer;
 using GTANetworkShared;
 using MongoDB.Driver;
@@ -63,7 +64,7 @@ namespace RoleplayServer.resources.vehicle_manager
             var pos = player.position;
             var rot = player.rotation;
 
-            var veh = CreateUnownedVehicle(model, pos, rot, color1, color2, dimension);
+            var veh = CreateVehicle(model, pos, rot, "ABC123", 0, color1, color2, dimension);
             spawn_vehicle(veh);
             
             API.setPlayerIntoVehicle(player, veh.NetHandle, -1);
@@ -137,8 +138,14 @@ namespace RoleplayServer.resources.vehicle_manager
             if (maxVehs > e.character.OwnedVehicles.Count) maxVehs = e.character.OwnedVehicles.Count;
             for (int i = 0; i < maxVehs; i++)
             {
-                if (spawn_vehicle(e.character.OwnedVehicles[i]) != 1)
-                    API.consoleOutput($"There was an error spawning vehicle #{e.character.OwnedVehicles[i].Id} of {e.character.CharacterName}.");
+                var car =
+                    VehicleManager.Vehicles.SingleOrDefault(
+                        x => x.Id == e.character.OwnedVehicles[i] && x.OwnerId == e.character.Id);
+                if (car == null)
+                    continue;
+
+                if (spawn_vehicle(car) != 1)
+                    API.consoleOutput($"There was an error spawning vehicle #{car.Id} of {e.character.CharacterName}.");
             }
         }
 
@@ -152,8 +159,14 @@ namespace RoleplayServer.resources.vehicle_manager
             if (maxVehs > character.OwnedVehicles.Count) maxVehs = character.OwnedVehicles.Count;
             for (int i = 0; i < maxVehs; i++)
             {
-                if (despawn_vehicle(character.OwnedVehicles[i]) != 1)
-                    API.consoleOutput($"There was an error despawning vehicle #{character.OwnedVehicles[i].Id} of {character.CharacterName}.");
+                var car =
+                    VehicleManager.Vehicles.SingleOrDefault(
+                        x => x.Id == character.OwnedVehicles[i] && x.OwnerId == character.Id);
+                if (car == null)
+                    continue;
+
+                if (despawn_vehicle(car) != 1)
+                    API.consoleOutput($"There was an error despawning vehicle #{car.Id} of {character.CharacterName}.");
             }
         }
 
@@ -167,7 +180,7 @@ namespace RoleplayServer.resources.vehicle_manager
 
             Character character = API.getEntityData(player.handle, "Character");
 
-            API.sendChatMessageToPlayer(player, "~w~[VehicleM] You have entered vehicle ~r~" + Vehicles.IndexOf(veh) + "(Owned by: " + veh.OwnerName + ")");
+            API.sendChatMessageToPlayer(player, "~w~[VehicleM] You have entered vehicle ~r~" + Vehicles.IndexOf(veh) + "(Owned by: " + PlayerManager.Players.Single(x => x.Id == veh.OwnerId).CharacterName + ")");
 
             API.sendChatMessageToPlayer(player, "~y~ Press \"N\" on your keyboard to access the vehicle menu.");
 
@@ -242,24 +255,29 @@ namespace RoleplayServer.resources.vehicle_manager
             return 0;
         }
 
-    public Vehicle CreateUnownedVehicle(VehicleHash model, Vector3 pos, Vector3 rot, int color1 = 0, int color2 = 0, int dimension = 0)
+    public static Vehicle CreateVehicle(VehicleHash model, Vector3 pos, Vector3 rot, string license, int ownerid, int vehtype, int color1 = 0, int color2 = 0, int dimension = 0)
         {
-            var veh = new Vehicle();
-
-            veh.VehModel = model;
-            veh.SpawnPos = pos;
-            veh.SpawnRot = rot;
-            veh.SpawnColors[0] = color1;
-            veh.SpawnColors[1] = color2;
-            veh.SpawnDimension = dimension;
-            veh.LicensePlate = "ABC123";
+            var veh = new Vehicle
+            {
+                VehModel = model,
+                SpawnPos = pos,
+                SpawnRot = rot,
+                SpawnColors =
+                {
+                    [0] = color1,
+                    [1] = color2
+                },
+                SpawnDimension = dimension,
+                LicensePlate = license,
+                OwnerId = ownerid,
+                VehType = vehtype
+            };
 
             Vehicles.Add(veh);
-
             return veh;
         }
 
-        public void delete_vehicle(Vehicle veh)
+        public static void delete_vehicle(Vehicle veh)
         {
             Vehicles.Remove(veh);
         }

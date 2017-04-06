@@ -1,7 +1,9 @@
-﻿using GTANetworkServer;
+﻿using System.Linq;
+using GTANetworkServer;
 using GTANetworkShared;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.player_manager;
+using RoleplayServer.resources.vehicle_manager;
 
 namespace RoleplayServer.resources.AdminSystem
 {
@@ -185,8 +187,14 @@ namespace RoleplayServer.resources.AdminSystem
             Character character = API.getEntityData(player.handle, "Character");
             API.sendChatMessageToPlayer(player, "----------------------------------------------");
             API.sendChatMessageToPlayer(player, $"Vehicles Owned By {character.CharacterName}");
-            foreach (var car in character.OwnedVehicles)
+            foreach (var carid in character.OwnedVehicles)
             {
+                var car = VehicleManager.Vehicles.SingleOrDefault(x => x.Id == carid);
+                if (car == null)
+                {
+                    API.sendChatMessageToPlayer(player, $"(UNKNOWN VEHICLE) | ID ~r~{carid}~w~.");
+                    continue;
+                }
                 API.sendChatMessageToPlayer(player, $"({API.getVehicleDisplayName(car.VehModel)}) | NetHandle ~r~{car.NetHandle.Value}~w~ | ID ~r~{car.Id}~w~.");
             }
             API.sendChatMessageToPlayer(player, "----------------------------------------------");
@@ -207,7 +215,7 @@ namespace RoleplayServer.resources.AdminSystem
             }
 
             Character character = API.getEntityData(player.handle, "Character");
-            vehicle_manager.Vehicle car = character.OwnedVehicles.Find(x => x.NetHandle.Value == nethandle);
+            var car = VehicleManager.Vehicles.Find(x => x.NetHandle.Value == nethandle && x.OwnerId == character.Id);
             API.setEntityPosition(car.NetHandle, player.position);
             API.sendChatMessageToPlayer(player, "Sucessfully teleported the car to you.");
         }
