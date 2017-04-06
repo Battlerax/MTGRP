@@ -508,7 +508,6 @@ namespace RoleplayServer.resources.group_manager.lspd
             API.sendNotificationToPlayer(player, "~r~Congratulations! Your tickets have been paid off.");
             character.Money -= character.ticketBalance;
             character.unpaidTickets = 0;
-            character.Save();
         }
 
 
@@ -557,21 +556,6 @@ namespace RoleplayServer.resources.group_manager.lspd
         }
     //TODO: ADD A DELETE OBJECTS FEATURE
 
-        [Command("badge", GreedyArg = true)]
-        public void badge_cmd(Client player)
-        {
-            Character character = API.getEntityData(player.handle, "Character");
-
-            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
-            {
-                API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
-                return;
-            }
-
-            character.IsOnPoliceDuty = !character.IsOnPoliceDuty;
-            GroupManager.SendGroupMessage(player, character.CharacterName + " is now " + (character.IsOnPoliceDuty ? "on" : "off") + " police duty.");
-            character.Save();
-        }
 
         public void GiveLspdEquipment(Client player, int type = 0)
         {
