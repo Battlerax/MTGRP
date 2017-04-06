@@ -63,6 +63,8 @@ namespace RoleplayServer.resources.player_manager
         public string Birthday { get; set; }
         public string Birthplace { get; set; }
 
+        public string playerCrimes{ get; set; }
+
         [BsonIgnore]
         public Client Client { get; set; }
 

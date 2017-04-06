@@ -152,5 +152,61 @@ namespace RoleplayServer.resources.player_manager
             }
             API.sendChatMessageToPlayer(sender, Color.White, "------------------------------------------------------------");
         }
+
+        [Command("stats")]          //Stats command
+        public void getStatistics(Client sender, string id = null)
+        {
+            var receiver = PlayerManager.ParseClient(id);
+            Character character = API.getEntityData(sender.handle, "Character");
+            Account account = API.shared.getEntityData(sender.handle, "Account");
+
+            if (account.AdminLevel == 0)
+            {
+                if (receiver != sender)
+                {
+                    API.sendNotificationToPlayer(sender, "You can't see other player's stats.");
+                }
+                showStats(sender);
+            }
+            showStats(sender, receiver);
+        }
+
+        //Show time and time until paycheck.
+        [Command("time")]
+        public void checkTime(Client player)
+        {
+            Character character = API.getEntityData(player.handle, "Character");
+            var secondsLeft = 3600 - character.GetTimePlayed();
+            API.sendChatMessageToPlayer(player, "The current server time is: " + DateTime.Now.ToString("h:mm:ss tt"));
+            API.sendChatMessageToPlayer(player, string.Format("Time until next paycheck: {0}" + " minutes.", secondsLeft / 60));
+        }
+
+
+        //Show player stats (admins can show stats of other players).
+        public void showStats(Client sender)
+        {
+            showStats(sender, sender);
+        }
+ 
+        public void showStats(Client sender, Client receiver)
+        {
+            Character character = API.getEntityData(receiver.handle, "Character");
+            Account account = API.shared.getEntityData(receiver.handle, "Account");
+            Account senderAccount = API.shared.getEntityData(receiver.handle, "Account");
+
+            API.sendChatMessageToPlayer(sender, "________________PLAYER STATS________________");
+            API.sendChatMessageToPlayer(sender, "~g~General:~g~");
+            API.sendChatMessageToPlayer(sender, string.Format("~h~Character name:~h~ {0} ~h~Account name:~h~ {1} ~h~ID:~h~ {2} ~h~Money:~h~ {3} ~h~Bank balance:~h~ {4} ~h~Playing hours:~h~ {5}", sender.name, account.AccountName, character.Id, character.Money, character.BankBalance, character.TimePlayed));
+            API.sendChatMessageToPlayer(sender, "~b~Faction:~b~");
+            API.sendChatMessageToPlayer(sender, string.Format("~h~Faction ID:~h~ {0} ~h~Rank:~h~ {1}", character.GroupId, character.GroupRank));
+            API.sendChatMessageToPlayer(sender, "~r~Property:~r~");
+            //Show property info..
+
+            if (senderAccount.AdminLevel > 0)
+            {
+                API.sendChatMessageToPlayer(sender, "~y~Admin:~y~");
+                API.sendChatMessageToPlayer(sender, string.Format("~h~Admin level:~h~ {0} ~h~ Admin name:~h~ {1} ~h~Last vehicle:~h~ {2} ~h~Dimension:~h~ {3} ~h~Last IP:~h~ {4}", account.AdminLevel, account.AdminName, character.LastVehicle, character.LastDimension, account.LastIp));
+            }
+        }
     }
 }

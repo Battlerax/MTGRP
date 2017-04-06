@@ -116,6 +116,8 @@ namespace RoleplayServer.resources.vehicle_manager
 
             API.consoleOutput(i + " " + pos + " " + rot);
             API.sendNotificationToPlayer(player, "Saved");
+            API.sendChatMessageToPlayer(player,"Position: " + pos + "Rotation: " + rot);
+
         }
 
         [Command("tele")]

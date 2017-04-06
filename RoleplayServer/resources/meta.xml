@@ -10,6 +10,7 @@
 	<!-- Door Manager -->
 	<include resource="doormanager" />
 	
+  <!-- MAIN script with all *.cs files. -->
 	<script src="../bin/Debug/RoleplayServer.dll" type="server" lang="compiled"/>
 	
 	<!-- BANK -->
@@ -35,7 +36,7 @@
 	<script src="vehicle_manager/vehicle_editor/VehicleEdit.js" type="client" lang="javascript"/>
 	<file src="vehicle_manager/vehicle_editor/VehicleEdit.html"/>
 	
-	<!-- Dealership -->
+	<!-- Dealership/Ownership -->
 	<script src="vehicle_dealership/vehicledealer.js" type="client" lang="javascript"/>
 	<script src="vehicle_manager/VehicleOwnership.js" type="client" lang="javascript"/>
   
