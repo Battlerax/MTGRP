@@ -183,6 +183,9 @@ namespace RoleplayServer.resources.player_manager
 
         public List<IInventoryItem> Inventory { get; set; }
 
+        [BsonIgnore]
+        public int MaxInvStorage => 100; //TODO: change this later on.
+
         public Character()
         {
             Id = 0;
