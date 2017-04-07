@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using GTANetworkServer;
 using RoleplayServer.resources.job_manager;
 using RoleplayServer.resources.player_manager;
@@ -79,7 +80,7 @@ namespace RoleplayServer.resources.vehicle_manager.vehicle_editor
                 }
 
                 veh.VehModel = modelHash;
-                veh.OwnerName = owner;
+                veh.OwnerId = PlayerManager.Players.Single(x => x.CharacterName == owner).Id;
                 veh.LicensePlate = licensePlate;
                 veh.SpawnColors[0] = color1;
                 veh.SpawnColors[1] = color2;
@@ -144,7 +145,7 @@ namespace RoleplayServer.resources.vehicle_manager.vehicle_editor
             }
 
             API.setEntityData(player.handle, "EDIT_VEH", veh);
-            API.triggerClientEvent(player, "show_vehicle_edit_menu", veh.Id, API.getVehicleDisplayName(veh.VehModel), veh.OwnerName, veh.LicensePlate, veh.SpawnColors[0], veh.SpawnColors[1], veh.RespawnDelay, veh.JobId);
+            API.triggerClientEvent(player, "show_vehicle_edit_menu", veh.Id, API.getVehicleDisplayName(veh.VehModel), (veh.OwnerId == 0 ? "NONE" : PlayerManager.Players.Single(x => x.Id == veh.OwnerId).CharacterName), veh.LicensePlate, veh.SpawnColors[0], veh.SpawnColors[1], veh.RespawnDelay, veh.JobId);
         }
     }
 }

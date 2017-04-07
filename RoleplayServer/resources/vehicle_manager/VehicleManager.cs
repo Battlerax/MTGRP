@@ -10,7 +10,9 @@
  * */
 
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using GTANetworkServer;
 using GTANetworkShared;
 using MongoDB.Driver;
@@ -39,6 +41,10 @@ namespace RoleplayServer.resources.vehicle_manager
             API.onPlayerEnterVehicle += OnPlayerEnterVehicle;
             API.onVehicleDeath += OnVehicleDeath;
             API.onPlayerExitVehicle += OnPlayerExitVehicle;
+            API.onPlayerDisconnected += API_onPlayerDisconnected;
+
+            //Register for on character enter to show his cars.
+            CharacterMenu.OnCharacterLogin += CharacterMenu_OnCharacterLogin;
 
             // Create vehicle table + 
             load_all_unowned_vehicles();
@@ -58,7 +64,7 @@ namespace RoleplayServer.resources.vehicle_manager
             var pos = player.position;
             var rot = player.rotation;
 
-            var veh = CreateUnownedVehicle(model, pos, rot, color1, color2, dimension);
+            var veh = CreateVehicle(model, pos, rot, "ABC123", 0, color1, color2, dimension);
             spawn_vehicle(veh);
             
             API.setPlayerIntoVehicle(player, veh.NetHandle, -1);
@@ -127,6 +133,51 @@ namespace RoleplayServer.resources.vehicle_manager
         * 
         */
 
+        private void CharacterMenu_OnCharacterLogin(object sender, CharacterMenu.CharacterLoginEventArgs e)
+        {
+            //Load them.
+            Vehicles.AddRange(DatabaseManager.VehicleTable.Find(x => x.OwnerId == e.character.Id).ToList());
+
+            //Spawn his cars.
+            var maxVehs = GetMaxOwnedVehicles(e.character.Client);
+            if (maxVehs > e.character.OwnedVehicles.Count) maxVehs = e.character.OwnedVehicles.Count;
+            for (int i = 0; i < maxVehs; i++)
+            {
+                var car =
+                    Vehicles.SingleOrDefault(
+                        x => x.Id == e.character.OwnedVehicles[i] && x.OwnerId == e.character.Id);
+                if (car == null)
+                    continue;
+
+                if (spawn_vehicle(car) != 1)
+                    API.consoleOutput($"There was an error spawning vehicle #{car.Id} of {e.character.CharacterName}.");
+            }
+        }
+
+        private void API_onPlayerDisconnected(Client player, string reason)
+        {
+            //DeSpawn his cars.
+            Character character = API.getEntityData(player.handle, "Character");
+            if (character == null)
+                return;
+            var maxVehs = GetMaxOwnedVehicles(character.Client);
+            if (maxVehs > character.OwnedVehicles.Count) maxVehs = character.OwnedVehicles.Count;
+            for (int i = 0; i < maxVehs; i++)
+            {
+                var car =
+                    Vehicles.SingleOrDefault(
+                        x => x.Id == character.OwnedVehicles[i] && x.OwnerId == character.Id);
+                if (car == null)
+                    continue;
+
+                if (despawn_vehicle(car) != 1)
+                    API.consoleOutput($"There was an error despawning vehicle #{car.Id} of {character.CharacterName}.");
+            }
+
+            //Delete.
+            Vehicles.RemoveAll(x => x.OwnerId == character.Id);
+        }
+
         private void OnPlayerEnterVehicle(Client player, NetHandle vehicleHandle)
         {
             // Admin check in future
@@ -137,7 +188,7 @@ namespace RoleplayServer.resources.vehicle_manager
 
             Character character = API.getEntityData(player.handle, "Character");
 
-            API.sendChatMessageToPlayer(player, "~w~[VehicleM] You have entered vehicle ~r~" + Vehicles.IndexOf(veh) + "(Owned by: " + veh.OwnerName + ")");
+            API.sendChatMessageToPlayer(player, "~w~[VehicleM] You have entered vehicle ~r~" + Vehicles.IndexOf(veh) + "(Owned by: " + PlayerManager.Players.Single(x => x.Id == veh.OwnerId).CharacterName + ")");
 
             API.sendChatMessageToPlayer(player, "~y~ Press \"N\" on your keyboard to access the vehicle menu.");
 
@@ -195,24 +246,46 @@ namespace RoleplayServer.resources.vehicle_manager
         * 
         */
 
-        public Vehicle CreateUnownedVehicle(VehicleHash model, Vector3 pos, Vector3 rot, int color1 = 0, int color2 = 0, int dimension = 0)
+        public static int GetMaxOwnedVehicles(Client chr)
         {
-            var veh = new Vehicle();
+            Account acc = API.shared.getEntityData(chr, "Account");
+            switch (acc.VipLevel)
+            {
+                case 0:
+                    return 2;
+                case 1:
+                    return 3;
+                case 2:
+                    return 4;
+                case 3:
+                    return 5;
+            }
+            return 0;
+        }
 
-            veh.VehModel = model;
-            veh.SpawnPos = pos;
-            veh.SpawnRot = rot;
-            veh.SpawnColors[0] = color1;
-            veh.SpawnColors[1] = color2;
-            veh.SpawnDimension = dimension;
-            veh.LicensePlate = "ABC123";
+    public static Vehicle CreateVehicle(VehicleHash model, Vector3 pos, Vector3 rot, string license, int ownerid, int vehtype, int color1 = 0, int color2 = 0, int dimension = 0)
+        {
+            var veh = new Vehicle
+            {
+                VehModel = model,
+                SpawnPos = pos,
+                SpawnRot = rot,
+                SpawnColors =
+                {
+                    [0] = color1,
+                    [1] = color2
+                },
+                SpawnDimension = dimension,
+                LicensePlate = license,
+                OwnerId = ownerid,
+                VehType = vehtype
+            };
 
             Vehicles.Add(veh);
-
             return veh;
         }
 
-        public void delete_vehicle(Vehicle veh)
+        public static void delete_vehicle(Vehicle veh)
         {
             Vehicles.Remove(veh);
         }
@@ -294,6 +367,5 @@ namespace RoleplayServer.resources.vehicle_manager
 
             DebugManager.DebugMessage("Loaded " + unownedVehicles.Count + " unowned vehicles from the database.");
         }
-
     }
 }
