@@ -85,6 +85,9 @@
     <Compile Include="resources\group_manager\lspd\Lspd.cs" />
     <Compile Include="resources\group_manager\lspd\LspdCommands.cs" />
     <Compile Include="resources\Init.cs" />
+    <Compile Include="resources\inventory\IInventoryItem.cs" />
+    <Compile Include="resources\inventory\InventoryManager.cs" />
+    <Compile Include="resources\inventory\TestItem.cs" />
     <Compile Include="resources\job_manager\fisher\Fish.cs" />
     <Compile Include="resources\job_manager\fisher\Fisher.cs" />
     <Compile Include="resources\job_manager\Job.cs" />

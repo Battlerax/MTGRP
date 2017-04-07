@@ -8,6 +8,7 @@ using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using RoleplayServer.resources.database_manager;
 using RoleplayServer.resources.group_manager;
+using RoleplayServer.resources.inventory;
 using RoleplayServer.resources.job_manager;
 using RoleplayServer.resources.job_manager.fisher;
 using RoleplayServer.resources.job_manager.taxi;
@@ -180,6 +181,7 @@ namespace RoleplayServer.resources.player_manager
 
         public bool IsCuffed { get; set; }
 
+        public List<IInventoryItem> Inventory { get; set; }
 
         public Character()
         {
