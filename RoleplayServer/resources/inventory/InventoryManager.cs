@@ -58,11 +58,11 @@ namespace RoleplayServer.resources.inventory
             var allItems =
                 Assembly.GetExecutingAssembly().GetTypes().Where(x => typeof(IInventoryItem).IsAssignableFrom(x) && x.IsClass).ToArray();
 
-            // ReSharper disable once SuspiciousTypeConversion.Global
-            foreach (IInventoryItem i in allItems)
+            foreach (var i in allItems)
             {
-                if (i.CommandFriendlyName == item)
-                    return i;
+                IInventoryItem instance = (IInventoryItem)Activator.CreateInstance(i);
+                if (instance.CommandFriendlyName == item)
+                    return instance;
             }
             return null;
         }
@@ -83,7 +83,8 @@ namespace RoleplayServer.resources.inventory
             IInventoryItem actualitem = ParseItem(item);
             if (actualitem != null)
             {
-                switch (GiveItemToPlayer(character, new TestItem() {Amount = amount}))
+                actualitem.Amount = amount;
+                switch (GiveItemToPlayer(character, actualitem))
                 {
                     case GiveItemErrors.NotEnoughSpace:
                         API.sendChatMessageToPlayer(player, "You can't hold anymore items in your inventory.");
