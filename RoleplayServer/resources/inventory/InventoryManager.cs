@@ -53,6 +53,11 @@ namespace RoleplayServer.resources.inventory
             }
         }
 
+        public IInventoryItem DoesHaveItem(Character player, Type item)
+        {
+            return player.Inventory.FirstOrDefault(x => x.GetType() == item);
+        }
+
         public IInventoryItem ParseItem(string item)
         {
             var allItems =
