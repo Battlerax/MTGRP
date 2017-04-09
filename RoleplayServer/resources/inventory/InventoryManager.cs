@@ -14,17 +14,17 @@ namespace RoleplayServer.resources.inventory
         public enum GiveItemErrors
         {
             NotEnoughSpace,
-            ItemNotStackable,
             Success
         }
         public static GiveItemErrors GiveItemToPlayer(Character player, IInventoryItem item)
         {
+            if (player.Inventory == null) player.Inventory = new List<IInventoryItem>();
             //Check if player has simliar item.
             var oldItem = player.Inventory.FirstOrDefault(x => x.GetType() == item.GetType());
-            if (oldItem == null)
+            if (oldItem == null || oldItem.CanBeStacked == false)
             {
                 //Check if has enough space.
-                if ((GetPlayerFilledSlots(player) + item.Amount * item.AmountOfSlots) < player.MaxInvStorage)
+                if ((GetPlayerFilledSlots(player) + item.Amount * item.AmountOfSlots) <= player.MaxInvStorage)
                 {
                     //Add.
                     player.Inventory.Add(item);
@@ -35,21 +35,15 @@ namespace RoleplayServer.resources.inventory
             }
             else
             {
-                //Must be stackable.
-                if (oldItem.CanBeStacked)
+                //Make sure there is space again.
+                if ((GetPlayerFilledSlots(player) + item.Amount * item.AmountOfSlots) <= player.MaxInvStorage)
                 {
-                    //Make sure there is space again.
-                    if ((GetPlayerFilledSlots(player) + item.Amount * item.AmountOfSlots) < player.MaxInvStorage)
-                    {
-                        //Add.
-                        oldItem.Amount += item.Amount;
-                        return GiveItemErrors.Success;
-                    }
-                    else
-                        return GiveItemErrors.NotEnoughSpace;
+                    //Add.
+                    oldItem.Amount += item.Amount;
+                    return GiveItemErrors.Success;
                 }
                 else
-                    return GiveItemErrors.ItemNotStackable;
+                    return GiveItemErrors.NotEnoughSpace;
             }
         }
 
