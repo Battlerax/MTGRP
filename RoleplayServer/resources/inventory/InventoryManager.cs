@@ -101,6 +101,11 @@ namespace RoleplayServer.resources.inventory
         public void give_cmd(Client player, string id, string item, int amount)
         {
             var targetClient = PlayerManager.ParseClient(id);
+            if (targetClient == null)
+            {
+                API.sendNotificationToPlayer(player, "Target player not found.");
+                return;
+            }
             Character sender = API.getEntityData(player, "Character");
             Character target = API.getEntityData(targetClient, "Character");
             if (player.position.DistanceTo(targetClient.position) > 5f)
@@ -111,10 +116,15 @@ namespace RoleplayServer.resources.inventory
 
             //Get the item.
             var itemType = ParseItem(item);
-            var itemObj = ItemTypeToNewObject(itemType);
-            if (itemObj == null || itemObj.CanBeGiven == false)
+            if (itemType == null)
             {
-                API.sendNotificationToPlayer(player, "That item doesn't exist or cannot be given.");
+                API.sendNotificationToPlayer(player, "That item doesn't exist.");
+                return;
+            }
+            var itemObj = ItemTypeToNewObject(itemType);
+            if (itemObj.CanBeGiven == false)
+            {
+                API.sendNotificationToPlayer(player, "That item cannot be given.");
                 return;
             }
 
@@ -127,11 +137,13 @@ namespace RoleplayServer.resources.inventory
             }
 
             //Give.
-            switch (GiveItemToPlayer(target, sendersItem))
+            var newItem = sendersItem.Copy();
+            newItem.Amount = amount;
+            switch (GiveItemToPlayer(target, newItem))
             {
                 case GiveItemErrors.NotEnoughSpace:
                     API.sendNotificationToPlayer(player, "The target player doesn't have enough space in his inventory.");
-                    API.sendChatMessageToPlayer(targetClient, "Someone has tried to give you an item but failed due to insufficient inventory.");
+                    API.sendNotificationToPlayer(targetClient, "Someone has tried to give you an item but failed due to insufficient inventory.");
                     break;
 
                 case GiveItemErrors.HasBlockingItem:
@@ -140,8 +152,11 @@ namespace RoleplayServer.resources.inventory
                     break;
 
                 case GiveItemErrors.Success:
-                    API.sendNotificationToPlayer(player, $"You have sucessfully given {amount} ~r~{sendersItem.LongName}~w~ to ~r~{target.CharacterName}~w~.");
-                    API.sendNotificationToPlayer(targetClient, $"You have receieved {amount} ~r~{sendersItem.LongName}~w~ from ~r~{sender.CharacterName}~w~.");
+                    API.sendNotificationToPlayer(player, $"You have sucessfully given ~g~{amount}~w~ ~g~{sendersItem.LongName}~w~ to ~g~{target.CharacterName}~w~.");
+                    API.sendNotificationToPlayer(targetClient, $"You have receieved ~g~{amount}~w~ ~g~{sendersItem.LongName}~w~ from ~g~{sender.CharacterName}~w~.");
+
+                    //Remove from their inv.
+                    sendersItem.Amount -= amount;
                     break;
             }
     }
