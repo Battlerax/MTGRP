@@ -143,23 +143,29 @@ namespace RoleplayServer.resources.inventory
             {
                 case GiveItemErrors.NotEnoughSpace:
                     API.sendNotificationToPlayer(player, "The target player doesn't have enough space in his inventory.");
-                    API.sendNotificationToPlayer(targetClient, "Someone has tried to give you an item but failed due to insufficient inventory.");
+                    API.sendNotificationToPlayer(targetClient,
+                        "Someone has tried to give you an item but failed due to insufficient inventory.");
                     break;
 
                 case GiveItemErrors.HasBlockingItem:
                     API.sendNotificationToPlayer(player, "The target player has a blocking item in hand.");
-                    API.sendNotificationToPlayer(targetClient, "You have a blocking item in-hand, place it somewhere first. /inv to find out what it is.");
+                    API.sendNotificationToPlayer(targetClient,
+                        "You have a blocking item in-hand, place it somewhere first. /inv to find out what it is.");
                     break;
 
                 case GiveItemErrors.Success:
-                    API.sendNotificationToPlayer(player, $"You have sucessfully given ~g~{amount}~w~ ~g~{sendersItem.LongName}~w~ to ~g~{target.CharacterName}~w~.");
-                    API.sendNotificationToPlayer(targetClient, $"You have receieved ~g~{amount}~w~ ~g~{sendersItem.LongName}~w~ from ~g~{sender.CharacterName}~w~.");
+                    API.sendNotificationToPlayer(player,
+                        $"You have sucessfully given ~g~{amount}~w~ ~g~{sendersItem.LongName}~w~ to ~g~{target.CharacterName}~w~.");
+                    API.sendNotificationToPlayer(targetClient,
+                        $"You have receieved ~g~{amount}~w~ ~g~{sendersItem.LongName}~w~ from ~g~{sender.CharacterName}~w~.");
 
                     //Remove from their inv.
                     sendersItem.Amount -= amount;
                     break;
             }
-    }
+        }
+
+
 
         //TODO: TEST COMMAND.
         [Command("givemeitem")]
