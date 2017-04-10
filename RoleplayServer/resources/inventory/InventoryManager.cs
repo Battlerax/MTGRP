@@ -5,20 +5,31 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using GTANetworkServer;
+using MongoDB.Bson.Serialization;
 using RoleplayServer.resources.player_manager;
 
 namespace RoleplayServer.resources.inventory
 {
     class InventoryManager : Script
     {
+        public InventoryManager()
+        {
+            BsonClassMap.RegisterClassMap<TestItem>();
+        }
+
         public enum GiveItemErrors
         {
             NotEnoughSpace,
+            HasBlockingItem,
             Success
         }
         public static GiveItemErrors GiveItemToPlayer(Character player, IInventoryItem item)
         {
             if (player.Inventory == null) player.Inventory = new List<IInventoryItem>();
+            //Make sure he doesn't have blocking item.
+            if(player.Inventory.FirstOrDefault(x => x.IsBlocking == true) != null)
+                return GiveItemErrors.HasBlockingItem;
+
             //Check if player has simliar item.
             var oldItem = player.Inventory.FirstOrDefault(x => x.GetType() == item.GetType());
             if (oldItem == null || oldItem.CanBeStacked == false)
@@ -47,12 +58,12 @@ namespace RoleplayServer.resources.inventory
             }
         }
 
-        public IInventoryItem DoesHaveItem(Character player, Type item)
+        public static IInventoryItem DoesHaveItem(Character player, Type item)
         {
             return player.Inventory.FirstOrDefault(x => x.GetType() == item);
         }
 
-        public IInventoryItem ParseItem(string item)
+        public static Type ParseItem(string item)
         {
             var allItems =
                 Assembly.GetExecutingAssembly().GetTypes().Where(x => typeof(IInventoryItem).IsAssignableFrom(x) && x.IsClass).ToArray();
@@ -61,11 +72,10 @@ namespace RoleplayServer.resources.inventory
             {
                 IInventoryItem instance = (IInventoryItem)Activator.CreateInstance(i);
                 if (instance.CommandFriendlyName == item)
-                    return instance;
+                    return i;
             }
             return null;
         }
-
 
         public static int GetPlayerFilledSlots(Character player)
         {
@@ -74,14 +84,77 @@ namespace RoleplayServer.resources.inventory
             return value;
         }
 
+        public static bool DeleteItem(Character player, Type item)
+        {
+            if (player.Inventory.RemoveAll(x => x.GetType() == item) > 0)
+            return true;
+
+            return false;
+        }
+
+        public static IInventoryItem ItemTypeToNewObject(Type item)
+        {
+            return (IInventoryItem)Activator.CreateInstance(item);
+        }
+
+        [Command("give")]
+        public void give_cmd(Client player, string id, string item, int amount)
+        {
+            var targetClient = PlayerManager.ParseClient(id);
+            Character sender = API.getEntityData(player, "Character");
+            Character target = API.getEntityData(targetClient, "Character");
+            if (player.position.DistanceTo(targetClient.position) > 5f)
+            {
+                API.sendNotificationToPlayer(player, "You must be near the target player to give him an item.");
+                return;
+            }
+
+            //Get the item.
+            var itemType = ParseItem(item);
+            var itemObj = ItemTypeToNewObject(itemType);
+            if (itemObj == null || itemObj.CanBeGiven == false)
+            {
+                API.sendNotificationToPlayer(player, "That item doesn't exist or cannot be given.");
+                return;
+            }
+
+            //Make sure he does have such amount.
+            var sendersItem = DoesHaveItem(sender, itemType);
+            if (sendersItem == null || sendersItem.Amount < amount)
+            {
+                API.sendNotificationToPlayer(player, "You don't have that item or you don't have that amount.");
+                return;
+            }
+
+            //Give.
+            switch (GiveItemToPlayer(target, sendersItem))
+            {
+                case GiveItemErrors.NotEnoughSpace:
+                    API.sendNotificationToPlayer(player, "The target player doesn't have enough space in his inventory.");
+                    API.sendChatMessageToPlayer(targetClient, "Someone has tried to give you an item but failed due to insufficient inventory.");
+                    break;
+
+                case GiveItemErrors.HasBlockingItem:
+                    API.sendNotificationToPlayer(player, "The target player has a blocking item in hand.");
+                    API.sendNotificationToPlayer(targetClient, "You have a blocking item in-hand, place it somewhere first. /inv to find out what it is.");
+                    break;
+
+                case GiveItemErrors.Success:
+                    API.sendNotificationToPlayer(player, $"You have sucessfully given {amount} ~r~{sendersItem.LongName}~w~ to ~r~{target.CharacterName}~w~.");
+                    API.sendNotificationToPlayer(targetClient, $"You have receieved {amount} ~r~{sendersItem.LongName}~w~ from ~r~{sender.CharacterName}~w~.");
+                    break;
+            }
+    }
+
         //TODO: TEST COMMAND.
         [Command("givemeitem")]
         public void GiveMeItem(Client player, string item, int amount)
         {
             Character character = API.getEntityData(player, "Character");
-            IInventoryItem actualitem = ParseItem(item);
-            if (actualitem != null)
+            Type itemType = ParseItem(item);
+            if (itemType != null)
             {
+                var actualitem = ItemTypeToNewObject(itemType);
                 actualitem.Amount = amount;
                 switch (GiveItemToPlayer(character, actualitem))
                 {

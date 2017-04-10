@@ -8,6 +8,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace RoleplayServer.resources.inventory
 {
+    [BsonDiscriminator("TestItem")]
     class TestItem : IInventoryItem
     {
         [BsonId]
@@ -18,6 +19,7 @@ namespace RoleplayServer.resources.inventory
         public bool CanBeGiven => true;
         public bool CanBeStashed => true;
         public bool CanBeStacked => true;
+        public bool IsBlocking => false;
 
         public string CommandFriendlyName => "TestItem";
         public string LongName => "TestItem";
