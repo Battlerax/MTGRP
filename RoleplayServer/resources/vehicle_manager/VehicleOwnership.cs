@@ -42,8 +42,8 @@ namespace RoleplayServer.resources.vehicle_manager
                 case "myvehicles_sellcar":
                     vehicle_manager.Vehicle scVeh =
                         VehicleManager.Vehicles.Single(x => x.Id == Convert.ToInt32(arguments[0]) && x.OwnerId == character.Id);
-                    var tid = Convert.ToInt32(arguments[1]);
-                    var target = PlayerManager.Players.SingleOrDefault(x => x.Id == tid);
+                    var tid = (string)arguments[1];
+                    var target = PlayerManager.ParseClient(tid);
                     if (target == null)
                     {
                         API.sendChatMessageToPlayer(sender, "That player isn't online or doesn't exist.");
