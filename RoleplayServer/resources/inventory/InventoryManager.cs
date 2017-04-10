@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GTANetworkServer;
 using MongoDB.Bson.Serialization;
+using RoleplayServer.resources.core;
 using RoleplayServer.resources.player_manager;
 
 namespace RoleplayServer.resources.inventory
@@ -165,7 +166,40 @@ namespace RoleplayServer.resources.inventory
             }
         }
 
+        [Command("drop")]
+        public void drop_cmd(Client player, string item, int amount)
+        {
+            Character character = API.getEntityData(player, "Character");
 
+            //Get the item.
+            var itemType = ParseItem(item);
+            if (itemType == null)
+            {
+                API.sendNotificationToPlayer(player, "That item doesn't exist.");
+                return;
+            }
+            var itemObj = ItemTypeToNewObject(itemType);
+            if (itemObj.CanBeGiven == false)
+            {
+                API.sendNotificationToPlayer(player, "That item cannot be dropped.");
+                return;
+            }
+
+            //Get in inv.
+            var sendersItem = DoesHaveItem(character, itemType);
+            if (sendersItem == null || sendersItem.Amount < amount)
+            {
+                API.sendNotificationToPlayer(player, "You don't have that item or you don't have that amount.");
+                return;
+            }
+
+            if (amount == sendersItem.Amount)
+                DeleteItem(character, itemType);
+            else
+                sendersItem.Amount -= amount;
+
+            API.sendNotificationToPlayer(player, "Item was sucessfully dropped.");
+        }
 
         //TODO: TEST COMMAND.
         [Command("givemeitem")]
