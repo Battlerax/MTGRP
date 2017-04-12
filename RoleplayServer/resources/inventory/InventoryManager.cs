@@ -179,7 +179,7 @@ namespace RoleplayServer.resources.inventory
                 return;
             }
             var itemObj = ItemTypeToNewObject(itemType);
-            if (itemObj.CanBeGiven == false)
+            if (itemObj.CanBeDropped == false)
             {
                 API.sendNotificationToPlayer(player, "That item cannot be dropped.");
                 return;
