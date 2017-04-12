@@ -49,10 +49,11 @@ namespace RoleplayServer.resources.vehicle_manager
                         API.sendChatMessageToPlayer(sender, "That player isn't online or doesn't exist.");
                         return;
                     }
+                    var targetChar = API.getEntityData(target, "Character");
                     API.sendChatMessageToPlayer(sender,
-                        $"Are you sure you would like to sell the ~r~{API.getVehicleDisplayName(scVeh.VehModel)}~w~ for ~r~${arguments[2]}~w~ to the player ~r~{target.CharacterName}~w~");
+                        $"Are you sure you would like to sell the ~r~{API.getVehicleDisplayName(scVeh.VehModel)}~w~ for ~r~${arguments[2]}~w~ to the player ~r~{targetChar.CharacterName}~w~");
                     API.sendChatMessageToPlayer(sender, "Use /confirmsellvehicle to sell.");
-                    API.setEntityData(sender, "sellcar_selling", new[] {scVeh, target, arguments[2]});
+                    API.setEntityData(sender, "sellcar_selling", new[] {scVeh, targetChar, arguments[2]});
                     break;
             }
         }

@@ -453,21 +453,6 @@ declare namespace GTANetwork.Javascript {
     }
 
     class GlobalCamera {
-        Position: Vector3;
-        Rotation: Vector3;
-        EntityPointing: number;
-        BonePointing: number;
-        PointOffset: Vector3;
-        VectorPointing: Vector3;
-        EntityAttached: number;
-        BoneAttached: number;
-        AttachOffset: Vector3;
-        Shake: string;
-        ShakeAmp: number;
-        Fov: number;
-        Active: boolean;
-        CamObj: GTA.Camera;
-        constructor();
     }
 
     class IntegerEvent {
@@ -830,9 +815,9 @@ declare namespace GTANetwork.Javascript {
         setHudVisible(visible: boolean): void;
         isSpectating(): boolean;
         getHudVisible(): boolean;
-        createMarker(markerType: number, pos: Vector3, dir: Vector3, rot: Vector3, scale: Vector3, r: number, g: number, b: number, alpha: number): GTANetwork.Util.LocalHandle;
-        setMarkerType(marker: GTANetwork.Util.LocalHandle, type: number): void;
-        getMarkerType(marker: GTANetwork.Util.LocalHandle): number;
+        createMarker(markerType: Enums.MarkerType, pos: Vector3, dir: Vector3, rot: Vector3, scale: Vector3, r: number, g: number, b: number, alpha: number): GTANetwork.Util.LocalHandle;
+        setMarkerType(marker: GTANetwork.Util.LocalHandle, type: Enums.MarkerType): void;
+        getMarkerType(marker: GTANetwork.Util.LocalHandle): Enums.MarkerType;
         setMarkerColor(marker: GTANetwork.Util.LocalHandle, alpha: number, r: number, g: number, b: number): void;
         getMarkerColor(marker: GTANetwork.Util.LocalHandle): System.Drawing.Color;
         setMarkerScale(marker: GTANetwork.Util.LocalHandle, scale: Vector3): void;
@@ -909,7 +894,7 @@ declare namespace GTANetwork.Javascript {
         requestScaleform(scaleformName: string): GTA.Scaleform;
         renderScaleform(sc: GTA.Scaleform, x: number, y: number, w: number, h: number): void;
         setEntityTransparency(entity: GTANetwork.Util.LocalHandle, alpha: number): void;
-        getEntityType(entity: GTANetwork.Util.LocalHandle): number;
+        getEntityType(entity: GTANetwork.Util.LocalHandle): Enums.EntityType;
         getEntityTransparency(entity: GTANetwork.Util.LocalHandle): number;
         setEntityDimension(entity: GTANetwork.Util.LocalHandle, dimension: number): void;
         getEntityDimension(entity: GTANetwork.Util.LocalHandle): number;
@@ -933,8 +918,8 @@ declare namespace GTANetwork.Javascript {
         onServerEventTrigger: IEvent<(eventName: string, argumentss: System.Array<any>) => void>;
         onChatMessage: IEvent<(msg: string) => void>;
         onChatCommand: IEvent<(msg: string) => void>;
-        onEntityStreamIn: IEvent<(item: GTANetwork.Util.LocalHandle, entityType: number) => void>;
-        onEntityStreamOut: IEvent<(item: GTANetwork.Util.LocalHandle, entityType: number) => void>;
+        onEntityStreamIn: IEvent<(item: GTANetwork.Util.LocalHandle, entityType: Enums.EntityType) => void>;
+        onEntityStreamOut: IEvent<(item: GTANetwork.Util.LocalHandle, entityType: Enums.EntityType) => void>;
         onEntityDataChange: IEvent<(entity: GTANetwork.Util.LocalHandle, key: string, oldValue: any) => void>;
         onCustomDataReceived: IEvent<(data: string) => void>;
         onPlayerDeath: IEvent<(killer: GTANetwork.Util.LocalHandle, weapon: Enums.WeaponHash) => void>;
@@ -998,8 +983,8 @@ declare namespace GTANetwork.Javascript {
 
     class ScriptContext_StreamEvent {
         constructor(object: any, method: number);
-        Invoke(item: GTANetwork.Util.LocalHandle, entityType: number): void;
-        BeginInvoke(item: GTANetwork.Util.LocalHandle, entityType: number, callback: System.AsyncCallback, object: any): System.IAsyncResult;
+        Invoke(item: GTANetwork.Util.LocalHandle, entityType: Enums.EntityType): void;
+        BeginInvoke(item: GTANetwork.Util.LocalHandle, entityType: Enums.EntityType, callback: System.AsyncCallback, object: any): System.IAsyncResult;
         EndInvoke(result: System.IAsyncResult): void;
     }
 
@@ -1592,7 +1577,7 @@ declare namespace GTANetwork.Networking {
         LocalOnly: boolean;
         StreamedIn: boolean;
         Position: Vector3;
-        EntityType: number;
+        EntityType: Enums.EntityType;
         Dimension: number;
         AttachedTo: Attachment;
         Attachables: number[];
@@ -1615,7 +1600,7 @@ declare namespace GTANetwork.Networking {
 
         //
         Position: Vector3;
-        EntityType: number;
+        EntityType: Enums.EntityType;
         Dimension: number;
         AttachedTo: Attachment;
         Attachables: number[];
@@ -1632,7 +1617,7 @@ declare namespace GTANetwork.Networking {
 
         //
         Position: Vector3;
-        EntityType: number;
+        EntityType: Enums.EntityType;
         Dimension: number;
         AttachedTo: Attachment;
         Attachables: number[];
@@ -1650,7 +1635,7 @@ declare namespace GTANetwork.Networking {
         GetHashCode(): number;
 
         //
-        EntityType: number;
+        EntityType: Enums.EntityType;
         Dimension: number;
         AttachedTo: Attachment;
         Attachables: number[];
@@ -1668,7 +1653,7 @@ declare namespace GTANetwork.Networking {
 
         //
         Position: Vector3;
-        EntityType: number;
+        EntityType: Enums.EntityType;
         Dimension: number;
         AttachedTo: Attachment;
         Attachables: number[];
@@ -1686,7 +1671,7 @@ declare namespace GTANetwork.Networking {
 
         //
         Position: Vector3;
-        EntityType: number;
+        EntityType: Enums.EntityType;
         Dimension: number;
         AttachedTo: Attachment;
         Attachables: number[];
@@ -1704,7 +1689,7 @@ declare namespace GTANetwork.Networking {
 
         //
         Position: Vector3;
-        EntityType: number;
+        EntityType: Enums.EntityType;
         Dimension: number;
         AttachedTo: Attachment;
         Attachables: number[];
@@ -1722,7 +1707,7 @@ declare namespace GTANetwork.Networking {
 
         //
         Position: Vector3;
-        EntityType: number;
+        EntityType: Enums.EntityType;
         Dimension: number;
         AttachedTo: Attachment;
         Attachables: number[];
@@ -1739,7 +1724,7 @@ declare namespace GTANetwork.Networking {
 
         //
         Position: Vector3;
-        EntityType: number;
+        EntityType: Enums.EntityType;
         Dimension: number;
         AttachedTo: Attachment;
         Attachables: number[];
@@ -1757,7 +1742,7 @@ declare namespace GTANetwork.Networking {
 
         //
         Position: Vector3;
-        EntityType: number;
+        EntityType: Enums.EntityType;
         Dimension: number;
         AttachedTo: Attachment;
         Attachables: number[];
