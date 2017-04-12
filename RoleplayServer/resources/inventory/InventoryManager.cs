@@ -201,6 +201,25 @@ namespace RoleplayServer.resources.inventory
             API.sendNotificationToPlayer(player, "Item was sucessfully dropped.");
         }
 
+        [Command("inventory", Alias = "inv")]
+        public void showinventory_cmd(Client player)
+        {
+            //TODO: For now can be just text-based even though I'd recommend it to be a CEF.
+            Character character = API.getEntityData(player, "Character");
+
+            //First the main thing.
+            API.sendChatMessageToPlayer(player, $"[INVENTORY]              {GetPlayerFilledSlots(character)}/{character.MaxInvStorage} Slots          [INVENTORY]");
+            
+            //For Each item.
+            foreach (var item in character.Inventory)
+            {
+                API.sendChatMessageToPlayer(player, $"* ~r~{item.LongName}~w~ ({item.Amount}) Weights {item.AmountOfSlots}" + (item.IsBlocking ? " [BLOCKING]" : ""));
+            }
+
+            //Ending
+            API.sendChatMessageToPlayer(player, "----------------------------------------------------------");
+        }
+
         //TODO: TEST COMMAND.
         [Command("givemeitem")]
         public void GiveMeItem(Client player, string item, int amount)
