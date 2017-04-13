@@ -17,7 +17,7 @@ using Vehicle = RoleplayServer.resources.vehicle_manager.Vehicle;
 
 namespace RoleplayServer.resources.player_manager
 {
-    public class Character
+    public class Character : IStorage
     {
         public static readonly Character None = new Character();
 

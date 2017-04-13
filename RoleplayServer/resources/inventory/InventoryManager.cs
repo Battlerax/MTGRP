@@ -24,22 +24,22 @@ namespace RoleplayServer.resources.inventory
             HasBlockingItem,
             Success
         }
-        public static GiveItemErrors GiveItemToPlayer(Character player, IInventoryItem item)
+        public static GiveItemErrors GiveInventoryItem(IStorage storage, IInventoryItem item, bool ignoreBlocking = false)
         {
-            if (player.Inventory == null) player.Inventory = new List<IInventoryItem>();
+            if (storage.Inventory == null) storage.Inventory = new List<IInventoryItem>();
             //Make sure he doesn't have blocking item.
-            if(player.Inventory.FirstOrDefault(x => x.IsBlocking == true) != null)
+            if(storage.Inventory.FirstOrDefault(x => x.IsBlocking == true) != null && ignoreBlocking == false)
                 return GiveItemErrors.HasBlockingItem;
 
             //Check if player has simliar item.
-            var oldItem = player.Inventory.FirstOrDefault(x => x.GetType() == item.GetType());
+            var oldItem = storage.Inventory.FirstOrDefault(x => x.GetType() == item.GetType());
             if (oldItem == null || oldItem.CanBeStacked == false)
             {
                 //Check if has enough space.
-                if ((GetPlayerFilledSlots(player) + item.Amount * item.AmountOfSlots) <= player.MaxInvStorage)
+                if ((GetInventoryFilledSlots(storage) + item.Amount * item.AmountOfSlots) <= storage.MaxInvStorage)
                 {
                     //Add.
-                    player.Inventory.Add(item);
+                    storage.Inventory.Add(item);
                     return GiveItemErrors.Success;
                 }
                 else
@@ -48,13 +48,13 @@ namespace RoleplayServer.resources.inventory
             else
             {
                 //Make sure there is space again.
-                if ((GetPlayerFilledSlots(player) + item.Amount * item.AmountOfSlots) <= player.MaxInvStorage)
+                if ((GetInventoryFilledSlots(storage) + item.Amount * item.AmountOfSlots) <= storage.MaxInvStorage)
                 {
                     //Add.
                     oldItem.Amount += item.Amount;
                     if (oldItem.Amount == 0)
                     {
-                        player.Inventory.Remove(oldItem);
+                        storage.Inventory.Remove(oldItem);
                     }
                     return GiveItemErrors.Success;
                 }
@@ -63,12 +63,12 @@ namespace RoleplayServer.resources.inventory
             }
         }
 
-        public static IInventoryItem DoesHaveItem(Character player, Type item)
+        public static IInventoryItem DoesInventoryHaveItem(IStorage storage, Type item)
         {
-            return player.Inventory.FirstOrDefault(x => x.GetType() == item);
+            return storage.Inventory.FirstOrDefault(x => x.GetType() == item);
         }
 
-        public static Type ParseItem(string item)
+        public static Type ParseInventoryItem(string item)
         {
             var allItems =
                 Assembly.GetExecutingAssembly().GetTypes().Where(x => typeof(IInventoryItem).IsAssignableFrom(x) && x.IsClass).ToArray();
@@ -82,16 +82,16 @@ namespace RoleplayServer.resources.inventory
             return null;
         }
 
-        public static int GetPlayerFilledSlots(Character player)
+        public static int GetInventoryFilledSlots(IStorage storage)
         {
             int value = 0;
-            player.Inventory.ForEach(x => value += x.AmountOfSlots * x.Amount);
+            storage.Inventory.ForEach(x => value += x.AmountOfSlots * x.Amount);
             return value;
         }
 
-        public static bool DeleteItem(Character player, Type item)
+        public static bool DeleteInventoryItem(IStorage storage, Type item)
         {
-            if (player.Inventory.RemoveAll(x => x.GetType() == item) > 0)
+            if (storage.Inventory.RemoveAll(x => x.GetType() == item) > 0)
             return true;
 
             return false;
@@ -120,7 +120,7 @@ namespace RoleplayServer.resources.inventory
             }
 
             //Get the item.
-            var itemType = ParseItem(item);
+            var itemType = ParseInventoryItem(item);
             if (itemType == null)
             {
                 API.sendNotificationToPlayer(player, "That item doesn't exist.");
@@ -134,7 +134,7 @@ namespace RoleplayServer.resources.inventory
             }
 
             //Make sure he does have such amount.
-            var sendersItem = DoesHaveItem(sender, itemType);
+            var sendersItem = DoesInventoryHaveItem(sender, itemType);
             if (sendersItem == null || sendersItem.Amount < amount)
             {
                 API.sendNotificationToPlayer(player, "You don't have that item or you don't have that amount.");
@@ -144,7 +144,7 @@ namespace RoleplayServer.resources.inventory
             //Give.
             var newItem = sendersItem.Copy();
             newItem.Amount = amount;
-            switch (GiveItemToPlayer(target, newItem))
+            switch (GiveInventoryItem(target, newItem))
             {
                 case GiveItemErrors.NotEnoughSpace:
                     API.sendNotificationToPlayer(player, "The target player doesn't have enough space in his inventory.");
@@ -176,7 +176,7 @@ namespace RoleplayServer.resources.inventory
             Character character = API.getEntityData(player, "Character");
 
             //Get the item.
-            var itemType = ParseItem(item);
+            var itemType = ParseInventoryItem(item);
             if (itemType == null)
             {
                 API.sendNotificationToPlayer(player, "That item doesn't exist.");
@@ -190,7 +190,7 @@ namespace RoleplayServer.resources.inventory
             }
 
             //Get in inv.
-            var sendersItem = DoesHaveItem(character, itemType);
+            var sendersItem = DoesInventoryHaveItem(character, itemType);
             if (sendersItem == null || sendersItem.Amount < amount)
             {
                 API.sendNotificationToPlayer(player, "You don't have that item or you don't have that amount.");
@@ -198,7 +198,7 @@ namespace RoleplayServer.resources.inventory
             }
 
             if (amount == sendersItem.Amount)
-                DeleteItem(character, itemType);
+                DeleteInventoryItem(character, itemType);
             else
                 sendersItem.Amount -= amount;
 
@@ -213,7 +213,7 @@ namespace RoleplayServer.resources.inventory
 
             //First the main thing.
             API.sendChatMessageToPlayer(player, "-------------------------------------------------------------");
-            API.sendChatMessageToPlayer(player, $"[INVENTORY] {GetPlayerFilledSlots(character)}/{character.MaxInvStorage} Slots [INVENTORY]");
+            API.sendChatMessageToPlayer(player, $"[INVENTORY] {GetInventoryFilledSlots(character)}/{character.MaxInvStorage} Slots [INVENTORY]");
             
             //For Each item.
             foreach (var item in character.Inventory)
@@ -230,12 +230,12 @@ namespace RoleplayServer.resources.inventory
         public void GiveMeItem(Client player, string item, int amount)
         {
             Character character = API.getEntityData(player, "Character");
-            Type itemType = ParseItem(item);
+            Type itemType = ParseInventoryItem(item);
             if (itemType != null)
             {
                 var actualitem = ItemTypeToNewObject(itemType);
                 actualitem.Amount = amount;
-                switch (GiveItemToPlayer(character, actualitem))
+                switch (GiveInventoryItem(character, actualitem))
                 {
                     case GiveItemErrors.NotEnoughSpace:
                         API.sendChatMessageToPlayer(player, "You can't hold anymore items in your inventory.");
