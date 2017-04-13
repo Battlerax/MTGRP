@@ -31,6 +31,9 @@ namespace RoleplayServer.resources.inventory
         //Long name.
         string LongName { get; }
 
+        //Object hash.
+        int Object { get; }
+
         //Amount of items.
         int Amount { get; set; }
     }

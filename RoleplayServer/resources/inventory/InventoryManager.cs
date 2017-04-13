@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using GTANetworkServer;
+using GTANetworkShared;
 using MongoDB.Bson.Serialization;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.player_manager;
@@ -204,6 +205,86 @@ namespace RoleplayServer.resources.inventory
 
             API.sendNotificationToPlayer(player, "Item was sucessfully dropped.");
         }
+
+        #region Stashing System: 
+        private Dictionary<NetHandle, IInventoryItem> stashedItems = new Dictionary<NetHandle, IInventoryItem>();
+
+        [Command("stash")]
+        public void stash_cmd(Client player, string item, int amount)
+        {
+            Character character = API.getEntityData(player, "Character");
+
+            //Get the item.
+            var itemType = ParseInventoryItem(item);
+            if (itemType == null)
+            {
+                API.sendNotificationToPlayer(player, "That item doesn't exist.");
+                return;
+            }
+            var itemObj = ItemTypeToNewObject(itemType);
+            if (itemObj.CanBeStashed == false)
+            {
+                API.sendNotificationToPlayer(player, "That item cannot be stashed.");
+                return;
+            }
+
+            //Get in inv.
+            var sendersItem = DoesInventoryHaveItem(character, itemType);
+            if (sendersItem == null || sendersItem.Amount < amount)
+            {
+                API.sendNotificationToPlayer(player, "You don't have that item or you don't have that amount.");
+                return;
+            }
+
+            //Create object and add to list.
+            var droppedObject = API.createObject(sendersItem.Object, player.position.Subtract(new Vector3(0, 0, 1)), new Vector3(0, 0, 0));
+            stashedItems.Add(droppedObject, sendersItem.Copy());
+
+            //Decrease.
+            if (amount == sendersItem.Amount)
+                DeleteInventoryItem(character, itemType);
+            else
+                sendersItem.Amount -= amount;
+
+            //Send message.
+            API.sendNotificationToPlayer(player, $"You have sucessfully stashed ~g~{amount} {sendersItem.LongName}~w~. Use /pickupstash to take it.");
+        }
+
+        [Command("pickupstash")]
+        public void pickupstash_cmd(Client player)
+        {
+            //Check if near any stash.
+            var items = stashedItems.Where(x => API.getEntityPosition(x.Key).DistanceTo(player.position) <= 3).ToArray();
+            if (!items.Any())
+            {
+                API.sendNotificationToPlayer(player, "You aren't near any stash.");
+                return;
+            }
+
+            //Just get the first one and take it.
+            Character character = API.getEntityData(player, "Character");
+            switch (GiveInventoryItem(character, items.First().Value))
+            {
+                case GiveItemErrors.NotEnoughSpace:
+                    API.sendNotificationToPlayer(player, "You don't have enough space in his inventory.");
+                    break;
+
+                case GiveItemErrors.HasBlockingItem:
+                    API.sendNotificationToPlayer(player, "You have a blocking item in hand.");
+                    break;
+
+                case GiveItemErrors.Success:
+                    API.sendNotificationToPlayer(player,
+                        $"You have sucessfully taken ~g~{items.First().Value.Amount}~w~ ~g~{items.First().Value.LongName}~w~ from the stash.");
+
+                    //Remove object and item from list.
+                    API.deleteEntity(items.First().Key);
+                    stashedItems.Remove(items.First().Key);
+                    break;
+            }
+        }
+
+        #endregion
 
         [Command("inventory", Alias = "inv")]
         public void showinventory_cmd(Client player)

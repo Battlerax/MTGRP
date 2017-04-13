@@ -23,6 +23,7 @@ namespace RoleplayServer.resources.inventory
 
         public string CommandFriendlyName => "TestItem";
         public string LongName => "TestItem";
+        public int Object => 1843823183;
 
         public int Amount { get; set; }
     }
