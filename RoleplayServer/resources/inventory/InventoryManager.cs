@@ -52,6 +52,10 @@ namespace RoleplayServer.resources.inventory
                 {
                     //Add.
                     oldItem.Amount += item.Amount;
+                    if (oldItem.Amount == 0)
+                    {
+                        player.Inventory.Remove(oldItem);
+                    }
                     return GiveItemErrors.Success;
                 }
                 else
@@ -208,16 +212,17 @@ namespace RoleplayServer.resources.inventory
             Character character = API.getEntityData(player, "Character");
 
             //First the main thing.
-            API.sendChatMessageToPlayer(player, $"[INVENTORY]              {GetPlayerFilledSlots(character)}/{character.MaxInvStorage} Slots          [INVENTORY]");
+            API.sendChatMessageToPlayer(player, "-------------------------------------------------------------");
+            API.sendChatMessageToPlayer(player, $"[INVENTORY] {GetPlayerFilledSlots(character)}/{character.MaxInvStorage} Slots [INVENTORY]");
             
             //For Each item.
             foreach (var item in character.Inventory)
             {
-                API.sendChatMessageToPlayer(player, $"* ~r~{item.LongName}~w~ ({item.Amount}) Weights {item.AmountOfSlots}" + (item.IsBlocking ? " [BLOCKING]" : ""));
+                API.sendChatMessageToPlayer(player, $"* ~r~{item.LongName}~w~[{item.CommandFriendlyName}] ({item.Amount}) Weights {item.AmountOfSlots} Slots" + (item.IsBlocking ? " [BLOCKING]" : ""));
             }
 
             //Ending
-            API.sendChatMessageToPlayer(player, "----------------------------------------------------------");
+            API.sendChatMessageToPlayer(player, "-------------------------------------------------------------");
         }
 
         //TODO: TEST COMMAND.
