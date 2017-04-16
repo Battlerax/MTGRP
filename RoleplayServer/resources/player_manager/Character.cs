@@ -8,6 +8,7 @@ using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using RoleplayServer.resources.database_manager;
 using RoleplayServer.resources.group_manager;
+using RoleplayServer.resources.inventory;
 using RoleplayServer.resources.job_manager;
 using RoleplayServer.resources.job_manager.fisher;
 using RoleplayServer.resources.job_manager.taxi;
@@ -16,7 +17,7 @@ using Vehicle = RoleplayServer.resources.vehicle_manager.Vehicle;
 
 namespace RoleplayServer.resources.player_manager
 {
-    public class Character
+    public class Character : IStorage
     {
         public static readonly Character None = new Character();
 
@@ -180,6 +181,10 @@ namespace RoleplayServer.resources.player_manager
 
         public bool IsCuffed { get; set; }
 
+        public List<IInventoryItem> Inventory { get; set; }
+
+        [BsonIgnore]
+        public int MaxInvStorage => 100; //TODO: change this later on.
 
         public Character()
         {
