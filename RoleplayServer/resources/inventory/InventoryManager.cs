@@ -16,7 +16,8 @@ namespace RoleplayServer.resources.inventory
     {
         public InventoryManager()
         {
-            BsonClassMap.RegisterClassMap<TestItem>();
+			//TODO: Not sure if items still need to be registered here, but do so if you ever see a related exception.
+            //BsonClassMap.RegisterClassMap<TestItem>();
         }
 
         public enum GiveItemErrors
