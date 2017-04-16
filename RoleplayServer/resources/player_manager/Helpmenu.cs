@@ -27,20 +27,29 @@ namespace RoleplayServer.resources.player_manager
     {
         public void HelpMenu()
         {
-            API.onClientEventTrigger += OnClientEvent;
+            API.onClientEventTrigger += onClientEvent;
         }
         [Command("help")]
-        public static void help_cmd(Client player)
+        public void help_cmd(Client player)
+
         {
-            API.triggerClientEvent(player, "HelpMenu1");
         }
 
-
-        public void OnClientEvent(Client player, string id, params object[] args)
+        public void onClientEvent(Client player, string id, params object[] arguments)
+        {
+            if (id == "Commands1")
+            {
+                player.sendChatMessage("~h~Here is the list of commands availible to you:");
+                player.sendChatMessage("/time, /stats");
+            }
+        }
+    }
+}
+        /*
+        public void OnClientEvent(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
             Character character = API.getEntityData(player.handle, "Character");
-            Character receiverCharacter = API.getEntityData(receiver.handle, "Character");
 
             if (id == "clickeditem")
             {
@@ -109,3 +118,4 @@ namespace RoleplayServer.resources.player_manager
         }
     }
 }
+*/

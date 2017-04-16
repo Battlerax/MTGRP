@@ -32,7 +32,7 @@ API.onChatCommand.connect(function (msg) {
 //**************************************
 
 var menu = new Menu();
-
+define
 function openHelpMenu() {
     menu
         .createMenu("Help Menu")
@@ -46,13 +46,7 @@ function openHelpMenu() {
     ;
 }
 
-function callServerTrigger(HelpMenu1) {
+function callServerTrigger(eventname) {
     var args = [].slice.call(arguments).splice(1);
-    menu.callServerFunction(HelpMenu1, args);
+    menu.callServerFunction(eventname, args);
 }
-
-API.onUpdate.connect(function () {
-    if (menu.menuPool !== null) {
-        menu.menuPool.ProcessMenus();
-    }
-});
