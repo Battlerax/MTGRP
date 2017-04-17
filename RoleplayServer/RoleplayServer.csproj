@@ -74,6 +74,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="resources\AdminSystem\AdminCommands.cs" />
     <Compile Include="resources\component_manager\ComponentManager.cs" />
+    <Compile Include="resources\core\Animations.cs" />
     <Compile Include="resources\core\ChatManager.cs" />
     <Compile Include="resources\core\Color.cs" />
     <Compile Include="resources\core\DebugManager.cs" />
@@ -88,7 +89,6 @@
     <Compile Include="resources\inventory\IInventoryItem.cs" />
     <Compile Include="resources\inventory\InventoryManager.cs" />
     <Compile Include="resources\inventory\IStorage.cs" />
-    <Compile Include="resources\inventory\TestItem.cs" />
     <Compile Include="resources\job_manager\fisher\Fish.cs" />
     <Compile Include="resources\job_manager\fisher\Fisher.cs" />
     <Compile Include="resources\job_manager\Job.cs" />
