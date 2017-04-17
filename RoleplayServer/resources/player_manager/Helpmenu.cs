@@ -33,6 +33,7 @@ namespace RoleplayServer.resources.player_manager
         public void help_cmd(Client player)
 
         {
+            API.triggerClientEvent(player, "openHelpMenu");
         }
 
         public void onClientEvent(Client player, string id, params object[] arguments)
