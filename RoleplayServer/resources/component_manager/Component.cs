@@ -1,52 +1,51 @@
-﻿using MongoDB.Bson;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using MongoDB.Bson;
 
-namespace RoleplayServer
+namespace RoleplayServer.resources.component_manager
 {
     public class Component
     {
-        public const int COMPONENT_TYPE_FACE = 0;
-        public const int COMPONENT_TYPE_MASK = 1;
-        public const int COMPONENT_TYPE_HAIR = 2;
-        public const int COMPONENT_TYPE_TORSO = 3;
-        public const int COMPONENT_TYPE_LEGS = 4;
-        public const int COMPONENT_TYPE_BAGS = 5;
-        public const int COMPONENT_TYPE_SHOES = 6;
-        public const int COMPONENT_TYPE_ACCESSORIES = 7;
-        public const int COMPONENT_TYPE_UNDERSHIRT = 8;
-        public const int COMPONENT_TYPE_BODYARMOR = 9;
-        public const int COMPONENT_TYPE_DECALS = 10;
-        public const int COMPONENT_TYPE_TOPS = 11;
+        public const int ComponentTypeFace = 0;
+        public const int ComponentTypeMask = 1;
+        public const int ComponentTypeHair = 2;
+        public const int ComponentTypeTorso = 3;
+        public const int ComponentTypeLegs = 4;
+        public const int ComponentTypeBags = 5;
+        public const int ComponentTypeShoes = 6;
+        public const int ComponentTypeAccessories = 7;
+        public const int ComponentTypeUndershirt = 8;
+        public const int ComponentTypeBodyarmor = 9;
+        public const int ComponentTypeDecals = 10;
+        public const int ComponentTypeTops = 11;
 
         //Use (20 - COMPONENT_TYPE) when setting using API functions
-        public const int COMPONENT_TYPE_HATS = 20;
-        public const int COMPONENT_TYPE_GLASSES = 21;
-        public const int COMPONENT_TYPE_EARS = 22;
+        public const int ComponentTypeHats = 20;
+        public const int ComponentTypeGlasses = 21;
+        public const int ComponentTypeEars = 22;
 
-        public ObjectId _id;
-        public string name;
-        public int type;
-        public int gender;
-        public int component_id;
-        public List<int> variations = new List<int>();
+        public ObjectId Id;
+        public string Name;
+        public int Type;
+        public int Gender;
+        public int ComponentId;
+        public List<int> Variations = new List<int>();
         
-        public Component(int type, int gender, int component_id, List<int> variations)
+        public Component(int type, int gender, int componentId, List<int> variations)
         {
-            this.type = type;
-            this.gender = gender;
-            this.component_id = component_id;
-            this.variations = variations;
+            Type = type;
+            Gender = gender;
+            ComponentId = componentId;
+            Variations = variations;
             
         }
 
-        public Component(int type, int gender, int component_id, List<int> variations, string name)
+        public Component(int type, int gender, int componentId, List<int> variations, string name)
         {
-            this.type = type;
-            this.gender = gender;
-            this.component_id = component_id;
-            this.variations = variations;
-            this.name = name;
+            Type = type;
+            Gender = gender;
+            ComponentId = componentId;
+            Variations = variations;
+            Name = name;
         }
         
     }

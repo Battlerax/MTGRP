@@ -1,0 +1,146 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link href="../stylesheet/css/metro.css" rel="stylesheet" />
+    <link href="../stylesheet/css/metro-icons.css" rel="stylesheet" />
+    <script src="../jquery.js"></script>
+    <script src="../stylesheet/js/metro.js"></script>
+
+    <style>
+        .main_container {
+            width: 800px;
+            max-height: 600px;
+            max-width: 800px;
+
+            position: absolute;
+            margin: -100px 0 0 -200px;
+            top: 30%;
+            left: 40%;
+            background: rgba(255, 255, 255, 0.00);
+    
+        }
+
+        .inner_panel {
+            width: 250px;
+            height: 450px;
+            margin: 20px;
+        }
+    </style>
+
+</head>
+<body>
+<div class="main_container">
+        
+   
+      
+    <div class="panel place-right shadow" style="width: inherit;">
+            
+        <div class="heading">
+            <span class="icon mif-users"></span>
+            <span class="title" id="main_panel_title" style="font-family:House Script;font-size:30px">Group Editor - Los Santos Police Department (1)</span>
+        </div>
+        
+        <ul class="sidebar2 dark place-left" style="width:150px;">
+            <li id="main_option" class="active"><a href="#"><span class="mif-home icon"></span>Main</a></li>
+            <li id="ranks_option" class=""><a href="#"><span class="mif-chevron-thin-right icon"></span>Ranks</a></li>
+            <li id="divisions_option" class=""><a href="#"><span class="mif-chevron-thin-right icon"></span>Divisions</a></li>
+            
+            <li style="background:#60a917"><button class="button success"><span class="mif-floppy-disk"></span> Save Changes</button></li>
+            <li style="background:#fa6800"><button class="button warning"><span class="mif-cross"></span> Cancel Changes</button></li>
+
+            <li class="disabled">
+                <a href="#" style="height: 235px"> </a>
+            </li>           
+        </ul>
+    
+
+        <div id="panel_content" class="content" style="background: rgba(255, 255, 255, 0.00);">
+            
+            <div id="main" style="display: block">
+                
+                <div id="form_content" class="form_container">
+                   
+                    <div class="place-left">
+
+                        <div class="padding10">
+                            SQL ID
+                            <br />
+                            <div class="input-control text">
+                                <input type="text" id="id" value="Default" readonly>
+                            </div>
+                        </div>
+                        
+                        <div class="padding10">
+                            Group Name
+                            <br />
+                            <div class="input-control text">
+                                <input type="text" id="id" value="Default" readonly>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                    <div class="place-right">
+                        
+
+                    </div>
+
+                </div>
+
+            </div>
+           
+            <div id="ranks" style="display: none">
+                
+                Ranks
+
+            </div>
+            
+            <div id="divisions" style="display: none">
+                
+                Divisions
+                
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+</body>
+</html>
+
+<script>
+
+    $('#main_option').click(function() {
+        $('#main_option').addClass("active");
+        $('#ranks_option').removeClass("active");
+        $('#divisions_option').removeClass('active');
+
+        $('#main').css("display", "block");
+        $('#ranks').css("display", "none");
+        $('#divisions').css("display", "none");
+    });
+
+    $('#ranks_option').click(function () {
+        $('#ranks_option').addClass("active");
+        $('#main_option').removeClass("active");
+        $('#divisions_option').removeClass('active');
+
+        $('#main').css("display", "none");
+        $('#ranks').css("display", "block");
+        $('#divisions').css("display", "none");
+    });
+
+    $('#divisions_option').click(function () {
+        $('#divisions_option').addClass("active");
+        $('#main_option').removeClass("active");
+        $('#ranks_option').removeClass('active');
+
+        $('#main').css("display", "none");
+        $('#ranks').css("display", "none");
+        $('#divisions').css("display", "block");
+    });
+
+</script>

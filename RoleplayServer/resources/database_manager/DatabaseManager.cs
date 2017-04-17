@@ -1,44 +1,57 @@
-﻿using System;
+﻿using MongoDB.Bson;
 using MongoDB.Driver;
-using MongoDB.Bson;
+using RoleplayServer.resources.core;
+using RoleplayServer.resources.group_manager;
+using RoleplayServer.resources.job_manager;
+using RoleplayServer.resources.phone_manager;
+using RoleplayServer.resources.player_manager;
+using RoleplayServer.resources.vehicle_manager;
 
-
-namespace RoleplayServer
+namespace RoleplayServer.resources.database_manager
 {
     public static class DatabaseManager
     {
-        private static IMongoClient mongo_client = new MongoClient("mongodb://localhost");
-        private static IMongoDatabase database = null;
+        private static readonly IMongoClient MongoClient = new MongoClient("mongodb://localhost");
+        private static IMongoDatabase _database;
 
-        private static IMongoCollection<BsonDocument> counters_table = null;
-        public static IMongoCollection<Vehicle> vehicle_table = null;
-        public static IMongoCollection<Account> account_table = null; 
-        public static IMongoCollection<Character> character_table = null;
-        public static IMongoCollection<Component> component_table = null;
-       
+        private static IMongoCollection<BsonDocument> _countersTable;
+        public static IMongoCollection<Vehicle> VehicleTable;
+        public static IMongoCollection<Account> AccountTable; 
+        public static IMongoCollection<Character> CharacterTable;
+        public static IMongoCollection<Job> JobTable;
+        public static IMongoCollection<Phone> PhoneTable;
+        public static IMongoCollection<PhoneContact> ContactTable;
+        public static IMongoCollection<Group> GroupTable;
+
+
         public static void DatabaseManagerInit()
         {
-            DebugManager.debugMessage("[DatabaseM] Initalizing database manager...");
+            DebugManager.DebugMessage("[DatabaseM] Initalizing database manager...");
 
-            database = mongo_client.GetDatabase("test_db");
+            _database = MongoClient.GetDatabase("mtg_test");
 
-            counters_table = database.GetCollection<BsonDocument>("counters");
-            vehicle_table = database.GetCollection<Vehicle>("vehicles");
-            account_table = database.GetCollection<Account>("accounts");
-            character_table = database.GetCollection<Character>("characters");
-            component_table = database.GetCollection<Component>("components");
-           
-            DebugManager.debugMessage("[DatabaseM] Database Manager initalized!");
+            _countersTable = _database.GetCollection<BsonDocument>("counters");
+            VehicleTable = _database.GetCollection<Vehicle>("vehicles");
+            AccountTable = _database.GetCollection<Account>("accounts");
+            CharacterTable = _database.GetCollection<Character>("characters");
+            JobTable = _database.GetCollection<Job>("jobs");
+            PhoneTable = _database.GetCollection<Phone>("phones");
+            ContactTable = _database.GetCollection<PhoneContact>("phonecontacts");
+            GroupTable = _database.GetCollection<Group>("groups");
+
+            DebugManager.DebugMessage("[DatabaseM] Database Manager initalized!");
         }
 
-        public static int getNextId(string table_name)
+        public static int GetNextId(string tableName)
         {
-            FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.Eq("_id", table_name);
-            UpdateDefinition<BsonDocument> update = Builders<BsonDocument>.Update.Inc("sequence", 1);
-            var result = counters_table.FindOneAndUpdate(filter, update, new FindOneAndUpdateOptions<BsonDocument> { IsUpsert = true });
-
+            var filter = Builders<BsonDocument>.Filter.Eq("_id", tableName);
+            var update = Builders<BsonDocument>.Update.Inc("sequence", 1);
+            var result = _countersTable.FindOneAndUpdate(filter, update, new FindOneAndUpdateOptions<BsonDocument> { IsUpsert = true });
+            if (result == null)
+            {
+                return 1;
+            }
             return result.GetValue("sequence").ToInt32();
         }
-
     }
 }

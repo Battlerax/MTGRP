@@ -1,24 +1,22 @@
-﻿using System;
-using GTANetworkServer;
-using GTANetworkShared;
+﻿using GTANetworkServer;
 
-namespace RoleplayServer
+namespace RoleplayServer.resources.core
 {
     public static class DebugManager
     {
-        public const int DEBUG_LEVEL = 10;
+        private const int DebugLevel = 10;
 
-        public const int STACKTRACE_PRINT_LEVEL = 2;
+        public const int StacktracePrintLevel = 2;
 
         public static void DebugManagerInit()
         {
-            debugMessage("[DebugM] Debug manager loaded... (Current Level: " + DEBUG_LEVEL + ")");
+            DebugMessage("[DebugM] Debug manager loaded... (Current Level: " + DebugLevel + ")");
         }
 
 
-        public static void debugMessage(string msg, int level = 0)
+        public static void DebugMessage(string msg, int level = 0)
         {
-            if(level <= DEBUG_LEVEL)
+            if(level <= DebugLevel)
             {
                 API.shared.consoleOutput(msg);
             }

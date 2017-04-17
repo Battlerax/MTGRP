@@ -1,39 +1,58 @@
 <meta>
     <info name="Init" author="Chenko" type="gamemode" />
-    
-	<assembly ref="System.Data.dll"/>
+	
+	<!-- Door Manager -->
+	<include resource="doormanager" />
+	
 	<assembly ref="MongoDB.Bson.dll"/>
 	<assembly ref="MongoDB.Driver.dll"/>
 	<assembly ref="MongoDB.Driver.Core.dll"/>
 	<assembly ref="System.Runtime.InteropServices.RuntimeInformation.dll"/>
 	
-	<script src="Init.cs" type="server" lang="csharp"/>
+	<!-- MAIN script with all *.cs files. -->
+	<script src="../bin/Debug/RoleplayServer.dll" type="server" lang="compiled"/>
 	
-	<script src="core/DebugManager.cs" type="server" lang="csharp"/>
-	<script src="core/Color.cs" type="server" lang="csharp"/>
-	<script src="core/ChatManager.cs" type="server" lang="csharp"/>
+	<!-- BANK -->
+	<script src="rp_scripts/BankMenu.js" type="client" lang="javascript"/>
 	
-	<script src="database_manager/DatabaseManager.cs" type="server" lang="csharp"/>
-	
-	<script src="player_manager/Account.cs" type="server" lang="csharp"/>
-	<script src="player_manager/Character.cs" type="server" lang="csharp"/>
-	<script src="player_manager/Model.cs" type="server" lang="csharp"/>
-	<script src="player_manager/PlayerManager.cs" type="server" lang="csharp"/>
+	<!-- PLAYER -->	
 	<script src="player_manager/PlayerManager.js" type="client" lang="javascript"/>
-	<script src="player_manager/LoginManager.cs" type="server" lang="csharp"/>
-	<script src="player_manager/LoginManager.js" type="client" lang="javascript"/>
+	<script src="player_manager/player_interaction/PlayerInteraction.js" type="client" lang="javascript"/>
+	<file src="player_manager/player_interaction/PlayerInteraction.html"/>
+	<script src="player_manager/player_list/PlayerList.js" type="client" lang="javascript"/>
+	<file src="player_manager/player_list/PlayerList.html" />
+	<script src="player_manager/login/LoginManager.js" type="client" lang="javascript"/>
+	<file src="player_manager/login/Login.html"/>
 	<script src="player_manager/CharacterMenu.js" type="client" lang="javascript"/>
-	<script src="player_manager/CharacterMenu.cs" type="server" lang="csharp"/>
 	
-	<script src="vehicle_manager/Vehicle.cs" type="server" lang="csharp"/>
-	<script src="vehicle_manager/VehicleManager.cs" type="server" lang="csharp"/>
-	<script src="vehicle_manager/VehicleMenu.cs" type="server" lang="csharp"/>
+	<!-- JOBS -->
+	<script src="job_manager/JobManager.js" type="client" lang="javascript"/>
+	<script src="job_manager/taxi/TaxiJob.js" type="client" lang="javascript"/>
+	<script src="job_manager/fisher/Fisher.js" type="client" lang="javascript"/>
+	
+	<!-- VEHICLE -->
 	<script src="vehicle_manager/VehicleMenu.js" type="client" lang="javascript"/>
+	<script src="vehicle_manager/vehicle_editor/VehicleEdit.js" type="client" lang="javascript"/>
+	<file src="vehicle_manager/vehicle_editor/VehicleEdit.html"/>
 	
-	<script src="component_manager/Component.cs" type="server" lang="csharp"/>
-	<script src="component_manager/ComponentManager.cs" type="server" lang="csharp"/>
-	
+	<!-- Dealership/Ownership -->
+	<script src="vehicle_dealership/vehicledealer.js" type="client" lang="javascript"/>
+	<script src="vehicle_manager/VehicleOwnership.js" type="client" lang="javascript"/>
+  
+	<!-- CEF  -->
+	<file src="stylesheet/css/metro.css"/>
+	<file src="stylesheet/css/metro-schemes.css"/>
+	<file src="stylesheet/js/metro.js"/>
+	<file src="jquery.js"/>
+	<file src="stylesheet/fonts/metro.ttf"/>
+	<file src="stylesheet/fonts/housescript.woff"/>
+	<file src="stylesheet/fonts/housescript.woff2"/>
+	<file src="stylesheet/css/metro-icons.css"/>
 
+	<!-- CORE -->
+	<file src="cef_resources/MTGVRP_LOGO_BIG.png"/>
+	<file src="cef_resources/MTGVRP_LOGO_SMALL.png"/>
+	
 	
 	<file src="jquery.js" />
 </meta>
