@@ -1,4 +1,11 @@
-﻿using System;
+﻿// Animations
+// Author: Toro
+// Date: 18/04/2017
+// TODO: Need to check all animations to see if they work.
+// May need to add some other animations that will be needed.
+// Will wait till release to make changes that the community suggests
+
+using System;
 using GTANetworkServer;
 using GTANetworkShared;
 using System.Collections.Generic;
@@ -21,66 +28,7 @@ namespace RoleplayServer
         {
             API.stopPlayerAnimation(player);
         }
-        /*
-        [Command("test")]
-        public void test(Client player)
-        {
-            API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "asdafasfafase", "base");
-        }
-
-        [Command("lookout")]
-        public void lookout(Client player, int number)
-        {
-            switch (number)
-            {
-                case 1:
-                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "0000000000000", "idle_c");
-                    break;
-                case 2:
-                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "0000000000000", "idle_c");
-                    break;
-                case 3:
-                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "0000000000000", "base_back_left");
-                    break;
-                case 4:
-                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "0000000000000", "base");
-                    break;
-                case 5:
-                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "0000000000000a", "idle_b");
-                    break;
-                case 6:
-                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "0000000000000", "idle_d");
-                    break;
-                case 7:
-                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "0000000000000", "base_back_left");
-                    break;
-                case 8:
-                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "0000000000000", "base");
-                    break;
-                case 9:
-                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "0000000000000", "base");
-                    break;
-                case 10:
-                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "0000000000000", "idle_c");
-                    break;
-                case 11:
-                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "0000000000000", "base");
-                    break;
-                case 12:
-                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "0000000000000", "idle_b");
-                    break;
-                case 13:
-                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "0000000000000", "base_right");
-                    break;
-                default:
-                    API.sendChatMessageToPlayer(player, "~y~Syntax /Hide 1 - 13");
-                    break;
-            }
-        }
-
-             | AnimationFlags.OnlyAnimateUpperBody
-
-    */
+        
         [Command("hide")]
         public void hide(Client player, int number)
         {
@@ -220,64 +168,37 @@ namespace RoleplayServer
                     API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@code_human_wander_drinking@beer@male@base", "static");
                     break;
                 case 3:
-                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@code_human_wander_drinking_fat@beer@female@base", "static");
-                    break;
-                case 4:
-                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@code_human_wander_drinking_fat@beer@male@base", "static");
-                    break;
-                case 5:
-                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@code_human_wander_drinking_fat@beer@male@base", "static");
-                    break;
-                case 6:
-                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@code_human_wander_drinking_fat@female@base", "static");
-                    break;
-                case 7:
-                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@code_human_wander_drinking_fat@male@base", "static");
-                    break;
-                case 9:
                     API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_aa_coffee@base", "base");
                     break;
-                case 10:
+                case 4:
                     API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_aa_coffee@idle_a", "idle_a");
                     break;
-                case 11:
+                case 5:
                     API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_drinking@beer@female@base", "base");
                     break;
-                case 12:
+                case 6:
                     API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_drinking@beer@female@idle_a", "idle_f");
                     break;
-                case 13:
+                case 7:
                     API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_drinking@beer@male@base", "base");
                     break;
-                case 14:
+                case 8:
                     API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_drinking@beer@male@idle_a", "idle_a");
                     break;
-                case 15:
+                case 9:
                     API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_drinking@coffee@female@base", "base");
                     break;
-                case 16:
+                case 10:
                     API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_drinking@coffee@female@idle_a", "idle_a");
                     break;
-                case 17:
+                case 11:
                     API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_drinking@coffee@male@base", "base");
                     break;
-                case 18:
+                case 12:
                     API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_drinking@coffee@male@idle_a", "idle_a");
                     break;
-                case 19:
-                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_drinking_fat@beer@male@base", "base");
-                    break;
-                case 20:
-                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_drinking_fat@beer@male@idle_a", "idle_a");
-                    break;
-                case 21:
-                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_drinking_fat@coffee@female@base", "base");
-                    break;
-                case 22:
-                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_drinking_fat@coffee@female@idle_a", "idle_a");
-                    break;
                 default:
-                    API.sendChatMessageToPlayer(player, "~y~Syntax /drink 1 - 22");
+                    API.sendChatMessageToPlayer(player, "~y~Syntax /drink 1 - 12");
                     break;
             }
         }
@@ -328,9 +249,11 @@ namespace RoleplayServer
                 case 14:
                     API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_hang_out_street@male_c@idle_b", "idle_d");
                     break;
-
+                case 15:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "anim@heists@heist_corona@single_team", "single_team_loop_boss");
+                    break;
                 default:
-                    API.sendChatMessageToPlayer(player, "~y~Syntax /crossarms 1 - 14");
+                    API.sendChatMessageToPlayer(player, "~y~Syntax /crossarms 1 - 15");
                     break;
             }
         }
@@ -604,8 +527,14 @@ namespace RoleplayServer
                 case 10:
                     API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_push_ups@male@idle_a", "idle_a");
                     break;
+                case 11:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_sit_ups@male@base", "base");
+                    break;
+                case 12:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_sit_ups@male@idle_a", "idle_a");
+                    break;
                 default:
-                    API.sendChatMessageToPlayer(player, "~y~Syntax /workout 1 - 10");
+                    API.sendChatMessageToPlayer(player, "~y~Syntax /workout 1 - 12");
                     break;
             }
         }
@@ -623,8 +552,38 @@ namespace RoleplayServer
                 case 3:
                     API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_prostitute@french@base", "idle_a");
                     break;
+                case 4:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_smoking@female@base", "base");
+                    break;
+                case 5:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_smoking@female@idle_a", "idle_a");
+                    break;
+                case 6:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_smoking@male@male_a@base", "base");
+                    break;
+                case 7:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_smoking@male@male_a@idle_a", "idle_c");
+                    break;
+                case 8:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_smoking@male@male_b@base", "base");
+                    break;
+                case 9:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_smoking@male@male_b@idle_a", "idle_b");
+                    break;
+                case 10:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_smoking_pot@female@base", "base");
+                    break;
+                case 11:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_smoking_pot@female@idle_a", "idle_b");
+                    break;
+                case 12:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_smoking_pot@male@base", "base");
+                    break;
+                case 13:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_smoking_pot@male@idle_a", "idle_c");
+                    break;
                 default:
-                    API.sendChatMessageToPlayer(player, "~y~Syntax /smoke 1 - 3");
+                    API.sendChatMessageToPlayer(player, "~y~Syntax /smoke 1 - 13");
                     break;
             }
         }
@@ -707,9 +666,20 @@ namespace RoleplayServer
                 case 3:
                     API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_bum_freeway@male@idle_b", "idle_d");
                     break;
-               
+                case 4:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "combat@damage@writhe", "writhe_loop");
+                    break;
+                case 5:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "combat@damage@writheidle_a", "writhe_idle_a");
+                    break;
+                case 6:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "combat@damage@writheidle_b", "writhe_idle_e");
+                    break;
+                case 7:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "combat@damage@writheidle_c", "writhe_idle_g");
+                    break;
                 default:
-                    API.sendChatMessageToPlayer(player, "~y~Syntax /fallover 1 - 3");
+                    API.sendChatMessageToPlayer(player, "~y~Syntax /fallover 1 - 7");
                     break;
             }
         }
@@ -730,9 +700,33 @@ namespace RoleplayServer
                 case 4:
                     API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_bum_slumped@male@laying_on_right_side@idle_b", "idle_d");
                     break;
+                case 5:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_sunbathe@female@back@base", "base");
+                    break;
+                case 6:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_sunbathe@female@back@idle_a", "idle_a");
+                    break;
+                case 7:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_sunbathe@female@front@base", "base");
+                    break;
+                case 8:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_sunbathe@female@front@idle_a", "idle_c");
+                    break;
+                case 9:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_sunbathe@male@back@base", "base");
+                    break;
+                case 10:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_sunbathe@male@back@idle_a", "idle_a");
+                    break;
+                case 11:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_sunbathe@male@front@base", "base");
+                    break;
+                case 12:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_sunbathe@male@front@idle_a", "idle_a");
+                    break;
 
                 default:
-                    API.sendChatMessageToPlayer(player, "~y~Syntax /laydown 1 - 4");
+                    API.sendChatMessageToPlayer(player, "~y~Syntax /laydown 1 - 12");
                     break;
             }
         }
@@ -901,8 +895,26 @@ namespace RoleplayServer
                 case 3:
                     API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_guard_patrol@male@idle_b", "idle_e");
                     break;
+                case 4:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_stand_fire@male@base", "base");
+                    break;
+                case 5:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_stand_guard@male@base", "base");
+                    break;
+                case 6:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_stand_guard@male@idle_a", "idle_a");
+                    break;
+                case 7:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_stand_guard@male@idle_b", "idle_d");
+                    break;
+                case 8:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "anim@amb@code_human_patrol@male@2h@base", "base");
+                    break;
+                case 9:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "anim@amb@code_human_patrol@male@2h@idle_a", "idle_c");
+                    break;
                 default:
-                    API.sendChatMessageToPlayer(player, "~y~Syntax /guard 1 - 3");
+                    API.sendChatMessageToPlayer(player, "~y~Syntax /guard 1 - 9");
                     break;
             }
         }
@@ -961,8 +973,11 @@ namespace RoleplayServer
                 case 2:
                     API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_musician@guitar@male@idle_a", "idle_a");
                     break;
+                case 3:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "anim@mp_player_intcelebrationfemale@air_guitar", "air_guitar");
+                    break;
                 default:
-                    API.sendChatMessageToPlayer(player, "~y~Syntax /guitar 1 - 2");
+                    API.sendChatMessageToPlayer(player, "~y~Syntax /guitar 1 - 3");
                     break;
             }
         }
@@ -1005,16 +1020,181 @@ namespace RoleplayServer
                 case 4:
                     API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_picnic@male@idle_a", "idle_a");
                     break;
+                case 5:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_stupor@male@base", "base");
+                    break;
+                case 6:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_stupor@male@idle_a", "idle_c");
+                    break;
+                case 7:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "anim@heists@heist_safehouse_intro@phone_couch@male", "phone_couch_male_idle");
+                    break;
+                case 8:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "anim@heists@heist_safehouse_intro@phone_couch@female", "phone_couch_female_idle");
+                    break;
+                case 9:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "anim@mp_rollarcoaster", "idle_b_player_two");
+                    break;
                 default:
-                    API.sendChatMessageToPlayer(player, "~y~Syntax /sit 1 - 4");
+                    API.sendChatMessageToPlayer(player, "~y~Syntax /sit 1 - 9");
+                    break;
+            }
+        }
+        [Command("mech")]
+        public void mech(Client player, int number)
+        {
+            switch (number)
+            {
+                case 1:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_vehicle_mechanic@male@base", "base");
+                    break;
+                case 2:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_vehicle_mechanic@male@idle_a", "idle_b");
+                    break;
+                case 3:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_welding@male@base", "base");
+                    break;
+                case 4:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_welding@male@idle_a", "idle_a");
+                    break;
+                case 5:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "anim@heists@narcotics@funding@gang_idle", "gang_chatting_idle01");
+                    break;
+                default:
+                    API.sendChatMessageToPlayer(player, "~y~Syntax /mech 1 - 5");
+                    break;
+            }
+        }
+        [Command("yoga")]
+        public void yoga(Client player, int number)
+        {
+            switch (number)
+            {
+                case 1:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_yoga@female@base", "base_b");
+                    break;
+                case 2:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_yoga@male@base", "base_a");
+                    break;
+                default:
+                    API.sendChatMessageToPlayer(player, "~y~Syntax /yoga 1 - 2");
+                    break;
+            }
+        }
+        [Command("bonghit")]
+        public void bonghit(Client player, int number)
+        {
+            switch (number)
+            {
+                case 1:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "anim@safehouse@bong", "bong_stage1");
+                    break;
+                case 2:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "anim@safehouse@bong", "bong_stage2");
+                    break;
+                case 3:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "anim@safehouse@bong", "bong_stage3");
+                    break;
+                case 4:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "anim@safehouse@bong", "bong_stage4");
+                    break;
+                default:
+                    API.sendChatMessageToPlayer(player, "~y~Syntax /bonghit 1 - 4");
                     break;
             }
         }
 
-
-
-
-
-
+        [Command("restrained")]
+        public void restrained(Client player)
+        {
+            API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "anim@move_m@prisoner_cuffed_rc", "aim_low_loop");
+        }
+        [Command("middlefinger")]
+        public void middlefinger(Client player)
+        {
+            API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "anim@mp_player_intcelebrationmale@finger", "finger");
+        }
+        [Command("salute")]
+        public void salute(Client player)
+        {
+            API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "anim@mp_player_intcelebrationmale@salute", "salute");
+        }
+        [Command("slowclap")]
+        public void slowclap(Client player)
+        {
+            API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "anim@mp_player_intcelebrationmale@slow_clap", "slow_clap");
+        }
+        [Command("facepalm")]
+        public void facepalm(Client player)
+        {
+            API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "anim@mp_player_intcelebrationmale@face_palm", "face_palm");
+        }
+        [Command("handsup")]
+        public void handsup(Client player)
+        {
+            API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "mp_am_hold_up", "handsup_base");
+        }
+        [Command("coverl")]
+        public void coverl(Client player, int number)
+        {
+            switch (number)
+            {
+                case 1:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "cover@idles@1h@high@_a", "idle_r_corner");
+                    break;
+                case 2:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "cover@idles@1h@low@_b", "idle_r_corner");
+                    break;
+                case 3:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "cover@idles@2h@high@_a", "idle_r_corner");
+                    break;
+                case 4:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "cover@idles@ai@1h@high@_a", "idle_r_corner");
+                    break;
+                case 5:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "cover@idles@ai@2h@high@_b", "idle_r_corner");
+                    break;
+                case 6:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "cover@idles@ai@unarmed@high@_b", "idle_r_corner");
+                    break;
+                case 7:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "cover@idles@ai@unarmed@low@_a", "idle_r_corner");
+                    break;
+                default:
+                    API.sendChatMessageToPlayer(player, "~y~Syntax /coverL 1 - 7");
+                    break;
+            }
+        }
+        [Command("coverr")]
+        public void coverr(Client player, int number)
+        {
+            switch (number)
+            {
+                case 1:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "cover@idles@1h@high@_b", "idle_l_corner");
+                    break;
+                case 2:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "cover@idles@1h@low@_a", "idle_l_corner");
+                    break;
+                case 3:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "cover@idles@2h@high@_c", "idle_l_corner");
+                    break;
+                case 4:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "cover@idles@ai@1h@low@_a", "idle_l_corner");
+                    break;
+                case 5:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "cover@idles@ai@2h@high@_a", "idle_l_corner");
+                    break;
+                case 6:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "cover@idles@ai@unarmed@high@_a", "idle_l_corner");
+                    break;
+                case 7:
+                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "cover@idles@ai@unarmed@low@_b", "idle_l_corner");
+                    break;
+                default:
+                    API.sendChatMessageToPlayer(player, "~y~Syntax /coverR 1 - 7");
+                    break;
+            }
+        }
     }
 }
