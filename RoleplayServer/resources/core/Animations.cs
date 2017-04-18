@@ -6,9 +6,15 @@
 // Will wait till release to make changes that the community suggests
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using GTANetworkServer;
 using GTANetworkShared;
-using System.Collections.Generic;
+using RoleplayServer.resources.player_manager;
+using RoleplayServer.resources.core;
+
 
 namespace RoleplayServer
 {
@@ -29,7 +35,7 @@ namespace RoleplayServer
             API.stopPlayerAnimation(player);
         }
         
-        [Command("hide")]
+        [Command("hide", "~y~Syntax /Hide 1 - 13")]
         public void hide(Client player, int number)
         {
             switch (number)
@@ -78,7 +84,7 @@ namespace RoleplayServer
                     break;
             }
         }
-        [Command("lookout")]
+        [Command("lookout", "~y~Syntax /lookout 1 - 4")]
         public void lookout(Client player, int number)
         {
             switch (number)
@@ -100,7 +106,7 @@ namespace RoleplayServer
                     break;
             }
         }
-        [Command("crowdcontrol")]
+        [Command("crowdcontrol", "~y~Syntax /crowdcontrol 1 - 3")]
         public void crowdcontrol(Client player, int number)
         {
             switch (number)
@@ -119,7 +125,7 @@ namespace RoleplayServer
                     break;
             }
         }
-        [Command("investigate")]
+        [Command("investigate", "~y~Syntax /investigate 1 - 9")]
         public void investigate(Client player, int number)
         {
             switch (number)
@@ -156,7 +162,7 @@ namespace RoleplayServer
                     break;
             }
         }
-        [Command("drink")]
+        [Command("drink", "~y~Syntax /drink 1 - 12")]
         public void drink(Client player, int number)
         {
             switch (number)
@@ -202,7 +208,7 @@ namespace RoleplayServer
                     break;
             }
         }
-        [Command("crossarms")]
+        [Command("crossarms", "~y~Syntax /crossarms 1 - 15")]
         public void crossarms(Client player, int number)
         {
             switch (number)
@@ -257,7 +263,7 @@ namespace RoleplayServer
                     break;
             }
         }
-        [Command("idle")]
+        [Command("idle", "~y~Syntax /idle 1 - 28")]
         public void idle(Client player, int number)
         {
             switch (number)
@@ -352,7 +358,7 @@ namespace RoleplayServer
                     break;
             }
         }
-        [Command("lean")]
+        [Command("lean", "~y~Syntax /lean 1 - 38")]
         public void lean(Client player, int number)
         {
             switch (number)
@@ -476,7 +482,7 @@ namespace RoleplayServer
                     break;
             }
         }
-        [Command("reach")]
+        [Command("reach", "~y~Syntax /reach 1 - 2")]
         public void reach(Client player, int number)
         {
             switch (number)
@@ -492,7 +498,7 @@ namespace RoleplayServer
                     break;
             }
         }
-        [Command("workout")]
+        [Command("workout", "~y~Syntax /workout 1 - 12")]
         public void workout(Client player, int number)
         {
             switch (number)
@@ -538,7 +544,7 @@ namespace RoleplayServer
                     break;
             }
         }
-        [Command("smoke")]
+        [Command("smoke", "~y~Syntax /smoke 1 - 13")]
         public void smoke(Client player, int number)
         {
             switch (number)
@@ -587,7 +593,7 @@ namespace RoleplayServer
                     break;
             }
         }
-        [Command("binoculars")]
+        [Command("binoculars", "~y~Syntax /binoculars 1 - 6")]
         public void binoculars(Client player, int number)
         {
             switch (number)
@@ -615,7 +621,7 @@ namespace RoleplayServer
                     break;
             }
         }
-        [Command("hobo")]
+        [Command("hobo", "~y~Syntax /hobo 1 - 9")]
         public void hobo(Client player, int number)
         {
             switch (number)
@@ -652,7 +658,7 @@ namespace RoleplayServer
                     break;
             }
         }
-        [Command("fallover")]
+        [Command("fallover", "~y~Syntax /fallover 1 - 7")]
         public void fallover(Client player, int number)
         {
             switch (number)
@@ -683,7 +689,7 @@ namespace RoleplayServer
                     break;
             }
         }
-        [Command("laydown")]
+        [Command("laydown", "~y~Syntax /laydown 1 - 12")]
         public void laydown(Client player, int number)
         {
             switch (number)
@@ -730,7 +736,7 @@ namespace RoleplayServer
                     break;
             }
         }
-        [Command("drunk")]
+        [Command("drunk", "~y~Syntax /drunk 1 - 2")]
         public void drunk(Client player, int number)
         {
             switch (number)
@@ -746,7 +752,7 @@ namespace RoleplayServer
                     break;
             }
         }
-        [Command("twitchy")]
+        [Command("twitchy", "~y~Syntax /twitchy 1 - 4")]
         public void twitchy(Client player, int number)
         {
             switch (number)
@@ -768,7 +774,7 @@ namespace RoleplayServer
                     break;
             }
         }
-        [Command("signal")]
+        [Command("signal", "~y~Syntax /signal 1 - 3")]
         public void signal(Client player, int number)
         {
             switch (number)
@@ -787,7 +793,7 @@ namespace RoleplayServer
                     break;
             }
         }
-        [Command("cheer")]
+        [Command("cheer", "~y~Syntax /cheer 1 - 8")]
         public void cheer(Client player, int number)
         {
             switch (number)
@@ -821,7 +827,7 @@ namespace RoleplayServer
                     break;
             }
         }
-        [Command("clipboard")]
+        [Command("clipboard", "~y~Syntax /clipboard 1 - 3")]
         public void clipboard(Client player, int number)
         {
             switch (number)
@@ -840,7 +846,7 @@ namespace RoleplayServer
                     break;
             }
         }
-        [Command("drugdeal")]
+        [Command("drugdeal", "~y~Syntax /drugdeal 1 - 3")]
         public void drugdeal(Client player, int number)
         {
             switch (number)
@@ -859,7 +865,7 @@ namespace RoleplayServer
                     break;
             }
         }
-        [Command("gardening")]
+        [Command("gardening", "~y~Syntax /gardening 1 - 4")]
         public void gardening(Client player, int number)
         {
             switch (number)
@@ -881,7 +887,7 @@ namespace RoleplayServer
                     break;
             }
         }
-        [Command("guard")]
+        [Command("guard", "~y~Syntax /guard 1 - 9")]
         public void guard(Client player, int number)
         {
             switch (number)
@@ -918,7 +924,7 @@ namespace RoleplayServer
                     break;
             }
         }
-        [Command("hammer")]
+        [Command("hammer", "~y~Syntax /hammer 1 - 2")]
         public void hammer(Client player, int number)
         {
             switch (number)
@@ -934,7 +940,7 @@ namespace RoleplayServer
                     break;
             }
         }
-        [Command("jog")]
+        [Command("jog", "~y~Syntax /hammer 1 - 6")]
         public void jog(Client player, int number)
         {
             switch (number)
@@ -962,7 +968,7 @@ namespace RoleplayServer
                     break;
             }
         }
-        [Command("guitar")]
+        [Command("guitar", "~y~Syntax /guitar 1 - 3")]
         public void guitar(Client player, int number)
         {
             switch (number)
@@ -981,7 +987,7 @@ namespace RoleplayServer
                     break;
             }
         }
-        [Command("getjiggy")]
+        [Command("getjiggy", "~y~Syntax /getjiggy 1 - 4")]
         public void getjiggy(Client player, int number)
         {
             switch (number)
@@ -1003,7 +1009,7 @@ namespace RoleplayServer
                     break;
             }
         }
-        [Command("sit")]
+        [Command("sit", "~y~Syntax /sit 1 - 9")]
         public void sit(Client player, int number)
         {
             switch (number)
@@ -1040,7 +1046,7 @@ namespace RoleplayServer
                     break;
             }
         }
-        [Command("mech")]
+        [Command("mech", "~y~Syntax /mech 1 - 5")]
         public void mech(Client player, int number)
         {
             switch (number)
@@ -1065,7 +1071,7 @@ namespace RoleplayServer
                     break;
             }
         }
-        [Command("yoga")]
+        [Command("yoga", "~y~Syntax /yoga 1 - 2")]
         public void yoga(Client player, int number)
         {
             switch (number)
@@ -1081,7 +1087,7 @@ namespace RoleplayServer
                     break;
             }
         }
-        [Command("bonghit")]
+        [Command("bonghit", "~y~Syntax /bonghit 1 - 4")]
         public void bonghit(Client player, int number)
         {
             switch (number)
@@ -1134,7 +1140,7 @@ namespace RoleplayServer
         {
             API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "mp_am_hold_up", "handsup_base");
         }
-        [Command("coverl")]
+        [Command("coverl", "~y~Syntax /coverL 1 - 7")]
         public void coverl(Client player, int number)
         {
             switch (number)
@@ -1165,7 +1171,7 @@ namespace RoleplayServer
                     break;
             }
         }
-        [Command("coverr")]
+        [Command("coverr", "~y~Syntax /coverR 1 - 7")]
         public void coverr(Client player, int number)
         {
             switch (number)
