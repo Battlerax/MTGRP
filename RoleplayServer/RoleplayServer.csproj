@@ -88,7 +88,6 @@
     <Compile Include="resources\inventory\IInventoryItem.cs" />
     <Compile Include="resources\inventory\InventoryManager.cs" />
     <Compile Include="resources\inventory\IStorage.cs" />
-    <Compile Include="resources\inventory\TestItem.cs" />
     <Compile Include="resources\job_manager\fisher\Fish.cs" />
     <Compile Include="resources\job_manager\fisher\Fisher.cs" />
     <Compile Include="resources\job_manager\Job.cs" />

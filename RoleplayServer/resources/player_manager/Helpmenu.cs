@@ -23,28 +23,28 @@ using RoleplayServer.resources.AdminSystem;
 
 namespace RoleplayServer.resources.player_manager
 {
-    public class Helpmenu : Script
+    public class openHelpmenu : Script
     {
-        public void HelpMenu()
+        public void openHelpMenu()
         {
             API.onClientEventTrigger += onClientEvent;
         }
-        [Command("help")]
-        public void help_cmd(Client player)
-
-        {
-            API.triggerClientEvent(player, "openHelpMenu");
-        }
-
         public void onClientEvent(Client player, string id, params object[] arguments)
         {
-            if (id == "Commands1")
-            {
-                player.sendChatMessage("~h~Here is the list of commands availible to you:");
-                player.sendChatMessage("/time, /stats");
-            }
+
         }
-    }
+        [Command("help")]
+        public void Helpmenu(Client player)
+        {
+            API.triggerClientEvent(player, "openHelpMenu", "Help_Menu", "Select an option");
+        }
+        [Command("ping")]
+        public void test(Client player)
+
+        {
+            API.sendChatMessageToPlayer(player, "pong");
+        }
+    } 
 }
         /*
         public void OnClientEvent(Client player, string id)

@@ -1,20 +1,22 @@
 ﻿var menu = new Menu();
-function openHelpMenu() {
-    menu
-        .createMenu("Help Menu")
-        .addMenuItem("Commands", "", true, true, "callServerTrigger", "Commands1")
-        .addMenuItem("Animations", "", true, true, "callServerTrigger", "Animations1")
-        .addMenuItem("Police", "", true, true, "callServerTrigger", "Police1")
-        .addMenuItem("Admin", "", true, true, "callServerTrigger", "Admin1")
-        .addMenuItem("Rules", "", true, true, "callServerTrigger", "Rules1")
-        .addMenuItem("FAQ", "", true, true, "callServerTrigger", "FAQ1")
-        .addCloseButton()
-    ;
-}
-
-function callServerTrigger(eventname) {
+API.onServerEventTrigger.connect(function (openHelpMenu, args) {
+    switch (openHelpMenu) {
+        case 'openHelpMenu':
+                menu
+                    .createMenu("Help Menu")
+                    .addMenuItem("Commands", "", true, true, "callServerTrigger", "Commands")
+                    .addMenuItem("Animations", "", true, true, "callServerTrigger", "Animations")
+                    .addMenuItem("Police", "", true, true, "callServerTrigger", "Police")
+                    .addMenuItem("Admin", "", true, true, "callServerTrigger", "Admin")
+                    .addMenuItem("Rules", "", true, true, "callServerTrigger", "Rules")
+                    .addMenuItem("FAQ", "", true, true, "callServerTrigger", "FAQ")
+                    .addCloseButton()
+            break;
+    }
+});
+function callServerTrigger(Helpmenu) {
     var args = [].slice.call(arguments).splice(1);
-    menu.callServerFunction(eventname, args);
+    menu.callServerFunction(openHelpMenu, args);
 }
 API.onUpdate.connect(function () {
     if (menu.menuPool !== null) {
