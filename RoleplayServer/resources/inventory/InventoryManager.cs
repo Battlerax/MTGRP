@@ -24,6 +24,7 @@ namespace RoleplayServer.resources.inventory
         {
             NotEnoughSpace,
             HasBlockingItem,
+            MaxAmountReached,
             Success
         }
         public static GiveItemErrors GiveInventoryItem(IStorage storage, IInventoryItem item, bool ignoreBlocking = false)
@@ -49,6 +50,11 @@ namespace RoleplayServer.resources.inventory
             }
             else
             {
+                if (item.MaxAmount != -1 && oldItem.Amount >= item.MaxAmount)
+                {
+                    return GiveItemErrors.MaxAmountReached;
+                }
+
                 //Make sure there is space again.
                 if ((GetInventoryFilledSlots(storage) + item.Amount * item.AmountOfSlots) <= storage.MaxInvStorage)
                 {
