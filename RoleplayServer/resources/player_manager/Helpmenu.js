@@ -2,18 +2,51 @@
 API.onServerEventTrigger.connect(function (openHelpMenu, args) {
     switch (openHelpMenu) {
         case 'openHelpMenu':
-                menu
-                    .createMenu("Help Menu")
-                    .addMenuItem("Commands", "", true, true, "callServerTrigger", "Commands")
-                    .addMenuItem("Animations", "", true, true, "callServerTrigger", "Animations")
-                    .addMenuItem("Police", "", true, true, "callServerTrigger", "Police")
-                    .addMenuItem("Admin", "", true, true, "callServerTrigger", "Admin")
-                    .addMenuItem("Rules", "", true, true, "callServerTrigger", "Rules")
-                    .addMenuItem("FAQ", "", true, true, "callServerTrigger", "FAQ")
-                    .addCloseButton()
+            menu
+                .createMenu("Help Menu")
+                API.createMenuItem("Commands", "", true, true, "callServerTrigger", "Commands")
+                API.createMenuItem("Animations", "", true, true, "callServerTrigger", "Animations")
+                API.createMenuItem("Police", "", true, true, "callServerTrigger", "Police")
+                API.createMenuItem("Admin", "", true, true, "callServerTrigger", "Admin")
+                API.createMenuItem("Rules", "", true, true, "callServerTrigger", "Rules")
+                API.createMenuItem("FAQ", "", true, true, "callServerTrigger", "FAQ")
+                API.addCloseButton()
             break;
+        
     }
 });
+API.onServerEventTrigger.connect(function (callServerTrigger, args) {
+    switch (callServerTrigger) {
+        case "Commands":
+            API.sendChatMessage('~h~Here is the list of commands availible to you:');
+            API.sendChatMessage('/time, /stats');
+            break;
+        case "Animations":
+            API.sendChatMessage('~h~Here is the list of commands availible to you:');
+            API.sendChatMessage('/time, /stats');
+            break;
+        case "Police":
+            API.sendChatMessage('~h~Here is the list of commands availible to you:');
+            API.sendChatMessage('/time, /stats');
+            break;
+        case "Admin":
+            API.sendChatMessage('~h~Here is the list of commands availible to you:');
+            API.sendChatMessage('/time, /stats');
+            break;
+        case "Rules":
+            API.sendChatMessage('~h~Here is the list of commands availible to you:');
+            API.sendChatMessage('/time, /stats');
+            break;
+        case "FAQ":
+            API.sendChatMessage('~h~Here is the list of commands availible to you:');
+            API.sendChatMessage('/time, /stats');
+            break;
+    
+    }
+});
+
+
+
 function callServerTrigger(Helpmenu) {
     var args = [].slice.call(arguments).splice(1);
     menu.callServerFunction(openHelpMenu, args);
