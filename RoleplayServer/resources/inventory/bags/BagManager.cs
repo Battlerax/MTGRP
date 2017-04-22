@@ -20,8 +20,8 @@ namespace RoleplayServer.resources.inventory.bags
             throw new NotImplementedException();
         }
 
-        [Command("managebag")]
-        public void Managebag(Client player)
+        [Command("putinbag")]
+        public void putinbag(Client player, string itemname, int amount)
         {
             Character character = API.getEntityData(player, "Character");
             var bag = InventoryManager.DoesInventoryHaveItem<BagItem>(character);
@@ -31,10 +31,9 @@ namespace RoleplayServer.resources.inventory.bags
                 return;
             }
 
-            //Get the current bag items.
-            string[][] bagItems = bag.BagItems.Select(x => new [] {x.Id.ToString(), x.LongName}).ToArray();
-            string[][] invItems = character.Inventory.Select(x => new[] { x.Id.ToString(), x.LongName }).ToArray();
-            API.triggerClientEvent(player, "bag_showmanager", API.toJson(invItems), API.toJson(bagItems));
+            //Parse for that item.
+            Type itemType = InventoryManager.ParseInventoryItem(itemname);
+            var item = InventoryManager.DoesInventoryHaveItem(character, itemType);
         }
 
         //TODO: test cmd.
