@@ -39,9 +39,6 @@
 	<script src="vehicle_dealership/vehicledealer.js" type="client" lang="javascript"/>
 	<script src="vehicle_manager/VehicleOwnership.js" type="client" lang="javascript"/>
   
-  <!-- Bag System-->
-  <script src="inventory/bags/BagManager.js" type="client" lang="javascript"/>
-  
 	<!-- CEF  -->
 	<file src="stylesheet/css/metro.css"/>
 	<file src="stylesheet/css/metro-schemes.css"/>
