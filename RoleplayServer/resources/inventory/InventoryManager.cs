@@ -71,9 +71,9 @@ namespace RoleplayServer.resources.inventory
             }
         }
 
-        public static T DoesInventoryHaveItem<T>(IStorage storage)
+        public static IInventoryItem DoesInventoryHaveItem(IStorage storage, Type item)
         {
-            return (T)storage.Inventory.FirstOrDefault(x => x.GetType() == typeof(T));
+            return storage.Inventory.FirstOrDefault(x => x.GetType() == item);
         }
 
         public static Type ParseInventoryItem(string item)
