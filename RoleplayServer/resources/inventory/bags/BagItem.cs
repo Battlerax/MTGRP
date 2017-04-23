@@ -10,7 +10,7 @@ using RoleplayServer.resources.player_manager;
 
 namespace RoleplayServer.resources.inventory.bags
 {
-    class BagItem : IInventoryItem
+    class BagItem : IStorage, IInventoryItem
     {
         [BsonId]
         public ObjectId Id { get; set; }
@@ -54,7 +54,8 @@ namespace RoleplayServer.resources.inventory.bags
 
         //-------------------------
 
-        public List<IInventoryItem> BagItems;
+        public List<IInventoryItem> Inventory { get; set; }
+        public int MaxInvStorage => 500; //To be calced dynamically depending on bag model.
 
     }
 }

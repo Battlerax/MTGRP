@@ -24,15 +24,15 @@ namespace RoleplayServer.resources.inventory.bags
         public void Managebag(Client player)
         {
             Character character = API.getEntityData(player, "Character");
-            var bag = InventoryManager.DoesInventoryHaveItem<BagItem>(character);
-            if (bag == null)
+            BagItem[] bag = (BagItem[])InventoryManager.DoesInventoryHaveItem(character, typeof(BagItem));
+            if (bag.Length != 1)
             {
                 API.sendNotificationToPlayer(player, "You don't have a bag right now.");
                 return;
             }
 
             //Get the current bag items.
-            string[][] bagItems = bag.BagItems.Select(x => new [] {x.Id.ToString(), x.LongName}).ToArray();
+            string[][] bagItems = bag[0].Inventory.Select(x => new [] {x.Id.ToString(), x.LongName}).ToArray();
             string[][] invItems = character.Inventory.Select(x => new[] { x.Id.ToString(), x.LongName }).ToArray();
             API.triggerClientEvent(player, "bag_showmanager", API.toJson(invItems), API.toJson(bagItems));
         }
@@ -42,7 +42,7 @@ namespace RoleplayServer.resources.inventory.bags
         public void GiveMeBag(Client player)
         {
             Character character = API.getEntityData(player, "Character");
-            API.sendChatMessageToPlayer(player, InventoryManager.GiveInventoryItem(character, new BagItem()).ToString());
+            API.sendChatMessageToPlayer(player, InventoryManager.GiveInventoryItem(character, new BagItem(), 1, true).ToString());
         }
     }
 }
