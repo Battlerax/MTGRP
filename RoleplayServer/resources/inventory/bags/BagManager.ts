@@ -15,5 +15,13 @@ API.onServerEventTrigger.connect((eventName, args) => {
             //Send to fill items.
             myBrowser.call("fillItems", args[0], args[1]);
             break;
+
+        case 'moveItemFromInvToBag': 
+            myBrowser.call("moveItemFromInvToBag", args[0], args[1], args[2]);
+            break;
     }
 });
+
+function moveFromInvToBag(id, shortname, amount) {
+    API.triggerServerEvent("bag_moveFromInvToBag", id, shortname, amount);
+}

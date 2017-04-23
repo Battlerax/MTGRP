@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GTANetworkServer;
 using GTANetworkShared;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.player_manager;
@@ -68,6 +69,9 @@ namespace RoleplayServer.resources.inventory
                 //Check if has enough space.
                 if ((GetInventoryFilledSlots(storage) + item.Amount * item.AmountOfSlots) <= storage.MaxInvStorage)
                 {
+                    //Set an id.
+                    if(item.Id == ObjectId.Empty) ObjectId.GenerateNewId(DateTime.Now);
+
                     //Add.
                     storage.Inventory.Add(item);
                     return GiveItemErrors.Success;

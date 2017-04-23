@@ -7,6 +7,7 @@
     <link href="../../stylesheet/css/metro.css" rel="stylesheet">
     <script src="../../jquery.js"></script>
     <script src="../../stylesheet/js/metro.js"></script>
+    <link href="../../stylesheet/css/metro-icons.css" rel="stylesheet">
     
     <script>
         function fillItems(invItems, bagItems) {
@@ -16,40 +17,78 @@
             //Loop in each.
             $.each(invList,
                     function (i, val) {
-                        $("#InvItems").append(`<option value='${val[0]}'>${val[1]}</li>`);
+                        $("#InvItems").append(`<div class="list" itemid="${val[0]}">
+                    <div class="list-content">
+                        <span class="list-title">${val[1]}</span>
+                        <span class="list-subtitle" shortname="${val[2]}">Short Name: ${val[2]}</span>
+                        <span class="list-remark" amount="${val[3]}">Amount: ${val[3]}</span>
+                    </div>
+                </div>`);
                     });
 
             $.each(bagList,
                     function (i, val) {
-                        $("#BagItems").append(`<option value='${val[0]}'>${val[1]}</li>`);
+                        $("#BagItems").append(`<div class="list" itemid="${val[0]}">
+                    <div class="list-content">
+                        <span class="list-title">${val[1]}</span>
+                        <span class ="list-subtitle" shortname="${val[2]}">Short Name: ${val[2]}</span>
+                        <span class ="list-remark" amount="${val[3]}">Amount: ${val[3]}</span>
+                    </div>
+                </div>`);
                     });
         }
+
+        function moveItemFromInvToBag(id, itemname, amount) {
+            //Get old item from inv.
+            var item = $("#InvItems").find(`.list[itemid='${id}']`);
+            //If amount there is qual to what to be removed, we remove whole thing and then add to list.
+            if (item.find('span.list-remark').attr("amount") == amount) {
+                //TODO: still continue adding to list code.
+            }
+        }
+
+        //Events.
+        $(document).ready(function () {
+            $("#MoveFromInvToBag").click(function () {
+                //Get clicked one: 
+                var item = $("#InvItems").find('div.active');
+                //Send event.
+                resourceCall("moveFromInvToBag", item.attr("itemid"), item.find('span.list-subtitle').attr("shortname"), "1"); 
+            });
+        });
     </script>
 </head>
 <body>
 
-<div class="flex-grid">
-
+<div class="flex-grid" style="margin: 5px;">
     <div class="row cells3">
         <div class="cell">
             <h3 class="header">Inventory Items:</h3>
-            <select id="InvItems" multiple style="width: 300px; height: 500px;">
-                <!-- Items to be added here. -->
-            </select>
+            <div class="listview-outlook" id="InvItems" data-role="listview" style="width: 300px; height: 500px; overflow-y: auto; border: black solid 1px;">
+                <!-- <div class="list">
+                    <div class="list-content">
+                        <span class="list-title">Miners Bag - (defaultname)</span>
+                        <span class="list-subtitle">Short Name: bag_defaultname</span>
+                        <span class="list-remark">Amount: 1</span>
+                    </div>
+                </div>  -->
+           
+            </div>
         </div>
 
         <div class="cell">
             <div style="text-align: center; margin-top: 200px;">
-                <button class="button primary" style="width: 100px; margin: auto; margin-bottom: 5px;">></button><br/>
-                <button class="button primary" style="width: 100px; margin: auto;"><</button>
+                <button class="button primary" id="MoveFromInvToBag" style="width: 100px; margin: auto; margin-bottom: 5px;">></button><br/>
+                <button class="button primary" id="MoveFromBagToInv" style="width: 100px; margin: auto;"><</button>
             </div>
         </div>
 
         <div class="cell">
             <h3 class="header">Bag Items:</h3>
-            <select id="BagItems" multiple style="width: 300px; height: 500px;">
-                <!-- Items to be added here. -->
-            </select>
+            <div class="listview-outlook" id="BagItems" data-role="listview" style="width: 300px; height: 500px; overflow-y: auto; border: black solid 1px;">
+                <!-- Add items. -->
+            </div>
+            <button class="button success" id="ExitButton" style="width: 100px; float: right;">Exit</button>
         </div>
     </div>
 </div>
