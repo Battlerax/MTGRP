@@ -223,7 +223,7 @@ namespace RoleplayServer.resources.vehicle_manager
                 API.sendNotificationToPlayer(player, "Your vehicle was deleted on exit because it was temporary.");
             }
 
-            if (veh.Driver == API.getEntityData(player, "Character"))
+            if (veh.Driver == player.GetCharacter();)
                 veh.Driver = null;
 
             Character character = API.getEntityData(player.handle, "Character");

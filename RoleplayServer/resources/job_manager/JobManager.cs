@@ -64,7 +64,7 @@ namespace RoleplayServer.resources.job_manager
 
         private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle)
         {
-            Character character = API.getEntityData(player, "Character");
+            Character character = player.GetCharacter();
             var veh = VehicleManager.GetVehFromNetHandle(vehicle);
 
             if(veh.JobId != 0)
@@ -80,7 +80,7 @@ namespace RoleplayServer.resources.job_manager
         [Command("joinjob")]
         public void joinjob_cmd(Client player)
         {
-            Character character = API.getEntityData(player, "Character");
+            Character character = player.GetCharacter();
             if(character.JobZoneType != 1)
             {
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~ You are not near a job joining location.");
@@ -104,7 +104,7 @@ namespace RoleplayServer.resources.job_manager
         [Command("quitjob")]
         public void quitjob_cmd(Client player)
         {
-            Character character = API.getEntityData(player, "Character");
+            Character character = player.GetCharacter();
 
             if(character.JobOneId == 0)
             {
@@ -157,7 +157,7 @@ namespace RoleplayServer.resources.job_manager
         [Command("editjob", GreedyArg = true)]
         public void editjob_cmd(Client player, int jobId, string option, string value = "None")
         {
-            Account account = API.getEntityData(player, "Account");
+            Account account = player.GetAccount();
             if(account.AdminLevel < 4)
                 return;
 
@@ -275,7 +275,7 @@ namespace RoleplayServer.resources.job_manager
         [Command("createjobzone")]
         public void createjobzone_cmd(Client player, int jobId, string option)
         {
-            Account account = API.getEntityData(player, "Account");
+            Account account = player.GetAccount();
             if (account.AdminLevel < 4)
                 return;
 
@@ -310,7 +310,7 @@ namespace RoleplayServer.resources.job_manager
         [Command("deletejobzone")]
         public void deletejobzone_cmd(Client player, int jobId, int zoneId)
         {
-            Account account = API.getEntityData(player, "Account");
+            Account account = player.GetAccount();
             if (account.AdminLevel < 4)
                 return;
 
@@ -335,7 +335,7 @@ namespace RoleplayServer.resources.job_manager
         [Command("viewjobzone")]
         public void viewjobzone_cmd(Client player, int jobId, int zoneId)
         {
-            Account account = API.getEntityData(player, "Account");
+            Account account = player.GetAccount();
             if (account.AdminLevel < 4)
                 return;
 

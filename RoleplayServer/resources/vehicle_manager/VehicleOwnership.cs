@@ -18,7 +18,7 @@ namespace RoleplayServer.resources.vehicle_manager
 
         private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
         {
-            Character character = API.getEntityData(sender, "Character");
+            Character character = sender.GetCharacter();
             switch (eventName)
             {
                 case "myvehicles_locatecar":
@@ -49,7 +49,7 @@ namespace RoleplayServer.resources.vehicle_manager
                         API.sendChatMessageToPlayer(sender, "That player isn't online or doesn't exist.");
                         return;
                     }
-                    var targetChar = API.getEntityData(target, "Character");
+                    var targetChar = target.GetCharacter();
                     API.sendChatMessageToPlayer(sender,
                         $"Are you sure you would like to sell the ~r~{API.getVehicleDisplayName(scVeh.VehModel)}~w~ for ~r~${arguments[2]}~w~ to the player ~r~{targetChar.CharacterName}~w~");
                     API.sendChatMessageToPlayer(sender, "Use /confirmsellvehicle to sell.");
@@ -62,7 +62,7 @@ namespace RoleplayServer.resources.vehicle_manager
         public void myvehicles_cmd(Client player)
         {
             //Get all owned vehicles and send them.
-            Character character = API.getEntityData(player, "Character");
+            Character character = player.GetCharacter();
             string[][] cars = VehicleManager.Vehicles
                 .Where(x => x.OwnerId == character.Id)
                 .Select(x => new [] { API.getVehicleDisplayName(x.VehModel), x.Id.ToString(), x.NetHandle.Value.ToString()}).ToArray();
@@ -73,7 +73,7 @@ namespace RoleplayServer.resources.vehicle_manager
         [Command("confirmsellvehicle")]
         public void confirmsellvehicle_cmd(Client player)
         {
-            Character character = API.getEntityData(player, "Character");
+            Character character = player.GetCharacter();
             var data = API.getEntityData(player, "sellcar_selling");
             if (data != null)
             {
@@ -91,8 +91,8 @@ namespace RoleplayServer.resources.vehicle_manager
         [Command("confirmbuyvehicle")]
         public void confirmbuyvehicle_cmd(Client player)
         {
-            Character character = API.getEntityData(player, "Character");
-            Account account = API.getEntityData(player, "Account");
+            Character character = player.GetCharacter();
+            Account account = player.GetAccount();
             var data = API.getEntityData(player, "sellcar_buying");
             if (data != null)
             {
