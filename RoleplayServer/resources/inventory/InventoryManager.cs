@@ -214,7 +214,7 @@ namespace RoleplayServer.resources.inventory
 
             //Make sure he does have such amount.
             var sendersItem = DoesInventoryHaveItem(sender, itemType);
-            if (sendersItem.Length == 0 || sendersItem.Length > 1 || sendersItem[0].Amount < amount)
+            if (sendersItem.Length != 1 || sendersItem[0].Amount < amount)
             {
                 API.sendNotificationToPlayer(player, "You don't have that item or you don't have that amount or there is more than 1 item with that name.");
                 return;
@@ -268,7 +268,7 @@ namespace RoleplayServer.resources.inventory
 
             //Get in inv.
             var sendersItem = DoesInventoryHaveItem(character, itemType);
-            if (sendersItem.Length == 0 || sendersItem.Length > 1 || sendersItem[0].Amount < amount)
+            if (sendersItem.Length != 1 || sendersItem[0].Amount < amount)
             {
                 API.sendNotificationToPlayer(player, "You don't have that item or you don't have that amount or there is more than 1 item with that name.");
                 return;
@@ -302,24 +302,21 @@ namespace RoleplayServer.resources.inventory
 
             //Get in inv.
             var sendersItem = DoesInventoryHaveItem(character, itemType);
-            if (sendersItem == null || sendersItem.Amount < amount)
+            if (sendersItem.Length != 1 || sendersItem[0].Amount < amount)
             {
                 API.sendNotificationToPlayer(player, "You don't have that item or you don't have that amount.");
                 return;
             }
 
             //Create object and add to list.
-            var droppedObject = API.createObject(sendersItem.Object, player.position.Subtract(new Vector3(0, 0, 1)), new Vector3(0, 0, 0));
-            stashedItems.Add(droppedObject, CloneItem(sendersItem));
+            var droppedObject = API.createObject(sendersItem[0].Object, player.position.Subtract(new Vector3(0, 0, 1)), new Vector3(0, 0, 0));
+            stashedItems.Add(droppedObject, CloneItem(sendersItem[0], amount));
 
             //Decrease.
-            if (amount == sendersItem.Amount)
-                DeleteInventoryItem(character, itemType);
-            else
-                sendersItem.Amount -= amount;
+            DeleteInventoryItem(character, itemType, amount, x => x == sendersItem[0]);
 
             //Send message.
-            API.sendNotificationToPlayer(player, $"You have sucessfully stashed ~g~{amount} {sendersItem.LongName}~w~. Use /pickupstash to take it.");
+            API.sendNotificationToPlayer(player, $"You have sucessfully stashed ~g~{amount} {sendersItem[0].LongName}~w~. Use /pickupstash to take it.");
         }
 
         [Command("pickupstash")]
