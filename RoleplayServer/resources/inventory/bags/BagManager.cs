@@ -31,7 +31,7 @@ namespace RoleplayServer.resources.inventory.bags
                     }
                     if (amount <= 0)
                     {
-                        API.sendChatMessageToPlayer(sender, "Amount must not be zero or non-negative.");
+                        API.sendChatMessageToPlayer(sender, "Amount must not be zero or negative.");
                         return;
                     }
 
