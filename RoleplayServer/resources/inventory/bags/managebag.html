@@ -41,9 +41,25 @@
         function moveItemFromInvToBag(id, itemname, amount) {
             //Get old item from inv.
             var item = $("#InvItems").find(`.list[itemid='${id}']`);
-            //If amount there is qual to what to be removed, we remove whole thing and then add to list.
+            //If amount there is equal to what to be removed, we remove whole thing and then add to list.
             if (item.find('span.list-remark').attr("amount") == amount) {
-                //TODO: still continue adding to list code.
+                //Add and remove.
+                $("#BagItems").append(item);
+                $("#InvItems").remove(`.list[itemid='${id}']`);
+            } else {
+                //Check if there is an item inside the target inv with that id.
+                var titem = $("#BagItems").find(`.list[itemid='${id}']`);
+                if (!!titem.length) { //If was found.
+                    //Change amount of target.
+                    var oldValue = parseInt(titem.find('span.list-remark').attr("amount"));
+                    titem.find('span.list-remark').attr("amount", oldValue + parseInt(amount));
+                } else {
+                    //If not, add it.
+                    $("#BagItems").append(item);
+                }
+                //Change amount of sender.
+                var ov = parseInt(item.find('span.list-remark').attr("amount"));
+                item.find('span.list-remark').attr("amount", ov - parseInt(amount));
             }
         }
 
@@ -53,7 +69,7 @@
                 //Get clicked one: 
                 var item = $("#InvItems").find('div.active');
                 //Send event.
-                resourceCall("moveFromInvToBag", item.attr("itemid"), item.find('span.list-subtitle').attr("shortname"), "1"); 
+                resourceCall("moveFromInvToBag", item.attr("itemid"), item.find('span.list-subtitle').attr("shortname")); 
             });
         });
     </script>
@@ -72,7 +88,13 @@
                         <span class="list-remark">Amount: 1</span>
                     </div>
                 </div>  -->
-           
+                <div class="list" itemid="123">
+                    <div class="list-content">
+                        <span class="list-title">Engine Part</span>
+                        <span class="list-subtitle" shortname="enginepart">Short Name: enginepart</span>
+                        <span class="list-remark" amount="5">Amount: 5</span>
+                    </div>
+                </div>
             </div>
         </div>
 

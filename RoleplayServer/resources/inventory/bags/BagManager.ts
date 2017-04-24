@@ -22,6 +22,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
     }
 });
 
-function moveFromInvToBag(id, shortname, amount) {
+function moveFromInvToBag(id, shortname) {
+    var amount = API.getUserInput("1", 4);
     API.triggerServerEvent("bag_moveFromInvToBag", id, shortname, amount);
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GTANetworkServer;
+using RoleplayServer.resources.core;
 using RoleplayServer.resources.player_manager;
 
 namespace RoleplayServer.resources.inventory.bags
@@ -22,9 +23,19 @@ namespace RoleplayServer.resources.inventory.bags
                 case "bag_moveFromInvToBag":
                     string id = (string)arguments[0];
                     string shortname = (string)arguments[1];
-                    string amount = (string) arguments[2];
+                    int amount;
+                    if (!int.TryParse((string)arguments[2], out amount))
+                    {
+                        API.sendChatMessageToPlayer(sender, "Invalid amount entered.");
+                        return;
+                    }
+                    if (amount <= 0)
+                    {
+                        API.sendChatMessageToPlayer(sender, "Amount must not be zero or non-negative.");
+                        return;
+                    }
 
-                    Character character = API.getEntityData(sender, "Character");
+                    Character character = sender.GetCharacter();
 
                     //See if has item.
                     var itemType = InventoryManager.ParseInventoryItem(shortname);
@@ -34,9 +45,9 @@ namespace RoleplayServer.resources.inventory.bags
                         return;
                     }
                     var playerItem = InventoryManager.DoesInventoryHaveItem(character, itemType).SingleOrDefault(x => x.Id.ToString() == id);
-                    if (playerItem == null)
+                    if (playerItem == null || playerItem.Amount < amount)
                     {
-                        API.sendNotificationToPlayer(sender, "You don't have that item.");
+                        API.sendNotificationToPlayer(sender, "You don't have that item or don't have that amount.");
                         return;
                     }
 
@@ -49,10 +60,10 @@ namespace RoleplayServer.resources.inventory.bags
                     }
 
                     //Add to bag and remove from player
-                    InventoryManager.DeleteInventoryItem(character, itemType, 1,
+                    InventoryManager.DeleteInventoryItem(character, itemType, amount,
                         x => x.Id.ToString() == id && x.CommandFriendlyName == shortname);
 
-                    switch (InventoryManager.GiveInventoryItem(bag[0], playerItem, 1, true))
+                    switch (InventoryManager.GiveInventoryItem(bag[0], playerItem, amount, true))
                     {
                         case InventoryManager.GiveItemErrors.NotEnoughSpace:
                             API.sendNotificationToPlayer(sender, "You don't have enough slots in bag.");
@@ -62,7 +73,7 @@ namespace RoleplayServer.resources.inventory.bags
                             break;
                         case InventoryManager.GiveItemErrors.Success:
                             //Send event done.
-                            API.triggerClientEvent(sender, "moveItemFromInvToBag", id, shortname, amount); //Id should be same cause it was already set since it was in player inv.
+                            API.triggerClientEvent(sender, "moveItemFromInvToBag", id, shortname, amount.ToString()); //Id should be same cause it was already set since it was in player inv.
                             break;
                     }
                     break;
@@ -72,7 +83,7 @@ namespace RoleplayServer.resources.inventory.bags
         [Command("managebag")]
         public void Managebag(Client player)
         {
-            Character character = API.getEntityData(player, "Character");
+            Character character = player.GetCharacter();
             BagItem[] bag = (BagItem[])InventoryManager.DoesInventoryHaveItem(character, typeof(BagItem));
             if (bag.Length != 1)
             {
@@ -90,8 +101,7 @@ namespace RoleplayServer.resources.inventory.bags
         [Command("givemebag")]
         public void GiveMeBag(Client player)
         {
-            Character character = API.getEntityData(player, "Character");
-            API.sendChatMessageToPlayer(player, InventoryManager.GiveInventoryItem(character, new BagItem(), 1, true).ToString());
+            API.sendChatMessageToPlayer(player, InventoryManager.GiveInventoryItem(player.GetCharacter(), new BagItem(), 1, true).ToString());
         }
     }
 }
