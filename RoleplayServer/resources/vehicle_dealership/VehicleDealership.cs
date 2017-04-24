@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GTANetworkServer;
 using GTANetworkShared;
+using RoleplayServer.resources.core;
 using RoleplayServer.resources.database_manager;
 using RoleplayServer.resources.player_manager;
 using RoleplayServer.resources.vehicle_manager;
@@ -103,7 +104,7 @@ namespace RoleplayServer.resources.vehicle_dealership
         {
             if (eventName == "vehicledealer_selectcar")
             {
-                Character character = API.getEntityData(sender, "Character");
+                Character character = sender.GetCharacter();
 
                 string[] selectedCar = null;
 
@@ -193,7 +194,7 @@ namespace RoleplayServer.resources.vehicle_dealership
         public void BuyVehicle(Client player)
         {
             //Check if can buy more cars.
-            Character character = API.getEntityData(player, "Character");
+            Character character = player.GetCharacter();
             if (character.OwnedVehicles.Count >= VehicleManager.GetMaxOwnedVehicles(player))
             {
                 API.sendChatMessageToPlayer(player, "You can't own anymore vehicles.");
