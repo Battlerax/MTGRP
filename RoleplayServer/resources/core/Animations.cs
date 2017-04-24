@@ -940,7 +940,7 @@ namespace RoleplayServer
                     break;
             }
         }
-        [Command("jog", "~y~Syntax /hammer 1 - 6")]
+        [Command("jog", "~y~Syntax /jog 1 - 6")]
         public void jog(Client player, int number)
         {
             switch (number)
