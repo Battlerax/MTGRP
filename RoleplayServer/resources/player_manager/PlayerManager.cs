@@ -29,7 +29,7 @@ namespace RoleplayServer.resources.player_manager
             {
                 var player = (NetHandle)arguments[0];
 
-                Character c = API.getEntityData(player, "Character");
+                Character c = player.GetCharacter();
                 c.update_ped();
             }
         }

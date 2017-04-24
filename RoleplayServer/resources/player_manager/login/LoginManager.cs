@@ -116,7 +116,7 @@ namespace RoleplayServer.resources.player_manager.login
 
         public void OnPlayerChat(Client player, string message, CancelEventArgs e)
         {
-            Account account = API.getEntityData(player, "Account");
+            Account account = player.GetAccount();
             if(account.IsLoggedIn == false)
             {
                 e.Cancel = true;

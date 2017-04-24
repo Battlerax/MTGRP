@@ -41,7 +41,7 @@ namespace RoleplayServer.resources.player_manager
             switch (eventName)
             {
                 case "OnCharacterMenuSelect":
-                    Account account = API.getEntityData(player, "Account");
+                    Account account = player.GetAccount();
                     var charName = (string)arguments[0];
 
                     if(charName == "Create new character")
