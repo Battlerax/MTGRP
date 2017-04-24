@@ -4,6 +4,7 @@ using GTANetworkServer;
 using GTANetworkShared;
 using MongoDB.Driver;
 using RoleplayServer.resources.component_manager;
+using RoleplayServer.resources.core;
 using RoleplayServer.resources.database_manager;
 using RoleplayServer.resources.group_manager;
 using RoleplayServer.resources.job_manager;
