@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GTANetworkServer;
 using GTANetworkShared;
+using RoleplayServer.resources.core;
 using RoleplayServer.resources.player_manager;
 
 namespace RoleplayServer.resources.vehicle_manager
