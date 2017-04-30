@@ -4,6 +4,7 @@ using GTANetworkServer;
 using GTANetworkShared;
 using MongoDB.Driver;
 using RoleplayServer.resources.component_manager;
+using RoleplayServer.resources.core;
 using RoleplayServer.resources.database_manager;
 using RoleplayServer.resources.group_manager;
 using RoleplayServer.resources.job_manager;
@@ -41,7 +42,7 @@ namespace RoleplayServer.resources.player_manager
             switch (eventName)
             {
                 case "OnCharacterMenuSelect":
-                    Account account = API.getEntityData(player, "Account");
+                    Account account = player.GetAccount();
                     var charName = (string)arguments[0];
 
                     if(charName == "Create new character")

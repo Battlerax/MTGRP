@@ -113,8 +113,8 @@ namespace RoleplayServer.resources.inventory
                 API.sendNotificationToPlayer(player, "Target player not found.");
                 return;
             }
-            Character sender = API.getEntityData(player, "Character");
-            Character target = API.getEntityData(targetClient, "Character");
+            Character sender = player.GetCharacter();
+            Character target = targetClient.GetCharacter();
             if (player.position.DistanceTo(targetClient.position) > 5f)
             {
                 API.sendNotificationToPlayer(player, "You must be near the target player to give him an item.");
@@ -175,7 +175,7 @@ namespace RoleplayServer.resources.inventory
         [Command("drop")]
         public void drop_cmd(Client player, string item, int amount)
         {
-            Character character = API.getEntityData(player, "Character");
+            Character character = player.GetCharacter();
 
             //Get the item.
             var itemType = ParseInventoryItem(item);
@@ -213,7 +213,7 @@ namespace RoleplayServer.resources.inventory
         [Command("stash")]
         public void stash_cmd(Client player, string item, int amount)
         {
-            Character character = API.getEntityData(player, "Character");
+            Character character = player.GetCharacter();
 
             //Get the item.
             var itemType = ParseInventoryItem(item);
@@ -263,7 +263,7 @@ namespace RoleplayServer.resources.inventory
             }
 
             //Just get the first one and take it.
-            Character character = API.getEntityData(player, "Character");
+            Character character = player.GetCharacter();
             switch (GiveInventoryItem(character, items.First().Value))
             {
                 case GiveItemErrors.NotEnoughSpace:
@@ -291,7 +291,7 @@ namespace RoleplayServer.resources.inventory
         public void showinventory_cmd(Client player)
         {
             //TODO: For now can be just text-based even though I'd recommend it to be a CEF.
-            Character character = API.getEntityData(player, "Character");
+            Character character = player.GetCharacter();
 
             //First the main thing.
             API.sendChatMessageToPlayer(player, "-------------------------------------------------------------");
@@ -311,7 +311,7 @@ namespace RoleplayServer.resources.inventory
         [Command("givemeitem")]
         public void GiveMeItem(Client player, string item, int amount)
         {
-            Character character = API.getEntityData(player, "Character");
+            Character character = player.GetCharacter();
             Type itemType = ParseInventoryItem(item);
             if (itemType != null)
             {
