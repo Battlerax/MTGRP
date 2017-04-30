@@ -37,5 +37,10 @@ namespace RoleplayServer.resources.player_manager
         {
             API.triggerClientEvent(player, "openHelpMenu", "Help_Menu", "Select an option");
         }
+        [Command("FAQ")]
+        public void FAQ(Client player)
+        {
+            API.triggerClientEvent(player, "openFAQMenu", "FAQ_Menu", "Select an option");
+        }
     } 
 }

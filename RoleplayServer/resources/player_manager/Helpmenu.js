@@ -44,22 +44,30 @@ function showRules(group) {
     API.sendChatMessage("DM = Death matching - killing another player without any roleplay reason or any roleplay at all.");
     API.sendChatMessage("PG = Powergaming - Roleplaying the impossible | forcing a player to roleplay situation without giving them a chance.");
 };
-function showFAQ() {
-    menu
-        .createMenu("FAQ")
-        .addMenuItem("How to join LSPD?", "", true, true, "JoinLSPD")
-        .addMenuItem("Where is the bank?", "", true, true, "FBank")
-        .addMenuItem("Where do I find X job?", "", true, true, "FJob")
-        .addMenuItem("Where do I find X busienss?", "", true, true, "FBusienss")
-        .addMenuItem("How do I change my clothes?", "", true, true, "ChangeClothes")
-        .addMenuItem("Where do I buy a car?", "", true, true, "BuyCar")
-        .addMenuItem("Whats the best job?", "", true, true, "BestJob")
-        .addMenuItem("How do I buy ~y~VIP", "", true, true, "BuyVIP")
+function showFAQ(group) {
+    API.sendChatMessage("Use /FAQ to see all the Frequently Asked Questions. If your answer isn't there use /n or ask on our forum.");
 };
+
+API.onServerEventTrigger.connect(function (openFAQMenu, args) {
+    switch (openFAQMenu) {
+        case "openFAQMenu":
+            menu
+                .createMenu("FAQ")
+                .addMenuItem("How to join LSPD?", "", true, true, "JoinLSPD")
+                .addMenuItem("Where is the bank?", "", true, true, "FBank")
+                .addMenuItem("Where do I find X job?", "", true, true, "FJob")
+                .addMenuItem("Where do I find X busienss?", "", true, true, "FBusienss")
+                .addMenuItem("How do I change my clothes?", "", true, true, "ChangeClothes")
+                .addMenuItem("Where do I buy a car?", "", true, true, "BuyCar")
+                .addMenuItem("Whats the best job?", "", true, true, "BestJob")
+                .addMenuItem("How do I buy VIP?", "", true, true, "BuyVIP")
+            break;
+    }
+});
 function JoinLSPD(group) {
     API.sendChatMessage('Head over to ~h~Mt-Gaming.com~h~ and go to the GTA:V LSPD section to see the requirements');
-    API.sendChatMessage('General OOC requirements: Minimum 25hours, No active warnings, Able to use TeamSpeak.');
-    API.sendChatMessage('General IC requirements: Must be 21 years if age, Valid Drivers licence, No criminal record.');
+    API.sendChatMessage('~h~General OOC requirements:~h~ Minimum 25hours, No active warnings, Able to use TeamSpeak.');
+    API.sendChatMessage('~h~General IC requirements:~h~ Must be 21 years if age, Valid Drivers licence, No criminal record.');
 };
 function FBank(group) {
     API.sendChatMessage('~r~Currently no /map, ask through /n for help.');
