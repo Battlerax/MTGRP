@@ -4,7 +4,7 @@ API.onServerEventTrigger.connect(function (openHelpMenu, args) {
         case "openHelpMenu":
             menu
                 .createMenu("Help Menu")
-                .addMenuItem("Commands", "", true, true, "showHelpCmds")
+                .addMenuItem("Commands", "", true, true, "showCmds", "showHelpCmds")
                 .addMenuItem("Animations", "", true, true, "showAnimationsCmds")
                 .addMenuItem("Police", "", true, true, "showPoliceCmds")
                 .addMenuItem("Admin", "", true, true, "showAdminCmds")
@@ -13,7 +13,26 @@ API.onServerEventTrigger.connect(function (openHelpMenu, args) {
             break;
     }
 });
-
+function showCmds(group) {  
+    if (group == "showHelpCmds") {
+        API.sendChatMessage('~h~Here is the list of commands availible to you:');
+        API.sendChatMessage('/Time, /Stats, /Rp, /B, /Me, /Ame, /(V)ip, /(N)ewbie, /O, /Pm');
+    }
+    else if (group == "showAnimationCmds") {
+        API.sendChatMessage('~h~Here is the list of Animations:');
+        API.sendChatMessage('/Stopanim, /Hide, /Lookout, /Crowdcontrol, /Investigate, /Drink, /Crossarms, /Idle, /Lean,');
+        API.sendChatMessage('/Reach, /Workout, /Smoke, /Binoculars, /Hobo, /Fallover, /Laydown, /Drunk, /Twitchy, /Signal,');
+        API.sendChatMessage('/Cheer, /Drugdeal, /Gardening, /Guard, /Jog, /Getjiggy, /Sit, /Mech, /Yoga, /Bonghit,');
+        API.sendChatMessage('/Restrained, /MiddleFinger, /Salute, /Slowclap, /Facepalm, /Handsup, /CoverL, /CoverR');
+        API.sendChatMessage('~h~~y~VIP Animations');
+        API.sendChatMessage('/Clipboard, /Hammer, /Guitar  ');
+    }
+    else if (group == "showPoliceCmds") {
+        API.sendChatMessage("~h~Here is the list of commands availible to you:");
+        API.sendChatMessage("/Arrest, /Frisk, /Cuff, /Uncuff, /Detain, /(M)egaphone");
+    }
+}
+/*
 function showHelpCmds(group) {
     API.sendChatMessage('~h~Here is the list of commands availible to you:');
     API.sendChatMessage('/Time, /Stats, /Rp, /B, /Me, /Ame, /(V)ip, /(N)ewbie, /O, /Pm');
@@ -93,7 +112,7 @@ function BestJob(group) {
 function BuyVIP(group) {
     API.sendChatMessage('Head over to ~h~Mt-Gaming.com~h~ Once logged in, click on the ~h~Account upgrades~h~ tab.');
 };
-
+*/
 function callServerTrigger(Helpmenu) {
     var args = [].slice.call(arguments).splice(1);
     menu.callServerFunction(openHelpMenu, args);
