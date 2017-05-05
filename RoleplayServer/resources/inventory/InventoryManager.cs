@@ -17,8 +17,11 @@ namespace RoleplayServer.resources.inventory
     {
         public InventoryManager()
         {
-			//TODO: Not sure if items still need to be registered here, but do so if you ever see a related exception.
+            _activeInvsBeingManaged = new Dictionary<Client, KeyValuePair<IStorage, IStorage>>();
+            //TODO: Not sure if items still need to be registered here, but do so if you ever see a related exception.
             //BsonClassMap.RegisterClassMap<TestItem>();
+
+            API.onClientEventTrigger += API_onClientEventTrigger;
         }
 
         public enum GiveItemErrors
@@ -180,6 +183,24 @@ namespace RoleplayServer.resources.inventory
         {
             return (IInventoryItem)Activator.CreateInstance(item);
         }
+
+        #region InventoryMovingManagement
+
+        private Dictionary<Client, KeyValuePair<IStorage, IStorage>> _activeInvsBeingManaged;
+        public static void ShowInventoryManager(Client player, IStorage activeLeft, IStorage activeRight)
+        {
+            string[][] bagItems = activeLeft.Inventory.Select(x => new[] { x.Id.ToString(), x.LongName, x.CommandFriendlyName, x.Amount.ToString() }).ToArray();
+            string[][] invItems = activeRight.Inventory.Select(x => new[] { x.Id.ToString(), x.LongName, x.CommandFriendlyName, x.Amount.ToString() }).ToArray();
+            API.shared.triggerClientEvent(player, "bag_showmanager", API.shared.toJson(invItems), API.shared.toJson(bagItems));
+            
+        }
+
+        private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
 
         [Command("give")]
         public void give_cmd(Client player, string id, string item, int amount)

@@ -92,9 +92,7 @@ namespace RoleplayServer.resources.inventory.bags
             }
 
             //Get the current bag items.
-            string[][] bagItems = bag[0].Inventory.Select(x => new [] {x.Id.ToString(), x.LongName, x.CommandFriendlyName, x.Amount.ToString()}).ToArray();
-            string[][] invItems = character.Inventory.Select(x => new[] {x.Id.ToString(), x.LongName, x.CommandFriendlyName, x.Amount.ToString()}).ToArray();
-            API.triggerClientEvent(player, "bag_showmanager", API.toJson(invItems), API.toJson(bagItems));
+            
         }
 
         //TODO: test cmd.
