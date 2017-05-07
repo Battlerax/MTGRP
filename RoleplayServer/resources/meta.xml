@@ -24,7 +24,9 @@
 	<script src="player_manager/login/LoginManager.js" type="client" lang="javascript"/>
 	<file src="player_manager/login/Login.html"/>
 	<script src="player_manager/CharacterMenu.js" type="client" lang="javascript"/>
-	
+  <script src="player_manager/Helpmenu.js" type="client" lang="javascript"/>
+  <script src="player_manager/Plugins.js" type="client" lang="javascript"/>
+  
 	<!-- JOBS -->
 	<script src="job_manager/JobManager.js" type="client" lang="javascript"/>
 	<script src="job_manager/taxi/TaxiJob.js" type="client" lang="javascript"/>
