@@ -101,6 +101,7 @@
     <Compile Include="resources\player_manager\CharacterMenu.cs" />
     <Compile Include="resources\component_manager\Component.cs" />
     <Compile Include="resources\player_manager\Character.cs" />
+    <Compile Include="resources\player_manager\Helpmenu.cs" />
     <Compile Include="resources\player_manager\login\LoginManager.cs" />
     <Compile Include="resources\player_manager\Model.cs" />
     <Compile Include="resources\player_manager\PlayerManager.cs" />
@@ -132,6 +133,7 @@
     <Content Include="resources\jquery.js" />
     <Content Include="resources\meta.xml" />
     <Content Include="resources\player_manager\CharacterMenu.js" />
+    <Content Include="resources\player_manager\Helpmenu.js" />
     <Content Include="resources\player_manager\login\Login.html" />
     <Content Include="resources\player_manager\login\LoginManager.js" />
     <Content Include="resources\player_manager\PlayerManager.js" />
