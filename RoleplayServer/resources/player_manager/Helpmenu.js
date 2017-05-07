@@ -5,11 +5,11 @@ API.onServerEventTrigger.connect(function (openHelpMenu, args) {
             menu
                 .createMenu("Help Menu")
                 .addMenuItem("Commands", "", true, true, "showCmds", "showHelpCmds")
-                .addMenuItem("Animations", "", true, true, "showAnimationsCmds")
-                .addMenuItem("Police", "", true, true, "showPoliceCmds")
-                .addMenuItem("Admin", "", true, true, "showAdminCmds")
-                .addMenuItem("Rules", "", true, true, "showRules")
-                .addMenuItem("FAQ", "", true, true, "showFAQ")
+                .addMenuItem("Animations", "", true, true, "showCmds", "showAnimCmds")
+                .addMenuItem("Police", "", true, true, "showCmds", "showPolCmds")
+                .addMenuItem("Admin", "", true, true, "showCmds", "showAdCmds")
+                .addMenuItem("Rules", "", true, true, "showCmds", "sRules")
+                .addMenuItem("FAQ", "", true, true, "showCmds", "sFAQ")
             break;
     }
 });
@@ -18,7 +18,7 @@ function showCmds(group) {
         API.sendChatMessage('~h~Here is the list of commands availible to you:');
         API.sendChatMessage('/Time, /Stats, /Rp, /B, /Me, /Ame, /(V)ip, /(N)ewbie, /O, /Pm');
     }
-    else if (group == "showAnimationCmds") {
+    else if (group == "showAnimCmds") {
         API.sendChatMessage('~h~Here is the list of Animations:');
         API.sendChatMessage('/Stopanim, /Hide, /Lookout, /Crowdcontrol, /Investigate, /Drink, /Crossarms, /Idle, /Lean,');
         API.sendChatMessage('/Reach, /Workout, /Smoke, /Binoculars, /Hobo, /Fallover, /Laydown, /Drunk, /Twitchy, /Signal,');
@@ -27,95 +27,68 @@ function showCmds(group) {
         API.sendChatMessage('~h~~y~VIP Animations');
         API.sendChatMessage('/Clipboard, /Hammer, /Guitar  ');
     }
-    else if (group == "showPoliceCmds") {
+    else if (group == "showPolCmds") {
         API.sendChatMessage("~h~Here is the list of commands availible to you:");
         API.sendChatMessage("/Arrest, /Frisk, /Cuff, /Uncuff, /Detain, /(M)egaphone");
     }
-}
-/*
-function showHelpCmds(group) {
-    API.sendChatMessage('~h~Here is the list of commands availible to you:');
-    API.sendChatMessage('/Time, /Stats, /Rp, /B, /Me, /Ame, /(V)ip, /(N)ewbie, /O, /Pm');
-};
-function showAnimationsCmds(group) {
-    API.sendChatMessage('~h~Here is the list of Animations:');
-    API.sendChatMessage('/Stopanim, /Hide, /Lookout, /Crowdcontrol, /Investigate, /Drink, /Crossarms, /Idle, /Lean,');
-    API.sendChatMessage('/Reach, /Workout, /Smoke, /Binoculars, /Hobo, /Fallover, /Laydown, /Drunk, /Twitchy, /Signal,');
-    API.sendChatMessage('/Cheer, /Drugdeal, /Gardening, /Guard, /Jog, /Getjiggy, /Sit, /Mech, /Yoga, /Bonghit,');
-    API.sendChatMessage('/Restrained, /MiddleFinger, /Salute, /Slowclap, /Facepalm, /Handsup, /CoverL, /CoverR');
-    API.sendChatMessage('~h~~y~VIP Animations');
-    API.sendChatMessage('/Clipboard, /Hammer, /Guitar  ');
-};
-function showPoliceCmds(group) {
-    API.sendChatMessage("~h~Here is the list of commands availible to you:");
-    API.sendChatMessage("/Arrest, /Frisk, /Cuff, /Uncuff, /Detain, /(M)egaphone");
-};
-function showAdminCmds(group) {
-    API.sendChatMessage('~h~Here is the list of Admin Commands:');
-    API.sendChatMessage('/Agiveweapon, /Spec, /Specoff, /Setadmin, /Spawnveh, /Sethealth, /Setarmour, /Gotopos');
-    API.sendChatMessage('~r~TesterCMDs to be removed.');
-    API.sendChatMessage('~r~/testeradmin');
-};
-function showRules(group) {
-    API.sendChatMessage("To view all the rules head to ~h~MT-Gaming.com~h~ Here some basic server rules:");
-    API.sendChatMessage("IC = In character || OOC = Out of character");
-    API.sendChatMessage("MG = Metagaming - Using out of character info in character | Using in character info out of character.");
-    API.sendChatMessage("DM = Death matching - killing another player without any roleplay reason or any roleplay at all.");
-    API.sendChatMessage("PG = Powergaming - Roleplaying the impossible | forcing a player to roleplay situation without giving them a chance.");
-};
-function showFAQ(group) {
-    API.sendChatMessage("Use /FAQ to see all the Frequently Asked Questions. If your answer isn't there use /n or ask on our forum.");
-};
-
-API.onServerEventTrigger.connect(function (openFAQMenu, args) {
-    switch (openFAQMenu) {
-        case "openFAQMenu":
-            menu
-                .createMenu("FAQ")
-                .addMenuItem("How to join LSPD?", "", true, true, "JoinLSPD")
-                .addMenuItem("Where is the bank?", "", true, true, "FBank")
-                .addMenuItem("Where do I find X job?", "", true, true, "FJob")
-                .addMenuItem("Where do I find X busienss?", "", true, true, "FBusienss")
-                .addMenuItem("How do I change my clothes?", "", true, true, "ChangeClothes")
-                .addMenuItem("Where do I buy a car?", "", true, true, "BuyCar")
-                .addMenuItem("Whats the best job?", "", true, true, "BestJob")
-                .addMenuItem("How do I buy VIP?", "", true, true, "BuyVIP")
-            break;
+    else if (group == "showAdCmds") {
+        API.sendChatMessage('~h~Here is the list of Admin Commands:');
+        API.sendChatMessage('/Agiveweapon, /Spec, /Specoff, /Setadmin, /Spawnveh, /Sethealth, /Setarmour, /Gotopos');
+        API.sendChatMessage('~r~TesterCMDs to be removed.');
+        API.sendChatMessage('~r~/testeradmin');
     }
-});
-function JoinLSPD(group) {
-    API.sendChatMessage('Head over to ~h~Mt-Gaming.com~h~ and go to the GTA:V LSPD section to see the requirements');
-    API.sendChatMessage('~h~General OOC requirements:~h~ Minimum 25hours, No active warnings, Able to use TeamSpeak.');
-    API.sendChatMessage('~h~General IC requirements:~h~ Must be 21 years if age, Valid Drivers licence, No criminal record.');
-};
-function FBank(group) {
-    API.sendChatMessage('~r~Currently no /map, ask through /n for help.');
-};
-function FJob(group) {
-    API.sendChatMessage('The icons on the map indicate the location of each job.');
-};
-function FBusienss(group) {
-    API.sendChatMessage('~r~Currently no /map, ask through /n for help.');
-};
-function ChangeClothes(group) {
-    API.sendChatMessage('Head to a clothes store to purchause new clothes.');
-};
-function BuyCar(group) {
-    API.sendChatMessage('Head to the dealership on the map to purchause a vehicle inside. Or you can RP with others');
-    API.sendChatMessage('to purchause a vehicle off them second hand. (Requires 2 hours playtime)');
-};
-function BestJob(group) {
-    API.sendChatMessage('All jobs are made to be very similar with how much money you can earn. Even RPing with others');
-    API.sendChatMessage('can be a great way to earn money. We suggest you try them all to see what suits your RP and');
-    API.sendChatMessage('is enjoyable to you.');
-};
-function BuyVIP(group) {
-    API.sendChatMessage('Head over to ~h~Mt-Gaming.com~h~ Once logged in, click on the ~h~Account upgrades~h~ tab.');
-};
-*/
-function callServerTrigger(Helpmenu) {
-    var args = [].slice.call(arguments).splice(1);
-    menu.callServerFunction(openHelpMenu, args);
+    else if (group == "sRules") {
+        API.sendChatMessage("To view all the rules head to ~h~MT-Gaming.com~h~ Here some basic server rules:");
+        API.sendChatMessage("IC = In character || OOC = Out of character");
+        API.sendChatMessage("MG = Metagaming - Using out of character info in character | Using in character info out of character.");
+        API.sendChatMessage("DM = Death matching - killing another player without any roleplay reason or any roleplay at all.");
+        API.sendChatMessage("PG = Powergaming - Roleplaying the impossible | forcing a player to roleplay situation without giving them a chance.");
+    }
+    else if (group == "sFAQ") {
+        API.sendChatMessage("If your answer isn't there use /n or ask on our forums. ~h~MT-Gaming.com~h~");
+        menu
+            .createMenu("FAQ")
+            .addMenuItem("How to join LSPD?", "", true, true, "ShowFAQ","JoinLSPD")
+            .addMenuItem("Where is the bank?", "", true, true, "ShowFAQ", "FBank")
+            .addMenuItem("Where do I find X job?", "", true, true, "ShowFAQ", "FJob")
+            .addMenuItem("Where do I find X busienss?", "", true, true, "ShowFAQ", "FBusienss")
+            .addMenuItem("How do I change my clothes?", "", true, true, "ShowFAQ", "ChangeClothes")
+            .addMenuItem("Where do I buy a car?", "", true, true, "ShowFAQ", "BuyCar")
+            .addMenuItem("Whats the best job?", "", true, true, "ShowFAQ", "BestJob")
+            .addMenuItem("How do I buy VIP?", "", true, true, "ShowFAQ", "BuyVIP")
+        ;
+    }
+}
+function ShowFAQ(group) {
+    if (group == "JoinLSPD") {
+        API.sendChatMessage('Head over to ~h~Mt-Gaming.com~h~ and go to the GTA:V LSPD section to see the requirements');
+        API.sendChatMessage('~h~General OOC requirements:~h~ Minimum 25hours, No active warnings, Able to use TeamSpeak.');
+        API.sendChatMessage('~h~General IC requirements:~h~ Must be 21 years if age, Valid Drivers licence, No criminal record.');
+    }
+    else if (group == "FBank") {
+        API.sendChatMessage('~r~Currently no /map, ask through /n for help.');
+    }
+    else if (group == "FJob") {
+        API.sendChatMessage('The icons on the map indicate the location of each job.');
+    }
+    else if (group == "FBusiness") {
+        API.sendChatMessage('~r~Currently no /map, ask through /n for help.');
+    }
+    else if (group == "ChangeClothes") {
+        API.sendChatMessage('Head to a clothes store to purchause new clothes.');
+    }
+    else if (group == "BuyCar") {
+        API.sendChatMessage('Head to the dealership on the map to purchause a vehicle inside. Or you can RP with others');
+        API.sendChatMessage('to purchause a vehicle off them second hand. (Requires 2 hours playtime)');
+    }
+    else if (group == "BestJob") {
+        API.sendChatMessage('All jobs are made to be very similar with how much money you can earn. Even RPing with others');
+        API.sendChatMessage('can be a great way to earn money. We suggest you try them all to see what suits your RP and');
+        API.sendChatMessage('is enjoyable to you.');
+    }
+    else if (group == "BuyVIP") {
+        API.sendChatMessage('Head over to ~h~Mt-Gaming.com~h~ Once logged in, click on the ~h~Account upgrades~h~ tab.');
+    }
 }
 API.onUpdate.connect(function () {
     if (menu.menuPool !== null) {
