@@ -10,14 +10,13 @@
     <link href="../../stylesheet/css/metro-icons.css" rel="stylesheet">
     
     <script>
-        function fillItems(invItems, bagItems) {
-            var invList = JSON.parse(invItems);
-            var bagList = JSON.parse(bagItems);
-
+        function fillItems(leftJson, rightJson) {
+            var leftList = JSON.parse(leftJson);
+            var rightList = JSON.parse(rightJson);
             //Loop in each.
-            $.each(invList,
+            $.each(leftList,
                     function (i, val) {
-                        $("#InvItems").append(`<div class="list" itemid="${val[0]}">
+                        $("#LeftItems").append(`<div class="list" itemid="${val[0]}">
                     <div class="list-content">
                         <span class="list-title">${val[1]}</span>
                         <span class="list-subtitle" shortname="${val[2]}">Short Name: ${val[2]}</span>
@@ -26,9 +25,9 @@
                 </div>`);
                     });
 
-            $.each(bagList,
+            $.each(rightList,
                     function (i, val) {
-                        $("#BagItems").append(`<div class="list" itemid="${val[0]}">
+                        $("#RightItems").append(`<div class="list" itemid="${val[0]}">
                     <div class="list-content">
                         <span class="list-title">${val[1]}</span>
                         <span class ="list-subtitle" shortname="${val[2]}">Short Name: ${val[2]}</span>
@@ -38,24 +37,24 @@
                     });
         }
 
-        function moveItemFromInvToBag(id, itemname, amount) {
+        function moveItemFromLeftToRightSucess(id, itemname, amount) {
             //Get old item from inv.
-            var item = $("#InvItems").find(`.list[itemid='${id}']`);
+            var item = $("#LeftItems").find(`.list[itemid='${id}']`);
             //If amount there is equal to what to be removed, we remove whole thing and then add to list.
             if (item.find('span.list-remark').attr("amount") == amount) {
                 //Add and remove.
-                $("#BagItems").append(item);
-                $("#InvItems").remove(`.list[itemid='${id}']`);
+                $("#RightItems").append(item);
+                $("#LeftItems").remove(`.list[itemid='${id}']`);
             } else {
                 //Check if there is an item inside the target inv with that id.
-                var titem = $("#BagItems").find(`.list[itemid='${id}']`);
+                var titem = $("#RightItems").find(`.list[itemid='${id}']`);
                 if (!!titem.length) { //If was found.
                     //Change amount of target.
                     var oldValue = parseInt(titem.find('span.list-remark').attr("amount"));
                     titem.find('span.list-remark').attr("amount", oldValue + parseInt(amount));
                 } else {
                     //If not, add it.
-                    $("#BagItems").append(item);
+                    $("#RightItems").append(item);
                 }
                 //Change amount of sender.
                 var ov = parseInt(item.find('span.list-remark').attr("amount"));
@@ -65,22 +64,27 @@
 
         //Events.
         $(document).ready(function () {
-            $("#MoveFromInvToBag").click(function () {
-                //Get clicked one: 
-                var item = $("#InvItems").find('div.active');
-                //Send event.
-                resourceCall("moveFromInvToBag", item.attr("itemid"), item.find('span.list-subtitle').attr("shortname")); 
+            $("#ExitButton").click(function () {
+                resourceCall("ExitWindow");
             });
+
+            $("#MoveFromLeftToRight").click(function () {
+                //Get clicked one: 
+                var item = $("#LeftItems").find('div.active');
+                //Send event.
+                resourceCall("moveFromLeftToRight", item.attr("itemid"), item.find("span.list-subtitle").attr("shortname"));
+            });
+            
         });
     </script>
 </head>
 <body>
 
-<div class="flex-grid" style="margin: 5px;">
+<div class="flex-grid" style="margin: 5px; background-color: white;">
     <div class="row cells3">
         <div class="cell">
             <h3 class="header">Inventory Items:</h3>
-            <div class="listview-outlook" id="InvItems" data-role="listview" style="width: 300px; height: 500px; overflow-y: auto; border: black solid 1px;">
+            <div class="listview-outlook" id="LeftItems" data-role="listview" style="width: 300px; height: 500px; overflow-y: auto; border: black solid 1px;">
                 <!-- <div class="list">
                     <div class="list-content">
                         <span class="list-title">Miners Bag - (defaultname)</span>
@@ -88,26 +92,19 @@
                         <span class="list-remark">Amount: 1</span>
                     </div>
                 </div>  -->
-                <div class="list" itemid="123">
-                    <div class="list-content">
-                        <span class="list-title">Engine Part</span>
-                        <span class="list-subtitle" shortname="enginepart">Short Name: enginepart</span>
-                        <span class="list-remark" amount="5">Amount: 5</span>
-                    </div>
-                </div>
             </div>
         </div>
 
         <div class="cell">
             <div style="text-align: center; margin-top: 200px;">
-                <button class="button primary" id="MoveFromInvToBag" style="width: 100px; margin: auto; margin-bottom: 5px;">></button><br/>
-                <button class="button primary" id="MoveFromBagToInv" style="width: 100px; margin: auto;"><</button>
+                <button class="button primary" id="MoveFromLeftToRight" style="width: 100px; margin: auto; margin-bottom: 5px;">></button><br/>
+                <button class="button primary" id="MoveFromRightToLeft" style="width: 100px; margin: auto;"><</button>
             </div>
         </div>
 
         <div class="cell">
             <h3 class="header">Bag Items:</h3>
-            <div class="listview-outlook" id="BagItems" data-role="listview" style="width: 300px; height: 500px; overflow-y: auto; border: black solid 1px;">
+            <div class="listview-outlook" id="RightItems" data-role="listview" style="width: 300px; height: 500px; overflow-y: auto; border: black solid 1px;">
                 <!-- Add items. -->
             </div>
             <button class="button success" id="ExitButton" style="width: 100px; float: right;">Exit</button>

@@ -10,8 +10,14 @@ using RoleplayServer.resources.player_manager;
 
 namespace RoleplayServer.resources.inventory.bags
 {
+    [BsonDiscriminator("BagItem")]
     class BagItem : IStorage, IInventoryItem
     {
+        public BagItem()
+        {
+            Inventory = new List<IInventoryItem>();
+        }
+
         [BsonId]
         public ObjectId Id { get; set; }
 
@@ -54,7 +60,13 @@ namespace RoleplayServer.resources.inventory.bags
 
         //-------------------------
 
-        public List<IInventoryItem> Inventory { get; set; }
+        private List<IInventoryItem> _inventory;
+        public List<IInventoryItem> Inventory
+        {
+            get { return _inventory ?? (_inventory = new List<IInventoryItem>()); }
+            set { _inventory = value; }
+        }
+
         public int MaxInvStorage => 500; //To be calced dynamically depending on bag model.
 
     }

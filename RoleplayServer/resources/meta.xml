@@ -41,6 +41,7 @@
   
   <!-- Bag System-->
   <script src="inventory/bags/BagManager.js" type="client" lang="javascript"/>
+  <file src="inventory/bags/managebag.html"/>
   
 	<!-- CEF  -->
 	<file src="stylesheet/css/metro.css"/>

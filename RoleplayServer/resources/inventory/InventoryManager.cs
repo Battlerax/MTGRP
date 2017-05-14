@@ -9,6 +9,7 @@ using GTANetworkShared;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using RoleplayServer.resources.core;
+using RoleplayServer.resources.inventory.bags;
 using RoleplayServer.resources.player_manager;
 
 namespace RoleplayServer.resources.inventory
@@ -18,8 +19,14 @@ namespace RoleplayServer.resources.inventory
         public InventoryManager()
         {
             _activeInvsBeingManaged = new Dictionary<Client, KeyValuePair<IStorage, IStorage>>();
-            //TODO: Not sure if items still need to be registered here, but do so if you ever see a related exception.
-            //BsonClassMap.RegisterClassMap<TestItem>();
+
+            #region Inventory Items
+
+            BsonClassMap.RegisterClassMap<BagItem>();
+            BsonClassMap.RegisterClassMap<TestItem>();
+
+            #endregion
+
 
             API.onClientEventTrigger += API_onClientEventTrigger;
         }
@@ -38,7 +45,8 @@ namespace RoleplayServer.resources.inventory
             var newObject = ItemTypeToNewObject(type);
             foreach (var prop in properties)
             {
-                prop.SetValue(newObject, prop.GetValue(item));
+                if(prop.CanWrite)
+                    prop.SetValue(newObject, prop.GetValue(item));
             }
             if (amount != -1) newObject.Amount = amount;
             return newObject;
@@ -113,6 +121,7 @@ namespace RoleplayServer.resources.inventory
         /// <returns>An array of IInventoryItem.</returns>
         public static IInventoryItem[] DoesInventoryHaveItem(IStorage storage, Type item)
         {
+            if (storage.Inventory == null) storage.Inventory = new List<IInventoryItem>();
             return storage.Inventory.Where(x => x.GetType() == item).ToArray();
         }
 
@@ -143,6 +152,7 @@ namespace RoleplayServer.resources.inventory
         /// <returns>An integer of sum of taken slots.</returns>
         public static int GetInventoryFilledSlots(IStorage storage)
         {
+            if (storage.Inventory == null) storage.Inventory = new List<IInventoryItem>();
             int value = 0;
             storage.Inventory.ForEach(x => value += x.AmountOfSlots * x.Amount);
             return value;
@@ -158,6 +168,7 @@ namespace RoleplayServer.resources.inventory
         /// <returns>true if something was removed and false if nothing was removed.</returns>
         public static bool DeleteInventoryItem(IStorage storage, Type item, int amount = -1, Func<IInventoryItem, bool> predicate = null)
         {
+            if (storage.Inventory == null) storage.Inventory = new List<IInventoryItem>();
             if (amount == -1)
             {
                 return storage.Inventory.RemoveAll(x => x.GetType() == item) > 0;
@@ -186,18 +197,98 @@ namespace RoleplayServer.resources.inventory
 
         #region InventoryMovingManagement
 
-        private Dictionary<Client, KeyValuePair<IStorage, IStorage>> _activeInvsBeingManaged;
+        private static Dictionary<Client, KeyValuePair<IStorage, IStorage>> _activeInvsBeingManaged;
         public static void ShowInventoryManager(Client player, IStorage activeLeft, IStorage activeRight)
         {
-            string[][] bagItems = activeLeft.Inventory.Select(x => new[] { x.Id.ToString(), x.LongName, x.CommandFriendlyName, x.Amount.ToString() }).ToArray();
-            string[][] invItems = activeRight.Inventory.Select(x => new[] { x.Id.ToString(), x.LongName, x.CommandFriendlyName, x.Amount.ToString() }).ToArray();
-            API.shared.triggerClientEvent(player, "bag_showmanager", API.shared.toJson(invItems), API.shared.toJson(bagItems));
-            
+            if (_activeInvsBeingManaged.ContainsKey(player))
+            {
+                API.shared.sendNotificationToPlayer(player, "You already have an inventory management window open.");
+                return;
+            }
+
+            string[][] LeftItems =
+                activeLeft.Inventory.Where(x => x.GetType() != typeof(BagItem))
+                    .Select(x => new[] {x.Id.ToString(), x.LongName, x.CommandFriendlyName, x.Amount.ToString()})
+                    .ToArray();
+
+            string[][] RightItems =
+                activeRight.Inventory.Where(x => x.GetType() != typeof(BagItem))
+                    .Select(x => new[] {x.Id.ToString(), x.LongName, x.CommandFriendlyName, x.Amount.ToString()})
+                    .ToArray();
+
+            var leftJson = API.shared.toJson(LeftItems);
+            var rightJson = API.shared.toJson(RightItems);
+            API.shared.triggerClientEvent(player, "bag_showmanager", leftJson, rightJson);
+            _activeInvsBeingManaged.Add(player, new KeyValuePair<IStorage, IStorage>(activeLeft, activeRight));
         }
 
         private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
         {
-            throw new NotImplementedException();
+            switch (eventName)
+            {
+                case "invmanagement_cancelled":
+                    _activeInvsBeingManaged.Remove(sender);
+                    API.sendNotificationToPlayer(sender, "Cancelled Inventory Management.");
+                    break;
+                   
+                case "bag_moveFromLeftToRight":
+                    string id = (string)arguments[0];
+                    string shortname = (string)arguments[1];
+                    int amount;
+                    if (!int.TryParse((string)arguments[2], out amount))
+                    {
+                        API.sendChatMessageToPlayer(sender, "Invalid amount entered.");
+                        return;
+                    }
+                    if (amount <= 0)
+                    {
+                        API.sendChatMessageToPlayer(sender, "Amount must not be zero or negative.");
+                        return;
+                    }
+
+                    //Make sure is managing.
+                    if (!_activeInvsBeingManaged.ContainsKey(sender))
+                    {
+                        API.sendNotificationToPlayer(sender, "You aren't managing any inventory.");
+                        return;
+                    }
+
+                    //Get the invs.
+                    KeyValuePair<IStorage, IStorage> storages = _activeInvsBeingManaged.Get(sender);
+
+                    //See if has item.
+                    var itemType = InventoryManager.ParseInventoryItem(shortname);
+                    if (itemType == null)
+                    {
+                        API.sendNotificationToPlayer(sender, "That item type doesn't exist.");
+                        return;
+                    }
+                    var playerItem = InventoryManager.DoesInventoryHaveItem(storages.Key, itemType).SingleOrDefault(x => x.Id.ToString() == id);
+                    if (playerItem == null || playerItem.Amount < amount)
+                    {
+                        API.sendNotificationToPlayer(sender, "You don't have that item or don't have that amount.");
+                        return;
+                    }
+
+                    //Add to bag and remove from player
+                    InventoryManager.DeleteInventoryItem(storages.Key, itemType, amount,
+                        x => x.Id.ToString() == id && x.CommandFriendlyName == shortname);
+
+                    switch (InventoryManager.GiveInventoryItem(storages.Value, playerItem, amount, true))
+                    {
+                        case InventoryManager.GiveItemErrors.NotEnoughSpace:
+                            API.sendNotificationToPlayer(sender, "You don't have enough slots in the target storage.");
+                            break;
+                        case InventoryManager.GiveItemErrors.MaxAmountReached:
+                            API.sendNotificationToPlayer(sender, "Reached max amount of that item in the target storage.");
+                            break;
+                        case InventoryManager.GiveItemErrors.Success:
+                            //Send event done.
+                            API.triggerClientEvent(sender, "moveItemFromLeftToRightSucess", id, shortname, amount.ToString()); //Id should be same cause it was already set since it was in player inv.
+                            break;
+                    }
+                    break;
+            }
         }
 
         #endregion
