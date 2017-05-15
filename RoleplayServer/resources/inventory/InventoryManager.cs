@@ -77,6 +77,10 @@ namespace RoleplayServer.resources.inventory
             var oldItem = storage.Inventory.FirstOrDefault(x => x.GetType() == item.GetType());
             if (oldItem == null || oldItem.CanBeStacked == false)
             {
+                if (item.MaxAmount != -1 && oldItem?.Amount >= item.MaxAmount)
+                {
+                    return GiveItemErrors.MaxAmountReached;
+                }
                 //Check if has enough space.
                 if ((GetInventoryFilledSlots(storage) + item.Amount * item.AmountOfSlots) <= storage.MaxInvStorage)
                 {
@@ -178,7 +182,7 @@ namespace RoleplayServer.resources.inventory
             if (itm != null)
             {
                 itm.Amount -= amount;
-                if (itm.Amount < 0)
+                if (itm.Amount <= 0)
                     storage.Inventory.Remove(itm);
                 return true;
             }
@@ -206,18 +210,18 @@ namespace RoleplayServer.resources.inventory
                 return;
             }
 
-            string[][] LeftItems =
+            string[][] leftItems =
                 activeLeft.Inventory.Where(x => x.GetType() != typeof(BagItem))
                     .Select(x => new[] {x.Id.ToString(), x.LongName, x.CommandFriendlyName, x.Amount.ToString()})
                     .ToArray();
 
-            string[][] RightItems =
+            string[][] rightItems =
                 activeRight.Inventory.Where(x => x.GetType() != typeof(BagItem))
                     .Select(x => new[] {x.Id.ToString(), x.LongName, x.CommandFriendlyName, x.Amount.ToString()})
                     .ToArray();
 
-            var leftJson = API.shared.toJson(LeftItems);
-            var rightJson = API.shared.toJson(RightItems);
+            var leftJson = API.shared.toJson(leftItems);
+            var rightJson = API.shared.toJson(rightItems);
             API.shared.triggerClientEvent(player, "bag_showmanager", leftJson, rightJson);
             _activeInvsBeingManaged.Add(player, new KeyValuePair<IStorage, IStorage>(activeLeft, activeRight));
         }
@@ -270,10 +274,7 @@ namespace RoleplayServer.resources.inventory
                         return;
                     }
 
-                    //Add to bag and remove from player
-                    InventoryManager.DeleteInventoryItem(storages.Key, itemType, amount,
-                        x => x.Id.ToString() == id && x.CommandFriendlyName == shortname);
-
+                    //Add to bag.
                     switch (InventoryManager.GiveInventoryItem(storages.Value, playerItem, amount, true))
                     {
                         case InventoryManager.GiveItemErrors.NotEnoughSpace:
@@ -283,8 +284,13 @@ namespace RoleplayServer.resources.inventory
                             API.sendNotificationToPlayer(sender, "Reached max amount of that item in the target storage.");
                             break;
                         case InventoryManager.GiveItemErrors.Success:
+                            //Remove from player.
+                            InventoryManager.DeleteInventoryItem(storages.Key, itemType, amount,
+                                x => x.Id.ToString() == id && x.CommandFriendlyName == shortname);
+
                             //Send event done.
-                            API.triggerClientEvent(sender, "moveItemFromLeftToRightSucess", id, shortname, amount.ToString()); //Id should be same cause it was already set since it was in player inv.
+                            API.triggerClientEvent(sender, "moveItemFromLeftToRightSucess", id, shortname, amount); //Id should be same cause it was already set since it was in player inv.
+                            API.sendNotificationToPlayer(sender, $"The item ~g~{shortname}~w~ was moved sucessfully.");
                             break;
                     }
                     break;

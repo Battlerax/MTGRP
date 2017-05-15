@@ -18,13 +18,12 @@ API.onServerEventTrigger.connect((eventName, args) => {
             break;
 
         case 'moveItemFromLeftToRightSucess': 
-            myBrowser.call("moveItemFromLeftToRightSucess", args[0], args[1], args[2]);
+            myBrowser.call("moveItemFromLeftToRightSuccess", args[0], args[1], args[2]);
             break;
     }
 });
 
-function moveFromLeftToRight(id, shortname) {
-    var amount = API.getUserInput("1", 4);
+function moveFromLeftToRight(id, shortname, amount) {
     API.triggerServerEvent("bag_moveFromLeftToRight", id, shortname, amount);
 }
 

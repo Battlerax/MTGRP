@@ -32,31 +32,11 @@ namespace RoleplayServer.resources.inventory.bags
         public bool IsBlocking => false;
         public int MaxAmount => 1;
 
-        public string CommandFriendlyName
-        {
-            get
-            {
-                //TO
-                throw new NotImplementedException();
-            }
-        }
+        public string CommandFriendlyName => "Bag";
 
-        public string LongName
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public string LongName => "Bag";
 
-        public int Object
-        {
-            get
-            {
-                //TODO: return 
-                throw new NotImplementedException();
-            }
-        }
+        public int Object => 0;
 
         //-------------------------
 

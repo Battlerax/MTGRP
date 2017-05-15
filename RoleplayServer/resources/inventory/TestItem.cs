@@ -22,7 +22,7 @@ namespace RoleplayServer.resources.inventory
         public bool CanBeStacked => true;
         public bool CanBeStashed => true;
         public bool IsBlocking => false;
-        public int MaxAmount => 5;
+        public int MaxAmount => -1;
 
         public string CommandFriendlyName => "TestItem";
         public string LongName => "Test Item";

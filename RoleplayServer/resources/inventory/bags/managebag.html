@@ -37,28 +37,32 @@
                     });
         }
 
-        function moveItemFromLeftToRightSucess(id, itemname, amount) {
+        function moveItemFromLeftToRightSuccess(id, itemname, amount) {
             //Get old item from inv.
             var item = $("#LeftItems").find(`.list[itemid='${id}']`);
-            //If amount there is equal to what to be removed, we remove whole thing and then add to list.
-            if (item.find('span.list-remark').attr("amount") == amount) {
-                //Add and remove.
-                $("#RightItems").append(item);
-                $("#LeftItems").remove(`.list[itemid='${id}']`);
+
+            //Add item.
+            var titem = $("#RightItems").find(`.list[itemid='${id}']`);
+            if (!!titem.length) { //If was found.
+                //Change amount of target.
+                var oldValue = parseInt(titem.find('span.list-remark').attr("amount"));
+                titem.find('span.list-remark').attr("amount", oldValue + amount);
+                titem.find('span.list-remark').text("Amount: " + (oldValue + amount));
             } else {
-                //Check if there is an item inside the target inv with that id.
-                var titem = $("#RightItems").find(`.list[itemid='${id}']`);
-                if (!!titem.length) { //If was found.
-                    //Change amount of target.
-                    var oldValue = parseInt(titem.find('span.list-remark').attr("amount"));
-                    titem.find('span.list-remark').attr("amount", oldValue + parseInt(amount));
-                } else {
-                    //If not, add it.
-                    $("#RightItems").append(item);
-                }
+                //If not, add it with new value.
+                $("#RightItems").append(item.clone());
+                $("#RightItems").find(`.list[itemid='${id}']`).find('span.list-remark').attr("amount", amount);
+                $("#RightItems").find(`.list[itemid='${id}']`).find('span.list-remark').text("Amount: " + amount);
+            }
+
+            //If amount there is equal to what to be removed, we remove whole thing and then add to list.
+            if (parseInt(item.find('span.list-remark').attr("amount")) === amount) {
+                item.remove();
+            } else {
                 //Change amount of sender.
                 var ov = parseInt(item.find('span.list-remark').attr("amount"));
-                item.find('span.list-remark').attr("amount", ov - parseInt(amount));
+                item.find('span.list-remark').attr("amount", ov - amount);
+                item.find('span.list-remark').text("Amount: " + (ov - amount));
             }
         }
 
@@ -68,17 +72,51 @@
                 resourceCall("ExitWindow");
             });
 
+            var currentStatus = 0;
             $("#MoveFromLeftToRight").click(function () {
-                //Get clicked one: 
                 var item = $("#LeftItems").find('div.active');
-                //Send event.
-                resourceCall("moveFromLeftToRight", item.attr("itemid"), item.find("span.list-subtitle").attr("shortname"));
+                if (!!item.length) {
+                    currentStatus = 1;
+                    metroDialog.open('#amountDialog');
+                }
+            });
+
+            $("#MoveFromRightToLeft").click(function () {
+                var item = $("#RightItems").find('div.active');
+                if (!!item.length) {
+                    currentStatus = 2;
+                    metroDialog.open('#amountDialog');
+                }
             });
             
+            $("#MoveButton").click(function () {
+                if (currentStatus === 1) {
+                    //Get clicked one: 
+                    var item = $("#LeftItems").find('div.active');
+                    //Send event.
+                    resourceCall("moveFromLeftToRight", item.attr("itemid"), item.find("span.list-subtitle").attr("shortname"), $('#amounttext').val());
+                }
+                else if (currentStatus === 2) {
+                    //Get clicked one: 
+                    var eitem = $("#RightItems").find('div.active');
+                    //Send event.
+                    resourceCall("moveFromRightToLeft", eitem.attr("itemid"), eitem.find("span.list-subtitle").attr("shortname"), $('#amounttext').val());
+                }
+
+                metroDialog.close('#amountDialog');
+                currentStatus = 0;
+            });
         });
     </script>
 </head>
 <body>
+    
+    <!-- Asking for amount dialog. -->
+<div data-role="dialog" data-close-button="true" data-overlay="true" class="padding20 dialog" id="amountDialog">
+    <h1>Enter Amount</h1>
+    <input type="number" id="amounttext" value="1" style="width: 200px;"/><br/>
+    <button class="button primary" id="MoveButton" style="width: 100px; margin-top: 5px;">Done</button>
+</div>
 
 <div class="flex-grid" style="margin: 5px; background-color: white;">
     <div class="row cells3">
