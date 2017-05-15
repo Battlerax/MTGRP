@@ -235,7 +235,7 @@ namespace RoleplayServer.resources.inventory
                     API.sendNotificationToPlayer(sender, "Cancelled Inventory Management.");
                     break;
                    
-                case "bag_moveFromLeftToRight":
+                case "invmanagement_moveFromLeftToRight":
                     string id = (string)arguments[0];
                     string shortname = (string)arguments[1];
                     int amount;
@@ -270,7 +270,7 @@ namespace RoleplayServer.resources.inventory
                     var playerItem = InventoryManager.DoesInventoryHaveItem(storages.Key, itemType).SingleOrDefault(x => x.Id.ToString() == id);
                     if (playerItem == null || playerItem.Amount < amount)
                     {
-                        API.sendNotificationToPlayer(sender, "You don't have that item or don't have that amount.");
+                        API.sendNotificationToPlayer(sender, "The source storage doesn't have that item or doesn't have that amount.");
                         return;
                     }
 
@@ -278,10 +278,10 @@ namespace RoleplayServer.resources.inventory
                     switch (InventoryManager.GiveInventoryItem(storages.Value, playerItem, amount, true))
                     {
                         case InventoryManager.GiveItemErrors.NotEnoughSpace:
-                            API.sendNotificationToPlayer(sender, "You don't have enough slots in the target storage.");
+                            API.sendNotificationToPlayer(sender, "There is no enough slots in target storage.");
                             break;
                         case InventoryManager.GiveItemErrors.MaxAmountReached:
-                            API.sendNotificationToPlayer(sender, "Reached max amount of that item in the target storage.");
+                            API.sendNotificationToPlayer(sender, "Reached max amount of that item in target storage.");
                             break;
                         case InventoryManager.GiveItemErrors.Success:
                             //Remove from player.
@@ -289,10 +289,72 @@ namespace RoleplayServer.resources.inventory
                                 x => x.Id.ToString() == id && x.CommandFriendlyName == shortname);
 
                             //Send event done.
-                            API.triggerClientEvent(sender, "moveItemFromLeftToRightSucess", id, shortname, amount); //Id should be same cause it was already set since it was in player inv.
+                            API.triggerClientEvent(sender, "moveItemFromLeftToRightSuccess", id, shortname, amount); //Id should be same cause it was already set since it was in player inv.
                             API.sendNotificationToPlayer(sender, $"The item ~g~{shortname}~w~ was moved sucessfully.");
                             break;
                     }
+                    break;
+
+                case "invmanagement_moveFromRightToLeft":
+
+                    string rlid = (string)arguments[0];
+                    string rlshortname = (string)arguments[1];
+                    int rlamount;
+                    if (!int.TryParse((string)arguments[2], out rlamount))
+                    {
+                        API.sendChatMessageToPlayer(sender, "Invalid amount entered.");
+                        return;
+                    }
+                    if (rlamount <= 0)
+                    {
+                        API.sendChatMessageToPlayer(sender, "Amount must not be zero or negative.");
+                        return;
+                    }
+
+                    //Make sure is managing.
+                    if (!_activeInvsBeingManaged.ContainsKey(sender))
+                    {
+                        API.sendNotificationToPlayer(sender, "You aren't managing any inventory.");
+                        return;
+                    }
+
+                    //Get the invs.
+                    KeyValuePair<IStorage, IStorage> rlstorages = _activeInvsBeingManaged.Get(sender);
+
+                    //See if has item.
+                    var rlitemType = InventoryManager.ParseInventoryItem(rlshortname);
+                    if (rlitemType == null)
+                    {
+                        API.sendNotificationToPlayer(sender, "That item type doesn't exist.");
+                        return;
+                    }
+                    var rlplayerItem = InventoryManager.DoesInventoryHaveItem(rlstorages.Value, rlitemType).SingleOrDefault(x => x.Id.ToString() == rlid);
+                    if (rlplayerItem == null || rlplayerItem.Amount < rlamount)
+                    {
+                        API.sendNotificationToPlayer(sender, "The source storage doesn't have that item or doesn't have that amount.");
+                        return;
+                    }
+
+                    //Add to bag.
+                    switch (InventoryManager.GiveInventoryItem(rlstorages.Key, rlplayerItem, rlamount, true))
+                    {
+                        case InventoryManager.GiveItemErrors.NotEnoughSpace:
+                            API.sendNotificationToPlayer(sender, "There is no enough slots in target storage.");
+                            break;
+                        case InventoryManager.GiveItemErrors.MaxAmountReached:
+                            API.sendNotificationToPlayer(sender, "Reached max amount of that item in target storage.");
+                            break;
+                        case InventoryManager.GiveItemErrors.Success:
+                            //Remove from player.
+                            InventoryManager.DeleteInventoryItem(rlstorages.Value, rlitemType, rlamount,
+                                x => x.Id.ToString() == rlid && x.CommandFriendlyName == rlshortname);
+
+                            //Send event done.
+                            API.triggerClientEvent(sender, "moveItemFromRightToLeftSuccess", rlid, rlshortname, rlamount); //Id should be same cause it was already set since it was in player inv.
+                            API.sendNotificationToPlayer(sender, $"The item ~g~{rlshortname}~w~ was moved sucessfully.");
+                            break;
+                    }
+
                     break;
             }
         }

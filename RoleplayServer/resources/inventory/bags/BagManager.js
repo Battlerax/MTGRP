@@ -5,10 +5,10 @@ API.onServerEventTrigger.connect((eventName, args) => {
     switch (eventName) {
         case 'bag_showmanager':
             var res = API.getScreenResolution();
-            myBrowser = API.createCefBrowser(725, 605);
+            myBrowser = API.createCefBrowser(710, 660);
             API.waitUntilCefBrowserInit(myBrowser);
-            API.setCefBrowserPosition(myBrowser, (res.Width / 2) - (725 / 2),
-                (res.Height / 2) - (605 / 2));
+            API.setCefBrowserPosition(myBrowser, (res.Width / 2) - (710 / 2),
+                (res.Height / 2) - (660 / 2));
             API.loadPageCefBrowser(myBrowser, "inventory/bags/managebag.html");
             API.showCursor(true);
 
@@ -17,14 +17,21 @@ API.onServerEventTrigger.connect((eventName, args) => {
             myBrowser.call("fillItems", args[0], args[1]);
             break;
 
-        case 'moveItemFromLeftToRightSucess': 
+        case 'moveItemFromLeftToRightSuccess': 
             myBrowser.call("moveItemFromLeftToRightSuccess", args[0], args[1], args[2]);
+            break;
+        case 'moveItemFromRightToLeftSuccess':
+            myBrowser.call("moveItemFromRightToLeftSuccess", args[0], args[1], args[2]);
             break;
     }
 });
 
 function moveFromLeftToRight(id, shortname, amount) {
-    API.triggerServerEvent("bag_moveFromLeftToRight", id, shortname, amount);
+    API.triggerServerEvent("invmanagement_moveFromLeftToRight", id, shortname, amount);
+}
+
+function moveFromRightToLeft(id, shortname, amount) {
+    API.triggerServerEvent("invmanagement_moveFromRightToLeft", id, shortname, amount);
 }
 
 function ExitWindow() {
