@@ -4,13 +4,13 @@
 <head>
     <meta charset="utf-8" />
     <title></title>
-    <link href="../../stylesheet/css/metro.css" rel="stylesheet">
-    <script src="../../jquery.js"></script>
-    <script src="../../stylesheet/js/metro.js"></script>
-    <link href="../../stylesheet/css/metro-icons.css" rel="stylesheet">
+    <link href="../stylesheet/css/metro.css" rel="stylesheet">
+    <script src="../jquery.js"></script>
+    <script src="../stylesheet/js/metro.js"></script>
+    <link href="../stylesheet/css/metro-icons.css" rel="stylesheet">
     
     <script>
-        function fillItems(leftJson, rightJson) {
+        function fillItems(leftJson, rightJson, titleLeft, titleRight) {
             var leftList = JSON.parse(leftJson);
             var rightList = JSON.parse(rightJson);
             //Loop in each.
@@ -36,8 +36,14 @@
                 </div>`);
                     });
 
+            //Set titles.
+            $('#TitleLeft').text(titleLeft);
+            $('#TitleRight').text(titleRight);
+
             $('#loading_icon').css('display', 'none');
             $('#form_content').css('display', 'block');
+
+       
         }
 
         function moveItemFromLeftToRightSuccess(id, itemname, amount) {
@@ -163,7 +169,7 @@
             <div id="form_content" class="flex-grid" style="margin: 5px; display: none;">
                 <div class="row cells3">
                     <div class="cell">
-                        <h3 class="header">Inventory Items:</h3>
+                        <h3 class="header" id="TitleLeft"></h3>
                         <div class="listview-outlook" id="LeftItems" data-role="listview" style="width: 300px; height: 500px; overflow-y: auto; border: black solid 1px;">
                             <!-- <div class="list">
                         <div class="list-content">
@@ -183,7 +189,7 @@
                     </div>
 
                     <div class="cell">
-                        <h3 class="header">Bag Items:</h3>
+                        <h3 class="header" id="TitleRight"></h3>
                         <div class="listview-outlook" id="RightItems" data-role="listview" style="width: 300px; height: 500px; overflow-y: auto; border: black solid 1px;">
                             <!-- Add items. -->
                         </div>

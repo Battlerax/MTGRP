@@ -202,7 +202,7 @@ namespace RoleplayServer.resources.inventory
         #region InventoryMovingManagement
 
         private static Dictionary<Client, KeyValuePair<IStorage, IStorage>> _activeInvsBeingManaged;
-        public static void ShowInventoryManager(Client player, IStorage activeLeft, IStorage activeRight)
+        public static void ShowInventoryManager(Client player, IStorage activeLeft, IStorage activeRight, string leftTitle, string rightTitle)
         {
             if (_activeInvsBeingManaged.ContainsKey(player))
             {
@@ -222,7 +222,7 @@ namespace RoleplayServer.resources.inventory
 
             var leftJson = API.shared.toJson(leftItems);
             var rightJson = API.shared.toJson(rightItems);
-            API.shared.triggerClientEvent(player, "bag_showmanager", leftJson, rightJson);
+            API.shared.triggerClientEvent(player, "invmanagement_showmanager", leftJson, rightJson, leftTitle, rightTitle);
             _activeInvsBeingManaged.Add(player, new KeyValuePair<IStorage, IStorage>(activeLeft, activeRight));
         }
 
@@ -241,12 +241,12 @@ namespace RoleplayServer.resources.inventory
                     int amount;
                     if (!int.TryParse((string)arguments[2], out amount))
                     {
-                        API.sendChatMessageToPlayer(sender, "Invalid amount entered.");
+                        API.sendNotificationToPlayer(sender, "Invalid amount entered.");
                         return;
                     }
                     if (amount <= 0)
                     {
-                        API.sendChatMessageToPlayer(sender, "Amount must not be zero or negative.");
+                        API.sendNotificationToPlayer(sender, "Amount must not be zero or negative.");
                         return;
                     }
 
@@ -302,12 +302,12 @@ namespace RoleplayServer.resources.inventory
                     int rlamount;
                     if (!int.TryParse((string)arguments[2], out rlamount))
                     {
-                        API.sendChatMessageToPlayer(sender, "Invalid amount entered.");
+                        API.sendNotificationToPlayer(sender, "Invalid amount entered.");
                         return;
                     }
                     if (rlamount <= 0)
                     {
-                        API.sendChatMessageToPlayer(sender, "Amount must not be zero or negative.");
+                        API.sendNotificationToPlayer(sender, "Amount must not be zero or negative.");
                         return;
                     }
 

@@ -24,7 +24,7 @@ namespace RoleplayServer.resources.inventory.bags
             }
 
             //Show the window.
-            InventoryManager.ShowInventoryManager(player, character, (BagItem)bag[0]);
+            InventoryManager.ShowInventoryManager(player, character, (BagItem)bag[0], "Inventory: ", "Bag: ");
         }
 
         //TODO: test cmd.

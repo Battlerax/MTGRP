@@ -3,18 +3,18 @@
 var myBrowser = null;
 API.onServerEventTrigger.connect((eventName, args) => {
     switch (eventName) {
-        case 'bag_showmanager':
+        case 'invmanagement_showmanager':
             var res = API.getScreenResolution();
             myBrowser = API.createCefBrowser(710, 660);
             API.waitUntilCefBrowserInit(myBrowser);
             API.setCefBrowserPosition(myBrowser, (res.Width / 2) - (710 / 2),
                 (res.Height / 2) - (660 / 2));
-            API.loadPageCefBrowser(myBrowser, "inventory/bags/managebag.html");
+            API.loadPageCefBrowser(myBrowser, "inventory/ManageInv.html");
             API.showCursor(true);
 
             //Send to fill items.
             API.sleep(500);
-            myBrowser.call("fillItems", args[0], args[1]);
+            myBrowser.call("fillItems", args[0], args[1], args[2], args[3]);
             break;
 
         case 'moveItemFromLeftToRightSuccess': 
