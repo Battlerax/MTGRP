@@ -10,7 +10,7 @@
     <link href="../stylesheet/css/metro-icons.css" rel="stylesheet">
     
     <script>
-        function fillItems(leftJson, rightJson, titleLeft, titleRight) {
+        function fillItems(leftJson, rightJson, titleLeft, titleRight, usedLeft, usedRight) {
             var leftList = JSON.parse(leftJson);
             var rightList = JSON.parse(rightJson);
             //Loop in each.
@@ -39,6 +39,8 @@
             //Set titles.
             $('#TitleLeft').text(titleLeft);
             $('#TitleRight').text(titleRight);
+            $('#LeftItemsUsed').text(usedLeft);
+            $('#RightItemsUsed').text(usedRight);
 
             $('#loading_icon').css('display', 'none');
             $('#form_content').css('display', 'block');
@@ -46,7 +48,7 @@
        
         }
 
-        function moveItemFromLeftToRightSuccess(id, itemname, amount) {
+        function moveItemFromLeftToRightSuccess(id, itemname, amount, usedLeft, usedRight) {
             //Get old item from inv.
             var item = $("#LeftItems").find(`.list[itemid='${id}']`);
 
@@ -73,9 +75,12 @@
                 item.find('span.list-remark').attr("amount", ov - amount);
                 item.find('span.list-remark').text("Amount: " + (ov - amount));
             }
+
+            $('#LeftItemsUsed').text(usedLeft);
+            $('#RightItemsUsed').text(usedRight);
         }
 
-        function moveItemFromRightToLeftSuccess(id, itemname, amount) {
+        function moveItemFromRightToLeftSuccess(id, itemname, amount, usedLeft, usedRight) {
             //Get old item from inv.
             var item = $("#RightItems").find(`.list[itemid='${id}']`);
 
@@ -102,6 +107,9 @@
                 item.find('span.list-remark').attr("amount", ov - amount);
                 item.find('span.list-remark').text("Amount: " + (ov - amount));
             }
+
+            $('#LeftItemsUsed').text(usedLeft);
+            $('#RightItemsUsed').text(usedRight);
         }
 
         //Events.
@@ -170,6 +178,7 @@
                 <div class="row cells3">
                     <div class="cell">
                         <h3 class="header" id="TitleLeft"></h3>
+                        <span style="float: right;" id="LeftItemsUsed"></span>
                         <div class="listview-outlook" id="LeftItems" data-role="listview" style="width: 300px; height: 500px; overflow-y: auto; border: black solid 1px;">
                             <!-- <div class="list">
                         <div class="list-content">
@@ -181,7 +190,7 @@
                         </div>
                     </div>
 
-                    <div class="cell">
+                    <div class="cell" style="margin-left: 5px; margin-right: 5px;">
                         <div style="text-align: center; margin-top: 200px;">
                             <button class="button primary" id="MoveFromLeftToRight" style="width: 100px; margin: auto; margin-bottom: 5px;">></button><br />
                             <button class="button primary" id="MoveFromRightToLeft" style="width: 100px; margin: auto;"><</button>
@@ -190,6 +199,7 @@
 
                     <div class="cell">
                         <h3 class="header" id="TitleRight"></h3>
+                        <span style="float: right;" id="RightItemsUsed"></span>
                         <div class="listview-outlook" id="RightItems" data-role="listview" style="width: 300px; height: 500px; overflow-y: auto; border: black solid 1px;">
                             <!-- Add items. -->
                         </div>

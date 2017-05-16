@@ -271,7 +271,9 @@ namespace RoleplayServer.resources.inventory
 
             var leftJson = API.shared.toJson(leftItems);
             var rightJson = API.shared.toJson(rightItems);
-            API.shared.triggerClientEvent(player, "invmanagement_showmanager", leftJson, rightJson, leftTitle, rightTitle);
+            var usedLeft = GetInventoryFilledSlots(activeLeft) + "/" + activeLeft.MaxInvStorage;
+            var usedRight = GetInventoryFilledSlots(activeRight) + "/" + activeRight.MaxInvStorage;
+            API.shared.triggerClientEvent(player, "invmanagement_showmanager", leftJson, rightJson, leftTitle, rightTitle, usedLeft, usedRight);
             _activeInvsBeingManaged.Add(player, new KeyValuePair<IStorage, IStorage>(activeLeft, activeRight));
         }
 
@@ -338,7 +340,9 @@ namespace RoleplayServer.resources.inventory
                                 x => x.Id.ToString() == id && x.CommandFriendlyName == shortname);
 
                             //Send event done.
-                            API.triggerClientEvent(sender, "moveItemFromLeftToRightSuccess", id, shortname, amount); //Id should be same cause it was already set since it was in player inv.
+                            var usedLeft = GetInventoryFilledSlots(storages.Key) + "/" + storages.Key.MaxInvStorage;
+                            var usedRight = GetInventoryFilledSlots(storages.Value) + "/" + storages.Value.MaxInvStorage;
+                            API.triggerClientEvent(sender, "moveItemFromLeftToRightSuccess", id, shortname, amount, usedLeft, usedRight); //Id should be same cause it was already set since it was in player inv.
                             API.sendNotificationToPlayer(sender, $"The item ~g~{shortname}~w~ was moved sucessfully.");
                             break;
                     }
@@ -399,7 +403,9 @@ namespace RoleplayServer.resources.inventory
                                 x => x.Id.ToString() == rlid && x.CommandFriendlyName == rlshortname);
 
                             //Send event done.
-                            API.triggerClientEvent(sender, "moveItemFromRightToLeftSuccess", rlid, rlshortname, rlamount); //Id should be same cause it was already set since it was in player inv.
+                            var usedLeft = GetInventoryFilledSlots(rlstorages.Key) + "/" + rlstorages.Key.MaxInvStorage;
+                            var usedRight = GetInventoryFilledSlots(rlstorages.Value) + "/" + rlstorages.Value.MaxInvStorage;
+                            API.triggerClientEvent(sender, "moveItemFromRightToLeftSuccess", rlid, rlshortname, rlamount, usedLeft, usedRight); //Id should be same cause it was already set since it was in player inv.
                             API.sendNotificationToPlayer(sender, $"The item ~g~{rlshortname}~w~ was moved sucessfully.");
                             break;
                     }
@@ -581,7 +587,7 @@ namespace RoleplayServer.resources.inventory
             //For Each item.
             foreach (var item in character.Inventory)
             {
-                API.sendChatMessageToPlayer(player, $"* ~r~{item.LongName}~w~[{item.CommandFriendlyName}] ({item.Amount}) Weights {item.AmountOfSlots} Slots" + (item.IsBlocking ? " [BLOCKING]" : ""));
+                API.sendChatMessageToPlayer(player, $"* ~r~{item.LongName}~w~ [{item.CommandFriendlyName}] ({item.Amount}) Weights {item.AmountOfSlots} Slots" + (item.IsBlocking ? " [BLOCKING]" : ""));
             }
 
             //Ending
