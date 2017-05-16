@@ -160,7 +160,17 @@ namespace RoleplayServer.resources.inventory
             if (storage.Inventory == null) storage.Inventory = new List<IInventoryItem>();
             return storage.Inventory.Where(x => x.GetType() == item).ToArray();
         }
-
+        /// <summary>
+        /// Checks if user has certain item.
+        /// </summary>
+        /// <param name="storage">The storage that shall be checked.</param>
+        /// <param name="item">The item name. Commandname.</param>
+        /// <returns>An array of IInventoryItem.</returns>
+        public static IInventoryItem[] DoesInventoryHaveItem(IStorage storage, string item)
+        {
+            if (storage.Inventory == null) storage.Inventory = new List<IInventoryItem>();
+            return storage.Inventory.Where(x => x.CommandFriendlyName == item).ToArray();
+        }
 
         /// <summary>
         /// Converts a string to its equivelent Type of IInventoryItem.
@@ -417,27 +427,20 @@ namespace RoleplayServer.resources.inventory
                 return;
             }
 
-            //Get the item.
-            var itemType = ParseInventoryItem(item);
-            if (itemType == null)
-            {
-                API.sendNotificationToPlayer(player, "That item doesn't exist.");
-                return;
-            }
-            var itemObj = ItemTypeToNewObject(itemType);
-            if (itemObj.CanBeGiven == false)
-            {
-                API.sendNotificationToPlayer(player, "That item cannot be given.");
-                return;
-            }
-
             //Make sure he does have such amount.
-            var sendersItem = DoesInventoryHaveItem(sender, itemType);
+            var sendersItem = DoesInventoryHaveItem(sender, item);
             if (sendersItem.Length != 1 || sendersItem[0].Amount < amount)
             {
                 API.sendNotificationToPlayer(player, "You don't have that item or you don't have that amount or there is more than 1 item with that name.");
                 return;
             }
+
+            if (sendersItem[0].CanBeGiven == false)
+            {
+                API.sendNotificationToPlayer(player, "That item cannot be given.");
+                return;
+            }
+
 
             //Give.
             switch (GiveInventoryItem(target, sendersItem[0], amount))
@@ -453,6 +456,11 @@ namespace RoleplayServer.resources.inventory
                     API.sendNotificationToPlayer(targetClient,
                         "You have a blocking item in-hand, place it somewhere first. /inv to find out what it is.");
                     break;
+                case GiveItemErrors.MaxAmountReached:
+                    API.sendNotificationToPlayer(player, "The target player reach max amount of that item.");
+                    API.sendNotificationToPlayer(targetClient,
+                        "You have reached the max amount of that item.");
+                    break;
 
                 case GiveItemErrors.Success:
                     API.sendNotificationToPlayer(player,
@@ -461,7 +469,7 @@ namespace RoleplayServer.resources.inventory
                         $"You have receieved ~g~{amount}~w~ ~g~{sendersItem[0].LongName}~w~ from ~g~{sender.CharacterName}~w~.");
 
                     //Remove from their inv.
-                    DeleteInventoryItem(sender, itemType, amount, x => x == sendersItem[0]);
+                    DeleteInventoryItem(sender, sendersItem[0].GetType(), amount, x => x == sendersItem[0]);
                     break;
             }
         }
@@ -471,29 +479,21 @@ namespace RoleplayServer.resources.inventory
         {
             Character character = player.GetCharacter();
 
-            //Get the item.
-            var itemType = ParseInventoryItem(item);
-            if (itemType == null)
-            {
-                API.sendNotificationToPlayer(player, "That item doesn't exist.");
-                return;
-            }
-            var itemObj = ItemTypeToNewObject(itemType);
-            if (itemObj.CanBeDropped == false)
-            {
-                API.sendNotificationToPlayer(player, "That item cannot be dropped.");
-                return;
-            }
-
             //Get in inv.
-            var sendersItem = DoesInventoryHaveItem(character, itemType);
+            var sendersItem = DoesInventoryHaveItem(character, item);
             if (sendersItem.Length != 1 || sendersItem[0].Amount < amount)
             {
                 API.sendNotificationToPlayer(player, "You don't have that item or you don't have that amount or there is more than 1 item with that name.");
                 return;
             }
 
-            if(DeleteInventoryItem(character, itemType, amount, x => x == sendersItem[0]))
+            if (sendersItem[0].CanBeDropped == false)
+            {
+                API.sendNotificationToPlayer(player, "That item cannot be dropped.");
+                return;
+            }
+
+            if (DeleteInventoryItem(character, sendersItem[0].GetType(), amount, x => x == sendersItem[0]))
                 API.sendNotificationToPlayer(player, "Item(s) was sucessfully dropped.");
         }
 
@@ -505,25 +505,17 @@ namespace RoleplayServer.resources.inventory
         {
             Character character = player.GetCharacter();
 
-            //Get the item.
-            var itemType = ParseInventoryItem(item);
-            if (itemType == null)
-            {
-                API.sendNotificationToPlayer(player, "That item doesn't exist.");
-                return;
-            }
-            var itemObj = ItemTypeToNewObject(itemType);
-            if (itemObj.CanBeStashed == false)
-            {
-                API.sendNotificationToPlayer(player, "That item cannot be stashed.");
-                return;
-            }
-
             //Get in inv.
-            var sendersItem = DoesInventoryHaveItem(character, itemType);
+            var sendersItem = DoesInventoryHaveItem(character, item);
             if (sendersItem.Length != 1 || sendersItem[0].Amount < amount)
             {
                 API.sendNotificationToPlayer(player, "You don't have that item or you don't have that amount.");
+                return;
+            }
+
+            if (sendersItem[0].CanBeStashed == false)
+            {
+                API.sendNotificationToPlayer(player, "That item cannot be stashed.");
                 return;
             }
 
@@ -532,7 +524,7 @@ namespace RoleplayServer.resources.inventory
             stashedItems.Add(droppedObject, CloneItem(sendersItem[0], amount));
 
             //Decrease.
-            DeleteInventoryItem(character, itemType, amount, x => x == sendersItem[0]);
+            DeleteInventoryItem(character, sendersItem[0].GetType(), amount, x => x == sendersItem[0]);
 
             //Send message.
             API.sendNotificationToPlayer(player, $"You have sucessfully stashed ~g~{amount} {sendersItem[0].LongName}~w~. Use /pickupstash to take it.");
@@ -560,7 +552,9 @@ namespace RoleplayServer.resources.inventory
                 case GiveItemErrors.HasBlockingItem:
                     API.sendNotificationToPlayer(player, "You have a blocking item in hand.");
                     break;
-
+                case GiveItemErrors.MaxAmountReached:
+                    API.sendNotificationToPlayer(player, "You have reached the max amount of that item.");
+                    break;
                 case GiveItemErrors.Success:
                     API.sendNotificationToPlayer(player,
                         $"You have sucessfully taken ~g~{items.First().Value.Amount}~w~ ~g~{items.First().Value.LongName}~w~ from the stash.");
@@ -603,15 +597,7 @@ namespace RoleplayServer.resources.inventory
             if (itemType != null)
             {
                 var actualitem = ItemTypeToNewObject(itemType);
-                switch (GiveInventoryItem(character, actualitem, amount))
-                {
-                    case GiveItemErrors.NotEnoughSpace:
-                        API.sendChatMessageToPlayer(player, "You can't hold anymore items in your inventory.");
-                        break;
-                    case GiveItemErrors.Success:
-                        API.sendChatMessageToPlayer(player, "DONE!");
-                        break;
-                }
+                API.sendChatMessageToPlayer(player, GiveInventoryItem(character, actualitem, amount).ToString());
             }
             else
                 API.sendChatMessageToPlayer(player, "Invalid item name.");
