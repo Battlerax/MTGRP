@@ -31,6 +31,36 @@ namespace RoleplayServer.resources.inventory
             API.onClientEventTrigger += API_onClientEventTrigger;
         }
 
+        #region Events
+
+        public class OnGetItemEventArgs : EventArgs
+        {
+            public IInventoryItem Item { get; private set; }
+            public int Amount { get; private set; }
+            public OnGetItemEventArgs(IInventoryItem item, int amount)
+            {
+                Item = item;
+                Amount = amount;
+            }
+        }
+        public delegate void StorageGetItemHandler(IStorage sender, OnGetItemEventArgs args);
+        public static event StorageGetItemHandler OnStorageGetItem;
+
+        public class OnLoseItemEventArgs : EventArgs
+        {
+            public Type Item { get; private set; }
+            public int Amount { get; private set; }
+            public OnLoseItemEventArgs(Type item, int amount)
+            {
+                Item = item;
+                Amount = amount;
+            }
+        }
+        public delegate void StorageLoseItemHandler(IStorage sender, OnLoseItemEventArgs args);
+        public static event StorageLoseItemHandler OnStorageLoseItem;
+
+        #endregion
+
         public enum GiveItemErrors
         {
             NotEnoughSpace,
@@ -59,14 +89,14 @@ namespace RoleplayServer.resources.inventory
         /// Use DeleteInventoryItem to take.
         /// </summary>
         /// <param name="storage">The storage you wanna add to.</param>
-        /// <param name="olditem">The item object, the Amount inside is ignored.</param>
+        /// <param name="sentitem">The item object, the Amount inside is ignored.</param>
         /// <param name="amount">The amount of this item to be added, item will be duplicated if not stackable.</param>
         /// <param name="ignoreBlocking">Add even if inventory is blocked due to big item.</param>
         /// <returns></returns>
-        public static GiveItemErrors GiveInventoryItem(IStorage storage, IInventoryItem olditem, int amount = 1, bool ignoreBlocking = false)
+        public static GiveItemErrors GiveInventoryItem(IStorage storage, IInventoryItem sentitem, int amount = 1, bool ignoreBlocking = false)
         {
             //We wanna clone and add it.
-            var item = CloneItem(olditem, amount);
+            var item = CloneItem(sentitem, amount);
 
             if (storage.Inventory == null) storage.Inventory = new List<IInventoryItem>();
             //Make sure he doesn't have blocking item.
@@ -89,6 +119,7 @@ namespace RoleplayServer.resources.inventory
 
                     //Add.
                     storage.Inventory.Add(item);
+                    OnStorageGetItem?.Invoke(storage, new OnGetItemEventArgs(sentitem, amount));
                     return GiveItemErrors.Success;
                 }
                 else
@@ -110,6 +141,7 @@ namespace RoleplayServer.resources.inventory
                     {
                         storage.Inventory.Remove(oldItem);
                     }
+                    OnStorageGetItem?.Invoke(storage, new OnGetItemEventArgs(sentitem, amount));
                     return GiveItemErrors.Success;
                 }
                 else
@@ -175,7 +207,12 @@ namespace RoleplayServer.resources.inventory
             if (storage.Inventory == null) storage.Inventory = new List<IInventoryItem>();
             if (amount == -1)
             {
-                return storage.Inventory.RemoveAll(x => x.GetType() == item) > 0;
+                if (storage.Inventory.RemoveAll(x => x.GetType() == item) > 0)
+                {
+                    OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(item, amount));
+                    return true;
+                }
+                return false;
             }
 
             IInventoryItem itm = predicate != null ? storage.Inventory.Where(x => x.GetType() == item).SingleOrDefault(predicate) : storage.Inventory.SingleOrDefault(x => x.GetType() == item);
@@ -184,6 +221,8 @@ namespace RoleplayServer.resources.inventory
                 itm.Amount -= amount;
                 if (itm.Amount <= 0)
                     storage.Inventory.Remove(itm);
+
+                OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(item, amount));
                 return true;
             }
             return false;
