@@ -1,0 +1,41 @@
+#main {
+    background-color: blanchedalmond;
+    width: 350px;
+    height: 450px;
+}
+
+#notif-bar {
+    width: 100%;
+    height: 30px;
+}
+
+.notif-item {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 2px;
+    float: right;
+    color: white;
+    margin: 2px;
+}
+
+#content {
+    width: 100%;
+    height: 400px;
+    overflow:hidden;
+    margin-top: 20px;
+    margin-left: 10px;
+}
+
+#child-content {
+	width: 376px;
+    height: 400px;
+	overflow:auto;
+}
+
+#navigation {
+    width: 100%;
+    height: 50px;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
