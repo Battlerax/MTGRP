@@ -15,6 +15,17 @@ namespace RoleplayServer.resources.inventory.bags
         {
             InventoryManager.OnStorageGetItem += InventoryManager_OnStorageGetItem;
             InventoryManager.OnStorageLoseItem += InventoryManager_OnStorageLoseItem;
+            CharacterMenu.OnCharacterLogin += CharacterMenu_OnCharacterLogin;
+        }
+
+        private void CharacterMenu_OnCharacterLogin(object sender, CharacterMenu.CharacterLoginEventArgs e)
+        {
+            var items = InventoryManager.DoesInventoryHaveItem(e.character, typeof(BagItem));
+            if (items.Length == 1)
+            {
+                BagItem item = (BagItem)items[0];
+                API.setPlayerClothes(e.character.Client, 5, item.BagType, item.BagDesign);
+            }
         }
 
         private void InventoryManager_OnStorageLoseItem(IStorage sender, InventoryManager.OnLoseItemEventArgs args)
