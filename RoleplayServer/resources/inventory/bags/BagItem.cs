@@ -36,7 +36,17 @@ namespace RoleplayServer.resources.inventory.bags
 
         public string LongName => $"Bag, Type {BagType} Design {BagDesign}";
 
-        public int Object => 0;
+        public int Object
+        {
+            get
+            {
+                //If its the heist bag
+                if (BagType == 40 || BagType == 41 || BagType == 44 || BagType == 45)
+                    return -711724000;
+
+                return 1269440357;
+            }
+        }
 
         //-------------------------
 
