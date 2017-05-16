@@ -32,9 +32,9 @@ namespace RoleplayServer.resources.inventory.bags
         public bool IsBlocking => false;
         public int MaxAmount => 1;
 
-        public string CommandFriendlyName => "Bag";
+        public string CommandFriendlyName => $"Bag{BagType}{BagDesign}";
 
-        public string LongName => "Bag";
+        public string LongName => $"Bag, Type {BagType} Design {BagDesign}";
 
         public int Object => 0;
 
@@ -47,7 +47,21 @@ namespace RoleplayServer.resources.inventory.bags
             set { _inventory = value; }
         }
 
-        public int MaxInvStorage => 500; //To be calced dynamically depending on bag model.
+        //TODO: to be changed, not sure how much it should be.
+        public int MaxInvStorage
+        {
+            get
+            {
+                //If its the heist bag, its 1000 big and if its any other, 500.
+                if (BagType == 40 || BagType == 41 || BagType == 44 || BagType == 45)
+                    return 1000;
+
+                return 500;
+            }
+        }
+
+        public int BagType { get; set; }
+        public int BagDesign { get; set; }
 
     }
 }

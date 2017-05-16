@@ -11,6 +11,36 @@ namespace RoleplayServer.resources.inventory.bags
 {
     class BagManager : Script
     {
+        public BagManager()
+        {
+            InventoryManager.OnStorageGetItem += InventoryManager_OnStorageGetItem;
+            InventoryManager.OnStorageLoseItem += InventoryManager_OnStorageLoseItem;
+        }
+
+        private void InventoryManager_OnStorageLoseItem(IStorage sender, InventoryManager.OnLoseItemEventArgs args)
+        {
+            if (sender.GetType() == typeof(Character))
+            {
+                if (args.Item == typeof(BagItem))
+                {
+                    Character chr = (Character)sender;
+                    API.setPlayerClothes(chr.Client, 5, 0, 0);
+                }
+            }
+        }
+
+        private void InventoryManager_OnStorageGetItem(IStorage sender, InventoryManager.OnGetItemEventArgs args)
+        {
+            if (sender.GetType() == typeof(Character))
+            {
+                if (args.Item.GetType() == typeof(BagItem))
+                {
+                    Character chr = (Character) sender;
+                    BagItem item = (BagItem) args.Item;
+                    API.setPlayerClothes(chr.Client, 5, item.BagType, item.BagDesign);
+                }
+            }
+        }
 
         [Command("managebag")]
         public void Managebag(Client player)
@@ -29,9 +59,14 @@ namespace RoleplayServer.resources.inventory.bags
 
         //TODO: test cmd.
         [Command("givemebag")]
-        public void GiveMeBag(Client player)
+        public void GiveMeBag(Client player, int type, int design)
         {
-            API.sendChatMessageToPlayer(player, InventoryManager.GiveInventoryItem(player.GetCharacter(), new BagItem(), 1, true).ToString());
+            API.sendChatMessageToPlayer(player, InventoryManager.GiveInventoryItem(player.GetCharacter(), new BagItem() { BagDesign = design, BagType = type }, 1, true).ToString());
+        }
+        [Command("setmyclothes")]
+        public void setmyclothes(Client player, int slot, int drawable, int texture)
+        {
+            API.setPlayerClothes(player, slot, drawable, texture);
         }
     }
 }
