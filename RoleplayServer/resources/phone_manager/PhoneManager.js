@@ -4,8 +4,8 @@ API.onServerEventTrigger.connect((eventName, args) => {
     switch (eventName) {
         case "phone_showphone":
             var res = API.getScreenResolution();
-            var width = 350;
-            var height = 450;
+            var width = 360;
+            var height = 500;
             myBrowser = API.createCefBrowser(width, height);
             API.waitUntilCefBrowserInit(myBrowser);
             API.setCefBrowserPosition(myBrowser, res.Width - (width + 10),

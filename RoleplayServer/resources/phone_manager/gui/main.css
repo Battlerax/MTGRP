@@ -12,10 +12,9 @@
 .notif-item {
     display: inline-block;
     vertical-align: middle;
-    margin: 2px;
     float: right;
     color: white;
-    margin: 2px;
+    margin: 5px;
 }
 
 #content {
