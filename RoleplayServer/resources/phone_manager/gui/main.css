@@ -50,6 +50,12 @@
     background-color: #ce352c !important;  
 }
 
+#app-browser {
+    width: 330px;
+    height: 100%;
+    border: none;
+}
+
 #navigation {
     width: 100%;
     height: 50px;
