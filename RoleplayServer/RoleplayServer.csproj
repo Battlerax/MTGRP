@@ -135,6 +135,7 @@
     <Content Include="resources\phone_manager\gui\main.css" />
     <Content Include="resources\phone_manager\gui\main.html" />
     <Content Include="resources\phone_manager\gui\main.js" />
+    <Content Include="resources\phone_manager\gui\phone-base.png" />
     <Content Include="resources\phone_manager\PhoneManager.js" />
     <Content Include="resources\player_manager\CharacterMenu.js" />
     <Content Include="resources\player_manager\Helpmenu.js" />

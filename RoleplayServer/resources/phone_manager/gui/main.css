@@ -1,7 +1,21 @@
+#phonebase-image {
+    background: url(phone-base.png);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    width: 400px;
+    height: 580px;
+    z-index:1;
+    position:absolute;
+    pointer-events: none;
+}
+
 #main {
+    margin-top: 55px;
+    margin-left: 23px;
     background-color: black;
     width: 350px;
     height: 450px;
+    position: absolute;
 }
 
 #notif-bar {
