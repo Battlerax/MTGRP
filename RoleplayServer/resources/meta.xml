@@ -55,6 +55,7 @@
   <file src="phone_manager/gui/main.html"/>
 	<file src="phone_manager/gui/main.css"/>
 	<file src="phone_manager/gui/main.js"/>
+  <file src="phone_manager/gui/phone-base.png"/>
   <!-- Apps -->
   <file src="phone_manager/gui/apps/dialpad.html"/>
   

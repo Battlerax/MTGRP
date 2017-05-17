@@ -429,7 +429,7 @@ namespace RoleplayServer.resources.phone_manager
             }
         }
 
-        [Command("showphone")]
+        [Command("phone")]
         public void ShowPhone(Client player)
         {
             API.triggerClientEvent(player, "phone_showphone");
