@@ -51,6 +51,14 @@
 	<file src="stylesheet/fonts/housescript.woff2"/>
 	<file src="stylesheet/css/metro-icons.css"/>
 
+  <!-- Phone Files -->
+  <script src="phone_manager/PhoneManager.js" type="client" lang="javascript"/>
+  <file src="phone_manager/gui/main.html"/>
+	<file src="phone_manager/gui/main.css"/>
+	<file src="phone_manager/gui/main.js"/>
+  <!-- Apps -->
+  <file src="phone_manager/gui/apps/dialpad.html"/>
+  
 	<!-- CORE -->
 	<file src="cef_resources/MTGVRP_LOGO_BIG.png"/>
 	<file src="cef_resources/MTGVRP_LOGO_SMALL.png"/>

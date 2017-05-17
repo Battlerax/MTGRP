@@ -1,5 +1,5 @@
 #main {
-    background-color: blanchedalmond;
+    background-color: black;
     width: 350px;
     height: 450px;
 }
@@ -30,6 +30,11 @@
 	width: 376px;
     height: 400px;
 	overflow:auto;
+}
+
+.tile {
+    color: white;
+    background-color: #ce352c !important;  
 }
 
 #navigation {

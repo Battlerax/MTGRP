@@ -429,6 +429,12 @@ namespace RoleplayServer.resources.phone_manager
             }
         }
 
+        [Command("showphone")]
+        public void ShowPhone(Client player)
+        {
+            API.triggerClientEvent(player, "phone_showphone");
+        }
+
         public static Phone GetPhoneByNumber(int number)
         {
             var phoneFilter = Builders<Phone>.Filter.Eq("Number", number);
