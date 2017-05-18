@@ -1,5 +1,19 @@
 ﻿var myBrowser = null;
 
+function showPhoneIfNotShown() {
+    if (myBrowser == null) {
+        var res = API.getScreenResolution();
+        var width = 405;
+        var height = 590;
+        myBrowser = API.createCefBrowser(width, height);
+        API.waitUntilCefBrowserInit(myBrowser);
+        API.setCefBrowserPosition(myBrowser,
+            res.Width - width,
+            res.Height - height);
+        API.loadPageCefBrowser(myBrowser, "phone_manager/gui/main.html");
+    }
+}
+
 API.onServerEventTrigger.connect((eventName, args) => {
     switch (eventName) {
         case "phone_showphone":
@@ -8,14 +22,17 @@ API.onServerEventTrigger.connect((eventName, args) => {
                 break;
             }
 
-            var res = API.getScreenResolution();
-            var width = 405;
-            var height = 590;
-            myBrowser = API.createCefBrowser(width, height);
-            API.waitUntilCefBrowserInit(myBrowser);
-            API.setCefBrowserPosition(myBrowser, res.Width - width,
-                res.Height - height);
-            API.loadPageCefBrowser(myBrowser, "phone_manager/gui/main.html");
+            showPhoneIfNotShown();
+            break;
+
+        case "phone_calling":
+            showPhoneIfNotShown();
+            myBrowser.call("calling", args[0], args[1]);
+            break;
+
+        case "phone_incoming-call":
+            showPhoneIfNotShown();
+            myBrowser.call("incoming_call", args[0], args[1]);
             break;
     }
 });
@@ -34,5 +51,5 @@ API.onKeyUp.connect(function (sender, e) {
 })
 
 function callPhone(number) {
-    API.sendChatMessage("Called: " + number); //Temporary
+    API.triggerServerEvent("phone_callphone", number);
 }

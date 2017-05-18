@@ -18,8 +18,20 @@ namespace RoleplayServer.resources.phone_manager
             DebugManager.DebugMessage("[PhoneM] Initalizing Phone Manager...");
 
             API.onChatMessage += OnChatMessage;
+            API.onClientEventTrigger += API_onClientEventTrigger;
 
             DebugManager.DebugMessage("[PhoneM] Phone Manager initalized.");
+        }
+
+        private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
+        {
+            switch (eventName)
+            {
+                case "phone_callphone":
+                    string number = (string)arguments[0];
+                    call_cmd(sender, number);
+                    break;
+            }
         }
 
         public void OnChatMessage(Client player, string msg, CancelEventArgs e)
@@ -182,6 +194,12 @@ namespace RoleplayServer.resources.phone_manager
                 ChatManager.RoleplayMessage(character, "'s phone starts to ring...", ChatManager.RoleplayMe);
                 sender.CallingPlayer = character;
                 character.BeingCalledBy = sender;
+
+                var contact = sender.Phone.Contacts.Find(pc => pc.Number == number);
+                var targetContact = character.Phone.Contacts.Find(pc => pc.Number == character.Phone.Number);
+
+                API.triggerClientEvent(player, "phone_calling", contact.Name, contact.Number);
+                API.triggerClientEvent(character.Client, "phone_incoming-call", targetContact.Name, character.Phone.Number);
             }
             else
             {
@@ -220,6 +238,9 @@ namespace RoleplayServer.resources.phone_manager
                 ChatManager.RoleplayMessage(character, "'s phone starts to ring...", ChatManager.RoleplayMe);
                 sender.CallingPlayer = character;
                 character.BeingCalledBy = sender;
+                API.triggerClientEvent(player, "phone_calling", contact.Name, contact.Number);
+                var targetContact = character.Phone.Contacts.Find(pc => pc.Number == character.Phone.Number);
+                API.triggerClientEvent(character.Client, "phone_incoming-call", targetContact.Name, character.Phone.Number);
             }
         }
 
