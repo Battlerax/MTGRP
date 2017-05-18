@@ -19,6 +19,17 @@
 
         <div id="content">
             <div id="child-content">
+				<div id="call-interface" style="display: none;">
+					<span id="calling_header">INCOMING CALL</span>
+					<h1 id="caller_number"></h1>
+				    <span id="caller_name"></span>
+				    <div id="calling-actionbuttons">
+                        <button id="calling_end-call" class="button bg-red fg-white">end call</button>
+				        <button id="calling_answer" class="button bg-red fg-white">answer</button>
+				        <button id="calling_ignore" class="button bg-gray fg-white">ignore</button>
+				        <button id="calling_text-reply" class="button bg-gray fg-white">text reply</button>
+				    </div>
+				</div>
                 <div id="app-content" style="display: none;">
                     <iframe id="app-browser"></iframe>
                 </div>

@@ -63,3 +63,34 @@
     justify-content: center;
     align-items: center;
 }
+
+#call-interface {
+	color: white;
+}
+
+#calling_header {
+    color: #ce352c;
+}
+
+#calling-actionbuttons {
+    margin-top: 170px;
+}
+
+#calling_answer,#calling_header,#caller_number,#caller_name { margin-left: 10px; }
+
+#calling_answer, #calling_ignore {
+    height: 50px;
+    width: 150px;
+}
+
+#calling_text-reply {
+    height: 50px;
+    width: 303px;
+    margin-left: 10px;
+}
+
+#calling_end-call {
+    height: 50px;
+    width: 303px;
+    margin-left: 10px;
+}
