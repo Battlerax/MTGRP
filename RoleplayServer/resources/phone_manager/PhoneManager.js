@@ -32,3 +32,7 @@ API.onKeyUp.connect(function (sender, e) {
         API.showCursor(isMouseShown);
     }
 })
+
+function callPhone(number) {
+    API.sendChatMessage("Called: " + number); //Temporary
+}

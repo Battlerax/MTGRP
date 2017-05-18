@@ -47,6 +47,17 @@
                 var number = $(this).text();
                 $('#enteredNumber').val($('#enteredNumber').val() + number);
             });
+
+            $("#backspace").click(function () {
+                //get the input's value
+                var textVal = $('#enteredNumber').val();
+                //set the input's value
+                $('#enteredNumber').val(textVal.substring(0, textVal.length - 1));
+            });
+
+            $("#call").click(function () {
+                resourceCall("callPhone", $('#enteredNumber').val());
+            });
         });
     </script>
 </head>
@@ -68,8 +79,8 @@
     <button class="button cycle-button">*</button>
     <button class="button cycle-button">0</button>
     <button class="button cycle-button">#</button>
-    <button class="button rounded"><span class="mif-arrow-left"></span></button>
-    <button class="button rounded"><span class="mif-phone"></span></button>
+    <button class="button rounded" id="backspace"><span class="mif-arrow-left"></span></button>
+    <button class="button rounded" id="call"><span class="mif-phone"></span></button>
 </div>
 </body>
 </html>
