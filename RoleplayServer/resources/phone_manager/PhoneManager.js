@@ -1,9 +1,9 @@
-﻿var myBrowser;
+﻿var myBrowser = null;
 
 API.onServerEventTrigger.connect((eventName, args) => {
     switch (eventName) {
         case "phone_showphone":
-            if (myBrowser == null) {
+            if (myBrowser !== null) {
                 API.sendChatMessage("You already have the phone opened.");
                 break;
             }
@@ -24,6 +24,7 @@ var isMouseShown = false;
 API.onKeyUp.connect(function (sender, e) {
     if (myBrowser !== null && e.KeyCode === Keys.Escape) {
         API.destroyCefBrowser(myBrowser);
+        API.showCursor(false);
         myBrowser = null;
     }
     else if (myBrowser !== null && e.KeyCode === Keys.M) {
