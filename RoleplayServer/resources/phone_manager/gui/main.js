@@ -13,8 +13,18 @@
         $("#app-browser").attr("src", "");
         $("#apps-list").css("display", "block"); //Set the apps list as shown.
         $("#app-content").css("display", "none"); //Hide the content.
-        //TODO: End current call.
-        $("#call-interface").css("display", "none");
+
+        if ($("#call-interface").css("display") === "block") {
+            resourceCall("closeCall");
+            $("#call-interface").css("display", "none");
+        }
+    });
+
+    $("#calling_answer").click(function () {
+        resourceCall("answerCall");
+    });
+    $("#calling_end-call").click(function () {
+        resourceCall("closeCall");
     });
 });
 
@@ -43,4 +53,10 @@ function calling(name, number) {
     $("#calling_answer").css("display", "none");
     $("#calling_ignore").css("display", "none");
     $("#calling_text-reply").css("display", "none");
+}
+
+function callClosed() {
+    $("#apps-list").css("display", "block"); //Set the apps list as shown.
+    $("#app-content").css("display", "none"); //Hide the content.
+    $("#call-interface").css("display", "none");
 }

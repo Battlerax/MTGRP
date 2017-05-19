@@ -31,6 +31,14 @@ namespace RoleplayServer.resources.phone_manager
                     string number = (string)arguments[0];
                     call_cmd(sender, number);
                     break;
+
+                case "phone_answercall":
+                    pickup_cmd(sender);
+                    break;
+
+                case "phone_hangout":
+                    h_cmd(sender);
+                    break;
             }
         }
 
@@ -93,6 +101,9 @@ namespace RoleplayServer.resources.phone_manager
             API.sendChatMessageToPlayer(player, "You have answered the phone call.");
             character.InCallWith = character.BeingCalledBy;
             character.BeingCalledBy = Character.None;
+
+            var contact = character.InCallWith.Phone.Contacts.Find(pc => pc.Number == character.InCallWith.Phone.Number);
+            API.triggerClientEvent(player, "phone_calling", contact?.Name ?? "Unknown", character.InCallWith.Phone.Number);
         }
 
         [Command("h")]
@@ -109,6 +120,8 @@ namespace RoleplayServer.resources.phone_manager
             character.InCallWith = Character.None;
             API.sendChatMessageToPlayer(player, "You have terminated the call.");
             API.sendChatMessageToPlayer(talkingTo.Client, "The other party has ended the call.");
+            API.triggerClientEvent(player, "phone-call-closed");
+            API.triggerClientEvent(talkingTo.Client, "phone-call-closed");
         }
 
         [Command("togphone")]
@@ -198,8 +211,8 @@ namespace RoleplayServer.resources.phone_manager
                 var contact = sender.Phone.Contacts.Find(pc => pc.Number == number);
                 var targetContact = character.Phone.Contacts.Find(pc => pc.Number == character.Phone.Number);
 
-                API.triggerClientEvent(player, "phone_calling", contact.Name, contact.Number);
-                API.triggerClientEvent(character.Client, "phone_incoming-call", targetContact.Name, character.Phone.Number);
+                API.triggerClientEvent(player, "phone_calling", contact?.Name ?? "Unknown", number);
+                API.triggerClientEvent(character.Client, "phone_incoming-call", targetContact?.Name ?? "Unknown", character.Phone.Number);
             }
             else
             {

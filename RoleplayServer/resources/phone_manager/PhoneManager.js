@@ -27,12 +27,18 @@ API.onServerEventTrigger.connect((eventName, args) => {
 
         case "phone_calling":
             showPhoneIfNotShown();
+            API.sleep(500);
             myBrowser.call("calling", args[0], args[1]);
             break;
 
         case "phone_incoming-call":
             showPhoneIfNotShown();
+            API.sleep(500);
             myBrowser.call("incoming_call", args[0], args[1]);
+            break;
+
+        case "phone-call-closed":
+            myBrowser.call("callClosed");
             break;
     }
 });
@@ -52,4 +58,11 @@ API.onKeyUp.connect(function (sender, e) {
 
 function callPhone(number) {
     API.triggerServerEvent("phone_callphone", number);
+}
+function answerCall() {
+    API.triggerServerEvent("phone_answercall");
+}
+
+function closeCall() {
+    API.triggerServerEvent("phone_hangout");
 }
