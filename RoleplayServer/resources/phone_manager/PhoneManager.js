@@ -44,24 +44,18 @@ API.onServerEventTrigger.connect((eventName, args) => {
 });
 
 var isMouseShown = false;
-API.onKeyUp.connect(function (sender, e) {
+API.onKeyUp.connect(function(sender, e) {
     if (myBrowser !== null && e.KeyCode === Keys.Escape) {
         API.destroyCefBrowser(myBrowser);
         API.showCursor(false);
         myBrowser = null;
-    }
-    else if (myBrowser !== null && e.KeyCode === Keys.F2) {
+    } else if (myBrowser !== null && e.KeyCode === Keys.F2) {
         isMouseShown = !isMouseShown;
         API.showCursor(isMouseShown);
     }
-})
+});
 
-function callPhone(number) {
-    API.triggerServerEvent("phone_callphone", number);
-}
-function answerCall() {
-    API.triggerServerEvent("phone_answercall");
-}
-function closeCall() {
-    API.triggerServerEvent("phone_hangout");
+function callServerEvent(eventName /* Args */) {
+    var args = Array.prototype.slice.call(arguments, 1);
+    API.triggerServerEvent(eventName, ...args);
 }

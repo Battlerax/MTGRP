@@ -15,16 +15,16 @@
         $("#app-content").css("display", "none"); //Hide the content.
 
         if ($("#call-interface").css("display") === "block") {
-            resourceCall("closeCall");
+            resourceCall("callServerEvent", "phone_hangout");
             $("#call-interface").css("display", "none");
         }
     });
 
     $("#calling_answer").click(function () {
-        resourceCall("answerCall");
+        resourceCall("callServerEvent", "phone_answercall");
     });
     $("#calling_end-call").click(function () {
-        resourceCall("closeCall");
+        resourceCall("callServerEvent", "phone_hangout");
     });
     $("#calling_ignore").click(function() {
         //We will just ignore it CEF side.
