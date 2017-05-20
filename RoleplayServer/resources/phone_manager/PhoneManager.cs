@@ -99,6 +99,8 @@ namespace RoleplayServer.resources.phone_manager
             }
 
             API.sendChatMessageToPlayer(player, "You have answered the phone call.");
+            character.BeingCalledBy.CallingPlayer = Character.None;
+            character.BeingCalledBy.InCallWith = character;
             character.InCallWith = character.BeingCalledBy;
             character.BeingCalledBy = Character.None;
 
