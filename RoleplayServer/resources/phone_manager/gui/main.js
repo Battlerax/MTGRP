@@ -34,7 +34,8 @@
 
 function callAppFunction(functionName /* Args */) {
     var args = Array.prototype.slice.call(arguments, 1);
-    document.getElementById('app-browser').contentWindow[functionName](...args);
+    var sent = [functionName, args];
+    document.getElementById('app-browser').contentWindow.postMessage(sent, "*");
 }
 
 function incoming_call(name, number)
