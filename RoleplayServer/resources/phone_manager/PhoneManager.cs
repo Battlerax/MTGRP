@@ -46,10 +46,10 @@ namespace RoleplayServer.resources.phone_manager
         {
             Account account = API.getEntityData(player.handle, "Account");
             Character character = API.getEntityData(player.handle, "Character");
-            Character talkingTo = character.InCallWith;
-            string phonemsg;
             if (account.AdminDuty == 0 && character.InCallWith != Character.None)
             {
+                Character talkingTo = character.InCallWith;
+                string phonemsg;
                 msg = "[Phone]" + character.rp_name() + " says: " + msg;
                 ChatManager.NearbyMessage(player, 15, msg);
                 if (talkingTo.Phone.HasContactWithNumber(character.Phone.Number))
@@ -62,6 +62,8 @@ namespace RoleplayServer.resources.phone_manager
                     phonemsg = "[" + character.Phone.Number + "]" + character.rp_name() + " says: " + msg;
                 }
                 API.sendChatMessageToPlayer(talkingTo.Client, Color.Grey, phonemsg);
+                e.Cancel = true;
+                e.Reason = "Phone";
             }
         }
 
