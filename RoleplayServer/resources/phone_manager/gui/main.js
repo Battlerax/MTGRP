@@ -56,7 +56,9 @@ function calling(name, number) {
 }
 
 function callClosed() {
-    $("#apps-list").css("display", "block"); //Set the apps list as shown.
-    $("#app-content").css("display", "none"); //Hide the content.
-    $("#call-interface").css("display", "none");
+    if ($("#call-interface").css("display") === "block") {
+        $("#apps-list").css("display", "block"); //Set the apps list as shown.
+        $("#app-content").css("display", "none"); //Hide the content.
+        $("#call-interface").css("display", "none");
+    }
 }
