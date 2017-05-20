@@ -50,7 +50,7 @@ API.onKeyUp.connect(function (sender, e) {
         API.showCursor(false);
         myBrowser = null;
     }
-    else if (myBrowser !== null && e.KeyCode === Keys.M) {
+    else if (myBrowser !== null && e.KeyCode === Keys.F2) {
         isMouseShown = !isMouseShown;
         API.showCursor(isMouseShown);
     }
