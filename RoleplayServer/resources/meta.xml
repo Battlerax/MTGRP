@@ -58,6 +58,7 @@
   <file src="phone_manager/gui/phone-base.png"/>
   <!-- Apps -->
   <file src="phone_manager/gui/apps/dialpad.html"/>
+  <file src="phone_manager/gui/apps/contacts.html"/>
   
 	<!-- CORE -->
 	<file src="cef_resources/MTGVRP_LOGO_BIG.png"/>

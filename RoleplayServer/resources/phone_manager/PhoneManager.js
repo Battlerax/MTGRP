@@ -40,6 +40,10 @@ API.onServerEventTrigger.connect((eventName, args) => {
         case "phone_call-closed":
             myBrowser.call("callClosed");
             break;
+
+        case "phone_showContacts":
+            myBrowser.call("showContacts", args[0]);
+            break;
     }
 });
 

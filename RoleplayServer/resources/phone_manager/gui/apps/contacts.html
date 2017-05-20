@@ -1,0 +1,30 @@
+﻿<html>
+
+<head>
+    <link href="../../../stylesheet/css/metro-icons.css" rel="stylesheet" type="text/css">
+    <link href="../../../stylesheet/css/metro.css" type="text/css" rel="stylesheet">
+    <script src="../../../jquery.js"></script>
+    <script src="../../../stylesheet/js/metro.js"></script>
+
+    <style>
+        
+    </style>
+
+    <script>
+        $(document).ready(function () {
+            resourceCall("callServerEvent", "phone_getallContacts");
+        });
+
+        function showContacts(contactsJson) {
+            var contacts = JSON.parse(contactsJson);
+            $.each(contacts, function (key, value) {
+                $("body").append(value[1] + "/");
+            });
+        }
+    </script>
+</head>
+
+<body>
+    
+</body>
+</html>

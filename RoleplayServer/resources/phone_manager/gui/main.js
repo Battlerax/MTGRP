@@ -32,6 +32,11 @@
     });
 });
 
+function callAppFunction(functionName /* Args */) {
+    var args = Array.prototype.slice.call(arguments, 1);
+    document.getElementById('app-browser').contentWindow[functionName](...args);
+}
+
 function incoming_call(name, number)
 {
 	$("#apps-list").css("display", "none");

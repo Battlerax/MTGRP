@@ -40,6 +40,11 @@ namespace RoleplayServer.resources.phone_manager
                 case "phone_hangout":
                     h_cmd(sender);
                     break;
+
+                case "phone_getallContacts":
+                    string[][] contacts = sender.GetCharacter().Phone.Contacts.Select(x => new[] { x.Name, x.Number.ToString()}).ToArray();
+                    API.triggerClientEvent(sender, "phone_showContacts", API.toJson(contacts));
+                    break;
             }
         }
 
