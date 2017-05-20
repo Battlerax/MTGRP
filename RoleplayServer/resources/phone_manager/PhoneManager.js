@@ -62,7 +62,6 @@ function callPhone(number) {
 function answerCall() {
     API.triggerServerEvent("phone_answercall");
 }
-
 function closeCall() {
     API.triggerServerEvent("phone_hangout");
 }

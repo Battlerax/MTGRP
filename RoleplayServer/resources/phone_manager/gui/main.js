@@ -26,6 +26,10 @@
     $("#calling_end-call").click(function () {
         resourceCall("closeCall");
     });
+    $("#calling_ignore").click(function() {
+        //We will just ignore it CEF side.
+        callClosed();
+    });
 });
 
 function incoming_call(name, number)
