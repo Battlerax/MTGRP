@@ -37,7 +37,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
             myBrowser.call("incoming_call", args[0], args[1]);
             break;
 
-        case "phone-call-closed":
+        case "phone_call-closed":
             myBrowser.call("callClosed");
             break;
     }

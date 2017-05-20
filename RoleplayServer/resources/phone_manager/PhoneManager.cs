@@ -120,8 +120,8 @@ namespace RoleplayServer.resources.phone_manager
             character.InCallWith = Character.None;
             API.sendChatMessageToPlayer(player, "You have terminated the call.");
             API.sendChatMessageToPlayer(talkingTo.Client, "The other party has ended the call.");
-            API.triggerClientEvent(player, "phone-call-closed");
-            API.triggerClientEvent(talkingTo.Client, "phone-call-closed");
+            API.triggerClientEvent(player, "phone_call-closed");
+            API.triggerClientEvent(talkingTo.Client, "phone_call-closed");
         }
 
         [Command("togphone")]
