@@ -21,6 +21,7 @@ namespace RoleplayServer.resources.database_manager
         public static IMongoCollection<Job> JobTable;
         public static IMongoCollection<Phone> PhoneTable;
         public static IMongoCollection<PhoneContact> ContactTable;
+        public static IMongoCollection<PhoneMessage> MessagesTable;
         public static IMongoCollection<Group> GroupTable;
 
 
@@ -37,6 +38,7 @@ namespace RoleplayServer.resources.database_manager
             JobTable = _database.GetCollection<Job>("jobs");
             PhoneTable = _database.GetCollection<Phone>("phones");
             ContactTable = _database.GetCollection<PhoneContact>("phonecontacts");
+            MessagesTable = _database.GetCollection<PhoneMessage>("phonemessages");
             GroupTable = _database.GetCollection<Group>("groups");
 
             DebugManager.DebugMessage("[DatabaseM] Database Manager initalized!");

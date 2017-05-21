@@ -97,6 +97,7 @@
     <Compile Include="resources\phone_manager\Phone.cs" />
     <Compile Include="resources\phone_manager\PhoneContact.cs" />
     <Compile Include="resources\phone_manager\PhoneManager.cs" />
+    <Compile Include="resources\phone_manager\PhoneMessage.cs" />
     <Compile Include="resources\player_manager\Account.cs" />
     <Compile Include="resources\player_manager\CharacterMenu.cs" />
     <Compile Include="resources\component_manager\Component.cs" />
@@ -133,6 +134,7 @@
     <Content Include="resources\jquery.js" />
     <Content Include="resources\meta.xml" />
     <Content Include="resources\phone_manager\gui\apps\contacts.html" />
+    <Content Include="resources\phone_manager\gui\apps\mail.html" />
     <Content Include="resources\phone_manager\gui\main.css" />
     <Content Include="resources\phone_manager\gui\main.html" />
     <Content Include="resources\phone_manager\gui\main.js" />

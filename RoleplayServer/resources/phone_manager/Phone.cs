@@ -12,6 +12,7 @@ namespace RoleplayServer.resources.phone_manager
     {
         public static readonly Phone None = new Phone();
 
+        [BsonId]
         public ObjectId Id { get; set; }
         public int Number { get; set; }
         public bool IsOn { get; set; }
@@ -90,7 +91,50 @@ namespace RoleplayServer.resources.phone_manager
 
 
         /* ============== TEXT MESSAGES =============*/
+        //NOTE: These are static methods and are not linked to a phone basically.. for performance.
 
+        public long GetMessageCount(int from, int to)
+        {
+            var filter = Builders<PhoneMessage>.Filter.Eq(x => x.SenderNumber, from);
+            filter = filter & Builders<PhoneMessage>.Filter.Eq(x => x.ToNumber, to);
+            return DatabaseManager.MessagesTable.Find(filter).Count();
+        }
+
+        public static void LogMessage(int from, int to, string message)
+        {
+            var msg = new PhoneMessage()
+            {
+                Message = message,
+                DateSent = DateTime.Now,
+                SenderNumber = from,
+                ToNumber = to
+            };
+            msg.Insert();
+        }
+
+        public static List<PhoneMessage> GetMessageLog(int from, int to, int limit = 20, int toBeSkipped = 0)
+        {
+            var filter = Builders<PhoneMessage>.Filter.Eq(x => x.SenderNumber, from) & Builders<PhoneMessage>.Filter.Eq(x => x.ToNumber, to);
+            var sort = Builders<PhoneMessage>.Sort.Descending(x => x.DateSent);
+            var messages = DatabaseManager.MessagesTable.Find(filter).Sort(sort).Skip(toBeSkipped).Limit(limit).ToList();
+            return messages;
+        }
+
+        public static List<string[]> GetContactListOfMessages(int number)
+        {
+            var filter = Builders<PhoneMessage>.Filter.Eq(x => x.ToNumber, number);
+            var sort = Builders<PhoneMessage>.Sort.Descending(x => x.DateSent);
+            List<string[]> numbersList = DatabaseManager.MessagesTable.Find(filter).Sort(sort).Project(x => new [] { x.SenderNumber.ToString(), x.Message }).ToList();
+            List<string[]> numbers = new List<string[]>();
+            foreach (var itm in numbersList)
+            {
+                if (numbers.SingleOrDefault(x => x[0] == itm[0]) != null)
+                {
+                    numbers.Add(itm);
+                }
+            }
+            return numbers;
+        }
         /* ============== PHONE CALLS ==============*/
     }
 }

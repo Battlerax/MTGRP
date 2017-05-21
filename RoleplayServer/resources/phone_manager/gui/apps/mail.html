@@ -1,0 +1,130 @@
+﻿<html>
+<head>
+    <link href="../../../stylesheet/css/metro-icons.css" rel="stylesheet" type="text/css">
+    <link href="../../../stylesheet/css/metro.css" type="text/css" rel="stylesheet">
+    <script src="../../../jquery.js"></script>
+    <script src="../../../stylesheet/js/metro.js"></script>
+    <style>
+        .list-title {
+            color: white !important;
+        }
+
+        .list-subtitle {
+            color: #ce352c !important;
+            font-size: 20px;
+        }
+
+        .list-remark {
+            color: gray;
+        }
+
+        #contactsList {
+            height: 85%;
+        }
+        #footer {
+            height: 15%;
+            display:flex;
+            justify-content: center;
+            align-items: center;
+            background-color: gray;
+        }
+
+        #contactsList {
+            overflow: auto;
+        }
+
+        .popover {
+            width: 20px;
+            height: auto;
+            color: white;
+        }
+
+        .marker-on-right {
+            float: right;
+            margin-right: 10px;
+            background-color: gray !important;
+            margin-bottom: 5px;
+        }
+
+        .marker-on-left {
+            float: left;
+            margin-left: 10px;
+            background-color: #ce352c !important;
+            margin-bottom: 5px;
+        }
+
+        #messages {
+            overflow: auto;
+            height: 290px;
+        }
+        #messagesDiv { overflow: hidden; }
+    </style>
+    
+    <script>
+        $(document).ready(function() {
+            resourceCall("callServerEvent", "phone_loadMessagesContacts");
+        });
+
+        $(document).ready(function () {
+            $(".list").dblclick(function () {
+                $("#messagesDiv").css("display", "block");
+                $("#contactsListDiv").css("display", "none");
+                window.getSelection().empty();
+            });
+
+            $("#backButton").click(function () {
+                $("#messagesDiv").css("display", "none");
+                $("#contactsListDiv").css("display", "block");
+            });
+        });
+
+        function messageContactsLoaded(contactsJson) {
+            var contacts = JSON.parse(contactsJson);
+            $.each(contacts, function (key, value) {
+                $("#contactsList").append(`<div class="list">
+            <div class="list-content">
+                <span class="list-title">Johnny</span>
+                <span class="list-subtitle">I steal cars haha..</span>
+                <span class="list-remark">11:16 PM</span>
+            </div>
+        </div>`);
+            });
+        }
+    </script>
+</head>
+<body>
+<div id="contactsListDiv" style="display: block;">
+    <div class="listview-outlook" data-role="listview" id="contactsList">
+        <!-- <div class="list">
+            <div class="list-content">
+                <span class="list-title">Johnny</span>
+                <span class="list-subtitle">I steal cars haha..</span>
+                <span class="list-remark">11:16 PM</span>
+            </div>
+        </div> -->
+            
+    </div>
+    <div id="footer">
+        <button class="button cycle-button" style="height: 40px; width: 40px; background-color: gray; color: white;"><span class="mif-plus"></span></button>
+    </div>
+</div>
+    
+<div id="messagesDiv" style="display: none;">
+    <h2 style="color: white; margin-bottom: 15px;"><button class="button cycle-button" id="backButton"><span class="mif-arrow-left"></span></button> Johnny</h2>
+    <div id="messages">
+        <!-- <div class="popover marker-on-left">
+            <div>Hello, who are you ?</div>
+        </div>
+        <div class="popover marker-on-right">
+            <div>I am Ahmed, you ?</div>
+        </div> -->
+    </div>
+    <div id="newReplyDiv">
+        <div class="input-control text" style="width: 100%;" data-role="input">
+            <input type="text">
+            <button class="button"><span class="mif-paper-plane"></span></button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

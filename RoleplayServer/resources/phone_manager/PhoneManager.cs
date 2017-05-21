@@ -74,6 +74,21 @@ namespace RoleplayServer.resources.phone_manager
                 case "phone_deleteContact":
                     removecontact_cmd(sender, arguments[0].ToString());
                     break;
+
+                case "phone_loadMessagesContacts":
+                    Character character = sender.GetCharacter();
+                    if (character.Phone == Phone.None)
+                    {
+                        API.sendChatMessageToPlayer(sender, Color.White, "You do not have a phone!");
+                        return;
+                    }
+                    //First get all messages for this phone.
+                    var cntcs = Phone.GetContactListOfMessages(character.Phone.Number);
+                    
+                    //Now loop through them, substituting with name.
+                    var newContacts = cntcs.Select(x => character.Phone.Contacts.SingleOrDefault(y => y.Number == x)?.Name ?? x.ToString());
+                    API.triggerClientEvent(sender, "phone_messageContactsLoaded", API.toJson(newContacts));
+                    break;
             }
         }
 

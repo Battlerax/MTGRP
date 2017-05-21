@@ -56,6 +56,10 @@ API.onServerEventTrigger.connect((eventName, args) => {
         case "phone_contactRemoved":
             myBrowser.call("callAppFunction", "contactRemoved", args[0]);
             break;
+
+        case "phone_messageContactsLoaded":
+            myBrowser.call("callAppFunction", "messageContactsLoaded", args[0]);
+            break;
     }
 });
 
