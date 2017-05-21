@@ -45,6 +45,35 @@ namespace RoleplayServer.resources.phone_manager
                     string[][] contacts = sender.GetCharacter().Phone.Contacts.Select(x => new[] { x.Name, x.Number.ToString()}).ToArray();
                     API.triggerClientEvent(sender, "phone_showContacts", API.toJson(contacts));
                     break;
+
+                case "phone_saveContact":
+                    var name = arguments[0].ToString();
+                    int num;
+                    if (int.TryParse((string)arguments[1], out num))
+                    {
+                        addcontact_cmd(sender, num, name);
+                    }
+                    else
+                    {
+                        API.sendNotificationToPlayer(sender, "Invalid number entered.");
+                    }
+                    break;
+
+                case "phone_editContact":
+                    int anum;
+                    if (int.TryParse((string)arguments[2], out anum))
+                    {
+                        editcontact_cmd(sender, (string)arguments[0], (string)arguments[1], anum);
+                    }
+                    else
+                    {
+                        API.sendNotificationToPlayer(sender, "Invalid number entered.");
+                    }
+                    break;
+
+                case "phone_deleteContact":
+                    removecontact_cmd(sender, arguments[0].ToString());
+                    break;
             }
         }
 
@@ -90,7 +119,6 @@ namespace RoleplayServer.resources.phone_manager
             API.sendChatMessageToPlayer(player, "You have changed your phone name to " + name + ".");
         }
 
-        [Command("pickup")]
         public void pickup_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -116,7 +144,6 @@ namespace RoleplayServer.resources.phone_manager
             API.triggerClientEvent(player, "phone_calling", contact?.Name ?? "Unknown", character.InCallWith.Phone.Number);
         }
 
-        [Command("h")]
         public void h_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -160,8 +187,6 @@ namespace RoleplayServer.resources.phone_manager
         }
 
 
-
-        [Command("call", GreedyArg = true)]
         public void call_cmd(Client player, string input)
         {
             int number;
@@ -326,7 +351,30 @@ namespace RoleplayServer.resources.phone_manager
             API.sendChatMessageToPlayer(player, "You have changed " + rec.CharacterName + "'s phone number to " + number + ".");
         }
 
-        [Command("addcontact", GreedyArg = true)]
+        public void editcontact_cmd(Client player, string oldname, string newname, int number)
+        {
+            Character c = API.getEntityData(player.handle, "Character");
+
+            if (c.Phone == Phone.None)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "You do not have a phone!");
+                return;
+            }
+
+            var contact = c.Phone.Contacts.Find(x => x.Name == oldname);
+            if (contact != null)
+            {
+                contact.Name = newname;
+                contact.Number = number;
+                API.sendChatMessageToPlayer(player, Color.White, "You have edited the contact " + oldname + "  to " + newname + " (" + number + ").");
+                API.triggerClientEvent(player, "phone_contactEdited", oldname, newname, number);
+            }
+            else
+            {
+                API.sendNotificationToPlayer(player, "That contact doesn't exist.");
+            }
+        }
+
         public void addcontact_cmd(Client player, int number, string name)
         {
             Character c = API.getEntityData(player.handle, "Character");
@@ -346,9 +394,9 @@ namespace RoleplayServer.resources.phone_manager
 
             c.Phone.InsertContact(name, number);
             API.sendChatMessageToPlayer(player, Color.White, "You have added the contact " + name + " (" + number + ") to your phone.");
+            API.triggerClientEvent(player, "phone_contactAdded", name, number);
         }
 
-        [Command("removecontact", GreedyArg = true)]
         public void removecontact_cmd(Client player, string name)
         {
             Character c = API.getEntityData(player.handle, "Character");
@@ -372,33 +420,11 @@ namespace RoleplayServer.resources.phone_manager
                     return;
                 }
 
-                var contact = c.Phone.Contacts.Single(pc => string.Equals(pc.Name, name, StringComparison.OrdinalIgnoreCase));
+                var contact = c.Phone.Contacts.FirstOrDefault(pc => string.Equals(pc.Name, name, StringComparison.OrdinalIgnoreCase));
                 API.sendChatMessageToPlayer(player, Color.White, "You have deleted " + name + " (" + contact.Number + ") from your contacts.");
                 c.Phone.DeleteContact(contact);
+                API.triggerClientEvent(player, "phone_contactRemoved", name);
             }
-        }
-
-
-
-        [Command("listcontacts", GreedyArg = true)]
-        public void listcontacts_cmd(Client player)
-        {
-            API.sendChatMessageToPlayer(player, "---------------------------- PHONE CONTACTS ----------------------------");
-
-            Character character = API.getEntityData(player.handle, "Character");
-
-            if (character.Phone == Phone.None)
-            {
-                API.sendChatMessageToPlayer(player, Color.White, "You do not have a phone!");
-                return;
-            }
-
-            foreach (var pc in character.Phone.Contacts)
-            {
-                API.sendChatMessageToPlayer(player, pc.Name + " - " + pc.Number);
-            }
-
-            API.sendChatMessageToPlayer(player, "---------------------------------------------------------------------------------- ");
         }
 
         [Command("sms", GreedyArg = true)]

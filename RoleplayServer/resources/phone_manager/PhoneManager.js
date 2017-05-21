@@ -42,7 +42,19 @@ API.onServerEventTrigger.connect((eventName, args) => {
             break;
 
         case "phone_showContacts":
-            myBrowser.call("showContacts", args[0]);
+            myBrowser.call("callAppFunction", "showContacts", args[0]);
+            break;
+
+        case "phone_contactAdded":
+            myBrowser.call("callAppFunction", "contactAdded", args[0], args[1]);
+            break;
+
+        case "phone_contactEdited":
+            myBrowser.call("callAppFunction", "contactEdited", args[0], args[1], args[2]);
+            break;
+
+        case "phone_contactRemoved":
+            myBrowser.call("callAppFunction", "contactRemoved", args[0]);
             break;
     }
 });
