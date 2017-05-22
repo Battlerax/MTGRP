@@ -83,6 +83,7 @@
     <Compile Include="resources\database_manager\DatabaseManager.cs" />
     <Compile Include="resources\group_manager\Group.cs" />
     <Compile Include="resources\group_manager\GroupManager.cs" />
+    <Compile Include="resources\group_manager\lsnn\Lsnn.cs" />
     <Compile Include="resources\group_manager\lspd\Lspd.cs" />
     <Compile Include="resources\group_manager\lspd\LspdCommands.cs" />
     <Compile Include="resources\Init.cs" />
@@ -132,6 +133,8 @@
   <ItemGroup>
     <Content Include="resources\cef_resources\MTGVRP_LOGO_BIG.png" />
     <Content Include="resources\cef_resources\MTGVRP_LOGO_SMALL.png" />
+    <Content Include="resources\group_manager\lsnn\LowerThird.html" />
+    <Content Include="resources\group_manager\lsnn\Lsnn.js" />
     <Content Include="resources\inventory\ManageInv.html" />
     <Content Include="resources\job_manager\taxi\TaxiJob.js" />
     <Content Include="resources\jquery.js" />

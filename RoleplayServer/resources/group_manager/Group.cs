@@ -14,6 +14,7 @@ namespace RoleplayServer.resources.group_manager
     public class Group
     {
         public static readonly int CommandTypeLspd = 1;
+        public static readonly int CommandTypeLsnn = 2;
 
         public static readonly Group None = new Group();
 

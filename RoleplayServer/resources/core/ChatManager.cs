@@ -26,9 +26,15 @@ namespace RoleplayServer.resources.core
         {
             Account account = API.getEntityData(player.handle, "Account");
             Character character = API.getEntityData(player.handle, "Character");
-            
+
             //Local Chat
-            if(account.AdminDuty == 0)
+            if (API.getEntityData(player, "MicStatus") == true)
+            {
+                msg = character.rp_name() + " ~p~[BROADCAST]: " + msg;
+                SendBroadcastMessage(msg);
+            }
+       
+            if (account.AdminDuty == 0)
             {
                 msg = character.rp_name() + " says: " + msg;
                 NearbyMessage(player, 15, msg);
@@ -384,6 +390,18 @@ namespace RoleplayServer.resources.core
                 API.shared.deleteEntity(c.AmeText);
             }
             c.AmeTimer.Stop();
+        }
+
+        public void SendBroadcastMessage(string msg)
+        {
+            foreach (var c in PlayerManager.Players)
+            {
+                if (c.Phone.IsOn == false)
+                {
+                    return;
+                }
+                API.sendChatMessageToPlayer(c.Client, msg);
+            }
         }
     }
 }

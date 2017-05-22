@@ -166,6 +166,11 @@ namespace RoleplayServer.resources.player_manager
         //LSPD Related
         public bool IsInPoliceUniform { get; set; }
 
+        //LSNN Related
+        public bool IsWatchingBroadcast { get; set; }
+        public bool HasMic { get; set; }
+        public bool HasLottoTicket { get; set; }
+        public bool HasCamera { get; set; }
         //Player Interaction
         [BsonIgnore]
         public Character FollowingPlayer { get; set; }
