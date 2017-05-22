@@ -136,7 +136,9 @@
     <Content Include="resources\inventory\ManageInv.html" />
     <Content Include="resources\job_manager\taxi\TaxiJob.js" />
     <Content Include="resources\jquery.js" />
-    <Content Include="resources\meta.xml" />
+    <Content Include="resources\meta.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="resources\phone_manager\gui\apps\contacts.html" />
     <Content Include="resources\phone_manager\gui\apps\mail.html" />
     <Content Include="resources\phone_manager\gui\main.css" />
