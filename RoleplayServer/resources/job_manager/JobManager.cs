@@ -67,7 +67,7 @@ namespace RoleplayServer.resources.job_manager
             Character character = player.GetCharacter();
             var veh = VehicleManager.GetVehFromNetHandle(vehicle);
 
-            if(veh.JobId != 0)
+            if(veh?.JobId != 0)
             {
                 if (API.getPlayerVehicleSeat(player) == -1 && veh.Job != character.JobOne)
                 {

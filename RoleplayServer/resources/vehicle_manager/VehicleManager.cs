@@ -188,7 +188,7 @@ namespace RoleplayServer.resources.vehicle_manager
 
             Character character = API.getEntityData(player.handle, "Character");
 
-            API.sendChatMessageToPlayer(player, "~w~[VehicleM] You have entered vehicle ~r~" + Vehicles.IndexOf(veh) + "(Owned by: " + PlayerManager.Players.Single(x => x.Id == veh.OwnerId).CharacterName + ")");
+            API.sendChatMessageToPlayer(player, "~w~[VehicleM] You have entered vehicle ~r~" + Vehicles.IndexOf(veh) + "(Owned by: " + PlayerManager.Players.SingleOrDefault(x => x.Id == veh.OwnerId)?.CharacterName + ")");
 
             API.sendChatMessageToPlayer(player, "~y~ Press \"N\" on your keyboard to access the vehicle menu.");
 
