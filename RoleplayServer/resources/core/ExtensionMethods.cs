@@ -8,7 +8,7 @@ using RoleplayServer.resources.player_manager;
 
 namespace RoleplayServer.resources.core
 {
-    public static class ExtensionMethods
+    public static class ClientEx
     {
         public static Character GetCharacter(this Client player)
         {
