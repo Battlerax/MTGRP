@@ -6,6 +6,7 @@ using GTANetworkServer;
 using MongoDB.Driver;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.database_manager;
+using RoleplayServer.resources.inventory;
 using RoleplayServer.resources.player_manager;
 
 namespace RoleplayServer.resources.phone_manager
@@ -42,7 +43,16 @@ namespace RoleplayServer.resources.phone_manager
                     break;
 
                 case "phone_getallContacts":
-                    string[][] contacts = sender.GetCharacter().Phone.Contacts.Select(x => new[] { x.Name, x.Number.ToString()}).ToArray();
+                    //Check if has phone.
+                    var items = InventoryManager.DoesInventoryHaveItem(sender.GetCharacter(), typeof(Phone));
+                    if (items.Length == 0)
+                    {
+                        API.sendChatMessageToPlayer(sender, "You don't have a phone.");
+                        return;
+                    }
+                    var phone = (Phone) items[0];
+
+                    string[][] contacts = phone.Contacts.Select(x => new[] { x.Name, x.Number.ToString()}).ToArray();
                     API.triggerClientEvent(sender, "phone_showContacts", API.toJson(contacts));
                     break;
 
@@ -77,16 +87,19 @@ namespace RoleplayServer.resources.phone_manager
 
                 case "phone_loadMessagesContacts":
                     Character character = sender.GetCharacter();
-                    if (character.Phone == Phone.None)
+                    var lmcitems = InventoryManager.DoesInventoryHaveItem(character, typeof(Phone));
+                    if (lmcitems.Length == 0)
                     {
-                        API.sendChatMessageToPlayer(sender, Color.White, "You do not have a phone!");
+                        API.sendChatMessageToPlayer(sender, "You don't have a phone.");
                         return;
                     }
+                    var lmcphone = (Phone)lmcitems[0];
+
                     //First get all messages for this phone.
-                    var cntcs = Phone.GetContactListOfMessages(character.Phone.Number);
+                    var cntcs = Phone.GetContactListOfMessages(lmcphone.Number);
                     
                     //Now loop through them, substituting with name.
-                    var newContacts = cntcs.Select(x => new[] { character.Phone.Contacts.SingleOrDefault(y => y.Number.ToString() == x[0])?.Name ?? x[0], x[1], x[2], x[3]}).ToArray();
+                    var newContacts = cntcs.Select(x => new[] { lmcphone.Contacts.SingleOrDefault(y => y.Number.ToString() == x[0])?.Name ?? x[0], x[1], x[2], x[3]}).ToArray();
                     API.triggerClientEvent(sender, "phone_messageContactsLoaded", API.toJson(newContacts));
                     break;
             }
@@ -565,7 +578,7 @@ namespace RoleplayServer.resources.phone_manager
         public static Phone GetPhoneByNumber(int number)
         {
             var phoneFilter = Builders<Phone>.Filter.Eq("Number", number);
-            var foundPhones = DatabaseManager.PhoneTable.Find(phoneFilter).ToList();
+            var foundPhones = DatabaseManager.PhoneNumbersTable.Find(phoneFilter).ToList();
             return foundPhones.Count > 0 ? foundPhones[0] : Phone.None;
         }
 
@@ -573,7 +586,7 @@ namespace RoleplayServer.resources.phone_manager
         {
             var filter = Builders<Phone>.Filter.Eq("Number", num);
 
-            return DatabaseManager.PhoneTable.Find(filter).Count() > 0;
+            return DatabaseManager.PhoneNumbersTable.Find(filter).Count() > 0;
         }
     }
 }

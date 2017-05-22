@@ -14,8 +14,8 @@ namespace RoleplayServer.resources.phone_manager
         [BsonId]
         public ObjectId Id { get; set; }
 
-        public int SenderNumber { get; set; }
-        public int ToNumber { get; set; }
+        public string SenderNumber { get; set; }
+        public string ToNumber { get; set; }
         public string Message { get; set; }
         public DateTime DateSent { get; set; }
         public bool IsRead { get; set; }
