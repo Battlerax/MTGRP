@@ -6,8 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 using GTANetworkServer;
 using GTANetworkShared;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using RoleplayServer.resources.core;
+using RoleplayServer.resources.inventory.bags;
 using RoleplayServer.resources.player_manager;
 
 namespace RoleplayServer.resources.inventory
@@ -16,18 +18,86 @@ namespace RoleplayServer.resources.inventory
     {
         public InventoryManager()
         {
-			//TODO: Not sure if items still need to be registered here, but do so if you ever see a related exception.
-            //BsonClassMap.RegisterClassMap<TestItem>();
+            _activeInvsBeingManaged = new Dictionary<Client, KeyValuePair<IStorage, IStorage>>();
+
+            #region Inventory Items
+
+            BsonClassMap.RegisterClassMap<BagItem>();
+            BsonClassMap.RegisterClassMap<TestItem>();
+
+            #endregion
+
+
+            API.onClientEventTrigger += API_onClientEventTrigger;
         }
+
+        #region Events
+
+        public class OnGetItemEventArgs : EventArgs
+        {
+            public IInventoryItem Item { get; private set; }
+            public int Amount { get; private set; }
+            public OnGetItemEventArgs(IInventoryItem item, int amount)
+            {
+                Item = item;
+                Amount = amount;
+            }
+        }
+        public delegate void StorageGetItemHandler(IStorage sender, OnGetItemEventArgs args);
+        public static event StorageGetItemHandler OnStorageGetItem;
+
+        public class OnLoseItemEventArgs : EventArgs
+        {
+            public Type Item { get; private set; }
+            public int Amount { get; private set; }
+            public OnLoseItemEventArgs(Type item, int amount)
+            {
+                Item = item;
+                Amount = amount;
+            }
+        }
+        public delegate void StorageLoseItemHandler(IStorage sender, OnLoseItemEventArgs args);
+        public static event StorageLoseItemHandler OnStorageLoseItem;
+
+        #endregion
 
         public enum GiveItemErrors
         {
             NotEnoughSpace,
             HasBlockingItem,
+            MaxAmountReached,
             Success
         }
-        public static GiveItemErrors GiveInventoryItem(IStorage storage, IInventoryItem item, bool ignoreBlocking = false)
+        private static IInventoryItem CloneItem(IInventoryItem item, int amount = -1)
         {
+            var type = item.GetType();
+            var properties = type.GetProperties();
+            var newObject = ItemTypeToNewObject(type);
+            foreach (var prop in properties)
+            {
+                if(prop.CanWrite)
+                    prop.SetValue(newObject, prop.GetValue(item));
+            }
+            if (amount != -1) newObject.Amount = amount;
+            return newObject;
+        }
+
+
+        /// <summary>
+        /// Gives player an item.
+        /// NOTE: The item object is cloned, so the actual object passed isn't referenced.
+        /// Use DeleteInventoryItem to take.
+        /// </summary>
+        /// <param name="storage">The storage you wanna add to.</param>
+        /// <param name="sentitem">The item object, the Amount inside is ignored.</param>
+        /// <param name="amount">The amount of this item to be added, item will be duplicated if not stackable.</param>
+        /// <param name="ignoreBlocking">Add even if inventory is blocked due to big item.</param>
+        /// <returns></returns>
+        public static GiveItemErrors GiveInventoryItem(IStorage storage, IInventoryItem sentitem, int amount = 1, bool ignoreBlocking = false)
+        {
+            //We wanna clone and add it.
+            var item = CloneItem(sentitem, amount);
+
             if (storage.Inventory == null) storage.Inventory = new List<IInventoryItem>();
             //Make sure he doesn't have blocking item.
             if(storage.Inventory.FirstOrDefault(x => x.IsBlocking == true) != null && ignoreBlocking == false)
@@ -37,11 +107,19 @@ namespace RoleplayServer.resources.inventory
             var oldItem = storage.Inventory.FirstOrDefault(x => x.GetType() == item.GetType());
             if (oldItem == null || oldItem.CanBeStacked == false)
             {
+                if (item.MaxAmount != -1 && oldItem?.Amount >= item.MaxAmount)
+                {
+                    return GiveItemErrors.MaxAmountReached;
+                }
                 //Check if has enough space.
                 if ((GetInventoryFilledSlots(storage) + item.Amount * item.AmountOfSlots) <= storage.MaxInvStorage)
                 {
+                    //Set an id.
+                    if(item.Id == ObjectId.Empty) ObjectId.GenerateNewId(DateTime.Now);
+
                     //Add.
                     storage.Inventory.Add(item);
+                    OnStorageGetItem?.Invoke(storage, new OnGetItemEventArgs(sentitem, amount));
                     return GiveItemErrors.Success;
                 }
                 else
@@ -49,6 +127,11 @@ namespace RoleplayServer.resources.inventory
             }
             else
             {
+                if (item.MaxAmount != -1 && oldItem.Amount >= item.MaxAmount)
+                {
+                    return GiveItemErrors.MaxAmountReached;
+                }
+
                 //Make sure there is space again.
                 if ((GetInventoryFilledSlots(storage) + item.Amount * item.AmountOfSlots) <= storage.MaxInvStorage)
                 {
@@ -58,6 +141,7 @@ namespace RoleplayServer.resources.inventory
                     {
                         storage.Inventory.Remove(oldItem);
                     }
+                    OnStorageGetItem?.Invoke(storage, new OnGetItemEventArgs(sentitem, amount));
                     return GiveItemErrors.Success;
                 }
                 else
@@ -65,11 +149,34 @@ namespace RoleplayServer.resources.inventory
             }
         }
 
-        public static IInventoryItem DoesInventoryHaveItem(IStorage storage, Type item)
+        /// <summary>
+        /// Checks if user has certain item.
+        /// </summary>
+        /// <param name="storage">The storage that shall be checked.</param>
+        /// <param name="item">The item Type</param>
+        /// <returns>An array of IInventoryItem.</returns>
+        public static IInventoryItem[] DoesInventoryHaveItem(IStorage storage, Type item)
         {
-            return storage.Inventory.FirstOrDefault(x => x.GetType() == item);
+            if (storage.Inventory == null) storage.Inventory = new List<IInventoryItem>();
+            return storage.Inventory.Where(x => x.GetType() == item).ToArray();
+        }
+        /// <summary>
+        /// Checks if user has certain item.
+        /// </summary>
+        /// <param name="storage">The storage that shall be checked.</param>
+        /// <param name="item">The item name. Commandname.</param>
+        /// <returns>An array of IInventoryItem.</returns>
+        public static IInventoryItem[] DoesInventoryHaveItem(IStorage storage, string item)
+        {
+            if (storage.Inventory == null) storage.Inventory = new List<IInventoryItem>();
+            return storage.Inventory.Where(x => x.CommandFriendlyName == item).ToArray();
         }
 
+        /// <summary>
+        /// Converts a string to its equivelent Type of IInventoryItem.
+        /// </summary>
+        /// <param name="item">The item string</param>
+        /// <returns>The IInventoryItem Type</returns>
         public static Type ParseInventoryItem(string item)
         {
             var allItems =
@@ -84,25 +191,230 @@ namespace RoleplayServer.resources.inventory
             return null;
         }
 
+        /// <summary>
+        /// Gets current filled slots.
+        /// </summary>
+        /// <param name="storage">The storage to check.</param>
+        /// <returns>An integer of sum of taken slots.</returns>
         public static int GetInventoryFilledSlots(IStorage storage)
         {
+            if (storage.Inventory == null) storage.Inventory = new List<IInventoryItem>();
             int value = 0;
             storage.Inventory.ForEach(x => value += x.AmountOfSlots * x.Amount);
             return value;
         }
 
-        public static bool DeleteInventoryItem(IStorage storage, Type item)
+        /// <summary>
+        /// Removes an item from storage.
+        /// </summary>
+        /// <param name="storage">The storage to remove from.</param>
+        /// <param name="item">The item to remove.</param>
+        /// <param name="amount">Amount to be removed, -1 for all.</param>
+        /// <param name="predicate">The predicate to be used, can be null for none</param>
+        /// <returns>true if something was removed and false if nothing was removed.</returns>
+        public static bool DeleteInventoryItem(IStorage storage, Type item, int amount = -1, Func<IInventoryItem, bool> predicate = null)
         {
-            if (storage.Inventory.RemoveAll(x => x.GetType() == item) > 0)
-            return true;
+            if (storage.Inventory == null) storage.Inventory = new List<IInventoryItem>();
+            if (amount == -1)
+            {
+                if (storage.Inventory.RemoveAll(x => x.GetType() == item) > 0)
+                {
+                    OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(item, amount));
+                    return true;
+                }
+                return false;
+            }
 
+            IInventoryItem itm = predicate != null ? storage.Inventory.Where(x => x.GetType() == item).SingleOrDefault(predicate) : storage.Inventory.SingleOrDefault(x => x.GetType() == item);
+            if (itm != null)
+            {
+                itm.Amount -= amount;
+                if (itm.Amount <= 0)
+                    storage.Inventory.Remove(itm);
+
+                OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(item, amount));
+                return true;
+            }
             return false;
         }
 
+        /// <summary>
+        /// Creates a new object from Type.
+        /// </summary>
+        /// <param name="item">Item Type</param>
+        /// <returns>Object of Type</returns>
         public static IInventoryItem ItemTypeToNewObject(Type item)
         {
             return (IInventoryItem)Activator.CreateInstance(item);
         }
+
+        #region InventoryMovingManagement
+
+        private static Dictionary<Client, KeyValuePair<IStorage, IStorage>> _activeInvsBeingManaged;
+        public static void ShowInventoryManager(Client player, IStorage activeLeft, IStorage activeRight, string leftTitle, string rightTitle)
+        {
+            if (_activeInvsBeingManaged.ContainsKey(player))
+            {
+                API.shared.sendNotificationToPlayer(player, "You already have an inventory management window open.");
+                return;
+            }
+
+            string[][] leftItems =
+                activeLeft.Inventory.Where(x => x.GetType() != typeof(BagItem))
+                    .Select(x => new[] {x.Id.ToString(), x.LongName, x.CommandFriendlyName, x.Amount.ToString()})
+                    .ToArray();
+
+            string[][] rightItems =
+                activeRight.Inventory.Where(x => x.GetType() != typeof(BagItem))
+                    .Select(x => new[] {x.Id.ToString(), x.LongName, x.CommandFriendlyName, x.Amount.ToString()})
+                    .ToArray();
+
+            var leftJson = API.shared.toJson(leftItems);
+            var rightJson = API.shared.toJson(rightItems);
+            var usedLeft = GetInventoryFilledSlots(activeLeft) + "/" + activeLeft.MaxInvStorage;
+            var usedRight = GetInventoryFilledSlots(activeRight) + "/" + activeRight.MaxInvStorage;
+            API.shared.triggerClientEvent(player, "invmanagement_showmanager", leftJson, rightJson, leftTitle, rightTitle, usedLeft, usedRight);
+            _activeInvsBeingManaged.Add(player, new KeyValuePair<IStorage, IStorage>(activeLeft, activeRight));
+        }
+
+        private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
+        {
+            switch (eventName)
+            {
+                case "invmanagement_cancelled":
+                    _activeInvsBeingManaged.Remove(sender);
+                    API.sendNotificationToPlayer(sender, "Cancelled Inventory Management.");
+                    break;
+                   
+                case "invmanagement_moveFromLeftToRight":
+                    string id = (string)arguments[0];
+                    string shortname = (string)arguments[1];
+                    int amount;
+                    if (!int.TryParse((string)arguments[2], out amount))
+                    {
+                        API.sendNotificationToPlayer(sender, "Invalid amount entered.");
+                        return;
+                    }
+                    if (amount <= 0)
+                    {
+                        API.sendNotificationToPlayer(sender, "Amount must not be zero or negative.");
+                        return;
+                    }
+
+                    //Make sure is managing.
+                    if (!_activeInvsBeingManaged.ContainsKey(sender))
+                    {
+                        API.sendNotificationToPlayer(sender, "You aren't managing any inventory.");
+                        return;
+                    }
+
+                    //Get the invs.
+                    KeyValuePair<IStorage, IStorage> storages = _activeInvsBeingManaged.Get(sender);
+
+                    //See if has item.
+                    var itemType = InventoryManager.ParseInventoryItem(shortname);
+                    if (itemType == null)
+                    {
+                        API.sendNotificationToPlayer(sender, "That item type doesn't exist.");
+                        return;
+                    }
+                    var playerItem = InventoryManager.DoesInventoryHaveItem(storages.Key, itemType).SingleOrDefault(x => x.Id.ToString() == id);
+                    if (playerItem == null || playerItem.Amount < amount)
+                    {
+                        API.sendNotificationToPlayer(sender, "The source storage doesn't have that item or doesn't have that amount.");
+                        return;
+                    }
+
+                    //Add to bag.
+                    switch (InventoryManager.GiveInventoryItem(storages.Value, playerItem, amount, true))
+                    {
+                        case InventoryManager.GiveItemErrors.NotEnoughSpace:
+                            API.sendNotificationToPlayer(sender, "There is no enough slots in target storage.");
+                            break;
+                        case InventoryManager.GiveItemErrors.MaxAmountReached:
+                            API.sendNotificationToPlayer(sender, "Reached max amount of that item in target storage.");
+                            break;
+                        case InventoryManager.GiveItemErrors.Success:
+                            //Remove from player.
+                            InventoryManager.DeleteInventoryItem(storages.Key, itemType, amount,
+                                x => x.Id.ToString() == id && x.CommandFriendlyName == shortname);
+
+                            //Send event done.
+                            var usedLeft = GetInventoryFilledSlots(storages.Key) + "/" + storages.Key.MaxInvStorage;
+                            var usedRight = GetInventoryFilledSlots(storages.Value) + "/" + storages.Value.MaxInvStorage;
+                            API.triggerClientEvent(sender, "moveItemFromLeftToRightSuccess", id, shortname, amount, usedLeft, usedRight); //Id should be same cause it was already set since it was in player inv.
+                            API.sendNotificationToPlayer(sender, $"The item ~g~{shortname}~w~ was moved sucessfully.");
+                            break;
+                    }
+                    break;
+
+                case "invmanagement_moveFromRightToLeft":
+
+                    string rlid = (string)arguments[0];
+                    string rlshortname = (string)arguments[1];
+                    int rlamount;
+                    if (!int.TryParse((string)arguments[2], out rlamount))
+                    {
+                        API.sendNotificationToPlayer(sender, "Invalid amount entered.");
+                        return;
+                    }
+                    if (rlamount <= 0)
+                    {
+                        API.sendNotificationToPlayer(sender, "Amount must not be zero or negative.");
+                        return;
+                    }
+
+                    //Make sure is managing.
+                    if (!_activeInvsBeingManaged.ContainsKey(sender))
+                    {
+                        API.sendNotificationToPlayer(sender, "You aren't managing any inventory.");
+                        return;
+                    }
+
+                    //Get the invs.
+                    KeyValuePair<IStorage, IStorage> rlstorages = _activeInvsBeingManaged.Get(sender);
+
+                    //See if has item.
+                    var rlitemType = InventoryManager.ParseInventoryItem(rlshortname);
+                    if (rlitemType == null)
+                    {
+                        API.sendNotificationToPlayer(sender, "That item type doesn't exist.");
+                        return;
+                    }
+                    var rlplayerItem = InventoryManager.DoesInventoryHaveItem(rlstorages.Value, rlitemType).SingleOrDefault(x => x.Id.ToString() == rlid);
+                    if (rlplayerItem == null || rlplayerItem.Amount < rlamount)
+                    {
+                        API.sendNotificationToPlayer(sender, "The source storage doesn't have that item or doesn't have that amount.");
+                        return;
+                    }
+
+                    //Add to bag.
+                    switch (InventoryManager.GiveInventoryItem(rlstorages.Key, rlplayerItem, rlamount, true))
+                    {
+                        case InventoryManager.GiveItemErrors.NotEnoughSpace:
+                            API.sendNotificationToPlayer(sender, "There is no enough slots in target storage.");
+                            break;
+                        case InventoryManager.GiveItemErrors.MaxAmountReached:
+                            API.sendNotificationToPlayer(sender, "Reached max amount of that item in target storage.");
+                            break;
+                        case InventoryManager.GiveItemErrors.Success:
+                            //Remove from player.
+                            InventoryManager.DeleteInventoryItem(rlstorages.Value, rlitemType, rlamount,
+                                x => x.Id.ToString() == rlid && x.CommandFriendlyName == rlshortname);
+
+                            //Send event done.
+                            var usedLeft = GetInventoryFilledSlots(rlstorages.Key) + "/" + rlstorages.Key.MaxInvStorage;
+                            var usedRight = GetInventoryFilledSlots(rlstorages.Value) + "/" + rlstorages.Value.MaxInvStorage;
+                            API.triggerClientEvent(sender, "moveItemFromRightToLeftSuccess", rlid, rlshortname, rlamount, usedLeft, usedRight); //Id should be same cause it was already set since it was in player inv.
+                            API.sendNotificationToPlayer(sender, $"The item ~g~{rlshortname}~w~ was moved sucessfully.");
+                            break;
+                    }
+
+                    break;
+            }
+        }
+
+        #endregion
 
         [Command("give")]
         public void give_cmd(Client player, string id, string item, int amount)
@@ -121,32 +433,23 @@ namespace RoleplayServer.resources.inventory
                 return;
             }
 
-            //Get the item.
-            var itemType = ParseInventoryItem(item);
-            if (itemType == null)
+            //Make sure he does have such amount.
+            var sendersItem = DoesInventoryHaveItem(sender, item);
+            if (sendersItem.Length != 1 || sendersItem[0].Amount < amount)
             {
-                API.sendNotificationToPlayer(player, "That item doesn't exist.");
+                API.sendNotificationToPlayer(player, "You don't have that item or you don't have that amount or there is more than 1 item with that name.");
                 return;
             }
-            var itemObj = ItemTypeToNewObject(itemType);
-            if (itemObj.CanBeGiven == false)
+
+            if (sendersItem[0].CanBeGiven == false)
             {
                 API.sendNotificationToPlayer(player, "That item cannot be given.");
                 return;
             }
 
-            //Make sure he does have such amount.
-            var sendersItem = DoesInventoryHaveItem(sender, itemType);
-            if (sendersItem == null || sendersItem.Amount < amount)
-            {
-                API.sendNotificationToPlayer(player, "You don't have that item or you don't have that amount.");
-                return;
-            }
 
             //Give.
-            var newItem = sendersItem.Copy();
-            newItem.Amount = amount;
-            switch (GiveInventoryItem(target, newItem))
+            switch (GiveInventoryItem(target, sendersItem[0], amount))
             {
                 case GiveItemErrors.NotEnoughSpace:
                     API.sendNotificationToPlayer(player, "The target player doesn't have enough space in his inventory.");
@@ -159,15 +462,20 @@ namespace RoleplayServer.resources.inventory
                     API.sendNotificationToPlayer(targetClient,
                         "You have a blocking item in-hand, place it somewhere first. /inv to find out what it is.");
                     break;
+                case GiveItemErrors.MaxAmountReached:
+                    API.sendNotificationToPlayer(player, "The target player reach max amount of that item.");
+                    API.sendNotificationToPlayer(targetClient,
+                        "You have reached the max amount of that item.");
+                    break;
 
                 case GiveItemErrors.Success:
                     API.sendNotificationToPlayer(player,
-                        $"You have sucessfully given ~g~{amount}~w~ ~g~{sendersItem.LongName}~w~ to ~g~{target.CharacterName}~w~.");
+                        $"You have sucessfully given ~g~{amount}~w~ ~g~{sendersItem[0].LongName}~w~ to ~g~{target.CharacterName}~w~.");
                     API.sendNotificationToPlayer(targetClient,
-                        $"You have receieved ~g~{amount}~w~ ~g~{sendersItem.LongName}~w~ from ~g~{sender.CharacterName}~w~.");
+                        $"You have receieved ~g~{amount}~w~ ~g~{sendersItem[0].LongName}~w~ from ~g~{sender.CharacterName}~w~.");
 
                     //Remove from their inv.
-                    sendersItem.Amount -= amount;
+                    DeleteInventoryItem(sender, sendersItem[0].GetType(), amount, x => x == sendersItem[0]);
                     break;
             }
         }
@@ -177,34 +485,22 @@ namespace RoleplayServer.resources.inventory
         {
             Character character = player.GetCharacter();
 
-            //Get the item.
-            var itemType = ParseInventoryItem(item);
-            if (itemType == null)
+            //Get in inv.
+            var sendersItem = DoesInventoryHaveItem(character, item);
+            if (sendersItem.Length != 1 || sendersItem[0].Amount < amount)
             {
-                API.sendNotificationToPlayer(player, "That item doesn't exist.");
+                API.sendNotificationToPlayer(player, "You don't have that item or you don't have that amount or there is more than 1 item with that name.");
                 return;
             }
-            var itemObj = ItemTypeToNewObject(itemType);
-            if (itemObj.CanBeDropped == false)
+
+            if (sendersItem[0].CanBeDropped == false)
             {
                 API.sendNotificationToPlayer(player, "That item cannot be dropped.");
                 return;
             }
 
-            //Get in inv.
-            var sendersItem = DoesInventoryHaveItem(character, itemType);
-            if (sendersItem == null || sendersItem.Amount < amount)
-            {
-                API.sendNotificationToPlayer(player, "You don't have that item or you don't have that amount.");
-                return;
-            }
-
-            if (amount == sendersItem.Amount)
-                DeleteInventoryItem(character, itemType);
-            else
-                sendersItem.Amount -= amount;
-
-            API.sendNotificationToPlayer(player, "Item was sucessfully dropped.");
+            if (DeleteInventoryItem(character, sendersItem[0].GetType(), amount, x => x == sendersItem[0]))
+                API.sendNotificationToPlayer(player, "Item(s) was sucessfully dropped.");
         }
 
         #region Stashing System: 
@@ -215,40 +511,29 @@ namespace RoleplayServer.resources.inventory
         {
             Character character = player.GetCharacter();
 
-            //Get the item.
-            var itemType = ParseInventoryItem(item);
-            if (itemType == null)
-            {
-                API.sendNotificationToPlayer(player, "That item doesn't exist.");
-                return;
-            }
-            var itemObj = ItemTypeToNewObject(itemType);
-            if (itemObj.CanBeStashed == false)
-            {
-                API.sendNotificationToPlayer(player, "That item cannot be stashed.");
-                return;
-            }
-
             //Get in inv.
-            var sendersItem = DoesInventoryHaveItem(character, itemType);
-            if (sendersItem == null || sendersItem.Amount < amount)
+            var sendersItem = DoesInventoryHaveItem(character, item);
+            if (sendersItem.Length != 1 || sendersItem[0].Amount < amount)
             {
                 API.sendNotificationToPlayer(player, "You don't have that item or you don't have that amount.");
                 return;
             }
 
+            if (sendersItem[0].CanBeStashed == false)
+            {
+                API.sendNotificationToPlayer(player, "That item cannot be stashed.");
+                return;
+            }
+
             //Create object and add to list.
-            var droppedObject = API.createObject(sendersItem.Object, player.position.Subtract(new Vector3(0, 0, 1)), new Vector3(0, 0, 0));
-            stashedItems.Add(droppedObject, sendersItem.Copy());
+            var droppedObject = API.createObject(sendersItem[0].Object, player.position.Subtract(new Vector3(0, 0, 1)), new Vector3(0, 0, 0));
+            stashedItems.Add(droppedObject, CloneItem(sendersItem[0], amount));
 
             //Decrease.
-            if (amount == sendersItem.Amount)
-                DeleteInventoryItem(character, itemType);
-            else
-                sendersItem.Amount -= amount;
+            DeleteInventoryItem(character, sendersItem[0].GetType(), amount, x => x == sendersItem[0]);
 
             //Send message.
-            API.sendNotificationToPlayer(player, $"You have sucessfully stashed ~g~{amount} {sendersItem.LongName}~w~. Use /pickupstash to take it.");
+            API.sendNotificationToPlayer(player, $"You have sucessfully stashed ~g~{amount} {sendersItem[0].LongName}~w~. Use /pickupstash to take it.");
         }
 
         [Command("pickupstash")]
@@ -273,7 +558,9 @@ namespace RoleplayServer.resources.inventory
                 case GiveItemErrors.HasBlockingItem:
                     API.sendNotificationToPlayer(player, "You have a blocking item in hand.");
                     break;
-
+                case GiveItemErrors.MaxAmountReached:
+                    API.sendNotificationToPlayer(player, "You have reached the max amount of that item.");
+                    break;
                 case GiveItemErrors.Success:
                     API.sendNotificationToPlayer(player,
                         $"You have sucessfully taken ~g~{items.First().Value.Amount}~w~ ~g~{items.First().Value.LongName}~w~ from the stash.");
@@ -300,7 +587,7 @@ namespace RoleplayServer.resources.inventory
             //For Each item.
             foreach (var item in character.Inventory)
             {
-                API.sendChatMessageToPlayer(player, $"* ~r~{item.LongName}~w~[{item.CommandFriendlyName}] ({item.Amount}) Weights {item.AmountOfSlots} Slots" + (item.IsBlocking ? " [BLOCKING]" : ""));
+                API.sendChatMessageToPlayer(player, $"* ~r~{item.LongName}~w~ [{item.CommandFriendlyName}] ({item.Amount}) Weights {item.AmountOfSlots} Slots" + (item.IsBlocking ? " [BLOCKING]" : ""));
             }
 
             //Ending
@@ -316,16 +603,7 @@ namespace RoleplayServer.resources.inventory
             if (itemType != null)
             {
                 var actualitem = ItemTypeToNewObject(itemType);
-                actualitem.Amount = amount;
-                switch (GiveInventoryItem(character, actualitem))
-                {
-                    case GiveItemErrors.NotEnoughSpace:
-                        API.sendChatMessageToPlayer(player, "You can't hold anymore items in your inventory.");
-                        break;
-                    case GiveItemErrors.Success:
-                        API.sendChatMessageToPlayer(player, "DONE!");
-                        break;
-                }
+                API.sendChatMessageToPlayer(player, GiveInventoryItem(character, actualitem, amount).ToString());
             }
             else
                 API.sendChatMessageToPlayer(player, "Invalid item name.");
