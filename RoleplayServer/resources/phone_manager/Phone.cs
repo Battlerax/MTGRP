@@ -107,14 +107,15 @@ namespace RoleplayServer.resources.phone_manager
                 Message = message,
                 DateSent = DateTime.Now,
                 SenderNumber = from,
-                ToNumber = to
+                ToNumber = to,
+                IsRead = false
             };
             msg.Insert();
         }
 
-        public static List<PhoneMessage> GetMessageLog(int from, int to, int limit = 20, int toBeSkipped = 0)
+        public static List<PhoneMessage> GetMessageLog(int contact1, int contact2, int limit = 20, int toBeSkipped = 0)
         {
-            var filter = Builders<PhoneMessage>.Filter.Eq(x => x.SenderNumber, from) & Builders<PhoneMessage>.Filter.Eq(x => x.ToNumber, to);
+            var filter = (Builders<PhoneMessage>.Filter.Eq(x => x.SenderNumber, contact1) & Builders<PhoneMessage>.Filter.Eq(x => x.ToNumber, contact2)) | (Builders<PhoneMessage>.Filter.Eq(x => x.SenderNumber, contact2) & Builders<PhoneMessage>.Filter.Eq(x => x.ToNumber, contact1));
             var sort = Builders<PhoneMessage>.Sort.Descending(x => x.DateSent);
             var messages = DatabaseManager.MessagesTable.Find(filter).Sort(sort).Skip(toBeSkipped).Limit(limit).ToList();
             return messages;
@@ -124,11 +125,11 @@ namespace RoleplayServer.resources.phone_manager
         {
             var filter = Builders<PhoneMessage>.Filter.Eq(x => x.ToNumber, number);
             var sort = Builders<PhoneMessage>.Sort.Descending(x => x.DateSent);
-            List<string[]> numbersList = DatabaseManager.MessagesTable.Find(filter).Sort(sort).Project(x => new [] { x.SenderNumber.ToString(), x.Message }).ToList();
+            var numbersList = DatabaseManager.MessagesTable.Find(filter).Sort(sort).Project(x => new [] { x.SenderNumber.ToString(), x.Message, x.DateSent.ToString("g"),x.IsRead.ToString() }).ToEnumerable();
             List<string[]> numbers = new List<string[]>();
             foreach (var itm in numbersList)
             {
-                if (numbers.SingleOrDefault(x => x[0] == itm[0]) != null)
+                if (numbers.SingleOrDefault(x => x[0] == itm[0]) == null)
                 {
                     numbers.Add(itm);
                 }

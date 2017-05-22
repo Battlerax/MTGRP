@@ -83,12 +83,17 @@
             $.each(contacts, function (key, value) {
                 $("#contactsList").append(`<div class="list">
             <div class="list-content">
-                <span class="list-title">Johnny</span>
-                <span class="list-subtitle">I steal cars haha..</span>
-                <span class="list-remark">11:16 PM</span>
+                <span class="list-title">${value[0]}</span>
+                <span class ="list-subtitle">${value[1]}</span>
+                <span class ="list-remark">${value[2]}</span>
             </div>
         </div>`);
             });
+        }
+
+        window.addEventListener("message", receiveMessage, false);
+        function receiveMessage(event) {
+            window[event.data[0]](...event.data[1]);
         }
     </script>
 </head>

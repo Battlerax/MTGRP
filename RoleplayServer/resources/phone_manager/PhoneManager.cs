@@ -86,7 +86,7 @@ namespace RoleplayServer.resources.phone_manager
                     var cntcs = Phone.GetContactListOfMessages(character.Phone.Number);
                     
                     //Now loop through them, substituting with name.
-                    var newContacts = cntcs.Select(x => character.Phone.Contacts.SingleOrDefault(y => y.Number == x)?.Name ?? x.ToString());
+                    var newContacts = cntcs.Select(x => new[] { character.Phone.Contacts.SingleOrDefault(y => y.Number.ToString() == x[0])?.Name ?? x[0], x[1], x[2], x[3]}).ToArray();
                     API.triggerClientEvent(sender, "phone_messageContactsLoaded", API.toJson(newContacts));
                     break;
             }
@@ -511,6 +511,8 @@ namespace RoleplayServer.resources.phone_manager
 
                 ChatManager.AmeLabelMessage(player, "presses a few buttons on their phone, sending a message.", 4000);
                 ChatManager.RoleplayMessage(character, "'s phone vibrates..", ChatManager.RoleplayMe);
+
+                Phone.LogMessage(sender.Phone.Number, character.Phone.Number, message);
             }
             else
             {
@@ -549,6 +551,8 @@ namespace RoleplayServer.resources.phone_manager
 
                 ChatManager.AmeLabelMessage(player, "presses a few buttons on their phone, sending a message.", 4000);
                 ChatManager.RoleplayMessage(character, "'s phone vibrates..", ChatManager.RoleplayMe);
+
+                Phone.LogMessage(sender.Phone.Number, character.Phone.Number, message);
             }
         }
 

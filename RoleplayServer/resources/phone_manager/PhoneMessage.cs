@@ -18,6 +18,7 @@ namespace RoleplayServer.resources.phone_manager
         public int ToNumber { get; set; }
         public string Message { get; set; }
         public DateTime DateSent { get; set; }
+        public bool IsRead { get; set; }
 
         public void Insert()
         {
