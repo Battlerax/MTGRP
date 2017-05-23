@@ -10,13 +10,13 @@ namespace RoleplayServer.resources.phone_manager
         [BsonId]
         public ObjectId Id { get; set; }
         public string Name { get; set; }
-        public int Number { get; set; }
+        public string Number { get; set; }
         public string PhoneId { get; set; }
 
         public PhoneContact()
         {
             Name = "unnamed";
-            Number = 0;
+            Number = "0";
             PhoneId = "None";
         }
 

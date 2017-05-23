@@ -115,7 +115,7 @@ namespace RoleplayServer.resources.inventory
                 if ((GetInventoryFilledSlots(storage) + item.Amount * item.AmountOfSlots) <= storage.MaxInvStorage)
                 {
                     //Set an id.
-                    if(item.Id == ObjectId.Empty) ObjectId.GenerateNewId(DateTime.Now);
+                    if(item.Id == ObjectId.Empty) { item.Id = ObjectId.GenerateNewId(DateTime.Now); sentitem.Id = item.Id; }
 
                     //Add.
                     storage.Inventory.Add(item);
@@ -170,6 +170,12 @@ namespace RoleplayServer.resources.inventory
         {
             if (storage.Inventory == null) storage.Inventory = new List<IInventoryItem>();
             return storage.Inventory.Where(x => x.CommandFriendlyName == item).ToArray();
+        }
+
+        public static T[] DoesInventoryHaveItem<T>(IStorage storage)
+        {
+            if (storage.Inventory == null) storage.Inventory = new List<IInventoryItem>();
+            return storage.Inventory.Where(x => x.GetType() == typeof(T)).Cast<T>().ToArray();
         }
 
         /// <summary>

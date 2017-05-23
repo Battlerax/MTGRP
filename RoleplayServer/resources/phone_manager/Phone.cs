@@ -22,13 +22,13 @@ namespace RoleplayServer.resources.phone_manager
 
         public bool CanBeDropped => true;
         public bool CanBeGiven => true;
-        public bool CanBeStacked => true;
+        public bool CanBeStacked => false;
         public bool CanBeStashed => true;
         public bool IsBlocking => false;
         public int MaxAmount => 1;
 
-        public string CommandFriendlyName => "Phone";
-        public string LongName => "Test Item";
+        public string CommandFriendlyName => "phone_" + PhoneName;
+        public string LongName => "Phone " + PhoneName;
         public int Object => 0;
 
         #endregion
@@ -47,19 +47,29 @@ namespace RoleplayServer.resources.phone_manager
             PhoneName = "Phone";
         }
 
-        public void InsertNumber()
+        public static void InsertNumber(ObjectId phoneid, string num)
         {
-            DatabaseManager.PhoneNumbersTable.InsertOne(Number);
+            PhoneNumber number = new PhoneNumber()
+            {
+                Number = num,
+                PhoneId = phoneid
+            };
+            DatabaseManager.PhoneNumbersTable.InsertOne(number);
         }
 
-        public void ChangeNumber(string newNumber)
+        public static void ChangeNumber(ObjectId phoneid, string newNumber)
         {
-            DatabaseManager.PhoneNumbersTable.ReplaceOneAsync(x => x == Number , newNumber);
+            PhoneNumber number = new PhoneNumber()
+            {
+                Number = newNumber,
+                PhoneId = phoneid
+            };
+            DatabaseManager.PhoneNumbersTable.ReplaceOneAsync(y => y.PhoneId == phoneid, number);
         }
 
         /* ============== CONTACTS ================ */
 
-        public void InsertContact(string name, int number)
+        public void InsertContact(string name, string number)
         {
             var contact = new PhoneContact
             {
@@ -97,12 +107,12 @@ namespace RoleplayServer.resources.phone_manager
             return Contacts.Count(pc => string.Equals(pc.Name, name, StringComparison.OrdinalIgnoreCase)) > 0;
         }
 
-        public bool HasContactWithNumber(int number)
+        public bool HasContactWithNumber(string number)
         {
             return Contacts.Count(pc => pc.Number == number) > 0;
         }
 
-        public bool HasContact(string name, int number)
+        public bool HasContact(string name, string number)
         {
             return Contacts.Count(pc => pc.Number == number || string.Equals(pc.Name, name, StringComparison.OrdinalIgnoreCase)) > 0;
         }
