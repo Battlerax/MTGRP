@@ -5,35 +5,16 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using RoleplayServer.resources.database_manager;
-using RoleplayServer.resources.inventory;
 
 namespace RoleplayServer.resources.phone_manager
 {
-    public class Phone : IInventoryItem
+    public class Phone
     {
-        #region InvRelated Stuff
+        public static readonly Phone None = new Phone();
 
         [BsonId]
         public ObjectId Id { get; set; }
-
-        public int Amount { get; set; }
-
-        public int AmountOfSlots => 25; //TODO: Change this to something apporpriate.
-
-        public bool CanBeDropped => true;
-        public bool CanBeGiven => true;
-        public bool CanBeStacked => true;
-        public bool CanBeStashed => true;
-        public bool IsBlocking => false;
-        public int MaxAmount => 1;
-
-        public string CommandFriendlyName => "Phone";
-        public string LongName => "Test Item";
-        public int Object => 0;
-
-        #endregion
-
-        public string Number { get; set; }
+        public int Number { get; set; }
         public bool IsOn { get; set; }
         public string PhoneName { get; set; }
 
@@ -42,19 +23,20 @@ namespace RoleplayServer.resources.phone_manager
 
         public Phone()
         {
-            Number = "0";
+            Number = 0;
             IsOn = true;
             PhoneName = "Phone";
         }
 
-        public void InsertNumber()
+        public void Insert()
         {
-            DatabaseManager.PhoneNumbersTable.InsertOne(Number);
+            DatabaseManager.PhoneTable.InsertOne(this);
         }
 
-        public void ChangeNumber(string newNumber)
+        public void Save()
         {
-            DatabaseManager.PhoneNumbersTable.ReplaceOneAsync(x => x == Number , newNumber);
+            var filter = Builders<Phone>.Filter.Eq("Id", Id);
+            DatabaseManager.PhoneTable.ReplaceOneAsync(filter, this);
         }
 
         /* ============== CONTACTS ================ */
@@ -111,14 +93,14 @@ namespace RoleplayServer.resources.phone_manager
         /* ============== TEXT MESSAGES =============*/
         //NOTE: These are static methods and are not linked to a phone basically.. for performance.
 
-        public long GetMessageCount(string from, string to)
+        public long GetMessageCount(int from, int to)
         {
             var filter = Builders<PhoneMessage>.Filter.Eq(x => x.SenderNumber, from);
             filter = filter & Builders<PhoneMessage>.Filter.Eq(x => x.ToNumber, to);
             return DatabaseManager.MessagesTable.Find(filter).Count();
         }
 
-        public static void LogMessage(string from, string to, string message)
+        public static void LogMessage(int from, int to, string message)
         {
             var msg = new PhoneMessage()
             {
@@ -131,7 +113,7 @@ namespace RoleplayServer.resources.phone_manager
             msg.Insert();
         }
 
-        public static List<PhoneMessage> GetMessageLog(string contact1, string contact2, int limit = 20, int toBeSkipped = 0)
+        public static List<PhoneMessage> GetMessageLog(int contact1, int contact2, int limit = 20, int toBeSkipped = 0)
         {
             var filter = (Builders<PhoneMessage>.Filter.Eq(x => x.SenderNumber, contact1) & Builders<PhoneMessage>.Filter.Eq(x => x.ToNumber, contact2)) | (Builders<PhoneMessage>.Filter.Eq(x => x.SenderNumber, contact2) & Builders<PhoneMessage>.Filter.Eq(x => x.ToNumber, contact1));
             var sort = Builders<PhoneMessage>.Sort.Descending(x => x.DateSent);
@@ -139,11 +121,11 @@ namespace RoleplayServer.resources.phone_manager
             return messages;
         }
 
-        public static List<string[]> GetContactListOfMessages(string number)
+        public static List<string[]> GetContactListOfMessages(int number)
         {
             var filter = Builders<PhoneMessage>.Filter.Eq(x => x.ToNumber, number);
             var sort = Builders<PhoneMessage>.Sort.Descending(x => x.DateSent);
-            var numbersList = DatabaseManager.MessagesTable.Find(filter).Sort(sort).Project(x => new [] { x.SenderNumber, x.Message, x.DateSent.ToString("g"),x.IsRead.ToString() }).ToEnumerable();
+            var numbersList = DatabaseManager.MessagesTable.Find(filter).Sort(sort).Project(x => new [] { x.SenderNumber.ToString(), x.Message, x.DateSent.ToString("g"),x.IsRead.ToString() }).ToEnumerable();
             List<string[]> numbers = new List<string[]>();
             foreach (var itm in numbersList)
             {
