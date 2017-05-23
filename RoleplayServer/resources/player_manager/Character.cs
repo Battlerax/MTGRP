@@ -139,11 +139,6 @@ namespace RoleplayServer.resources.player_manager
 
         public Dictionary<Fish, int> FishOnHand = new Dictionary<Fish, int>();
 
-        //Phone System
-        public int PhoneNumber { get; set; }
-
-        [BsonIgnore]
-        public Phone Phone { get; set; }
         [BsonIgnore]
         public Character InCallWith { get; set; }
         [BsonIgnore]
