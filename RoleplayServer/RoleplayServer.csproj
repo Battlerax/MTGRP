@@ -39,24 +39,22 @@
   <ItemGroup>
     <Reference Include="GTANetworkServer, Version=0.1.385.714, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\gtanetwork.api.0.1.385.714\lib\GTANetworkServer.exe</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="GTANetworkShared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=60c67de1b3b675de, processorArchitecture=MSIL">
       <HintPath>..\packages\gtanetwork.api.0.1.385.714\lib\GTANetworkShared.dll</HintPath>
-    </Reference>
-    <Reference Include="MongoDB.Bson, Version=2.4.0.70, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MongoDB.Bson.2.4.0\lib\net45\MongoDB.Bson.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="MongoDB.Driver, Version=2.4.0.70, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MongoDB.Driver.2.4.0\lib\net45\MongoDB.Driver.dll</HintPath>
+    <Reference Include="MongoDB.Bson, Version=2.4.3.23, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MongoDB.Bson.2.4.3\lib\net45\MongoDB.Bson.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="MongoDB.Driver.Core, Version=2.4.0.70, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MongoDB.Driver.Core.2.4.0\lib\net45\MongoDB.Driver.Core.dll</HintPath>
+    <Reference Include="MongoDB.Driver, Version=2.4.3.23, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MongoDB.Driver.2.4.3\lib\net45\MongoDB.Driver.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="MySql.Data, Version=6.7.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <HintPath>..\packages\MySql.Data.6.7.9\lib\net45\MySql.Data.dll</HintPath>
+    <Reference Include="MongoDB.Driver.Core, Version=2.4.3.23, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MongoDB.Driver.Core.2.4.3\lib\net45\MongoDB.Driver.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -79,6 +77,8 @@
     <Compile Include="resources\core\ChatManager.cs" />
     <Compile Include="resources\core\Color.cs" />
     <Compile Include="resources\core\DebugManager.cs" />
+    <Compile Include="resources\core\DoorManager.cs" />
+    <Compile Include="resources\core\ExtensionMethods.cs" />
     <Compile Include="resources\core\MarkerZone.cs" />
     <Compile Include="resources\database_manager\DatabaseManager.cs" />
     <Compile Include="resources\group_manager\Group.cs" />
@@ -86,7 +86,14 @@
     <Compile Include="resources\group_manager\lspd\Crime.cs" />
     <Compile Include="resources\group_manager\lspd\CriminalRecord.cs" />
     <Compile Include="resources\group_manager\lspd\Lspd.cs" />
+    <Compile Include="resources\group_manager\lspd\LspdCommands.cs" />
     <Compile Include="resources\Init.cs" />
+    <Compile Include="resources\inventory\bags\BagItem.cs" />
+    <Compile Include="resources\inventory\bags\BagManager.cs" />
+    <Compile Include="resources\inventory\IInventoryItem.cs" />
+    <Compile Include="resources\inventory\InventoryManager.cs" />
+    <Compile Include="resources\inventory\IStorage.cs" />
+    <Compile Include="resources\inventory\TestItem.cs" />
     <Compile Include="resources\job_manager\fisher\Fish.cs" />
     <Compile Include="resources\job_manager\fisher\Fisher.cs" />
     <Compile Include="resources\job_manager\Job.cs" />
@@ -99,15 +106,18 @@
     <Compile Include="resources\player_manager\CharacterMenu.cs" />
     <Compile Include="resources\component_manager\Component.cs" />
     <Compile Include="resources\player_manager\Character.cs" />
+    <Compile Include="resources\player_manager\Helpmenu.cs" />
     <Compile Include="resources\player_manager\login\LoginManager.cs" />
     <Compile Include="resources\player_manager\Model.cs" />
     <Compile Include="resources\player_manager\PlayerManager.cs" />
     <Compile Include="resources\player_manager\player_interaction\PlayerInteraction.cs" />
     <Compile Include="resources\player_manager\player_list\PlayerList.cs" />
     <Compile Include="resources\rp_scripts\BankMenu.cs" />
+    <Compile Include="resources\vehicle_dealership\VehicleDealership.cs" />
     <Compile Include="resources\vehicle_manager\Vehicle.cs" />
     <Compile Include="resources\vehicle_manager\VehicleManager.cs" />
     <Compile Include="resources\vehicle_manager\VehicleMenu.cs" />
+    <Compile Include="resources\vehicle_manager\VehicleOwnership.cs" />
     <Compile Include="resources\vehicle_manager\vehicle_editor\VehicleEditor.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -126,11 +136,16 @@
     <Content Include="resources\cef_resources\LSPDMDC.png" />
     <Content Include="resources\cef_resources\MTGVRP_LOGO_BIG.png" />
     <Content Include="resources\cef_resources\MTGVRP_LOGO_SMALL.png" />
+    <Content Include="resources\inventory\ManageInv.html" />
     <Content Include="resources\group_manager\lspd\Lspd.js" />
     <Content Include="resources\group_manager\lspd\MDC.html" />
     <Content Include="resources\job_manager\taxi\TaxiJob.js" />
     <Content Include="resources\jquery.js" />
+    <Content Include="resources\meta.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="resources\player_manager\CharacterMenu.js" />
+    <Content Include="resources\player_manager\Helpmenu.js" />
     <Content Include="resources\player_manager\login\Login.html" />
     <Content Include="resources\player_manager\login\LoginManager.js" />
     <Content Include="resources\player_manager\PlayerManager.js" />
@@ -153,6 +168,8 @@
     <Content Include="resources\stylesheet\fonts\metro.svg" />
     <Content Include="resources\stylesheet\js\metro.js" />
     <Content Include="resources\stylesheet\js\metro.min.js" />
+    <Content Include="resources\vehicle_dealership\vehicledealer.js" />
+    <Content Include="resources\vehicle_manager\VehicleOwnership.js" />
     <Content Include="resources\vehicle_manager\vehicle_editor\VehicleEdit.js" />
     <Content Include="resources\vehicle_manager\vehicle_editor\VehicleEdit.html" />
     <Content Include="resources\vehicle_manager\VehicleMenu.js" />
@@ -162,6 +179,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="resources\inventory\InventoryManager.js" />
     <TypeScriptCompile Include="resources\group_manager\lspd\LspdLocker.ts" />
     <TypeScriptCompile Include="resources\job_manager\fisher\Fisher.ts" />
     <TypeScriptCompile Include="resources\job_manager\JobManager.ts" />

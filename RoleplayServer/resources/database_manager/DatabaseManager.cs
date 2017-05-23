@@ -54,7 +54,10 @@ namespace RoleplayServer.resources.database_manager
             var filter = Builders<BsonDocument>.Filter.Eq("_id", tableName);
             var update = Builders<BsonDocument>.Update.Inc("sequence", 1);
             var result = _countersTable.FindOneAndUpdate(filter, update, new FindOneAndUpdateOptions<BsonDocument> { IsUpsert = true });
-
+            if (result == null)
+            {
+                return 1;
+            }
             return result.GetValue("sequence").ToInt32();
         }
     }

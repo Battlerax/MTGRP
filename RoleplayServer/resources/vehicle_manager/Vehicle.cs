@@ -35,7 +35,6 @@ namespace RoleplayServer.resources.vehicle_manager
         public Vector3 SpawnRot { get; set; }
         public int[] SpawnColors = new int[2];
         public int SpawnDimension { get; set; }
-        public string OwnerName { get; set; }
         public int OwnerId { get; set; }
         public string LicensePlate { get; set; }
 
@@ -54,7 +53,7 @@ namespace RoleplayServer.resources.vehicle_manager
         [BsonIgnore]
         private Client OwnerClient { get; set; }
         [BsonIgnore]
-        private bool IsSpawned { get; set; }
+        public bool IsSpawned { get; set; }
 
         [BsonIgnore]
         public NetHandle Blip { get; set; }
@@ -71,7 +70,6 @@ namespace RoleplayServer.resources.vehicle_manager
             SpawnRot = new Vector3(0.0, 0.0, 0.0);
             SpawnColors = new int[2];
             SpawnDimension = 0;
-            OwnerName = "None";
             LicensePlate = "DEFAULT";
 
             RespawnDelay = 600;
@@ -129,6 +127,9 @@ namespace RoleplayServer.resources.vehicle_manager
             API.shared.setBlipScale(Blip, (float)0.7);
             API.shared.setBlipShortRange(Blip, true);
 
+            //Set owner detials.
+            OwnerClient = PlayerManager.ParseClient(OwnerId.ToString());
+
             IsSpawned = true;
 
             return 1; // Successful spawn
@@ -156,6 +157,12 @@ namespace RoleplayServer.resources.vehicle_manager
         {
             var filter = Builders<Vehicle>.Filter.Eq("_id", Id);
             DatabaseManager.VehicleTable.ReplaceOneAsync(filter, this);
+        }
+
+        public void Delete()
+        {
+            var filter = Builders<Vehicle>.Filter.Eq("_id", Id);
+            DatabaseManager.VehicleTable.DeleteOne(filter);
         }
 
         public bool is_saved()

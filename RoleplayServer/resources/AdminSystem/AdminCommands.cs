@@ -1,7 +1,9 @@
-﻿using GTANetworkServer;
+﻿using System.Linq;
+using GTANetworkServer;
 using GTANetworkShared;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.player_manager;
+using RoleplayServer.resources.vehicle_manager;
 
 namespace RoleplayServer.resources.AdminSystem
 {
@@ -153,6 +155,78 @@ namespace RoleplayServer.resources.AdminSystem
             var playerPos = API.getEntityPosition(receiver);
             API.setEntityPosition(receiver, new Vector3(playerPos.X, playerPos.Y, playerPos.Z + 5));
             API.sendChatMessageToPlayer(receiver, "You have been slapped by an admin");
+        }
+
+        [Command("setmymoney")]
+        public void setmymoney_cmd(Client player, int money)
+        {
+            Account account = API.getEntityData(player.handle, "Account");
+            Character character = API.getEntityData(player.handle, "Character");
+
+            if (account.AdminLevel == 0)
+                return;
+
+            character.Money = money;
+            API.sendChatMessageToPlayer(player, $"You have sucessfully changed your money to ${money}.");
+        }
+
+        [Command("showplayercars")]
+        public void showplayercars_cmd(Client player, string id)
+        {
+            Account account = API.getEntityData(player.handle, "Account");
+            if (account.AdminLevel == 0)
+                return;
+
+            var receiver = PlayerManager.ParseClient(id);
+            if (receiver == null)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
+            }
+
+            Character character = API.getEntityData(player.handle, "Character");
+            API.sendChatMessageToPlayer(player, "----------------------------------------------");
+            API.sendChatMessageToPlayer(player, $"Vehicles Owned By {character.CharacterName}");
+            foreach (var carid in character.OwnedVehicles)
+            {
+                var car = VehicleManager.Vehicles.SingleOrDefault(x => x.Id == carid);
+                if (car == null)
+                {
+                    API.sendChatMessageToPlayer(player, $"(UNKNOWN VEHICLE) | ID ~r~{carid}~w~.");
+                    continue;
+                }
+                API.sendChatMessageToPlayer(player, $"({API.getVehicleDisplayName(car.VehModel)}) | NetHandle ~r~{car.NetHandle.Value}~w~ | ID ~r~{car.Id}~w~.");
+            }
+            API.sendChatMessageToPlayer(player, "----------------------------------------------");
+        }
+
+        [Command("getplayercar")]
+        public void getplayercar_cmd(Client player, string id, int nethandle)
+        {
+            Account account = API.getEntityData(player.handle, "Account");
+            if (account.AdminLevel == 0)
+                return;
+
+            var receiver = PlayerManager.ParseClient(id);
+            if (receiver == null)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
+            }
+
+            Character character = API.getEntityData(player.handle, "Character");
+            var car = VehicleManager.Vehicles.Find(x => x.NetHandle.Value == nethandle && x.OwnerId == character.Id);
+            API.setEntityPosition(car.NetHandle, player.position);
+            API.sendChatMessageToPlayer(player, "Sucessfully teleported the car to you.");
+        }
+
+        //TODO: REMOVE THIS: 
+        [Command("makemeadmin")]
+        public void makemeadmin_cmd(Client player)
+        {
+            Account account = API.getEntityData(player.handle, "Account");
+            account.AdminLevel = 7;
+            API.sendChatMessageToPlayer(player, "You are now a king.");
         }
     }
 }

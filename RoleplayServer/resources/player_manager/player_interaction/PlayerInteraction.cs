@@ -151,7 +151,7 @@ namespace RoleplayServer.resources.player_manager.player_interaction
 
             var receiver = PlayerManager.ParseClient(id);
             Character character = API.getEntityData(player.handle, "Character");
-
+    
             if (receiver == null)
             {
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
@@ -220,7 +220,7 @@ namespace RoleplayServer.resources.player_manager.player_interaction
             API.setPlayerIntoVehicle(receiver, player.vehicle.handle, seatNumber);
             API.warpPlayerOutOfVehicle(receiver, API.getPlayerVehicle(receiver));
         }
-
+ 
         public void FollowPlayer(Character c, bool isDrag)
         {
             API.sendNativeToAllPlayers(Hash.TASK_FOLLOW_TO_OFFSET_OF_ENTITY, c.Client.handle,

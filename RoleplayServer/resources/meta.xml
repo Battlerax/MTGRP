@@ -1,94 +1,49 @@
 <meta>
     <info name="Init" author="Chenko" type="gamemode" />
-    
-	<assembly ref="System.Data.dll"/>
+	
+	<!-- Door Manager -->
+	<include resource="doormanager" />
+	
 	<assembly ref="MongoDB.Bson.dll"/>
 	<assembly ref="MongoDB.Driver.dll"/>
 	<assembly ref="MongoDB.Driver.Core.dll"/>
 	<assembly ref="System.Runtime.InteropServices.RuntimeInformation.dll"/>
 	
-	<script src="Init.cs" type="server" lang="csharp"/>
-	
-	<!-- CORE -->
-	<script src="core/DebugManager.cs" type="server" lang="csharp"/>
-	<script src="core/Color.cs" type="server" lang="csharp"/>
-	<script src="core/ChatManager.cs" type="server" lang="csharp"/>
-	<script src="core/MarkerZone.cs" type="server" lang="csharp"/>
-	
-	<!-- DATABASE -->
-	<script src="database_manager/DatabaseManager.cs" type="server" lang="csharp"/>
-	
-	<!-- ADMIN -->
-	<script src="AdminSystem/AdminCommands.cs" type="server" lang="csharp"/>
+	<!-- MAIN script with all *.cs files. -->
+	<script src="../bin/Debug/RoleplayServer.dll" type="server" lang="compiled"/>
 	
 	<!-- BANK -->
-	<script src="rp_scripts/BankMenu.cs" type="server" lang="csharp"/>
 	<script src="rp_scripts/BankMenu.js" type="client" lang="javascript"/>
 	
-	<!-- PLAYER -->
-	<script src="player_manager/Account.cs" type="server" lang="csharp"/>
-	<script src="player_manager/Character.cs" type="server" lang="csharp"/>
-	<script src="player_manager/Model.cs" type="server" lang="csharp"/>
-	
-	<script src="player_manager/PlayerManager.cs" type="server" lang="csharp"/>
+	<!-- PLAYER -->	
 	<script src="player_manager/PlayerManager.js" type="client" lang="javascript"/>
-	
-	<script src="player_manager/player_interaction/PlayerInteraction.cs" type="server" lang="csharp"/>
 	<script src="player_manager/player_interaction/PlayerInteraction.js" type="client" lang="javascript"/>
 	<file src="player_manager/player_interaction/PlayerInteraction.html"/>
-	
-	<script src="player_manager/player_list/PlayerList.cs" type="server" lang="csharp"/>
 	<script src="player_manager/player_list/PlayerList.js" type="client" lang="javascript"/>
 	<file src="player_manager/player_list/PlayerList.html" />
-	
-	<script src="player_manager/login/LoginManager.cs" type="server" lang="csharp"/>
 	<script src="player_manager/login/LoginManager.js" type="client" lang="javascript"/>
 	<file src="player_manager/login/Login.html"/>
-	
 	<script src="player_manager/CharacterMenu.js" type="client" lang="javascript"/>
-	<script src="player_manager/CharacterMenu.cs" type="server" lang="csharp"/>
-	
+  <script src="player_manager/Helpmenu.js" type="client" lang="javascript"/>
+  
 	<!-- JOBS -->
-	<script src="job_manager/Job.cs" type="server" lang="csharp"/>
-	<script src="job_manager/JobManager.cs" type="server" lang="csharp"/>
 	<script src="job_manager/JobManager.js" type="client" lang="javascript"/>
-
-	<script src="job_manager/taxi/TaxiJob.cs" type="server" lang="csharp"/>
 	<script src="job_manager/taxi/TaxiJob.js" type="client" lang="javascript"/>
-	
-	<script src="job_manager/fisher/Fish.cs" type="server" lang="csharp"/>
-	<script src="job_manager/fisher/Fisher.cs" type="server" lang="csharp"/>
 	<script src="job_manager/fisher/Fisher.js" type="client" lang="javascript"/>
 	
 	<!-- VEHICLE -->
-	<script src="vehicle_manager/Vehicle.cs" type="server" lang="csharp"/>
-	<script src="vehicle_manager/VehicleManager.cs" type="server" lang="csharp"/>
-	<script src="vehicle_manager/VehicleMenu.cs" type="server" lang="csharp"/>
 	<script src="vehicle_manager/VehicleMenu.js" type="client" lang="javascript"/>
-	<script src="vehicle_manager/vehicle_editor/VehicleEditor.cs" type="server" lang="csharp"/>
 	<script src="vehicle_manager/vehicle_editor/VehicleEdit.js" type="client" lang="javascript"/>
 	<file src="vehicle_manager/vehicle_editor/VehicleEdit.html"/>
 	
-	<!--- GROUPS -->
-	
-	<script src="group_manager/Group.cs" type="server" lang="csharp"/>
-	<script src="group_manager/GroupManager.cs" type="server" lang="csharp"/>
-	
-	<script src="group_manager/lspd/Lspd.cs" type="server" lang="csharp"/>
-	<script src="group_manager/lspd/LspdLocker.js" type="client" lang="javascript"/>
-	<script src="group_manager/lspd/Lspd.js" type="client" lang="javascript"/>
-	
-	
-	<!--- PHONES -->
-	
-	<script src="phone_manager/Phone.cs" type="server" lang="csharp"/>
-	<script src="phone_manager/PhoneContact.cs" type="server" lang="csharp"/>
-	<script src="phone_manager/PhoneManager.cs" type="server" lang="csharp"/>
-	
-	<!-- COMPONENT -->
-	<script src="component_manager/Component.cs" type="server" lang="csharp"/>
-	<script src="component_manager/ComponentManager.cs" type="server" lang="csharp"/>
-	
+	<!-- Dealership/Ownership -->
+	<script src="vehicle_dealership/vehicledealer.js" type="client" lang="javascript"/>
+	<script src="vehicle_manager/VehicleOwnership.js" type="client" lang="javascript"/>
+  
+  <!-- Bag System-->
+  <script src="inventory/InventoryManager.js" type="client" lang="javascript"/>
+  <file src="inventory/ManageInv.html"/>
+  
 	<!-- CEF  -->
 	<file src="stylesheet/css/metro.css"/>
 	<file src="stylesheet/css/metro-schemes.css"/>

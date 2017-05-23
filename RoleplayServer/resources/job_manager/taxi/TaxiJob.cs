@@ -98,7 +98,7 @@ namespace RoleplayServer.resources.job_manager.taxi
             //Check for passengers entering available cabs
             if (API.getPlayerVehicleSeat(player) != -1)
             {
-                if (veh.Job.Type == JobManager.TaxiJob)
+                if (veh.Job?.Type == JobManager.TaxiJob)
                 {
                     if (veh.Driver == null)
                     {

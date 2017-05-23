@@ -17,8 +17,34 @@ namespace RoleplayServer.resources.phone_manager
         {
             DebugManager.DebugMessage("[PhoneM] Initalizing Phone Manager...");
 
+            API.onChatMessage += OnChatMessage;
+
             DebugManager.DebugMessage("[PhoneM] Phone Manager initalized.");
         }
+
+        public void OnChatMessage(Client player, string msg, CancelEventArgs e)
+        {
+            Account account = API.getEntityData(player.handle, "Account");
+            Character character = API.getEntityData(player.handle, "Character");
+            Character talkingTo = character.InCallWith;
+            string phonemsg;
+            if (account.AdminDuty == 0 && character.InCallWith != Character.None)
+            {
+                msg = "[Phone]" + character.rp_name() + " says: " + msg;
+                ChatManager.NearbyMessage(player, 15, msg);
+                if (talkingTo.Phone.HasContactWithNumber(character.Phone.Number))
+                {
+                    phonemsg = "[" + talkingTo.Phone.Contacts.Find(pc => pc.Number == character.Phone.Number).Name + "]" +
+                         character.rp_name() + " says: " + msg;
+                }
+                else
+                {
+                    phonemsg = "[" + character.Phone.Number + "]" + character.rp_name() + " says: " + msg;
+                }
+                API.sendChatMessageToPlayer(talkingTo.Client, Color.Grey, phonemsg);
+            }
+        }
+
 
         [Command("setphonename", GreedyArg = true)]
         public void setphonename_cmd(Client player, string name)
@@ -34,6 +60,43 @@ namespace RoleplayServer.resources.phone_manager
             character.Phone.PhoneName = name;
             character.Phone.Save();
             API.sendChatMessageToPlayer(player, "You have changed your phone name to " + name + ".");
+        }
+
+        [Command("pickup")]
+        public void pickup_cmd(Client player)
+        {
+            Character character = API.getEntityData(player.handle, "Character");
+            if (character.InCallWith != Character.None)
+            {
+                API.sendChatMessageToPlayer(player, "You are already on a phone call.");
+                return;
+            }
+
+            if (character.BeingCalledBy == Character.None)
+            {
+                API.sendChatMessageToPlayer(player, "None is trying to reach you.");
+                return;
+            }
+
+            API.sendChatMessageToPlayer(player, "You have answered the phone call.");
+            character.InCallWith = character.BeingCalledBy;
+            character.BeingCalledBy = Character.None;
+        }
+
+        [Command("h")]
+        public void h_cmd(Client player)
+        {
+            Character character = API.getEntityData(player.handle, "Character");
+            if (character.InCallWith == Character.None)
+            {
+                API.sendChatMessageToPlayer(player, "You are not on a phone call.");
+                return;
+            }
+            Character talkingTo = character.InCallWith;
+            talkingTo.InCallWith = Character.None;
+            character.InCallWith = Character.None;
+            API.sendChatMessageToPlayer(player, "You have terminated the call.");
+            API.sendChatMessageToPlayer(talkingTo.Client, "The other party has ended the call.");
         }
 
         [Command("togphone")]
@@ -61,34 +124,105 @@ namespace RoleplayServer.resources.phone_manager
             }
         }
 
-        /*  [Command("call")]
-          public void call_cmd(Client player, string number)
-          {
-              if (DoesNumberExist(number))
-              {
-                  Character caller = API.shared.getEntityData(player.handle, "Character");
-                  FilterDefinition<Phone> filter = Builders<Phone>.Filter.Eq("Number", number);
-                  List<Phone> found_phones = DatabaseManager.PhoneTable.Find(filter).ToList<Phone>();
-                  foreach (Phone phone in found_phones)
-                  {
-                      if (character.Id = phone.Id)
-                      {
-                          if (phone.Status == 1)
-                          {
-                              ChatManager.RoleplayMessage(character, "'s phone starts to ring...", ChatManager.ROLEPLAY_ME, 10);
-                              ChatManager.RoleplayMessage(caller, "takes out their phone and presses a few numbers.", ChatManager.ROLEPLAY_ME, 10);
 
-                              // the rest will be done when chenko adds phone vars in Players data
-                          }
-                      }
-                  }
-              }
-              else
-              {
-                  API.sendChatMessageToPlayer(player, "The number you are trying to reach is unavailable.");
-                  return;
-              }
-          }*/
+
+        [Command("call", GreedyArg = true)]
+        public void call_cmd(Client player, string input)
+        {
+            int number;
+            Character sender = API.shared.getEntityData(player.handle, "Character");
+
+            if (sender.Phone == Phone.None)
+            {
+                API.sendChatMessageToPlayer(player, "You don't have a phone.");
+                return;
+            }
+
+            if (sender.Phone.IsOn == false)
+            {
+                API.sendChatMessageToPlayer(player, "Your phone is turned off.");
+                return;
+            }
+
+            var canConvert = int.TryParse(input, out number);
+            if (canConvert)
+            {
+                if (!DoesNumberExist(number))
+                {
+                    API.sendChatMessageToPlayer(player, Color.White,
+                        "The call failed to connect. (Phone number is not registered.");
+                    return;
+                }
+
+                var character = PlayerManager.Players.Find(c => c.Phone.Number == number);
+
+                if (character == null)
+                {
+                    API.sendChatMessageToPlayer(player, Color.White,
+                        "The call failed to connect. ((No one online found with that phone number))");
+                    return;
+                }
+
+                if (character.Phone.IsOn == false)
+                {
+                    API.sendChatMessageToPlayer(player, Color.Yellow,
+                        "The number you are trying to reach is currently unavailable.");
+                    return;
+                }
+
+                if (character.BeingCalledBy != Character.None || character.CallingPlayer != Character.None ||
+                    character.InCallWith != Character.None)
+                {
+                    API.sendChatMessageToPlayer(player, Color.Yellow, "The line you're trying to call is busy.");
+                    return;
+                }
+
+                ChatManager.AmeLabelMessage(player, "takes out their phone and presses a few numbers..", 4000);
+                API.sendChatMessageToPlayer(character.Client, "Incoming call from" + sender.PhoneNumber + "...");
+                ChatManager.RoleplayMessage(character, "'s phone starts to ring...", ChatManager.RoleplayMe);
+                sender.CallingPlayer = character;
+                character.BeingCalledBy = sender;
+            }
+            else
+            {
+                if (!sender.Phone.HasContactWithName(input))
+                {
+                    API.sendChatMessageToPlayer(player, Color.White, "You do not have a contact with the name: " + input);
+                    return;
+                }
+
+                var contact = sender.Phone.Contacts.Find(pc => string.Equals(pc.Name, input, StringComparison.OrdinalIgnoreCase));
+                var character = PlayerManager.Players.Find(c => c.Phone.Number == contact.Number);
+
+                if (character == null)
+                {
+                    API.sendChatMessageToPlayer(player, Color.White,
+                        "The call failed to connect. ((No one online found with that phone number))");
+                    return;
+                }
+
+                if (character.Phone.IsOn == false)
+                {
+                    API.sendChatMessageToPlayer(player, Color.Yellow,
+                        "The number you are trying to reach is currently unavailable.");
+                    return;
+                }
+
+                if (character.BeingCalledBy != Character.None || character.CallingPlayer != Character.None ||
+                    character.InCallWith != Character.None)
+                {
+                    API.sendChatMessageToPlayer(player, Color.Yellow, "The line you're trying to call is busy.");
+                    return;
+                }
+
+                ChatManager.AmeLabelMessage(player, "takes out their phone and presses a few numbers..", 4000);
+                API.sendChatMessageToPlayer(character.Client, "Incoming call from" + sender.PhoneNumber + "...");
+                ChatManager.RoleplayMessage(character, "'s phone starts to ring...", ChatManager.RoleplayMe);
+                sender.CallingPlayer = character;
+                character.BeingCalledBy = sender;
+            }
+        }
+
 
         [Command("setphonenumber")]
         public void setphone_cmd(Client player, string id, int number)
@@ -222,7 +356,7 @@ namespace RoleplayServer.resources.phone_manager
                     return;
                 }
 
-               
+
                 string fromMsg;
                 string toMsg;
 
@@ -310,5 +444,4 @@ namespace RoleplayServer.resources.phone_manager
         }
     }
 }
-
 
