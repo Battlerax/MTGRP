@@ -73,6 +73,12 @@ namespace RoleplayServer.resources.player_manager
 
         public Vehicle LastVehicle { get; set; }
 
+        //Reports
+        public bool HasActiveReport { get; set; }
+        public bool ReportMuted { get; set; }
+        public bool ReportCreated { get; set; }
+        public Timer ReportTimer { get; set; }
+
         //Jobs
         public int JobOneId { get; set; }
 

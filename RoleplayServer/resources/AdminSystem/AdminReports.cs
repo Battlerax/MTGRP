@@ -15,15 +15,17 @@ namespace RoleplayServer.resources.AdminSystem
         [BsonId]
         public ObjectId Id { get; set; }
 
-        public string Type { get; set; }
+        public int Type { get; set; }
         public string Name { get; set; }
         public string ReportMessage { get; set; }
+        public string Target { get; set; }
 
-        public AdminReports(string type, string name, string reportmessage, string target)
+        public AdminReports(int type, string name, string reportmessage, string target = null)
         {
             Type = type;
             Name = name;
             ReportMessage = reportmessage;
+            Target = target;
         }
 
         public void Update()
@@ -45,7 +47,7 @@ namespace RoleplayServer.resources.AdminSystem
             DatabaseManager.ReportTable.DeleteOne(filter);
         }
 
-        public static void InsertReport(string type, string name, string ReportMessage, string target)
+        public static void InsertReport(int type, string name, string ReportMessage, string target = null)
         {
             var report = new AdminReports(type, name, ReportMessage, target);
             report.Insert();

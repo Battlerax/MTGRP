@@ -131,6 +131,7 @@
     <None Include="tsconfig.json" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="resources\AdminSystem\Reports.js" />
     <Content Include="resources\cef_resources\MTGVRP_LOGO_BIG.png" />
     <Content Include="resources\cef_resources\MTGVRP_LOGO_SMALL.png" />
     <Content Include="resources\inventory\ManageInv.html" />
