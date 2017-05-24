@@ -2,6 +2,7 @@
 using GTANetworkShared;
 using System.Collections.Generic;
 using System.Linq;
+using System.Timers;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.player_manager;
 
@@ -17,7 +18,6 @@ namespace RoleplayServer.resources.group_manager.lspd
         }
 
         //LSPD Locations. TODO: MAKE IT WORK WITH MARKERZONE!!!!
-        public static readonly Vector3 arrest_loc = new Vector3(468.7845f, -1015.69f, 26.38641f);
         public static readonly Vector3 jailOne = new Vector3(458.0021f, -1001.581f, 24.91485f);
         public static readonly Vector3 jailTwo = new Vector3(458.7058f, -998.1188f, 24.91487f);
         public static readonly Vector3 jailThree = new Vector3(459.6695f, -994.0704f, 24.91487f);
@@ -31,26 +31,15 @@ namespace RoleplayServer.resources.group_manager.lspd
         public ColShape StationShape;
         public ColShape arrestShape;
 
+        public LinkedList<GTANetworkServer.Object> objects = new LinkedList<GTANetworkServer.Object>();
+
 
         public void startLspd()
         {
-            int i = API.exported.doormanager.registerDoor(631614199, jailPosOne);
-            API.exported.doormanager.setDoorState(i, true, 0);
-
-            int z = API.exported.doormanager.registerDoor(631614199, jailPosTwo);
-            API.exported.doormanager.setDoorState(z, true, 0);
-
-            int v = API.exported.doormanager.registerDoor(631614199, jailPosThree);
-            API.exported.doormanager.setDoorState(v, true, 0);
-
             var jailShapeOne = API.createSphereColShape(jailOne, 3.7f);
             var jailShapeTwo = API.createSphereColShape(jailTwo, 3.7f);
             var jailShapeThree = API.createSphereColShape(jailThree, 3.7f);
 
-            arrestShape = API.createSphereColShape(arrest_loc, 3.7f);
-
-            API.createMarker(2, arrest_loc, new Vector3(), new Vector3(), new Vector3(0.5, 0.5, 0.5), 255, 255, 255, 255);
-        
             StationShape = API.createCylinderColShape(PoliceStationPos, 2f, 3f);
 
             API.createMarker(1, PoliceStationPos - new Vector3(0, 0, 1f), new Vector3(), new Vector3(),
@@ -58,71 +47,71 @@ namespace RoleplayServer.resources.group_manager.lspd
 
         }
 
-        
+
         private void API_onClientEventTrigger(Client player, string eventName, params object[] arguments)
         {
             switch (eventName)
             {
                 case "LSPD_Menu_Change_Clothes":
-                { 
-                    Character c = API.getEntityData(player.handle, "Character");
-
-                    if (c.Group.CommandType != Group.CommandTypeLspd)
                     {
-                        return;
+                        Character c = API.getEntityData(player.handle, "Character");
+                        
+                        if (c.Group.CommandType != Group.CommandTypeLspd)
+                        {
+                            return;
+                        }
+
+                        c.IsInPoliceUniform = !c.IsInPoliceUniform;
+                        ChatManager.AmeLabelMessage(player,
+                            "changes into their " + (c.IsInPoliceUniform ? "police uniform." : "civilian clothing."), 8000);
+                        c.update_ped();
+                        c.Save();
+
+                        break;
                     }
-
-                    c.IsInPoliceUniform = !c.IsInPoliceUniform;
-                    ChatManager.AmeLabelMessage(player,
-                        "changes into their " + (c.IsInPoliceUniform ? "police uniform." : "civilian clothing."), 8000);
-                    c.update_ped();
-                    c.Save();
-
-                    break;
-                }
                 case "LSPD_Menu_Toggle_Duty":
-                {
-                    Character c = API.getEntityData(player.handle, "Character");
-
-                    if (c.Group.CommandType != Group.CommandTypeLspd)
                     {
-                        return;
+                        Character c = API.getEntityData(player.handle, "Character");
+
+                        if (c.Group.CommandType != Group.CommandTypeLspd)
+                        {
+                            return;
+                        }
+
+                        c.IsOnPoliceDuty = !c.IsOnPoliceDuty;
+                        GroupManager.SendGroupMessage(player,
+                            c.CharacterName + " is now " + (c.IsOnPoliceDuty ? "on" : "off") + " police duty.");
+                        c.Save();
+
+                        break;
                     }
-
-                    c.IsOnPoliceDuty = !c.IsOnPoliceDuty;
-                    GroupManager.SendGroupMessage(player,
-                        c.CharacterName + " is now " + (c.IsOnPoliceDuty ? "on" : "off") + " police duty.");
-                    c.Save();
-
-                    break;
-                }
                 case "LSPD_Menu_Equip_Standard_Equipment":
-                {
-                    Character c = API.getEntityData(player.handle, "Character");
-
-                    if (c.Group.CommandType != Group.CommandTypeLspd)
                     {
-                        return;
+                        Character c = API.getEntityData(player.handle, "Character");
+
+                        if (c.Group.CommandType != Group.CommandTypeLspd)
+                        {
+                            return;
+                        }
+
+                        GiveLspdEquipment(player);
+                        API.sendChatMessageToPlayer(player, Color.White, "You have been given the standard LSPD equipment.");
+
+                        break;
                     }
-
-                    GiveLspdEquipment(player);
-                    API.sendChatMessageToPlayer(player, Color.White, "You have been given the standard LSPD equipment.");
-
-                    break;
-                }
                 case "LSPD_Menu_Equip_SWAT_Equipment":
-                {
-                    Character c = API.getEntityData(player.handle, "Character");
-
-                    if (c.Group.CommandType != Group.CommandTypeLspd)
                     {
-                        return;
-                    }
+                        Character c = API.getEntityData(player.handle, "Character");
 
-                    GiveLspdEquipment(player, 1);
-                    API.sendChatMessageToPlayer(player, Color.White, "You have been given the standard SWAT equipment.");
-                    break;
-                }
+                        if (c.Group.CommandType != Group.CommandTypeLspd)
+                        {
+                            return;
+                        }
+
+                        GiveLspdEquipment(player, 1);
+                        API.sendChatMessageToPlayer(player, Color.White, "You have been given the standard SWAT equipment.");
+                        break;
+                    }
                 case "toggle_megaphone_key":
                     {
                         megaphonetog_cmd(player);
@@ -132,13 +121,12 @@ namespace RoleplayServer.resources.group_manager.lspd
         }
 
         [Command("recordcrime", GreedyArg = true)]
-        public void recordcrimes_cmd(Client player, string id, Crime crime)
+        public void recordcrimes_cmd(Client player, string id, string crime)
         {
             var receiver = PlayerManager.ParseClient(id);
 
             Character character = API.getEntityData(player.handle, "Character");
             Character receiverCharacter = API.getEntityData(receiver.handle, "Character");
-            CriminalRecord criminalrecord = API.getEntityData(receiver.handle, "CriminalRecord");
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
@@ -151,14 +139,115 @@ namespace RoleplayServer.resources.group_manager.lspd
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
-     
-            API.sendNotificationToPlayer(player, "You have recorded " + receiver.name + " for committing a crime.");
-            API.sendNotificationToPlayer(receiver, player.name + " has recorded a crime you committed: ~r~" + crime + "~w~.");
-            criminalrecord.ActiveCrime = true;
-            criminalrecord.Crime = crime;
-            criminalrecord.CharacterId = id;
-            criminalrecord.OfficerId = player.name;
-            criminalrecord.Insert();
+
+            receiverCharacter.activeCrime = true;
+            receiverCharacter.RecordCrime(crime, player.nametag, true);
+            API.sendNotificationToPlayer(player, "You have recorded " + receiver.nametag + " for committing a crime.");
+            API.sendNotificationToPlayer(receiver, player.nametag + " has recorded a crime you committed: ~r~" + crime + "~w~.");
+
+        }
+
+        [Command("showcriminalrecord", GreedyArg = true)]
+        public void criminalrecord_cmd(Client player, string id)
+        {
+            var receiver = PlayerManager.ParseClient(id);
+
+            Character character = API.getEntityData(player.handle, "Character");
+            Character receiverCharacter = API.getEntityData(receiver.handle, "Character");
+
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                return;
+            }
+
+            if (receiver == null)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
+            }
+
+            API.sendChatMessageToPlayer(player, "=======CRIMIMNAL RECORD FOR " + receiverCharacter.CharacterName + "=======");
+            foreach (var i in receiverCharacter.GetCriminalRecord())
+            {
+                if(i.ActiveCrime == true)
+                {
+                    API.sendChatMessageToPlayer(player, "~r~[ACTIVE] Crime: " + i.CrimeName + " Date issued: " + i.DateTime + " Recording officer: " + i.OfficerId);
+                }
+
+                else
+                {
+                    API.sendChatMessageToPlayer(player, "Crime: " + i.CrimeName + " Date issued: " + i.DateTime + " Recording officer: " + i.OfficerId);
+                }
+            }
+
+
+
+        }
+
+        [Command("listcrimes")]
+        public void listcrimes_cmd(Client player)
+        {
+            Character character = API.getEntityData(player.handle, "Character");
+
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                return;
+            }
+
+            foreach (var i in Crime.Crimes)
+            {
+                API.sendChatMessageToPlayer(player, i.Type + " | " + i.Name + " | " + i.JailTime + " | " + i.Fine); //TODO: REPLACE WITH A MENU
+            }
+        }
+
+        [Command("createcrime")]
+        public void createcrime_cmd(Client player, string type, string crimeName, int jailTime, int fine)
+        {
+            Character character = API.getEntityData(player.handle, "Character");
+
+
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                return;
+            }
+
+            if (character.GroupRank < 7)
+            {
+                API.sendChatMessageToPlayer(player, "You do not have permission to use this command.");
+                return;
+            }
+
+            if (Crime.CrimeExists(crimeName))
+            {
+                API.sendChatMessageToPlayer(player, "This crime already exists!");
+                return;
+            }
+            Crime.InsertCrime(type, crimeName, jailTime, fine);
+            API.sendChatMessageToPlayer(player, "Crime created and added to crime list.");
+        }
+
+        [Command("deletecrime")]
+        public void deletecrime_cmd(Client player, int id)
+        {
+            Character character = API.getEntityData(player.handle, "Character");
+
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                return;
+            }
+
+            if (character.GroupRank < 7)
+            {
+                API.sendChatMessageToPlayer(player, "You do not have permission to use this command.");
+                return;
+            }
+            Crime crimeDelete = Crime.Crimes[id];
+            Crime.Crimes.Remove(crimeDelete);
+            API.sendChatMessageToPlayer(player, "Crime deleted from crime list.");
         }
 
         [Command("wanted", GreedyArg = true)]
@@ -178,9 +267,12 @@ namespace RoleplayServer.resources.group_manager.lspd
 
             foreach (var c in PlayerManager.Players)
             {
-                if (c.activeCrime == true)
+                foreach(var i in c.GetCriminalRecord())
                 {
-                    API.sendChatMessageToPlayer(player, c.CharacterName + " is wanted for " + c.GetCriminalRecord());
+                    if (i.ActiveCrime == true)
+                    {
+                        API.sendChatMessageToPlayer(player, c.CharacterName + " is wanted for " + i.CrimeName + " .");
+                    }
                 }
 
             }
@@ -188,14 +280,13 @@ namespace RoleplayServer.resources.group_manager.lspd
 
 
         [Command("arrest", GreedyArg = true)]
-        public void arrest_cmd(Client player, string id, int time)
+        public void arrest_cmd(Client player, string id, int time) //change receiver to id (currently a bug)
         {
 
             var receiver = PlayerManager.ParseClient(id);
 
             Character character = API.getEntityData(player.handle, "Character");
             Character receiverCharacter = API.getEntityData(receiver.handle, "Character");
-            CriminalRecord criminalrecord = API.getEntityData(receiver.handle, "CriminalRecord");
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
@@ -208,32 +299,45 @@ namespace RoleplayServer.resources.group_manager.lspd
                 API.sendNotificationToPlayer(player, "~r~You can't arrest yourself!");
                 return;
             }
-
-            if (criminalrecord.ActiveCrime == false)
+            
+            if (receiverCharacter.activeCrime == false)
             {
                 API.sendChatMessageToPlayer(player, "You must record this player's crimes before they can be arrested.");
             }
+            
             if (character.GroupId == receiverCharacter.GroupId)
             {
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~ You cannot arrest a member of the LSPD.");
                 return;
             }
-
+            
             if (receiver == null)
             {
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
-
-            if (arrestPointCheck(player))
+            
+            if (player.position.DistanceTo(character.Group.ArrestLocation.Location) > 4)
             {
-                API.sendNotificationToPlayer(player, "~r~You are too far away from the arrest point.");
+                API.sendChatMessageToPlayer(player, Color.White, "You are not at the arrest location.");
                 return;
+            }
+            
+            foreach (var i in receiverCharacter.GetCriminalRecord())
+            {
+                if (i.ActiveCrime == false)
+                {
+                    API.sendChatMessageToPlayer(player, "You must record this player's crimes before they can be arrested.");
+                }
+            }
+
+            foreach (var i in receiverCharacter.GetCriminalRecord())
+            {
+                i.ActiveCrime = false;
             }
 
             API.sendNotificationToPlayer(player, "You have arrested ~b~" + receiver.name + "~w~.");
             API.sendNotificationToPlayer(receiver, "You have been arrested by ~b~" + player.name + "~w~.");
-            criminalrecord.ActiveCrime = false;
             jailControl(receiver, time);
 
         }
@@ -244,13 +348,8 @@ namespace RoleplayServer.resources.group_manager.lspd
             var receiver = PlayerManager.ParseClient(id);
 
             Character character = API.getEntityData(player.handle, "Character");
-
-            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
-            {
-                API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
-                return;
-            }
-
+            Character receivercharacter = API.getEntityData(receiver, "Character");
+            
             if (receiver == null)
             {
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
@@ -268,7 +367,16 @@ namespace RoleplayServer.resources.group_manager.lspd
                 return;
             }
 
-            //TODO: check items on player (first implement inv system).
+            if (receivercharacter.AreHandsUp == true || receivercharacter.IsCuffed == true)
+            {
+                API.sendChatMessageToPlayer(player, "-------------PLAYER INVENTORY-------------");
+                foreach (var item in receivercharacter.Inventory)
+                {
+                    API.sendChatMessageToPlayer(player, $"* ~r~{item.LongName}~w~[{item.CommandFriendlyName}] ({item.Amount})");
+                }
+            }
+            API.sendChatMessageToPlayer(player, "Players must be cuffed or have their hands up before you can frisk them.");
+
         }
 
         [Command("backupbeacon", GreedyArg = true)]
@@ -281,22 +389,24 @@ namespace RoleplayServer.resources.group_manager.lspd
                 API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
                 return;
             }
-            API.sendNotificationToPlayer(player, "~b~Backup beacon deployed~w~. Available officers have been notified.");
 
-            //Update beacon 5 seconds for 60 seconds. Reset beacon to false after 60.
+            API.sendNotificationToPlayer(player, "~b~Backup beacon deployed~w~. Available officers have been notified.");
+            GroupManager.SendGroupMessage(player, player.nametag + " has deployed a backup beacon. Use /acceptbeacon to accept.");
+
             character.BeaconSet = true;
-            character.BeaconCreator = player;
-            character.BeaconResetTimer = new System.Timers.Timer { Interval = 60 };
+            character.BeaconCreator = player; 
+            character.BeaconResetTimer = new Timer { Interval = 60000 };
             character.BeaconResetTimer.Elapsed += delegate { resetBeacon(player); };
             character.BeaconResetTimer.Start();
 
         }
- 
+
         [Command("acceptbeacon", GreedyArg = true)]
         public void acceptbeacon_cmd(Client player)
         {
             Character character = API.shared.getEntityData(player.handle, "Character");
             var beaconCreator = player;
+
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
                 API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
@@ -305,22 +415,21 @@ namespace RoleplayServer.resources.group_manager.lspd
 
             foreach (var c in PlayerManager.Players)
             {
-                if (c.GroupId == character.GroupId && c.BeaconSet == true)
+                if (c.BeaconSet == false)
                 {
-                    beaconCreator = c.BeaconCreator;
+                    API.sendChatMessageToPlayer(player, "There are no active beacons.");
+                    return;
                 }
 
+                beaconCreator = c.BeaconCreator;
+
             }
 
-            if (beaconCreator == player)
-            {
-                return;
-            }
-            API.sendNotificationToPlayer(player, "~b~Beacon accepted~w~. A marker has been added to your map.");
+            API.sendNotificationToPlayer(player, "~b~Beacon accepted~w~. A waypoint has been added to your map.");
             API.triggerClientEvent(player, "update_beacon", API.getEntityPosition(beaconCreator), beaconCreator);
         }
 
-        [Command("megaphonetoggle", Alias ="mp", GreedyArg = true)]
+        [Command("megaphonetoggle", Alias = "mp", GreedyArg = true)]
         public void megaphonetog_cmd(Client player)
         {
             var playerPos = API.getEntityPosition(player);
@@ -365,78 +474,14 @@ namespace RoleplayServer.resources.group_manager.lspd
             API.triggerClientEvent(player, "show_lspd_locker");
         }
 
-        [Command("listcrimes")]
-        public void listcrimes_cmd(Client player)
-        {
-            Character character = API.getEntityData(player.handle, "Character");
-
-            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
-            {
-                API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
-                return;
-            }
-
-            foreach (var i in Crime.Crimes)
-            {
-                API.sendChatMessageToPlayer(player, i.Type + " | " + i.Name + " | " + i.JailTime + " | " + i.Fine ); //TODO: REPLACE WITH A MENU
-            }
-        }
-
-        [Command("createcrime")]
-        public void createcrime_cmd(Client player, string type, string crimeName, int jailTime, int fine)
-        {
-            Character character = API.getEntityData(player.handle, "Character");
-
-            var crimes = Crime.Crimes;
-
-            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
-            {
-                API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
-                return;
-            }
-
-            if (character.GroupRank < 7)
-            {
-                API.sendChatMessageToPlayer(player, "You do not have permission to use this command.");
-                return;
-            }
-
-            if (Crime.CrimeExists(crimeName))
-            {
-                API.sendChatMessageToPlayer(player, "This crime already exists!");
-                return;
-            }
-            Crime.InsertCrime(type, crimeName, jailTime, fine);
-            API.sendChatMessageToPlayer(player, "Crime created and added to crime list.");
-        }
-
-        [Command("deletecrime")]
-        public void deletecrime_cmd(Client player, Crime crimeName)
-        {
-            Character character = API.getEntityData(player.handle, "Character");
-
-            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
-            {
-                API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
-                return;
-            }
-
-            if (character.GroupRank < 7)
-            {
-                API.sendChatMessageToPlayer(player, "You do not have permission to use this command.");
-                return;
-            }
-
-            Crime.Delete(crimeName);
-            API.sendChatMessageToPlayer(player, "Crime deleted from crime list.");
-        }
 
         [Command("ticket")]
         public void ticket_cmd(Client player, string id, int amount)
         {
-            Character character = API.getEntityData(player.handle, "Character");
-
             var target = PlayerManager.ParseClient(id);
+
+            Character character = API.getEntityData(player.handle, "Character");
+            Character receiverCharacter = API.getEntityData(target, "Character");
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
@@ -456,34 +501,36 @@ namespace RoleplayServer.resources.group_manager.lspd
                 return;
             }
 
-            API.sendChatMessageToPlayer(target, player.name + " is offering to hand you a ticket. Use /accept copticket to accept it.");
+            API.sendChatMessageToPlayer(target, player.name + " is offering to hand you a ticket. Use /acceptcopticket to accept it.");
             API.sendChatMessageToPlayer(player, "You offer to hand " + target.name + " a ticket.");
-            character.sentTicketAmount = amount;
-            character.TicketTimer = new System.Timers.Timer { Interval = 10 };
-            character.TicketTimer.Elapsed += delegate { resetTicket(player); };
+            receiverCharacter.sentTicketAmount = amount;
+            receiverCharacter.sentTicket = true;
+            character.TicketTimer = new Timer { Interval = 10000 };
+            character.TicketTimer.Elapsed += delegate { resetTicket(target); };
             character.TicketTimer.Start();
 
         }
 
-        [Command("accept")]
-        public void ticketaccept_cmd(Client player, string playerAccept)
+        [Command("acceptcopticket", GreedyArg = true)]
+        public void ticketaccept_cmd(Client player)
         {
-            if (playerAccept == "copticket")
+            Character character = API.getEntityData(player.handle, "Character");
+
+            if (character.sentTicket == true)
             {
-                Character character = API.getEntityData(player.handle, "Character");
-                Character ticketPlayer = API.getEntityData(player.handle, "TicketSent");
-
-                if (ticketPlayer.sentTicket == false)
-                {
-                    API.sendChatMessageToPlayer(player, Color.White, "No active tickets to accept.");
-                    return;
-                }
-
-                API.sendChatMessageToPlayer(player, "Ticket accepted. Pay for this ticket at the main desk of the police station.");
-                character.ticketBalance += ticketPlayer.sentTicketAmount;
+                character.sentTicket = false;
+                character.ticketBalance += character.sentTicketAmount;
                 character.unpaidTickets += 1;
                 character.Save();
+                API.sendChatMessageToPlayer(player, "Ticket accepted. Pay for this ticket at the main desk of the police station.");
+           
+
             }
+            else
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "There are no active tickets to accept.");
+            }
+
         }
 
         [Command("paycoptickets", GreedyArg = true)]
@@ -491,7 +538,7 @@ namespace RoleplayServer.resources.group_manager.lspd
         {
             Character character = API.getEntityData(player.handle, "Character");
 
-            if (IsInPoliceStation(player))
+            if (IsInPoliceStation(player) == false)
             {
                 API.sendNotificationToPlayer(player, "~r~You are not at the front desk of the police station.");
                 return;
@@ -518,6 +565,14 @@ namespace RoleplayServer.resources.group_manager.lspd
         [Command("deploy", GreedyArg = true)]
         public void deploy_cmd(Client player, int objectid)
         {
+            Character character = API.getEntityData(player.handle, "Character");
+
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                return;
+            }
+
             switch (objectid)
             {
                 case 1:
@@ -525,6 +580,7 @@ namespace RoleplayServer.resources.group_manager.lspd
                         var playerpos = API.getEntityPosition(player);
                         var playerDimension = API.getEntityDimension(player);
                         var item = API.createObject(API.getHashKey("prop_mp_barrier_01"), playerpos - new Vector3(0, 0, 1f), new Vector3(), playerDimension);
+                        objects.AddLast(item);
                         break;
                     }
 
@@ -533,6 +589,7 @@ namespace RoleplayServer.resources.group_manager.lspd
                         var playerpos = API.getEntityPosition(player);
                         var playerDimension = API.getEntityDimension(player);
                         var item = API.createObject(API.getHashKey("prop_barrier_wat_03b"), playerpos - new Vector3(0, 0, 1f), new Vector3(), playerDimension);
+                        objects.AddLast(item);
                         break;
                     }
                 case 3:
@@ -540,6 +597,7 @@ namespace RoleplayServer.resources.group_manager.lspd
                         var playerpos = API.getEntityPosition(player);
                         var playerDimension = API.getEntityDimension(player);
                         var item = API.createObject(API.getHashKey("prop_barrier_work04a"), playerpos - new Vector3(0, 0, 1f), new Vector3(), playerDimension);
+                        objects.AddLast(item);
                         break;
                     }
                 case 4:
@@ -547,6 +605,7 @@ namespace RoleplayServer.resources.group_manager.lspd
                         var playerpos = API.getEntityPosition(player);
                         var playerDimension = API.getEntityDimension(player);
                         var item = API.createObject(API.getHashKey("prop_mp_conc_barrier_01"), playerpos - new Vector3(0, 0, 1f), new Vector3(), playerDimension);
+                        objects.AddLast(item);
                         break;
                     }
                 case 5:
@@ -554,12 +613,27 @@ namespace RoleplayServer.resources.group_manager.lspd
                         var playerpos = API.getEntityPosition(player);
                         var playerDimension = API.getEntityDimension(player);
                         var item = API.createObject(API.getHashKey("prop_barrier_work05"), playerpos - new Vector3(0, 0, 1f), new Vector3(), playerDimension);
+                        objects.AddLast(item);
                         break;
                     }
             }
+            API.sendNotificationToPlayer(player, "Object placed. There are now ~r~" + objects.Count + "~w~ placed.");
         }
-    //TODO: ADD A DELETE OBJECTS FEATURE
 
+        [Command("removelastobject", GreedyArg = true)]
+        public void removeobject_cmd(Client player)
+        {
+            Character character = API.getEntityData(player.handle, "Character");
+
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                return;
+            }
+            API.deleteEntity(objects.Last());
+            objects.RemoveLast();
+            API.sendNotificationToPlayer(player, "Object removed. There are now ~r~" + objects.Count + "~w~ placed.");
+        }
 
         public void GiveLspdEquipment(Client player, int type = 0)
         {
@@ -588,11 +662,19 @@ namespace RoleplayServer.resources.group_manager.lspd
             API.setPlayerHealth(player, 100);
             API.setPlayerArmor(player, 100);
         }
-        
+
         public void resetTicket(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
             character.sentTicket = false;
+            character.TicketTimer.Stop();
+        }
+
+
+        public void resetBeacon(Client player)
+        {
+            Character character = API.getEntityData(player.handle, "Character");
+            character.BeaconSet = false;
             character.BeaconResetTimer.Stop();
         }
 
@@ -633,14 +715,6 @@ namespace RoleplayServer.resources.group_manager.lspd
             character.jailTimer = new System.Timers.Timer { Interval = seconds };
             character.jailTimer.Elapsed += delegate { setFree(player); };
             character.jailTimer.Start();
-        }
-
-        public void resetBeacon(Client player)
-        {
-            Character character = API.getEntityData(player.handle, "Character");
-            character.BeaconSet = false;
-            API.triggerClientEvent(player, "delete_beacon");
-            character.BeaconResetTimer.Stop();
         }
 
         public void setFree(Client player)

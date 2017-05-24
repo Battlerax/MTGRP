@@ -177,11 +177,13 @@ namespace RoleplayServer.resources.player_manager
         public Timer jailTimer { get; set; }
         public bool isJailed { get; set; }
         public int sentTicketAmount { get; set; }
+        public bool activeCrime { get; set; }
 
         public Timer TicketTimer { get; set; }
         public bool sentTicket { get; set; }
         public int ticketBalance { get; set; }
         public int unpaidTickets { get; set; }
+        public bool radioToggle { get; set; }
 
         //Player Interaction
         [BsonIgnore]
@@ -373,10 +375,9 @@ namespace RoleplayServer.resources.player_manager
         }
 
         //Criminal Records
-
-        public void RecordCrime(Crime crime, Character officer, bool Activecrime)
+        public void RecordCrime(string crime, string officer, bool Activecrime)
         {
-            var record = new CriminalRecord(this.Id.ToString(), officer.Id.ToString(), crime, Activecrime);
+            var record = new CriminalRecord(this.Id.ToString(), officer, crime, Activecrime);
             record.Insert();
         }
 

@@ -268,18 +268,41 @@ namespace RoleplayServer.resources.group_manager
         [Command("group", Alias = "g", GreedyArg = true)]
         public void group_cmd(Client player, string message)
         {
-            GroupCommandPermCheck(API.getEntityData(player.handle, "Character"), 1);
 
-            Character character = API.getEntityData(player.handle, "Character");
-            SendGroupMessage(player, "[G][" + character.GroupRank + "] " + GetRankName(character) + " " + character.CharacterName + " : " + "~w~" + message);
+            if (GroupCommandPermCheck(API.getEntityData(player.handle, "Character"), 1)){
+
+                Character character = API.getEntityData(player.handle, "Character");
+                SendGroupMessage(player, "[G][" + character.GroupRank + "] " + GetRankName(character) + " " + character.CharacterName + " : " + "~w~" + message);
+            }
         }
 
-        [Command("gotopoint")]
-        public void gotopoint_cmd(Client player, float x, float y, float z, string ipl = "none")
+        [Command("radio", Alias = "r", GreedyArg = true)]
+        public void radio_cmd(Client player, string message)
         {
-            API.requestIpl(ipl);
-            API.setEntityPosition(player.handle, new Vector3(x, y, z));
-            API.sendChatMessageToPlayer(player, "TPed");
+
+            if (GroupCommandPermCheck(API.getEntityData(player.handle, "Character"), 1))
+            {
+
+                Character character = API.getEntityData(player.handle, "Character");
+                SendRadioMessage(player, "~b~[RADIO][" + character.GroupRank + "] " + GetRankName(character) + " " + character.CharacterName + " : " + "~w~" + message);
+            }
+        }
+
+        [Command("toggleradio", GreedyArg = true)]
+        public void toggleradio_cmd(Client player)
+        {
+            Character character = API.getEntityData(player.handle, "Character");
+
+            if (character.radioToggle == false)
+            {
+                character.radioToggle = true;
+                API.sendChatMessageToPlayer(player, "~p~You turn your radio on.");
+            }
+            else
+            {
+                character.radioToggle = false;
+                API.sendChatMessageToPlayer(player, "~p~You turn your radio off.");
+            }
         }
 
         [Command("accept")]
@@ -298,6 +321,7 @@ namespace RoleplayServer.resources.group_manager
 
                 character.GroupId = inviteSender.GroupId ;
                 character.Group = inviteSender.Group;
+                character.Group.CommandType = inviteSender.Group.CommandType;
                 character.GroupRank = 1;
                 character.Save();
 
@@ -321,11 +345,12 @@ namespace RoleplayServer.resources.group_manager
 
             SendGroupMessage(player, sender.CharacterName + " has left the group. (Quit)");
 
+            var groupName = sender.Group.Name;
             sender.GroupId = 0;
             sender.Group = null;
             sender.GroupRank = 0;
             sender.Save();
-            API.sendChatMessageToPlayer(player, "You have left " + sender.Group.Name + ".");
+            API.sendChatMessageToPlayer(player, "You have left " + groupName + ".");
         }
         
         [Command("invite")]
@@ -438,11 +463,23 @@ namespace RoleplayServer.resources.group_manager
             switch (option)
             {
                 case "group":
+                    if (amount < 1 || amount > 2)
+                    {
+                        API.sendChatMessageToPlayer(player, Color.Grey, "Valid group types are 1 (factions) and 2 (groups).");
+                        return;
+                    }
+                    if (GetGroupById(amount).Type == 1)
+                    {
+                        API.sendChatMessageToPlayer(player, Color.Grey, "You are attempting to set a player into a faction. Use /set faction instead.");
+                        return;
+                    }
+
                     character.GroupId = amount;
                     character.Group = GetGroupById(amount);
                     character.Save();
-                    API.sendChatMessageToPlayer(player, "You have set " + PlayerManager.GetName(receiver) + "[" + id + "]" + "'s group to " + amount + ".");
+                    API.sendChatMessageToPlayer(player, "You have set " + PlayerManager.GetName(receiver) + "[" + id + "]" + "'s group to " + amount + ", " + character.Group.Name + ".");
                     break;
+
                 case "grouprank":
                     if (amount < 1 || amount > 10)
                     {
@@ -454,8 +491,23 @@ namespace RoleplayServer.resources.group_manager
                     character.Save();
                     API.sendChatMessageToPlayer(player, "You have set " + PlayerManager.GetName(receiver) + "[" + id + "]" + "'s group rank to " + amount + ".");
                     break;
+
+                case "faction":
+                    if (GetGroupById(amount).Type == 2)
+                    {
+                        API.sendChatMessageToPlayer(player, Color.Grey, "You are attempting to set a player into a group. Use /set group instead.");
+                        return;
+                    }
+                
+                    character.GroupId = amount;
+                    character.Group = GetGroupById(amount);
+                    character.Group.CommandType = amount;
+                    character.Save();
+                    API.sendChatMessageToPlayer(player, "You have set " + PlayerManager.GetName(receiver) + "[" + id + "]" + "'s faction to " + amount + ", " + character.Group.Name + ".");
+                    break;
+
                 default:
-                    API.sendChatMessageToPlayer(player, Color.White, "Valid options are: group, grouprank");
+                    API.sendChatMessageToPlayer(player, Color.White, "Valid options are: group, grouprank, faction");
                     break;
             }
         }
@@ -474,6 +526,7 @@ namespace RoleplayServer.resources.group_manager
             group.Insert();
 
             API.sendChatMessageToPlayer(player, Color.Grey, "You have created group " + group.Id + " ( " + group.Name + ", Type: " + group.Type + " ). Use /editgroup to edit it.");
+            Groups = DatabaseManager.GroupTable.Find(Builders<Group>.Filter.Empty).ToList();
         }
 
         public static Group GetGroupById(int id)
@@ -490,6 +543,18 @@ namespace RoleplayServer.resources.group_manager
             foreach (var c in PlayerManager.Players)
             {
                 if(c.GroupId == sender.GroupId)
+                {
+                    API.shared.sendChatMessageToPlayer(c.Client, color, message);
+                }
+            }
+        }
+
+        public static void SendRadioMessage(Client player, string message, string color = Color.GroupChat)
+        {
+            Character sender = API.shared.getEntityData(player.handle, "Character");
+            foreach (var c in PlayerManager.Players)
+            {
+                if (c.GroupId == sender.GroupId && c.radioToggle == true)
                 {
                     API.shared.sendChatMessageToPlayer(c.Client, color, message);
                 }
