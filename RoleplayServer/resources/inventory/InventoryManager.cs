@@ -10,6 +10,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.inventory.bags;
+using RoleplayServer.resources.phone_manager;
 using RoleplayServer.resources.player_manager;
 
 namespace RoleplayServer.resources.inventory
@@ -23,6 +24,7 @@ namespace RoleplayServer.resources.inventory
             #region Inventory Items
 
             BsonClassMap.RegisterClassMap<BagItem>();
+            BsonClassMap.RegisterClassMap<Phone>();
             BsonClassMap.RegisterClassMap<TestItem>();
 
             #endregion
@@ -318,13 +320,13 @@ namespace RoleplayServer.resources.inventory
                     KeyValuePair<IStorage, IStorage> storages = _activeInvsBeingManaged.Get(sender);
 
                     //See if has item.
-                    var itemType = InventoryManager.ParseInventoryItem(shortname);
-                    if (itemType == null)
+                    var item = InventoryManager.DoesInventoryHaveItem(storages.Key, shortname);
+                    if (item.Length == 0)
                     {
                         API.sendNotificationToPlayer(sender, "That item type doesn't exist.");
                         return;
                     }
-                    var playerItem = InventoryManager.DoesInventoryHaveItem(storages.Key, itemType).SingleOrDefault(x => x.Id.ToString() == id);
+                    var playerItem = item.SingleOrDefault(x => x.Id.ToString() == id);
                     if (playerItem == null || playerItem.Amount < amount)
                     {
                         API.sendNotificationToPlayer(sender, "The source storage doesn't have that item or doesn't have that amount.");
@@ -342,7 +344,7 @@ namespace RoleplayServer.resources.inventory
                             break;
                         case InventoryManager.GiveItemErrors.Success:
                             //Remove from player.
-                            InventoryManager.DeleteInventoryItem(storages.Key, itemType, amount,
+                            InventoryManager.DeleteInventoryItem(storages.Key, playerItem.GetType(), amount,
                                 x => x.Id.ToString() == id && x.CommandFriendlyName == shortname);
 
                             //Send event done.
@@ -381,13 +383,13 @@ namespace RoleplayServer.resources.inventory
                     KeyValuePair<IStorage, IStorage> rlstorages = _activeInvsBeingManaged.Get(sender);
 
                     //See if has item.
-                    var rlitemType = InventoryManager.ParseInventoryItem(rlshortname);
-                    if (rlitemType == null)
+                    var rlitem = InventoryManager.DoesInventoryHaveItem(rlstorages.Value, rlshortname);
+                    if (rlitem.Length == 0)
                     {
                         API.sendNotificationToPlayer(sender, "That item type doesn't exist.");
                         return;
                     }
-                    var rlplayerItem = InventoryManager.DoesInventoryHaveItem(rlstorages.Value, rlitemType).SingleOrDefault(x => x.Id.ToString() == rlid);
+                    var rlplayerItem = rlitem.SingleOrDefault(x => x.Id.ToString() == rlid);
                     if (rlplayerItem == null || rlplayerItem.Amount < rlamount)
                     {
                         API.sendNotificationToPlayer(sender, "The source storage doesn't have that item or doesn't have that amount.");
@@ -405,7 +407,7 @@ namespace RoleplayServer.resources.inventory
                             break;
                         case InventoryManager.GiveItemErrors.Success:
                             //Remove from player.
-                            InventoryManager.DeleteInventoryItem(rlstorages.Value, rlitemType, rlamount,
+                            InventoryManager.DeleteInventoryItem(rlstorages.Value, rlplayerItem.GetType(), rlamount,
                                 x => x.Id.ToString() == rlid && x.CommandFriendlyName == rlshortname);
 
                             //Send event done.
