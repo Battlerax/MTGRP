@@ -368,6 +368,11 @@ namespace RoleplayServer.resources.phone_manager
         {
             var receiver = PlayerManager.ParseClient(id);
             Character rec = API.getEntityData(receiver.handle, "Character");
+            if (DoesNumberExist(number))
+            {
+                API.sendChatMessageToPlayer(player, "That number is taken.");
+                return;
+            }
 
             var phone = new Phone
             {
