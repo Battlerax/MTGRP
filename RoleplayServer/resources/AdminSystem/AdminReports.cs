@@ -5,5 +5,6 @@ namespace RoleplayServer.resources.AdminSystem
 {
     class AdminReports : Script
     {
+
     }
 }

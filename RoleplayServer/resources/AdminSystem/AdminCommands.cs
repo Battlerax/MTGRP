@@ -220,6 +220,54 @@ namespace RoleplayServer.resources.AdminSystem
             API.sendChatMessageToPlayer(player, "Sucessfully teleported the car to you.");
         }
 
+
+        //============REPORT SYSTEM=============
+
+        [Command("report", Alias = "re", GreedyArg = true)]
+        public void report_cmd(Client player)
+        {
+            //MENU TO REPORT PLAYERS AND REQUEST ADMIN ASSISTANCE.
+        }
+
+        [Command("reports", GreedyArg = true)]
+        public void reports_cmd(Client player)
+        {
+            Account account = API.getEntityData(player.handle, "Account");
+            if (account.AdminLevel == 0)
+                return;
+            //LIST ALL REPORTS
+        }
+
+        [Command("trashreport", GreedyArg = true)]
+        public void trashreport_cmd(Client player, int id)
+        {
+            Account account = API.getEntityData(player.handle, "Account");
+            if (account.AdminLevel == 0)
+                return;
+            //TRASH REPORT
+        }
+
+        [Command("ask", GreedyArg = true)]
+        public void ask_cmd(Client player, string message)
+        {
+            //ask questions to adminlevel > 0
+        }
+
+        [Command("asklist", GreedyArg = true)]
+        public void asklist_cmd(Client player)
+        {
+            //show list of ask questions.
+        }
+
+        [Command("trashask", GreedyArg = true)]
+        public void trashask_cmd(Client player, int id)
+        {
+            Account account = API.getEntityData(player.handle, "Account");
+            if (account.AdminLevel == 0)
+                return;
+            //trash ask question.
+        }
+    
         //TODO: REMOVE THIS: 
         [Command("makemeadmin")]
         public void makemeadmin_cmd(Client player)
