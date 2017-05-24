@@ -208,6 +208,25 @@ namespace RoleplayServer.resources.core
             }
         }
         
+        [Command("admin", Alias = "a", GreedyArg = true)]
+        public void admin_cmd(Client player,  string text)
+        {
+            Account account = API.getEntityData(player.handle, "Account");
+
+            if(account.AdminLevel > 0)
+            {
+                foreach (var c in API.getAllPlayers())
+                {
+                    Account receiverAccount = API.getEntityData(player.handle, "Account");
+
+                    if (receiverAccount.AdminLevel > 0)
+                    {
+                        API.sendChatMessageToPlayer(c, Color.AdminChat, text);
+                    }
+                }
+            }
+        }
+
         [Command("rp", GreedyArg = true)]
         public void rp_cmd(Client player, string id, string text)
         {
