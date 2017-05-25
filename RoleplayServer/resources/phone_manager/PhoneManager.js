@@ -68,6 +68,10 @@ API.onServerEventTrigger.connect((eventName, args) => {
         case "phone_showMessages":
             myBrowser.call("callAppFunction", "showMessages", args[0], args[1], args[2]);
             break;
+
+        case "phone_incomingMessage":
+            myBrowser.call("callAppFunction", "incomingMessage", args[0], args[1]);
+            break;
     }
 });
 

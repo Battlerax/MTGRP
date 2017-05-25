@@ -139,6 +139,12 @@
             resourceCall("callServerEvent", "phone_loadMessages", name, last);
         }
 
+        function incomingMessage(number, msg) {
+            if (number === $("#contactName").text()) {
+                $("#messages").append(`<div class="popover marker-on-left"><div>${msg}</div></div>`);
+            }
+        }
+
         window.addEventListener("message", receiveMessage, false);
         function receiveMessage(event) {
             window[event.data[0]](...event.data[1]);
