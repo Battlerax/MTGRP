@@ -21,7 +21,14 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 					  report_menu.Visible = false;
                       report_menu = null;
                       menu_pool = null;
-                      var message = API.getUserInput("What do you need help with?", 200);
+					  API.sendNotification("~r~Enter your reason for request.");
+					  API.sendChatMessage("~r~Enter your reason for request.");
+                      var message = API.getUserInput("", 200);
+					  if(message.length == 0){
+						API.sendNotification("~r~Please enter a valid reason for your request.");
+						API.sendChatMessage("~r~Please enter a valid reason for your request.");
+						return;
+					  }
                       API.triggerServerEvent("OnRequestSubmitted", message);
                     }
 
@@ -29,8 +36,23 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 					  report_menu.Visible = false;
                       report_menu = null;
                       menu_pool = null;
-                      var targetPlayer = API.getUserInput("Enter the name or ID of a player breaking the rules..", 65);
-                      var message = API.getUserInput("What is your report reason?", 200);
+					  API.sendNotification("~r~Enter the name or ID of the player you want to report.");
+					  API.sendChatMessage("~r~Enter the name or ID of the player you want to report.");
+                      var targetPlayer = API.getUserInput("",65);
+					  if(targetPlayer.length == 0){
+						API.sendNotification("~r~Please enter a valid name or ID of the player you want to report.");
+						API.sendChatMessage("~r~Please enter a valid name or ID of the player you want to report.");
+						return;
+					  }
+
+					  API.sendNotification("~r~Enter your report reason.");
+					  API.sendChatMessage("~r~Enter your report reason.");
+                      var message = API.getUserInput("", 200);
+					  if(message.length == 0){
+						API.sendNotification("~r~Please enter a valid report reason.");
+						API.sendChatMessage("~r~Please enter a valid report reason.");
+						return;
+					  }
                       API.triggerServerEvent("OnReportMade", message, targetPlayer);
                     }
 

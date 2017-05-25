@@ -27,6 +27,7 @@ namespace RoleplayServer.resources.AdminSystem
                     int playerid = PlayerManager.GetPlayerId(character);
                     AdminReports.InsertReport(3, player.nametag, (string)arguments[0]);
                     sendtoAllAdmins("~g~[REPORT]~w~ " + PlayerManager.GetName(player) + " (ID:" + playerid + "): " + (string)arguments[0]);
+                    API.sendChatMessageToPlayer(player, "Report submitted.");
                     startReportTimer(player);
                     character.HasActiveReport = true;
                     break;
@@ -36,8 +37,14 @@ namespace RoleplayServer.resources.AdminSystem
                     int senderid = PlayerManager.GetPlayerId(senderchar);
                     string id = (string)arguments[1];
                     var receiver = PlayerManager.ParseClient(id);
+                    if (receiver == null)
+                    {
+                        API.shared.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                        return;
+                    }
                     AdminReports.InsertReport(2, player.nametag, (string)arguments[0], PlayerManager.GetName(receiver) + " (ID:" + id + ")");
                     sendtoAllAdmins("~g~[REPORT]~w~ " + PlayerManager.GetName(player) + " (ID:" + senderid + ")" + " reported " + PlayerManager.GetName(receiver) + " (ID:" + id + ") for " + (string)arguments[0]);
+                    API.sendChatMessageToPlayer(player, "Report submitted.");
                     startReportTimer(player);
                     senderchar.HasActiveReport = true;
                     break;
@@ -45,25 +52,43 @@ namespace RoleplayServer.resources.AdminSystem
             }
         }
 
-        public void startReportTimer(Client player)
-        {
-            Character senderchar = API.getEntityData(player.handle, "Character");
-            senderchar.ReportCreated = true;
-            senderchar.ReportTimer = new Timer() { Interval = 15000 };
-            senderchar.ReportTimer.Elapsed += delegate { reportTimer(player); };
-            senderchar.ReportTimer.Start();
-        }
 
-        public void sendtoAllAdmins(string text)
+        [Command("setadminlevel")]
+        public void setrank_cmd(Client player, string id, int level)
         {
-            foreach (var c in API.getAllPlayers())
+            var receiver = PlayerManager.ParseClient(id);
+            Account account = API.shared.getEntityData(player.handle, "Account");
+            Account receiverAccount = API.shared.getEntityData(receiver.handle, "Account");
+            Character character = API.shared.getEntityData(player.handle, "Character");
+            Character receiverCharacter = API.shared.getEntityData(receiver.handle, "Character");
+
+            if (account.AdminLevel == 0)
+                return;
+
+            if (receiver == null)
             {
-                Account receiverAccount = API.getEntityData(c.handle, "Account");
+                API.sendChatMessageToPlayer(player, Color.White, "That player is not connected.");
+                return;
+            }
 
-                if (receiverAccount.AdminLevel > 0)
+            if (account.AdminLevel >= receiverAccount.AdminLevel && account.AdminLevel > level)
+            {
+                var oldLevel = receiverAccount.AdminLevel;
+                if (oldLevel > level)
                 {
-                    API.sendChatMessageToPlayer(c, Color.AdminChat, text);
+                    API.sendChatMessageToPlayer(receiver, "You have been demoted to admin level " + level + " by " + character.CharacterName + ".");
                 }
+                else
+                {
+                    API.sendChatMessageToPlayer(receiver, "You have been promoted to admin level " + level + " by " + character.CharacterName + ".");
+                }
+                API.sendChatMessageToPlayer(player, "You have changed " + receiverCharacter.CharacterName + "'s admin level to " + level + " (was " + oldLevel + ").");
+                receiverAccount.AdminLevel = level;
+                receiverAccount.Save();
+            }
+            else
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "You cannot set a higher admin level than yours or set someone to a level above yours.");
             }
         }
 
@@ -81,7 +106,7 @@ namespace RoleplayServer.resources.AdminSystem
             var receiver = PlayerManager.ParseClient(id);
             Account account = API.shared.getEntityData(player.handle, "Account");
 
-            if (account.AdminLevel == 0)
+            if (account.AdminLevel < 2)
                 return;
 
             if (receiver == null)
@@ -102,7 +127,7 @@ namespace RoleplayServer.resources.AdminSystem
             var receiver = PlayerManager.ParseClient(id);
             Account account = API.shared.getEntityData(player.handle, "Account");
 
-            if (account.AdminLevel == 0)
+            if (account.AdminLevel < 2)
                 return;
 
             if (receiver == null)
@@ -122,7 +147,7 @@ namespace RoleplayServer.resources.AdminSystem
             var receiver = PlayerManager.ParseClient(id);
             Account account = API.getEntityData(player.handle, "Account");
 
-            if (account.AdminLevel == 0)
+            if (account.AdminLevel < 3)
                 return;
 
             if (receiver == null)
@@ -140,7 +165,7 @@ namespace RoleplayServer.resources.AdminSystem
             var receiver = PlayerManager.ParseClient(id);
             Account account = API.getEntityData(player.handle, "Account");
 
-            if (account.AdminLevel == 0)
+            if (account.AdminLevel < 3)
                 return;
 
             if (receiver == null)
@@ -158,7 +183,7 @@ namespace RoleplayServer.resources.AdminSystem
             var receiver = PlayerManager.ParseClient(id);
             Account account = API.getEntityData(player.handle, "Account");
 
-            if (account.AdminLevel == 0)
+            if (account.AdminLevel < 3)
                 return;
 
             if (receiver == null)
@@ -176,7 +201,7 @@ namespace RoleplayServer.resources.AdminSystem
             var target = PlayerManager.ParseClient(id);
             Account account = API.shared.getEntityData(player.handle, "Account");
 
-            if (account.AdminLevel == 0)
+            if (account.AdminLevel < 2)
                 return;
 
             if (target == null)
@@ -195,7 +220,7 @@ namespace RoleplayServer.resources.AdminSystem
         {
             Account account = API.getEntityData(player.handle, "Account");
 
-            if (account.AdminLevel == 0)
+            if (account.AdminLevel < 2)
                 return;
 
             if (account.IsSpectating == false)
@@ -214,7 +239,7 @@ namespace RoleplayServer.resources.AdminSystem
             var receiver = PlayerManager.ParseClient(id);
             Account account = API.getEntityData(player.handle, "Account");
 
-            if (account.AdminLevel == 0)
+            if (account.AdminLevel < 2)
                 return;
 
             if (receiver == null)
@@ -233,7 +258,7 @@ namespace RoleplayServer.resources.AdminSystem
             var receiver = PlayerManager.ParseClient(id);
             Account account = API.getEntityData(player.handle, "Account");
 
-            if (account.AdminLevel == 0)
+            if (account.AdminLevel < 2)
                 return;
 
             if (receiver == null)
@@ -251,7 +276,7 @@ namespace RoleplayServer.resources.AdminSystem
             var receiver = PlayerManager.ParseClient(id);
             Account account = API.getEntityData(player.handle, "Account");
 
-            if (account.AdminLevel == 0)
+            if (account.AdminLevel < 2)
                 return;
 
             if (receiver == null)
@@ -269,7 +294,7 @@ namespace RoleplayServer.resources.AdminSystem
             Account account = API.getEntityData(player.handle, "Account");
             Character character = API.getEntityData(player.handle, "Character");
 
-            if (account.AdminLevel == 0)
+            if (account.AdminLevel < 7)
                 return;
 
             character.Money = money;
@@ -280,7 +305,7 @@ namespace RoleplayServer.resources.AdminSystem
         public void showplayercars_cmd(Client player, string id)
         {
             Account account = API.getEntityData(player.handle, "Account");
-            if (account.AdminLevel == 0)
+            if (account.AdminLevel < 2)
                 return;
 
             var receiver = PlayerManager.ParseClient(id);
@@ -310,7 +335,7 @@ namespace RoleplayServer.resources.AdminSystem
         public void getplayercar_cmd(Client player, string id, int nethandle)
         {
             Account account = API.getEntityData(player.handle, "Account");
-            if (account.AdminLevel == 0)
+            if (account.AdminLevel < 2)
                 return;
 
             var receiver = PlayerManager.ParseClient(id);
@@ -332,7 +357,7 @@ namespace RoleplayServer.resources.AdminSystem
             var receiver = PlayerManager.ParseClient(id);
             Account account = API.getEntityData(player.handle, "Account");
             Account receiverAccount = API.getEntityData(receiver.handle, "Account");
-            if (account.AdminLevel == 0)
+            if (account.AdminLevel < 6)
                 return;
 
             if (receiverAccount.AdminLevel == 0)
@@ -354,7 +379,7 @@ namespace RoleplayServer.resources.AdminSystem
             {
                 Account receiverAccount = API.getEntityData(c.handle, "Account");
 
-                if (receiverAccount.AdminLevel > 0 && receiverAccount.AdminDuty == 0)
+                if (receiverAccount.AdminLevel > 1 && receiverAccount.AdminDuty == 0)
                 {
                     API.sendChatMessageToPlayer(player, "~g~" + receiverAccount.AdminName + " | LEVEL " + receiverAccount.AdminLevel);
                 }
@@ -391,7 +416,7 @@ namespace RoleplayServer.resources.AdminSystem
         public void reports_cmd(Client player)
         {
             Account account = API.getEntityData(player.handle, "Account");
-            if (account.AdminLevel == 0)
+            if (account.AdminLevel < 2)
                 return;
 
 
@@ -421,7 +446,7 @@ namespace RoleplayServer.resources.AdminSystem
             Character character = API.getEntityData(player.handle, "Character");
             Character receivercharacter = API.getEntityData(receiver, "Character");
 
-            if (account.AdminLevel == 0)
+            if (account.AdminLevel < 2)
                 return;
 
 
@@ -448,7 +473,7 @@ namespace RoleplayServer.resources.AdminSystem
             receivercharacter.HasActiveReport = false;
             API.sendChatMessageToPlayer(player, "Report accepted.");
             API.sendChatMessageToPlayer(receiver, "Your report has been taken by ~b~" + player.nametag + ".");
-            sendtoAllAdmins("[REPORT] " + player.nametag + "has taken " + receiver.nametag + "'s report.");
+            sendtoAllAdmins("[REPORT] " + player.nametag + " has taken " + receiver.nametag + "'s report.");
             character.AdminActions++;
         }
 
@@ -459,7 +484,7 @@ namespace RoleplayServer.resources.AdminSystem
             Account account = API.getEntityData(player.handle, "Account");
             Character receivercharacter = API.getEntityData(receiver, "Character");
 
-            if (account.AdminLevel == 0)
+            if (account.AdminLevel < 1)
                 return;
 
 
@@ -485,6 +510,76 @@ namespace RoleplayServer.resources.AdminSystem
             receivercharacter.HasActiveReport = false;
             API.sendChatMessageToPlayer(player, "Request trashed.");
             API.sendChatMessageToPlayer(receiver, "Your admin/moderator request was trashed.");
+            sendtoAllAdmins("[TRASHED] " + player.nametag + " trashed " + receiver.nametag + "'s report.");
+        }
+
+        [Command("maccept", GreedyArg = true)]
+        public void maccept_cmd(Client player, string id)
+        {
+            var receiver = PlayerManager.ParseClient(id);
+            Account account = API.getEntityData(player.handle, "Account");
+            Character character = API.getEntityData(player.handle, "Character");
+            Character receivercharacter = API.getEntityData(receiver, "Character");
+
+            if (account.AdminLevel < 1)
+                return;
+
+            if (character.IsOnAsk == true)
+            {
+                API.sendChatMessageToPlayer(player, "You are already helping someone.");
+                return;
+            }
+
+            if (receiver == null)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
+            }
+
+            if (receivercharacter.HasActiveAsk == false)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ This player has no active help requests.");
+                return;
+            }
+
+            foreach (var i in AdminReports.Reports.ToList())
+            {
+                if (i.Name == receiver.nametag)
+                {
+                    AdminReports.Delete(i);
+                }
+            }
+
+            character.IsOnAsk = true;
+            character.LastPos = API.getEntityPosition(player);
+            receivercharacter.HasActiveAsk = false;
+            API.sendChatMessageToPlayer(player, "Ask accepted.");
+            API.sendChatMessageToPlayer(receiver, "Your help request has been taken by ~b~" + player.nametag + ".");
+            sendtoAllAdmins("[REPORT] " + player.nametag + " has taken " + receiver.nametag + "'s ask request.");
+            API.setEntityPosition(player, API.getEntityPosition(receiver));
+            API.setPlayerNametagColor(player, 51, 102, 255);
+            character.AdminActions++;
+        }
+
+        [Command("mfinish", GreedyArg = true)]
+        public void mfinish_cmd(Client player)
+        {
+            Account account = API.getEntityData(player.handle, "Account");
+            Character character = API.getEntityData(player.handle, "Character");
+
+            if (account.AdminLevel < 1)
+                return;
+
+            if(character.IsOnAsk == false)
+            {
+                API.sendChatMessageToPlayer(player, "You are not helping anyone.");
+                return;
+            }
+
+            character.IsOnAsk = false;
+            API.sendChatMessageToPlayer(player, "Ask finished.");
+            API.setEntityPosition(player, character.LastPos);
+            API.setPlayerNametagColor(player, 0, 0, 0);
         }
 
         [Command("ask", GreedyArg = true)]
@@ -503,11 +598,84 @@ namespace RoleplayServer.resources.AdminSystem
                 API.sendChatMessageToPlayer(player, "Please wait 15 seconds before creating another request.");
                 return;
             }
-            character.HasActiveReport = true;
+
+            character.HasActiveAsk = true;
             AdminReports.InsertReport(1, player.nametag, message);
             sendtoAllAdmins("~g~[ASK]~w~ " + PlayerManager.GetName(player) + ": " + message);
-            API.sendChatMessageToPlayer(player, "~b~Your ask request has been submitted. ~w~Moderators have been informed and will be with you soon.");
+            API.sendChatMessageToPlayer(player, "~b~Ask request submitted. ~w~Moderators have been informed and will be with you soon.");
             startReportTimer(player);
+        }
+
+        [Command("nmute", GreedyArg = true)]
+        public void nmute_cmd(Client player, string id)
+        {
+            var receiver = PlayerManager.ParseClient(id);
+            Account account = API.getEntityData(player.handle, "Account");
+            Character receivercharacter = API.getEntityData(receiver, "Character");
+
+            if (account.AdminLevel < 1)
+                return;
+
+            if (receiver == null)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
+            }
+
+            if (receivercharacter.NMuted == false)
+            {
+                receivercharacter.NMuted = true;
+                API.sendChatMessageToPlayer(player, "You have muted ~b~" + receiver.nametag + "~w~ from newbie chat for 1 hour.");
+                API.sendChatMessageToPlayer(receiver, "You have been ~r~muted ~w~from newbie chat for 1 hour.");
+                receivercharacter.NMutedTimer = new Timer() { Interval = 3600000 };
+                receivercharacter.NMutedTimer.Elapsed += delegate { NMuteTimer(player); };
+                receivercharacter.NMutedTimer.Start();
+                return;
+            }
+            else
+            {
+                receivercharacter.NMuted = false;
+                API.sendChatMessageToPlayer(receiver, "You have been ~r~unmmuted ~w~from newbie chat.");
+                API.sendChatMessageToPlayer(player, "You have unmuted ~b~" + receiver.nametag + "~w~ from newbie chat.");
+                receivercharacter.NMutedTimer.Stop();
+            }
+
+        }
+
+        [Command("vmute", GreedyArg = true)]
+        public void vmute_cmd(Client player, string id)
+        {
+            var receiver = PlayerManager.ParseClient(id);
+            Account account = API.getEntityData(player.handle, "Account");
+            Character receivercharacter = API.getEntityData(receiver, "Character");
+
+            if (account.AdminLevel < 1)
+                return;
+
+            if (receiver == null)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
+            }
+
+            if (receivercharacter.VMuted == false)
+            {
+                receivercharacter.VMuted = true;
+                API.sendChatMessageToPlayer(player, "You have muted ~b~" + receiver.nametag + "~w~ from VIP chat for 1 hour.");
+                API.sendChatMessageToPlayer(receiver, "You have been ~r~muted ~w~from VIP chat for 1 hour.");
+                receivercharacter.VMutedTimer = new Timer() { Interval = 3600000 };
+                receivercharacter.VMutedTimer.Elapsed += delegate { VMuteTimer(player); };
+                receivercharacter.VMutedTimer.Start();
+                return;
+            }
+            else
+            {
+                receivercharacter.VMuted = false;
+                API.sendChatMessageToPlayer(receiver, "You have been ~r~unmmuted ~w~from VIP chat.");
+                API.sendChatMessageToPlayer(player, "You have unmuted ~b~" + receiver.nametag + "~w~ from VIP chat.");
+                receivercharacter.VMutedTimer.Stop();
+            }
+
         }
 
         [Command("reportmute", GreedyArg = true)]
@@ -517,7 +685,7 @@ namespace RoleplayServer.resources.AdminSystem
             Account account = API.getEntityData(player.handle, "Account");
             Character receivercharacter = API.getEntityData(receiver, "Character");
 
-            if (account.AdminLevel == 0)
+            if (account.AdminLevel < 1)
                 return;
 
             if (receiver == null)
@@ -531,21 +699,26 @@ namespace RoleplayServer.resources.AdminSystem
                 receivercharacter.ReportMuted = true;
                 API.sendChatMessageToPlayer(player, "You have muted ~b~" + receiver.nametag + "~w~from creating reports.");
                 API.sendChatMessageToPlayer(receiver, "You have been ~r~muted ~w~from making reports.");
+                receivercharacter.ReportMutedTimer = new Timer() { Interval = 3600000 };
+                receivercharacter.ReportMutedTimer.Elapsed += delegate { reportMuteTimer(player); };
+                receivercharacter.ReportMutedTimer.Start();
+                return;
             }
             else
             {
                 receivercharacter.ReportMuted = false;
                 API.sendChatMessageToPlayer(receiver, "You have been ~r~unmmuted ~w~from making reports.");
                 API.sendChatMessageToPlayer(player, "You have unmuted ~b~" + receiver.nametag + "~w~from creating reports.");
+                receivercharacter.ReportMutedTimer.Stop();
             }
 
         }
 
-        [Command("asklist", GreedyArg = true)]
+        [Command("mlist", GreedyArg = true)]
         public void asklist_cmd(Client player)
         {
             Account account = API.getEntityData(player.handle, "Account");
-            if (account.AdminLevel == 0)
+            if (account.AdminLevel < 1)
                 return;
 
             API.sendChatMessageToPlayer(player, "=======ASK LIST=======");
@@ -564,7 +737,7 @@ namespace RoleplayServer.resources.AdminSystem
         public void clearreports_cmd(Client player)
         {
             Account account = API.getEntityData(player.handle, "Account");
-            if (account.AdminLevel == 0)
+            if (account.AdminLevel < 3)
                 return;
 
             AdminReports.Reports.Clear();
@@ -580,11 +753,61 @@ namespace RoleplayServer.resources.AdminSystem
             API.sendChatMessageToPlayer(player, "You are now a king.");
         }
 
+        public void startReportTimer(Client player)
+        {
+            Character senderchar = API.getEntityData(player.handle, "Character");
+            senderchar.ReportCreated = true;
+            senderchar.ReportTimer = new Timer() { Interval = 15000 };
+            senderchar.ReportTimer.Elapsed += delegate { reportTimer(player); };
+            senderchar.ReportTimer.Start();
+        }
+
+        public void sendtoAllAdmins(string text)
+        {
+            foreach (var c in API.getAllPlayers())
+            {
+                Account receiverAccount = API.getEntityData(c.handle, "Account");
+
+                if (receiverAccount.AdminLevel > 0)
+                {
+                    API.sendChatMessageToPlayer(c, Color.AdminChat, text);
+                }
+            }
+        }
+
         public void reportTimer(Client player)
         {
             Character character = API.getEntityData(player, "Character");
 
             character.ReportCreated = false;
+            character.ReportTimer.Stop();
+        }
+
+        public void reportMuteTimer(Client player)
+        {
+            Character character = API.getEntityData(player, "Character");
+
+            API.sendChatMessageToPlayer(player, "You have been ~r~unmuted~w~ from creating reports.");
+            character.ReportMuted = false;
+            character.ReportMutedTimer.Stop();
+        }
+
+        public void NMuteTimer(Client player)
+        {
+            Character character = API.getEntityData(player, "Character");
+
+            API.sendChatMessageToPlayer(player, "You have been ~r~unmuted~w~ from newbie chat.");
+            character.NMuted = false;
+            character.NMutedTimer.Stop();
+        }
+
+        public void VMuteTimer(Client player)
+        {
+            Character character = API.getEntityData(player, "Character");
+
+            API.sendChatMessageToPlayer(player, "You have been ~r~unmuted~w~ from VIP chat.");
+            character.VMuted = false;
+            character.VMutedTimer.Stop();
         }
     }
 }

@@ -212,6 +212,9 @@ namespace RoleplayServer.resources.group_manager
         [Command("gotopoint")]
         public void gotopoint_cmd(Client player, float x, float y, float z, string ipl = "none")
         {
+            Account account = API.getEntityData(player.handle, "Account");
+            if (account.AdminLevel < 5)
+                return;
             API.requestIpl(ipl);
             API.setEntityPosition(player.handle, new Vector3(x, y, z));
             API.sendChatMessageToPlayer(player, "TPed");

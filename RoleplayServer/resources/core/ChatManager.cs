@@ -45,10 +45,17 @@ namespace RoleplayServer.resources.core
         public void newbie_cmd(Client player, string message)
         {
             Account account = API.getEntityData(player.handle, "Account");
+            Character character = API.getEntityData(player.handle, "Character");
 
             if (NewbieStatus == false && account.AdminLevel == 0)
             {
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~Newbie chat is currently disabled.");
+                return;
+            }
+
+            if (character.NMuted == true)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~You are muted from newbie chat.");
                 return;
             }
 
@@ -97,6 +104,7 @@ namespace RoleplayServer.resources.core
         public void vip_chat(Client player, string message)
         {
             Account account = API.getEntityData(player.handle, "Account");
+            Character character = API.getEntityData(player.handle, "Character");
 
             if (VipStatus == false && account.AdminLevel == 0)
             {
@@ -104,7 +112,13 @@ namespace RoleplayServer.resources.core
                 return;
             }
 
-            if(account.VipLevel == 0)
+            if (character.VMuted == true)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~You are muted from VIP chat.");
+                return;
+            }
+
+            if (account.VipLevel == 0)
             {
                 API.sendNotificationToPlayer(player, "~y~You must be a VIP to use VIP chat.");
                 return;

@@ -75,10 +75,13 @@ namespace RoleplayServer.resources.player_manager
         public Vehicle LastVehicle { get; set; }
 
         //Reports
+        public bool IsOnAsk { get; set; }
+        public bool HasActiveAsk { get; set; }
         public bool HasActiveReport { get; set; }
         public bool ReportMuted { get; set; }
         public bool ReportCreated { get; set; }
         public Timer ReportTimer { get; set; }
+        public Timer ReportMutedTimer { get; set; }
 
         //Jobs
         public int JobOneId { get; set; }
@@ -105,6 +108,12 @@ namespace RoleplayServer.resources.player_manager
 
         [BsonIgnore]
         public long OocCooldown { get; set; }
+
+        //Chat mutes
+        public bool NMuted { get; set; }
+        public bool VMuted { get; set; }
+        public Timer NMutedTimer { get; set; }
+        public Timer VMutedTimer { get; set; }
 
         //Job zone related
         [BsonIgnore]
