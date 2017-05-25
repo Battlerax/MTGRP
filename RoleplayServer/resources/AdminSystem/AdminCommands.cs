@@ -14,9 +14,8 @@ namespace RoleplayServer.resources.AdminSystem
         public AdminCommands()
         {
             DebugManager.DebugMessage("[AdminSys] Initalizing Admin System...");
-
-
             DebugManager.DebugMessage("[AdminSys] Admin System initalized.");
+            API.onClientEventTrigger += OnClientEventTrigger;
         }
 
         public void OnClientEventTrigger(Client player, string eventId, params object[] arguments)
@@ -26,9 +25,10 @@ namespace RoleplayServer.resources.AdminSystem
                 case "OnRequestSubmitted":
                     Character character = API.getEntityData(player.handle, "Character");
                     int playerid = PlayerManager.GetPlayerId(character);
-                    AdminReports.InsertReport(1, PlayerManager.GetName(player) + " (ID:" + playerid + ")", (string)arguments[0]);
+                    AdminReports.InsertReport(3, player.nametag + " (ID:" + playerid + ")", (string)arguments[0]);
                     sendtoAllAdmins("~g~[REPORT]~w~ " + PlayerManager.GetName(player) + " (ID:" + playerid + "): " + (string)arguments[0]);
                     startReportTimer(player);
+                    character.HasActiveReport = true;
                     break;
 
                 case "OnReportMade":
@@ -36,9 +36,10 @@ namespace RoleplayServer.resources.AdminSystem
                     int senderid = PlayerManager.GetPlayerId(senderchar);
                     string id = (string)arguments[1];
                     var receiver = PlayerManager.ParseClient(id);
-                    AdminReports.InsertReport(2, PlayerManager.GetName(player) + " (ID:" + senderid + ")", (string)arguments[0], PlayerManager.GetName(receiver) + " (ID:" + id + ")");
+                    AdminReports.InsertReport(2, player.nametag + " (ID:" + senderid + ")", (string)arguments[0], PlayerManager.GetName(receiver) + " (ID:" + id + ")");
                     sendtoAllAdmins("~g~[REPORT]~w~ " + PlayerManager.GetName(player) + " (ID:" + senderid + ")" + " reported " + PlayerManager.GetName(receiver) + " (ID:" + id + ") for " + (string)arguments[0]);
                     startReportTimer(player);
+                    senderchar.HasActiveReport = true;
                     break;
 
             }
@@ -65,7 +66,6 @@ namespace RoleplayServer.resources.AdminSystem
                 }
             }
         }
-
 
         [Command("gotopos")]
         public void gotopos_cmd(Client player, double x, double y, double z)
@@ -227,6 +227,42 @@ namespace RoleplayServer.resources.AdminSystem
             API.sendChatMessageToPlayer(receiver, "You have been slapped by an admin");
         }
 
+        [Command("freeze")]
+        public void freeze_cmd(Client player, string id)
+        {
+            var receiver = PlayerManager.ParseClient(id);
+            Account account = API.getEntityData(player.handle, "Account");
+
+            if (account.AdminLevel == 0)
+                return;
+
+            if (receiver == null)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
+            }
+            API.freezePlayer(receiver, true);
+            API.sendChatMessageToPlayer(receiver, "You have been frozen by an admin");
+        }
+
+        [Command("unfreeze")]
+        public void unfreeze_cmd(Client player, string id)
+        {
+            var receiver = PlayerManager.ParseClient(id);
+            Account account = API.getEntityData(player.handle, "Account");
+
+            if (account.AdminLevel == 0)
+                return;
+
+            if (receiver == null)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
+            }
+            API.freezePlayer(receiver, false);
+            API.sendChatMessageToPlayer(receiver, "You have been unfrozen by an admin");
+        }
+
         [Command("setmymoney")]
         public void setmymoney_cmd(Client player, int money)
         {
@@ -290,7 +326,36 @@ namespace RoleplayServer.resources.AdminSystem
             API.sendChatMessageToPlayer(player, "Sucessfully teleported the car to you.");
         }
 
+        [Command("setadminname")]
+        public void setadminname_cmd(Client player, string id, string name)
+        {
+            Account account = API.getEntityData(player.handle, "Account");
+            Account receiverAccount = API.getEntityData(player.handle, "Account");
+            if (account.AdminLevel == 0)
+                return;
 
+            if (receiverAccount.AdminLevel == 0)
+            {
+                API.sendChatMessageToPlayer(player, "This player is not an admin.");
+                return;
+            }
+            receiverAccount.AdminName = name;
+        }
+
+        [Command("admins")]
+        public void admins_cmd(Client player)
+        {
+            API.sendChatMessageToPlayer(player, "=====ADMINS ONLINE NOW=====");
+            foreach (var c in API.getAllPlayers())
+            {
+                Account receiverAccount = API.getEntityData(c.handle, "Account");
+
+                if (receiverAccount.AdminLevel > 0 && receiverAccount.AdminDuty == 0)
+                {
+                    API.sendChatMessageToPlayer(player, "~g~" + receiverAccount.AdminName + " | LEVEL " + receiverAccount.AdminLevel);
+                }
+            }
+        }
         //============REPORT SYSTEM=============
 
         [Command("report", Alias = "re", GreedyArg = true)]
@@ -306,8 +371,7 @@ namespace RoleplayServer.resources.AdminSystem
 
             if (AdminReports.Reports.Count > 5)
             {
-                API.sendChatMessageToPlayer(player, "We are experiencing a high volume of reports. Please only use the report featue if it is absolutely necessary.");
-                return;
+                API.sendChatMessageToPlayer(player, "~r~We are experiencing a high volume of reports. Please only use the report feature if it is absolutely necessary.");
             }
 
             if (character.ReportCreated == true)
@@ -326,7 +390,9 @@ namespace RoleplayServer.resources.AdminSystem
             if (account.AdminLevel == 0)
                 return;
 
-            foreach (var i in AdminReports.Reports)
+
+            API.sendChatMessageToPlayer(player, "=======REPORTS=======");
+            foreach (var i in AdminReports.Reports.ToList())
             {
                 if(i.Type == 1)
                 {
@@ -335,18 +401,56 @@ namespace RoleplayServer.resources.AdminSystem
 
                 if (i.Type == 2)
                 {
-                    API.sendChatMessageToPlayer(player, "~b~" + i.Name + "~w~" + " | " + i.ReportMessage);
+                    API.sendChatMessageToPlayer(player, "~b~" + i.Name + "reported ~r~" + i.Target + "~w~" + " | " + i.ReportMessage);
                     return;
                 }
+                API.sendChatMessageToPlayer(player, "~b~" + i.Name + "~w~" + " | " + i.ReportMessage);
 
-                API.sendChatMessageToPlayer(player, "~b~" + i.Name + "reported ~r~" + i.Target + "~w~" + " | " + i.ReportMessage);
             }
+        }
+
+        [Command("acceptreport", GreedyArg = true)]
+        public void acceptreport_cmd(Client player, string id)
+        {
+            var receiver = PlayerManager.ParseClient(id);
+            Account account = API.getEntityData(player.handle, "Account");
+            Character character = API.getEntityData(player.handle, "Character");
+            Character receivercharacter = API.getEntityData(receiver, "Character");
+
+            if (account.AdminLevel == 0)
+                return;
+
+
+            if (receiver == null)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
+            }
+
+            if (receivercharacter.HasActiveReport == false)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ This player has no active reports.");
+                return;
+            }
+
+            foreach (var i in AdminReports.Reports.ToList())
+            {
+                if (i.Name == receiver.nametag)
+                {
+                    AdminReports.Delete(i);
+                }
+            }
+
+            receivercharacter.HasActiveReport = false;
+            API.sendChatMessageToPlayer(player, "Report accepted.");
+            API.sendChatMessageToPlayer(receiver, "Your report has been taken by ~b~" + player.nametag + ".");
+            sendtoAllAdmins("[REPORT] " + player.nametag + "has taken " + receiver.nametag + "'s report.");
+            character.AdminActions++;
         }
 
         [Command("trashreport", GreedyArg = true)]
         public void trashreport_cmd(Client player, string id)
         {
-            int reportId = 0;
             var receiver = PlayerManager.ParseClient(id);
             Account account = API.getEntityData(player.handle, "Account");
             Character receivercharacter = API.getEntityData(receiver, "Character");
@@ -367,17 +471,14 @@ namespace RoleplayServer.resources.AdminSystem
                 return;
             }
 
-            int j = 0;
-            foreach(var i in AdminReports.Reports)
+            foreach (var i in AdminReports.Reports.ToList())
             {
-                if(i.Name == receivercharacter.CharacterName)
+                if (i.Name == receiver.nametag)
                 {
-                    reportId = j;
+                    AdminReports.Delete(i);
                 }
-                j++;
             }
-            AdminReports reportToDelete = AdminReports.Reports[reportId];
-            AdminReports.Reports.Remove(reportToDelete);
+            receivercharacter.HasActiveReport = false;
             API.sendChatMessageToPlayer(player, "Request trashed.");
             API.sendChatMessageToPlayer(receiver, "Your admin/moderator request was trashed.");
         }
@@ -393,8 +494,16 @@ namespace RoleplayServer.resources.AdminSystem
                 return;
             }
 
+            if (character.ReportCreated == true)
+            {
+                API.sendChatMessageToPlayer(player, "Please wait 15 seconds before creating another request.");
+                return;
+            }
+            character.HasActiveReport = true;
             AdminReports.InsertReport(1, player.nametag, message);
+            sendtoAllAdmins("~g~[ASK]~w~ " + PlayerManager.GetName(player) + ": " + message);
             API.sendChatMessageToPlayer(player, "~b~Your ask request has been submitted. ~w~Moderators have been informed and will be with you soon.");
+            startReportTimer(player);
         }
 
         [Command("reportmute", GreedyArg = true)]
@@ -435,6 +544,7 @@ namespace RoleplayServer.resources.AdminSystem
             if (account.AdminLevel == 0)
                 return;
 
+            API.sendChatMessageToPlayer(player, "=======ASK LIST=======");
             foreach (var i in AdminReports.Reports)
             {
                 if (i.Type == 2 || i.Type == 3)
@@ -445,7 +555,18 @@ namespace RoleplayServer.resources.AdminSystem
                 API.sendChatMessageToPlayer(player, "~b~" + i.Name + "~w~" + " | " + i.ReportMessage);
             }
         }
-    
+
+        [Command("clearreports", GreedyArg = true)]
+        public void clearreports_cmd(Client player)
+        {
+            Account account = API.getEntityData(player.handle, "Account");
+            if (account.AdminLevel == 0)
+                return;
+
+            AdminReports.Reports.Clear();
+            API.sendChatMessageToPlayer(player, "All reports (including ask) have been cleared.");
+        }
+
         //TODO: REMOVE THIS: 
         [Command("makemeadmin")]
         public void makemeadmin_cmd(Client player)

@@ -4,7 +4,6 @@ using System.Linq;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
-using RoleplayServer.resources.database_manager;
 
 namespace RoleplayServer.resources.AdminSystem
 {
@@ -28,29 +27,15 @@ namespace RoleplayServer.resources.AdminSystem
             Target = target;
         }
 
-        public void Update()
-        {
-            var filter = MongoDB.Driver.Builders<AdminReports>.Filter.Eq("Id", Id);
-            DatabaseManager.ReportTable.ReplaceOne(filter, this);
-        }
-
-        public void Insert()
-        {
-            DatabaseManager.ReportTable.InsertOne(this);
-        }
-
         public static void Delete(AdminReports name)
         {
 
             Reports.Remove(name);
-            var filter = MongoDB.Driver.Builders<AdminReports>.Filter.Eq("Id", name.Id);
-            DatabaseManager.ReportTable.DeleteOne(filter);
         }
 
         public static void InsertReport(int type, string name, string ReportMessage, string target = null)
         {
             var report = new AdminReports(type, name, ReportMessage, target);
-            report.Insert();
             Reports.Add(report);
         }
 

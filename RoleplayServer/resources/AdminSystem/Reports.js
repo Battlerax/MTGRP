@@ -13,16 +13,22 @@ API.onServerEventTrigger.connect(function (eventName, args) {
                 menu_pool.Add(report_menu);
                 report_menu.OnItemSelect.connect(function (sender, selectedItem, index) {
                     if (selectedItem.Text == "Close") {
-                        report_menu.Visible = false;
+						report_menu.Visible = false;
                         report_menu = null;
                         menu_pool = null;
                     }
                     else if (selectedItem.Text == "Request Assistance"){
+					  report_menu.Visible = false;
+                      report_menu = null;
+                      menu_pool = null;
                       var message = API.getUserInput("What do you need help with?", 200);
                       API.triggerServerEvent("OnRequestSubmitted", message);
                     }
 
                     else if (selectedItem.Text == "Report a Player"){
+					  report_menu.Visible = false;
+                      report_menu = null;
+                      menu_pool = null;
                       var targetPlayer = API.getUserInput("Enter the name or ID of a player breaking the rules..", 65);
                       var message = API.getUserInput("What is your report reason?", 200);
                       API.triggerServerEvent("OnReportMade", message, targetPlayer);

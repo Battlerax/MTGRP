@@ -2,8 +2,7 @@
     <info name="Init" author="Chenko" type="gamemode" />
 	
 	<!-- Door Manager -->
-	<include resource="doormanager" />
-	
+
 	<assembly ref="MongoDB.Bson.dll"/>
 	<assembly ref="MongoDB.Driver.dll"/>
 	<assembly ref="MongoDB.Driver.Core.dll"/>
@@ -25,8 +24,10 @@
 	<file src="player_manager/login/Login.html"/>
 	<script src="player_manager/CharacterMenu.js" type="client" lang="javascript"/>
   <script src="player_manager/Helpmenu.js" type="client" lang="javascript"/>
-  
-	<!-- JOBS -->
+  <script src="AdminSystem/Reports.js" type="client" lang="javascript"/>
+
+
+  <!-- JOBS -->
 	<script src="job_manager/JobManager.js" type="client" lang="javascript"/>
 	<script src="job_manager/taxi/TaxiJob.js" type="client" lang="javascript"/>
 	<script src="job_manager/fisher/Fisher.js" type="client" lang="javascript"/>

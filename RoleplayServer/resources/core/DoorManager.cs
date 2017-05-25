@@ -16,7 +16,7 @@ namespace RoleplayServer.resources.core
 
         public void onResourceStart()
         {
-
+            /*
             int i = API.exported.doormanager.registerDoor(631614199, jailPosOne);
             API.exported.doormanager.setDoorState(i, true, 0);
 
@@ -25,6 +25,7 @@ namespace RoleplayServer.resources.core
 
             int v = API.exported.doormanager.registerDoor(631614199, jailPosThree);
             API.exported.doormanager.setDoorState(v, true, 0);
+            */
         }
     }
 
