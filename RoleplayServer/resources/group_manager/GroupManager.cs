@@ -284,6 +284,13 @@ namespace RoleplayServer.resources.group_manager
             {
 
                 Character character = API.getEntityData(player.handle, "Character");
+
+                if (character.radioToggle == false)
+                {
+                    API.sendChatMessageToPlayer(player, "~r~Your radio is off.");
+                    return;
+                }
+
                 SendRadioMessage(player, "~b~[RADIO][" + character.GroupRank + "] " + GetRankName(character) + " " + character.CharacterName + " : " + "~w~" + message);
             }
         }
