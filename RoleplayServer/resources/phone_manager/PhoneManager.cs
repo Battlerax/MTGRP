@@ -527,10 +527,12 @@ namespace RoleplayServer.resources.phone_manager
                         fromMsg = "SMS from " +
                                     charphone.Contacts.Find(pc => pc.Number == senderphone.Number).Name + ": " +
                                     message;
+                        API.triggerClientEvent(character.Client, "phone_incomingMessage", charphone.Contacts.Find(pc => pc.Number == senderphone.Number).Name, message);
                     }
                     else
                     {
                         fromMsg = "SMS from " + senderphone.Number + ": " + message;
+                        API.triggerClientEvent(character.Client, "phone_incomingMessage", senderphone.Number, message);
                     }
 
                     API.sendChatMessageToPlayer(character.Client, Color.Sms, fromMsg);
