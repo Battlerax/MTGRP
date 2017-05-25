@@ -25,7 +25,7 @@ namespace RoleplayServer.resources.AdminSystem
                 case "OnRequestSubmitted":
                     Character character = API.getEntityData(player.handle, "Character");
                     int playerid = PlayerManager.GetPlayerId(character);
-                    AdminReports.InsertReport(3, player.nametag + " (ID:" + playerid + ")", (string)arguments[0]);
+                    AdminReports.InsertReport(3, player.nametag, (string)arguments[0]);
                     sendtoAllAdmins("~g~[REPORT]~w~ " + PlayerManager.GetName(player) + " (ID:" + playerid + "): " + (string)arguments[0]);
                     startReportTimer(player);
                     character.HasActiveReport = true;
@@ -36,7 +36,7 @@ namespace RoleplayServer.resources.AdminSystem
                     int senderid = PlayerManager.GetPlayerId(senderchar);
                     string id = (string)arguments[1];
                     var receiver = PlayerManager.ParseClient(id);
-                    AdminReports.InsertReport(2, player.nametag + " (ID:" + senderid + ")", (string)arguments[0], PlayerManager.GetName(receiver) + " (ID:" + id + ")");
+                    AdminReports.InsertReport(2, player.nametag, (string)arguments[0], PlayerManager.GetName(receiver) + " (ID:" + id + ")");
                     sendtoAllAdmins("~g~[REPORT]~w~ " + PlayerManager.GetName(player) + " (ID:" + senderid + ")" + " reported " + PlayerManager.GetName(receiver) + " (ID:" + id + ") for " + (string)arguments[0]);
                     startReportTimer(player);
                     senderchar.HasActiveReport = true;
@@ -329,8 +329,9 @@ namespace RoleplayServer.resources.AdminSystem
         [Command("setadminname")]
         public void setadminname_cmd(Client player, string id, string name)
         {
+            var receiver = PlayerManager.ParseClient(id);
             Account account = API.getEntityData(player.handle, "Account");
-            Account receiverAccount = API.getEntityData(player.handle, "Account");
+            Account receiverAccount = API.getEntityData(receiver.handle, "Account");
             if (account.AdminLevel == 0)
                 return;
 
@@ -339,6 +340,9 @@ namespace RoleplayServer.resources.AdminSystem
                 API.sendChatMessageToPlayer(player, "This player is not an admin.");
                 return;
             }
+
+            API.sendChatMessageToPlayer(player, "You have set " + receiver.nametag + "'s admin name to '" + name + "'.");
+            API.sendChatMessageToPlayer(receiver, receiver.nametag + " has set your admin name to '" + name + "'.");
             receiverAccount.AdminName = name;
         }
 
@@ -401,7 +405,7 @@ namespace RoleplayServer.resources.AdminSystem
 
                 if (i.Type == 2)
                 {
-                    API.sendChatMessageToPlayer(player, "~b~" + i.Name + "reported ~r~" + i.Target + "~w~" + " | " + i.ReportMessage);
+                    API.sendChatMessageToPlayer(player, "~b~" + i.Name + " reported ~r~" + i.Target + "~w~" + " | " + i.ReportMessage);
                     return;
                 }
                 API.sendChatMessageToPlayer(player, "~b~" + i.Name + "~w~" + " | " + i.ReportMessage);
