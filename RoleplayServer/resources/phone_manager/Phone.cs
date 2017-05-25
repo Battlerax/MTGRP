@@ -121,10 +121,9 @@ namespace RoleplayServer.resources.phone_manager
         /* ============== TEXT MESSAGES =============*/
         //NOTE: These are static methods and are not linked to a phone basically.. for performance.
 
-        public long GetMessageCount(string from, string to)
+        public static long GetMessageCount(string contact1, string contact2)
         {
-            var filter = Builders<PhoneMessage>.Filter.Eq(x => x.SenderNumber, from);
-            filter = filter & Builders<PhoneMessage>.Filter.Eq(x => x.ToNumber, to);
+            var filter = (Builders<PhoneMessage>.Filter.Eq(x => x.SenderNumber, contact1) & Builders<PhoneMessage>.Filter.Eq(x => x.ToNumber, contact2)) | (Builders<PhoneMessage>.Filter.Eq(x => x.SenderNumber, contact2) & Builders<PhoneMessage>.Filter.Eq(x => x.ToNumber, contact1));
             return DatabaseManager.MessagesTable.Find(filter).Count();
         }
 

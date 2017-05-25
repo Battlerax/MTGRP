@@ -104,6 +104,30 @@ namespace RoleplayServer.resources.phone_manager
                     var newContacts = cntcs.Select(x => new[] { lmcphone.Contacts.SingleOrDefault(y => y.Number.ToString() == x[0])?.Name ?? x[0], x[1], x[2], x[3]}).ToArray();
                     API.triggerClientEvent(sender, "phone_messageContactsLoaded", API.toJson(newContacts));
                     break;
+
+                case "phone_sendMessage":
+                    sms_cmd(sender, (string)arguments[0], (string)arguments[1]);
+                    break;
+
+                case "phone_loadMessages":
+                    var contact = (string)arguments[0];
+                    var toSkip = (int) arguments[1];
+
+                    Character lmcharacter = sender.GetCharacter();
+                    var lmitems = InventoryManager.DoesInventoryHaveItem(lmcharacter, typeof(Phone));
+                    if (lmitems.Length == 0)
+                    {
+                        API.sendChatMessageToPlayer(sender, "You don't have a phone.");
+                        return;
+                    }
+                    var lmphone = (Phone)lmitems[0];
+                    string numbera = IsDigitsOnly(contact) ? contact : lmphone.Contacts.Find(x => x.Name == contact).Number;
+
+                    var returnMsgs = Phone.GetMessageLog(lmphone.Number, numbera, 10, toSkip);
+                    var actualMsgs = returnMsgs.Select(x => new[] {x.SenderNumber, x.Message, x.DateSent.ToString("g")}).ToArray();
+                    API.triggerClientEvent(sender, "phone_showMessages", lmphone.Number, API.toJson(actualMsgs),
+                        (Phone.GetMessageCount(lmphone.Number, numbera) - (toSkip + 10)) > 0, toSkip == 0);
+                    break;
             }
         }
 
@@ -277,13 +301,13 @@ namespace RoleplayServer.resources.phone_manager
                 }
 
                 var character = PlayerManager.Players.Find(c => InventoryManager.DoesInventoryHaveItem<Phone>(c)?[0].Number == input);
-                var charphone = InventoryManager.DoesInventoryHaveItem<Phone>(character)[0];
                 if (character == null)
                 {
                     API.sendChatMessageToPlayer(player, Color.White,
                         "The call failed to connect. ((No one online found with that phone number))");
                     return;
                 }
+                var charphone = InventoryManager.DoesInventoryHaveItem<Phone>(character)[0];
 
                 if (charphone.IsOn == false)
                 {
@@ -324,14 +348,13 @@ namespace RoleplayServer.resources.phone_manager
 
                 var contact = senderphone.Contacts.Find(pc => string.Equals(pc.Name, input, StringComparison.OrdinalIgnoreCase));
                 var character = PlayerManager.Players.Find(c => InventoryManager.DoesInventoryHaveItem<Phone>(c)?[0].Number == contact.Number);
-                var charphone = InventoryManager.DoesInventoryHaveItem<Phone>(character)[0];
-
                 if (character == null)
                 {
                     API.sendChatMessageToPlayer(player, Color.White,
                         "The call failed to connect. ((No one online found with that phone number))");
                     return;
                 }
+                var charphone = InventoryManager.DoesInventoryHaveItem<Phone>(character)[0];
 
                 if (charphone.IsOn == false)
                 {
@@ -467,10 +490,9 @@ namespace RoleplayServer.resources.phone_manager
             }
         }
 
-        [Command("sms", GreedyArg = true)]
         public void sms_cmd(Client player, string input, string message)
         {
-            Character sender = API.shared.getEntityData(player.handle, "Character");
+            Character sender = player.GetCharacter();
 
             var targetitems = InventoryManager.DoesInventoryHaveItem(sender, typeof(Phone));
             if (targetitems.Length == 0)
@@ -496,17 +518,25 @@ namespace RoleplayServer.resources.phone_manager
                 }
 
                 var character = PlayerManager.Players.Find(c => InventoryManager.DoesInventoryHaveItem<Phone>(c)?[0].Number == input);
-                var charphone = InventoryManager.DoesInventoryHaveItem<Phone>(character)[0];
-
-                if (character == null)
+                if (character != null)
                 {
-                    API.sendChatMessageToPlayer(player, Color.White,
-                        "The text message failed to send. ((No one online found with that phone number))");
-                    return;
+                    var charphone = InventoryManager.DoesInventoryHaveItem<Phone>(character)[0];
+                    string fromMsg;
+                    if (charphone.HasContactWithNumber(senderphone.Number))
+                    {
+                        fromMsg = "SMS from " +
+                                    charphone.Contacts.Find(pc => pc.Number == senderphone.Number).Name + ": " +
+                                    message;
+                    }
+                    else
+                    {
+                        fromMsg = "SMS from " + senderphone.Number + ": " + message;
+                    }
+
+                    API.sendChatMessageToPlayer(character.Client, Color.Sms, fromMsg);
+                    ChatManager.RoleplayMessage(character, "'s phone vibrates..", ChatManager.RoleplayMe);
                 }
 
-
-                string fromMsg;
                 string toMsg;
 
                 if (senderphone.HasContactWithNumber(input))
@@ -519,26 +549,11 @@ namespace RoleplayServer.resources.phone_manager
                     toMsg = "SMS to " + input + ": " +
                             message;
                 }
-
-                if (charphone.HasContactWithNumber(senderphone.Number))
-                {
-                    fromMsg = "SMS from " +
-                                charphone.Contacts.Find(pc => pc.Number == senderphone.Number).Name + ": " +
-                                message;
-                }
-                else
-                {
-                    fromMsg = "SMS from " + senderphone.Number + ": " + message;
-                }
-
-
-                API.sendChatMessageToPlayer(character.Client, Color.Sms, fromMsg);
                 API.sendChatMessageToPlayer(sender.Client, Color.Sms, toMsg);
-
                 ChatManager.AmeLabelMessage(player, "presses a few buttons on their phone, sending a message.", 4000);
-                ChatManager.RoleplayMessage(character, "'s phone vibrates..", ChatManager.RoleplayMe);
 
-                Phone.LogMessage(senderphone.Number, charphone.Number, message);
+                Phone.LogMessage(senderphone.Number, input, message);
+                API.triggerClientEvent(player, "phone_messageSent");
             }
             else
             {
@@ -549,37 +564,43 @@ namespace RoleplayServer.resources.phone_manager
                 }
 
                 var contact = senderphone.Contacts.Find(pc => string.Equals(pc.Name, input, StringComparison.OrdinalIgnoreCase));
-                var character = PlayerManager.Players.Find(c => InventoryManager.DoesInventoryHaveItem<Phone>(c)?[0].Number == contact.Number);
-                var charphone = InventoryManager.DoesInventoryHaveItem<Phone>(character)[0];
 
-                if (character == null)
+                if (!DoesNumberExist(contact.Number))
                 {
                     API.sendChatMessageToPlayer(player, Color.White,
-                        "The text message failed to send. ((No one online found with that phone number))");
+                        "The text message failed to send. (Phone number is not registered.");
                     return;
                 }
 
-                string fromMsg;
+                var character = PlayerManager.Players.Find(c => InventoryManager.DoesInventoryHaveItem<Phone>(c)?[0].Number == contact.Number);
+                if (character != null)
+                {
+                    var charphone = InventoryManager.DoesInventoryHaveItem<Phone>(character)[0];
 
-                if (charphone.HasContactWithNumber(senderphone.Number))
-                {
-                    fromMsg = "SMS from " + charphone.Contacts.Find(pc => pc.Number == senderphone.Number).Name +
-                              ": " + message;
+                    string fromMsg;
+
+                    if (charphone.HasContactWithNumber(senderphone.Number))
+                    {
+                        fromMsg = "SMS from " + charphone.Contacts.Find(pc => pc.Number == senderphone.Number).Name +
+                                  ": " + message;
+                        API.triggerClientEvent(character.Client, "phone_incomingMessage", charphone.Contacts.Find(pc => pc.Number == senderphone.Number).Name, message);
+                    }
+                    else
+                    {
+                        fromMsg = "SMS from " + senderphone.Number + ": " + input;
+                        API.triggerClientEvent(character.Client, "phone_incomingMessage", senderphone.Number, message);
+                    }
+                    API.sendChatMessageToPlayer(character.Client, Color.Sms, fromMsg);
+                    ChatManager.RoleplayMessage(character, "'s phone vibrates..", ChatManager.RoleplayMe);
                 }
-                else
-                {
-                    fromMsg = "SMS from " + senderphone.Number + ": " + input;
-                }
+               
 
                 var toMsg = "SMS to " + contact.Name + ": " + message;
-
-                API.sendChatMessageToPlayer(character.Client, Color.Sms, fromMsg);
                 API.sendChatMessageToPlayer(sender.Client, Color.Sms, toMsg);
-
                 ChatManager.AmeLabelMessage(player, "presses a few buttons on their phone, sending a message.", 4000);
-                ChatManager.RoleplayMessage(character, "'s phone vibrates..", ChatManager.RoleplayMe);
 
-                Phone.LogMessage(senderphone.Number, charphone.Number, message);
+                Phone.LogMessage(senderphone.Number, contact.Number, message);
+                API.triggerClientEvent(player, "phone_messageSent");
             }
         }
 

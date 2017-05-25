@@ -67,14 +67,21 @@
 
         $(document).ready(function () {
             $(".list").dblclick(function () {
-                $("#messagesDiv").css("display", "block");
-                $("#contactsListDiv").css("display", "none");
-                window.getSelection().empty();
+                //Get Messages.
+                var name = $(this).find("span.list-title").text();
+                $("#contactName").text(name);
+                resourceCall("callServerEvent", "phone_loadMessages", name, 0);
             });
 
             $("#backButton").click(function () {
                 $("#messagesDiv").css("display", "none");
+                $("#messages").clear();
                 $("#contactsListDiv").css("display", "block");
+            });
+
+            $("#sendNewMessage").click(function () {
+                var msg = $("#message").val();
+                resourceCall("callServerEvent", "phone_sendMessage", $("#contactName").text(), msg);
             });
         });
 
@@ -91,6 +98,47 @@
             });
         }
 
+        function messageSent() {
+            metroDialog.close('#sendMessageDialog');
+        }
+
+        function showMessages(number, msgsjson, remaining, isFirst) {
+            var msgs = JSON.parse(msgsjson);
+
+            $.each(msgs, function (key, value) {
+                var msgSender = value[0];
+                var message = value[1];
+                var dateSent = value[2];
+                if (msgSender === number) {
+                    $("#messages").prepend(`<div class="popover marker-on-right"><div>${message}</div></div>`);
+                } else {
+                    $("#messages").prepend(`<div class="popover marker-on-left"><div>${message}</div></div>`);
+                }
+            });
+
+            if (remaining) {
+                $("#loadRemaingMessages").remove();
+                $("#messages").prepend('<button class="button link" id="loadRemaingMessages" onclick="loadRemainingMessages()">Load More</button>');
+            }
+
+            if (isFirst) {
+                $("#messagesDiv").css("display", "block");
+                $("#contactsListDiv").css("display", "none");
+                window.getSelection().empty();
+
+                //Scroll.
+                var d = $('#messages');
+                d.scrollTop(d.prop("scrollHeight"));
+            }
+        }
+
+        var last = 0;
+        function loadRemainingMessages() {
+            var name = $("#contactName").text();
+            last += 10;
+            resourceCall("callServerEvent", "phone_loadMessages", name, last);
+        }
+
         window.addEventListener("message", receiveMessage, false);
         function receiveMessage(event) {
             window[event.data[0]](...event.data[1]);
@@ -98,6 +146,17 @@
     </script>
 </head>
 <body>
+    <div data-role="dialog" id="sendMessageDialog" class="padding20 dialog" data-close-button="true" data-overlay="true" data-overlay-color="op-dark" style="width: auto; height: auto;">
+        <h3>Compose Message</h3>
+        <div class="input-control text">
+            <input type="text" placeholder="Number" id="numberInput">
+        </div>
+        <div class="input-control number">
+            <input type="text" placeholder="Message" id="messageInput">
+        </div>
+        <button class="button success right-side" onclick='resourceCall("callServerEvent", "phone_sendMessage", $("#numberInput").val(), $("#messageInput").val());'>Send</button>
+    </div>
+
 <div id="contactsListDiv" style="display: block;">
     <div class="listview-outlook" data-role="listview" id="contactsList">
         <!-- <div class="list">
@@ -107,15 +166,17 @@
                 <span class="list-remark">11:16 PM</span>
             </div>
         </div> -->
-            
+
     </div>
     <div id="footer">
-        <button class="button cycle-button" style="height: 40px; width: 40px; background-color: gray; color: white;"><span class="mif-plus"></span></button>
+        <button class="button cycle-button" style="height: 40px; width: 40px; background-color: gray; color: white;" onclick="metroDialog.open('#sendMessageDialog');"><span class="mif-plus"></span></button>
     </div>
 </div>
-    
+
 <div id="messagesDiv" style="display: none;">
-    <h2 style="color: white; margin-bottom: 15px;"><button class="button cycle-button" id="backButton"><span class="mif-arrow-left"></span></button> Johnny</h2>
+    <h2 style="color: white; margin-bottom: 15px;"><button class="button cycle-button" id="backButton"><span class="mif-arrow-left"></span></button>
+        <span id="contactName"></span>
+    </h2>
     <div id="messages">
         <!-- <div class="popover marker-on-left">
             <div>Hello, who are you ?</div>
@@ -126,8 +187,8 @@
     </div>
     <div id="newReplyDiv">
         <div class="input-control text" style="width: 100%;" data-role="input">
-            <input type="text">
-            <button class="button"><span class="mif-paper-plane"></span></button>
+            <input type="text" id="message">
+            <button class="button" id="sendNewMessage"><span class="mif-paper-plane"></span></button>
         </div>
     </div>
 </div>
