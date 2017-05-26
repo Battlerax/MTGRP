@@ -94,8 +94,10 @@
 
             $("#backButton").click(function () {
                 $("#messagesDiv").css("display", "none");
+                $("#messages").empty();
                 last = 0;
                 $("#contactsListDiv").css("display", "block");
+                resourceCall("callServerEvent", "phone_loadMessagesContacts");
             });
 
             $("#sendNewMessage").click(function () {
@@ -108,6 +110,7 @@
         });
 
         function messageContactsLoaded(contactsJson) {
+            $("#contactsList").empty();
             var contacts = JSON.parse(contactsJson);
             $.each(contacts, function (key, value) {
                 var isRead = "";
@@ -127,6 +130,7 @@
 
         function messageSent() {
             metroDialog.close('#sendMessageDialog');
+            resourceCall("callServerEvent", "phone_loadMessagesContacts");
         }
 
         function showMessages(number, msgsjson, remaining, isFirst) {
