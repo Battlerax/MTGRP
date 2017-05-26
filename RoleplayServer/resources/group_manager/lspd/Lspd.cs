@@ -280,7 +280,7 @@ namespace RoleplayServer.resources.group_manager.lspd
 
         /* * * * * * TO TEST * * * * * */
         [Command("arrest", GreedyArg = true)]
-        public void arrest_cmd(Client player, string id, int time) //change receiver to id (currently a bug)
+        public void arrest_cmd(Client player, string id, string time) //change receiver to id (currently a bug)
         {
 
             var receiver = PlayerManager.ParseClient(id);
@@ -288,6 +288,7 @@ namespace RoleplayServer.resources.group_manager.lspd
             Character character = API.getEntityData(player.handle, "Character");
             Character receiverCharacter = API.getEntityData(receiver.handle, "Character");
 
+            /*
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
                 API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
@@ -299,7 +300,7 @@ namespace RoleplayServer.resources.group_manager.lspd
                 API.sendNotificationToPlayer(player, "~r~You can't arrest yourself!");
                 return;
             }
-            
+
             if (receiverCharacter.activeCrime == false)
             {
                 API.sendChatMessageToPlayer(player, "This player has no active crimes.");
@@ -310,19 +311,19 @@ namespace RoleplayServer.resources.group_manager.lspd
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~ You cannot arrest a member of the LSPD.");
                 return;
             }
-            
+            */
             if (receiver == null)
             {
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
-            
+            /*
             if (player.position.DistanceTo(character.Group.ArrestLocation.Location) > 4)
             {
                 API.sendChatMessageToPlayer(player, Color.White, "You are not at the arrest location.");
                 return;
             }
-
+            */
             foreach (var i in receiverCharacter.GetCriminalRecord())
             {
                 i.ActiveCrime = false;
@@ -330,7 +331,7 @@ namespace RoleplayServer.resources.group_manager.lspd
 
             API.sendNotificationToPlayer(player, "You have arrested ~b~" + receiver.name + "~w~.");
             API.sendNotificationToPlayer(receiver, "You have been arrested by ~b~" + player.name + "~w~.");
-            jailControl(receiver, time);
+            jailControl(receiver, int.Parse(time));
 
         }
 
@@ -352,6 +353,7 @@ namespace RoleplayServer.resources.group_manager.lspd
             if (receiverCharacter.isJailed == false)
             {
                 API.sendChatMessageToPlayer(player, "This player is not jailed.");
+                return;
             }
 
             if (receiver == null)
@@ -737,7 +739,7 @@ namespace RoleplayServer.resources.group_manager.lspd
             API.sendChatMessageToPlayer(player, "You have been jailed for " + seconds / 60 + " minutes.");
 
 
-            character.jailTimer = new System.Timers.Timer { Interval = seconds * 1000 };
+            character.jailTimer = new Timer { Interval = seconds * 1000 };
             character.jailTimer.Elapsed += delegate { setFree(player); };
             character.jailTimer.Start();
         }
@@ -745,6 +747,10 @@ namespace RoleplayServer.resources.group_manager.lspd
         public void setFree(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
+            if (character.isJailed == false)
+            {
+                return;
+            }
             API.sendChatMessageToPlayer(player, "~b~You are free to go.");
             character.isJailed = false;
             API.setEntityPosition(player, freeJail);

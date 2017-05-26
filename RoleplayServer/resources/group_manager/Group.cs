@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using GTANetworkServer;
 using GTANetworkShared;
-using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson.Serialization.Options;
 using MongoDB.Driver;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.database_manager;
@@ -13,7 +11,7 @@ namespace RoleplayServer.resources.group_manager
 {
     public class Group
     {
-        public static readonly int CommandTypeLspd = 1;
+        public static int CommandTypeLspd = 1;
 
         public static readonly Group None = new Group();
 
@@ -27,6 +25,8 @@ namespace RoleplayServer.resources.group_manager
 
         public List<string> RankNames = new List<string> { "R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9", "R10" };
         public List<string> Divisions = new List<string> { "D1", "D2", "D3", "D4", "D5" };
+        public Dictionary<string, Tuple<Vector3, VehicleHash>> groupVehicles = new Dictionary<string, Tuple<Vector3, VehicleHash>>();
+
 
         public List<List<string>> DivisionRanks = new List<List<string>>
         {
@@ -68,16 +68,12 @@ namespace RoleplayServer.resources.group_manager
             DatabaseManager.GroupTable.ReplaceOne(filter, this);
         }
 
-        /* * * * * * TO TEST * * * * * */
+        /* * * * * * TO FIX AFTER BETA.. CURRENTLY CAUSING PROBLEMS * * * * * */
         public void register_markerzones()
         {
-            if (LockerSet == false)
-            {
-                Locker = new MarkerZone(new Vector3(0, 0, 0), new Vector3(0, 0, 0));
-            }
-
-            if (Locker != MarkerZone.None)
-            {
+                Locker = new MarkerZone(new Vector3(457.5921, -992.7383, 30.6896), new Vector3(0, 0, 180.0), 0, 2.0f);
+                return;
+            /*
                 Locker.ColZone.onEntityEnterColShape += (shape, entity) =>
                 {
                     if (API.shared.getEntityType(entity) != EntityType.Player)
@@ -105,7 +101,7 @@ namespace RoleplayServer.resources.group_manager
                         c.LockerZoneGroup = Group.None;
                     }
                 };
-            }
+                */
         }
 
     }

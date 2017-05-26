@@ -20,6 +20,7 @@ using RoleplayServer.resources.core;
 using RoleplayServer.resources.database_manager;
 using RoleplayServer.resources.job_manager;
 using RoleplayServer.resources.player_manager;
+using RoleplayServer.resources.group_manager;
 
 namespace RoleplayServer.resources.vehicle_manager
 {
@@ -187,6 +188,13 @@ namespace RoleplayServer.resources.vehicle_manager
 
 
             Character character = API.getEntityData(player.handle, "Character");
+
+            if(API.getEntityData(vehicleHandle, "IS_LSPD") == true && character.Group.CommandType != Group.CommandTypeLspd)
+            {
+                API.sendChatMessageToPlayer(player, "You must be a member of the LSPD to use this vehicle.");
+                API.setEntityPosition(player, API.getEntityPosition(vehicleHandle) + new Vector3(-1, 0, 0));
+                return;
+            }
 
             API.sendChatMessageToPlayer(player, "~w~[VehicleM] You have entered vehicle ~r~" + Vehicles.IndexOf(veh) + "(Owned by: " + PlayerManager.Players.SingleOrDefault(x => x.Id == veh.OwnerId)?.CharacterName + ")");
 

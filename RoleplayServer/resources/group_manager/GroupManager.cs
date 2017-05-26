@@ -5,6 +5,7 @@ using MongoDB.Driver;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.database_manager;
 using RoleplayServer.resources.player_manager;
+using System;
 
 namespace RoleplayServer.resources.group_manager
 {
@@ -42,6 +43,52 @@ namespace RoleplayServer.resources.group_manager
                 }
             }
             API.sendChatMessageToPlayer(player, "---------------------------------------------------------------------------------- ");
+        }
+        
+        [Command("setfactionvehicle")]
+        public void setfactionvehicle_cmd(Client player)
+        {
+            Character character = API.getEntityData(player.handle, "Character");
+            Account account = API.getEntityData(player.handle, "Account");
+
+            if (account.AdminLevel == 0)
+            {
+                return;
+            }
+
+            if (player.isInVehicle == false)
+            {
+                API.sendChatMessageToPlayer(player, "You must be in the vehicle you want to add.");
+                return;
+            }
+
+            var currentCar = API.getPlayerVehicle(player);
+            var vehicle = new Tuple<Vector3, VehicleHash>(API.getEntityPosition(player), (VehicleHash)API.getEntityModel(currentCar));
+            character.Group.groupVehicles.Add(character.Group.groupVehicles.Count + 1.ToString(), vehicle);
+            character.Group.Save();
+        }
+
+        [Command("listgroupvehicles")]
+        public void listfactionvehicles_cmd(Client player)
+        {
+            Character character = API.getEntityData(player.handle, "Character");
+            Account account = API.getEntityData(player.handle, "Account");
+
+            if (account.AdminLevel == 0)
+            {
+                return;
+            }
+
+            if (character.GroupId == 0)
+            {
+                return;
+            }
+
+            API.sendChatMessageToPlayer(player, "======GROUP VEHICLES======");
+            foreach (var i in character.Group.groupVehicles)
+            {
+                API.sendChatMessageToPlayer(player, "Vehicle: " + i.Key.ToString() + " | " + i.Value.Item2.ToString());
+            }
         }
 
         [Command("remoteuninvite")]
