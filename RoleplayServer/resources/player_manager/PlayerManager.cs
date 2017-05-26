@@ -27,10 +27,8 @@ namespace RoleplayServer.resources.player_manager
         {
             if(eventName == "update_ped_for_client")
             {
-                //BUG: Not sure why this was NetHandle, I changed it to Client so just adding this here as reminder.
-                var player = (Client)arguments[0];
-
-                Character c = player.GetCharacter();
+                var player = (NetHandle)arguments[0];
+                Character c = API.getEntityData(player, "Character");
                 c.update_ped();
             }
         }
