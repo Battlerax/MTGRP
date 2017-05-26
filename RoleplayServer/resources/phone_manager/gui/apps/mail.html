@@ -104,6 +104,7 @@
                 resourceCall("callServerEvent", "phone_sendMessage", $("#contactName").text(), msg);
                 var dateTime = getCurrentDateTime();
                 $("#messages").append(`<div class="popover marker-on-right"><small>${dateTime}</small><p>${msg}</p></div>`);
+                $("#message").val("");
             });
         });
 
