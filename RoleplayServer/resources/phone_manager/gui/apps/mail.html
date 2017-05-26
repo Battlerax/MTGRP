@@ -61,6 +61,21 @@
     </style>
     
     <script>
+        // For todays date;
+        Date.prototype.today = function () {
+            return ((this.getDate() < 10) ? "0" : "") + this.getDate() + "/" + (((this.getMonth() + 1) < 10) ? "0" : "") + (this.getMonth() + 1) + "/" + this.getFullYear();
+        }
+
+        // For the time now
+        Date.prototype.timeNow = function () {
+            return ((this.getHours() < 10) ? "0" : "") + this.getHours() + ":" + ((this.getMinutes() < 10) ? "0" : "") + this.getMinutes() + ":" + ((this.getSeconds() < 10) ? "0" : "") + this.getSeconds();
+        }
+
+        function getCurrentDateTime() {
+            var newDate = new Date();
+            return newDate.today() + " " + newDate.timeNow();
+        }
+
         $(document).ready(function() {
             resourceCall("callServerEvent", "phone_loadMessagesContacts");
         });
@@ -83,7 +98,8 @@
             $("#sendNewMessage").click(function () {
                 var msg = $("#message").val();
                 resourceCall("callServerEvent", "phone_sendMessage", $("#contactName").text(), msg);
-                $("#messages").append(`<div class="popover marker-on-right"><div>${msg}</div></div>`);
+                var dateTime = getCurrentDateTime();
+                $("#messages").append(`<div class="popover marker-on-right"><small>${dateTime}</small><p>${msg}</p></div>`);
             });
         });
 
@@ -116,10 +132,14 @@
                 var msgSender = value[0];
                 var message = value[1];
                 var dateSent = value[2];
+                var isRead = "";
+                if (value[3] === "False") {
+                    isRead = "* ";
+                }
                 if (msgSender === number) {
-                    $("#messages").prepend(`<div class="popover marker-on-right"><div>${message}</div></div>`);
+                    $("#messages").prepend(`<div class="popover marker-on-right"><small>${dateSent}</small><p>${message}</p></div>`);
                 } else {
-                    $("#messages").prepend(`<div class="popover marker-on-left"><div>${message}</div></div>`);
+                    $("#messages").prepend(`<div class="popover marker-on-left"><small>${isRead}${dateSent}</small><p>${message}</p></div>`);
                 }
             });
 
@@ -148,7 +168,8 @@
 
         function incomingMessage(number, msg) {
             if (number === $("#contactName").text()) {
-                $("#messages").append(`<div class="popover marker-on-left"><div>${msg}</div></div>`);
+                var dateTime = getCurrentDateTime();
+                $("#messages").append(`<div class="popover marker-on-left"><small>${dateTime}</small><p>${msg}</p></div>`);
             }
         }
 
