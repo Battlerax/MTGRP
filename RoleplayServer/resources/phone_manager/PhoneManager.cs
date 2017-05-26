@@ -124,7 +124,7 @@ namespace RoleplayServer.resources.phone_manager
                     string numbera = IsDigitsOnly(contact) ? contact : lmphone.Contacts.Find(x => x.Name == contact).Number;
 
                     var returnMsgs = Phone.GetMessageLog(lmphone.Number, numbera, 10, toSkip);
-                    var actualMsgs = returnMsgs.Select(x => new[] {x.SenderNumber, x.Message, x.DateSent.ToString(""), x.IsRead.ToString()}).ToArray();
+                    var actualMsgs = returnMsgs.Select(x => new[] {x.SenderNumber, x.Message, x.DateSent.ToString(), x.IsRead.ToString()}).ToArray();
                     API.triggerClientEvent(sender, "phone_showMessages", lmphone.Number, API.toJson(actualMsgs),
                         (Phone.GetMessageCount(lmphone.Number, numbera) - (toSkip + 10)) > 0, toSkip == 0);
                     break;

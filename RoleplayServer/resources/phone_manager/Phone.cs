@@ -132,7 +132,7 @@ namespace RoleplayServer.resources.phone_manager
             var msg = new PhoneMessage()
             {
                 Message = message,
-                DateSent = DateTime.Now,
+                DateSent = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds,
                 SenderNumber = from,
                 ToNumber = to,
                 IsRead = false
@@ -152,7 +152,7 @@ namespace RoleplayServer.resources.phone_manager
         {
             var filter = Builders<PhoneMessage>.Filter.Eq(x => x.ToNumber, number);
             var sort = Builders<PhoneMessage>.Sort.Descending(x => x.DateSent);
-            var numbersList = DatabaseManager.MessagesTable.Find(filter).Sort(sort).Project(x => new [] { x.SenderNumber, x.Message, x.DateSent.ToString("g"), x.IsRead.ToString() }).ToEnumerable();
+            var numbersList = DatabaseManager.MessagesTable.Find(filter).Sort(sort).Project(x => new [] { x.SenderNumber, x.Message, x.DateSent.ToString(), x.IsRead.ToString() }).ToEnumerable();
             List<string[]> numbers = new List<string[]>();
             foreach (var itm in numbersList)
             {

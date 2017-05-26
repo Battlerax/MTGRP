@@ -75,6 +75,10 @@
             var newDate = new Date();
             return newDate.today() + " " + newDate.timeNow();
         }
+        function getDateTime(t) {
+            var newDate = new Date(t);
+            return newDate.today() + " " + newDate.timeNow();
+        }
 
         $(document).ready(function() {
             resourceCall("callServerEvent", "phone_loadMessagesContacts");
@@ -136,10 +140,11 @@
                 if (value[3] === "False") {
                     isRead = "* ";
                 }
+                var date = getDateTime(parseInt(dateSent));
                 if (msgSender === number) {
-                    $("#messages").prepend(`<div class="popover marker-on-right"><small>${dateSent}</small><p>${message}</p></div>`);
+                    $("#messages").prepend(`<div class="popover marker-on-right"><small>${date}</small><p>${message}</p></div>`);
                 } else {
-                    $("#messages").prepend(`<div class="popover marker-on-left"><small>${isRead}${dateSent}</small><p>${message}</p></div>`);
+                    $("#messages").prepend(`<div class="popover marker-on-left"><small>${isRead}${date}</small><p>${message}</p></div>`);
                 }
             });
 
