@@ -100,11 +100,35 @@ namespace RoleplayServer.resources.AdminSystem
             API.sendChatMessageToPlayer(player, "Teleported");
         }
 
+        [Command("sendback")]
+        public static void sendback_cmd(Client player, string id)
+        {
+            var receiver = PlayerManager.ParseClient(id);
+            Account account = API.shared.getEntityData(player.handle, "Account");
+            Character receiverCharacter = API.shared.getEntityData(receiver.handle, "Character");
+
+            if (account.AdminLevel < 2)
+                return;
+
+            if (receiver == null)
+            {
+                API.shared.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
+            }
+
+            var playerPos = receiverCharacter.LastPos;
+            API.shared.setEntityPosition(receiver, new Vector3(playerPos.X, playerPos.Y + 1, playerPos.Z));
+            API.shared.sendNotificationToPlayer(player, "You teleported ~b~" + PlayerManager.GetName(receiver) + " (ID:" + id + ")~w~ back to their previous position.");
+            API.shared.sendNotificationToPlayer(receiver, "You were teleported back to your original position by ~b~" + PlayerManager.GetName(player) + "~w~.");
+
+        }
+
         [Command("get")]
         public static void get_cmd(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
             Account account = API.shared.getEntityData(player.handle, "Account");
+            Character receiverCharacter = API.shared.getEntityData(receiver.handle, "Character");
 
             if (account.AdminLevel < 2)
                 return;
@@ -115,6 +139,8 @@ namespace RoleplayServer.resources.AdminSystem
                 return;
             }
             var playerPos = API.shared.getEntityPosition(player);
+            var targetPos = API.shared.getEntityPosition(receiver);
+            receiverCharacter.LastPos = targetPos;
             API.shared.setEntityPosition(receiver, new Vector3(playerPos.X, playerPos.Y + 1, playerPos.Z));
             API.shared.sendNotificationToPlayer(player, "You teleported ~b~" + PlayerManager.GetName(receiver) + " (ID:" + id + ")~w~ to your position.");
             API.shared.sendNotificationToPlayer(receiver, "You were teleported to ~b~" + PlayerManager.GetName(player) + "~w~.");
@@ -742,6 +768,47 @@ namespace RoleplayServer.resources.AdminSystem
 
             AdminReports.Reports.Clear();
             API.sendChatMessageToPlayer(player, "All reports (including ask) have been cleared.");
+        }
+
+        //PLAYER-ADMIN STUFF
+        [Command("playerwarns", GreedyArg = false)]
+        public static void playerwarns_cmd(Client player, string id)
+        {
+            var receiver = PlayerManager.ParseClient(id);
+
+            Account account = API.shared.getEntityData(player.handle, "Account");
+
+            if (receiver == null)
+            {
+                API.shared.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
+            }
+
+            else if(account.AdminLevel < 2 && id != null)
+            {
+                return;
+            }
+
+            else if (id == null)
+            {
+                showWarns(player);
+                return;
+            }
+
+            else if (account.AdminLevel >= 2 && id != null)
+            {
+                showWarns(player, receiver);
+                return;
+            }
+        }
+
+        public void showWarns(Client player, Client receiver = null)
+        {
+            Account receiverAccount = API.shared.getEntityData(receiver.handle, "Account");
+            Character account = API.shared.getEntityData(player.handle, "Account");
+
+            //LOOP THROUGH ALL PLAYERS WARNS AND OUTPUT THEM
+            API.sendChatMessageToPlayer(player, "Tempban level: " + receiverAccount.TempbanLevel);
         }
 
         //TODO: REMOVE THIS: 

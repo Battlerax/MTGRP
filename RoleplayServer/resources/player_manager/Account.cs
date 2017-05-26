@@ -23,6 +23,8 @@ namespace RoleplayServer.resources.player_manager
 
         public string LastIp { get; set; }
 
+        public int TempbanLevel { get; set; }
+
         [BsonIgnore]
         public bool IsLoggedIn { get; set; }
         public bool IsSpectating { get; set; }
@@ -55,6 +57,7 @@ namespace RoleplayServer.resources.player_manager
 
                 LastIp = a.LastIp;
 
+                TempbanLevel = a.TempbanLevel;
                 break;
             }
         }
