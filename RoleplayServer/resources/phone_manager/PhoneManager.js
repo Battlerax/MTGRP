@@ -84,10 +84,12 @@ API.onKeyUp.connect(function(sender, e) {
     if (myBrowser !== null && e.KeyCode === Keys.Escape) {
         API.destroyCefBrowser(myBrowser);
         API.showCursor(false);
+        API.setCanOpenChat(true);
         myBrowser = null;
     } else if (myBrowser !== null && e.KeyCode === Keys.F2) {
         isMouseShown = !isMouseShown;
         API.showCursor(isMouseShown);
+        API.setCanOpenChat(!isMouseShown);
     }
 });
 
