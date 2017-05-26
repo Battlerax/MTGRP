@@ -176,6 +176,10 @@
                 var dateTime = getCurrentDateTime();
                 $("#messages").append(`<div class="popover marker-on-left"><small>${dateTime}</small><p>${msg}</p></div>`);
                 resourceCall("callServerEvent", "phone_markMessagesRead");
+
+                //Scoll..
+                var d = $('#messages');
+                d.scrollTop(d.prop("scrollHeight"));
             }
         }
 
