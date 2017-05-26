@@ -175,7 +175,8 @@ namespace RoleplayServer.resources.phone_manager
                 }
                 else
                 {
-                    item[3] = (Convert.ToInt32(item[3]) + 1).ToString();
+                    if (itm[3] == "False")
+                        item[3] = (Convert.ToInt32(item[3]) + 1).ToString();
                 }
             }
             return numbers;
