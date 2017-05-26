@@ -521,21 +521,11 @@ namespace RoleplayServer.resources.phone_manager
                 if (character != null)
                 {
                     var charphone = InventoryManager.DoesInventoryHaveItem<Phone>(character)[0];
-                    string fromMsg;
-                    if (charphone.HasContactWithNumber(senderphone.Number))
-                    {
-                        fromMsg = "SMS from " +
-                                    charphone.Contacts.Find(pc => pc.Number == senderphone.Number).Name + ": " +
-                                    message;
-                        API.triggerClientEvent(character.Client, "phone_incomingMessage", charphone.Contacts.Find(pc => pc.Number == senderphone.Number).Name, message);
-                    }
-                    else
-                    {
-                        fromMsg = "SMS from " + senderphone.Number + ": " + message;
-                        API.triggerClientEvent(character.Client, "phone_incomingMessage", senderphone.Number, message);
-                    }
-
-                    API.sendChatMessageToPlayer(character.Client, Color.Sms, fromMsg);
+                    API.triggerClientEvent(character.Client, "phone_incomingMessage",
+                        charphone.HasContactWithNumber(senderphone.Number)
+                            ? charphone.Contacts.Find(pc => pc.Number == senderphone.Number).Name
+                            : senderphone.Number, message);
+                    API.sendChatMessageToPlayer(character.Client, Color.Sms, "You've received an SMS.");
                     ChatManager.RoleplayMessage(character, "'s phone vibrates..", ChatManager.RoleplayMe);
                 }
 
@@ -578,21 +568,11 @@ namespace RoleplayServer.resources.phone_manager
                 if (character != null)
                 {
                     var charphone = InventoryManager.DoesInventoryHaveItem<Phone>(character)[0];
-
-                    string fromMsg;
-
-                    if (charphone.HasContactWithNumber(senderphone.Number))
-                    {
-                        fromMsg = "SMS from " + charphone.Contacts.Find(pc => pc.Number == senderphone.Number).Name +
-                                  ": " + message;
-                        API.triggerClientEvent(character.Client, "phone_incomingMessage", charphone.Contacts.Find(pc => pc.Number == senderphone.Number).Name, message);
-                    }
-                    else
-                    {
-                        fromMsg = "SMS from " + senderphone.Number + ": " + input;
-                        API.triggerClientEvent(character.Client, "phone_incomingMessage", senderphone.Number, message);
-                    }
-                    API.sendChatMessageToPlayer(character.Client, Color.Sms, fromMsg);
+                    API.triggerClientEvent(character.Client, "phone_incomingMessage",
+                        charphone.HasContactWithNumber(senderphone.Number)
+                            ? charphone.Contacts.Find(pc => pc.Number == senderphone.Number).Name
+                            : senderphone.Number, message);
+                    API.sendChatMessageToPlayer(character.Client, Color.Sms, "You've received an SMS.");
                     ChatManager.RoleplayMessage(character, "'s phone vibrates..", ChatManager.RoleplayMe);
                 }
                
