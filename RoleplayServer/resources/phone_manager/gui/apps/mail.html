@@ -150,7 +150,6 @@
             });
 
             if (remaining) {
-                $("#loadRemaingMessages").remove();
                 $("#messages").prepend('<button class="button link" id="loadRemaingMessages" onclick="loadRemainingMessages()">Load More</button>');
             }
 
@@ -167,6 +166,7 @@
 
         var last = 0;
         function loadRemainingMessages() {
+            $("#loadRemaingMessages").remove();
             var name = $("#contactName").text();
             last += 10;
             resourceCall("callServerEvent", "phone_loadMessages", name, last);
