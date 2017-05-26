@@ -90,9 +90,14 @@
         function messageContactsLoaded(contactsJson) {
             var contacts = JSON.parse(contactsJson);
             $.each(contacts, function (key, value) {
+                var isRead = "";
+                if (value[3] !== "0") {
+                    isRead = `<strong>${value[3]} UNREAD</strong>`;
+                }
+
                 $("#contactsList").append(`<div class="list">
             <div class="list-content">
-                <span class="list-title">${value[0]}</span>
+                ${isRead}<span class ="list-title">${value[0]}</span>
                 <span class ="list-subtitle">${value[1]}</span>
                 <span class ="list-remark">${value[2]}</span>
             </div>

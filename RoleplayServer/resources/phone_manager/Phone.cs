@@ -152,13 +152,23 @@ namespace RoleplayServer.resources.phone_manager
         {
             var filter = Builders<PhoneMessage>.Filter.Eq(x => x.ToNumber, number);
             var sort = Builders<PhoneMessage>.Sort.Descending(x => x.DateSent);
-            var numbersList = DatabaseManager.MessagesTable.Find(filter).Sort(sort).Project(x => new [] { x.SenderNumber, x.Message, x.DateSent.ToString("g"),x.IsRead.ToString() }).ToEnumerable();
+            var numbersList = DatabaseManager.MessagesTable.Find(filter).Sort(sort).Project(x => new [] { x.SenderNumber, x.Message, x.DateSent.ToString("g"), x.IsRead.ToString() }).ToEnumerable();
             List<string[]> numbers = new List<string[]>();
             foreach (var itm in numbersList)
             {
-                if (numbers.SingleOrDefault(x => x[0] == itm[0]) == null)
+                var item = numbers.SingleOrDefault(x => x[0] == itm[0]);
+                if (item == null)
                 {
+                    if (itm[3] == "False")
+                        itm[3] = "1";
+                    else
+                        itm[3] = "0";
+
                     numbers.Add(itm);
+                }
+                else
+                {
+                    item[3] = (Convert.ToInt32(item[3]) + 1).ToString();
                 }
             }
             return numbers;
