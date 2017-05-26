@@ -76,7 +76,7 @@
             return newDate.today() + " " + newDate.timeNow();
         }
         function getDateTime(t) {
-            var newDate = new Date(t);
+            var newDate = new Date(t*1000);
             return newDate.today() + " " + newDate.timeNow();
         }
 
@@ -114,12 +114,12 @@
                 if (value[3] !== "0") {
                     isRead = `<strong>${value[3]} UNREAD</strong>`;
                 }
-
+                var date = getDateTime(parseInt(value[2]));
                 $("#contactsList").append(`<div class="list">
             <div class="list-content">
                 ${isRead}<span class ="list-title">${value[0]}</span>
                 <span class ="list-subtitle">${value[1]}</span>
-                <span class ="list-remark">${value[2]}</span>
+                <span class ="list-remark">${date}</span>
             </div>
         </div>`);
             });
