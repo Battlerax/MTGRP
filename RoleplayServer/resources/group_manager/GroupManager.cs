@@ -179,6 +179,7 @@ namespace RoleplayServer.resources.group_manager
             }
           
             API.sendChatMessageToPlayer(player, Color.White, "You have moved the LSPD locker location.");
+            character.Group.LockerSet = true;
             return;
         }
 

@@ -39,6 +39,7 @@ namespace RoleplayServer.resources.group_manager
 
         public DateTime DisbandDate { get; set; }
 
+        public bool LockerSet { get; set; }
         public MarkerZone Locker { get; set; }
         public MarkerZone ArrestLocation { get; set; }
 
@@ -49,6 +50,7 @@ namespace RoleplayServer.resources.group_manager
             Type = 0;
             CommandType = 0;
             Motd = "Welcome To Group";
+
 
             Locker = MarkerZone.None;
             ArrestLocation = MarkerZone.None;
@@ -68,6 +70,11 @@ namespace RoleplayServer.resources.group_manager
 
         public void register_markerzones()
         {
+            if (LockerSet == false)
+            {
+                Locker = new MarkerZone(new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+            }
+
             if (Locker != MarkerZone.None)
             {
                 Locker.ColZone.onEntityEnterColShape += (shape, entity) =>
