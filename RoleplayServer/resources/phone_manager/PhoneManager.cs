@@ -174,8 +174,8 @@ namespace RoleplayServer.resources.phone_manager
                 var targetitems = InventoryManager.DoesInventoryHaveItem(character, typeof(Phone));
                 var charphone = (Phone)charitems[0];
                 var targetphone = (Phone)targetitems[0];
-                msg = "[Phone]" + character.rp_name() + " says: " + msg;
-                ChatManager.NearbyMessage(player, 15, msg);
+                var newmsg = "[Phone]" + character.rp_name() + " says: " + msg;
+                ChatManager.NearbyMessage(player, 15, newmsg);
                 if (targetphone.HasContactWithNumber(charphone.Number))
                 {
                     phonemsg = "[" + targetphone.Contacts.Find(pc => pc.Number == charphone.Number).Name + "]" +
