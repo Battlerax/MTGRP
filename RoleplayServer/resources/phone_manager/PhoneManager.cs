@@ -128,6 +128,23 @@ namespace RoleplayServer.resources.phone_manager
                     API.triggerClientEvent(sender, "phone_showMessages", lmphone.Number, API.toJson(actualMsgs),
                         (Phone.GetMessageCount(lmphone.Number, numbera) - (toSkip + 10)) > 0, toSkip == 0);
                     break;
+
+                case "phone_getNotifications":
+                    Character gncharacter = sender.GetCharacter();
+                    var gnitems = InventoryManager.DoesInventoryHaveItem(gncharacter, typeof(Phone));
+                    if (gnitems.Length == 0)
+                    {
+                        API.sendChatMessageToPlayer(sender, "You don't have a phone.");
+                        return;
+                    }
+                    var gnphone = (Phone)gnitems[0];
+
+                    //Ready unread notification thing.
+                    var unreadMessages =
+                        DatabaseManager.MessagesTable.Count(x => x.ToNumber == gnphone.Number && x.IsRead == false).ToString();
+                    
+                    API.triggerClientEvent(sender, "phone_showNotifications", unreadMessages);
+                    break;
             }
         }
 
@@ -596,6 +613,8 @@ namespace RoleplayServer.resources.phone_manager
                 API.sendChatMessageToPlayer(player, "You don't have a phone.");
                 return;
             }
+            var charphone = InventoryManager.DoesInventoryHaveItem<Phone>(character)[0];
+
             API.triggerClientEvent(player, "phone_showphone");
         }
 

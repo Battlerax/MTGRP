@@ -27,13 +27,13 @@ API.onServerEventTrigger.connect((eventName, args) => {
 
         case "phone_calling":
             showPhoneIfNotShown();
-            API.sleep(500);
+            API.waitUntilCefBrowserLoaded(myBrowser);
             myBrowser.call("calling", args[0], args[1]);
             break;
 
         case "phone_incoming-call":
             showPhoneIfNotShown();
-            API.sleep(500);
+            API.waitUntilCefBrowserLoaded(myBrowser);
             myBrowser.call("incoming_call", args[0], args[1]);
             break;
 
@@ -71,6 +71,10 @@ API.onServerEventTrigger.connect((eventName, args) => {
 
         case "phone_incomingMessage":
             myBrowser.call("callAppFunction", "incomingMessage", args[0], args[1]);
+            break;
+
+        case "phone_showNotifications":
+            myBrowser.call("showNotifications", args[0]);
             break;
     }
 });

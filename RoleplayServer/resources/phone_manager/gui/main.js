@@ -1,4 +1,8 @@
-﻿$(document).ready(function () {
+﻿$(document).ready(function() {
+    resourceCall("callServerEvent", "phone_getNotifications");
+});
+
+$(document).ready(function () {
     $(".tile").click(function () {
         var file = $(this).data("file");
        
@@ -18,6 +22,8 @@
             resourceCall("callServerEvent", "phone_hangout");
             $("#call-interface").css("display", "none");
         }
+
+        resourceCall("callServerEvent", "phone_getNotifications");
     });
 
     $("#calling_answer").click(function () {
@@ -31,6 +37,10 @@
         callClosed();
     });
 });
+
+function showNotifications(messages) {
+    $("#unreadMessages").text(messages);
+}
 
 function callAppFunction(functionName /* Args */) {
     var args = Array.prototype.slice.call(arguments, 1);
