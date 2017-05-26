@@ -148,6 +148,13 @@ namespace RoleplayServer.resources.phone_manager
             return messages;
         }
 
+        public static void MarkMessagesAsRead(string contact)
+        {
+            var filter = Builders<PhoneMessage>.Filter.Eq(x => x.ToNumber, contact);
+            var update = Builders<PhoneMessage>.Update.Set(x => x.IsRead, true);
+            DatabaseManager.MessagesTable.UpdateMany(filter, update);
+        }
+
         public static List<string[]> GetContactListOfMessages(string number)
         {
             var filter = Builders<PhoneMessage>.Filter.Eq(x => x.ToNumber, number);

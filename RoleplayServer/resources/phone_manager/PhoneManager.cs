@@ -127,6 +127,8 @@ namespace RoleplayServer.resources.phone_manager
                     var actualMsgs = returnMsgs.Select(x => new[] {x.SenderNumber, x.Message, x.DateSent.ToString(), x.IsRead.ToString()}).ToArray();
                     API.triggerClientEvent(sender, "phone_showMessages", lmphone.Number, API.toJson(actualMsgs),
                         (Phone.GetMessageCount(lmphone.Number, numbera) - (toSkip + 10)) > 0, toSkip == 0);
+
+                    Phone.MarkMessagesAsRead(lmphone.Number); //Mark as read.
                     break;
 
                 case "phone_getNotifications":
@@ -144,6 +146,18 @@ namespace RoleplayServer.resources.phone_manager
                         DatabaseManager.MessagesTable.Count(x => x.ToNumber == gnphone.Number && x.IsRead == false).ToString();
                     
                     API.triggerClientEvent(sender, "phone_showNotifications", unreadMessages);
+                    break;
+
+                case "phone_markMessagesRead":
+                    Character mkcharacter = sender.GetCharacter();
+                    var mkitems = InventoryManager.DoesInventoryHaveItem(mkcharacter, typeof(Phone));
+                    if (mkitems.Length == 0)
+                    {
+                        API.sendChatMessageToPlayer(sender, "You don't have a phone.");
+                        return;
+                    }
+                    var mkphone = (Phone)mkitems[0];
+                    Phone.MarkMessagesAsRead(mkphone.Number);
                     break;
             }
         }

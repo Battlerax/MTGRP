@@ -175,6 +175,7 @@
             if (number === $("#contactName").text()) {
                 var dateTime = getCurrentDateTime();
                 $("#messages").append(`<div class="popover marker-on-left"><small>${dateTime}</small><p>${msg}</p></div>`);
+                resourceCall("callServerEvent", "phone_markMessagesRead");
             }
         }
 
