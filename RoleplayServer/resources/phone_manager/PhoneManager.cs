@@ -659,9 +659,9 @@ namespace RoleplayServer.resources.phone_manager
                 API.sendChatMessageToPlayer(player, "You don't have a phone.");
                 return;
             }
-            var charphone = InventoryManager.DoesInventoryHaveItem<Phone>(character)[0];
 
-            API.triggerClientEvent(player, "phone_showphone");
+            var curTime = TimeWeatherManager.CurrentTime;
+            API.triggerClientEvent(player, "phone_showphone", curTime.Hour, curTime.Minute);
         }
 
         public bool DoesNumberExist(string num)

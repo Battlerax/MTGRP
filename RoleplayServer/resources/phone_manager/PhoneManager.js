@@ -17,6 +17,20 @@ function showPhoneIfNotShown() {
     return false;
 }
 
+var funcToBeCalled = "";
+var args;
+function setToBeCalled(func /* args */) {
+    var a = Array.prototype.slice.call(arguments, 1);
+    funcToBeCalled = func;
+    args = a;
+}
+function phoneLoaded() {
+    if (funcToBeCalled !== "") {
+        myBrowser.call(funcToBeCalled, ...args);
+    }
+}
+
+
 API.onServerEventTrigger.connect((eventName, args) => {
     switch (eventName) {
         case "phone_showphone":
@@ -26,20 +40,17 @@ API.onServerEventTrigger.connect((eventName, args) => {
             }
 
             showPhoneIfNotShown();
+            setToBeCalled("setTime", args[0], args[1]);
             break;
 
         case "phone_calling":
-            if (showPhoneIfNotShown()) {
-                API.sleep(1000);
-            }
-            myBrowser.call("calling", args[0], args[1]);
+            showPhoneIfNotShown();
+            setToBeCalled("calling", args[0], args[1]);
             break;
 
         case "phone_incoming-call":
-            if (showPhoneIfNotShown()) {
-                API.sleep(1000);
-            }
-            myBrowser.call("incoming_call", args[0], args[1]);
+            showPhoneIfNotShown();
+            setToBeCalled("incoming_call", args[0], args[1]);
             break;
 
         case "phone_call-closed":

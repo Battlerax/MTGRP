@@ -1,4 +1,41 @@
-﻿$(document).ready(function() {
+﻿$(document).ready(function () {
+    resourceCall("phoneLoaded");
+});
+
+//TIME SYSTEM
+var hour;
+var minute;
+
+function setTime(hr, me) {
+    hour = hr;
+    minute = me;
+    $("#time strong").text(zeroPad(hour, 2) + ":" + zeroPad(minute, 2));
+}
+function zeroPad(num, places) {
+    var zero = places - num.toString().length + 1;
+    return Array(+(zero > 0 && zero)).join("0") + num;
+}
+
+function updateTime() {
+    minute += 1;
+
+    if (minute === 60) {
+        minute = 0;
+        hour += 1;
+    }
+    if (hour === 24) {
+        hour = 0;
+    }
+
+    $("#time strong").text(zeroPad(hour, 2) + ":" + zeroPad(minute, 2));
+}
+
+window.setInterval(function () {
+    updateTime();
+}, 60000);
+//END TIME SYSTEM
+
+$(document).ready(function () {
     resourceCall("callServerEvent", "phone_getNotifications");
 });
 
