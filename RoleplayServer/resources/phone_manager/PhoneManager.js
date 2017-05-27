@@ -11,6 +11,7 @@ function showPhoneIfNotShown() {
             res.Width - width,
             res.Height - height);
         API.loadPageCefBrowser(myBrowser, "phone_manager/gui/main.html");
+        API.waitUntilCefBrowserLoaded(myBrowser);
     }
 }
 
@@ -27,13 +28,11 @@ API.onServerEventTrigger.connect((eventName, args) => {
 
         case "phone_calling":
             showPhoneIfNotShown();
-            API.waitUntilCefBrowserLoaded(myBrowser);
             myBrowser.call("calling", args[0], args[1]);
             break;
 
         case "phone_incoming-call":
             showPhoneIfNotShown();
-            API.waitUntilCefBrowserLoaded(myBrowser);
             myBrowser.call("incoming_call", args[0], args[1]);
             break;
 
