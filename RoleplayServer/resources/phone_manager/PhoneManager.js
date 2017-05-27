@@ -12,7 +12,9 @@ function showPhoneIfNotShown() {
             res.Height - height);
         API.loadPageCefBrowser(myBrowser, "phone_manager/gui/main.html");
         API.waitUntilCefBrowserLoaded(myBrowser);
+        return true;
     }
+    return false;
 }
 
 API.onServerEventTrigger.connect((eventName, args) => {
@@ -27,12 +29,16 @@ API.onServerEventTrigger.connect((eventName, args) => {
             break;
 
         case "phone_calling":
-            showPhoneIfNotShown();
+            if (showPhoneIfNotShown()) {
+                API.sleep(1000);
+            }
             myBrowser.call("calling", args[0], args[1]);
             break;
 
         case "phone_incoming-call":
-            showPhoneIfNotShown();
+            if (showPhoneIfNotShown()) {
+                API.sleep(1000);
+            }
             myBrowser.call("incoming_call", args[0], args[1]);
             break;
 

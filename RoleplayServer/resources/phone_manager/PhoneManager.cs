@@ -15,8 +15,6 @@ namespace RoleplayServer.resources.phone_manager
 {
     public class PhoneManager : Script
     {
-        public static List<Phone> Phones = new List<Phone>();
-
         public PhoneManager()
         {
             DebugManager.DebugMessage("[PhoneM] Initalizing Phone Manager...");
@@ -310,7 +308,7 @@ namespace RoleplayServer.resources.phone_manager
             var aArgs = (Character[]) args;
             var character = aArgs[0];
             var sender = aArgs[1];
-            if (character.InCallWith == Character.None && sender.InCallWith == Character.None && character.BeingCalledBy == sender.CallingPlayer)
+            if (character.InCallWith == Character.None && sender.InCallWith == Character.None && character.BeingCalledBy == sender && sender.CallingPlayer == character)
             {
                 character.BeingCalledBy = Character.None;
                 sender.CallingPlayer = Character.None;
