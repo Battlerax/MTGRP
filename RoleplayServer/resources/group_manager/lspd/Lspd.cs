@@ -290,7 +290,7 @@ namespace RoleplayServer.resources.group_manager.lspd
             Character receiverCharacter = API.getEntityData(receiver.handle, "Character");
 
 
-            /*if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
                 API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
                 return;
@@ -324,7 +324,7 @@ namespace RoleplayServer.resources.group_manager.lspd
                 API.sendChatMessageToPlayer(player, Color.White, "You are not at the arrest location.");
                 return;
             }
-            */
+            
             foreach (var i in receiverCharacter.GetCriminalRecord())
             {
                 i.ActiveCrime = false;
@@ -589,9 +589,8 @@ namespace RoleplayServer.resources.group_manager.lspd
             character.unpaidTickets = 0;
         }
 
-        /* * * * * * TO TEST * * * * * */
         [Command("deploy", GreedyArg = true)]
-        public void deploy_cmd(Client player, int objectid)
+        public void deploy_cmd(Client player, string objectid)
         {
             Character character = API.getEntityData(player.handle, "Character");
 
@@ -601,54 +600,52 @@ namespace RoleplayServer.resources.group_manager.lspd
                 return;
             }
 
+            if (int.Parse(objectid) > 5)
+            {
+                API.sendChatMessageToPlayer(player, "Deployable items are between 1-5");
+            }
+            var playerpos = API.getEntityPosition(player);
+            var playerrot = API.getEntityRotation(player);
+            var playerDimension = API.getEntityDimension(player);
+
             switch (objectid)
             {
-                case 1:
+                case "1":
                     {
-                        var playerpos = API.getEntityPosition(player);
-                        var playerDimension = API.getEntityDimension(player);
-                        var item = API.createObject(API.getHashKey("prop_mp_barrier_01"), playerpos - new Vector3(0, 0, 1f), new Vector3(), playerDimension);
+                        var item = API.createObject(API.getHashKey("prop_mp_barrier_01"), playerpos - new Vector3(0, 0, 1f), playerrot, playerDimension);
                         objects.AddLast(item);
                         break;
                     }
 
-                case 2:
+                case "2":
                     {
-                        var playerpos = API.getEntityPosition(player);
-                        var playerDimension = API.getEntityDimension(player);
-                        var item = API.createObject(API.getHashKey("prop_barrier_wat_03b"), playerpos - new Vector3(0, 0, 1f), new Vector3(), playerDimension);
+                        var item = API.createObject(API.getHashKey("prop_barrier_wat_03b"), playerpos - new Vector3(0, 0, 1f), playerrot, playerDimension);
                         objects.AddLast(item);
                         break;
                     }
-                case 3:
+                case "3":
                     {
-                        var playerpos = API.getEntityPosition(player);
-                        var playerDimension = API.getEntityDimension(player);
-                        var item = API.createObject(API.getHashKey("prop_barrier_work04a"), playerpos - new Vector3(0, 0, 1f), new Vector3(), playerDimension);
+                        var item = API.createObject(API.getHashKey("prop_barrier_work04a"), playerpos - new Vector3(0, 0, 1f), playerrot, playerDimension);
                         objects.AddLast(item);
                         break;
                     }
-                case 4:
+                case "4":
                     {
-                        var playerpos = API.getEntityPosition(player);
-                        var playerDimension = API.getEntityDimension(player);
-                        var item = API.createObject(API.getHashKey("prop_mp_conc_barrier_01"), playerpos - new Vector3(0, 0, 1f), new Vector3(), playerDimension);
+                        var item = API.createObject(API.getHashKey("prop_mp_conc_barrier_01"), playerpos - new Vector3(0, 0, 1f), playerrot, playerDimension);
                         objects.AddLast(item);
                         break;
                     }
-                case 5:
+                case "5":
                     {
-                        var playerpos = API.getEntityPosition(player);
-                        var playerDimension = API.getEntityDimension(player);
-                        var item = API.createObject(API.getHashKey("prop_barrier_work05"), playerpos - new Vector3(0, 0, 1f), new Vector3(), playerDimension);
+                        var item = API.createObject(API.getHashKey("prop_barrier_work05"), playerpos - new Vector3(0, 0, 1f), playerrot, playerDimension);
                         objects.AddLast(item);
                         break;
                     }
             }
-            API.sendNotificationToPlayer(player, "Object placed. There are now ~r~" + objects.Count + "~w~ placed.");
+            API.sendNotificationToPlayer(player, "Object placed. There are now ~r~" + objects.Count + "~w~ objects placed.");
         }
 
-        /* * * * * * TO TEST * * * * * */
+
         [Command("removelastobject", GreedyArg = true)]
         public void removeobject_cmd(Client player)
         {
@@ -659,9 +656,50 @@ namespace RoleplayServer.resources.group_manager.lspd
                 API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
                 return;
             }
+
+            if (objects.Count() == 0)
+            {
+                API.sendChatMessageToPlayer(player, "There are no more objects to remove.");
+                return;
+            }
+
             API.deleteEntity(objects.Last());
             objects.RemoveLast();
             API.sendNotificationToPlayer(player, "Object removed. There are now ~r~" + objects.Count + "~w~ placed.");
+        }
+
+        [Command("removeallobjects", GreedyArg = true)]
+        public void removeallobjects_cmd(Client player)
+        {
+            Character character = API.getEntityData(player.handle, "Character");
+
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                return;
+            }
+
+            if (objects.Count() == 0)
+            {
+                API.sendChatMessageToPlayer(player, "There are no more objects to remove.");
+                return;
+            }
+
+            int len = objects.Count();
+
+            foreach (var i in objects)
+            {
+                API.deleteEntity(i);
+            }
+
+            var node = objects.First;
+
+            while (node.Next != null)
+            {
+                var next = node.Next;
+                objects.Remove(node);
+            }
+            API.sendNotificationToPlayer(player, "~r~" + len + " objects removed.");
         }
 
         public void GiveLspdEquipment(Client player, int type = 0)
@@ -739,7 +777,7 @@ namespace RoleplayServer.resources.group_manager.lspd
             API.shared.removeAllPlayerWeapons(player);
             character.isJailed = true;
 
-            API.shared.sendChatMessageToPlayer(player, "You have been jailed for " + seconds/60 + " minutes.");
+            API.shared.sendChatMessageToPlayer(player, "You have been placed in jail for " + character.jailTimeLeft/60/1000 + " minutes.");
 
             character.jailTimeLeftTimer = new Timer { Interval = 1000 };
             character.jailTimeLeftTimer.Elapsed += delegate { updateTimer(player); };
@@ -753,7 +791,6 @@ namespace RoleplayServer.resources.group_manager.lspd
         {
             Character character = API.shared.getEntityData(player.handle, "Character");
             character.jailTimeLeft -= 1000;
-            API.shared.sendNotificationToPlayer(player, "You have ~b~" + character.jailTimeLeft/1000 + " ~w~ seconds left in prison.");
         }
 
         public static void setFree(Client player)

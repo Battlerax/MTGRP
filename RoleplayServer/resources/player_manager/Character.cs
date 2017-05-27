@@ -174,12 +174,25 @@ namespace RoleplayServer.resources.player_manager
         public Timer BeaconResetTimer { get; set; }
         public Client BeaconCreator{ get; set; }
 
+        private int _time;
+
         public Timer jailTimeLeftTimer { get; set; }
-        public int jailTimeLeft { get; set; }
         public Timer jailTimer { get; set; }
         public bool isJailed { get; set; }
         public int sentTicketAmount { get; set; }
         public bool activeCrime { get; set; }
+
+        public int jailTimeLeft
+        {
+            get { return _time; }
+            set
+            {
+                if (Client != null)
+                    API.shared.triggerClientEvent(Client, "update_jail_time", value/1000);
+
+                _time = value;
+            }
+        }
 
         public Timer TicketTimer { get; set; }
         public bool sentTicket { get; set; }
