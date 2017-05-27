@@ -252,19 +252,35 @@ namespace RoleplayServer.resources.phone_manager
 
         public void h_cmd(Client player)
         {
-            Character character = API.getEntityData(player.handle, "Character");
-            if (character.InCallWith == Character.None)
+            Character character = player.GetCharacter();
+            Character talkingTo;
+
+            if (character.InCallWith == Character.None && character.CallingPlayer == Character.None)
             {
                 API.sendChatMessageToPlayer(player, "You are not on a phone call.");
                 return;
             }
-            Character talkingTo = character.InCallWith;
-            talkingTo.InCallWith = Character.None;
-            character.InCallWith = Character.None;
-            API.sendChatMessageToPlayer(player, "You have terminated the call.");
-            API.sendChatMessageToPlayer(talkingTo.Client, "The other party has ended the call.");
-            API.triggerClientEvent(player, "phone_call-closed");
-            API.triggerClientEvent(talkingTo.Client, "phone_call-closed");
+
+            if (character.CallingPlayer != Character.None)
+            {
+                talkingTo = character.CallingPlayer;
+                talkingTo.BeingCalledBy = Character.None;
+                character.CallingPlayer = Character.None;
+                API.sendChatMessageToPlayer(player, "You have terminated the call.");
+                API.sendChatMessageToPlayer(talkingTo.Client, "The other party has ended the call.");
+                API.triggerClientEvent(player, "phone_call-closed");
+                API.triggerClientEvent(talkingTo.Client, "phone_call-closed");
+            }
+            else if(character.InCallWith != Character.None)
+            {
+                talkingTo = character.InCallWith;
+                talkingTo.InCallWith = Character.None;
+                character.InCallWith = Character.None;
+                API.sendChatMessageToPlayer(player, "You have terminated the call.");
+                API.sendChatMessageToPlayer(talkingTo.Client, "The other party has ended the call.");
+                API.triggerClientEvent(player, "phone_call-closed");
+                API.triggerClientEvent(talkingTo.Client, "phone_call-closed");
+            }
         }
 
         [Command("togphone")]
