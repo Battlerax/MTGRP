@@ -364,7 +364,7 @@ namespace RoleplayServer.resources.phone_manager
                 var targetContact = charphone.Contacts.Find(pc => pc.Number == charphone.Number);
 
                 API.triggerClientEvent(player, "phone_calling", contact?.Name ?? "Unknown", input);
-                API.triggerClientEvent(character.Client, "phone_incoming-call", targetContact?.Name ?? "Unknown", charphone.Number);
+                API.triggerClientEvent(character.Client, "phone_incoming-call", targetContact?.Name ?? "Unknown", senderphone.Number);
 
 
                 System.Threading.Timer timer = new System.Threading.Timer(OnCallSemiEnd, new[] {character, sender}, 30000, -1);
@@ -408,7 +408,7 @@ namespace RoleplayServer.resources.phone_manager
                 character.BeingCalledBy = sender;
                 API.triggerClientEvent(player, "phone_calling", contact.Name, contact.Number);
                 var targetContact = charphone.Contacts.Find(pc => pc.Number == charphone.Number);
-                API.triggerClientEvent(character.Client, "phone_incoming-call", targetContact.Name, charphone.Number);
+                API.triggerClientEvent(character.Client, "phone_incoming-call", targetContact?.Name ?? "Unknown", senderphone.Number);
 
                 //Function to hangup after 30 seconds with no answer.
                 System.Threading.Timer timer = new System.Threading.Timer(OnCallSemiEnd, new[] { character, sender }, 30000, -1);
