@@ -332,7 +332,7 @@ namespace RoleplayServer.resources.group_manager.lspd
 
             API.sendNotificationToPlayer(player, "You have arrested ~b~" + receiver.name + "~w~.");
             API.sendNotificationToPlayer(receiver, "You have been arrested by ~b~" + player.name + "~w~.");
-            character.jailTimeLeft = int.Parse(time) * 1000;
+            receiverCharacter.jailTimeLeft = int.Parse(time) * 1000;
             jailControl(receiver, int.Parse(time));
 
         }
@@ -739,13 +739,12 @@ namespace RoleplayServer.resources.group_manager.lspd
             API.shared.removeAllPlayerWeapons(player);
             character.isJailed = true;
 
-            character.jailTime = seconds * 1000;
-            API.shared.sendChatMessageToPlayer(player, "You have been jailed for " + character.jailTimeLeft + " seconds.");
+            API.shared.sendChatMessageToPlayer(player, "You have been jailed for " + seconds/60 + " minutes.");
 
             character.jailTimeLeftTimer = new Timer { Interval = 1000 };
             character.jailTimeLeftTimer.Elapsed += delegate { updateTimer(player); };
             character.jailTimeLeftTimer.Start();
-            character.jailTimer = new Timer { Interval = character.jailTimeLeft * 1000 };
+            character.jailTimer = new Timer { Interval = character.jailTimeLeft };
             character.jailTimer.Elapsed += delegate { setFree(player); };
             character.jailTimer.Start();
         }
@@ -754,8 +753,7 @@ namespace RoleplayServer.resources.group_manager.lspd
         {
             Character character = API.shared.getEntityData(player.handle, "Character");
             character.jailTimeLeft -= 1000;
-            character.jailTimeLeft = character.jailTime - character.jailTimeLeft;
-            API.shared.sendNotificationToPlayer(player, "You have ~b~" + character.jailTimeLeft/60 + " ~w~ seconds left in prison.");
+            API.shared.sendNotificationToPlayer(player, "You have ~b~" + character.jailTimeLeft/1000 + " ~w~ seconds left in prison.");
         }
 
         public static void setFree(Client player)
