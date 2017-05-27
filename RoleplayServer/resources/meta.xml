@@ -64,6 +64,7 @@
   <file src="phone_manager/gui/apps/dialpad.html"/>
   <file src="phone_manager/gui/apps/contacts.html"/>
   <file src="phone_manager/gui/apps/mail.html"/>
+  <file src="phone_manager/gui/apps/settings.html"/>
   
 	<!-- CORE -->
 	<file src="cef_resources/MTGVRP_LOGO_BIG.png"/>

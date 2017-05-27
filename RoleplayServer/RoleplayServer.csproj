@@ -141,6 +141,7 @@
     </Content>
     <Content Include="resources\phone_manager\gui\apps\contacts.html" />
     <Content Include="resources\phone_manager\gui\apps\mail.html" />
+    <Content Include="resources\phone_manager\gui\apps\settings.html" />
     <Content Include="resources\phone_manager\gui\main.css" />
     <Content Include="resources\phone_manager\gui\main.html" />
     <Content Include="resources\phone_manager\gui\main.js" />

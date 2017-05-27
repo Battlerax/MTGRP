@@ -159,6 +159,22 @@ namespace RoleplayServer.resources.phone_manager
                     var mkphone = (Phone)mkitems[0];
                     Phone.MarkMessagesAsRead(mkphone.Number);
                     break;
+
+                case "settings_getSettings":
+                    Character sscharacter = sender.GetCharacter();
+                    var ssitems = InventoryManager.DoesInventoryHaveItem(sscharacter, typeof(Phone));
+                    if (ssitems.Length == 0)
+                    {
+                        API.sendChatMessageToPlayer(sender, "You don't have a phone.");
+                        return;
+                    }
+                    var ssphone = (Phone)ssitems[0];
+                    API.triggerClientEvent(sender, "phone_showSettings", ssphone.Number, ssphone.IsOn.ToString());
+                    break;
+
+                case "settings_togPhone":
+                    togphone_cmd(sender);
+                    break;
             }
         }
 
