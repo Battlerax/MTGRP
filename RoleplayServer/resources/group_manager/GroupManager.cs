@@ -5,7 +5,7 @@ using MongoDB.Driver;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.database_manager;
 using RoleplayServer.resources.player_manager;
-using System;
+using RoleplayServer.resources.vehicle_manager;
 
 namespace RoleplayServer.resources.group_manager
 {
@@ -45,36 +45,89 @@ namespace RoleplayServer.resources.group_manager
             API.sendChatMessageToPlayer(player, "---------------------------------------------------------------------------------- ");
         }
         
-        [Command("setfactionvehicle")]
+        [Command("setgroupvehicle")]
         public void setfactionvehicle_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
             Account account = API.getEntityData(player.handle, "Account");
 
-            if (account.AdminLevel == 0)
+            if (account.AdminLevel < 4)
             {
                 return;
             }
 
             if (player.isInVehicle == false)
             {
-                API.sendChatMessageToPlayer(player, "You must be in the vehicle you want to add.");
+                API.sendChatMessageToPlayer(player, "You must be the driver of the vehicle you want to add.");
                 return;
             }
 
             var currentCar = API.getPlayerVehicle(player);
-            var vehicle = new Tuple<Vector3, VehicleHash>(API.getEntityPosition(player), (VehicleHash)API.getEntityModel(currentCar));
-            character.Group.groupVehicles.Add(character.Group.groupVehicles.Count + 1.ToString(), vehicle);
-            character.Group.Save();
+            var groupVehicle = VehicleManager.CreateVehicle((VehicleHash)API.getEntityModel(currentCar), API.getEntityPosition(player), API.getEntityRotation(player), character.Group.Name, 0, vehicle_manager.Vehicle.VehTypeGroup);
+            API.sendChatMessageToPlayer(player, "Group vehicle added.");
+            API.deleteEntity(currentCar);
+            groupVehicle.Insert();
+            groupVehicle.Save();
+            vehicle_manager.VehicleManager.spawn_vehicle(groupVehicle);
         }
 
+        [Command("respawngroupvehicles")]
+        public void respawngroupvehicles_cmd(Client player)
+        {
+            Account account = API.getEntityData(player.handle, "Account");
+
+            var filter = Builders<vehicle_manager.Vehicle>.Filter.Eq("VehType", "2");
+            var groupVehicles = DatabaseManager.VehicleTable.Find(filter).ToList();
+
+            if (account.AdminLevel < 4)
+            {
+                return;
+            }
+
+            int j = 0;
+            foreach (var v in groupVehicles)
+            {
+                v.Despawn();
+                v.Respawn();
+                j++;
+            }
+            API.sendChatMessageToPlayer(player, j + " faction vehicles have been respawned.");
+
+        }
+
+        [Command("removegroupvehicle", GreedyArg = true)]
+        public void removegroupvehicle_cmd(Client player, string id)
+        {
+            Account account = API.getEntityData(player.handle, "Account");
+
+            var filter = Builders<vehicle_manager.Vehicle>.Filter.Eq("VehType", "2");
+            var groupVehicles = DatabaseManager.VehicleTable.Find(filter).ToList();
+
+            if (account.AdminLevel < 4)
+            {
+                return;
+            }
+
+            foreach (var v in groupVehicles)
+            {
+                if (v.Id == int.Parse(id))
+                {
+                    v.Despawn();
+                    v.Delete();
+                    v.Save();
+                    API.sendChatMessageToPlayer(player, "Vehicle removed from group.");
+                }
+            }
+        }
+ 
+
         [Command("listgroupvehicles")]
-        public void listfactionvehicles_cmd(Client player)
+        public void listgroupvehicles_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
             Account account = API.getEntityData(player.handle, "Account");
 
-            if (account.AdminLevel == 0)
+            if (account.AdminLevel < 4)
             {
                 return;
             }
@@ -85,10 +138,20 @@ namespace RoleplayServer.resources.group_manager
             }
 
             API.sendChatMessageToPlayer(player, "======GROUP VEHICLES======");
-            foreach (var i in character.Group.groupVehicles)
+            var filter = Builders<vehicle_manager.Vehicle>.Filter.Eq("VehType", "2");
+            var groupVehicles = DatabaseManager.VehicleTable.Find(filter).ToList();
+
+            int j = 0;
+            foreach (var v in groupVehicles)
             {
-                API.sendChatMessageToPlayer(player, "Vehicle: " + i.Key.ToString() + " | " + i.Value.Item2.ToString());
+                if (v.LicensePlate == character.Group.Name)
+                {
+                    API.sendChatMessageToPlayer(player, "ID: " + v.Id + " Vehicle: " + v.VehModel);
+                    j++;
+                }
             }
+            API.sendChatMessageToPlayer(player, "There are " + j + " vehicles in this group.");
+
         }
 
         [Command("remoteuninvite")]
@@ -518,20 +581,17 @@ namespace RoleplayServer.resources.group_manager
             switch (option)
             {
                 case "group":
-                    if (amount < 1 || amount > 2)
-                    {
-                        API.sendChatMessageToPlayer(player, Color.Grey, "Valid group types are 1 (factions) and 2 (groups).");
-                        return;
-                    }
                     if (GetGroupById(amount).Type == 1)
                     {
                         API.sendChatMessageToPlayer(player, Color.Grey, "You are attempting to set a player into a faction. Use /set faction instead.");
                         return;
                     }
 
+                    character.GroupRank = 1;
                     character.GroupId = amount;
                     character.Group = GetGroupById(amount);
                     character.Save();
+                    character.Group.Save();
                     API.sendChatMessageToPlayer(player, "You have set " + PlayerManager.GetName(receiver) + "[" + id + "]" + "'s group to " + amount + ", " + character.Group.Name + ".");
                     break;
 
@@ -544,6 +604,7 @@ namespace RoleplayServer.resources.group_manager
 
                     character.GroupRank = amount;
                     character.Save();
+                    character.Group.Save();
                     API.sendChatMessageToPlayer(player, "You have set " + PlayerManager.GetName(receiver) + "[" + id + "]" + "'s group rank to " + amount + ".");
                     break;
 
@@ -553,11 +614,13 @@ namespace RoleplayServer.resources.group_manager
                         API.sendChatMessageToPlayer(player, Color.Grey, "You are attempting to set a player into a group. Use /set group instead.");
                         return;
                     }
-                
+
+                    character.GroupRank = 1;
                     character.GroupId = amount;
                     character.Group = GetGroupById(amount);
                     character.Group.CommandType = amount;
                     character.Save();
+                    character.Group.Save();
                     API.sendChatMessageToPlayer(player, "You have set " + PlayerManager.GetName(receiver) + "[" + id + "]" + "'s faction to " + amount + ", " + character.Group.Name + ".");
                     break;
 
@@ -573,6 +636,7 @@ namespace RoleplayServer.resources.group_manager
             Account account = API.getEntityData(player.handle, "Account");
             if (account.AdminLevel < 4)
                 return;
+
 
             var group = new Group();
 

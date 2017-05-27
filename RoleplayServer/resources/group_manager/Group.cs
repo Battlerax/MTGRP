@@ -25,7 +25,7 @@ namespace RoleplayServer.resources.group_manager
 
         public List<string> RankNames = new List<string> { "R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9", "R10" };
         public List<string> Divisions = new List<string> { "D1", "D2", "D3", "D4", "D5" };
-        public Dictionary<string, Tuple<Vector3, VehicleHash>> groupVehicles = new Dictionary<string, Tuple<Vector3, VehicleHash>>();
+        public Dictionary<string, Tuple<Vector3, Vector3, VehicleHash, int, int>> groupVehicles = new Dictionary<string, Tuple<Vector3, Vector3, VehicleHash, int, int>>();
 
 
         public List<List<string>> DivisionRanks = new List<List<string>>

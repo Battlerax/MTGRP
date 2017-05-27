@@ -27,6 +27,8 @@ namespace RoleplayServer.resources.vehicle_manager
         public const int VehTypeTemp = 0;
         [BsonIgnore]
         public const int VehTypePerm = 1;
+        [BsonIgnore]
+        public const int VehTypeGroup = 2;
 
         public int Id { get; set; }
        

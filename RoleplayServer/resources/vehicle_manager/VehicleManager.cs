@@ -49,6 +49,7 @@ namespace RoleplayServer.resources.vehicle_manager
 
             // Create vehicle table + 
             load_all_unowned_vehicles();
+            load_all_group_vehicles();
 
             DebugManager.DebugMessage("[VehicleM] Vehicle Manager initalized!");
         }
@@ -189,7 +190,19 @@ namespace RoleplayServer.resources.vehicle_manager
 
             Character character = API.getEntityData(player.handle, "Character");
 
-            if(API.getEntityData(vehicleHandle, "IS_LSPD") == true && character.Group.CommandType != Group.CommandTypeLspd)
+            if (veh.VehType == vehicle_manager.Vehicle.VehTypeGroup)
+            {
+                if (character.Group.Name != veh.LicensePlate)
+                {
+
+                    {
+                        API.sendChatMessageToPlayer(player, "You must be a member of " + veh.LicensePlate + " to use this vehicle.");
+                        API.setEntityPosition(player, API.getEntityPosition(vehicleHandle) + new Vector3(-1, 0, 0));
+                        return;
+                    }
+                }
+            }
+            if(veh.LicensePlate == "LSPD" && character.Group.CommandType != Group.CommandTypeLspd)
             {
                 API.sendChatMessageToPlayer(player, "You must be a member of the LSPD to use this vehicle.");
                 API.setEntityPosition(player, API.getEntityPosition(vehicleHandle) + new Vector3(-1, 0, 0));
@@ -359,6 +372,20 @@ namespace RoleplayServer.resources.vehicle_manager
             //gang check
 
             return false;
+        }
+
+        public void load_all_group_vehicles()
+        {
+            var filter = Builders<Vehicle>.Filter.Eq("VehType", "2");
+            var groupVehicles = DatabaseManager.VehicleTable.Find(filter).ToList();
+
+            foreach (var v in groupVehicles)
+            { 
+                spawn_vehicle(v);
+                Vehicles.Add(v);
+            }
+
+            DebugManager.DebugMessage("Loaded " + groupVehicles.Count + " group vehicles from the database.");
         }
 
         public void load_all_unowned_vehicles()

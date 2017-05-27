@@ -278,9 +278,9 @@ namespace RoleplayServer.resources.group_manager.lspd
             }
         }
 
-        /* * * * * * TO TEST * * * * * */
+
         [Command("arrest", GreedyArg = true)]
-        public void arrest_cmd(Client player, string id, string time) //change receiver to id (currently a bug)
+        public void arrest_cmd(Client player, string id, string time)
         {
 
             var receiver = PlayerManager.ParseClient(id);
@@ -288,7 +288,7 @@ namespace RoleplayServer.resources.group_manager.lspd
             Character character = API.getEntityData(player.handle, "Character");
             Character receiverCharacter = API.getEntityData(receiver.handle, "Character");
 
-            /*
+
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
                 API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
@@ -311,19 +311,19 @@ namespace RoleplayServer.resources.group_manager.lspd
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~ You cannot arrest a member of the LSPD.");
                 return;
             }
-            */
+
             if (receiver == null)
             {
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
-            /*
+
             if (player.position.DistanceTo(character.Group.ArrestLocation.Location) > 4)
             {
                 API.sendChatMessageToPlayer(player, Color.White, "You are not at the arrest location.");
                 return;
             }
-            */
+
             foreach (var i in receiverCharacter.GetCriminalRecord())
             {
                 i.ActiveCrime = false;
