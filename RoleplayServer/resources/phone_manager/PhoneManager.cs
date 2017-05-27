@@ -298,6 +298,7 @@ namespace RoleplayServer.resources.phone_manager
             {
                 character.BeingCalledBy = Character.None;
                 sender.CallingPlayer = Character.None;
+                sender.CallingTimer.Dispose();
                 API.sendChatMessageToPlayer(sender.Client, "Call hanged up with no answer.");
                 ChatManager.RoleplayMessage(character.Client, "'s phone stops to ring.", ChatManager.RoleplayMe);
                 API.triggerClientEvent(character.Client, "phone_call-closed");
@@ -367,7 +368,7 @@ namespace RoleplayServer.resources.phone_manager
                 API.triggerClientEvent(character.Client, "phone_incoming-call", targetContact?.Name ?? "Unknown", senderphone.Number);
 
 
-                System.Threading.Timer timer = new System.Threading.Timer(OnCallSemiEnd, new[] {character, sender}, 30000, -1);
+                sender.CallingTimer = new System.Threading.Timer(OnCallSemiEnd, new[] {character, sender}, 30000, -1);
             }
             else
             {
@@ -411,7 +412,7 @@ namespace RoleplayServer.resources.phone_manager
                 API.triggerClientEvent(character.Client, "phone_incoming-call", targetContact?.Name ?? "Unknown", senderphone.Number);
 
                 //Function to hangup after 30 seconds with no answer.
-                System.Threading.Timer timer = new System.Threading.Timer(OnCallSemiEnd, new[] { character, sender }, 30000, -1);
+                sender.CallingTimer = new System.Threading.Timer(OnCallSemiEnd, new[] { character, sender }, 30000, -1);
             }
         }
 

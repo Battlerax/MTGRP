@@ -145,7 +145,8 @@ namespace RoleplayServer.resources.player_manager
         public Character BeingCalledBy { get; set; }
         [BsonIgnore]
         public Character CallingPlayer { get; set; }
-
+        [BsonIgnore]
+        public System.Threading.Timer CallingTimer;
         //Groups
         public int GroupId { get; set; }
         public int GroupRank { get; set; }
