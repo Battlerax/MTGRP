@@ -283,7 +283,6 @@ namespace RoleplayServer.resources.phone_manager
             }
         }
 
-        [Command("togphone")]
         public void togphone_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
