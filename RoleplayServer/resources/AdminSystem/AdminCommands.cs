@@ -5,10 +5,11 @@ using System.Timers;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.player_manager;
 using RoleplayServer.resources.vehicle_manager;
+using RoleplayServer.resources.AdminSystem;
 
 namespace RoleplayServer.resources.AdminSystem
 {
-    public class AdminCommands : Script 
+    public class AdminCommands : Script
     {
 
         public AdminCommands()
@@ -163,7 +164,7 @@ namespace RoleplayServer.resources.AdminSystem
             }
             var playerPos = API.shared.getEntityPosition(receiver);
             API.shared.setEntityPosition(player, new Vector3(playerPos.X, playerPos.Y + 1, playerPos.Z));
-            API.shared.sendChatMessageToPlayer(player, "You have teleported to " + PlayerManager.GetName(receiver) +" (ID:" + id +").");
+            API.shared.sendChatMessageToPlayer(player, "You have teleported to " + PlayerManager.GetName(receiver) + " (ID:" + id + ").");
 
         }
 
@@ -449,7 +450,7 @@ namespace RoleplayServer.resources.AdminSystem
             API.sendChatMessageToPlayer(player, "=======REPORTS=======");
             foreach (var i in AdminReports.Reports.ToList())
             {
-                if(i.Type == 1)
+                if (i.Type == 1)
                 {
                     return;
                 }
@@ -520,7 +521,7 @@ namespace RoleplayServer.resources.AdminSystem
                 return;
             }
 
-            if(receivercharacter.HasActiveReport == false)
+            if (receivercharacter.HasActiveReport == false)
             {
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~ This player has no active reports.");
                 return;
@@ -596,7 +597,7 @@ namespace RoleplayServer.resources.AdminSystem
             if (account.AdminLevel < 1)
                 return;
 
-            if(character.IsOnAsk == false)
+            if (character.IsOnAsk == false)
             {
                 API.sendChatMessageToPlayer(player, "You are not helping anyone.");
                 return;
@@ -613,7 +614,7 @@ namespace RoleplayServer.resources.AdminSystem
         {
             Character character = API.getEntityData(player, "Character");
 
-            if(character.ReportMuted == true)
+            if (character.ReportMuted == true)
             {
                 API.sendChatMessageToPlayer(player, "You are muted from creating reports/ask requests.");
                 return;
@@ -771,20 +772,67 @@ namespace RoleplayServer.resources.AdminSystem
         }
 
         //PLAYER-ADMIN STUFF
-        [Command("playerwarns", GreedyArg = false)]
-        public static void playerwarns_cmd(Client player, string id)
+
+        //remotewarn
+        //remoteplayerwarns
+        //remoteban
+
+
+        [Command("kick", GreedyArg = true)]
+        public static void kick_cmd(Client player, string id, string reason)
         {
             var receiver = PlayerManager.ParseClient(id);
 
             Account account = API.shared.getEntityData(player.handle, "Account");
 
-            if (receiver == null)
-            {
-                API.shared.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
-                return;
-            }
+            kickPlayer(receiver, reason);
+        }
 
-            else if(account.AdminLevel < 2 && id != null)
+        [Command("ban", GreedyArg = true)]
+        public static void ban_cmd(Client player, string id, string reason)
+        {
+            var receiver = PlayerManager.ParseClient(id);
+
+            Account account = API.shared.getEntityData(player.handle, "Account");
+
+            banPlayer(receiver, reason);
+
+
+        }
+
+        [Command("warn", GreedyArg = false)]
+        public static void warn_cmd(Client player, string id, string reason)
+        {
+            var receiver = PlayerManager.ParseClient(id);
+
+            Account account = API.shared.getEntityData(player.handle, "Account");
+            Account receiverAccount = API.shared.getEntityData(receiver.handle, "Account");
+            Character character = API.shared.getEntityData(player.handle, "Character");
+            Character receiverCharacter = API.shared.getEntityData(receiver.handle, "Character");
+
+            var playerWarn = new PlayerWarns(receiverAccount.AccountName, account.AccountName, reason);
+            playerWarn.Insert();
+            receiverAccount.PlayerWarns.Add(playerWarn);
+            API.shared.sendChatMessageToPlayer(player, "You warned ~r~" + receiverCharacter.CharacterName + "~w~ for ~r~'" + reason + "~w~'.");
+            API.shared.sendChatMessageToPlayer(receiver, "You were warned by ~r~" + character.CharacterName + "~w~ for ~r~'" + reason + "~w~'.");
+            if (receiverAccount.PlayerWarns.Count() >= 3)
+            {
+                addTempBanLevel(receiver);
+                receiverAccount.PlayerWarns.Clear();
+            }
+            character.AdminActions++;
+            account.Save();
+            receiverAccount.Save();
+        }
+
+        [Command("playerwarns", GreedyArg = false)]
+        public static void playerwarns_cmd(Client player, string id = null)
+        {
+            var receiver = PlayerManager.ParseClient(id);
+
+            Account account = API.shared.getEntityData(player.handle, "Account");
+
+            if (account.AdminLevel < 2 && id != null)
             {
                 return;
             }
@@ -801,14 +849,63 @@ namespace RoleplayServer.resources.AdminSystem
                 return;
             }
         }
+    
 
-        public void showWarns(Client player, Client receiver = null)
+        public static void showWarns(Client player, Client receiver = null)
         {
-            Account receiverAccount = API.shared.getEntityData(receiver.handle, "Account");
-            Character account = API.shared.getEntityData(player.handle, "Account");
 
-            //LOOP THROUGH ALL PLAYERS WARNS AND OUTPUT THEM
-            API.sendChatMessageToPlayer(player, "Tempban level: " + receiverAccount.TempbanLevel);
+            Account account = API.shared.getEntityData(player.handle, "Account");
+            if (receiver != null)
+            {
+                account = API.shared.getEntityData(receiver.handle, "Account");
+            }
+
+
+            int j = 1;
+            foreach (var warn in account.PlayerWarns)
+            {
+                API.shared.sendChatMessageToPlayer(player, "Warning #" + j + " | ~r~Reason:~w~ " + warn.WarnReason + " | ~r~Given by:~w~ " + warn.WarnSender);
+                    j++;
+            }
+            if(account.PlayerWarns.Count == 0)
+            {
+                API.shared.sendChatMessageToPlayer(player, "No warnings to show.");
+            }
+            API.shared.sendChatMessageToPlayer(player, "~r~Tempban level:~w~ " + account.TempbanLevel);
+        }
+
+        public static void addTempBanLevel(Client player)
+        {
+            Character character = API.shared.getEntityData(player.handle, "Character");
+            Account account = API.shared.getEntityData(player.handle, "Account");
+
+            account.TempbanLevel += 1;
+            if (account.TempbanLevel >= 3)
+            {
+                banPlayer(player, "You reached the maximum tempban level (3)");
+            }
+        }
+
+        public static void kickPlayer(Client player, string reason)
+        {
+            API.shared.kickPlayer(player);
+            API.shared.sendChatMessageToPlayer(player, "You were kicked from the server for ~r~'" + reason + "~w~'.");
+        }
+
+        public static void banPlayer(Client player, string reason)
+        {
+            Account account = API.shared.getEntityData(player.handle, "Account");
+
+            account.IsBanned = true;
+            API.shared.kickPlayer(player);
+            API.shared.sendChatMessageToPlayer(player, "You were banned from the server for ~r~'" + reason + "~w~'.");
+        }
+
+        public static void unbanPlayer(Client player)
+        {
+            Account account = API.shared.getEntityData(player.handle, "Account");
+
+            account.IsBanned = false;
         }
 
         //TODO: REMOVE THIS: 
@@ -829,15 +926,15 @@ namespace RoleplayServer.resources.AdminSystem
             senderchar.ReportTimer.Start();
         }
 
-        public void sendtoAllAdmins(string text)
+        public static void sendtoAllAdmins(string text)
         {
-            foreach (var c in API.getAllPlayers())
+            foreach (var c in API.shared.getAllPlayers())
             {
-                Account receiverAccount = API.getEntityData(c.handle, "Account");
+                Account receiverAccount = API.shared.getEntityData(c.handle, "Account");
 
                 if (receiverAccount.AdminLevel > 0)
                 {
-                    API.sendChatMessageToPlayer(c, Color.AdminChat, text);
+                    API.shared.sendChatMessageToPlayer(c, Color.AdminChat, text);
                 }
             }
         }

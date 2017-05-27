@@ -3,11 +3,14 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using RoleplayServer.resources.database_manager;
+using RoleplayServer.resources.AdminSystem;
+using System.Collections.Generic;
 
 namespace RoleplayServer.resources.player_manager
 {
     public class Account
     {
+        public List<PlayerWarns> PlayerWarns = new List<PlayerWarns>();
         public ObjectId Id { get; set; }
 
         public string AccountName { get; set; }
@@ -24,6 +27,7 @@ namespace RoleplayServer.resources.player_manager
         public string LastIp { get; set; }
 
         public int TempbanLevel { get; set; }
+        public bool IsBanned { get; set; }
 
         [BsonIgnore]
         public bool IsLoggedIn { get; set; }
@@ -58,6 +62,7 @@ namespace RoleplayServer.resources.player_manager
                 LastIp = a.LastIp;
 
                 TempbanLevel = a.TempbanLevel;
+                IsBanned = a.IsBanned;
                 break;
             }
         }

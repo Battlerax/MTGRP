@@ -7,18 +7,16 @@ namespace RoleplayServer.resources.AdminSystem
 {
     public class PlayerWarns
     {
-        public static List<PlayerWarns> Warns = new List<PlayerWarns>();
-
         public ObjectId Id { get; set; }
 
-        public string AccountId { get; set; }
+        public string WarnReceiver { get; set; }
         public string WarnSender { get; set; }
         public string WarnReason { get; set; }
         public DateTime DateTime { get; set; }
 
-        public PlayerWarns(string accountId, string warnSenderId, string reason)
+        public PlayerWarns(string warnReceiverId, string warnSenderId, string reason)
         {
-            AccountId = accountId;
+            WarnReceiver = warnReceiverId;
             WarnSender = warnSenderId;
             WarnReason = reason;
             DateTime = DateTime.Now;

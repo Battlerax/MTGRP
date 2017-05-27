@@ -181,6 +181,14 @@ namespace RoleplayServer.resources.player_manager.login
 
             if (hashedPass == account.Password)
             {
+                if(account.IsBanned == true)
+                {
+                    API.sendChatMessageToPlayer(player, "You are banned from this server.");
+                    API.kickPlayer(player);
+                    AdminSystem.AdminCommands.sendtoAllAdmins(account.AccountName + "attempted to log in to a banned account.");
+                    return;
+                }
+
                 API.sendChatMessageToPlayer(player, "~g~ You have successfully logged in!");
 
                 account.IsLoggedIn = true;
