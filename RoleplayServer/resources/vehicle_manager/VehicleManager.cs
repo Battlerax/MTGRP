@@ -178,6 +178,10 @@ namespace RoleplayServer.resources.vehicle_manager
 
             //Delete.
             Vehicles.RemoveAll(x => x.OwnerId == character.Id);
+            if (character.isJailed)
+            {
+                character.jailTimer.Stop();
+            }
         }
 
         private void OnPlayerEnterVehicle(Client player, NetHandle vehicleHandle)

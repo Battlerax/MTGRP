@@ -174,6 +174,9 @@ namespace RoleplayServer.resources.player_manager
         public Timer BeaconResetTimer { get; set; }
         public Client BeaconCreator{ get; set; }
 
+        public int jailTime { get; set; }
+        public Timer jailTimeLeftTimer { get; set; }
+        public int jailTimeLeft { get; set; }
         public Timer jailTimer { get; set; }
         public bool isJailed { get; set; }
         public int sentTicketAmount { get; set; }

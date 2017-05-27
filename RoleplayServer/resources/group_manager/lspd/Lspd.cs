@@ -5,6 +5,7 @@ using System.Linq;
 using System.Timers;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.player_manager;
+using System;
 
 namespace RoleplayServer.resources.group_manager.lspd
 {
@@ -289,7 +290,7 @@ namespace RoleplayServer.resources.group_manager.lspd
             Character receiverCharacter = API.getEntityData(receiver.handle, "Character");
 
 
-            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
+            /*if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
                 API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
                 return;
@@ -323,7 +324,7 @@ namespace RoleplayServer.resources.group_manager.lspd
                 API.sendChatMessageToPlayer(player, Color.White, "You are not at the arrest location.");
                 return;
             }
-
+            */
             foreach (var i in receiverCharacter.GetCriminalRecord())
             {
                 i.ActiveCrime = false;
@@ -331,6 +332,7 @@ namespace RoleplayServer.resources.group_manager.lspd
 
             API.sendNotificationToPlayer(player, "You have arrested ~b~" + receiver.name + "~w~.");
             API.sendNotificationToPlayer(receiver, "You have been arrested by ~b~" + player.name + "~w~.");
+            character.jailTimeLeft = int.Parse(time) * 1000;
             jailControl(receiver, int.Parse(time));
 
         }
@@ -705,14 +707,14 @@ namespace RoleplayServer.resources.group_manager.lspd
             character.BeaconResetTimer.Stop();
         }
 
-        public void jailControl(Client player, int seconds)
+        public static void jailControl(Client player, int seconds)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = API.shared.getEntityData(player.handle, "Character");
 
-            int jailOnePlayers = API.getPlayersInRadiusOfPosition(3.7f, jailOne).Count;
-            int jailTwoPlayers = API.getPlayersInRadiusOfPosition(3.7f, jailTwo).Count;
-            int jailThreePlayers = API.getPlayersInRadiusOfPosition(3.7f, jailThree).Count;
-            int smallest = API.getAllPlayers().Count;
+            int jailOnePlayers = API.shared.getPlayersInRadiusOfPosition(3.7f, jailOne).Count;
+            int jailTwoPlayers = API.shared.getPlayersInRadiusOfPosition(3.7f, jailTwo).Count;
+            int jailThreePlayers = API.shared.getPlayersInRadiusOfPosition(3.7f, jailThree).Count;
+            int smallest = API.shared.getAllPlayers().Count;
             int chosenCell = 0;
             List<int> list = new List<int>(new int[] { jailOnePlayers, jailTwoPlayers, jailThreePlayers });
 
@@ -728,33 +730,47 @@ namespace RoleplayServer.resources.group_manager.lspd
             }
 
             if (chosenCell == 0)
-                API.setEntityPosition(player, jailOne);
+                API.shared.setEntityPosition(player, jailOne);
             else if (chosenCell == 1)
-                API.setEntityPosition(player, jailTwo);
+                API.shared.setEntityPosition(player, jailTwo);
             else
-                API.setEntityPosition(player, jailThree);
+                API.shared.setEntityPosition(player, jailThree);
 
-            API.removeAllPlayerWeapons(player);
+            API.shared.removeAllPlayerWeapons(player);
             character.isJailed = true;
-            API.sendChatMessageToPlayer(player, "You have been jailed for " + seconds / 60 + " minutes.");
 
+            character.jailTime = seconds * 1000;
+            API.shared.sendChatMessageToPlayer(player, "You have been jailed for " + character.jailTimeLeft + " seconds.");
 
-            character.jailTimer = new Timer { Interval = seconds * 1000 };
+            character.jailTimeLeftTimer = new Timer { Interval = 1000 };
+            character.jailTimeLeftTimer.Elapsed += delegate { updateTimer(player); };
+            character.jailTimeLeftTimer.Start();
+            character.jailTimer = new Timer { Interval = character.jailTimeLeft * 1000 };
             character.jailTimer.Elapsed += delegate { setFree(player); };
             character.jailTimer.Start();
         }
 
-        public void setFree(Client player)
+        public static void updateTimer(Client player)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = API.shared.getEntityData(player.handle, "Character");
+            character.jailTimeLeft -= 1000;
+            character.jailTimeLeft = character.jailTime - character.jailTimeLeft;
+            API.shared.sendNotificationToPlayer(player, "You have ~b~" + character.jailTimeLeft/60 + " ~w~ seconds left in prison.");
+        }
+
+        public static void setFree(Client player)
+        {
+            Character character = API.shared.getEntityData(player.handle, "Character");
             if (character.isJailed == false)
             {
                 return;
             }
-            API.sendChatMessageToPlayer(player, "~b~You are free to go.");
+            character.jailTimeLeft = 0;
+            API.shared.sendChatMessageToPlayer(player, "~b~You are free to go.");
             character.isJailed = false;
-            API.setEntityPosition(player, freeJail);
+            API.shared.setEntityPosition(player, freeJail);
             character.jailTimer.Stop();
+            character.jailTimeLeftTimer.Stop();
 
         }
 
