@@ -59,7 +59,6 @@ function incoming_call(name, number)
 	$("#calling_end-call").css("display", "none");
 	$("#calling_answer").css("display", "inline");
 	$("#calling_ignore").css("display", "inline");
-	$("#calling_text-reply").css("display", "inline");
 }
 
 function calling(name, number) {
@@ -72,7 +71,6 @@ function calling(name, number) {
     $("#calling_end-call").css("display", "inline");
     $("#calling_answer").css("display", "none");
     $("#calling_ignore").css("display", "none");
-    $("#calling_text-reply").css("display", "none");
 }
 
 function callClosed() {
