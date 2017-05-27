@@ -215,11 +215,7 @@ namespace RoleplayServer.resources.group_manager.lspd
                 return;
             }
 
-            if (character.GroupRank < 7)
-            {
-                API.sendChatMessageToPlayer(player, "You do not have permission to use this command.");
-                return;
-            }
+            GroupManager.GroupCommandPermCheck(character, 7);
 
             if (Crime.CrimeExists(crimeName))
             {
@@ -241,11 +237,8 @@ namespace RoleplayServer.resources.group_manager.lspd
                 return;
             }
 
-            if (character.GroupRank < 7)
-            {
-                API.sendChatMessageToPlayer(player, "You do not have permission to use this command.");
-                return;
-            }
+            GroupManager.GroupCommandPermCheck(character, 7);
+
             Crime crimeDelete = Crime.Crimes[id];
             Crime.Crimes.Remove(crimeDelete);
             API.sendChatMessageToPlayer(player, "Crime deleted from crime list.");
@@ -352,6 +345,8 @@ namespace RoleplayServer.resources.group_manager.lspd
                 return;
             }
 
+            GroupManager.GroupCommandPermCheck(character, 3);
+
             if (receiverCharacter.isJailed == false)
             {
                 API.sendChatMessageToPlayer(player, "This player is not jailed.");
@@ -369,7 +364,7 @@ namespace RoleplayServer.resources.group_manager.lspd
             setFree(receiver);
 
         }
-        /* * * * * * TO TEST * * * * * */
+
         [Command("frisk", GreedyArg = true)]
         public void frisk_cmd(Client player, string id)
         {
@@ -378,6 +373,7 @@ namespace RoleplayServer.resources.group_manager.lspd
             Character character = API.getEntityData(player.handle, "Character");
             Character receivercharacter = API.getEntityData(receiver, "Character");
             
+         
             if (receiver == null)
             {
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
@@ -394,9 +390,10 @@ namespace RoleplayServer.resources.group_manager.lspd
                 API.sendNotificationToPlayer(player, "~r~You're too far away!");
                 return;
             }
-
+            
             if (receivercharacter.AreHandsUp == true || receivercharacter.IsCuffed == true)
             {
+            
                 API.sendChatMessageToPlayer(player, "-------------PLAYER INVENTORY-------------");
                 foreach (var item in receivercharacter.Inventory)
                 {
@@ -539,6 +536,31 @@ namespace RoleplayServer.resources.group_manager.lspd
 
         }
 
+        [Command("unpaidtickets", GreedyArg = false)]
+        public void unpaidtickets_cmd(Client player, string id = null)
+        {
+            var target = PlayerManager.ParseClient(id);
+
+
+            Character character = API.getEntityData(player.handle, "Character");
+
+
+            if (target == null)
+            {
+                API.sendChatMessageToPlayer(player, "You have ~b~ " + character.unpaidTickets + "~w~ unpaid tickets.");
+                return;
+            }
+
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                return;
+            }
+
+            Character receiverCharacter = API.getEntityData(target, "Character");
+            API.sendChatMessageToPlayer(player, receiverCharacter.CharacterName + " has ~b~ " + receiverCharacter.unpaidTickets + "~w~ unpaid tickets.");
+        }
+
         [Command("acceptcopticket", GreedyArg = true)]
         public void ticketaccept_cmd(Client player)
         {
@@ -586,6 +608,7 @@ namespace RoleplayServer.resources.group_manager.lspd
 
             API.sendNotificationToPlayer(player, "~r~Congratulations! Your tickets have been paid off.");
             character.Money -= character.ticketBalance;
+            character.Save();
             character.unpaidTickets = 0;
         }
 
@@ -599,6 +622,8 @@ namespace RoleplayServer.resources.group_manager.lspd
                 API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
                 return;
             }
+
+            GroupManager.GroupCommandPermCheck(character, 4);
 
             if (int.Parse(objectid) > 5)
             {

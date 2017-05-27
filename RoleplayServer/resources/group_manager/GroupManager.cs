@@ -694,14 +694,14 @@ namespace RoleplayServer.resources.group_manager
             return c.DivisionRank == 0 ? "None" : c.Group.DivisionRanks[c.Division - 1][c.DivisionRank - 1];
         }
 
-        public bool GroupCommandPermCheck(Character c, int rank, bool isDivisionCmd = false, int divisionRank = 1)
+        public static bool GroupCommandPermCheck(Character c, int rank, bool isDivisionCmd = false, int divisionRank = 1)
         {
             if(isDivisionCmd == false)
                 if (c.Group != Group.None) return c.GroupRank >= rank;
 
             if (c.Group != Group.None) return c.DivisionRank >= divisionRank || c.GroupRank >= rank;
 
-            API.sendChatMessageToPlayer(c.Client, "You do not have permission to perform this command.");
+            API.shared.sendChatMessageToPlayer(c.Client, "You do not have permission to perform this command.");
             return false;
         }
 
