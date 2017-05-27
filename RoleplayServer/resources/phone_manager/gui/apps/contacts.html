@@ -21,6 +21,8 @@
     </style>
 
     <script>
+        var selNumber;
+
         $(document).ready(function () {
             resourceCall("callServerEvent", "phone_getallContacts");
         });
@@ -55,7 +57,7 @@
                 </div>
                 <div class="place-right">
                     <button class ="button success" onclick='resourceCall("callServerEvent", "phone_callphone", "${value[1]}");'><span class="mif-phone"></span></button>
-                    <button class="button primary"><span class="mif-bubbles"></span></button>
+                    <button class ="button primary" onclick='selNumber = "${value[1]}"; metroDialog.open("#sendMessageDialog");'><span class ="mif-bubbles"></span></button>
                 </div>
                 <div style="clear: both;"></div>
             </div>
@@ -114,6 +116,14 @@
     </div>
     <button class="button success right-side" onclick='resourceCall("callServerEvent", "phone_editContact", $("#oldName").text(), $("#editNameInput").val(), $("#editPhoneInput").val());'>Save</button>
 </div>
+    
+    <div data-role="dialog" id="sendMessageDialog" class="padding20 dialog" data-close-button="true" data-overlay="true" data-overlay-color="op-dark" style="width: auto; height: auto;">
+        <h3>Compose Message</h3>
+        <div class="input-control number">
+            <input type="text" placeholder="Message" id="messageInput">
+        </div>
+        <button class="button success right-side" onclick='resourceCall("callServerEvent", "phone_sendMessage", selNumber, $("#messageInput").val()); metroDialog.close("#sendMessageDialog");'>Send</button>
+    </div>
 
 <div id="contactsListDiv">
     <div class="listview-outlook" data-role="listview" id="contactsList">
