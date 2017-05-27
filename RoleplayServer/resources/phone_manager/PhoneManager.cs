@@ -435,8 +435,9 @@ namespace RoleplayServer.resources.phone_manager
                 IsOn = true
             };
 
-            API.sendChatMessageToPlayer(player, InventoryManager.GiveInventoryItem(rec, phone).ToString());
-            Phone.InsertNumber(phone.Id, number);
+            var status = InventoryManager.GiveInventoryItem(rec, phone);
+            API.sendChatMessageToPlayer(player, status.ToString());
+            if(status == InventoryManager.GiveItemErrors.Success) Phone.InsertNumber(phone.Id, number);
 
             API.sendChatMessageToPlayer(player, "You have given " + rec.CharacterName + " a phone. Number is " + number + ".");
         }
