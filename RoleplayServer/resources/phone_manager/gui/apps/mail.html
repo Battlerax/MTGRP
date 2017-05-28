@@ -106,6 +106,10 @@
                 var dateTime = getCurrentDateTime();
                 $("#messages").append(`<div class="popover marker-on-right"><small>${dateTime}</small><p>${msg}</p></div>`);
                 $("#message").val("");
+
+                //Scoll..
+                var d = $('#messages');
+                d.scrollTop(d.prop("scrollHeight"));
             });
         });
 
