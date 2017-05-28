@@ -4,11 +4,6 @@
 	<!-- Door Manager -->
 	<include resource="doormanager" />
 	
-	<assembly ref="MongoDB.Bson.dll"/>
-	<assembly ref="MongoDB.Driver.dll"/>
-	<assembly ref="MongoDB.Driver.Core.dll"/>
-	<assembly ref="System.Runtime.InteropServices.RuntimeInformation.dll"/>
-	
 	<!-- MAIN script with all *.cs files. -->
 	<script src="../bin/Debug/RoleplayServer.dll" type="server" lang="compiled"/>
 	
