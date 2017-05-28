@@ -235,7 +235,7 @@ namespace RoleplayServer.resources.core
 
                     if (receiverAccount.AdminLevel > 0)
                     {
-                        API.sendChatMessageToPlayer(c, Color.AdminChat, "[A] " + text);
+                        API.sendChatMessageToPlayer(c, Color.AdminChat, "[A] " + account.AdminName + text);
                     }
                 }
             }

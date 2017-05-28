@@ -1,7 +1,6 @@
 ﻿using System;
 using MongoDB.Bson;
-using RoleplayServer.resources.database_manager;
-using System.Collections.Generic;
+
 
 namespace RoleplayServer.resources.AdminSystem
 {
@@ -24,7 +23,7 @@ namespace RoleplayServer.resources.AdminSystem
 
         public void Insert()
         {
-            DatabaseManager.PlayerWarnTable.InsertOne(this);
+            //DatabaseManager.PlayerWarnTable.InsertOne(this);
         }
     }
 }

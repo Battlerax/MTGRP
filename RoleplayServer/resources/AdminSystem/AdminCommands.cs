@@ -1,11 +1,16 @@
 ﻿using System.Linq;
+using System;
+using System.Collections.Generic;
 using GTANetworkServer;
 using GTANetworkShared;
 using System.Timers;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.player_manager;
 using RoleplayServer.resources.vehicle_manager;
+using RoleplayServer.resources.group_manager.lspd;
+using RoleplayServer.resources.database_manager;
 using RoleplayServer.resources.AdminSystem;
+using MongoDB.Driver;
 
 namespace RoleplayServer.resources.AdminSystem
 {
@@ -773,12 +778,16 @@ namespace RoleplayServer.resources.AdminSystem
 
         //PLAYER-ADMIN STUFF
 
-        //remotewarn
-        //remoteplayerwarns
-        //remoteban
 
+        //prison
 
-        [Command("kick", GreedyArg = true)]
+        [Command("prison", GreedyArg = true)]
+        public static void prison_cmd(Client player, string id, string time)
+        {
+            //add prison feature once lspd is pulled
+        }
+        
+        [Command("kickplayer", GreedyArg = true)]
         public static void kick_cmd(Client player, string id, string reason)
         {
             var receiver = PlayerManager.ParseClient(id);
@@ -788,20 +797,165 @@ namespace RoleplayServer.resources.AdminSystem
             kickPlayer(receiver, reason);
         }
 
-        [Command("ban", GreedyArg = true)]
+        [Command("remotewarn", GreedyArg = true)]
+        public static void remotewarn_cmd(Client player, string accountname, string reason)
+        {
+            Account account = API.shared.getEntityData(player.handle, "Account");
+            Character character = API.shared.getEntityData(player.handle, "Character");
+
+            var filter = Builders<Account>.Filter.Eq("AccountName", accountname);
+            var foundAccount = DatabaseManager.AccountTable.Find(filter).ToList();
+
+            foreach (var c in foundAccount)
+            {
+                if (c.AccountName == accountname)
+                {
+                    if (c.IsLoggedIn)
+                    {
+                        API.shared.sendChatMessageToPlayer(player, "This player is logged in. Use /warn.");
+                    }
+                    var playerWarn = new PlayerWarns(c.AccountName, account.AccountName, reason);
+                    c.PlayerWarns.Add(playerWarn);
+                    character.AdminActions++;
+
+                    if (c.PlayerWarns.Count() >= 3)
+                    {
+                        c.TempbanLevel++;
+                        if (c.TempbanLevel >= 3)
+                        {
+                            c.IsBanned = true;
+                            c.BanReason = "Reached a tempban level of 3";
+                        }
+                        else
+                        {
+                            //tempbantheplayer
+                            if (c.TempbanLevel == 1)
+                            {
+                                API.shared.sendChatMessageToPlayer(player, "Player has been tempbanned.");
+                                c.TempBanExpiration = DateTime.Now.AddDays(3);
+                                c.IsTempbanned = true;
+
+                            }
+                            if (c.TempbanLevel == 2)
+                            {
+                                API.shared.sendChatMessageToPlayer(player, "Player has been tempbanned.");
+                                c.TempBanExpiration = DateTime.Now.AddDays(7);
+                                c.IsTempbanned = true;
+
+                            }
+                        }
+                        c.PlayerWarns.Clear();
+                    }
+                    c.Save();
+                }
+                API.shared.sendChatMessageToPlayer(player, "You remotewarned " + c.AccountName + " for '~r~" + reason + "~w~'.");
+                break;
+            }
+        }
+
+        [Command("remoteban", GreedyArg = true)]
+        public static void remoteban_cmd(Client player, string accountname, string reason)
+        {
+            var filter = Builders<Account>.Filter.Eq("AccountName", accountname);
+            var foundAccount = DatabaseManager.AccountTable.Find(filter).ToList();
+
+            foreach (var c in foundAccount)
+            {
+                if (c.AccountName == accountname)
+                {
+                    c.IsBanned = true;
+                    c.BanReason = reason;
+                    c.Save();
+                }
+                API.shared.sendChatMessageToPlayer(player, "You have remote-banned " + c.AccountName+ " from the server.");
+                break;
+            }
+        }
+
+        [Command("unban", GreedyArg = true)]
+        public static void unban_cmd(Client player, string accountname)
+        {
+            var filter = Builders<Account>.Filter.Eq("AccountName", accountname);
+            var foundAccount = DatabaseManager.AccountTable.Find(filter).ToList();
+
+            foreach (var c in foundAccount)
+            {
+                if (c.AccountName == accountname)
+                {
+                    c.IsBanned = false;
+                    c.BanReason = "";
+                    c.Save();
+                }
+                API.shared.sendChatMessageToPlayer(player, "You have unbanned " + c.AccountName + " from the server.");
+                break;
+            }
+        }
+
+        [Command("untempban", GreedyArg = true)]
+        public static void untempban_cmd(Client player, string accountname)
+        {
+            var filter = Builders<Account>.Filter.Eq("AccountName", accountname);
+            var foundAccount = DatabaseManager.AccountTable.Find(filter).ToList();
+
+            foreach (var c in foundAccount)
+            {
+                if (c.AccountName == accountname)
+                {
+                    c.IsTempbanned = false;
+                    c.TempbanLevel -= 1;
+                    c.Save();
+                }
+                API.shared.sendChatMessageToPlayer(player, "You have un-tempbanned " + c.AccountName + " from the server.");
+                break;
+            }
+        }
+
+        [Command("banplayer", GreedyArg = true)]
         public static void ban_cmd(Client player, string id, string reason)
         {
             var receiver = PlayerManager.ParseClient(id);
-
-            Account account = API.shared.getEntityData(player.handle, "Account");
 
             banPlayer(receiver, reason);
 
 
         }
 
+
         [Command("warn", GreedyArg = false)]
         public static void warn_cmd(Client player, string id, string reason)
+        {
+            var receiver = PlayerManager.ParseClient(id);
+
+            if(receiver == null)
+            {
+                API.shared.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid target.");
+                return;
+            }
+            Account account = API.shared.getEntityData(player.handle, "Account");
+            Account receiverAccount = API.shared.getEntityData(receiver, "Account");
+            Character character = API.shared.getEntityData(player.handle, "Character");
+            Character receiverCharacter = API.shared.getEntityData(receiver, "Character");
+
+            var playerWarn = new PlayerWarns(receiverAccount.AccountName, account.AccountName, reason);
+            receiverAccount.PlayerWarns.Add(playerWarn);
+            character.AdminActions++;
+
+            API.shared.sendChatMessageToPlayer(player, "You warned ~r~" + receiverCharacter.CharacterName + "~w~ for '~r~" + reason + "~w~'.");
+            API.shared.sendChatMessageToPlayer(receiver, "You were warned by ~r~" + character.CharacterName + "~w~ for '~r~" + reason + "~w~'.");
+
+
+            if (receiverAccount.PlayerWarns.Count() >= 3)
+            {
+                API.shared.sendNotificationToPlayer(player, "You were temporarily banned for reaching 3 player warns.");
+                addTempBanLevel(receiver);
+                tempBanPlayer(receiver);
+                receiverAccount.PlayerWarns.Clear();
+                API.shared.kickPlayer(receiver);
+            }
+        }
+
+        [Command("removewarns", GreedyArg = false)]
+        public static void removewarns_cmd(Client player, string id, string reason)
         {
             var receiver = PlayerManager.ParseClient(id);
 
@@ -810,20 +964,43 @@ namespace RoleplayServer.resources.AdminSystem
             Character character = API.shared.getEntityData(player.handle, "Character");
             Character receiverCharacter = API.shared.getEntityData(receiver.handle, "Character");
 
-            var playerWarn = new PlayerWarns(receiverAccount.AccountName, account.AccountName, reason);
-            playerWarn.Insert();
-            receiverAccount.PlayerWarns.Add(playerWarn);
-            API.shared.sendChatMessageToPlayer(player, "You warned ~r~" + receiverCharacter.CharacterName + "~w~ for ~r~'" + reason + "~w~'.");
-            API.shared.sendChatMessageToPlayer(receiver, "You were warned by ~r~" + character.CharacterName + "~w~ for ~r~'" + reason + "~w~'.");
-            if (receiverAccount.PlayerWarns.Count() >= 3)
+            foreach (var w in receiverAccount.PlayerWarns)
             {
-                addTempBanLevel(receiver);
-                receiverAccount.PlayerWarns.Clear();
+                receiverAccount.PlayerWarns.Remove(w);
             }
-            character.AdminActions++;
-            account.Save();
-            receiverAccount.Save();
+
+            API.shared.sendChatMessageToPlayer(player, "You removed all warns from ~r~" + receiverCharacter.CharacterName + "~w~.");
+            API.shared.sendChatMessageToPlayer(receiver, "Your warns were removed by ~r~" + character.CharacterName + "~w~.");
+
         }
+
+        [Command("remoteplayerwarns")]
+        public static void remoteplayerwarns_cmd(Client player, string accountname)
+        {
+            var filter = Builders<Account>.Filter.Eq("AccountName", accountname);
+            var foundAccount = DatabaseManager.AccountTable.Find(filter).ToList();
+
+            foreach (var c in foundAccount)
+            {
+                if (c.AccountName == accountname)
+                {
+                    int j = 1;
+                    foreach (var warn in c.PlayerWarns)
+                    {
+                        API.shared.sendChatMessageToPlayer(player, "Warning #" + j + " | ~r~Reason:~w~ " + warn.WarnReason + " | ~r~Given by:~w~ " + warn.WarnSender);
+                        j++;
+                    }
+                    if (c.PlayerWarns.Count == 0)
+                    {
+                        API.shared.sendChatMessageToPlayer(player, "No warnings to show.");
+                    }
+                    API.shared.sendChatMessageToPlayer(player, "~r~Tempban level:~w~ " + c.TempbanLevel);
+
+                }
+                break;
+            }
+        }
+
 
         [Command("playerwarns", GreedyArg = false)]
         public static void playerwarns_cmd(Client player, string id = null)
@@ -886,9 +1063,31 @@ namespace RoleplayServer.resources.AdminSystem
             }
         }
 
+        public static void tempBanPlayer(Client player)
+        {
+            Character character = API.shared.getEntityData(player.handle, "Character");
+            Account account = API.shared.getEntityData(player.handle, "Account");
+
+            if(account.TempbanLevel == 1)
+            {
+                API.shared.sendChatMessageToPlayer(player, "3 player warns reached. You have been temporarily banned for 3 days");
+                account.TempBanExpiration = DateTime.Now.AddDays(3);
+                account.IsTempbanned = true;
+                return;
+            }
+            if(account.TempbanLevel == 2)
+            {
+                API.shared.sendChatMessageToPlayer(player, "3 player warns reached. You have been temporarily banned for 7 days");
+                account.TempBanExpiration = DateTime.Now.AddDays(7);
+                account.IsTempbanned = true;
+                return;
+            }
+        }
+
         public static void kickPlayer(Client player, string reason)
         {
             API.shared.kickPlayer(player);
+            API.shared.sendNotificationToPlayer(player, "You were kicked from the server for ~r~'" + reason + "~w~'.");
             API.shared.sendChatMessageToPlayer(player, "You were kicked from the server for ~r~'" + reason + "~w~'.");
         }
 
@@ -896,9 +1095,11 @@ namespace RoleplayServer.resources.AdminSystem
         {
             Account account = API.shared.getEntityData(player.handle, "Account");
 
+            account.BanReason = reason;
             account.IsBanned = true;
-            API.shared.kickPlayer(player);
+            API.shared.sendNotificationToPlayer(player, "You were banned from the server for ~r~'" + reason + "~w~'.");
             API.shared.sendChatMessageToPlayer(player, "You were banned from the server for ~r~'" + reason + "~w~'.");
+            API.shared.kickPlayer(player);
         }
 
         public static void unbanPlayer(Client player)

@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System;
+using System.Security.Cryptography;
 using GTANetworkServer;
 using MongoDB.Driver;
 using RoleplayServer.resources.core;
@@ -61,6 +62,24 @@ namespace RoleplayServer.resources.player_manager.login
 
                         if (hashedPass == account.Password)
                         {
+
+                            if (account.IsTempbanned == true && account.TempBanExpiration > DateTime.Now)
+                            {
+                                API.sendChatMessageToPlayer(player, "~r~You are temp-banned from this server. You will be unbanned in " + (account.TempBanExpiration - DateTime.Now).TotalDays + " days.");
+                                API.sendNotificationToPlayer(player, "~r~You are temp-banned from this server. You will be unbanned in " + (account.TempBanExpiration - DateTime.Now).TotalDays + " days.");
+                                API.kickPlayer(player);
+                                AdminSystem.AdminCommands.sendtoAllAdmins(account.AccountName + "attempted to log in to a temp-banned account.");
+                                return;
+                            }
+                            if (account.IsBanned == true)
+                            {
+                                API.sendChatMessageToPlayer(player, "~r~You are banned from this server. Visit MT-Gaming.com to submit an unban appeal. ");
+                                API.sendNotificationToPlayer(player, "~r~You are banned from this server. Visit MT-Gaming.com to submit an unban appeal.");
+                                API.kickPlayer(player);
+                                AdminSystem.AdminCommands.sendtoAllAdmins(account.AccountName + "attempted to log in to a banned account.");
+                                return;
+                            }
+
                             API.sendChatMessageToPlayer(player, "~g~ You have successfully logged in!");
 
                             account.IsLoggedIn = true;
@@ -181,9 +200,20 @@ namespace RoleplayServer.resources.player_manager.login
 
             if (hashedPass == account.Password)
             {
-                if(account.IsBanned == true)
+                if (account.IsTempbanned == true && account.TempBanExpiration > DateTime.Now)
                 {
-                    API.sendChatMessageToPlayer(player, "You are banned from this server.");
+                    API.sendChatMessageToPlayer(player, "~r~You are temp-banned from this server. You will be unbanned in " + (account.TempBanExpiration - DateTime.Now).TotalDays + " days.");
+                    API.sendNotificationToPlayer(player, "~r~You are temp-banned from this server. You will be unbanned in " + (account.TempBanExpiration - DateTime.Now).TotalDays + " days.");
+                    API.kickPlayer(player);
+                    AdminSystem.AdminCommands.sendtoAllAdmins(account.AccountName + "attempted to log in to a temp-banned account.");
+                    return;
+                }
+                if (account.IsBanned == true)
+                {
+                    API.sendChatMessageToPlayer(player, "~r~You are banned from this server for the following reason: ");
+                    API.sendChatMessageToPlayer(player, account.BanReason);
+                    API.sendNotificationToPlayer(player, "~r~You are banned from this server for the following reason: ");
+                    API.sendNotificationToPlayer(player, account.BanReason);
                     API.kickPlayer(player);
                     AdminSystem.AdminCommands.sendtoAllAdmins(account.AccountName + "attempted to log in to a banned account.");
                     return;
