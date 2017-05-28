@@ -244,6 +244,7 @@ namespace RoleplayServer.resources.phone_manager
             character.BeingCalledBy.InCallWith = character;
             character.InCallWith = character.BeingCalledBy;
             character.BeingCalledBy = Character.None;
+            character.InCallWith.CallingTimer.Dispose();
 
             var targetitems = InventoryManager.DoesInventoryHaveItem(character.InCallWith, typeof(Phone));
             var targetphone = (Phone)targetitems[0];
