@@ -20,8 +20,9 @@ namespace RoleplayServer.resources.database_manager
         public static IMongoCollection<Account> AccountTable; 
         public static IMongoCollection<Character> CharacterTable;
         public static IMongoCollection<Job> JobTable;
-        public static IMongoCollection<Phone> PhoneTable;
+        public static IMongoCollection<PhoneNumber> PhoneNumbersTable;
         public static IMongoCollection<PhoneContact> ContactTable;
+        public static IMongoCollection<PhoneMessage> MessagesTable;
         public static IMongoCollection<Group> GroupTable;
 
         public static IMongoCollection<Crime> CrimeTable;
@@ -39,8 +40,9 @@ namespace RoleplayServer.resources.database_manager
             AccountTable = _database.GetCollection<Account>("accounts");
             CharacterTable = _database.GetCollection<Character>("characters");
             JobTable = _database.GetCollection<Job>("jobs");
-            PhoneTable = _database.GetCollection<Phone>("phones");
+            PhoneNumbersTable = _database.GetCollection<PhoneNumber>("phonenumbers");
             ContactTable = _database.GetCollection<PhoneContact>("phonecontacts");
+            MessagesTable = _database.GetCollection<PhoneMessage>("phonemessages");
             GroupTable = _database.GetCollection<Group>("groups");
 
             CrimeTable = _database.GetCollection<Crime>("crimes");
