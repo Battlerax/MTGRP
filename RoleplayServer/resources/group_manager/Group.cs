@@ -11,7 +11,7 @@ namespace RoleplayServer.resources.group_manager
 {
     public class Group
     {
-        public static int CommandTypeLspd = 1;
+        public static readonly int CommandTypeLspd = 1;
 
         public static readonly Group None = new Group();
 
@@ -71,9 +71,13 @@ namespace RoleplayServer.resources.group_manager
         /* * * * * * TO FIX AFTER BETA.. CURRENTLY CAUSING PROBLEMS * * * * * */
         public void register_markerzones()
         {
-                Locker = new MarkerZone(new Vector3(457.5921, -992.7383, 30.6896), new Vector3(0, 0, 180.0), 0, 2.0f);
-                return;
-            /*
+            /*Locker = new MarkerZone(new Vector3(457.5921, -992.7383, 30.6896), new Vector3(0, 0, 180.0), 0, 2.0f);
+            return;
+            */
+
+            if (Locker != MarkerZone.None)
+            {
+
                 Locker.ColZone.onEntityEnterColShape += (shape, entity) =>
                 {
                     if (API.shared.getEntityType(entity) != EntityType.Player)
@@ -82,7 +86,7 @@ namespace RoleplayServer.resources.group_manager
                     }
                     foreach (var c in PlayerManager.Players)
                     {
-                        if(c.Client != entity) { continue; }
+                        if (c.Client != entity) { continue; }
                         c.LockerZoneGroup = this;
                     }
                 };
@@ -101,7 +105,7 @@ namespace RoleplayServer.resources.group_manager
                         c.LockerZoneGroup = Group.None;
                     }
                 };
-                */
+            }
         }
 
     }
