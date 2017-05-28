@@ -110,6 +110,8 @@
     <Compile Include="resources\player_manager\PlayerManager.cs" />
     <Compile Include="resources\player_manager\player_interaction\PlayerInteraction.cs" />
     <Compile Include="resources\player_manager\player_list\PlayerList.cs" />
+    <Compile Include="resources\property_system\Property.cs" />
+    <Compile Include="resources\property_system\PropertyManager.cs" />
     <Compile Include="resources\rp_scripts\BankMenu.cs" />
     <Compile Include="resources\vehicle_dealership\VehicleDealership.cs" />
     <Compile Include="resources\vehicle_manager\Vehicle.cs" />
