@@ -44,13 +44,19 @@ API.onServerEventTrigger.connect((eventName, args) => {
             break;
 
         case "phone_calling":
-            showPhoneIfNotShown();
-            setToBeCalled("calling", args[0], args[1]);
+            if (showPhoneIfNotShown() === true) {
+                setToBeCalled("calling", args[0], args[1]);
+            } else {
+                myBrowser.call("calling", args[0], args[1]);
+            }
             break;
 
         case "phone_incoming-call":
-            showPhoneIfNotShown();
-            setToBeCalled("incoming_call", args[0], args[1]);
+            if (showPhoneIfNotShown() === true) {
+                setToBeCalled("incoming_call", args[0], args[1]);
+            } else {
+                myBrowser.call("incoming_call", args[0], args[1]);
+            }
             break;
 
         case "phone_call-closed":
