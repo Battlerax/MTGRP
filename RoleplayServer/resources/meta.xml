@@ -2,12 +2,7 @@
     <info name="Init" author="Chenko" type="gamemode" />
 
 	<!-- Door Manager -->
-	<include resource="mtg-gta-v/doormanager" />
-
-	<assembly ref="MongoDB.Bson.dll"/>
-	<assembly ref="MongoDB.Driver.dll"/>
-	<assembly ref="MongoDB.Driver.Core.dll"/>
-	<assembly ref="System.Runtime.InteropServices.RuntimeInformation.dll"/>
+	<include resource="doormanager" />
 
 	<!-- MAIN script with all *.cs files. -->
 	<script src="../bin/Debug/RoleplayServer.dll" type="server" lang="compiled"/>
