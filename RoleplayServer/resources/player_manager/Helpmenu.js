@@ -16,7 +16,8 @@ API.onServerEventTrigger.connect(function (openHelpMenu, args) {
 function showCmds(group) {  
     if (group == "showHelpCmds") {
         API.sendChatMessage('~h~Here is the list of commands availible to you:');
-        API.sendChatMessage('/Time, /Stats, /Rp, /B, /Me, /Ame, /(V)ip, /(N)ewbie, /O, /Pm');
+        API.sendChatMessage('/Time, /Stats, /rp, /b, /me, /ame, /(V)ip, /(N)ewbie, /o, /pm, /Myvehicles, /Buyvehicle');
+        API.sendChatMessage('/inv, /Give, /Drop, /Stash, /Managebag.');
     }
     else if (group == "showAnimCmds") {
         API.sendChatMessage('~h~Here is the list of Animations:');
@@ -24,7 +25,6 @@ function showCmds(group) {
         API.sendChatMessage('/Reach, /Workout, /Smoke, /Binoculars, /Hobo, /Fallover, /Laydown, /Drunk, /Twitchy, /Signal,');
         API.sendChatMessage('/Cheer, /Drugdeal, /Gardening, /Guard, /Jog, /Getjiggy, /Sit, /Mech, /Yoga, /Bonghit,');
         API.sendChatMessage('/Restrained, /MiddleFinger, /Salute, /Slowclap, /Facepalm, /Handsup, /CoverL, /CoverR');
-        API.sendChatMessage('~h~~y~VIP Animations');
         API.sendChatMessage('/Clipboard, /Hammer, /Guitar  ');
     }
     else if (group == "showPolCmds") {
@@ -33,9 +33,9 @@ function showCmds(group) {
     }
     else if (group == "showAdCmds") {
         API.sendChatMessage('~h~Here is the list of Admin Commands:');
-        API.sendChatMessage('/Agiveweapon, /Spec, /Specoff, /Setadmin, /Spawnveh, /Sethealth, /Setarmour, /Gotopos');
+        API.sendChatMessage('/Agiveweapon, /Spec, /Specoff, /Setadmin, /Spawnveh, /Sethealth, /Setarmour, /Gotopos, /setphonenumber');
         API.sendChatMessage('~r~TesterCMDs to be removed.');
-        API.sendChatMessage('~r~/testeradmin');
+        API.sendChatMessage('~r~/makemeadmin, /givemeitem, /setmymoney');
     }
     else if (group == "sRules") {
         API.sendChatMessage("To view all the rules head to ~h~MT-Gaming.com~h~ Here some basic server rules:");
@@ -66,13 +66,13 @@ function ShowFAQ(group) {
         API.sendChatMessage('~h~General IC requirements:~h~ Must be 21 years if age, Valid Drivers licence, No criminal record.');
     }
     else if (group == "FBank") {
-        API.sendChatMessage('~r~Currently no /map, ask through /n for help.');
+        API.sendChatMessage('Use the Map application on your phone, or ask through /n, or use /ask.');
     }
     else if (group == "FJob") {
         API.sendChatMessage('The icons on the map indicate the location of each job.');
     }
     else if (group == "FBusiness") {
-        API.sendChatMessage('~r~Currently no /map, ask through /n for help.');
+        API.sendChatMessage('Use the Map application on your phone, or ask through /n, or use /ask.');
     }
     else if (group == "ChangeClothes") {
         API.sendChatMessage('Head to a clothes store to purchause new clothes.');
