@@ -111,6 +111,7 @@ namespace RoleplayServer.resources.vehicle_manager
                             //Do actual process.
                             buyingFrom.Money += price;
                             character.Money -= price;
+                            veh.OwnerId = character.Id;
                             buyingFrom.OwnedVehicles.Remove(veh.Id);
                             character.OwnedVehicles.Add(veh.Id);
 

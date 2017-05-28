@@ -59,8 +59,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.0.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Xml.Linq" />
@@ -87,9 +87,12 @@
     <Compile Include="resources\group_manager\lspd\Lspd.cs" />
     <Compile Include="resources\group_manager\lspd\LspdCommands.cs" />
     <Compile Include="resources\Init.cs" />
+    <Compile Include="resources\inventory\bags\BagItem.cs" />
+    <Compile Include="resources\inventory\bags\BagManager.cs" />
     <Compile Include="resources\inventory\IInventoryItem.cs" />
     <Compile Include="resources\inventory\InventoryManager.cs" />
     <Compile Include="resources\inventory\IStorage.cs" />
+    <Compile Include="resources\inventory\TestItem.cs" />
     <Compile Include="resources\job_manager\fisher\Fish.cs" />
     <Compile Include="resources\job_manager\fisher\Fisher.cs" />
     <Compile Include="resources\job_manager\Job.cs" />
@@ -130,9 +133,12 @@
   <ItemGroup>
     <Content Include="resources\cef_resources\MTGVRP_LOGO_BIG.png" />
     <Content Include="resources\cef_resources\MTGVRP_LOGO_SMALL.png" />
+    <Content Include="resources\inventory\ManageInv.html" />
     <Content Include="resources\job_manager\taxi\TaxiJob.js" />
     <Content Include="resources\jquery.js" />
-    <Content Include="resources\meta.xml" />
+    <Content Include="resources\meta.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="resources\player_manager\CharacterMenu.js" />
     <Content Include="resources\player_manager\Helpmenu.js" />
     <Content Include="resources\player_manager\login\Login.html" />
@@ -168,6 +174,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="resources\inventory\InventoryManager.js" />
     <TypeScriptCompile Include="resources\job_manager\fisher\Fisher.ts" />
     <TypeScriptCompile Include="resources\job_manager\JobManager.ts" />
     <TypeScriptCompile Include="resources\player_manager\player_interaction\PlayerInteraction.ts" />
