@@ -57,7 +57,7 @@
                 </div>
                 <div class="place-right">
                     <button class ="button success" onclick='resourceCall("callServerEvent", "phone_callphone", "${value[1]}");'><span class="mif-phone"></span></button>
-                    <button class ="button primary" onclick='selNumber = "${value[1]}"; metroDialog.open("#sendMessageDialog");'><span class ="mif-bubbles"></span></button>
+                    <button class ="button primary" onclick='selNumber = "${value[1]}"; metroDialog.open("#sendMessageDialog"); $("messageInput").focus();'><span class ="mif-bubbles"></span></button>
                 </div>
                 <div style="clear: both;"></div>
             </div>
