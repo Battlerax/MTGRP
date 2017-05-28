@@ -47,7 +47,7 @@ namespace RoleplayServer.resources.core
             API.consoleOutput("Weather Updated To LA.");
         }
 
-        private int _elapsedMinutes;
+        private int _elapsedMinutes = 60; //To update weather on launch.
         private void WeatherTimeTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             _elapsedMinutes += 1;
