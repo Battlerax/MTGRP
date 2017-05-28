@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GTANetworkServer;
+using NodaTime;
 
 namespace RoleplayServer.resources.core
 {
@@ -23,6 +24,15 @@ namespace RoleplayServer.resources.core
         }
 
         //Los Angeles Time.
-        public static DateTime CurrentTime => TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("Pacific SA Standard Time"));
+        public static DateTime CurrentTime
+        {
+            get
+            {
+                DateTimeZone zone = DateTimeZoneProviders.Tzdb["America/Los_Angeles"];
+                Instant now = SystemClock.Instance.GetCurrentInstant();
+                ZonedDateTime pacificNow = now.InZone(zone);
+                return pacificNow.ToDateTimeUnspecified();
+            }
+        }
     }
 }
