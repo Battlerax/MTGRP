@@ -20,6 +20,12 @@ namespace RoleplayServer.resources.core
         {
             API.onResourceStart += API_onResourceStart;
             API.onResourceStop += API_onResourceStop;
+            API.onPlayerFinishedDownload += API_onPlayerFinishedDownload;
+        }
+
+        private void API_onPlayerFinishedDownload(Client player)
+        {
+            API.freezePlayerTime(player, true);
         }
 
         private void API_onResourceStop()
