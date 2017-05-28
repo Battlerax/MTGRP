@@ -60,46 +60,57 @@ API.onServerEventTrigger.connect((eventName, args) => {
             break;
 
         case "phone_call-closed":
+            if (myBrowser === null) return;
             myBrowser.call("callClosed");
             break;
 
         case "phone_showContacts":
+            if (myBrowser === null) return;
             myBrowser.call("callAppFunction", "showContacts", args[0]);
             break;
 
         case "phone_contactAdded":
+            if (myBrowser === null) return;
             myBrowser.call("callAppFunction", "contactAdded", args[0], args[1]);
             break;
 
         case "phone_contactEdited":
+            if (myBrowser === null) return;
             myBrowser.call("callAppFunction", "contactEdited", args[0], args[1], args[2]);
             break;
 
         case "phone_contactRemoved":
+            if (myBrowser === null) return;
             myBrowser.call("callAppFunction", "contactRemoved", args[0]);
             break;
 
         case "phone_messageContactsLoaded":
+            if (myBrowser === null) return;
             myBrowser.call("callAppFunction", "messageContactsLoaded", args[0]);
             break;
 
         case "phone_messageSent":
+            if (myBrowser === null) return;
             myBrowser.call("callAppFunction", "messageSent");
             break;
 
         case "phone_showMessages":
+            if (myBrowser === null) return;
             myBrowser.call("callAppFunction", "showMessages", args[0], args[1], args[2], args[3]);
             break;
 
         case "phone_incomingMessage":
+            if (myBrowser === null) return;
             myBrowser.call("callAppFunction", "incomingMessage", args[0], args[1]);
             break;
 
         case "phone_showNotifications":
+            if (myBrowser === null) return;
             myBrowser.call("showNotifications", args[0]);
             break;
 
         case "phone_showSettings":
+            if (myBrowser === null) return;
             myBrowser.call("callAppFunction", "setSettings", args[0], args[1]);
             break;
     }
