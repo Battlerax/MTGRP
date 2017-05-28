@@ -111,6 +111,12 @@
                 var d = $('#messages');
                 d.scrollTop(d.prop("scrollHeight"));
             });
+
+            $("#message").keyup(function (event) {
+                if (event.keyCode === 13) {
+                    $("#sendNewMessage").click();
+                }
+            });
         });
 
         function messageContactsLoaded(contactsJson) {
@@ -240,7 +246,7 @@
     <div id="newReplyDiv">
         <div class="input-control text" style="width: 100%;" data-role="input">
             <input type="text" id="message">
-            <button class="button" id="sendNewMessage" data-hotkey="Enter"><span class="mif-paper-plane"></span></button>
+            <button class="button" id="sendNewMessage"><span class="mif-paper-plane"></span></button>
         </div>
     </div>
 </div>
