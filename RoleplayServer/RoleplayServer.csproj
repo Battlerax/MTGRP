@@ -57,6 +57,10 @@
       <HintPath>..\packages\MongoDB.Driver.Core.2.4.3\lib\net45\MongoDB.Driver.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="NodaTime, Version=2.0.2.0, Culture=neutral, PublicKeyToken=4226afe0d9b296d1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NodaTime.2.0.2\lib\net45\NodaTime.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -80,6 +84,7 @@
     <Compile Include="resources\core\DoorManager.cs" />
     <Compile Include="resources\core\ExtensionMethods.cs" />
     <Compile Include="resources\core\MarkerZone.cs" />
+    <Compile Include="resources\core\TimeWeatherManager.cs" />
     <Compile Include="resources\database_manager\DatabaseManager.cs" />
     <Compile Include="resources\group_manager\Group.cs" />
     <Compile Include="resources\group_manager\GroupManager.cs" />
@@ -100,6 +105,7 @@
     <Compile Include="resources\phone_manager\Phone.cs" />
     <Compile Include="resources\phone_manager\PhoneContact.cs" />
     <Compile Include="resources\phone_manager\PhoneManager.cs" />
+    <Compile Include="resources\phone_manager\PhoneMessage.cs" />
     <Compile Include="resources\player_manager\Account.cs" />
     <Compile Include="resources\player_manager\CharacterMenu.cs" />
     <Compile Include="resources\component_manager\Component.cs" />
@@ -138,6 +144,14 @@
     <Content Include="resources\meta.xml">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="resources\phone_manager\gui\apps\contacts.html" />
+    <Content Include="resources\phone_manager\gui\apps\mail.html" />
+    <Content Include="resources\phone_manager\gui\apps\settings.html" />
+    <Content Include="resources\phone_manager\gui\main.css" />
+    <Content Include="resources\phone_manager\gui\main.html" />
+    <Content Include="resources\phone_manager\gui\main.js" />
+    <Content Include="resources\phone_manager\gui\phone-base.png" />
+    <Content Include="resources\phone_manager\PhoneManager.js" />
     <Content Include="resources\player_manager\CharacterMenu.js" />
     <Content Include="resources\player_manager\Helpmenu.js" />
     <Content Include="resources\player_manager\login\Login.html" />
@@ -176,6 +190,7 @@
     <Content Include="resources\inventory\InventoryManager.js" />
     <TypeScriptCompile Include="resources\job_manager\fisher\Fisher.ts" />
     <TypeScriptCompile Include="resources\job_manager\JobManager.ts" />
+    <Content Include="resources\phone_manager\gui\apps\dialpad.html" />
     <TypeScriptCompile Include="resources\player_manager\player_interaction\PlayerInteraction.ts" />
     <TypeScriptCompile Include="types-gtanetwork\Declarations.d.ts" />
     <TypeScriptCompile Include="types-gtanetwork\Enums.ts" />

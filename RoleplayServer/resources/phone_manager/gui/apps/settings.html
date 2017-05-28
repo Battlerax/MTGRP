@@ -1,0 +1,58 @@
+﻿<html>
+<head>
+    <link href="../../../stylesheet/css/metro-icons.css" rel="stylesheet" type="text/css">
+    <link href="../../../stylesheet/css/metro.css" type="text/css" rel="stylesheet">
+    <script src="../../../jquery.js"></script>
+    <script src="../../../stylesheet/js/metro.js"></script>
+    <script>
+        $(document).ready(function () {
+            resourceCall("callServerEvent", "settings_getSettings");
+        });
+
+        $(document).ready(function () {
+            $("#isPhoneTogged").change(function () {
+                resourceCall("callServerEvent", "settings_togPhone");
+            });
+        });
+
+        function setSettings(number, togged) {
+            $("#basicInfo strong").text(number);
+            if (togged === "True") {
+                $("#isPhoneTogged").attr('checked', 'checked');
+            }
+        }
+
+        window.addEventListener("message", receiveMessage, false);
+        function receiveMessage(event) {
+            window[event.data[0]](...event.data[1]);
+        }
+    </script>
+    
+    <style>
+        body {
+            color: white;
+        }
+
+        #settings {
+            margin-top: 20px;
+        }
+
+        .switch {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+<div id="basicInfo">
+    Phone Number: <strong>3245501</strong>
+</div>
+    
+<div id="settings">
+    <label for="isPhoneTogged">Is On: </label>
+    <label class="switch">
+        <input type="checkbox" id="isPhoneTogged">
+        <span class="check"></span>
+    </label>
+</div>
+</body>
+</html>
