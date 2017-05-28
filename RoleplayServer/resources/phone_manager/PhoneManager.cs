@@ -222,6 +222,7 @@ namespace RoleplayServer.resources.phone_manager
             API.sendChatMessageToPlayer(player, "You have changed your phone name to " + name + ".");
         }
 
+        [Command("pickup")]
         public void pickup_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -251,6 +252,7 @@ namespace RoleplayServer.resources.phone_manager
             API.triggerClientEvent(player, "phone_calling", contact?.Name ?? "Unknown", targetphone.Number);
         }
 
+        [Command("h")]
         public void h_cmd(Client player)
         {
             Character character = player.GetCharacter();
