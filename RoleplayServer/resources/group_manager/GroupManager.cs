@@ -47,7 +47,7 @@ namespace RoleplayServer.resources.group_manager
         
 
         [Command("respawngroupvehicles")]
-        public void respawngroupvehicles_cmd(Client player)
+        public void respawngroupvehicles_cmd(Client player, string groupId)
         {
             Account account = API.getEntityData(player.handle, "Account");
 
@@ -59,46 +59,17 @@ namespace RoleplayServer.resources.group_manager
             int j = 0;
             foreach (var i in DatabaseManager.GroupTable.Find(Builders<Group>.Filter.Empty).ToList())
             {
-                var filter = Builders<vehicle_manager.Vehicle>.Filter.Eq("GroupId", i.Id);
-                var groupVehicles = DatabaseManager.VehicleTable.Find(filter).ToList();
 
-                foreach (var v in groupVehicles)
+                foreach(var z in VehicleManager.Vehicles)
                 {
-                    v.Despawn();
-                    v.Respawn();
-                    j++;
+                    if (z.GroupId == int.Parse(groupId))
+                    {
+                        VehicleManager.respawn_vehicle(z);
+                        j++;
+                    }
                 }
             }
             API.sendChatMessageToPlayer(player, j + " faction vehicles have been respawned.");
-        }
-
-
-
-
-        [Command("removegroupvehicle", GreedyArg = true)]
-        public void removegroupvehicle_cmd(Client player, string groupId, string id)
-        {
-            Account account = API.getEntityData(player.handle, "Account");
-
-            if (account.AdminLevel < 4)
-            {
-                return;
-            }
-
-            var filter = Builders<vehicle_manager.Vehicle>.Filter.Eq("GroupId", groupId);
-            var groupVehicles = DatabaseManager.VehicleTable.Find(filter).ToList();
-
-            foreach (var g in groupVehicles)
-            {
-                if (g.Id == int.Parse(id))
-                {
-                    g.Respawn();
-                    g.Delete();
-                    g.Despawn();
-                    g.Save();
-                    API.sendChatMessageToPlayer(player, "Vehicle removed from group.");
-                }
-            }
         }
 
  
