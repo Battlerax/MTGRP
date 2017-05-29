@@ -194,16 +194,13 @@ namespace RoleplayServer.resources.vehicle_manager
 
             Character character = API.getEntityData(player.handle, "Character");
 
-            if (veh.VehType == vehicle_manager.Vehicle.VehTypeGroup)
+            if (character.Group.Id != veh.GroupId)
             {
-                if (character.Group.Name != veh.LicensePlate)
-                {
 
-                    {
-                        API.sendChatMessageToPlayer(player, "You must be a member of " + veh.LicensePlate + " to use this vehicle.");
-                        API.setEntityPosition(player, API.getEntityPosition(vehicleHandle) + new Vector3(-1, 0, 0));
-                        return;
-                    }
+                {
+                    API.sendChatMessageToPlayer(player, "You must be a member of " + veh.Group.Name + " to use this vehicle.");
+                    API.setEntityPosition(player, API.getEntityPosition(vehicleHandle) + new Vector3(-1, 0, 0));
+                    return;
                 }
             }
             if(veh.LicensePlate == "LSPD" && character.Group.CommandType != Group.CommandTypeLspd)
@@ -380,16 +377,23 @@ namespace RoleplayServer.resources.vehicle_manager
 
         public void load_all_group_vehicles()
         {
-            var filter = Builders<Vehicle>.Filter.Eq("VehType", "2");
-            var groupVehicles = DatabaseManager.VehicleTable.Find(filter).ToList();
+            int j = 0;
 
-            foreach (var v in groupVehicles)
-            { 
-                spawn_vehicle(v);
-                Vehicles.Add(v);
+            foreach (var i in DatabaseManager.GroupTable.Find(Builders<Group>.Filter.Empty).ToList())
+            {
+
+                var filter = Builders<Vehicle>.Filter.Eq("GroupId", i.Id);
+                var groupVehicles = DatabaseManager.VehicleTable.Find(filter).ToList();
+
+                foreach (var v in groupVehicles)
+                {
+                    spawn_vehicle(v);
+                    Vehicles.Add(v);
+                    j++;
+                }
             }
 
-            DebugManager.DebugMessage("Loaded " + groupVehicles.Count + " group vehicles from the database.");
+            DebugManager.DebugMessage("Loaded " + j + " group vehicles from the database.");
         }
 
         public void load_all_unowned_vehicles()

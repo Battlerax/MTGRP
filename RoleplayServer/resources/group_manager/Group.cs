@@ -71,9 +71,8 @@ namespace RoleplayServer.resources.group_manager
         /* * * * * * TO FIX AFTER BETA.. CURRENTLY CAUSING PROBLEMS * * * * * */
         public void register_markerzones()
         {
-            /*Locker = new MarkerZone(new Vector3(457.5921, -992.7383, 30.6896), new Vector3(0, 0, 180.0), 0, 2.0f);
-            return;
-            */
+            //Create locker.
+            Locker.Create();
 
             if (Locker != MarkerZone.None)
             {

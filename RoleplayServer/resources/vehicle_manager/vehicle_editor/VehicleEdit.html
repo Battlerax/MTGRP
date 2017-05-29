@@ -6,7 +6,7 @@
     <link href="../../stylesheet/css/metro-icons.css" rel="stylesheet" />
     <script src="../../jquery.js"></script>
     <script src="../../stylesheet/js/metro.js"></script>
-    
+
     <style>
         .main_container {
             width: 250px;
@@ -35,17 +35,17 @@
 <body>
 
     <div class="main_container">
- 
+
         <div class="panel" data-role="panel">
             <div class="heading">
                 <span class="icon mif-automobile"></span>
                 <span class="title" id="login_box_title" style="font-family:House Script;font-size:30px">Vehicle Editor</span>
             </div>
 
-           
+
 
             <div class="content" >
-             
+
                 <div id="loading_icon" class="cell padding20 bg-dark" style="color:white;font-family:House Script;font-size:25px;">
                     <div data-role="preloader" data-type="metro" style="margin: 30px auto" class="preloader-metro"><div class="circle"></div><div class="circle"></div><div class="circle"></div><div class="circle"></div><div class="circle"></div></div>
                 </div>
@@ -82,7 +82,7 @@
                         <div class="input-control text" style="width:25%">
                             <input type="text" id="color_1" value="Default">
                         </div>
-                        
+
                         <div class="input-control text" style="width:25%">
                             <input type="text" id="color_2" value="Default">
                         </div>
@@ -100,11 +100,17 @@
                         <input type="text" id="job_id">
                     </div>
 
+                    <br />
+                    Group ID
+                    <div class="input-control text">
+                        <input type="text" id="group_id">
+                    </div>
+
                     <button class="button info" onclick="change_spawn()" style="margin-top:10px" data-role="hint" data-hint-background="bg-green" data-hint-color="fg-white" data-hint-mode="2" data-hint="Set Spawn|Set the vehicle spawn location to current spot"><span class="mif-location"></span> </button>
                     <button class="button info" onclick="respawn_veh()" style="margin-top:10px" data-role="hint" data-hint-background="bg-green" data-hint-color="fg-white" data-hint-mode="2" data-hint="Respawn|Respawn the vehicle"><span class="mif-loop2"></span></button>
                     <button class="button success" data-hotkey="Ctrl+S" onclick="save_vehicle()" style="margin-top:10px" data-role="hint" data-hint-background="bg-green" data-hint-color="fg-white" data-hint-mode="2" data-hint="Save|Save changes"><span class="mif-floppy-disk"></span> </button>
                     <button class="button warning" onclick="cancel_veh_edit()" style="margin-top:10px"><span class="mif-cross" data-role="hint" data-hint-background="bg-red" data-hint-color="fg-white" data-hint-mode="2" data-hint="Cancel|Cancels changes"></span> </button>
-                   
+
                 </div>
 
             </div>
@@ -125,7 +131,7 @@
 
 <script>
 
-    function populate_fields(vehicle_id, model, owner, license_plate, color_1, color_2, respawn_delay, job_id) {
+    function populate_fields(vehicle_id, model, owner, license_plate, color_1, color_2, respawn_delay, job_id, group_id) {
         $('#id').val(vehicle_id);
         $('#model').val(model);
         $('#owner').val(owner);
@@ -134,6 +140,8 @@
         $('#color_2').val(color_2);
         $('#respawn_delay').val(respawn_delay);
         $('#job_id').val(job_id);
+        $('#group_id').val(group_id);
+
 
         $('#loading_icon').css('display', 'none');
         $('#form_content').css('display', 'block');
@@ -148,7 +156,7 @@
     }
 
     function save_vehicle() {
-        resourceCall("vehicle_edit_changes", $('#id').val(), $('#model').val(), $('#owner').val(), $('#license_plate').val(), $('#color_1').val(), $('#color_2').val(), $('#respawn_delay').val(), $('#job_id').val());
+        resourceCall("vehicle_edit_changes", $('#id').val(), $('#model').val(), $('#owner').val(), $('#license_plate').val(), $('#color_1').val(), $('#color_2').val(), $('#respawn_delay').val(), $('#job_id').val(), $('#group_id').val());
     }
 
     function respawn_veh() {
