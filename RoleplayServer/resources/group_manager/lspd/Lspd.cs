@@ -120,7 +120,6 @@ namespace RoleplayServer.resources.group_manager.lspd
                     }
             }
         }
-
         [Command("recordcrime", GreedyArg = true)]
         public void recordcrimes_cmd(Client player, string id, string crimeid)
         {
