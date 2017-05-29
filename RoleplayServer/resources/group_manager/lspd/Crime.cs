@@ -15,7 +15,6 @@ namespace RoleplayServer.resources.group_manager.lspd
         [BsonId]
         public ObjectId Id { get; set; }
 
-
         public string Type { get; set; }
         public string Name { get; set; }
         public int JailTime { get; set; }

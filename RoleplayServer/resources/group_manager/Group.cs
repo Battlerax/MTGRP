@@ -68,7 +68,7 @@ namespace RoleplayServer.resources.group_manager
             DatabaseManager.GroupTable.ReplaceOne(filter, this);
         }
 
-        /* * * * * * TO FIX AFTER BETA.. CURRENTLY CAUSING PROBLEMS * * * * * */
+
         public void register_markerzones()
         {
             //Create locker.

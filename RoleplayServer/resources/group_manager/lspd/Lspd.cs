@@ -122,7 +122,7 @@ namespace RoleplayServer.resources.group_manager.lspd
         }
 
         [Command("recordcrime", GreedyArg = true)]
-        public void recordcrimes_cmd(Client player, string id, string crime)
+        public void recordcrimes_cmd(Client player, string id, string crimeid)
         {
             var receiver = PlayerManager.ParseClient(id);
 
@@ -142,9 +142,15 @@ namespace RoleplayServer.resources.group_manager.lspd
             }
 
             receiverCharacter.activeCrime = true;
-            receiverCharacter.RecordCrime(crime, player.nametag, true);
+            foreach(var i in Crime.Crimes.ToList())
+            {
+                if (crimeid == i.Id.ToString())
+                {
+                    receiverCharacter.RecordCrime(receiverCharacter.CharacterName, character.CharacterName, i);
+                }
+            }
             API.sendNotificationToPlayer(player, "You have recorded " + receiver.nametag + " for committing a crime.");
-            API.sendNotificationToPlayer(receiver, player.nametag + " has recorded a crime you committed: ~r~" + crime + "~w~.");
+            API.sendNotificationToPlayer(receiver, player.nametag + " has recorded a crime you committed: ~r~" + Crime.Crimes[int.Parse(crimeid)].Name + "~w~.");
 
         }
 
@@ -173,12 +179,12 @@ namespace RoleplayServer.resources.group_manager.lspd
             {
                 if(i.ActiveCrime == true)
                 {
-                    API.sendChatMessageToPlayer(player, "~r~[ACTIVE] Crime: " + i.CrimeName + " Date issued: " + i.DateTime + " Recording officer: " + i.OfficerId);
+                    API.sendChatMessageToPlayer(player, "~r~[ACTIVE] Type: " + i.Crime.Type + " Crime: " + i.Crime.Name + " Date issued: " + i.DateTime + " Recording officer: " + i.OfficerId);
                 }
 
                 else
                 {
-                    API.sendChatMessageToPlayer(player, "Crime: " + i.CrimeName + " Date issued: " + i.DateTime + " Recording officer: " + i.OfficerId);
+                    API.sendChatMessageToPlayer(player, "Type: " + i.Crime.Type + "Crime: " + i.Crime.Name + " Date issued: " + i.DateTime + " Recording officer: " + i.OfficerId);
                 }
             }
 
@@ -199,7 +205,7 @@ namespace RoleplayServer.resources.group_manager.lspd
 
             foreach (var i in Crime.Crimes)
             {
-                API.sendChatMessageToPlayer(player, i.Type + " | " + i.Name + " | " + i.JailTime + " | " + i.Fine); //TODO: REPLACE WITH A MENU
+                API.sendChatMessageToPlayer(player, i.Id + " | " + i.Type + " | " + i.Name + " | " + i.JailTime + " | " + i.Fine); //TODO: REPLACE WITH A MENU
             }
         }
 
@@ -224,6 +230,28 @@ namespace RoleplayServer.resources.group_manager.lspd
             }
             Crime.InsertCrime(type, crimeName, jailTime, fine);
             API.sendChatMessageToPlayer(player, "Crime created and added to crime list.");
+        }
+
+        [Command("editcrime")]
+        public void deletecrime_cmd(Client player, int id, string type, string crimeName, int jailTime, int fine)
+        {
+            Character character = API.getEntityData(player.handle, "Character");
+
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                return;
+            }
+
+            GroupManager.GroupCommandPermCheck(character, 7);
+
+            Crime crime = Crime.Crimes[id];
+            crime.Type = type;
+            crime.Name = crimeName;
+            crime.JailTime = jailTime;
+            crime.Fine = fine;
+            crime.Update();
+            API.sendChatMessageToPlayer(player, "Crime edited.");
         }
 
         [Command("deletecrime")]
@@ -265,7 +293,7 @@ namespace RoleplayServer.resources.group_manager.lspd
                 {
                     if (i.ActiveCrime == true)
                     {
-                        API.sendChatMessageToPlayer(player, c.CharacterName + " is wanted for " + i.CrimeName + " .");
+                        API.sendChatMessageToPlayer(player, c.CharacterName + " is wanted for " + i.Crime.Name + " .");
                     }
                 }
 
@@ -274,7 +302,7 @@ namespace RoleplayServer.resources.group_manager.lspd
 
 
         [Command("arrest", GreedyArg = true)]
-        public void arrest_cmd(Client player, string id, string time)
+        public void arrest_cmd(Client player, string id)
         {
 
             var receiver = PlayerManager.ParseClient(id);
@@ -317,16 +345,25 @@ namespace RoleplayServer.resources.group_manager.lspd
                 API.sendChatMessageToPlayer(player, Color.White, "You are not at the arrest location.");
                 return;
             }
-            
-            foreach (var i in receiverCharacter.GetCriminalRecord())
+
+            int time = 0;
+            int fine = 0;
+
+            foreach (var j in receiverCharacter.GetCriminalRecord())
             {
-                i.ActiveCrime = false;
+                if (j.ActiveCrime == true)
+                {
+                    time += j.Crime.JailTime;
+                    fine += j.Crime.Fine;
+                    j.ActiveCrime = false;
+                }
             }
 
             API.sendNotificationToPlayer(player, "You have arrested ~b~" + receiver.name + "~w~.");
             API.sendNotificationToPlayer(receiver, "You have been arrested by ~b~" + player.name + "~w~.");
-            receiverCharacter.jailTimeLeft = int.Parse(time) * 1000;
-            jailControl(receiver, int.Parse(time));
+            receiverCharacter.Money -= fine;
+            receiverCharacter.jailTimeLeft = time * 1000;
+            jailControl(receiver, time);
 
         }
 

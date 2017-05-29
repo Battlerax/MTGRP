@@ -13,15 +13,15 @@ namespace RoleplayServer.resources.group_manager.lspd
 
         public string CharacterId { get; set; }
         public string OfficerId { get; set; }
-        public string CrimeName { get; set; }
+        public Crime Crime { get; set; }
         public DateTime DateTime { get; set; }
         public bool ActiveCrime { get; set; }
 
-        public CriminalRecord(string characterId, string arrestingOfficerId, string crime, bool Activecrime)
+        public CriminalRecord(string characterId, string arrestingOfficerId, Crime crime, bool Activecrime)
         {
             CharacterId = characterId;
             OfficerId = arrestingOfficerId;
-            CrimeName = crime;
+            Crime = crime;
             DateTime = DateTime.Now;
             ActiveCrime = Activecrime;
         }

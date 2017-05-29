@@ -386,9 +386,9 @@ namespace RoleplayServer.resources.player_manager
         }
 
         //Criminal Records
-        public void RecordCrime(string crime, string officer, bool Activecrime)
+        public void RecordCrime(string playerName, string recordingOfficer, Crime crime)
         {
-            var record = new CriminalRecord(this.Id.ToString(), officer, crime, Activecrime);
+            var record = new CriminalRecord(playerName, recordingOfficer, crime, true);
             record.Insert();
         }
 
