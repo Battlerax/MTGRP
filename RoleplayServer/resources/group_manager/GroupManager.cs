@@ -57,19 +57,14 @@ namespace RoleplayServer.resources.group_manager
             }
 
             int j = 0;
-            foreach (var i in DatabaseManager.GroupTable.Find(Builders<Group>.Filter.Empty).ToList())
+            foreach(var z in VehicleManager.Vehicles)
             {
-
-                foreach(var z in VehicleManager.Vehicles)
+                if (z.GroupId == int.Parse(groupId))
                 {
-                    if (z.GroupId == int.Parse(groupId))
-                    {
-                        VehicleManager.respawn_vehicle(z);
-                        j++;
-                    }
+                    VehicleManager.respawn_vehicle(z);
+                    j++;
                 }
             }
-            API.sendChatMessageToPlayer(player, j + " faction vehicles have been respawned.");
         }
 
  
