@@ -65,6 +65,7 @@ namespace RoleplayServer.resources.group_manager
                     j++;
                 }
             }
+            API.sendChatMessageToPlayer(player, j + string.Format("{0} vehicles have been respawned for group {1}.", j, groupId));
         }
 
  
