@@ -405,7 +405,7 @@ namespace RoleplayServer.resources.property_system
         }
 
         [Command("enter")]
-        public void enterproperty(Client player)
+        public void Enterproperty(Client player)
         {
             var prop = IsAtPropertyEnterance(player);
             if (prop != null)
@@ -416,6 +416,34 @@ namespace RoleplayServer.resources.property_system
                     player.rotation = prop.TargetRot;
                     player.dimension = prop.TargetDimension;
                 }
+                else
+                {
+                    API.sendNotificationToPlayer(player,
+                        prop.IsLocked ? "Property is locked." : "Property is not teleportable.");
+                }
+            }
+        }
+
+        [Command("lockproperty")]
+        public void LockProperty(Client player)
+        {
+            var prop = IsAtPropertyEnterance(player) ?? IsAtPropertyInteraction(player);
+            if (prop == null)
+            {
+                API.sendChatMessageToPlayer(player, "You aren't at an enteraction point or enterance.");
+                return;
+            }
+
+            if (prop.OwnerId == player.GetCharacter().Id)
+            {
+                prop.IsLocked = !prop.IsLocked;
+                prop.UpdateLockStatus();
+                API.sendNotificationToPlayer(player,
+                    prop.IsLocked ? "Property has been ~g~locked." : "Property has been ~r~unlocked.");
+            }
+            else
+            {
+                API.sendChatMessageToPlayer(player, "You don't own that property.");
             }
         }
 
