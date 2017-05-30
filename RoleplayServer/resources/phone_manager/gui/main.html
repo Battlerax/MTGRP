@@ -1,0 +1,76 @@
+<html>
+    <head>
+        <link href="main.css" type="text/css" rel="stylesheet">
+        <link href="../../stylesheet/css/metro-icons.css" rel="stylesheet" type="text/css">
+        <link href="../../stylesheet/css/metro.css" type="text/css" rel="stylesheet">
+        <script src="../../jquery.js"></script>
+        <script src="../../stylesheet/js/metro.js"></script>
+        <script src="main.js"></script>
+    </head>
+    
+<body>
+    <div id="phonebase-image"></div>
+    <div id="main" class="tile-container">
+        <div id="notif-bar">
+            <span class="notif-item" style="font-size: 25px;" id="time"><strong>00:00</strong></span>
+            <span class="notif-item mif-2x mif-battery-full"></span>
+            <span class="notif-item mif-2x mif-wifi-full"></span>
+        </div>
+
+        <div id="content">
+            <div id="child-content">
+				<div id="call-interface" style="display: none;">
+					<span id="calling_header">INCOMING CALL</span>
+					<h1 id="caller_number"></h1>
+				    <span id="caller_name"></span>
+				    <div id="calling-actionbuttons">
+                        <button id="calling_end-call" class="button bg-red fg-white">end call</button>
+				        <button id="calling_answer" class="button bg-red fg-white">answer</button>
+				        <button id="calling_ignore" class="button bg-gray fg-white">ignore</button>
+				    </div>
+				</div>
+                <div id="app-content" style="display: none;">
+                    <iframe id="app-browser"></iframe>
+                </div>
+                <div id="apps-list">
+                    <div class="tile" data-role="tile" data-file="dialpad.html">
+                        <div class="tile-content iconic">
+                            <span class="icon mif-dialpad"></span>
+                            <span class="tile-label">Dialpad</span>
+                        </div>
+                    </div>
+                    <div class="tile" data-role="tile" data-file="contacts.html">
+                        <div class="tile-content iconic">
+                            <span class="icon mif-contacts-dialer"></span>
+                            <span class="tile-label">Contacts</span>
+                        </div>
+                    </div>
+                    <div class="tile" data-role="tile" data-file="mail.html">
+                        <div class="tile-content iconic">
+                            <span class="icon mif-mail"></span>
+                            <span class="tile-label">Messages</span>
+                            <span class="tile-badge bg-darkRed" id="unreadMessages">0</span>
+                        </div>
+                    </div>
+                    <div class="tile" data-role="tile" data-file="map.html">
+                        <div class="tile-content iconic">
+                            <span class="icon mif-map"></span>
+                            <span class="tile-label">Maps</span>
+                        </div>
+                    </div>
+                    <div class="tile" data-role="tile" data-file="settings.html">
+                        <div class="tile-content iconic">
+                            <span class="icon mif-cogs"></span>
+                            <span class="tile-label">Settings</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="navigation" class="bg-black">
+            <span class="icon mif-windows mif-2x fg-white"></span>
+        </div>
+    </div>
+</body>
+</html>
