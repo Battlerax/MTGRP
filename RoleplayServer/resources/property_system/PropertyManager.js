@@ -14,6 +14,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
             editMenu.AddItem(API.createMenuItem("Change Type", "Change the type of property."));
             editMenu.AddItem(API.createMenuItem("Supplies", "Set the amount of supplied in business."));
             editMenu.AddItem(API.createMenuItem("Move Property", "Move enterance."));
+            editMenu.AddItem(API.createMenuItem("Goto Property", "Teleport to enterance."));
             editMenu.AddItem(API.createMenuItem("Set main door.", "Set this with the doorid that needs to be locked/unlocked via /lockproperty."));
             editMenu.AddItem(API.createMenuItem("Toggle Teleportable", "Set if person can /enter or not."));
             editMenu.AddItem(API.createMenuItem("Change Teleport Position", "Change the teleport position on /enter."));
@@ -60,7 +61,53 @@ API.onServerEventTrigger.connect((eventName, args) => {
                         break;
 
                     case 3:
+                        editMenu.Visible = false;
+                        changingPropertyPos = true;
+                        sendMessage("Goto the position you would like and hit LMB to save there.");
+                        break;
 
+                    case 4:
+                        API.triggerServerEvent("editproperty_gotoenterance", selID);
+                        break;
+
+                    case 5:
+                        var doorid = "";
+                        while (doorid === "") {
+                            doorid = API.getUserInput("", 100);
+                            if (doorid === "") {
+                                sendMessage("DoorID can't be empty.");
+                            }
+                        }
+                        API.triggerServerEvent("editproperty_setmaindoor", selID, doorid);
+                        break;
+
+                    case 6:
+                        API.triggerServerEvent("editproperty_toggleteleportable", selID);
+                        break;
+
+                    case 7:
+                        editMenu.Visible = false;
+                        changingTeleportPos = true;
+                        sendMessage("Goto the position you would like and hit LMB to save there.");
+                        break;
+
+                    case 8:
+                        API.triggerServerEvent("editproperty_toggleinteractable", selID);
+                        break;
+
+                    case 9:
+                        editMenu.Visible = false;
+                        changingInteractionPos = true;
+                        sendMessage("Goto the position you would like and hit LMB to save there.");
+                        break;
+
+                    case 10:
+                        API.triggerServerEvent("editproperty_togglelock", selID);
+                        break;
+
+                    case 11:
+                        editMenu.Visible = false;
+                        API.triggerServerEvent("editproperty_deleteproperty", selID);
                         break;
                 }
             });
@@ -68,7 +115,26 @@ API.onServerEventTrigger.connect((eventName, args) => {
     }
 });
 
+var changingPropertyPos = false;
+var changingTeleportPos = false;
+var changingInteractionPos = false;
+
 API.onUpdate.connect(function() {
     if (editMenu != null)
         API.drawMenu(editMenu);
+
+    if (API.isDisabledControlJustPressed(24)) {
+        if (changingPropertyPos === true) {
+            changingPropertyPos = false;
+            API.triggerServerEvent("editproperty_setenterancepos", selID);
+        } 
+        else if (changingTeleportPos === true) {
+            changingTeleportPos = false;
+            API.triggerServerEvent("editproperty_setteleportpos", selID);
+        }
+        else if (changingInteractionPos === true) {
+            changingInteractionPos = false;
+            API.triggerServerEvent("editproperty_setinteractpos", selID);
+        }
+    }
 });
