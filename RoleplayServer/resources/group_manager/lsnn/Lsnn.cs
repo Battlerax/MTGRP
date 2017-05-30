@@ -3,6 +3,7 @@ using GTANetworkShared;
 using System.Collections.Generic;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.player_manager;
+using RoleplayServer.resources.vehicle_manager;
 using System;
 
 namespace RoleplayServer.resources.group_manager.lsnn
@@ -48,33 +49,37 @@ namespace RoleplayServer.resources.group_manager.lsnn
             {
                 IsBroadcasting = false;
                 API.sendChatMessageToPlayer(player, "~p~The broadcast has been stopped.");
-                foreach (var c in PlayerManager.Players)
-                {
-                    if (c.IsWatchingBroadcast) {
-                        foreach (var i in API.getAllPlayers())
-                        {
-                            Character receivercharacter = API.getEntityData(i.handle, "Character");
 
-                            if (receivercharacter.CharacterName == c.CharacterName)
-                            {
-                                API.triggerClientEvent(i, "unwatch_broadcast");
-                                receivercharacter.IsWatchingBroadcast = false;
-                            }
-                        }
+                foreach (var c in API.getAllPlayers())
+                {
+                    Character receivercharacter = API.getEntityData(c, "Character");
+                    if (receivercharacter.IsWatchingBroadcast)
+                    {
+
+                        API.triggerClientEvent(c, "unwatch_broadcast");
+                        receivercharacter.IsWatchingBroadcast = false;
+                        API.sendChatMessageToPlayer(c, "~p~The LSNN broadcast has been stopped.");
                     }
                 }
-                 
                 return;
             }
+            API.sendChatMessageToPlayer(player, "Broadcast started.");
+            API.sendChatMessageToAll("~p~An LSNN broadcast has been started. /watchbroadcast to tune in!");
+            IsBroadcasting = true;
 
-                API.sendChatMessageToPlayer(player, "Broadcast started.");
-                API.sendChatMessageToAll("~p~An LSNN broadcast has been started.");
-                IsBroadcasting = true;
-            }
+        }
 
         [Command("editheadline")]
         public void editbanner_cmd(Client player, string text)
         {
+            Character character = API.getEntityData(player.handle, "Character");
+
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLsnn)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "You must be a member of the LSNN to use that command.");
+                return;
+            }
+
             headline = text;
         }
 
@@ -118,7 +123,9 @@ namespace RoleplayServer.resources.group_manager.lsnn
             }
 
             //TODO: CHECK IF IN LSNN CHOPPER
-            if (API.isPlayerInAnyVehicle(player) == false)
+            var vehicleHandle = API.getPlayerVehicle(player);
+            var veh = VehicleManager.GetVehFromNetHandle(vehicleHandle);
+            if (character.Group.Id != veh.GroupId && veh.VehModel != VehicleHash.Maverick)
             {
                 API.sendChatMessageToPlayer(player, "You must be in an LSNN chopper to use the chopper camera.");
                 return;
@@ -133,16 +140,18 @@ namespace RoleplayServer.resources.group_manager.lsnn
             if (chopperCamToggle == true)
             {
                 API.sendNotificationToPlayer(player, "The chopper camera has been turned ~r~off~w~.");
+                CameraSet = false;
                 chopperCamToggle = false;
                 return;
             }
 
+            CameraSet = true;
             chopperCamToggle = true;
             var chopper = API.getPlayerVehicle(player);
             CameraPosition = API.getEntityPosition(chopper) - new Vector3(0, 0, 3);
-            CameraRotation= API.getEntityRotation(chopper);
+            CameraRotation = API.getEntityRotation(chopper);
             API.sendNotificationToPlayer(player, "The chopper camera has been turned ~b~on~w~.");
-    }
+        }
 
         [Command("pickupcamera")]
         public void pickupcamera_cmd(Client player)
@@ -158,6 +167,39 @@ namespace RoleplayServer.resources.group_manager.lsnn
             if (IsBroadcasting == true)
             {
                 API.sendChatMessageToPlayer(player, "A broadcast is in progress.");
+            }
+
+            if (CameraSet == false)
+            {
+                foreach (var p in API.getAllPlayers())
+                {
+                    Character c = API.getEntityData(p, "Character");
+                    if (c.HasCamera == true)
+                    {
+                        API.sendChatMessageToPlayer(player, "There are no cameras left to pick up.");
+                        return;
+                    }
+
+                }
+                foreach(var v in VehicleManager.Vehicles)
+                {
+                    if(v.GroupId == character.GroupId)
+                    {
+                        if (CameraSet == true && player.position.DistanceTo(CameraPosition) > 2f && player.position.DistanceTo(API.getEntityPosition(v.NetHandle)) < 3f)
+                        {
+                            API.sendChatMessageToPlayer(player, "You can only have one camera.");
+                            return;
+                        }
+
+                        if (player.position.DistanceTo(API.getEntityPosition(v.NetHandle)) < 3f)
+                        {
+                            API.sendChatMessageToPlayer(player, "You grabbed a camera from the news vehicle.");
+                            character.HasCamera = true;
+                            return;
+                        }
+                    }
+                }
+                API.sendChatMessageToPlayer(player, "You are too far away from a news vehicle.");
             }
 
             var playerPos = API.getEntityPosition(player);
@@ -243,7 +285,7 @@ namespace RoleplayServer.resources.group_manager.lsnn
             }
 
             API.triggerClientEvent(player, "watch_broadcast", camPos, camRot, headline);
-            API.sendNativeToPlayer(player, 0xBB7454BAFF08FE25, camPos, camRot, 0, 0, 0);
+            //API.sendNativeToPlayer(player, 0xBB7454BAFF08FE25, camPos, camRot, 0, 0, 0);
             API.freezePlayer(player, true);
             character.IsWatchingBroadcast = true;
         }
@@ -264,12 +306,12 @@ namespace RoleplayServer.resources.group_manager.lsnn
         }
 
         [Command("mic")]
-        public void mictoggle_cmd(Client player, string message)
+        public void mictoggle_cmd(Client player)
         {
             var playerPos = API.getEntityPosition(player);
             Character character = API.getEntityData(player.handle, "Character");
 
-            if (character.HasMic == false)
+            if (character.HasMic == false && character.Group.CommandType != Group.CommandTypeLsnn)
             {
                 API.sendChatMessageToPlayer(player, "You do not have a microphone.");
                 return;
@@ -326,6 +368,8 @@ namespace RoleplayServer.resources.group_manager.lsnn
                 API.sendChatMessageToPlayer(player, Color.White, "You must be a member of the LSNN to use that command.");
                 return;
             }
+
+            API.sendChatMessageToPlayer(player, "Not yet implemented :(");
             //WILL BE IMPLEMENTING CEF UI FOR WRITING ARTICLES
             //OPTION TO INPUT TITLE AND TEXT
         }

@@ -3,7 +3,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
     switch (eventName) {
 		
         case "watch_broadcast":
-			var cam_view = API.createCamera(args[0], args[1], args[2]);
+			var cam_view = API.createCamera(args[0], args[1]);
 			API.setActiveCamera(cam_view);
 			var resolution = API.getScreenResolution();
 			lowerthird = API.createCefBrowser(resolution.Width, resolution.Height);

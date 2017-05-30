@@ -87,6 +87,7 @@
     <Compile Include="resources\database_manager\DatabaseManager.cs" />
     <Compile Include="resources\group_manager\Group.cs" />
     <Compile Include="resources\group_manager\GroupManager.cs" />
+    <Compile Include="resources\group_manager\lsnn\Lsnn.cs" />
     <Compile Include="resources\group_manager\lspd\Crime.cs" />
     <Compile Include="resources\group_manager\lspd\CriminalRecord.cs" />
     <Compile Include="resources\group_manager\lspd\Lspd.cs" />
@@ -140,6 +141,8 @@
     <Content Include="resources\cef_resources\LSPDMDC.png" />
     <Content Include="resources\cef_resources\MTGVRP_LOGO_BIG.png" />
     <Content Include="resources\cef_resources\MTGVRP_LOGO_SMALL.png" />
+    <Content Include="resources\group_manager\lsnn\LowerThird.html" />
+    <Content Include="resources\group_manager\lsnn\Lsnn.js" />
     <Content Include="resources\inventory\ManageInv.html" />
     <Content Include="resources\group_manager\lspd\Lspd.js" />
     <Content Include="resources\group_manager\lspd\MDC.html" />
