@@ -86,9 +86,15 @@ namespace RoleplayServer.resources.property_system
             EnteranceMarker.Create();
             EnteranceMarker.ColZone.setData("property_enterance", Id);
 
-            InteractionMarker = new MarkerZone(InteractionPos, InteractionRot, InteractionDimension) { LabelText = InteractionString };
-            InteractionMarker.Create();
-            InteractionMarker.ColZone.setData("property_interaction", Id);
+            if (IsInteractable)
+            {
+                InteractionMarker = new MarkerZone(InteractionPos, InteractionRot, InteractionDimension)
+                {
+                    LabelText = InteractionString
+                };
+                InteractionMarker.Create();
+                InteractionMarker.ColZone.setData("property_interaction", Id);
+            }
         }
 
         public void UpdateMarkers()
@@ -98,10 +104,13 @@ namespace RoleplayServer.resources.property_system
             EnteranceMarker.LabelText = EnteranceString + "\n" + Type + "\n" + "ID: " + Id;
             EnteranceMarker.Refresh();
 
-            InteractionMarker.Location = InteractionPos;
-            InteractionMarker.Rotation = InteractionRot;
-            InteractionMarker.LabelText = InteractionString;
-            InteractionMarker.Refresh();
+            if (IsInteractable)
+            {
+                InteractionMarker.Location = InteractionPos;
+                InteractionMarker.Rotation = InteractionRot;
+                InteractionMarker.LabelText = InteractionString;
+                InteractionMarker.Refresh();
+            }
         }
 
         public void UpdateLockStatus()

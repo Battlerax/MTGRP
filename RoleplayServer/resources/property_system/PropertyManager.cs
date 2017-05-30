@@ -158,11 +158,6 @@ namespace RoleplayServer.resources.property_system
                             API.sendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
                             return;
                         }
-                        if (!prop.IsTeleportable)
-                        {
-                            API.sendChatMessageToPlayer(sender, "[Property Manager] Property isn't teleportable.");
-                            return;
-                        }
                         prop.EnterancePos = sender.position;
                         prop.EnteranceRot = sender.rotation;
                         prop.Save();
@@ -284,9 +279,9 @@ namespace RoleplayServer.resources.property_system
                             API.sendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
                             return;
                         }
-                        if (!prop.IsTeleportable)
+                        if (!prop.IsInteractable)
                         {
-                            API.sendChatMessageToPlayer(sender, "[Property Manager] Property isn't teleportable.");
+                            API.sendChatMessageToPlayer(sender, "[Property Manager] Property isn't interactable.");
                             return;
                         }
                         prop.InteractionPos = sender.position;
