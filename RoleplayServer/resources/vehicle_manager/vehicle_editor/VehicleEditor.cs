@@ -3,6 +3,7 @@ using System.Linq;
 using GTANetworkServer;
 using RoleplayServer.resources.job_manager;
 using RoleplayServer.resources.player_manager;
+using RoleplayServer.resources.group_manager;
 
 namespace RoleplayServer.resources.vehicle_manager.vehicle_editor
 {
@@ -52,6 +53,7 @@ namespace RoleplayServer.resources.vehicle_manager.vehicle_editor
                 var color2 = Convert.ToInt32(arguments[5]);
                 var respawnDelay = Convert.ToInt32(arguments[6]);
                 var jobId = Convert.ToInt32(arguments[7]);
+                var groupId = Convert.ToInt32(arguments[8]);
 
                 if (veh.Id != vehId)
                 {
@@ -67,26 +69,42 @@ namespace RoleplayServer.resources.vehicle_manager.vehicle_editor
                     return;
                 }
 
-                if (!Character.IsCharacterRegistered(owner) && owner != "None")
+                if (!Character.IsCharacterRegistered(owner) && owner != "NONE")
                 {
                     API.triggerClientEvent(player, "send_veh_edit_error", "Invalid owner entered. (Character name does not exist.)");
                     return;
                 }
-                                        
+                 
                 if (JobManager.GetJobById(jobId) == null && jobId != 0)
                 {
                     API.triggerClientEvent(player, "send_veh_edit_error", "Invalid job ID entered!");
                     return;
                 }
 
+                if (GroupManager.GetGroupById(groupId) == null && groupId != 0)
+                {
+                    API.triggerClientEvent(player, "send_veh_edit_error", "Invalid group ID entered!");
+                    return;
+                }
+
+                if (owner == "NONE")
+                {
+                    veh.OwnerId = 0;
+                }
+                else
+                {
+                    veh.OwnerId = PlayerManager.Players.Single(x => x.CharacterName == owner).Id;
+                }
+
                 veh.VehModel = modelHash;
-                veh.OwnerId = PlayerManager.Players.Single(x => x.CharacterName == owner).Id;
                 veh.LicensePlate = licensePlate;
                 veh.SpawnColors[0] = color1;
                 veh.SpawnColors[1] = color2;
                 veh.RespawnDelay = respawnDelay;
                 veh.JobId = jobId;
                 veh.Job = JobManager.GetJobById(veh.JobId);
+                veh.Group = GroupManager.GetGroupById(veh.GroupId);
+                veh.GroupId = groupId;
 
                 VehicleManager.respawn_vehicle(veh, API.getEntityPosition(veh.NetHandle));
                 API.setPlayerIntoVehicle(player, veh.NetHandle, -1);
@@ -145,7 +163,7 @@ namespace RoleplayServer.resources.vehicle_manager.vehicle_editor
             }
 
             API.setEntityData(player.handle, "EDIT_VEH", veh);
-            API.triggerClientEvent(player, "show_vehicle_edit_menu", veh.Id, API.getVehicleDisplayName(veh.VehModel), (veh.OwnerId == 0 ? "NONE" : PlayerManager.Players.Single(x => x.Id == veh.OwnerId).CharacterName), veh.LicensePlate, veh.SpawnColors[0], veh.SpawnColors[1], veh.RespawnDelay, veh.JobId);
+            API.triggerClientEvent(player, "show_vehicle_edit_menu", veh.Id, API.getVehicleDisplayName(veh.VehModel), (veh.OwnerId == 0 ? "NONE" : PlayerManager.Players.Single(x => x.Id == veh.OwnerId).CharacterName), veh.LicensePlate, veh.SpawnColors[0], veh.SpawnColors[1], veh.RespawnDelay, veh.JobId, veh.GroupId);
         }
     }
 }
