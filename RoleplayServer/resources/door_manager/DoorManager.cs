@@ -120,5 +120,18 @@ namespace RoleplayServer.resources.door_manager
             }
         }
 
+        [Command("createdoor", GreedyArg = true)]
+        public void create_door(Client player, int model, float x, float y, float z, string desc)
+        {
+            if (player.GetAccount().AdminLevel >= 5)
+            {
+                var door = new Door(model, new Vector3(x, y, z), desc, false);
+                door.Insert();
+                door.RegisterDoor();
+
+                API.sendChatMessageToPlayer(player, $"[Door Manager] Created a door with id {door.Id}");
+            }
+        }
+
     }
 }
