@@ -93,11 +93,13 @@ namespace RoleplayServer.resources.vehicle_dealership
         {
             API.onClientEventTrigger += API_onClientEventTrigger;
 
+            /*
             //Setup dealership doors.
             int i = API.exported.doormanager.registerDoor(1417577297, new Vector3(-60.54582, -1094.749, 26.88872));
             API.exported.doormanager.setDoorState(i, false, 1);
             i = API.exported.doormanager.registerDoor(2059227086, new Vector3(-59.89302, -1092.952, 26.88362));
             API.exported.doormanager.setDoorState(i, false, 1);
+            */
         }
 
         private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
