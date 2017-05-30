@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using GTANetworkServer;
 using GTANetworkShared;
-using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson.Serialization.Options;
 using MongoDB.Driver;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.database_manager;
@@ -28,6 +26,8 @@ namespace RoleplayServer.resources.group_manager
 
         public List<string> RankNames = new List<string> { "R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9", "R10" };
         public List<string> Divisions = new List<string> { "D1", "D2", "D3", "D4", "D5" };
+        public Dictionary<string, Tuple<Vector3, Vector3, VehicleHash, int, int>> groupVehicles = new Dictionary<string, Tuple<Vector3, Vector3, VehicleHash, int, int>>();
+
 
         public List<List<string>> DivisionRanks = new List<List<string>>
         {
@@ -40,7 +40,9 @@ namespace RoleplayServer.resources.group_manager
 
         public DateTime DisbandDate { get; set; }
 
+        public bool LockerSet { get; set; }
         public MarkerZone Locker { get; set; }
+        public MarkerZone ArrestLocation { get; set; }
 
         public Group()
         {
@@ -50,7 +52,9 @@ namespace RoleplayServer.resources.group_manager
             CommandType = 0;
             Motd = "Welcome To Group";
 
+
             Locker = MarkerZone.None;
+            ArrestLocation = MarkerZone.None;
         }
 
         public void Insert()
@@ -65,10 +69,15 @@ namespace RoleplayServer.resources.group_manager
             DatabaseManager.GroupTable.ReplaceOne(filter, this);
         }
 
+
         public void register_markerzones()
         {
+            //Create locker.
+            Locker.Create();
+
             if (Locker != MarkerZone.None)
             {
+
                 Locker.ColZone.onEntityEnterColShape += (shape, entity) =>
                 {
                     if (API.shared.getEntityType(entity) != EntityType.Player)
@@ -77,7 +86,7 @@ namespace RoleplayServer.resources.group_manager
                     }
                     foreach (var c in PlayerManager.Players)
                     {
-                        if(c.Client != entity) { continue; }
+                        if (c.Client != entity) { continue; }
                         c.LockerZoneGroup = this;
                     }
                 };

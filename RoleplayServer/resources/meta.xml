@@ -1,16 +1,16 @@
 <meta>
     <info name="Init" author="Chenko" type="gamemode" />
-	
+
 	<!-- Door Manager -->
 	<include resource="doormanager" />
-	
+
 	<!-- MAIN script with all *.cs files. -->
 	<script src="../bin/Debug/RoleplayServer.dll" type="server" lang="compiled"/>
-	
+
 	<!-- BANK -->
 	<script src="rp_scripts/BankMenu.js" type="client" lang="javascript"/>
-	
-	<!-- PLAYER -->	
+
+	<!-- PLAYER -->
 	<script src="player_manager/PlayerManager.js" type="client" lang="javascript"/>
 	<script src="player_manager/player_interaction/PlayerInteraction.js" type="client" lang="javascript"/>
 	<file src="player_manager/player_interaction/PlayerInteraction.html"/>
@@ -20,25 +20,31 @@
 	<file src="player_manager/login/Login.html"/>
 	<script src="player_manager/CharacterMenu.js" type="client" lang="javascript"/>
   <script src="player_manager/Helpmenu.js" type="client" lang="javascript"/>
-  
+
 	<!-- JOBS -->
 	<script src="job_manager/JobManager.js" type="client" lang="javascript"/>
 	<script src="job_manager/taxi/TaxiJob.js" type="client" lang="javascript"/>
 	<script src="job_manager/fisher/Fisher.js" type="client" lang="javascript"/>
-	
+
 	<!-- VEHICLE -->
 	<script src="vehicle_manager/VehicleMenu.js" type="client" lang="javascript"/>
 	<script src="vehicle_manager/vehicle_editor/VehicleEdit.js" type="client" lang="javascript"/>
 	<file src="vehicle_manager/vehicle_editor/VehicleEdit.html"/>
-	
+
 	<!-- Dealership/Ownership -->
 	<script src="vehicle_dealership/vehicledealer.js" type="client" lang="javascript"/>
 	<script src="vehicle_manager/VehicleOwnership.js" type="client" lang="javascript"/>
-  
+
   <!-- Bag System-->
   <script src="inventory/InventoryManager.js" type="client" lang="javascript"/>
   <file src="inventory/ManageInv.html"/>
-  
+
+  <!--- GROUPS -->
+
+	<script src="group_manager/lspd/LspdLocker.js" type="client" lang="javascript"/>
+	<script src="group_manager/lspd/Lspd.js" type="client" lang="javascript"/>
+
+
 	<!-- CEF  -->
 	<file src="stylesheet/css/metro.css"/>
 	<file src="stylesheet/css/metro-schemes.css"/>
@@ -64,7 +70,7 @@
 	<!-- CORE -->
 	<file src="cef_resources/MTGVRP_LOGO_BIG.png"/>
 	<file src="cef_resources/MTGVRP_LOGO_SMALL.png"/>
-	
-	
+
+
 	<file src="jquery.js" />
 </meta>

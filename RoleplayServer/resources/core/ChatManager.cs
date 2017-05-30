@@ -28,12 +28,11 @@ namespace RoleplayServer.resources.core
             Character character = API.getEntityData(player.handle, "Character");
 
             //Local Chat
-            if (API.getEntityData(player, "MicStatus") == true)
+            if (API.getEntityData(player, "MegaphoneStatus") == true)
             {
-                msg = character.rp_name() + " ~p~[BROADCAST]: " + msg;
-                SendBroadcastMessage(msg);
+                msg = character.rp_name() + " [MEGAPHONE]: " + msg;
+                NearbyMessage(player, 30, msg);
             }
-       
             if (account.AdminDuty == 0)
             {
                 msg = character.rp_name() + " says: " + msg;
@@ -352,7 +351,7 @@ namespace RoleplayServer.resources.core
             string roleplayMsg = null;
 
             switch (type)
-            {
+            { 
                 case 0: //ME
                     roleplayMsg = "* " + PlayerManager.GetName(player) + " " + action;
                     break;
@@ -374,7 +373,7 @@ namespace RoleplayServer.resources.core
                 character.AmeTimer.Stop();
             }
 
-            character.AmeText = API.shared.createTextLabel(Color.PlayerRoleplay + character.CharacterName + action, player.position, 15, (float)(0.5), false, player.dimension);
+            character.AmeText = API.shared.createTextLabel(Color.PlayerRoleplay + character.CharacterName + " " + action, player.position, 15, (float)(0.5), false, player.dimension);
             API.shared.setTextLabelColor(character.AmeText, 194, 162, 218, 255);
             API.shared.attachEntityToEntity(character.AmeText, player.handle, "SKEL_Head", new Vector3(0.0, 0.0, 1.3), new Vector3(0, 0, 0));
 
@@ -390,18 +389,6 @@ namespace RoleplayServer.resources.core
                 API.shared.deleteEntity(c.AmeText);
             }
             c.AmeTimer.Stop();
-        }
-
-        public void SendBroadcastMessage(string msg)
-        {
-            foreach (var c in PlayerManager.Players)
-            {
-                if (c.Phone.IsOn == false)
-                {
-                    return;
-                }
-                API.sendChatMessageToPlayer(c.Client, msg);
-            }
         }
     }
 }

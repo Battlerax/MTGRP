@@ -17,7 +17,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
             API.setCanOpenChat(false);
             
             API.sleep(1000);
-            vehicle_edit_browser.call("populate_fields", args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
+            vehicle_edit_browser.call("populate_fields", args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8]);
             break;
         case "send_veh_edit_error":
             vehicle_edit_browser.call("send_error", args[0]);
@@ -42,8 +42,8 @@ function cancel_veh_edit() {
     API.setCanOpenChat(true);
 }
 
-function vehicle_edit_changes(vehicle_id, model, owner, license_plate, color_1, color_2, respawn_delay, job_id) {
-    API.triggerServerEvent("vehicle_edit_save", vehicle_id, model, owner, license_plate, color_1, color_2, respawn_delay, job_id);
+function vehicle_edit_changes(vehicle_id, model, owner, license_plate, color_1, color_2, respawn_delay, job_id, group_id) {
+    API.triggerServerEvent("vehicle_edit_save", vehicle_id, model, owner, license_plate, color_1, color_2, respawn_delay, job_id, group_id);
 }
 
 function respawn_veh() {
