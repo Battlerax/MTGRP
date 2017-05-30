@@ -24,7 +24,7 @@ namespace RoleplayServer.resources.property_system
 
         private void API_onResourceStart()
         {
-            Properties = DatabaseManager.PropertyTable.Find(x => x.Id != -1).ToList();
+            Properties = DatabaseManager.PropertyTable.Find(FilterDefinition<Property>.Empty).ToList();
             foreach (var prop in Properties)
             {
                 prop.CreateProperty();

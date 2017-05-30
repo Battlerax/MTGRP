@@ -23,12 +23,13 @@ namespace RoleplayServer.resources.property_system
         public string PropertyName { get; set; }
         public PropertyManager.PropertyTypes Type { get; set; }
         public int Supplies { get; set; }
-        public bool IsEnterable { get; set; }
+        public bool IsTeleportable { get; set; }
         public Vector3 TargetPos { get; set; }
         public Vector3 TargetRot { get; set; }
+        public int TargetDimension { get; set; }
 
+        //Inventory System
         public List<IInventoryItem> Inventory { get; set; }
-
         public int MaxInvStorage => 1000; //TODO: to be changed.
 
         //EnteranceInfo
@@ -39,8 +40,7 @@ namespace RoleplayServer.resources.property_system
         public string InteractionString { get; set; }
         public Vector3 InteractionPos { get; set; }
         public Vector3 InteractionRot { get; set; }
-        public Vector3 InteractionDimension { get; set; }
-
+        public int InteractionDimension { get; set; }
 
         [BsonIgnore]
         public MarkerZone EnteranceMarker { get; set; }
@@ -76,13 +76,26 @@ namespace RoleplayServer.resources.property_system
 
         public void CreateProperty()
         {
-            EnteranceMarker = new MarkerZone(EnterancePos, EnteranceRot) {LabelText = EnteranceString};
+            EnteranceMarker = new MarkerZone(EnterancePos, EnteranceRot) {LabelText = EnteranceString + "\n" + Type + "\n" + "ID: " + Id};
             EnteranceMarker.Create();
             EnteranceMarker.ColZone.setData("property_enterance", Id);
 
-            InteractionMarker = new MarkerZone(InteractionPos, InteractionRot) { LabelText = InteractionString };
+            InteractionMarker = new MarkerZone(InteractionPos, InteractionRot, InteractionDimension) { LabelText = InteractionString };
             InteractionMarker.Create();
             InteractionMarker.ColZone.setData("property_interaction", Id);
+        }
+
+        public void UpdateMarkers()
+        {
+            EnteranceMarker.Location = EnterancePos;
+            EnteranceMarker.Rotation = EnteranceRot;
+            EnteranceMarker.LabelText = EnteranceString + "\n" + Type + "\n" + "ID: " + Id;
+            EnteranceMarker.Refresh();
+
+            InteractionMarker.Location = InteractionPos;
+            InteractionMarker.Rotation = InteractionRot;
+            InteractionMarker.LabelText = InteractionString;
+            InteractionMarker.Refresh();
         }
     }
 }
