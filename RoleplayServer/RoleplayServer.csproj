@@ -81,7 +81,6 @@
     <Compile Include="resources\core\ChatManager.cs" />
     <Compile Include="resources\core\Color.cs" />
     <Compile Include="resources\core\DebugManager.cs" />
-    <Compile Include="resources\core\DoorManager.cs" />
     <Compile Include="resources\core\ExtensionMethods.cs" />
     <Compile Include="resources\core\MarkerZone.cs" />
     <Compile Include="resources\core\TimeWeatherManager.cs" />
