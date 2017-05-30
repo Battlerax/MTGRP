@@ -77,7 +77,7 @@ namespace RoleplayServer.resources.door_manager
         public void RegisterDoor()
         {
             Shape = API.shared.createSphereColShape(Position, 35f);
-            Text = API.shared.createTextLabel("~g~Door Id: " + Id, Position, 10f, 1f, false);
+            Text = API.shared.createTextLabel("~g~Door Id: " + Id, Position.Add(new Vector3(-1, 0, 0)), 5f, 1f, true);
             Shape.onEntityEnterColShape += Shape_onEntityEnterColShape;
             Doors.Add(this);
         }
