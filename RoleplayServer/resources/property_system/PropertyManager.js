@@ -20,7 +20,8 @@ API.onServerEventTrigger.connect((eventName, args) => {
             editMenu.AddItem(API.createMenuItem("Change Teleport Position", "Change the teleport position on /enter."));
             editMenu.AddItem(API.createMenuItem("Toggle Enteractable", "Set can interact."));
             editMenu.AddItem(API.createMenuItem("Move Interaction Point", "Moves the interaction point."));
-            editMenu.AddItem(API.createMenuItem("Toggle Business Locked", "Set business as locked or not."));
+            editMenu.AddItem(API.createMenuItem("Toggle Property Locked", "Set property as locked or not."));
+            editMenu.AddItem(API.createMenuItem("Set Price", "Set proerty's price."));
             editMenu.AddItem(API.createMenuItem("~r~Delete Property", "Delete the property."));
 
             editMenu.Visible = true;
@@ -106,6 +107,17 @@ API.onServerEventTrigger.connect((eventName, args) => {
                         break;
 
                     case 11:
+                        var price = "";
+                        while (price === "") {
+                            price = API.getUserInput("", 100);
+                            if (price === "") {
+                                sendMessage("Price can't be empty.");
+                            }
+                        }
+                        API.triggerServerEvent("editproperty_setprice", selID, price);
+                        break;
+
+                    case 12:
                         editMenu.Visible = false;
                         API.triggerServerEvent("editproperty_deleteproperty", selID);
                         break;

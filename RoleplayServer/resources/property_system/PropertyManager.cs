@@ -323,6 +323,32 @@ namespace RoleplayServer.resources.property_system
                         API.sendChatMessageToPlayer(sender, $"[Property Manager] Property #{id} was deleted.");
                     }
                     break;
+
+                case "editproperty_setprice":
+                    if (sender.GetAccount().AdminLevel >= 5)
+                    {
+                        var id = Convert.ToInt32(arguments[0]);
+                        var prop = Properties.SingleOrDefault(x => x.Id == id);
+                        if (prop == null)
+                        {
+                            API.sendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                            return;
+                        }
+                        int price;
+                        if (int.TryParse((string) arguments[1], out price))
+                        {
+                            prop.PropertyPrice = price;
+                            prop.Save();
+                            prop.UpdateMarkers();
+                            API.sendChatMessageToPlayer(sender,
+                                $"[Property Manager] Price of Property #{id} was changed to: '{price}'");
+                        }
+                        else
+                        {
+                            API.sendChatMessageToPlayer(sender, "[Property Manager] Invalid Price Entered.");
+                        }
+                    }
+                    break;
             }
         }
 

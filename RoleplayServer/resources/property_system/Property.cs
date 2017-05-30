@@ -48,6 +48,8 @@ namespace RoleplayServer.resources.property_system
 
         public bool IsLocked { get; set; }
 
+        public int PropertyPrice { get; set; }
+
         [BsonIgnore]
         public MarkerZone EnteranceMarker { get; set; }
 
