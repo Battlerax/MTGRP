@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
 using RoleplayServer.resources.core;
+using RoleplayServer.resources.door_manager;
 using RoleplayServer.resources.group_manager;
 using RoleplayServer.resources.group_manager.lspd;
 using RoleplayServer.resources.job_manager;
@@ -26,6 +27,7 @@ namespace RoleplayServer.resources.database_manager
         public static IMongoCollection<PhoneMessage> MessagesTable;
         public static IMongoCollection<Group> GroupTable;
         public static IMongoCollection<Property> PropertyTable;
+        public static IMongoCollection<Door> DoorsTable;
 
         public static IMongoCollection<Crime> CrimeTable;
         public static IMongoCollection<CriminalRecord> CriminalRecordTable;
@@ -47,6 +49,7 @@ namespace RoleplayServer.resources.database_manager
             MessagesTable = _database.GetCollection<PhoneMessage>("phonemessages");
             GroupTable = _database.GetCollection<Group>("groups");
             PropertyTable = _database.GetCollection<Property>("properties");
+            DoorsTable = _database.GetCollection<Door>("doors");
 
             CrimeTable = _database.GetCollection<Crime>("crimes");
             CriminalRecordTable = _database.GetCollection<CriminalRecord>("criminalrecords");
