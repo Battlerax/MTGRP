@@ -41,7 +41,6 @@ namespace RoleplayServer.resources.property_system
         public Vector3 EnteranceRot { get; set; }
 
         public bool IsInteractable { get; set; }
-        public string InteractionString { get; set; }
         public Vector3 InteractionPos { get; set; }
         public Vector3 InteractionRot { get; set; }
         public int InteractionDimension { get; set; }
@@ -98,7 +97,7 @@ namespace RoleplayServer.resources.property_system
             {
                 InteractionMarker = new MarkerZone(InteractionPos, InteractionRot, InteractionDimension)
                 {
-                    LabelText = InteractionString
+                    LabelText = PropertyManager.GetInteractText(Type)
                 };
                 InteractionMarker.Create();
                 InteractionMarker.ColZone.setData("property_interaction", Id);
@@ -116,7 +115,7 @@ namespace RoleplayServer.resources.property_system
             {
                 InteractionMarker.Location = InteractionPos;
                 InteractionMarker.Rotation = InteractionRot;
-                InteractionMarker.LabelText = InteractionString;
+                InteractionMarker.LabelText = PropertyManager.GetInteractText(Type);
                 InteractionMarker.Refresh();
             }
         }

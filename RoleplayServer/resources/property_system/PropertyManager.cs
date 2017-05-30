@@ -377,22 +377,27 @@ namespace RoleplayServer.resources.property_system
             }
         }
 
-        private Property IsAtPropertyEnterance(Client player)
+        public static string GetInteractText(PropertyTypes type)
         {
-            if (API.hasEntityData(player, "at_property_id"))
+            return "/interact";
+        }
+
+        public static Property IsAtPropertyEnterance(Client player)
+        {
+            if (API.shared.hasEntityData(player, "at_property_id"))
             {
-                int id = API.getEntityData(player, "at_property_id");
+                int id = API.shared.getEntityData(player, "at_property_id");
                 var property = Properties.Single(x => x.Id == id);
                 return property;
             }
             return null;
         }
 
-        private Property IsAtPropertyInteraction(Client player)
+        public static Property IsAtPropertyInteraction(Client player)
         {
-            if (API.hasEntityData(player, "at_interaction_property_id"))
+            if (API.shared.hasEntityData(player, "at_interaction_property_id"))
             {
-                int id = API.getEntityData(player, "at_interaction_property_id");
+                int id = API.shared.getEntityData(player, "at_interaction_property_id");
                 var property = Properties.Single(x => x.Id == id);
                 return property;
             }
