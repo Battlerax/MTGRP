@@ -9,6 +9,7 @@ using MongoDB.Driver;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.database_manager;
 using RoleplayServer.resources.group_manager;
+using RoleplayServer.resources.player_manager;
 
 namespace RoleplayServer.resources.door_manager
 {
@@ -218,6 +219,16 @@ namespace RoleplayServer.resources.door_manager
             }
         }
 
+        public bool DoesPlayerHaveDoorAccess(Client client, Door d)
+        {
+            Character c = client.GetCharacter();
+            Account a = client.GetAccount();
+            if (c.GroupId != 0 && c.GroupId == d.GroupId) return true;
+            //TODO add check for property
+            if (a.AdminLevel >= 5) return true;
+            return false;
+        }
+
         [Command("lockdoor")]
         public void Lockdoor(Client player, int id)
         {
@@ -227,9 +238,7 @@ namespace RoleplayServer.resources.door_manager
                 API.sendChatMessageToPlayer(player, "Invalid door id.");
                 return;
             }
-            var character = player.GetCharacter();
-            var account = player.GetAccount();
-            if ((character.GroupId != 0 && character.GroupId == door.GroupId) || account.AdminLevel >= 5) //TODO: add check for property.
+            if (DoesPlayerHaveDoorAccess(player, door))
             {
                 if (player.position.DistanceTo(door.Position) > 10.0f)
                 {
@@ -255,9 +264,7 @@ namespace RoleplayServer.resources.door_manager
                 API.sendChatMessageToPlayer(player, "Invalid door id.");
                 return;
             }
-            var character = player.GetCharacter();
-            var account = player.GetAccount();
-            if ((character.GroupId != 0 && character.GroupId == door.GroupId) || account.AdminLevel >= 5) //TODO: add check for property.
+            if (DoesPlayerHaveDoorAccess(player, door)) //TODO: add check for property.
             {
                 if (player.position.DistanceTo(door.Position) > 10.0f)
                 {
