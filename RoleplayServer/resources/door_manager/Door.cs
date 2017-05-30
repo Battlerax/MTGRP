@@ -20,22 +20,24 @@ namespace RoleplayServer.resources.door_manager
         [BsonIgnore]
         public static List<Door> Doors = new List<Door>(); 
 
-        public int Id;
+        public int Id { get; set; }
         public int Hash { get; set; }
         public Vector3 Position { get; set; }
-        public bool Locked;
-        public float State;
-        public string Description;
+        public bool Locked { get; set; }
+        public float State { get; set; }
+        public string Description { get; set; }
+        public bool DoesShowInAdmin { get; set; }
 
         [BsonIgnore]
         public ColShape Shape;
 
-        public Door(int model, Vector3 pos, string desc, bool locked)
+        public Door(int model, Vector3 pos, string desc, bool locked, bool doeshow)
         {
             Hash = model;
             Position = pos;
             Locked = locked;
             Description = desc;
+            DoesShowInAdmin = doeshow;
             State = 0f; //We want it to be closed by default.
         }
 
@@ -77,8 +79,6 @@ namespace RoleplayServer.resources.door_manager
                 API.shared.sendNativeToPlayer(player, SET_STATE_OF_CLOSEST_DOOR_OF_TYPE,
                     Hash, Position.X, Position.Y, Position.Z,
                     Locked, State, false);
-
-                API.shared.sendChatMessageToPlayer(player, "DOOR REFRESHED!");
             }
         }
 
@@ -93,8 +93,6 @@ namespace RoleplayServer.resources.door_manager
                 API.shared.sendNativeToPlayer(player, SET_STATE_OF_CLOSEST_DOOR_OF_TYPE,
                     Hash, Position.X, Position.Y, Position.Z,
                     Locked, State, false);
-
-                API.shared.sendChatMessageToPlayer(player, "DOOR SHOULD BE UNLOCKED!");
             }
         }
     }

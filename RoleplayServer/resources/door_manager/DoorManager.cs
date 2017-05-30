@@ -36,7 +36,7 @@ namespace RoleplayServer.resources.door_manager
                         var position = (Vector3) arguments[1];
                         var desc = (string) arguments[2];
                         
-                        var door = new Door(model, position, desc, false);
+                        var door = new Door(model, position, desc, false, true);
                         door.Insert();
                         door.RegisterDoor();
 
@@ -115,17 +115,18 @@ namespace RoleplayServer.resources.door_manager
         {
             if (player.GetAccount().AdminLevel >= 5)
             {
-                var doors = Door.Doors.Select(x => new[] {x.Description, x.Id.ToString()}).ToArray();
+                var doors = Door.Doors.Where(x => x.DoesShowInAdmin == true).Select(x => new[] {x.Description, x.Id.ToString()}).ToArray();
                 API.triggerClientEvent(player, "doormanager_managedoors", API.toJson(doors));
             }
         }
 
+        //Failsafe if the cursor doesn't work.
         [Command("createdoor", GreedyArg = true)]
         public void create_door(Client player, int model, float x, float y, float z, string desc)
         {
             if (player.GetAccount().AdminLevel >= 5)
             {
-                var door = new Door(model, new Vector3(x, y, z), desc, false);
+                var door = new Door(model, new Vector3(x, y, z), desc, false, true);
                 door.Insert();
                 door.RegisterDoor();
 
