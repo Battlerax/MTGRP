@@ -37,6 +37,7 @@ namespace RoleplayServer.resources.property_system
         public Vector3 EnterancePos { get; set; }
         public Vector3 EnteranceRot { get; set; }
 
+        public bool IsInteractable { get; set; }
         public string InteractionString { get; set; }
         public Vector3 InteractionPos { get; set; }
         public Vector3 InteractionRot { get; set; }

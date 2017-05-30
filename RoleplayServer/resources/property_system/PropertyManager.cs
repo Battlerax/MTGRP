@@ -109,5 +109,21 @@ namespace RoleplayServer.resources.property_system
                 API.sendChatMessageToPlayer(player, "You have sucessfully create a property of type " + type.ToString());
             } 
         }
+
+        [Command("editproperty")]
+        public void edit_property(Client player, int id)
+        {
+            var account = player.GetAccount();
+            if (account.AdminLevel >= 5)
+            {
+                var prop = Properties.SingleOrDefault(x => x.Id == id);
+                if (prop == null)
+                {
+                    API.sendChatMessageToPlayer(player, "Invalid Property Id.");
+                    return;
+                }
+                API.triggerClientEvent(player, "editproperty_showmenu", prop.Id);
+            }
+        }
     }
 }

@@ -166,6 +166,7 @@
     <Content Include="resources\player_manager\player_interaction\PlayerInteraction.html" />
     <Content Include="resources\player_manager\player_list\PlayerList.html" />
     <Content Include="resources\player_manager\player_list\PlayerList.js" />
+    <Content Include="resources\property_system\PropertyManager.js" />
     <Content Include="resources\rp_scripts\BankMenu.js" />
     <Content Include="resources\stylesheet\css\metro-colors.css" />
     <Content Include="resources\stylesheet\css\metro-colors.min.css" />
