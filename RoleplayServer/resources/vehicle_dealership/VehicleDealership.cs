@@ -93,12 +93,6 @@ namespace RoleplayServer.resources.vehicle_dealership
         public VehicleDealership()
         {
             API.onClientEventTrigger += API_onClientEventTrigger;
-
-            //We don't want to save them or show them in admin menu.
-            var door = new Door(1417577297, new Vector3(-60.54582, -1094.749, 26.88872), "", false, false);
-            door.RegisterDoor();
-            var door2 = new Door(2059227086, new Vector3(-59.89302, -1092.952, 26.88362), "", false, false);
-            door2.RegisterDoor();
         }
 
         private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)

@@ -27,12 +27,20 @@ namespace RoleplayServer.resources.door_manager
         public float State { get; set; }
         public string Description { get; set; }
         public bool DoesShowInAdmin { get; set; }
+        public int GroupId { get; set; }
+        public int PropertyId { get; set; }
 
         [BsonIgnore]
         public ColShape Shape;
 
+        [BsonIgnore]
+        public TextLabel Text;
+
         public Door(int model, Vector3 pos, string desc, bool locked, bool doeshow)
         {
+            Id = -1;
+            GroupId = -1;
+            PropertyId = -1;
             Hash = model;
             Position = pos;
             Locked = locked;
@@ -57,6 +65,9 @@ namespace RoleplayServer.resources.door_manager
         {
             Locked = true;
             RefreshDoor();
+            Text.delete();
+            Shape.onEntityEnterColShape -= Shape_onEntityEnterColShape;
+            API.shared.deleteColShape(Shape);
 
             var filter = MongoDB.Driver.Builders<Door>.Filter.Eq("_id", Id);
             DatabaseManager.DoorsTable.DeleteOne(filter);
@@ -66,6 +77,7 @@ namespace RoleplayServer.resources.door_manager
         public void RegisterDoor()
         {
             Shape = API.shared.createSphereColShape(Position, 35f);
+            Text = API.shared.createTextLabel("~g~Door Id: " + Id, Position, 10f, 1f, false);
             Shape.onEntityEnterColShape += Shape_onEntityEnterColShape;
             Doors.Add(this);
         }

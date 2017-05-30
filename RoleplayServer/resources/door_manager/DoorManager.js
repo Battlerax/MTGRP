@@ -2,6 +2,68 @@
 var actionMenu = null;
 
 var chosenDoor;
+function showEditMenu(id) {
+    chosenDoor = id;
+    actionMenu = API.createMenu("Door Actions", "", 0, 0, 6);
+    actionMenu.AddItem(API.createMenuItem("Toggle Lock", "Locks or unlocks door."));
+    actionMenu.AddItem(API.createMenuItem("Change Description", "Chnage door description."));
+    actionMenu.AddItem(API.createMenuItem("Goto", "Goto door."));
+    actionMenu.AddItem(API.createMenuItem("Set Group", "Set a group which has access to door."));
+    actionMenu.AddItem(API.createMenuItem("Set Property", "Set a property which has access to door."));
+    actionMenu.AddItem(API.createMenuItem("~r~Toggle Hide Door", "Toggles hide door from /managedoors."));
+    actionMenu.AddItem(API.createMenuItem("~r~Delete", "Deletes door."));
+
+    actionMenu.Visible = true;
+
+    actionMenu.OnItemSelect.connect(function (sender, item, index) {
+        switch (index) {
+            case 0:
+                API.triggerServerEvent("doormanager_togglelock", chosenDoor);
+                break;
+            case 1:
+                var desc = "";
+                while (desc === "") {
+                    desc = API.getUserInput("", 100);
+                    if (desc === "") {
+                        API.sendChatMessage("[Door Manager] Description can't be empty.");
+                    }
+                }
+                API.triggerServerEvent("doormanager_changedesc", chosenDoor, desc);
+                break;
+            case 2:
+                API.triggerServerEvent("doormanager_goto", chosenDoor);
+                break;
+            case 3:
+                var groupid = "";
+                while (groupid === "") {
+                    groupid = API.getUserInput("", 100);
+                    if (groupid === "") {
+                        API.sendChatMessage("[Door Manager] GroupID can't be empty.");
+                    }
+                }
+                API.triggerServerEvent("doormanager_setgroup", chosenDoor, groupid);
+                break;
+            case 4:
+                var propertyid = "";
+                while (propertyid === "") {
+                    propertyid = API.getUserInput("", 100);
+                    if (propertyid === "") {
+                        API.sendChatMessage("[Door Manager] PropertyID can't be empty.");
+                    }
+                }
+                API.triggerServerEvent("doormanager_setproperty", chosenDoor, propertyid);
+                break;
+            case 5:
+                API.triggerServerEvent("doormanager_hide", chosenDoor);
+                break;
+            case 6:
+                API.triggerServerEvent("doormanager_delete", chosenDoor);
+                actionMenu.Visible = false;
+                break;
+        }
+    });
+}
+
 API.onServerEventTrigger.connect(function (eventName, args) {
     switch (eventName) {
         case "doormanager_managedoors":
@@ -13,12 +75,6 @@ API.onServerEventTrigger.connect(function (eventName, args) {
             }
             gMenu.AddItem(API.createMenuItem("Create New Door", "CreateDoor"));
 
-            actionMenu = API.createMenu("Door Actions", "", 0, 0, 6);
-            actionMenu.AddItem(API.createMenuItem("Toggle Lock", "Locks or unlocks door."));
-            actionMenu.AddItem(API.createMenuItem("Change Description", "Chnage door description."));
-            actionMenu.AddItem(API.createMenuItem("Goto", "Goto door."));
-            actionMenu.AddItem(API.createMenuItem("~r~Delete", "Deletes door."));
-
             gMenu.Visible = true;
 
             gMenu.OnItemSelect.connect(function (sender, item, index) {
@@ -29,36 +85,14 @@ API.onServerEventTrigger.connect(function (eventName, args) {
                     selectingDoor = true;
                     API.sendChatMessage("[Door Manager] Select a door using your mouse.");
                 } else {
-                    chosenDoor = item.Description;
                     gMenu.Visible = false;
-                    actionMenu.Visible = true;
+                    showEditMenu(item.Description);
                 }
             });
+            break;
 
-            actionMenu.OnItemSelect.connect(function (sender, item, index) {
-                switch(index) {
-                    case 0:
-                        API.triggerServerEvent("doormanager_togglelock", chosenDoor);
-                        break;
-                    case 1:
-                        var desc = "";
-                        while (desc === "") {
-                            desc = API.getUserInput("", 100);
-                            if (desc === "") {
-                                API.sendChatMessage("[Door Manager] Description can't be empty.");
-                            }
-                        }
-                        API.triggerServerEvent("doormanager_changedesc", chosenDoor, desc);
-                        break;
-                    case 2:
-                        API.triggerServerEvent("doormanager_goto", chosenDoor);
-                        break;
-                    case 3:
-                        API.triggerServerEvent("doormanager_delete", chosenDoor);
-                        actionMenu.Visible = false;
-                        break;
-                }
-            });
+        case "doormanager_editdoor":
+            showEditMenu(args[0]);
             break;
     }
 });

@@ -107,6 +107,65 @@ namespace RoleplayServer.resources.door_manager
                         API.sendChatMessageToPlayer(sender, "[Door Manager] Door removed, id:" + door.Id);
                     }
                     break;
+
+                case "doormanager_setgroup":
+                    if (sender.GetAccount().AdminLevel >= 5)
+                    {
+                        var id = Convert.ToInt32(arguments[0]);
+                        var door = Door.Doors.SingleOrDefault(x => x.Id == id);
+                        if (door == null)
+                        {
+                            API.sendChatMessageToPlayer(sender, "[Door Manager] That ID doesn't exist.");
+                            return;
+                        }
+                        int groupid;
+                        if (int.TryParse((string)arguments[1], out groupid))
+                        {
+                            door.GroupId = groupid;
+                            door.Save();
+                            API.sendChatMessageToPlayer(sender, "[Door Manager] Group id set to " + groupid + " for door id:" + door.Id);
+                        }
+                    }
+                    break;
+
+                case "doormanager_setproperty":
+                    if (sender.GetAccount().AdminLevel >= 5)
+                    {
+                        var id = Convert.ToInt32(arguments[0]);
+                        var door = Door.Doors.SingleOrDefault(x => x.Id == id);
+                        if (door == null)
+                        {
+                            API.sendChatMessageToPlayer(sender, "[Door Manager] That ID doesn't exist.");
+                            return;
+                        }
+                        int prop;
+                        if (int.TryParse((string)arguments[1], out prop))
+                        {
+                            door.PropertyId = prop;
+                            door.Save();
+                            API.sendChatMessageToPlayer(sender, "[Door Manager] PropertyID set to " + prop + " for door id:" + door.Id);
+                        }
+                    }
+                    break;
+
+                case "doormanager_hide":
+                    if (sender.GetAccount().AdminLevel >= 5)
+                    {
+                        var id = Convert.ToInt32(arguments[0]);
+                        var door = Door.Doors.SingleOrDefault(x => x.Id == id);
+                        if (door == null)
+                        {
+                            API.sendChatMessageToPlayer(sender, "[Door Manager] That ID doesn't exist.");
+                            return;
+                        }
+                        door.DoesShowInAdmin = !door.DoesShowInAdmin;
+                        door.Save();
+                        API.sendChatMessageToPlayer(sender,
+                            "[Door Manager] Door was " + (door.DoesShowInAdmin ? "unhidden" : "hidden") +
+                            " from /managedoors.");
+                        API.sendChatMessageToPlayer(sender, "Could edit the door with /editdoor [id]");
+                    }
+                    break;
             }
         }
 
@@ -117,6 +176,21 @@ namespace RoleplayServer.resources.door_manager
             {
                 var doors = Door.Doors.Where(x => x.DoesShowInAdmin == true).Select(x => new[] {x.Description, x.Id.ToString()}).ToArray();
                 API.triggerClientEvent(player, "doormanager_managedoors", API.toJson(doors));
+            }
+        }
+
+        [Command("editdoor")]
+        public void edit_door(Client player, int id)
+        {
+            if (player.GetAccount().AdminLevel >= 5)
+            {
+                var door = Door.Doors.SingleOrDefault(x => x.Id == id);
+                if (door == null)
+                {
+                    API.sendChatMessageToPlayer(player, "[Door Manager] That ID doesn't exist.");
+                    return;
+                }
+                API.triggerClientEvent(player, "doormanager_editdoor", id);
             }
         }
 
@@ -134,5 +208,60 @@ namespace RoleplayServer.resources.door_manager
             }
         }
 
+        [Command("lockdoor")]
+        public void Lockdoor(Client player, int id)
+        {
+            var door = Door.Doors.SingleOrDefault(x => x.Id == id);
+            if (door == null)
+            {
+                API.sendChatMessageToPlayer(player, "Invalid door id.");
+                return;
+            }
+            var character = player.GetCharacter();
+            var account = player.GetAccount();
+            if (character.GroupId == door.GroupId || account.AdminLevel >= 5) //TODO: add check for property.
+            {
+                if (player.position.DistanceTo(door.Position) > 10.0f)
+                {
+                    API.sendChatMessageToPlayer(player, "You must be near the door.");
+                    return;
+                }
+
+                door.Locked = true;
+                door.RefreshDoor();
+                door.Save();
+                API.sendChatMessageToPlayer(player, "Door ~r~Locked!");
+            }
+            else
+                API.sendChatMessageToPlayer(player, "Insufficient permissions.");
+        }
+
+        [Command("unlockdoor")]
+        public void Unlockdoor(Client player, int id)
+        {
+            var door = Door.Doors.SingleOrDefault(x => x.Id == id);
+            if (door == null)
+            {
+                API.sendChatMessageToPlayer(player, "Invalid door id.");
+                return;
+            }
+            var character = player.GetCharacter();
+            var account = player.GetAccount();
+            if (character.GroupId == door.GroupId || account.AdminLevel >= 5) //TODO: add check for property.
+            {
+                if (player.position.DistanceTo(door.Position) > 10.0f)
+                {
+                    API.sendChatMessageToPlayer(player, "You must be near the door.");
+                    return;
+                }
+
+                door.Locked = false;
+                door.RefreshDoor();
+                door.Save();
+                API.sendChatMessageToPlayer(player, "Door ~g~Unocked!");
+            }
+            else
+                API.sendChatMessageToPlayer(player, "Insufficient permissions.");
+        }
     }
 }
