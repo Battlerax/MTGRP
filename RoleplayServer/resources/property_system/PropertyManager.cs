@@ -404,6 +404,21 @@ namespace RoleplayServer.resources.property_system
             return null;
         }
 
+        [Command("enter")]
+        public void enterproperty(Client player)
+        {
+            var prop = IsAtPropertyEnterance(player);
+            if (prop != null)
+            {
+                if (prop.IsTeleportable && (!prop.IsLocked || prop.OwnerId == player.GetCharacter().Id))
+                {
+                    player.position = prop.TargetPos;
+                    player.rotation = prop.TargetRot;
+                    player.dimension = prop.TargetDimension;
+                }
+            }
+        }
+
         [Command("createproperty")]
         public void create_property(Client player, PropertyTypes type)
         {
