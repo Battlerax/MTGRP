@@ -76,6 +76,9 @@ namespace RoleplayServer.resources.property_system
 
         public void Delete()
         {
+            EnteranceMarker?.Destroy();
+            InteractionMarker?.Destroy();
+
             var filter = MongoDB.Driver.Builders<Property>.Filter.Eq("_id", Id);
             DatabaseManager.PropertyTable.DeleteOne(filter);
         }
