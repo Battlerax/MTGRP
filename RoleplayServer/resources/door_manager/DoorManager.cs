@@ -8,6 +8,7 @@ using GTANetworkShared;
 using MongoDB.Driver;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.database_manager;
+using RoleplayServer.resources.group_manager;
 
 namespace RoleplayServer.resources.door_manager
 {
@@ -121,9 +122,17 @@ namespace RoleplayServer.resources.door_manager
                         int groupid;
                         if (int.TryParse((string)arguments[1], out groupid))
                         {
-                            door.GroupId = groupid;
-                            door.Save();
-                            API.sendChatMessageToPlayer(sender, "[Door Manager] Group id set to " + groupid + " for door id:" + door.Id);
+                            if (GroupManager.Groups.Exists(x => x.Id == groupid))
+                            {
+                                door.GroupId = groupid;
+                                door.Save();
+                                API.sendChatMessageToPlayer(sender,
+                                    "[Door Manager] Group id set to " + groupid + " for door id:" + door.Id);
+                            }
+                            else
+                            {
+                                API.sendChatMessageToPlayer(sender, "Invalid group id.");
+                            }
                         }
                     }
                     break;
@@ -141,6 +150,7 @@ namespace RoleplayServer.resources.door_manager
                         int prop;
                         if (int.TryParse((string)arguments[1], out prop))
                         {
+                            //TODO: check for valid property.
                             door.PropertyId = prop;
                             door.Save();
                             API.sendChatMessageToPlayer(sender, "[Door Manager] PropertyID set to " + prop + " for door id:" + door.Id);
