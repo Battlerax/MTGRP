@@ -9,6 +9,7 @@ using MongoDB.Driver;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.database_manager;
 using RoleplayServer.resources.door_manager;
+using RoleplayServer.resources.inventory;
 using RoleplayServer.resources.player_manager;
 
 namespace RoleplayServer.resources.property_system
@@ -467,6 +468,19 @@ namespace RoleplayServer.resources.property_system
             {
                 API.sendChatMessageToPlayer(player, "You don't own that property.");
             }
+        }
+
+        [Command("propertystorage")]
+        public void PropertyStorage(Client player)
+        {
+            var prop = IsAtPropertyInteraction(player);
+            if (prop == null)
+            {
+                API.sendChatMessageToPlayer(player, "You aren't at an enteraction point.");
+                return;
+            }
+
+            InventoryManager.ShowInventoryManager(player, player.GetCharacter(), prop, "Inventory: ", "Property: ");
         }
 
         [Command("createproperty")]
