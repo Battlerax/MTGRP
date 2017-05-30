@@ -1,9 +1,6 @@
 <meta>
     <info name="Init" author="Chenko" type="gamemode" />
 	
-	<!-- Door Manager -->
-	<include resource="doormanager" />
-	
 	<!-- MAIN script with all *.cs files. -->
 	<script src="../bin/Debug/RoleplayServer.dll" type="server" lang="compiled"/>
 	
@@ -65,6 +62,7 @@
 	<file src="cef_resources/MTGVRP_LOGO_BIG.png"/>
 	<file src="cef_resources/MTGVRP_LOGO_SMALL.png"/>
 	
-	
+	<script src="door_manager/DoorManager.js" type="client" lang="javascript"/>  
+
 	<file src="jquery.js" />
 </meta>
