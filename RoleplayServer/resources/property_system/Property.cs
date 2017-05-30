@@ -10,6 +10,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.database_manager;
+using RoleplayServer.resources.door_manager;
 using RoleplayServer.resources.inventory;
 using RoleplayServer.resources.vehicle_manager;
 
@@ -28,6 +29,8 @@ namespace RoleplayServer.resources.property_system
         public Vector3 TargetRot { get; set; }
         public int TargetDimension { get; set; }
 
+        public int MainDoorId { get; set; }
+
         //Inventory System
         public List<IInventoryItem> Inventory { get; set; }
         public int MaxInvStorage => 1000; //TODO: to be changed.
@@ -42,6 +45,8 @@ namespace RoleplayServer.resources.property_system
         public Vector3 InteractionPos { get; set; }
         public Vector3 InteractionRot { get; set; }
         public int InteractionDimension { get; set; }
+
+        public bool IsLocked { get; set; }
 
         [BsonIgnore]
         public MarkerZone EnteranceMarker { get; set; }
@@ -97,6 +102,19 @@ namespace RoleplayServer.resources.property_system
             InteractionMarker.Rotation = InteractionRot;
             InteractionMarker.LabelText = InteractionString;
             InteractionMarker.Refresh();
+        }
+
+        public void UpdateLockStatus()
+        {
+            if (!IsTeleportable)
+            {
+                var door = Door.Doors.SingleOrDefault(x => x.Id == MainDoorId);
+                if (door != null)
+                {
+                    door.Locked = IsLocked;
+                    door.RefreshDoor();
+                }
+            }
         }
     }
 }
