@@ -87,6 +87,9 @@ namespace RoleplayServer.resources.property_system
 
         public void CreateProperty()
         {
+            if (OwnerId == 0)
+                EnteranceString = "Unowned. /buyproperty to buy it.";
+
             EnteranceMarker = new MarkerZone(EnterancePos, EnteranceRot) {LabelText = EnteranceString + "\n" + Type + "\n" + "ID: " + Id};
             EnteranceMarker.Create();
             EnteranceMarker.ColZone.setData("property_enterance", Id);

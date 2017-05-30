@@ -21,7 +21,8 @@ API.onServerEventTrigger.connect((eventName, args) => {
             editMenu.AddItem(API.createMenuItem("Toggle Enteractable", "Set can interact."));
             editMenu.AddItem(API.createMenuItem("Move Interaction Point", "Moves the interaction point."));
             editMenu.AddItem(API.createMenuItem("Toggle Property Locked", "Set property as locked or not."));
-            editMenu.AddItem(API.createMenuItem("Set Price", "Set proerty's price."));
+            editMenu.AddItem(API.createMenuItem("Set Price", "Set property's price."));
+            editMenu.AddItem(API.createMenuItem("Set Owner", "Set property's owner."));
             editMenu.AddItem(API.createMenuItem("~r~Delete Property", "Delete the property."));
 
             editMenu.Visible = true;
@@ -118,6 +119,17 @@ API.onServerEventTrigger.connect((eventName, args) => {
                         break;
 
                     case 12:
+                        var owner = "";
+                        while (owner === "") {
+                            owner = API.getUserInput("", 100);
+                            if (owner === "") {
+                                sendMessage("Owner can't be empty.");
+                            }
+                        }
+                        API.triggerServerEvent("editproperty_setowner", selID, owner);
+                        break;
+
+                    case 13:
                         editMenu.Visible = false;
                         API.triggerServerEvent("editproperty_deleteproperty", selID);
                         break;

@@ -9,6 +9,7 @@ using MongoDB.Driver;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.database_manager;
 using RoleplayServer.resources.door_manager;
+using RoleplayServer.resources.player_manager;
 
 namespace RoleplayServer.resources.property_system
 {
@@ -347,6 +348,30 @@ namespace RoleplayServer.resources.property_system
                         {
                             API.sendChatMessageToPlayer(sender, "[Property Manager] Invalid Price Entered.");
                         }
+                    }
+                    break;
+
+                case "editproperty_setowner":
+                    if (sender.GetAccount().AdminLevel >= 5)
+                    {
+                        var id = Convert.ToInt32(arguments[0]);
+                        var prop = Properties.SingleOrDefault(x => x.Id == id);
+                        if (prop == null)
+                        {
+                            API.sendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                            return;
+                        }
+                        var player = PlayerManager.ParseClient((string) arguments[1]);
+                        if(player == null)
+                        {
+                            API.sendChatMessageToPlayer(sender, "[Property Manager] Invalid Player Entered.");
+                            return;
+                        }
+                        prop.OwnerId = player.GetCharacter().Id;
+                        prop.Save();
+                        prop.UpdateMarkers();
+                        API.sendChatMessageToPlayer(sender,
+                            $"[Property Manager] Owner of Property #{id} was changed to: '{player.GetCharacter().CharacterName}'");
                     }
                     break;
             }
