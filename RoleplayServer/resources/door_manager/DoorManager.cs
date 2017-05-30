@@ -229,7 +229,7 @@ namespace RoleplayServer.resources.door_manager
             }
             var character = player.GetCharacter();
             var account = player.GetAccount();
-            if (character.GroupId == door.GroupId || account.AdminLevel >= 5) //TODO: add check for property.
+            if ((character.GroupId != 0 && character.GroupId == door.GroupId) || account.AdminLevel >= 5) //TODO: add check for property.
             {
                 if (player.position.DistanceTo(door.Position) > 10.0f)
                 {
@@ -257,7 +257,7 @@ namespace RoleplayServer.resources.door_manager
             }
             var character = player.GetCharacter();
             var account = player.GetAccount();
-            if (character.GroupId == door.GroupId || account.AdminLevel >= 5) //TODO: add check for property.
+            if ((character.GroupId != 0 && character.GroupId == door.GroupId) || account.AdminLevel >= 5) //TODO: add check for property.
             {
                 if (player.position.DistanceTo(door.Position) > 10.0f)
                 {

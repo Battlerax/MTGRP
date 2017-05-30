@@ -39,8 +39,6 @@ namespace RoleplayServer.resources.door_manager
         public Door(int model, Vector3 pos, string desc, bool locked, bool doeshow)
         {
             Id = -1;
-            GroupId = -1;
-            PropertyId = -1;
             Hash = model;
             Position = pos;
             Locked = locked;
