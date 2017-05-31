@@ -70,5 +70,7 @@
 	
 	<script src="door_manager/DoorManager.js" type="client" lang="javascript"/>  
 
+  <script src="property_system/PropertyManager.js" type="client" lang="javascript"/>
+
 	<file src="jquery.js" />
 </meta>
