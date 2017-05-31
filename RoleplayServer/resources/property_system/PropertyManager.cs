@@ -76,6 +76,28 @@ namespace RoleplayServer.resources.property_system
                 API.setEntityData(entity, "at_interaction_property_id", colshape.getData("property_interaction"));
             }
         }
+
+        public static Property IsAtPropertyEnterance(Client player)
+        {
+            if (API.shared.hasEntityData(player, "at_interance_property_id"))
+            {
+                int id = API.shared.getEntityData(player, "at_interance_property_id");
+                var property = Properties.SingleOrDefault(x => x.Id == id);
+                return property;
+            }
+            return null;
+        }
+
+        public static Property IsAtPropertyInteraction(Client player)
+        {
+            if (API.shared.hasEntityData(player, "at_interaction_property_id"))
+            {
+                int id = API.shared.getEntityData(player, "at_interaction_property_id");
+                var property = Properties.SingleOrDefault(x => x.Id == id);
+                return property;
+            }
+            return null;
+        }
         #endregion
 
         private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
@@ -164,7 +186,7 @@ namespace RoleplayServer.resources.property_system
                         prop.EnteranceRot = sender.rotation;
                         prop.Save();
                         prop.UpdateMarkers();
-                        API.sendChatMessageToPlayer(sender, $"[Property Manager] Enteracne position of property #{id} was changed.");
+                        API.sendChatMessageToPlayer(sender, $"[Property Manager] Enterance position of property #{id} was changed.");
                     }
                     break;
 
@@ -289,8 +311,9 @@ namespace RoleplayServer.resources.property_system
                         prop.InteractionPos = sender.position;
                         prop.InteractionRot = sender.rotation;
                         prop.InteractionDimension = sender.dimension;
+                        prop.UpdateMarkers();
                         prop.Save();
-                        API.sendChatMessageToPlayer(sender, $"[Property Manager] Interior TP position of property #{id} was changed.");
+                        API.sendChatMessageToPlayer(sender, $"[Property Manager] Interaction position of property #{id} was changed.");
                     }
                     break;
 
@@ -383,26 +406,18 @@ namespace RoleplayServer.resources.property_system
             return "/interact";
         }
 
-        public static Property IsAtPropertyEnterance(Client player)
+        [Command("interact")]
+        public void interact(Client player)
         {
-            if (API.shared.hasEntityData(player, "at_property_id"))
+            var prop = IsAtPropertyInteraction(player);
+            if (prop != null)
             {
-                int id = API.shared.getEntityData(player, "at_property_id");
-                var property = Properties.Single(x => x.Id == id);
-                return property;
+                API.sendChatMessageToPlayer(player, "INTERACTED! At " + prop.Type);
             }
-            return null;
-        }
-
-        public static Property IsAtPropertyInteraction(Client player)
-        {
-            if (API.shared.hasEntityData(player, "at_interaction_property_id"))
+            else
             {
-                int id = API.shared.getEntityData(player, "at_interaction_property_id");
-                var property = Properties.Single(x => x.Id == id);
-                return property;
+                API.sendNotificationToPlayer(player,"Not at interact.");
             }
-            return null;
         }
 
         [Command("enter")]

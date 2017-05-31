@@ -147,7 +147,7 @@ API.onUpdate.connect(function() {
     if (editMenu != null)
         API.drawMenu(editMenu);
 
-    if (API.isDisabledControlJustPressed(24)) {
+    if (API.isControlJustPressed(24)) {
         if (changingPropertyPos === true) {
             changingPropertyPos = false;
             API.triggerServerEvent("editproperty_setenterancepos", selID);

@@ -82,12 +82,12 @@ namespace RoleplayServer.resources.property_system
 
             var filter = MongoDB.Driver.Builders<Property>.Filter.Eq("_id", Id);
             DatabaseManager.PropertyTable.DeleteOne(filter);
+            PropertyManager.Properties.Remove(this);
         }
 
         public void CreateProperty()
         {
-            if (OwnerId == 0)
-                EnteranceString = "Unowned. /buyproperty to buy it.";
+            EnteranceString = OwnerId == 0 ? "Unowned. /buyproperty to buy it." : PropertyName;
 
             EnteranceMarker = new MarkerZone(EnterancePos, EnteranceRot) {LabelText = EnteranceString + "\n" + Type + "\n" + "ID: " + Id};
             EnteranceMarker.Create();
@@ -106,10 +106,13 @@ namespace RoleplayServer.resources.property_system
 
         public void UpdateMarkers()
         {
+            EnteranceString = OwnerId == 0 ? "Unowned\n/buyproperty to buy it." : PropertyName;
+
             EnteranceMarker.Location = EnterancePos;
             EnteranceMarker.Rotation = EnteranceRot;
             EnteranceMarker.LabelText = EnteranceString + "\n" + Type + "\n" + "ID: " + Id;
             EnteranceMarker.Refresh();
+            EnteranceMarker.ColZone.setData("property_enterance", Id);
 
             if (IsInteractable)
             {
@@ -117,6 +120,7 @@ namespace RoleplayServer.resources.property_system
                 InteractionMarker.Rotation = InteractionRot;
                 InteractionMarker.LabelText = PropertyManager.GetInteractText(Type);
                 InteractionMarker.Refresh();
+                InteractionMarker.ColZone.setData("property_interaction", Id);
             }
         }
 
