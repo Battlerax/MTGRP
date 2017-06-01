@@ -30,20 +30,23 @@ namespace RoleplayServer.resources.core
             //Local Chat
             if (API.getEntityData(player, "MegaphoneStatus") == true)
             {
-                msg = character.rp_name() + " [MEGAPHONE]: " + msg;
+                msg = "~y~[MEGAPHONE] " + character.CharacterName + " : " + msg;
                 NearbyMessage(player, 30, msg);
+                return;
             }
 
             if (API.getEntityData(player, "MicStatus") == true)
             {
                 msg = "~p~ [BROADCAST] " + character.CharacterName + " : " + msg;
                 broadcastMessage(msg);
+                return;
             }
 
             if (account.AdminDuty == 0)
             {
                 msg = character.rp_name() + " says: " + msg;
                 NearbyMessage(player, 15, msg);
+                return;
             }
             else
             {
