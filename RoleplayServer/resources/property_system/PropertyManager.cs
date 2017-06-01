@@ -55,12 +55,20 @@ namespace RoleplayServer.resources.property_system
                     API.resetEntityData(entity, "at_interance_property_id");
                 }
             }
-
+            
             if (API.getEntityType(entity) == EntityType.Player && colshape.hasData("property_interaction"))
             {
                 if (API.getEntityData(entity, "at_interaction_property_id") == colshape.getData("property_interaction"))
                 {
                     API.resetEntityData(entity, "at_interaction_property_id");
+                }
+            }
+
+            if (API.getEntityType(entity) == EntityType.Player && colshape.hasData("property_exit"))
+            {
+                if (API.getEntityData(entity, "at_exit_property_id") == colshape.getData("property_exit"))
+                {
+                    API.resetEntityData(entity, "at_exit_property_id");
                 }
             }
         }
@@ -75,6 +83,11 @@ namespace RoleplayServer.resources.property_system
             {
                 API.setEntityData(entity, "at_interaction_property_id", colshape.getData("property_interaction"));
             }
+
+            if (API.getEntityType(entity) == EntityType.Player && colshape.hasData("property_exit"))
+            {
+                API.setEntityData(entity, "at_exit_property_id", colshape.getData("property_exit"));
+            }
         }
 
         public static Property IsAtPropertyEnterance(Client player)
@@ -82,6 +95,17 @@ namespace RoleplayServer.resources.property_system
             if (API.shared.hasEntityData(player, "at_interance_property_id"))
             {
                 int id = API.shared.getEntityData(player, "at_interance_property_id");
+                var property = Properties.SingleOrDefault(x => x.Id == id);
+                return property;
+            }
+            return null;
+        }
+
+        public static Property IsAtPropertyExit(Client player)
+        {
+            if (API.shared.hasEntityData(player, "at_exit_property_id"))
+            {
+                int id = API.shared.getEntityData(player, "at_exit_property_id");
                 var property = Properties.SingleOrDefault(x => x.Id == id);
                 return property;
             }
@@ -406,20 +430,6 @@ namespace RoleplayServer.resources.property_system
             return "/interact";
         }
 
-        [Command("interact")]
-        public void interact(Client player)
-        {
-            var prop = IsAtPropertyInteraction(player);
-            if (prop != null)
-            {
-                API.sendChatMessageToPlayer(player, "INTERACTED! At " + prop.Type);
-            }
-            else
-            {
-                API.sendNotificationToPlayer(player,"Not at interact.");
-            }
-        }
-
         [Command("enter")]
         public void Enterproperty(Client player)
         {
@@ -431,6 +441,26 @@ namespace RoleplayServer.resources.property_system
                     player.position = prop.TargetPos;
                     player.rotation = prop.TargetRot;
                     player.dimension = prop.TargetDimension;
+                }
+                else
+                {
+                    API.sendNotificationToPlayer(player,
+                        prop.IsLocked ? "Property is locked." : "Property is not teleportable.");
+                }
+            }
+        }
+
+        [Command("exit")]
+        public void Exitproperty(Client player)
+        {
+            var prop = IsAtPropertyExit(player);
+            if (prop != null)
+            {
+                if (prop.IsTeleportable && (!prop.IsLocked || prop.OwnerId == player.GetCharacter().Id))
+                {
+                    player.position = prop.EnterancePos;
+                    player.rotation = prop.EnteranceRot;
+                    player.dimension = 0;
                 }
                 else
                 {

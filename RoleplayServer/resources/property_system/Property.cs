@@ -55,6 +55,9 @@ namespace RoleplayServer.resources.property_system
         [BsonIgnore]
         public MarkerZone InteractionMarker { get; set; }
 
+        [BsonIgnore]
+        public MarkerZone ExitMarker { get; set; }
+
         public Property(PropertyManager.PropertyTypes type, Vector3 enterancePos, Vector3 enteranceRot, string enteranceString)
         {
             Type = type;
@@ -77,12 +80,17 @@ namespace RoleplayServer.resources.property_system
 
         public void Delete()
         {
-            EnteranceMarker?.Destroy();
-            InteractionMarker?.Destroy();
-
+            DestroyMarkers();
             var filter = MongoDB.Driver.Builders<Property>.Filter.Eq("_id", Id);
             DatabaseManager.PropertyTable.DeleteOne(filter);
             PropertyManager.Properties.Remove(this);
+        }
+
+        public void DestroyMarkers()
+        {
+            EnteranceMarker?.Destroy();
+            InteractionMarker?.Destroy();
+            ExitMarker?.Destroy();
         }
 
         public void CreateProperty()
@@ -102,26 +110,19 @@ namespace RoleplayServer.resources.property_system
                 InteractionMarker.Create();
                 InteractionMarker.ColZone.setData("property_interaction", Id);
             }
+
+            if (IsTeleportable)
+            {
+                ExitMarker = new MarkerZone(TargetPos, TargetRot) { LabelText = "/exit" };
+                ExitMarker.Create();
+                ExitMarker.ColZone.setData("property_exit", Id);
+            }
         }
 
         public void UpdateMarkers()
         {
-            EnteranceString = OwnerId == 0 ? "Unowned\n/buyproperty to buy it." : PropertyName;
-
-            EnteranceMarker.Location = EnterancePos;
-            EnteranceMarker.Rotation = EnteranceRot;
-            EnteranceMarker.LabelText = EnteranceString + "\n" + Type + "\n" + "ID: " + Id;
-            EnteranceMarker.Refresh();
-            EnteranceMarker.ColZone.setData("property_enterance", Id);
-
-            if (IsInteractable)
-            {
-                InteractionMarker.Location = InteractionPos;
-                InteractionMarker.Rotation = InteractionRot;
-                InteractionMarker.LabelText = PropertyManager.GetInteractText(Type);
-                InteractionMarker.Refresh();
-                InteractionMarker.ColZone.setData("property_interaction", Id);
-            }
+            DestroyMarkers();
+            CreateProperty();
         }
 
         public void UpdateLockStatus()
