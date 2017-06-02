@@ -23,6 +23,7 @@ namespace RoleplayServer.resources.group_manager.lsnn
 
         public string headline = "Los Santos News Network";
         public int lottoSafe = 0;
+        public int lottoPrice = 0;
         public bool IsBroadcasting = false;
         public bool CameraSet = false;
         public bool chopperCamToggle = false;
@@ -73,7 +74,7 @@ namespace RoleplayServer.resources.group_manager.lsnn
 
         }
 
-        [Command("editheadline")]
+        [Command("editheadline")]//Problem with headline CEF
         public void editbanner_cmd(Client player, string text)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -144,6 +145,7 @@ namespace RoleplayServer.resources.group_manager.lsnn
                 API.sendNotificationToPlayer(player, "The chopper camera has been turned ~r~off~w~.");
                 CameraSet = false;
                 chopperCamToggle = false;
+                chopperRotation.Stop();
                 return;
             }
 
@@ -162,23 +164,6 @@ namespace RoleplayServer.resources.group_manager.lsnn
             chopperRotation = new Timer { Interval = 1000 };
             chopperRotation.Elapsed += delegate { updateChopperRotation(player); };
             chopperRotation.Start();
-        }
-
-        public void updateChopperRotation(Client player)
-        {
-            chopper = API.getPlayerVehicle(player);
-            CameraPosition = API.getEntityPosition(chopper) - new Vector3(0, 0, 3);
-            CameraRotation = API.getEntityRotation(chopper);
-
-            foreach (var p in API.getAllPlayers())
-            {
-                Character character = API.getEntityData(p, "Character");
-
-                if (character.IsWatchingBroadcast)
-                {
-                    API.triggerClientEvent(p, "watch_chopper_broadcast", CameraPosition, CameraRotation, headline, chopper, offSet);
-                }
-            }
         }
 
         [Command("pickupcamera")]//INV
@@ -232,7 +217,7 @@ namespace RoleplayServer.resources.group_manager.lsnn
             }
 
             var playerPos = API.getEntityPosition(player);
-            API.sendNotificationToPlayer(player, "You are carrying a heavy camera", true);
+            API.sendNotificationToPlayer(player, "You are carrying a camera.", true);
             API.deleteObject(player, playerPos, API.getHashKey("p_tv_cam_02_s"));
             character.HasCamera = true;
             CameraSet = false;
@@ -251,6 +236,23 @@ namespace RoleplayServer.resources.group_manager.lsnn
 
             }
             API.sendChatMessageToPlayer(player, count + " people are watching the broadcast.");
+        }
+
+        [Command("buylottoticket")]
+        public void buylottoticket(Client player)
+        {
+            Character character = API.getEntityData(player.handle, "Character");
+
+            //Check distance from LSNN building main office (still gotta find a good one)
+
+            if (character.Money < lottoPrice)
+            {
+                API.sendChatMessageToPlayer(player, "You cannot afford a lottery ticket!");
+                return;
+            }
+
+            character.HasLottoTicket = true;
+            API.sendChatMessageToPlayer(player, "You purchased a lottery ticket. Good luck!");
         }
         
         [Command("lotto")]//INV-BUY TICKET
@@ -328,6 +330,7 @@ namespace RoleplayServer.resources.group_manager.lsnn
                 return;
             }
 
+            API.sendChatMessageToPlayer(player, "You are watching the broadcast. Use /stopwatching to stop watching .");
             API.triggerClientEvent(player, "watch_broadcast", camPos, camRot, headline);
             API.freezePlayer(player, true);
             character.IsWatchingBroadcast = true;
@@ -436,6 +439,23 @@ namespace RoleplayServer.resources.group_manager.lsnn
             ret.Y += (distance * (float)Math.Cos(angle));
             return ret;
 
+        }
+
+        public void updateChopperRotation(Client player)
+        {
+            chopper = API.getPlayerVehicle(player);
+            CameraPosition = API.getEntityPosition(chopper) - new Vector3(0, 0, 3);
+            CameraRotation = API.getEntityRotation(chopper);
+
+            foreach (var p in API.getAllPlayers())
+            {
+                Character character = API.getEntityData(p, "Character");
+
+                if (character.IsWatchingBroadcast)
+                {
+                    API.triggerClientEvent(p, "watch_chopper_broadcast", CameraPosition, CameraRotation, headline, chopper, offSet);
+                }
+            }
         }
     }
 }

@@ -1,6 +1,6 @@
 <meta>
     <info name="Init" author="Chenko" type="gamemode" />
-	
+
 	<!-- MAIN script with all *.cs files. -->
 	<script src="../bin/Debug/RoleplayServer.dll" type="server" lang="compiled"/>
 
@@ -42,7 +42,7 @@
 	<script src="group_manager/lspd/Lspd.js" type="client" lang="javascript"/>
   <script src="group_manager/lsnn/Lsnn.js" type="client" lang="javascript"/>
   <file src="group_manager/lsnn/LowerThird.html"/>
-
+  <file src="group_manager/lsnn/LowerThirdChopper.html"/>
 
 	<!-- CEF  -->
 	<file src="stylesheet/css/metro.css"/>
@@ -69,8 +69,8 @@
 	<!-- CORE -->
 	<file src="cef_resources/MTGVRP_LOGO_BIG.png"/>
 	<file src="cef_resources/MTGVRP_LOGO_SMALL.png"/>
-	
-	<script src="door_manager/DoorManager.js" type="client" lang="javascript"/>  
+
+	<script src="door_manager/DoorManager.js" type="client" lang="javascript"/>
 
 	<file src="jquery.js" />
 </meta>
