@@ -89,12 +89,10 @@ function loadBrowser(x, y) {
     API.loadPageCefBrowser(interactBrowser, "player_manager/player_interaction/PlayerInteraction.html");
     API.waitUntilCefBrowserLoaded(interactBrowser);
     API.showCursor(true);
-    API.setCefDrawState(true);
 }
 
 function reset_browser() {
     API.destroyCefBrowser(interactBrowser);
-    API.setCefDrawState(false);
     API.showCursor(false);
     interactBrowser = null;
 }
