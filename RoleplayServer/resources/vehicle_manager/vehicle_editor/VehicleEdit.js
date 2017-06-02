@@ -15,6 +15,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
             API.loadPageCefBrowser(vehicle_edit_browser, "vehicle_manager/vehicle_editor/VehicleEdit.html");
             API.showCursor(true);
             API.setCanOpenChat(false);
+            API.setCefDrawState(true);
             
             API.sleep(1000);
             vehicle_edit_browser.call("populate_fields", args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8]);
@@ -24,6 +25,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
             break;
         case "finish_veh_edit":
             API.destroyCefBrowser(vehicle_edit_browser);
+            API.setCefDrawState(false);
             API.showCursor(false);
             API.setCanOpenChat(true);
             break;
