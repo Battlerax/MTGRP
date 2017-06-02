@@ -470,6 +470,31 @@ namespace RoleplayServer.resources.property_system
             }
         }
 
+        [Command("manageprices")]
+        public void Manageprices(Client player)
+        {
+            var prop = IsAtPropertyEnterance(player) ?? IsAtPropertyInteraction(player);
+            if (prop == null)
+            {
+                API.sendChatMessageToPlayer(player, "You aren't at an enteraction point or enterance.");
+                return;
+            }
+
+            if (prop.OwnerId == player.GetCharacter().Id)
+            {
+                switch (prop.Type)
+                {
+                    case PropertyTypes.Hardware:
+
+                        break;
+                }
+            }
+            else
+            {
+                API.sendChatMessageToPlayer(player, "You don't own that property.");
+            }
+        }
+
         [Command("lockproperty")]
         public void LockProperty(Client player)
         {

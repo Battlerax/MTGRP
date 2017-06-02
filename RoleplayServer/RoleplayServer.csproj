@@ -118,6 +118,7 @@
     <Compile Include="resources\player_manager\PlayerManager.cs" />
     <Compile Include="resources\player_manager\player_interaction\PlayerInteraction.cs" />
     <Compile Include="resources\player_manager\player_list\PlayerList.cs" />
+    <Compile Include="resources\property_system\ItemManager.cs" />
     <Compile Include="resources\property_system\Property.cs" />
     <Compile Include="resources\property_system\PropertyManager.cs" />
     <Compile Include="resources\rp_scripts\BankMenu.cs" />
