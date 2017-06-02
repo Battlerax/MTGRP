@@ -142,7 +142,7 @@
     <Content Include="resources\cef_resources\MTGVRP_LOGO_SMALL.png" />
     <Content Include="resources\inventory\ManageInv.html" />
     <Content Include="resources\group_manager\lspd\Lspd.js" />
-    <Content Include="resources\group_manager\lspd\MDC.html" />
+    <Content Include="resources\group_manager\lspd\MDC\MDC.html" />
     <Content Include="resources\job_manager\taxi\TaxiJob.js" />
     <Content Include="resources\jquery.js" />
     <Content Include="resources\meta.xml">
@@ -193,6 +193,7 @@
   <ItemGroup>
     <Content Include="resources\inventory\InventoryManager.js" />
     <TypeScriptCompile Include="resources\group_manager\lspd\LspdLocker.ts" />
+    <TypeScriptCompile Include="resources\group_manager\lspd\MDC\MDC.ts" />
     <TypeScriptCompile Include="resources\job_manager\fisher\Fisher.ts" />
     <TypeScriptCompile Include="resources\job_manager\JobManager.ts" />
     <Content Include="resources\phone_manager\gui\apps\dialpad.html" />
