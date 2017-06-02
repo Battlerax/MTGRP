@@ -71,7 +71,7 @@ namespace RoleplayServer.resources.job_manager
             {
                 if (API.getPlayerVehicleSeat(player) == -1 && veh.Job != character.JobOne)
                 {
-                    API.warpPlayerOutOfVehicle(player, vehicle);
+                    API.warpPlayerOutOfVehicle(player);
                     API.sendPictureNotificationToPlayer(player, "This vehicle is only available to " + veh.Job.Name, "CHAR_BLOCKED", 0, 1, "Server", "~r~Vehicle Locked");
                 }
             }

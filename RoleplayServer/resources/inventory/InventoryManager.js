@@ -10,6 +10,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
             API.setCefBrowserPosition(myBrowser, (res.Width / 2) - (720 / 2),
                 (res.Height / 2) - (660 / 2));
             API.loadPageCefBrowser(myBrowser, "inventory/ManageInv.html");
+            API.setCefDrawState(true);
             API.showCursor(true);
 
             //Send to fill items.
@@ -36,6 +37,7 @@ function moveFromRightToLeft(id, shortname, amount) {
 
 function ExitWindow() {
     API.destroyCefBrowser(myBrowser);
+    API.setCefDrawState(false);
     API.showCursor(false);
     API.setCanOpenChat(true);
     myBrowser = null;

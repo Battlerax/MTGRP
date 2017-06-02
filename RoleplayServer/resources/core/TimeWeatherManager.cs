@@ -60,7 +60,17 @@ namespace RoleplayServer.resources.core
             {
                 _elapsedMinutes = 0;
                 WebClient client = new WebClient();
-                string reply = client.DownloadString("https://api.apixu.com/v1/current.json?key=2e4a0092a177439cab8165133172805&q=Los%20Angeles");
+                string reply = String.Empty;
+                try
+                {
+                    reply =
+                        client.DownloadString(
+                            "https://api.apixu.com/v1/current.json?key=2e4a0092a177439cab8165133172805&q=Los%20Angeles");
+                }
+                catch (WebException ex)
+                {
+                    API.consoleOutput("Weather API Exception: " + ex.Status);
+                }
                 Match result = Regex.Match(reply, "\\{.*\\\"code\\\":([0-9]+)\\}");
                 if (result.Success)
                 {
