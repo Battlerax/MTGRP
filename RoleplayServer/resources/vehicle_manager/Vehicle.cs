@@ -18,6 +18,7 @@ using MongoDB.Driver;
 using RoleplayServer.resources.database_manager;
 using RoleplayServer.resources.job_manager;
 using RoleplayServer.resources.player_manager;
+using RoleplayServer.resources.group_manager;
 
 namespace RoleplayServer.resources.vehicle_manager
 {
@@ -27,6 +28,8 @@ namespace RoleplayServer.resources.vehicle_manager
         public const int VehTypeTemp = 0;
         [BsonIgnore]
         public const int VehTypePerm = 1;
+        [BsonIgnore]
+        public const int VehTypeGroup = 2;
 
         public int Id { get; set; }
        
@@ -47,6 +50,11 @@ namespace RoleplayServer.resources.vehicle_manager
         public int JobId { get; set; }
         [BsonIgnore]
         public Job Job { get; set; }
+
+        public int GroupId { get; set; }
+
+        [BsonIgnore]
+        public Group Group { get; set; }
 
         [BsonIgnore]
         public NetHandle NetHandle { get; private set; }
@@ -81,6 +89,7 @@ namespace RoleplayServer.resources.vehicle_manager
             Driver = null;
 
             JobId = 0;
+            GroupId = 0;
         }
 
 

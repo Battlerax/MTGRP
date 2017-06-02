@@ -176,7 +176,7 @@ namespace RoleplayServer.resources.player_manager
         {
             Character character = API.getEntityData(player.handle, "Character");
             var secondsLeft = 3600 - character.GetTimePlayed();
-            API.sendChatMessageToPlayer(player, "The current server time is: " + DateTime.Now.ToString("h:mm:ss tt"));
+            API.sendChatMessageToPlayer(player, "The current server time is: " + TimeWeatherManager.CurrentTime.ToString("h:mm:ss tt"));
             API.sendChatMessageToPlayer(player, string.Format("Time until next paycheck: {0}" + " minutes.", secondsLeft / 60));
         }
 

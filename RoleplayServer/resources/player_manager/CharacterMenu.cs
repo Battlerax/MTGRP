@@ -9,6 +9,8 @@ using RoleplayServer.resources.database_manager;
 using RoleplayServer.resources.group_manager;
 using RoleplayServer.resources.job_manager;
 using RoleplayServer.resources.phone_manager;
+using RoleplayServer.resources.group_manager.lspd;
+using RoleplayServer.resources.inventory;
 
 namespace RoleplayServer.resources.player_manager
 {
@@ -133,8 +135,12 @@ namespace RoleplayServer.resources.player_manager
                         character.JobOne = JobManager.GetJobById(character.JobOneId);
                         character.Group = GroupManager.GetGroupById(character.GroupId);
 
-                        character.Phone = PhoneManager.GetPhoneByNumber(character.PhoneNumber);
-                        character.Phone.LoadContacts();
+                        var lmcitems = InventoryManager.DoesInventoryHaveItem(character, typeof(Phone));
+                        if (lmcitems.Length != 0)
+                        {
+                            var lmcphone = (Phone)lmcitems[0];
+                            lmcphone.LoadContacts();
+                        }
 
                         API.setEntityPosition(player.handle, character.LastPos);
                         API.setEntityRotation(player.handle, character.LastRot);
@@ -149,6 +155,11 @@ namespace RoleplayServer.resources.player_manager
                             {
                                 API.setEntitySyncedData(character.Client.handle, "IsCop", true);
                             }
+                        }
+
+                        if (character.isJailed)
+                        {
+                            Lspd.jailControl(player, character.jailTimeLeft);
                         }
 
                         API.sendChatMessageToPlayer(player, "You have successfully loaded your character: " + charName);

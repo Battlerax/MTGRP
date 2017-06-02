@@ -20,6 +20,7 @@ using RoleplayServer.resources.core;
 using RoleplayServer.resources.database_manager;
 using RoleplayServer.resources.job_manager;
 using RoleplayServer.resources.player_manager;
+using RoleplayServer.resources.group_manager;
 
 namespace RoleplayServer.resources.vehicle_manager
 {
@@ -48,6 +49,7 @@ namespace RoleplayServer.resources.vehicle_manager
 
             // Create vehicle table + 
             load_all_unowned_vehicles();
+            load_all_group_vehicles();
 
             DebugManager.DebugMessage("[VehicleM] Vehicle Manager initalized!");
         }
@@ -176,6 +178,10 @@ namespace RoleplayServer.resources.vehicle_manager
 
             //Delete.
             Vehicles.RemoveAll(x => x.OwnerId == character.Id);
+            if (character.isJailed)
+            {
+                character.jailTimer.Stop();
+            }
         }
 
         private void OnPlayerEnterVehicle(Client player, NetHandle vehicleHandle)
@@ -187,6 +193,22 @@ namespace RoleplayServer.resources.vehicle_manager
 
 
             Character character = API.getEntityData(player.handle, "Character");
+
+            if (character.Group.Id != veh.GroupId)
+            {
+
+                {
+                    API.sendChatMessageToPlayer(player, "You must be a member of " + veh.Group.Name + " to use this vehicle.");
+                    API.setEntityPosition(player, API.getEntityPosition(vehicleHandle) + new Vector3(-1, 0, 0));
+                    return;
+                }
+            }
+            if(veh.LicensePlate == "LSPD" && character.Group.CommandType != Group.CommandTypeLspd)
+            {
+                API.sendChatMessageToPlayer(player, "You must be a member of the LSPD to use this vehicle.");
+                API.setEntityPosition(player, API.getEntityPosition(vehicleHandle) + new Vector3(-1, 0, 0));
+                return;
+            }
 
             API.sendChatMessageToPlayer(player, "~w~[VehicleM] You have entered vehicle ~r~" + Vehicles.IndexOf(veh) + "(Owned by: " + PlayerManager.Players.SingleOrDefault(x => x.Id == veh.OwnerId)?.CharacterName + ")");
 
@@ -351,6 +373,27 @@ namespace RoleplayServer.resources.vehicle_manager
             //gang check
 
             return false;
+        }
+
+        public void load_all_group_vehicles()
+        {
+            int j = 0;
+
+            foreach (var i in DatabaseManager.GroupTable.Find(Builders<Group>.Filter.Empty).ToList())
+            {
+
+                var filter = Builders<Vehicle>.Filter.Eq("GroupId", i.Id);
+                var groupVehicles = DatabaseManager.VehicleTable.Find(filter).ToList();
+
+                foreach (var v in groupVehicles)
+                {
+                    spawn_vehicle(v);
+                    Vehicles.Add(v);
+                    j++;
+                }
+            }
+
+            DebugManager.DebugMessage("Loaded " + j + " group vehicles from the database.");
         }
 
         public void load_all_unowned_vehicles()
