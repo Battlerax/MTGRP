@@ -64,11 +64,13 @@ namespace RoleplayServer.resources.group_manager.lspd.MDC
             {
                 API.triggerClientEvent(player, "hideMDC");
                 ChatManager.RoleplayMessage(character, "logs off of the MDC.", ChatManager.RoleplayMe);
+                character.IsViewingMdc = false;
             }
             else
             {
                 API.triggerClientEvent(player, "showMDC");
                 ChatManager.RoleplayMessage(character, "logs into the MDC.", ChatManager.RoleplayMe);
+                character.IsViewingMdc = true;
             }
         }
 

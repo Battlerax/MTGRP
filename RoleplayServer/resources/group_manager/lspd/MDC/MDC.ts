@@ -9,11 +9,12 @@ API.onServerEventTrigger.connect((eventName, args) => {
         mdcBrowser = API.createCefBrowser(res.Width, res.Height);
         API.waitUntilCefBrowserInit(mdcBrowser);
         API.setCefBrowserPosition(mdcBrowser, 0, 0);
-        API.loadPageCefBrowser(mdcBrowser, "MDC.html");
+        API.loadPageCefBrowser(mdcBrowser, "group_manager/lspd/MDC/MDC.html");
         API.showCursor(true);
         API.setCefDrawState(true);
         API.setCanOpenChat(false);
 
+        API.sleep(500);
         API.triggerServerEvent("requestInformation");
         break;
 

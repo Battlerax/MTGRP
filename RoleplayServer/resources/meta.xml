@@ -27,7 +27,12 @@
 	<script src="vehicle_manager/VehicleMenu.js" type="client" lang="javascript"/>
 	<script src="vehicle_manager/vehicle_editor/VehicleEdit.js" type="client" lang="javascript"/>
 	<file src="vehicle_manager/vehicle_editor/VehicleEdit.html"/>
-
+	
+	<!-- MDC -->
+	<file src="group_manager/lspd/MDC/MDC.js" type="client" lang="javascript"/>
+	<file src="group_manager/lspd/MDC/MDC.html"/>
+  <file src="cef_resources/LSPDMDC.png"/>
+	
 	<!-- Dealership/Ownership -->
 	<script src="vehicle_dealership/vehicledealer.js" type="client" lang="javascript"/>
 	<script src="vehicle_manager/VehicleOwnership.js" type="client" lang="javascript"/>
