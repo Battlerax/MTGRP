@@ -103,7 +103,7 @@ namespace RoleplayServer.resources.job_manager.taxi
                     if (veh.Driver == null)
                     {
                         API.sendChatMessageToPlayer(player, Color.Yellow, "[TAXI] This taxi currently has no driver.");
-                        API.warpPlayerOutOfVehicle(player, vehicle);
+                        API.warpPlayerOutOfVehicle(player);
                         return;
                     }
 
