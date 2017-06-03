@@ -15,7 +15,6 @@ using GTANetworkShared;
 using RoleplayServer.resources.player_manager;
 using RoleplayServer.resources.core;
 
-
 namespace RoleplayServer
 {
     public class Animations : Script
@@ -30,9 +29,28 @@ namespace RoleplayServer
             Cancellable = 1 << 7
         }
         [Command("stopanim")]
-        public void stopanim(Client player)
+        public void stopanim(Client player, string id)
         {
             API.stopPlayerAnimation(player);
+
+
+            var receiver = PlayerManager.ParseClient(id);
+
+            Character character = API.getEntityData(player.handle, "Character");
+
+            if (character.CanDoAim == true)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                return;
+            }
+
+
+
+
+
+
+
+
         }
         
         [Command("hide", "~y~Syntax /Hide 1 - 13")]
@@ -1110,96 +1128,76 @@ namespace RoleplayServer
             }
         }
 
-        [Command("restrained")]
-        public void restrained(Client player)
-        {
-            API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "anim@move_m@prisoner_cuffed_rc", "aim_low_loop");
-        }
         [Command("middlefinger")]
         public void middlefinger(Client player)
         {
-            API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "anim@mp_player_intcelebrationmale@finger", "finger");
+            if (character.CanDoAim == true)
+            { 
+                API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "anim@mp_player_intcelebrationmale@finger", "finger");
+            }
+            else
+            {
+                API.sendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+            }
         }
         [Command("salute")]
         public void salute(Client player)
         {
-            API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "anim@mp_player_intcelebrationmale@salute", "salute");
+            if (CanDoAnim == true)
+            {
+                API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "anim@mp_player_intcelebrationmale@salute", "salute");
+            }
+            else
+            {
+                API.sendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+            }
         }
         [Command("slowclap")]
         public void slowclap(Client player)
         {
-            API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "anim@mp_player_intcelebrationmale@slow_clap", "slow_clap");
+            if (CanDoAnim == true)
+            {
+                API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "anim@mp_player_intcelebrationmale@slow_clap", "slow_clap");
+            }
+            else
+            {
+                API.sendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+            }
         }
         [Command("facepalm")]
         public void facepalm(Client player)
         {
-            API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "anim@mp_player_intcelebrationmale@face_palm", "face_palm");
-        }
-        [Command("handsup")]
-        public void handsup(Client player)
-        {
-            API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "mp_am_hold_up", "handsup_base");
-        }
-        [Command("coverl", "~y~Syntax /coverL 1 - 7")]
-        public void coverl(Client player, int number)
-        {
-            switch (number)
+            if (CanDoAnim == true)
             {
-                case 1:
-                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "cover@idles@1h@high@_a", "idle_r_corner");
-                    break;
-                case 2:
-                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "cover@idles@1h@low@_b", "idle_r_corner");
-                    break;
-                case 3:
-                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "cover@idles@2h@high@_a", "idle_r_corner");
-                    break;
-                case 4:
-                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "cover@idles@ai@1h@high@_a", "idle_r_corner");
-                    break;
-                case 5:
-                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "cover@idles@ai@2h@high@_b", "idle_r_corner");
-                    break;
-                case 6:
-                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "cover@idles@ai@unarmed@high@_b", "idle_r_corner");
-                    break;
-                case 7:
-                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "cover@idles@ai@unarmed@low@_a", "idle_r_corner");
-                    break;
-                default:
-                    API.sendChatMessageToPlayer(player, "~y~Syntax /coverL 1 - 7");
-                    break;
+                API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "anim@mp_player_intcelebrationmale@face_palm", "face_palm");
+            }
+            else
+            {
+                API.sendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
-        [Command("coverr", "~y~Syntax /coverR 1 - 7")]
-        public void coverr(Client player, int number)
+        [Command("handsup")]// allowed tp be cuffed
+        public void handsup(Client player)
         {
-            switch (number)
+            if (CanDoAnim == true)
             {
-                case 1:
-                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "cover@idles@1h@high@_b", "idle_l_corner");
-                    break;
-                case 2:
-                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "cover@idles@1h@low@_a", "idle_l_corner");
-                    break;
-                case 3:
-                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "cover@idles@2h@high@_c", "idle_l_corner");
-                    break;
-                case 4:
-                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "cover@idles@ai@1h@low@_a", "idle_l_corner");
-                    break;
-                case 5:
-                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "cover@idles@ai@2h@high@_a", "idle_l_corner");
-                    break;
-                case 6:
-                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "cover@idles@ai@unarmed@high@_a", "idle_l_corner");
-                    break;
-                case 7:
-                    API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "cover@idles@ai@unarmed@low@_b", "idle_l_corner");
-                    break;
-                default:
-                    API.sendChatMessageToPlayer(player, "~y~Syntax /coverR 1 - 7");
-                    break;
+                API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "mp_am_hold_up", "handsup_base");
+            }
+            else
+            {
+                API.sendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+            }
+        }
+        [Command("restrained")]// allowed to be cuffed
+        public void restrained(Client player)
+        {
+            if (CanDoAnim == true)
+            {
+                API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "anim@move_m@prisoner_cuffed_rc", "aim_low_loop");
+            }
+            else
+            {
+                API.sendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
     }
