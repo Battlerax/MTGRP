@@ -33,12 +33,14 @@ API.onKeyDown.connect(function(Player, args){
             API.loadPageCefBrowser(player_list_browser, "player_manager/player_list/PlayerList.html");
             API.showCursor(true);
             API.setCanOpenChat(false);
+            API.setCefDrawState(true);
 
             API.sleep(500);
             API.triggerServerEvent("fetch_player_list", 0)
         }
         else {
             API.destroyCefBrowser(player_list_browser);
+            API.setCefDrawState(false);
             API.showCursor(false);
             API.setCanOpenChat(true);
             player_list_browser = null;
