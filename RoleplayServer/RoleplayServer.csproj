@@ -144,6 +144,7 @@
     <Content Include="resources\cef_resources\MTGVRP_LOGO_BIG.png" />
     <Content Include="resources\cef_resources\MTGVRP_LOGO_SMALL.png" />
     <Content Include="resources\door_manager\DoorManager.js" />
+    <Content Include="resources\group_manager\lspd\MDC\MDC.js" />
     <Content Include="resources\group_manager\lspd\MDC\MDC.html" />
     <Content Include="resources\inventory\ManageInv.html" />
     <Content Include="resources\group_manager\lspd\Lspd.js" />
