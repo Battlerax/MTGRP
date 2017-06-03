@@ -29,9 +29,9 @@
 	<file src="vehicle_manager/vehicle_editor/VehicleEdit.html"/>
 	
 	<!-- MDC -->
-	<file src="group_manager/lspd/MDC/MDC.js" type="client" lang="javascript"/>
+	<script src="group_manager/lspd/MDC/MDC.js" type="client" lang="javascript"/>
 	<file src="group_manager/lspd/MDC/MDC.html"/>
-  <file src="cef_resources/LSPDMDC.png"/>
+  <file src="group_manager/lspd/MDC/LSPDMDC.png"/>
 	
 	<!-- Dealership/Ownership -->
 	<script src="vehicle_dealership/vehicledealer.js" type="client" lang="javascript"/>
@@ -55,7 +55,7 @@
 	<file src="stylesheet/fonts/metro.ttf"/>
 	<file src="stylesheet/fonts/housescript.woff"/>
 	<file src="stylesheet/fonts/housescript.woff2"/>
-  <file src="stylesheet/fonts/BebasKai-Regular.otf"/>
+  <file src="stylesheet/fonts/BebasKai-Regular.woff"/>
 	<file src="stylesheet/css/metro-icons.css"/>
  
   <!-- Phone Files -->
