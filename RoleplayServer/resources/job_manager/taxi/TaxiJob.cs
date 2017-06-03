@@ -112,7 +112,7 @@ namespace RoleplayServer.resources.job_manager.taxi
                         /*if (!taxi_requests.Contains(character))
                         {
                             API.sendChatMessageToPlayer(player, Color.Yellow, "[TAXI] You must have an active taxi request to ride in a taxi. ( /requesttaxi )");
-                            API.warpPlayerOutOfVehicle(player);
+                            API.warpPlayerOutOfVehicle(player, vehicle);
                             return;
                         }
 

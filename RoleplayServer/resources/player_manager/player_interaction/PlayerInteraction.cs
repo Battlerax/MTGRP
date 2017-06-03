@@ -47,7 +47,7 @@ namespace RoleplayServer.resources.player_manager.player_interaction
 
                                     var isStunned = API.fetchNativeFromPlayer<bool>(interactClient,
                                         Hash.IS_PED_BEING_STUNNED, interactHandle, 0);
-                                   
+
                                     if (interactCharacter.AreHandsUp == false && isStunned == false)
                                     {
                                         API.sendChatMessageToPlayer(player, Color.White,

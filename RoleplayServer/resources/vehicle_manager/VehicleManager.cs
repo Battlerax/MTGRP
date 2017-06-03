@@ -178,9 +178,9 @@ namespace RoleplayServer.resources.vehicle_manager
 
             //Delete.
             Vehicles.RemoveAll(x => x.OwnerId == character.Id);
-            if (character.isJailed)
+            if (character.IsJailed)
             {
-                character.jailTimer.Stop();
+                character.JailTimer.Stop();
             }
         }
 
@@ -398,7 +398,7 @@ namespace RoleplayServer.resources.vehicle_manager
 
         public void load_all_unowned_vehicles()
         {
-            var filter = Builders<Vehicle>.Filter.Eq("OwnerId", "0");
+            var filter = Builders<Vehicle>.Filter.Eq("OwnerName", "None");
             var unownedVehicles = DatabaseManager.VehicleTable.Find(filter).ToList();
 
             foreach (var v in unownedVehicles)
