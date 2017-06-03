@@ -49,6 +49,8 @@ namespace RoleplayServer.resources.property_system
 
         public int PropertyPrice { get; set; }
 
+        public Dictionary<int,int> ItemPrices { get; set; }
+
         [BsonIgnore]
         public MarkerZone EnteranceMarker { get; set; }
 

@@ -427,7 +427,12 @@ namespace RoleplayServer.resources.property_system
 
         public static string GetInteractText(PropertyTypes type)
         {
-            return "/interact";
+            switch (type)
+            {
+                case PropertyTypes.Clothing:
+                    return "/buyclothes";
+            }
+            return "";
         }
 
         [Command("enter")]
@@ -471,7 +476,7 @@ namespace RoleplayServer.resources.property_system
         }
 
         [Command("manageprices")]
-        public void Manageprices(Client player)
+        public void Manageprices(Client player, string item = "", int price = 0)
         {
             var prop = IsAtPropertyEnterance(player) ?? IsAtPropertyInteraction(player);
             if (prop == null)
@@ -484,8 +489,53 @@ namespace RoleplayServer.resources.property_system
             {
                 switch (prop.Type)
                 {
-                    case PropertyTypes.Hardware:
+                    case PropertyTypes.Clothing:
+                        if (item == "")
+                        {                                                              //0    ,1    ,2          ,3          ,4   ,5   ,6      ,7
+                            API.sendChatMessageToPlayer(player, "[ERROR] Choose a type: [Pants,Shoes,Accessories,Undershirts,Tops,Hats,Glasses,Earrings]");
+                            return;
+                        }
+                        if (price == 0)
+                        {
+                            API.sendChatMessageToPlayer(player, "[ERROR] Price can't be zero.");
+                            return;
+                        }
 
+                        switch (item.ToLower())
+                        {
+                            case "pants":
+                                prop.ItemPrices[0] = price;
+                                API.sendChatMessageToPlayer(player, $"Changed ~g~Pants~w~ price to {price}");
+                                break;
+                            case "shoes":
+                                prop.ItemPrices[1] = price;
+                                API.sendChatMessageToPlayer(player, $"Changed ~g~Shoes~w~ price to {price}");
+                                break;
+                            case "accessories":
+                                prop.ItemPrices[2] = price;
+                                API.sendChatMessageToPlayer(player, $"Changed ~g~Accessories~w~ price to {price}");
+                                break;
+                            case "undershirts":
+                                prop.ItemPrices[3] = price;
+                                API.sendChatMessageToPlayer(player, $"Changed ~g~Undershirts~w~ price to {price}");
+                                break;
+                            case "tops":
+                                prop.ItemPrices[4] = price;
+                                API.sendChatMessageToPlayer(player, $"Changed ~g~Tops~w~ price to {price}");
+                                break;
+                            case "hats":
+                                prop.ItemPrices[5] = price;
+                                API.sendChatMessageToPlayer(player, $"Changed ~g~Hats~w~ price to {price}");
+                                break;
+                            case "glasses":
+                                prop.ItemPrices[6] = price;
+                                API.sendChatMessageToPlayer(player, $"Changed ~g~Glasses~w~ price to {price}");
+                                break;
+                            case "earrings":
+                                prop.ItemPrices[7] = price;
+                                API.sendChatMessageToPlayer(player, $"Changed ~g~Earrings~w~ price to {price}");
+                                break;
+                        }
                         break;
                 }
             }
