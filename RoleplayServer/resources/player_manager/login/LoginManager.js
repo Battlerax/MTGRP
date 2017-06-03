@@ -12,6 +12,7 @@ API.onResourceStart.connect(function () {
     API.loadPageCefBrowser(login_browser, "player_manager/login/Login.html");
     API.showCursor(true);
     API.setCanOpenChat(false);
+    API.setCefDrawState(true);
    
 });
 
@@ -34,6 +35,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
         case "hide_login_browser":
             API.showCursor(false);
             API.destroyCefBrowser(login_browser);
+            API.setCefDrawState(false);
             break;
     }
 });

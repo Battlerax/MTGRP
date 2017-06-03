@@ -170,18 +170,15 @@ namespace RoleplayServer.resources.player_manager
         public Timer BeaconResetTimer { get; set; }
         public Client BeaconCreator{ get; set; }
 
-        [BsonIgnore]
-        public bool IsViewingMdc { get; set; }
-
         private int _time;
 
-        public Timer JailTimeLeftTimer { get; set; }
-        public Timer JailTimer { get; set; }
-        public bool IsJailed { get; set; }
-        public int SentTicketAmount { get; set; }
-        public bool ActiveCrime { get; set; }
+        public Timer jailTimeLeftTimer { get; set; }
+        public Timer jailTimer { get; set; }
+        public bool isJailed { get; set; }
+        public int sentTicketAmount { get; set; }
+        public bool activeCrime { get; set; }
 
-        public int JailTimeLeft
+        public int jailTimeLeft
         {
             get { return _time; }
             set
@@ -194,10 +191,10 @@ namespace RoleplayServer.resources.player_manager
         }
 
         public Timer TicketTimer { get; set; }
-        public bool SentTicket { get; set; }
-        public int TicketBalance { get; set; }
-        public int UnpaidTickets { get; set; }
-        public bool RadioToggle { get; set; }
+        public bool sentTicket { get; set; }
+        public int ticketBalance { get; set; }
+        public int unpaidTickets { get; set; }
+        public bool radioToggle { get; set; }
 
         //Player Interaction
         [BsonIgnore]

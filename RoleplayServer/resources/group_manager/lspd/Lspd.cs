@@ -14,32 +14,32 @@ namespace RoleplayServer.resources.group_manager.lspd
 
         public Lspd()
         {
-            API.onResourceStart += StartLspd;
+            API.onResourceStart += startLspd;
             API.onClientEventTrigger += API_onClientEventTrigger;
         }
 
         //LSPD Locations. TODO: MAKE IT WORK WITH MARKERZONE!!!!
-        public static readonly Vector3 JailOne = new Vector3(458.0021f, -1001.581f, 24.91485f);
-        public static readonly Vector3 JailTwo = new Vector3(458.7058f, -998.1188f, 24.91487f);
-        public static readonly Vector3 JailThree = new Vector3(459.6695f, -994.0704f, 24.91487f);
-        public static readonly Vector3 FreeJail = new Vector3(427.7434f, -976.0182f, 30.70999f);
+        public static readonly Vector3 jailOne = new Vector3(458.0021f, -1001.581f, 24.91485f);
+        public static readonly Vector3 jailTwo = new Vector3(458.7058f, -998.1188f, 24.91487f);
+        public static readonly Vector3 jailThree = new Vector3(459.6695f, -994.0704f, 24.91487f);
+        public static readonly Vector3 freeJail = new Vector3(427.7434f, -976.0182f, 30.70999f);
         public readonly Vector3 PoliceStationPos = new Vector3(441.9734f, -981.1342f, 30.6896f);
-        public readonly Vector3 JailPosOne = new Vector3(461.8065, -994.4086, 25.06443);
-        public readonly Vector3 JailPosTwo = new Vector3(461.8065, -997.6583, 25.06443);
-        public readonly Vector3 JailPosThree = new Vector3(461.8065, -1001.302, 25.06443);
+        public readonly Vector3 jailPosOne = new Vector3(461.8065, -994.4086, 25.06443);
+        public readonly Vector3 jailPosTwo = new Vector3(461.8065, -997.6583, 25.06443);
+        public readonly Vector3 jailPosThree = new Vector3(461.8065, -1001.302, 25.06443);
 
         //LSPD Shapes
         public ColShape StationShape;
-        public ColShape ArrestShape;
+        public ColShape arrestShape;
 
-        public LinkedList<GTANetworkServer.Object> Objects = new LinkedList<GTANetworkServer.Object>();
+        public LinkedList<GTANetworkServer.Object> objects = new LinkedList<GTANetworkServer.Object>();
 
 
-        public void StartLspd()
+        public void startLspd()
         {
-            var jailShapeOne = API.createSphereColShape(JailOne, 3.7f);
-            var jailShapeTwo = API.createSphereColShape(JailTwo, 3.7f);
-            var jailShapeThree = API.createSphereColShape(JailThree, 3.7f);
+            var jailShapeOne = API.createSphereColShape(jailOne, 3.7f);
+            var jailShapeTwo = API.createSphereColShape(jailTwo, 3.7f);
+            var jailShapeThree = API.createSphereColShape(jailThree, 3.7f);
 
             StationShape = API.createCylinderColShape(PoliceStationPos, 2f, 3f);
 
@@ -140,7 +140,7 @@ namespace RoleplayServer.resources.group_manager.lspd
                 return;
             }
 
-            receiverCharacter.ActiveCrime = true;
+            receiverCharacter.activeCrime = true;
             foreach(var i in Crime.Crimes.ToList())
             {
                 if (crimeid == i.Id.ToString())
@@ -322,7 +322,7 @@ namespace RoleplayServer.resources.group_manager.lspd
                 return;
             }
 
-            if (receiverCharacter.ActiveCrime == false)
+            if (receiverCharacter.activeCrime == false)
             {
                 API.sendChatMessageToPlayer(player, "This player has no active crimes.");
             }
@@ -361,8 +361,8 @@ namespace RoleplayServer.resources.group_manager.lspd
             API.sendNotificationToPlayer(player, "You have arrested ~b~" + receiver.name + "~w~.");
             API.sendNotificationToPlayer(receiver, "You have been arrested by ~b~" + player.name + "~w~.");
             receiverCharacter.Money -= fine;
-            receiverCharacter.JailTimeLeft = time * 1000;
-            JailControl(receiver, time);
+            receiverCharacter.jailTimeLeft = time * 1000;
+            jailControl(receiver, time);
 
         }
 
@@ -383,7 +383,7 @@ namespace RoleplayServer.resources.group_manager.lspd
 
             GroupManager.GroupCommandPermCheck(character, 3);
 
-            if (receiverCharacter.IsJailed == false)
+            if (receiverCharacter.isJailed == false)
             {
                 API.sendChatMessageToPlayer(player, "This player is not jailed.");
                 return;
@@ -397,7 +397,7 @@ namespace RoleplayServer.resources.group_manager.lspd
 
             API.sendNotificationToPlayer(player, "You have released ~b~" + receiver.name + "~w~ from prison.");
             API.sendNotificationToPlayer(receiver, "You have been released from prison by ~b~" + player.name + "~w~.");
-            SetFree(receiver);
+            setFree(receiver);
 
         }
 
@@ -457,7 +457,7 @@ namespace RoleplayServer.resources.group_manager.lspd
             character.BeaconSet = true;
             character.BeaconCreator = player; 
             character.BeaconResetTimer = new Timer { Interval = 60000 };
-            character.BeaconResetTimer.Elapsed += delegate { ResetBeacon(player); };
+            character.BeaconResetTimer.Elapsed += delegate { resetBeacon(player); };
             character.BeaconResetTimer.Start();
 
         }
@@ -564,10 +564,10 @@ namespace RoleplayServer.resources.group_manager.lspd
 
             API.sendChatMessageToPlayer(target, player.name + " is offering to hand you a ticket. Use /acceptcopticket to accept it.");
             API.sendChatMessageToPlayer(player, "You offer to hand " + target.name + " a ticket.");
-            receiverCharacter.SentTicketAmount = amount;
-            receiverCharacter.SentTicket = true;
+            receiverCharacter.sentTicketAmount = amount;
+            receiverCharacter.sentTicket = true;
             character.TicketTimer = new Timer { Interval = 10000 };
-            character.TicketTimer.Elapsed += delegate { ResetTicket(target); };
+            character.TicketTimer.Elapsed += delegate { resetTicket(target); };
             character.TicketTimer.Start();
 
         }
@@ -583,7 +583,7 @@ namespace RoleplayServer.resources.group_manager.lspd
 
             if (target == null)
             {
-                API.sendChatMessageToPlayer(player, "You have ~b~ " + character.UnpaidTickets + "~w~ unpaid tickets.");
+                API.sendChatMessageToPlayer(player, "You have ~b~ " + character.unpaidTickets + "~w~ unpaid tickets.");
                 return;
             }
 
@@ -594,7 +594,7 @@ namespace RoleplayServer.resources.group_manager.lspd
             }
 
             Character receiverCharacter = API.getEntityData(target, "Character");
-            API.sendChatMessageToPlayer(player, receiverCharacter.CharacterName + " has ~b~ " + receiverCharacter.UnpaidTickets + "~w~ unpaid tickets.");
+            API.sendChatMessageToPlayer(player, receiverCharacter.CharacterName + " has ~b~ " + receiverCharacter.unpaidTickets + "~w~ unpaid tickets.");
         }
 
         [Command("acceptcopticket", GreedyArg = true)]
@@ -602,11 +602,11 @@ namespace RoleplayServer.resources.group_manager.lspd
         {
             Character character = API.getEntityData(player.handle, "Character");
 
-            if (character.SentTicket == true)
+            if (character.sentTicket == true)
             {
-                character.SentTicket = false;
-                character.TicketBalance += character.SentTicketAmount;
-                character.UnpaidTickets += 1;
+                character.sentTicket = false;
+                character.ticketBalance += character.sentTicketAmount;
+                character.unpaidTickets += 1;
                 character.Save();
                 API.sendChatMessageToPlayer(player, "Ticket accepted. Pay for this ticket at the main desk of the police station.");
            
@@ -630,22 +630,22 @@ namespace RoleplayServer.resources.group_manager.lspd
                 return;
             }
 
-            if (character.UnpaidTickets == 0)
+            if (character.unpaidTickets == 0)
             {
                 API.sendNotificationToPlayer(player, "~r~You have no active tickets to pay for.");
                 return;
             }
 
-            if (character.TicketBalance > character.Money)
+            if (character.ticketBalance > character.Money)
             {
                 API.sendNotificationToPlayer(player, "~r~You cannot afford to pay for your tickets.");
                 return;
             }
 
             API.sendNotificationToPlayer(player, "~r~Congratulations! Your tickets have been paid off.");
-            character.Money -= character.TicketBalance;
+            character.Money -= character.ticketBalance;
             character.Save();
-            character.UnpaidTickets = 0;
+            character.unpaidTickets = 0;
         }
 
         [Command("deploy", GreedyArg = true)]
@@ -674,36 +674,36 @@ namespace RoleplayServer.resources.group_manager.lspd
                 case "1":
                     {
                         var item = API.createObject(API.getHashKey("prop_mp_barrier_01"), playerpos - new Vector3(0, 0, 1f), playerrot, playerDimension);
-                        Objects.AddLast(item);
+                        objects.AddLast(item);
                         break;
                     }
 
                 case "2":
                     {
                         var item = API.createObject(API.getHashKey("prop_barrier_wat_03b"), playerpos - new Vector3(0, 0, 1f), playerrot, playerDimension);
-                        Objects.AddLast(item);
+                        objects.AddLast(item);
                         break;
                     }
                 case "3":
                     {
                         var item = API.createObject(API.getHashKey("prop_barrier_work04a"), playerpos - new Vector3(0, 0, 1f), playerrot, playerDimension);
-                        Objects.AddLast(item);
+                        objects.AddLast(item);
                         break;
                     }
                 case "4":
                     {
                         var item = API.createObject(API.getHashKey("prop_mp_conc_barrier_01"), playerpos - new Vector3(0, 0, 1f), playerrot, playerDimension);
-                        Objects.AddLast(item);
+                        objects.AddLast(item);
                         break;
                     }
                 case "5":
                     {
                         var item = API.createObject(API.getHashKey("prop_barrier_work05"), playerpos - new Vector3(0, 0, 1f), playerrot, playerDimension);
-                        Objects.AddLast(item);
+                        objects.AddLast(item);
                         break;
                     }
             }
-            API.sendNotificationToPlayer(player, "Object placed. There are now ~r~" + Objects.Count + "~w~ objects placed.");
+            API.sendNotificationToPlayer(player, "Object placed. There are now ~r~" + objects.Count + "~w~ objects placed.");
         }
 
 
@@ -718,15 +718,15 @@ namespace RoleplayServer.resources.group_manager.lspd
                 return;
             }
 
-            if (Objects.Count() == 0)
+            if (objects.Count() == 0)
             {
                 API.sendChatMessageToPlayer(player, "There are no more objects to remove.");
                 return;
             }
 
-            API.deleteEntity(Objects.Last());
-            Objects.RemoveLast();
-            API.sendNotificationToPlayer(player, "Object removed. There are now ~r~" + Objects.Count + "~w~ placed.");
+            API.deleteEntity(objects.Last());
+            objects.RemoveLast();
+            API.sendNotificationToPlayer(player, "Object removed. There are now ~r~" + objects.Count + "~w~ placed.");
         }
 
         [Command("removeallobjects", GreedyArg = true)]
@@ -740,25 +740,25 @@ namespace RoleplayServer.resources.group_manager.lspd
                 return;
             }
 
-            if (Objects.Count() == 0)
+            if (objects.Count() == 0)
             {
                 API.sendChatMessageToPlayer(player, "There are no more objects to remove.");
                 return;
             }
 
-            int len = Objects.Count();
+            int len = objects.Count();
 
-            foreach (var i in Objects)
+            foreach (var i in objects)
             {
                 API.deleteEntity(i);
             }
 
-            var node = Objects.First;
+            var node = objects.First;
 
             while (node.Next != null)
             {
                 var next = node.Next;
-                Objects.Remove(node);
+                objects.Remove(node);
             }
             API.sendNotificationToPlayer(player, "~r~" + len + " objects removed.");
         }
@@ -791,28 +791,28 @@ namespace RoleplayServer.resources.group_manager.lspd
             API.setPlayerArmor(player, 100);
         }
 
-        public void ResetTicket(Client player)
+        public void resetTicket(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
-            character.SentTicket = false;
+            character.sentTicket = false;
             character.TicketTimer.Stop();
         }
 
 
-        public void ResetBeacon(Client player)
+        public void resetBeacon(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
             character.BeaconSet = false;
             character.BeaconResetTimer.Stop();
         }
 
-        public static void JailControl(Client player, int seconds)
+        public static void jailControl(Client player, int seconds)
         {
             Character character = API.shared.getEntityData(player.handle, "Character");
 
-            int jailOnePlayers = API.shared.getPlayersInRadiusOfPosition(3.7f, JailOne).Count;
-            int jailTwoPlayers = API.shared.getPlayersInRadiusOfPosition(3.7f, JailTwo).Count;
-            int jailThreePlayers = API.shared.getPlayersInRadiusOfPosition(3.7f, JailThree).Count;
+            int jailOnePlayers = API.shared.getPlayersInRadiusOfPosition(3.7f, jailOne).Count;
+            int jailTwoPlayers = API.shared.getPlayersInRadiusOfPosition(3.7f, jailTwo).Count;
+            int jailThreePlayers = API.shared.getPlayersInRadiusOfPosition(3.7f, jailThree).Count;
             int smallest = API.shared.getAllPlayers().Count;
             int chosenCell = 0;
             List<int> list = new List<int>(new int[] { jailOnePlayers, jailTwoPlayers, jailThreePlayers });
@@ -829,50 +829,50 @@ namespace RoleplayServer.resources.group_manager.lspd
             }
 
             if (chosenCell == 0)
-                API.shared.setEntityPosition(player, JailOne);
+                API.shared.setEntityPosition(player, jailOne);
             else if (chosenCell == 1)
-                API.shared.setEntityPosition(player, JailTwo);
+                API.shared.setEntityPosition(player, jailTwo);
             else
-                API.shared.setEntityPosition(player, JailThree);
+                API.shared.setEntityPosition(player, jailThree);
 
             API.shared.removeAllPlayerWeapons(player);
-            character.IsJailed = true;
+            character.isJailed = true;
 
-            API.shared.sendChatMessageToPlayer(player, "You have been placed in jail for " + character.JailTimeLeft/60/1000 + " minutes.");
+            API.shared.sendChatMessageToPlayer(player, "You have been placed in jail for " + character.jailTimeLeft/60/1000 + " minutes.");
 
-            character.JailTimeLeftTimer = new Timer { Interval = 1000 };
-            character.JailTimeLeftTimer.Elapsed += delegate { UpdateTimer(player); };
-            character.JailTimeLeftTimer.Start();
-            character.JailTimer = new Timer { Interval = character.JailTimeLeft };
-            character.JailTimer.Elapsed += delegate { SetFree(player); };
-            character.JailTimer.Start();
+            character.jailTimeLeftTimer = new Timer { Interval = 1000 };
+            character.jailTimeLeftTimer.Elapsed += delegate { updateTimer(player); };
+            character.jailTimeLeftTimer.Start();
+            character.jailTimer = new Timer { Interval = character.jailTimeLeft };
+            character.jailTimer.Elapsed += delegate { setFree(player); };
+            character.jailTimer.Start();
         }
 
-        public static void UpdateTimer(Client player)
+        public static void updateTimer(Client player)
         {
             Character character = API.shared.getEntityData(player.handle, "Character");
-            character.JailTimeLeft -= 1000;
+            character.jailTimeLeft -= 1000;
         }
 
-        public static void SetFree(Client player)
+        public static void setFree(Client player)
         {
             Character character = API.shared.getEntityData(player.handle, "Character");
-            if (character.IsJailed == false)
+            if (character.isJailed == false)
             {
                 return;
             }
-            character.JailTimeLeft = 0;
+            character.jailTimeLeft = 0;
             API.shared.sendChatMessageToPlayer(player, "~b~You are free to go.");
-            character.IsJailed = false;
-            API.shared.setEntityPosition(player, FreeJail);
-            character.JailTimer.Stop();
-            character.JailTimeLeftTimer.Stop();
+            character.isJailed = false;
+            API.shared.setEntityPosition(player, freeJail);
+            character.jailTimer.Stop();
+            character.jailTimeLeftTimer.Stop();
 
         }
 
-        public bool ArrestPointCheck(NetHandle entity)
+        public bool arrestPointCheck(NetHandle entity)
         {
-            return ArrestShape.containsEntity(entity);
+            return arrestShape.containsEntity(entity);
         }
 
         public bool IsInPoliceStation(NetHandle entity)

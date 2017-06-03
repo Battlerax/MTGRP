@@ -339,7 +339,7 @@ namespace RoleplayServer.resources.group_manager
 
                 Character character = API.getEntityData(player.handle, "Character");
 
-                if (character.RadioToggle == false)
+                if (character.radioToggle == false)
                 {
                     API.sendChatMessageToPlayer(player, "~r~Your radio is off.");
                     return;
@@ -354,14 +354,14 @@ namespace RoleplayServer.resources.group_manager
         {
             Character character = API.getEntityData(player.handle, "Character");
 
-            if (character.RadioToggle == false)
+            if (character.radioToggle == false)
             {
-                character.RadioToggle = true;
+                character.radioToggle = true;
                 API.sendChatMessageToPlayer(player, "~p~You turn your radio on.");
             }
             else
             {
-                character.RadioToggle = false;
+                character.radioToggle = false;
                 API.sendChatMessageToPlayer(player, "~p~You turn your radio off.");
             }
         }
@@ -615,7 +615,7 @@ namespace RoleplayServer.resources.group_manager
             Character sender = API.shared.getEntityData(player.handle, "Character");
             foreach (var c in PlayerManager.Players)
             {
-                if (c.GroupId == sender.GroupId && c.RadioToggle == true)
+                if (c.GroupId == sender.GroupId && c.radioToggle == true)
                 {
                     API.shared.sendChatMessageToPlayer(c.Client, color, message);
                 }
