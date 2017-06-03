@@ -48,8 +48,7 @@ namespace RoleplayServer.resources.vehicle_manager
             CharacterMenu.OnCharacterLogin += CharacterMenu_OnCharacterLogin;
 
             // Create vehicle table + 
-            load_all_unowned_vehicles();
-            load_all_group_vehicles();
+            //load_all_unowned_vehicles();
 
             DebugManager.DebugMessage("[VehicleM] Vehicle Manager initalized!");
         }
@@ -191,27 +190,17 @@ namespace RoleplayServer.resources.vehicle_manager
             var veh = GetVehFromNetHandle(vehicleHandle);
             API.setBlipTransparency(veh.Blip, 0);
 
-
             Character character = API.getEntityData(player.handle, "Character");
 
-            if (character.Group.Id != veh.GroupId)
+            if (character.Group != veh.Group && veh.Group != Group.None)
             {
-
                 {
                     API.sendChatMessageToPlayer(player, "You must be a member of " + veh.Group.Name + " to use this vehicle.");
                     API.setEntityPosition(player, API.getEntityPosition(vehicleHandle) + new Vector3(-1, 0, 0));
                     return;
                 }
             }
-            if(veh.LicensePlate == "LSPD" && character.Group.CommandType != Group.CommandTypeLspd)
-            {
-                API.sendChatMessageToPlayer(player, "You must be a member of the LSPD to use this vehicle.");
-                API.setEntityPosition(player, API.getEntityPosition(vehicleHandle) + new Vector3(-1, 0, 0));
-                return;
-            }
-
             API.sendChatMessageToPlayer(player, "~w~[VehicleM] You have entered vehicle ~r~" + Vehicles.IndexOf(veh) + "(Owned by: " + PlayerManager.Players.SingleOrDefault(x => x.Id == veh.OwnerId)?.CharacterName + ")");
-
             API.sendChatMessageToPlayer(player, "~y~ Press \"N\" on your keyboard to access the vehicle menu.");
 
             //Vehicle Interaction Menu Setup
@@ -375,7 +364,7 @@ namespace RoleplayServer.resources.vehicle_manager
             return false;
         }
 
-        public void load_all_group_vehicles()
+        /*public void load_all_group_vehicles()
         {
             int j = 0;
 
@@ -394,17 +383,20 @@ namespace RoleplayServer.resources.vehicle_manager
             }
 
             DebugManager.DebugMessage("Loaded " + j + " group vehicles from the database.");
-        }
+        }*/
 
-        public void load_all_unowned_vehicles()
+        public static void load_all_unowned_vehicles()
         {
             var filter = Builders<Vehicle>.Filter.Eq("OwnerId", "0");
             var unownedVehicles = DatabaseManager.VehicleTable.Find(filter).ToList();
 
             foreach (var v in unownedVehicles)
             {
-                v.Job = JobManager.GetJobById(v.JobId);
                 spawn_vehicle(v);
+
+                v.Job = JobManager.GetJobById(v.JobId);
+                v.Group = GroupManager.GetGroupById(v.GroupId);
+                
                 Vehicles.Add(v);
             }
 

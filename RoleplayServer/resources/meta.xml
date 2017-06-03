@@ -57,8 +57,9 @@
 	<file src="stylesheet/fonts/metro.ttf"/>
 	<file src="stylesheet/fonts/housescript.woff"/>
 	<file src="stylesheet/fonts/housescript.woff2"/>
+  <file src="stylesheet/fonts/BebasKai-Regular.otf"/>
 	<file src="stylesheet/css/metro-icons.css"/>
-
+ 
   <!-- Phone Files -->
   <script src="phone_manager/PhoneManager.js" type="client" lang="javascript"/>
   <file src="phone_manager/gui/main.html"/>
