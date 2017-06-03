@@ -13,6 +13,7 @@
 using GTANetworkServer;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.database_manager;
+using RoleplayServer.resources.vehicle_manager;
 
 namespace RoleplayServer.resources
 {
@@ -31,6 +32,7 @@ namespace RoleplayServer.resources
 
         public void OnResourceStartHandler()
         {
+            VehicleManager.load_all_unowned_vehicles();
             API.consoleOutput("[INIT] Script initalized!");
         }
     }

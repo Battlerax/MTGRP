@@ -53,7 +53,7 @@ namespace RoleplayServer.resources.group_manager.lspd.MDC
         [Command("mdc")]
         public void mdc_cmd(Client player)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            var character = player.GetCharacter();
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
                 API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
@@ -62,13 +62,13 @@ namespace RoleplayServer.resources.group_manager.lspd.MDC
 
             if (character.IsViewingMdc)
             {
-                API.triggerClientEvent(player, "hideMDC");
+                API.triggerClientEvent(character.Client, "hideMDC");
                 ChatManager.RoleplayMessage(character, "logs off of the MDC.", ChatManager.RoleplayMe);
                 character.IsViewingMdc = false;
             }
             else
             {
-                API.triggerClientEvent(player, "showMDC");
+                API.triggerClientEvent(character.Client, "showMDC");
                 ChatManager.RoleplayMessage(character, "logs into the MDC.", ChatManager.RoleplayMe);
                 character.IsViewingMdc = true;
             }

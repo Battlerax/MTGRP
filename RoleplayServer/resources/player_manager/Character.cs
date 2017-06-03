@@ -170,6 +170,7 @@ namespace RoleplayServer.resources.player_manager
         public Timer BeaconResetTimer { get; set; }
         public Client BeaconCreator{ get; set; }
 
+        [BsonIgnore]
         public bool IsViewingMdc { get; set; }
 
         private int _time;
