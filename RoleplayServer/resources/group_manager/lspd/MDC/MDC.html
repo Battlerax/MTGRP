@@ -295,12 +295,27 @@
         $('#911_table_body').empty();
     }
 
-    function add_bolo(boloId, officer, time, priority, info) { 
-        $('#bolo_table_body').prepend('<tr id=\"boloId_' + boloId + '\" class=\"' + priority + '\"> \
-                        <td style="color: black;font-family:BebasKai">' + officer + '</td> \
-                        <td style="color: black;font-family:BebasKai">' + time + '</td> \
-                        <td style="color: black;font-family:BebasKai">' + info + '</td>\
-                        <td><button class="square-button mini-button place-right warning" onclick=\"removeBolo(' + boloId + ')\"><span class="mif-cross"></span></button></tr>');
+    function add_bolo(boloId, officer, time, priority, info) {
+        if ($("#boloId_" + boloId).length == 0) {
+
+            $('#bolo_table_body').prepend('<tr id=\"boloId_' +
+                boloId +
+                '\" class=\"' +
+                priority +
+                '\"> \
+                        <td style="color: black;font-family:BebasKai">' +
+                officer +
+                '</td> \
+                        <td style="color: black;font-family:BebasKai">' +
+                time +
+                '</td> \
+                        <td style="color: black;font-family:BebasKai">' +
+                info +
+                '</td>\
+                        <td><button class="square-button mini-button place-right warning" onclick=\"removeBolo(' +
+                boloId +
+                ')\"><span class="mif-cross"></span></button></tr>');
+        }
     }
     
     function sendBoloToServer(info, priority) {

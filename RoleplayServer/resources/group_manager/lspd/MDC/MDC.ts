@@ -11,13 +11,17 @@ API.onServerEventTrigger.connect((eventName, args) => {
         API.setCefBrowserPosition(mdcBrowser, 0, 0);
         API.loadPageCefBrowser(mdcBrowser, "MDC.html");
         API.showCursor(true);
+        API.setCefDrawState(true);
         API.setCanOpenChat(false);
+
+        API.triggerServerEvent("requestInformation");
         break;
 
     case "hideMDC":
 
         API.showCursor(false);
         API.destroyCefBrowser(mdcBrowser);
+        API.setCefDrawState(false);
         break;
 
     case "add911":
@@ -41,7 +45,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
 //From HTML 
 
 function updateMdcAnnoucement(text) {
-    API.triggerServerEvent("update_mdc_annoucement", text);
+    API.triggerServerEvent("updateMdcAnnouncement", text);
 }
 
 function removeBolo(boloId) {
@@ -49,5 +53,5 @@ function removeBolo(boloId) {
 }
 
 function sendBoloToServer(info, priority) {
-    API.triggerServerEvent("createBolo", API.getLocalPlayer(), info, priority);
+    API.triggerServerEvent("createBolo", info, priority);
 }

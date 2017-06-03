@@ -157,9 +157,9 @@ namespace RoleplayServer.resources.player_manager
                             }
                         }
 
-                        if (character.isJailed)
+                        if (character.IsJailed)
                         {
-                            Lspd.jailControl(player, character.jailTimeLeft);
+                            Lspd.JailControl(player, character.JailTimeLeft);
                         }
 
                         API.sendChatMessageToPlayer(player, "You have successfully loaded your character: " + charName);

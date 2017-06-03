@@ -29,11 +29,11 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 });
 //From HTML 
 function updateMdcAnnoucement(text) {
-    API.triggerServerEvent("update_mdc_annoucement", text);
+    API.triggerServerEvent("updateMdcAnnouncement", text);
 }
 function removeBolo(boloId) {
     API.triggerServerEvent("removeBolo", boloId);
 }
 function sendBoloToServer(info, priority) {
-    API.triggerServerEvent("createBolo", API.getLocalPlayer(), info, priority);
+    API.triggerServerEvent("createBolo", info, priority);
 }

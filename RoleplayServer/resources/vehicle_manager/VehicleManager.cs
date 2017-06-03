@@ -178,9 +178,9 @@ namespace RoleplayServer.resources.vehicle_manager
 
             //Delete.
             Vehicles.RemoveAll(x => x.OwnerId == character.Id);
-            if (character.isJailed)
+            if (character.IsJailed)
             {
-                character.jailTimer.Stop();
+                character.JailTimer.Stop();
             }
         }
 
