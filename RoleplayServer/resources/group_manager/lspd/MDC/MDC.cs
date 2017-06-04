@@ -22,7 +22,7 @@ namespace RoleplayServer.resources.group_manager.lspd.MDC
             ReportingOfficer = reportingOfficer;
             Priority = priority;
             Info = info;
-            //Time = WeatherAndTimeManager.CurrentTimestamp();
+            Time = TimeWeatherManager.CurrentTime;
         }
     }
 
@@ -36,7 +36,7 @@ namespace RoleplayServer.resources.group_manager.lspd.MDC
         {
             PhoneNumber = phoneNumber;
             Info = info;
-            //Time = WeatherAndTimeManager.CurrentTimestamp();
+            Time = TimeWeatherManager.CurrentTime;
         }
     }
 
@@ -62,13 +62,13 @@ namespace RoleplayServer.resources.group_manager.lspd.MDC
 
             if (character.IsViewingMdc)
             {
-                API.triggerClientEvent(character.Client, "hideMDC");
+                API.shared.triggerClientEvent(character.Client, "hideMDC");
                 ChatManager.RoleplayMessage(character, "logs off of the MDC.", ChatManager.RoleplayMe);
                 character.IsViewingMdc = false;
             }
             else
             {
-                API.triggerClientEvent(character.Client, "showMDC");
+                API.shared.triggerClientEvent(character.Client, "showMDC");
                 ChatManager.RoleplayMessage(character, "logs into the MDC.", ChatManager.RoleplayMe);
                 character.IsViewingMdc = true;
             }
@@ -78,21 +78,22 @@ namespace RoleplayServer.resources.group_manager.lspd.MDC
         {
             switch (eventName)
             {
-                case "updateMdcAnnouncement":
+                case "server_updateMdcAnnouncement":
                 {
 
                     break;
                 }
-                case "removeBolo":
+                case "server_removeBolo":
                 {
                     ActiveBolos.RemoveAt((int) arguments[0]);
                     API.sendChatMessageToPlayer(player, "You removed Bolo # " + (int)arguments[0]);
                     break;
                 }
-                case "createBolo":
+                case "server_createBolo":
                 {
                     Character character = API.getEntityData(player, "Character");
-                    var newBolo = new Bolo(character.CharacterName, (int)arguments[0], (string)arguments[1]);
+                    API.sendChatMessageToPlayer(player, "ARGS: " + arguments[0] + " " + arguments[1]);
+                    var newBolo = new Bolo(character.CharacterName, Convert.ToInt32(arguments[1]), Convert.ToString(arguments[0]));
 
                     ActiveBolos.Add(newBolo);
                     newBolo.Id = ActiveBolos.IndexOf(newBolo);
@@ -104,14 +105,23 @@ namespace RoleplayServer.resources.group_manager.lspd.MDC
                             SendBoloToClient(c.Client, newBolo);
                         }
                     }
+
+                    API.sendChatMessageToPlayer(player, "Successfully submitted Bolo #" + newBolo.Id);
                     break;
                 }
-                case "requestInformation":
+                case "requestMdcInformation":
                 {
                     SendAll911ToClient(player);
                     SendAllBoloToClient(player);
                     break;
                 }
+                case "server_mdc_close":
+                {
+                    var character = player.GetCharacter();
+                    ChatManager.RoleplayMessage(character, "logs off of the MDC.", ChatManager.RoleplayMe);
+                    character.IsViewingMdc = false;
+                    break;
+                }                    
             }
             
         }
@@ -120,12 +130,12 @@ namespace RoleplayServer.resources.group_manager.lspd.MDC
         public void SendBoloToClient(Client player, Bolo bolo)
         {
             //boloId, officer, time, priority, info
-            API.triggerClientEvent(player, "addBolo", bolo.Id, bolo.ReportingOfficer, bolo.Time, bolo.Priority, bolo.Info);
+            API.triggerClientEvent(player, "addBolo", bolo.Id, bolo.ReportingOfficer, bolo.Time.ToString(), bolo.Priority, bolo.Info);
         }
 
         public void Send911ToClient(Client player, EmergencyCall call)
         {
-            API.triggerClientEvent(player, "add911", call.PhoneNumber, call.Time, call.Info);
+            API.triggerClientEvent(player, "add911", call.PhoneNumber, call.Time.ToString(), call.Info);
         }
 
         public void Add911Call(int phoneNumber, string info)
@@ -138,7 +148,7 @@ namespace RoleplayServer.resources.group_manager.lspd.MDC
         {
             var orderedBolo = ActiveBolos.OrderByDescending(b => b.Time);
 
-            foreach (var b in orderedBolo.Reverse())
+            foreach (var b in orderedBolo)
             {
                 SendBoloToClient(player, b);
             }
@@ -147,7 +157,7 @@ namespace RoleplayServer.resources.group_manager.lspd.MDC
         public void SendAll911ToClient(Client player)
         {
             var ordered911 = Active911s.OrderByDescending(c => c.Time).Take(20);
-            foreach (var c in ordered911.Reverse())
+            foreach (var c in ordered911)
             {
                 Send911ToClient(player, c);
             }

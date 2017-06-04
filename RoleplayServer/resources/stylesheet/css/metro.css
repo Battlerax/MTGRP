@@ -187,7 +187,7 @@ a {
 }
 @font-face{font-family:'House Script';src:url(../fonts/housescript.woff2) format("woff2"),url(../fonts/housescript.woff) format("woff");}
 
-@font-face{font-family:'BebasKai';src:url(../fonts/BebasKai-Regular.otf) format('opentype');}
+@font-face{font-family:'BebasKai';src:url(../fonts/BebasKai-Regular.woff) format('woff');}
 
 html {
   font-size: 100%;

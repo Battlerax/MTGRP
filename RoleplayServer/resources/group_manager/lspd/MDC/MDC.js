@@ -1,50 +1,39 @@
 ﻿var mdcBrowser = null;
 
 API.onResourceStart.connect(function () {
-    API.sendChatMessage("MDC.js started...");
+    
 });
 
 //From server
 API.onServerEventTrigger.connect(function (eventName, args) {
-    API.sendChatMessage("Event triggered: " + eventName);
+ 
     switch (eventName) {
         case "showMDC":
-            API.sendChatMessage("Starting to show MDC.");
             var res = API.getScreenResolution();
             mdcBrowser = API.createCefBrowser(res.Width, res.Height);
-            API.sendChatMessage("Browsered created.");
+        
             API.waitUntilCefBrowserInit(mdcBrowser);
-            API.sendChatMessage("Finished waiting for CEF.");
             API.setCefBrowserPosition(mdcBrowser, 0, 0);
-            API.sendChatMessage("Loading page..."):
             API.loadPageCefBrowser(mdcBrowser, "group_manager/lspd/MDC/MDC.html");
-            API.sendChatMessage("Page loaded.");
             API.setCefDrawState(true);
             API.setCanOpenChat(false);
-            API.sendChatMessage("Openeding MDC, requesting information.");
+            API.showCursor(true);
 
             API.sleep(500);
-            API.triggerServerEvent("requestInformation");
-            API.sendChatMessage("Info requested.");
-            break;
-
-        case "hideMDC":
-
-            API.showCursor(false);
-            API.destroyCefBrowser(mdcBrowser);
-            API.setCefDrawState(false);
+            API.triggerServerEvent("requestMdcInformation");
             break;
 
         case "add911":
 
             //number, time, info
-            mdcBrowser.call("add911", args[0], args[1], args[2]);
+            mdcBrowser.call("html_add911", args[0], args[1], args[2]);
             break;
 
         case "addBolo":
 
             //boloId, officer, time, priority, info
-            mdcBrowser.call("addBolo", args[0], args[1], args[2], args[3], args[4]);
+            API.sendChatMessage("Calling html_addBolo with: " + args[0] + " " + args[1] + " " + args[2] + " " + args[3] + " " + args[4]);
+            mdcBrowser.call("html_addBolo", args[0], args[1], args[2], args[3], args[4]);
             break;
 
         case "remove911":
@@ -55,14 +44,22 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 
 //From HTML 
 
-function updateMdcAnnoucement(text) {
-    API.triggerServerEvent("updateMdcAnnouncement", text);
+function client_updateMdcAnnoucement(text) {
+    API.triggerServerEvent("server_updateMdcAnnouncement", text);
 }
 
-function removeBolo(boloId) {
-    API.triggerServerEvent("removeBolo", boloId);
+function client_removeBolo(boloId) {
+    API.triggerServerEvent("server_removeBolo", boloId);
 }
 
-function sendBoloToServer(info, priority) {
-    API.triggerServerEvent("createBolo", info, priority);
+function client_sendBoloToServer(info, priority) {
+    API.triggerServerEvent("server_createBolo", info, priority);
+}
+
+function client_mdc_close() {
+    API.destroyCefBrowser(mdcBrowser);
+    API.showCursor(false);
+    API.setCefDrawState(false);
+    API.setCanOpenChat(true);
+    API.triggerServerEvent("server_mdc_close");
 }

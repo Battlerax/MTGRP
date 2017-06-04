@@ -18,7 +18,7 @@
             top: 25%;
             left: 35%;
 
-            background-image: url("../../../cef_resources/LSPDMDC.png");
+            background-image: url("LSPDMDC.png");
             background-size: cover;
             background-repeat: no-repeat;
 
@@ -95,6 +95,7 @@
        
         <div id="prism_menu" class="menu_item">PRISM Search</div>
         <div id="highcommand_menu" class="menu_item">High Command</div>
+        <div id="Logoff" class="menu_item" style="color:red" onclick="html_mdc_close()">Log out</div>
     </div>
     
     
@@ -153,7 +154,7 @@
                     </div>
                     
                     <br/>
-                    <button class="button success" onclick="sendBoloToServer($('#bolo_info').val(), $('#priority_select').val())"><span class="mif-my-location"></span> Create</button>  
+                    <button class="button success" onclick="html_sendBoloToServer($('#bolo_info').val(), $('#priority_select').val())"><span class="mif-my-location"></span> Create</button>  
                     <button class="button warning" onclick="metroDialog.close('#bolo_dialog')"><span class="mif-cross"></span> Cancel</button>
                
                  </div>
@@ -229,7 +230,7 @@
             <div class="input-control textarea" style="resize: none; overflow-y: hidden; height: 200px; width:600px">
                 <textarea id="announcement_textarea_input"></textarea>
             </div>
-            <button id="update_announcement" class="button success" onclick="update_announcement()"><span class="mif-checkmark"></span> Update</button>
+            <button id="update_announcement" class="button success" onclick="html_update_announcement()"><span class="mif-checkmark"></span> Update</button>
         </div>
         
         
@@ -295,13 +296,21 @@
         $('#911_table_body').empty();
     }
 
-    function add_bolo(boloId, officer, time, priority, info) {
+    function html_addBolo(boloId, officer, time, priority, info) {
         if ($("#boloId_" + boloId).length == 0) {
+
+            var priorityClass = "success";
+            if (priority == 2) {
+                priorityClass = "warning";
+            }
+            else if (priority == 3) {
+                priorityClass = "error";
+            }
 
             $('#bolo_table_body').prepend('<tr id=\"boloId_' +
                 boloId +
                 '\" class=\"' +
-                priority +
+                priorityClass +
                 '\"> \
                         <td style="color: black;font-family:BebasKai">' +
                 officer +
@@ -312,14 +321,14 @@
                         <td style="color: black;font-family:BebasKai">' +
                 info +
                 '</td>\
-                        <td><button class="square-button mini-button place-right warning" onclick=\"removeBolo(' +
+                        <td><button class="square-button mini-button place-right warning" onclick=\"html_removeBolo(' +
                 boloId +
                 ')\"><span class="mif-cross"></span></button></tr>');
         }
     }
     
-    function sendBoloToServer(info, priority) {
-        resourceCall("sendBoloToServer", info, priority);
+    function html_sendBoloToServer(info, priority) {
+        resourceCall("client_sendBoloToServer", info, priority);
         metroDialog.close('#bolo_dialog')
     }
 
@@ -328,12 +337,12 @@
         $('#pm_msg').focus();
     }
 
-    function removeBolo(boloId) {
+    function html_removeBolo(boloId) {
         $('#boloId_' + boloId).remove();
-        resourceCall("removeBolo", boloId);
+        resourceCall("client_removeBolo", boloId);
     }
 
-    function add_911(number, time, info) {
+    function html_add911(number, time, info) {
 
         //Make sure only last 20 calls are showed
         if ($('#911_table_body tr').length >= 20) {
@@ -347,12 +356,16 @@
                         <td style="color: black;font-family:BebasKai">' + info + '</td></tr>');
     }
 
-    function update_announcement() {
+    function html_update_announcement() {
         var annoucementText = document.getElementById('announcement_textarea_input').value;
         if (annoucementText.length > 0) {
             $('#announcement_text').text(annoucementText);
-            resourceCall("updateMdcAnnoucement", announcement_text);
+            resourceCall("client_updateMdcAnnoucement", announcement_text);
         }
+    }
+
+    function html_mdc_close() {
+        resourceCall("client_mdc_close");
     }
 
 </script>
