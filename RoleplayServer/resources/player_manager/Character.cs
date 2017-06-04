@@ -9,6 +9,7 @@ using MongoDB.Driver;
 using RoleplayServer.resources.database_manager;
 using RoleplayServer.resources.group_manager;
 using RoleplayServer.resources.inventory;
+using RoleplayServer.resources.group_manager.lspd;
 using RoleplayServer.resources.job_manager;
 using RoleplayServer.resources.job_manager.fisher;
 using RoleplayServer.resources.job_manager.taxi;
@@ -155,18 +156,14 @@ namespace RoleplayServer.resources.player_manager
 
         public Dictionary<Fish, int> FishOnHand = new Dictionary<Fish, int>();
 
-        //Phone System
-        public int PhoneNumber { get; set; }
-
-        [BsonIgnore]
-        public Phone Phone { get; set; }
         [BsonIgnore]
         public Character InCallWith { get; set; }
         [BsonIgnore]
         public Character BeingCalledBy { get; set; }
         [BsonIgnore]
         public Character CallingPlayer { get; set; }
-
+        [BsonIgnore]
+        public System.Threading.Timer CallingTimer;
         //Groups
         public int GroupId { get; set; }
         public int GroupRank { get; set; }
@@ -181,6 +178,42 @@ namespace RoleplayServer.resources.player_manager
 
         //LSPD Related
         public bool IsInPoliceUniform { get; set; }
+        public bool IsOnPoliceDuty { get; set; }
+
+        public Vector3 BeaconPosition { get; set; }
+        public bool BeaconSet { get; set; }
+        public Timer BeaconTimer { get; set; }
+        public Timer BeaconResetTimer { get; set; }
+        public Client BeaconCreator{ get; set; }
+
+        [BsonIgnore]
+        public bool IsViewingMdc { get; set; }
+
+        private int _time;
+
+        public Timer jailTimeLeftTimer { get; set; }
+        public Timer jailTimer { get; set; }
+        public bool isJailed { get; set; }
+        public int sentTicketAmount { get; set; }
+        public bool activeCrime { get; set; }
+
+        public int jailTimeLeft
+        {
+            get { return _time; }
+            set
+            {
+                if (Client != null)
+                    API.shared.triggerClientEvent(Client, "update_jail_time", value/1000);
+
+                _time = value;
+            }
+        }
+
+        public Timer TicketTimer { get; set; }
+        public bool sentTicket { get; set; }
+        public int ticketBalance { get; set; }
+        public int unpaidTickets { get; set; }
+        public bool radioToggle { get; set; }
 
         //Player Interaction
         [BsonIgnore]
@@ -369,6 +402,19 @@ namespace RoleplayServer.resources.player_manager
         public string rp_name()
         {
             return CharacterName.Replace("_", " ");
+        }
+
+        //Criminal Records
+        public void RecordCrime(string playerName, string recordingOfficer, Crime crime)
+        {
+            var record = new CriminalRecord(playerName, recordingOfficer, crime, true);
+            record.Insert();
+        }
+
+        public List<CriminalRecord> GetCriminalRecord()
+        {
+            var filter = Builders<CriminalRecord>.Filter.Eq("CharacterId", Id.ToString());
+            return DatabaseManager.CriminalRecordTable.Find(filter).ToList();
         }
     }
 }

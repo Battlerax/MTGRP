@@ -186,6 +186,9 @@ a {
   src: local("Segoe UI Bold"), local("Open Sans Bold"), local("OpenSans-Bold"), url(https://themes.googleusercontent.com/static/fonts/opensans/v8/k3k702ZOKiLJc3WVjuplzJ1r3JsPcQLi8jytr04NNhU.woff) format('woff');
 }
 @font-face{font-family:'House Script';src:url(../fonts/housescript.woff2) format("woff2"),url(../fonts/housescript.woff) format("woff");}
+
+@font-face{font-family:'BebasKai';src:url(../fonts/BebasKai-Regular.woff) format('woff');}
+
 html {
   font-size: 100%;
 }
