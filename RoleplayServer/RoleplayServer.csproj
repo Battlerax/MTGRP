@@ -75,6 +75,8 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="resources\AdminSystem\AdminCommands.cs" />
+    <Compile Include="resources\AdminSystem\AdminReports.cs" />
+    <Compile Include="resources\AdminSystem\PlayerWarns.cs" />
     <Compile Include="resources\component_manager\ComponentManager.cs" />
     <Compile Include="resources\core\ChatManager.cs" />
     <Compile Include="resources\core\Color.cs" />
@@ -138,6 +140,7 @@
     <None Include="tsconfig.json" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="resources\AdminSystem\Reports.js" />
     <Content Include="resources\cef_resources\MTGVRP_LOGO_BIG.png" />
     <Content Include="resources\cef_resources\MTGVRP_LOGO_SMALL.png" />
     <Content Include="resources\door_manager\DoorManager.js" />

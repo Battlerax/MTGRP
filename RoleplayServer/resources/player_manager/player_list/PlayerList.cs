@@ -29,7 +29,7 @@ namespace RoleplayServer.resources.player_manager.player_list
                         if(type == 1)
                         {
                             Account a = API.getEntityData(c.Client.handle, "Account");
-                            if (a.AdminDuty == 0)
+                            if (a.AdminDuty == false)
                                 continue;
                         }
 

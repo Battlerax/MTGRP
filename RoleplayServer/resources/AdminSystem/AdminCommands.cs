@@ -153,6 +153,26 @@ namespace RoleplayServer.resources.AdminSystem
 
         }
 
+        [Command("adminwarp", Alias = "aw", GreedyArg = true)]
+        public void adminwarp_cmd (Client player, string id)
+        {
+            var receiver = PlayerManager.ParseClient(id);
+            Account account = API.shared.getEntityData(player.handle, "Account");
+
+            if (account.AdminLevel < 2)
+                return;
+
+            if (receiver == null)
+            {
+                API.shared.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
+            }
+            //WILL FINISH ONCE WE ARE SURE ON SPAWN POINTS ETC. FOR NOW IT'S THE TRAIN SPAWN:
+            API.setEntityPosition(receiver, new Vector3(433.2354, -645.8408, 28.7263));
+            API.sendChatMessageToPlayer(receiver, "You have been admin warped to the spawn by an admin.");
+            API.sendChatMessageToPlayer(player, "You have admin warped " + receiver.nametag + " to the spawn.");
+        }
+
         [Command("goto")]
         public static void goto_cmd(Client player, string id)
         {
@@ -398,9 +418,9 @@ namespace RoleplayServer.resources.AdminSystem
                 return;
             }
 
+            receiverAccount.AdminName = name;
             API.sendChatMessageToPlayer(player, "You have set " + receiver.nametag + "'s admin name to '" + name + "'.");
             API.sendChatMessageToPlayer(receiver, receiver.nametag + " has set your admin name to '" + name + "'.");
-            receiverAccount.AdminName = name;
         }
 
         [Command("admins")]
@@ -411,12 +431,40 @@ namespace RoleplayServer.resources.AdminSystem
             {
                 Account receiverAccount = API.getEntityData(c.handle, "Account");
 
-                if (receiverAccount.AdminLevel > 1 && receiverAccount.AdminDuty == 0)
+                if (receiverAccount.AdminLevel > 1 && receiverAccount.AdminDuty == true)
                 {
                     API.sendChatMessageToPlayer(player, "~g~" + receiverAccount.AdminName + " | LEVEL " + receiverAccount.AdminLevel);
                 }
             }
         }
+
+        [Command("adminduty")]
+        public void adminduty_cmd(Client player)
+        {
+            Account account = API.getEntityData(player.handle, "Account");
+
+            if (account.AdminLevel < 1)
+                return;
+
+            Character character = API.getEntityData(player, "Character");
+
+            if (account.AdminDuty == false)
+            {
+                account.AdminDuty = true;
+                API.setPlayerNametagColor(player, 51, 102, 255);
+                API.setPlayerNametag(player, account.AdminName + " (" + character.Id + ")");
+                API.sendChatMessageToPlayer(player, "You are now on admin duty.");
+                return;
+            }
+
+            account.AdminDuty = false;
+            player.nametag = character.CharacterName + " (" + character.Id + ")";
+            API.resetPlayerNametagColor(player);
+            API.sendChatMessageToPlayer(player, "You are no longer on admin duty.");
+
+        }
+
+
         //============REPORT SYSTEM=============
 
         [Command("report", Alias = "re", GreedyArg = true)]
@@ -611,7 +659,7 @@ namespace RoleplayServer.resources.AdminSystem
             character.IsOnAsk = false;
             API.sendChatMessageToPlayer(player, "Ask finished.");
             API.setEntityPosition(player, character.LastPos);
-            API.setPlayerNametagColor(player, 0, 0, 0);
+            API.resetPlayerNametagColor(player);
         }
 
         [Command("ask", GreedyArg = true)]
@@ -779,20 +827,28 @@ namespace RoleplayServer.resources.AdminSystem
         //PLAYER-ADMIN STUFF
 
 
-        //prison
-
         [Command("prison", GreedyArg = true)]
-        public static void prison_cmd(Client player, string id, string time)
+        public void prison_cmd(Client player, string id, string time)
         {
-            //add prison feature once lspd is pulled
+            Account account = API.getEntityData(player.handle, "Account");
+            if (account.AdminLevel < 2)
+                return;
+
+            var receiver = PlayerManager.ParseClient(id);
+
+            Lspd.jailControl(receiver, int.Parse(time));
+            API.sendChatMessageToPlayer(player, "You have jailed " + receiver.nametag + " for " + time + " seconds.");
+            API.sendChatMessageToPlayer(receiver, "You have been jailed by " + player.nametag + " for " + time + " seconds.");
         }
-        
+
         [Command("kickplayer", GreedyArg = true)]
         public static void kick_cmd(Client player, string id, string reason)
         {
             var receiver = PlayerManager.ParseClient(id);
 
             Account account = API.shared.getEntityData(player.handle, "Account");
+            if (account.AdminLevel < 2)
+                return;
 
             kickPlayer(receiver, reason);
         }
@@ -802,6 +858,9 @@ namespace RoleplayServer.resources.AdminSystem
         {
             Account account = API.shared.getEntityData(player.handle, "Account");
             Character character = API.shared.getEntityData(player.handle, "Character");
+
+            if (account.AdminLevel < 3)
+                return;
 
             var filter = Builders<Account>.Filter.Eq("AccountName", accountname);
             var foundAccount = DatabaseManager.AccountTable.Find(filter).ToList();
@@ -813,6 +872,7 @@ namespace RoleplayServer.resources.AdminSystem
                     if (c.IsLoggedIn)
                     {
                         API.shared.sendChatMessageToPlayer(player, "This player is logged in. Use /warn.");
+                        return;
                     }
                     var playerWarn = new PlayerWarns(c.AccountName, account.AccountName, reason);
                     c.PlayerWarns.Add(playerWarn);
@@ -828,23 +888,20 @@ namespace RoleplayServer.resources.AdminSystem
                         }
                         else
                         {
-                            //tempbantheplayer
                             if (c.TempbanLevel == 1)
                             {
-                                API.shared.sendChatMessageToPlayer(player, "Player has been tempbanned.");
                                 c.TempBanExpiration = DateTime.Now.AddDays(3);
                                 c.IsTempbanned = true;
 
                             }
                             if (c.TempbanLevel == 2)
                             {
-                                API.shared.sendChatMessageToPlayer(player, "Player has been tempbanned.");
                                 c.TempBanExpiration = DateTime.Now.AddDays(7);
                                 c.IsTempbanned = true;
-
                             }
                         }
                         c.PlayerWarns.Clear();
+                        API.shared.sendChatMessageToPlayer(player, "Player has been tempbanned.");
                     }
                     c.Save();
                 }
@@ -853,11 +910,16 @@ namespace RoleplayServer.resources.AdminSystem
             }
         }
 
+
         [Command("remoteban", GreedyArg = true)]
         public static void remoteban_cmd(Client player, string accountname, string reason)
         {
             var filter = Builders<Account>.Filter.Eq("AccountName", accountname);
             var foundAccount = DatabaseManager.AccountTable.Find(filter).ToList();
+            Account account = API.shared.getEntityData(player.handle, "Account");
+
+            if (account.AdminLevel < 3)
+                return;
 
             foreach (var c in foundAccount)
             {
@@ -872,11 +934,38 @@ namespace RoleplayServer.resources.AdminSystem
             }
         }
 
+        [Command("getaccountname", GreedyArg = true)]
+        public void getaccountname_cmd(Client player, string charactername)
+        {
+            Account account = API.shared.getEntityData(player.handle, "Account");
+
+            if (account.AdminLevel < 3)
+                return;
+
+            var filter = Builders<Character>.Filter.Eq("CharacterName", charactername);
+            var foundCharacter = DatabaseManager.CharacterTable.Find(filter).ToList();
+
+            foreach (var p in foundCharacter)
+            {
+                var accountFilter = Builders<Account>.Filter.Eq("Id", p.AccountId);
+                var foundAccount = DatabaseManager.AccountTable.Find(accountFilter).ToList();
+
+                foreach (var j in foundAccount)
+                {
+                    API.sendChatMessageToPlayer(player, charactername + "'s account name is '" + j.AccountName + "'.");
+                }
+            }
+        }
+
         [Command("unban", GreedyArg = true)]
         public static void unban_cmd(Client player, string accountname)
         {
             var filter = Builders<Account>.Filter.Eq("AccountName", accountname);
             var foundAccount = DatabaseManager.AccountTable.Find(filter).ToList();
+            Account account = API.shared.getEntityData(player.handle, "Account");
+
+            if (account.AdminLevel < 3)
+                return;
 
             foreach (var c in foundAccount)
             {
@@ -896,6 +985,10 @@ namespace RoleplayServer.resources.AdminSystem
         {
             var filter = Builders<Account>.Filter.Eq("AccountName", accountname);
             var foundAccount = DatabaseManager.AccountTable.Find(filter).ToList();
+            Account account = API.shared.getEntityData(player.handle, "Account");
+
+            if (account.AdminLevel < 3)
+                return;
 
             foreach (var c in foundAccount)
             {
@@ -913,6 +1006,11 @@ namespace RoleplayServer.resources.AdminSystem
         [Command("banplayer", GreedyArg = true)]
         public static void ban_cmd(Client player, string id, string reason)
         {
+            Account account = API.shared.getEntityData(player.handle, "Account");
+
+            if (account.AdminLevel < 2)
+                return;
+
             var receiver = PlayerManager.ParseClient(id);
 
             banPlayer(receiver, reason);
@@ -924,6 +1022,11 @@ namespace RoleplayServer.resources.AdminSystem
         [Command("warn", GreedyArg = false)]
         public static void warn_cmd(Client player, string id, string reason)
         {
+            Account account = API.shared.getEntityData(player.handle, "Account");
+
+            if (account.AdminLevel < 2)
+                return;
+
             var receiver = PlayerManager.ParseClient(id);
 
             if(receiver == null)
@@ -931,7 +1034,6 @@ namespace RoleplayServer.resources.AdminSystem
                 API.shared.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid target.");
                 return;
             }
-            Account account = API.shared.getEntityData(player.handle, "Account");
             Account receiverAccount = API.shared.getEntityData(receiver, "Account");
             Character character = API.shared.getEntityData(player.handle, "Character");
             Character receiverCharacter = API.shared.getEntityData(receiver, "Character");
@@ -960,6 +1062,10 @@ namespace RoleplayServer.resources.AdminSystem
             var receiver = PlayerManager.ParseClient(id);
 
             Account account = API.shared.getEntityData(player.handle, "Account");
+
+            if (account.AdminLevel < 3)
+                return;
+
             Account receiverAccount = API.shared.getEntityData(receiver.handle, "Account");
             Character character = API.shared.getEntityData(player.handle, "Character");
             Character receiverCharacter = API.shared.getEntityData(receiver.handle, "Character");
@@ -977,6 +1083,11 @@ namespace RoleplayServer.resources.AdminSystem
         [Command("remoteplayerwarns")]
         public static void remoteplayerwarns_cmd(Client player, string accountname)
         {
+            Account account = API.shared.getEntityData(player.handle, "Account");
+
+            if (account.AdminLevel < 2)
+                return;
+
             var filter = Builders<Account>.Filter.Eq("AccountName", accountname);
             var foundAccount = DatabaseManager.AccountTable.Find(filter).ToList();
 

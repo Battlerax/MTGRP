@@ -33,7 +33,7 @@ namespace RoleplayServer.resources.core
                 msg = character.rp_name() + " [MEGAPHONE]: " + msg;
                 NearbyMessage(player, 30, msg);
             }
-            if (account.AdminDuty == 0)
+            if (account.AdminDuty == false)
             {
                 msg = character.rp_name() + " says: " + msg;
                 NearbyMessage(player, 15, msg);
@@ -217,7 +217,7 @@ namespace RoleplayServer.resources.core
         public void b_cmd(Client player, string text)
         {
             Account account = API.getEntityData(player.handle, "Account");
-            if(account.AdminDuty == 0)
+            if(account.AdminDuty == false)
             {
                 NearbyMessage(player, 10, "(( " + PlayerManager.GetName(player) + ": " + text + " ))", Color.Ooc);
             }
