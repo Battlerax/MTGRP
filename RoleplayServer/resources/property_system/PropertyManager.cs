@@ -159,6 +159,7 @@ namespace RoleplayServer.resources.property_system
                         if (Enum.TryParse((string) arguments[1], out type))
                         {
                             prop.Type = type;
+                            ItemManager.SetDefaultPrices(prop);
                             prop.Save();
                             prop.UpdateMarkers();
                             API.sendChatMessageToPlayer(sender,
@@ -504,35 +505,35 @@ namespace RoleplayServer.resources.property_system
                         switch (item.ToLower())
                         {
                             case "pants":
-                                prop.ItemPrices[0] = price;
+                                prop.ItemPrices["0"] = price;
                                 API.sendChatMessageToPlayer(player, $"Changed ~g~Pants~w~ price to {price}");
                                 break;
                             case "shoes":
-                                prop.ItemPrices[1] = price;
+                                prop.ItemPrices["1"] = price;
                                 API.sendChatMessageToPlayer(player, $"Changed ~g~Shoes~w~ price to {price}");
                                 break;
                             case "accessories":
-                                prop.ItemPrices[2] = price;
+                                prop.ItemPrices["2"] = price;
                                 API.sendChatMessageToPlayer(player, $"Changed ~g~Accessories~w~ price to {price}");
                                 break;
                             case "undershirts":
-                                prop.ItemPrices[3] = price;
+                                prop.ItemPrices["3"] = price;
                                 API.sendChatMessageToPlayer(player, $"Changed ~g~Undershirts~w~ price to {price}");
                                 break;
                             case "tops":
-                                prop.ItemPrices[4] = price;
+                                prop.ItemPrices["4"] = price;
                                 API.sendChatMessageToPlayer(player, $"Changed ~g~Tops~w~ price to {price}");
                                 break;
                             case "hats":
-                                prop.ItemPrices[5] = price;
+                                prop.ItemPrices["5"] = price;
                                 API.sendChatMessageToPlayer(player, $"Changed ~g~Hats~w~ price to {price}");
                                 break;
                             case "glasses":
-                                prop.ItemPrices[6] = price;
+                                prop.ItemPrices["6"] = price;
                                 API.sendChatMessageToPlayer(player, $"Changed ~g~Glasses~w~ price to {price}");
                                 break;
                             case "earrings":
-                                prop.ItemPrices[7] = price;
+                                prop.ItemPrices["7"] = price;
                                 API.sendChatMessageToPlayer(player, $"Changed ~g~Earrings~w~ price to {price}");
                                 break;
                         }
@@ -610,6 +611,7 @@ namespace RoleplayServer.resources.property_system
             if (account.AdminLevel >= 5)
             {
                 var property = new Property(type, player.position, player.rotation, type.ToString());
+                ItemManager.SetDefaultPrices(property);
                 property.Insert();
                 property.CreateProperty();
                 Properties.Add(property);

@@ -1,4 +1,5 @@
 ﻿var menu_pool;
+
 var pant_menu;
 var shoe_menu;
 var accessory_menu;
@@ -29,10 +30,12 @@ var facial_view = API.createCamera(new Vector3(403, -998, -98.2), new Vector3(0,
 
 API.onServerEventTrigger.connect((eventName, args) => {
     switch (eventName) {
-        case "clothing_initialize_components":
-            var list = args[0];
-            for (var i = 0; i < list.Count; i++) {
-                var obj = JSON.parse(list[i]);
+
+        case "properties_buyclothes":
+            //Setup items first.
+            var lost = args[0];
+            for (var a = 0; a < lost.Count; a++) {
+                var obj = JSON.parse(lost[a]);
 
                 var component = new Component();
                 component.type = obj.type;
@@ -42,9 +45,8 @@ API.onServerEventTrigger.connect((eventName, args) => {
 
                 component_list.push(component);
             }
-            break;
 
-        case "properties_buyclothes":
+
             var player = API.getLocalPlayer();
             menu_pool = API.getMenuPool();
 
@@ -302,5 +304,51 @@ API.onServerEventTrigger.connect((eventName, args) => {
                 }
             });
             break;
+    }
+});
+
+API.onKeyDown.connect(function (sender, e) {
+    if (menu_pool !== null && e.KeyCode === Keys.Enter) {
+        if (pant_menu != null) {
+            if (pant_menu.Visible == true) {
+                pant_menu.Visible = false;
+                character_creation_menu.Visible = true;
+            }
+            if (shoe_menu.Visible == true) {
+                shoe_menu.Visible = false;
+                character_creation_menu.Visible = true;
+            }
+
+            if (accessory_menu.Visible == true) {
+                accessory_menu.Visible = false;
+                character_creation_menu.Visible = true;
+            }
+            if (undershirt_menu.Visible == true) {
+                undershirt_menu.Visible = false;
+                character_creation_menu.Visible = true;
+            }
+            if (top_menu.Visible == true) {
+                top_menu.Visible = false;
+                character_creation_menu.Visible = true;
+            }
+            if (hat_menu.Visible == true) {
+                hat_menu.Visible = false;
+                character_creation_menu.Visible = true;
+            }
+            if (glasses_menu.Visible == true) {
+                glasses_menu.Visible = false;
+                character_creation_menu.Visible = true;
+            }
+            if (ear_menu.Visible == true) {
+                ear_menu.Visible = false;
+                character_creation_menu.Visible = true;
+            }
+        }
+    }
+});
+
+API.onUpdate.connect(function () {
+    if (menu_pool != null) {
+        menu_pool.ProcessMenus();
     }
 });
