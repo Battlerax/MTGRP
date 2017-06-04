@@ -127,6 +127,32 @@ namespace RoleplayServer.resources.vehicle_manager
             API.sendChatMessageToPlayer(player, "teleported");
         }
 
+        [Command("hotwire")]
+        public void hotwire_cmd(Client player)
+        {
+            if (player.isInVehicle == false)
+            {
+                API.sendChatMessageToPlayer(player, "You are not in a vehicle.");
+                return;
+            }
+
+            var veh = API.getPlayerVehicle(player);
+
+            if (API.getVehicleEngineStatus(veh) == true)
+            {
+                API.sendChatMessageToPlayer(player, "This vehicle is already started.");
+                return;
+            }
+
+            ChatManager.NearbyMessage(player, 6f, "~p~" + player.name + " attempts to hotwire the vehicle.");
+            //var random = new Random(); RANDOMLY START OR HURT PLAYER.. FINISH TOOMORROW
+
+            API.setPlayerHealth(player, player.health - 10);
+            player.sendChatMessage("You attempted to hotwire the vehicle and got shocked!");
+            ChatManager.NearbyMessage(player, 6f, "~p~" + player.name + " failed to hotwire the vehicle.");
+
+        }
+
 
         /*
         * 
@@ -211,6 +237,7 @@ namespace RoleplayServer.resources.vehicle_manager
             if (API.getPlayerVehicleSeat(player) == -1)
             {
                 veh.Driver = character;
+                API.sendChatMessageToPlayer(player, "~y~/hotwire to hotwire this vehicle.");
             }
         }
 

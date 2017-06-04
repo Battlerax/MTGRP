@@ -152,20 +152,17 @@ namespace RoleplayServer.resources.player_manager
             API.sendChatMessageToPlayer(sender, Color.White, "------------------------------------------------------------");
         }
 
-        [Command("stats")]          //Stats command
+        [Command("stats", GreedyArg = false)]
         public void getStatistics(Client sender, string id = null)
         {
             var receiver = PlayerManager.ParseClient(id);
             Character character = API.getEntityData(sender.handle, "Character");
             Account account = API.shared.getEntityData(sender.handle, "Account");
 
-            if (account.AdminLevel == 0)
+            if (account.AdminLevel < 2 && receiver != sender)
             {
-                if (receiver != sender)
-                {
-                    API.sendNotificationToPlayer(sender, "You can't see other player's stats.");
-                }
-                showStats(sender);
+                showStats(sender, sender);
+                return;
             }
             showStats(sender, receiver);
         }
@@ -175,18 +172,15 @@ namespace RoleplayServer.resources.player_manager
         public void checkTime(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
-            var secondsLeft = 3600 - character.GetTimePlayed();
-            API.sendChatMessageToPlayer(player, "The current server time is: " + TimeWeatherManager.CurrentTime.ToString("h:mm:ss tt"));
-            API.sendChatMessageToPlayer(player, string.Format("Time until next paycheck: {0}" + " minutes.", secondsLeft / 60));
+            var secondsLeft = (1 - character.GetTimePlayed()/3600) * 100;
+            API.sendChatMessageToPlayer(player, "The current server time is: " + DateTime.Now.ToString("h:mm:ss tt"));
+            API.sendChatMessageToPlayer(player, "The current in-game time is: " + TimeWeatherManager.CurrentTime.ToString("h:mm:ss tt"));
+            API.sendChatMessageToPlayer(player, string.Format("Time until next paycheck: {0}" + " minutes.", secondsLeft));
         }
 
 
         //Show player stats (admins can show stats of other players).
-        public void showStats(Client sender)
-        {
-            showStats(sender, sender);
-        }
- 
+
         public void showStats(Client sender, Client receiver)
         {
             Character character = API.getEntityData(receiver.handle, "Character");
@@ -195,9 +189,10 @@ namespace RoleplayServer.resources.player_manager
 
             API.sendChatMessageToPlayer(sender, "________________PLAYER STATS________________");
             API.sendChatMessageToPlayer(sender, "~g~General:~g~");
-            API.sendChatMessageToPlayer(sender, string.Format("~h~Character name:~h~ {0} ~h~Account name:~h~ {1} ~h~ID:~h~ {2} ~h~Money:~h~ {3} ~h~Bank balance:~h~ {4} ~h~Playing hours:~h~ {5}", sender.name, account.AccountName, character.Id, character.Money, character.BankBalance, character.TimePlayed));
-            API.sendChatMessageToPlayer(sender, "~b~Faction:~b~");
-            API.sendChatMessageToPlayer(sender, string.Format("~h~Faction ID:~h~ {0} ~h~Rank:~h~ {1}", character.GroupId, character.GroupRank));
+            API.sendChatMessageToPlayer(sender, string.Format("~h~Character name:~h~ {0} ~h~Account name:~h~ {1} ~h~ID:~h~ {2} ~h~Money:~h~ {3} ~h~Bank balance:~h~ {4} ~h~Playing hours:~h~ {5}", character.CharacterName, account.AccountName, character.Id, character.Money, character.BankBalance, character.TimePlayed));
+            API.sendChatMessageToPlayer(sender, string.Format("~h~Age:~h~ {0} ~h~Birthplace:~h~ {1} ~h~Birthday:~h~ {2} ~h~VIP level:~h~ {3} ~h~VIP expires:~h~ {4} ~h~Playing hours: {5}", character.Age, character.Birthplace, character.Birthday, account.VipLevel, account.VipExpirationDate, character.TimePlayed));
+            API.sendChatMessageToPlayer(sender, "~b~Faction/Jobs:~b~");
+            API.sendChatMessageToPlayer(sender, string.Format("~h~Faction ID:~h~ {0} ~h~Rank:~h~ {1} ~h~Group name:~h~ {2} ~h~Job 1:~h~ {3} ~h~Job 2: {4}", character.GroupId, character.GroupRank, character.Group.Name, character.JobOne));
             API.sendChatMessageToPlayer(sender, "~r~Property:~r~");
             //Show property info..
 
