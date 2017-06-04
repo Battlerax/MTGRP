@@ -63,7 +63,13 @@ namespace RoleplayServer.resources.group_manager.lsnn
 
                         API.triggerClientEvent(c, "unwatch_broadcast");
                         receivercharacter.IsWatchingBroadcast = false;
-                        API.sendChatMessageToPlayer(c, "~p~The LSNN broadcast has been stopped.");
+                        API.sendChatMessageToPlayer(c, "~p~The LSNN broadcast has concluded.");
+                    }
+                    
+                    if (receivercharacter.HasMic == true && receivercharacter.Group.CommandType != Group.CommandTypeLsnn)
+                    {
+                        receivercharacter.HasMic = false;
+                        API.setEntityData(c, "MicStatus", false);
                     }
                 }
                 return;
@@ -89,7 +95,7 @@ namespace RoleplayServer.resources.group_manager.lsnn
             API.sendChatMessageToPlayer(player, "Headline edited.");
         }
 
-        [Command("setcamera")]//INV
+        [Command("setcamera")]
         public void setcamera_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -102,7 +108,7 @@ namespace RoleplayServer.resources.group_manager.lsnn
 
             if (character.HasCamera == false)
             {
-                API.sendChatMessageToPlayer(player, "You do not have a camera in your inventory."); //Once inv system is done this will be fixed to work with it properly.
+                API.sendChatMessageToPlayer(player, "You do not have a camera in your inventory.");
                 return;
             }
 
@@ -166,7 +172,7 @@ namespace RoleplayServer.resources.group_manager.lsnn
             chopperRotation.Start();
         }
 
-        [Command("pickupcamera")]//INV
+        [Command("pickupcamera")]
         public void pickupcamera_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -255,7 +261,7 @@ namespace RoleplayServer.resources.group_manager.lsnn
             API.sendChatMessageToPlayer(player, "You purchased a lottery ticket. Good luck!");
         }
         
-        [Command("lotto")]//INV-BUY TICKET
+        [Command("lotto")]
         public void lotto_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -266,7 +272,6 @@ namespace RoleplayServer.resources.group_manager.lsnn
                 return;
             }
 
-            //MONEY FROM LOTTO TICKETS GO DIRECTLY TO LSNN LOTTO SAFE (COMPLETE WHEN 24/7s ARE IMPLEMENTED!)
             List<string> haveLottoTickets = new List<string>();
             var random = new Random();
             foreach (var c in PlayerManager.Players)
@@ -274,6 +279,7 @@ namespace RoleplayServer.resources.group_manager.lsnn
                 if (c.HasLottoTicket == true)
                 {
                     haveLottoTickets.Add(c.CharacterName);
+                    c.HasLottoTicket = false;
                 }
             }
             if (haveLottoTickets.Count <= 2)
@@ -294,6 +300,9 @@ namespace RoleplayServer.resources.group_manager.lsnn
 
             var camPos = CameraPosition + new Vector3(0, 0, 0.94);
             var camRot = CameraRotation + new Vector3(-1, 0, 180);
+            var FocusX = CameraPosition.X;
+            var FocusY = CameraPosition.Y;
+            var FocusZ = CameraPosition.Z;
 
             if (character.IsWatchingBroadcast == true)
             {
@@ -303,7 +312,7 @@ namespace RoleplayServer.resources.group_manager.lsnn
 
             if (character.Group.CommandType == Group.CommandTypeLsnn && chopperCamToggle == true)
             {
-                API.triggerClientEvent(player, "watch_chopper_broadcast", CameraPosition, CameraRotation, headline, chopper, offSet);
+                API.triggerClientEvent(player, "watch_chopper_broadcast", CameraPosition, CameraRotation, headline, chopper, offSet, FocusX, FocusY, FocusZ);
                 character.IsWatchingBroadcast = true;
                 return;
             }
@@ -324,14 +333,14 @@ namespace RoleplayServer.resources.group_manager.lsnn
             if (chopperCamToggle == true)
             {
                 
-                API.triggerClientEvent(player, "watch_chopper_broadcast", CameraPosition, CameraRotation, headline, chopper, offSet);
+                API.triggerClientEvent(player, "watch_chopper_broadcast", CameraPosition, CameraRotation, headline, chopper, offSet, FocusX, FocusY, FocusZ);
                 API.freezePlayer(player, true);
                 character.IsWatchingBroadcast = true;
                 return;
             }
 
             API.sendChatMessageToPlayer(player, "You are watching the broadcast. Use /stopwatching to stop watching .");
-            API.triggerClientEvent(player, "watch_broadcast", camPos, camRot, headline);
+            API.triggerClientEvent(player, "watch_broadcast", camPos, camRot, headline, FocusX, FocusY, FocusZ);
             API.freezePlayer(player, true);
             character.IsWatchingBroadcast = true;
         }
@@ -446,6 +455,9 @@ namespace RoleplayServer.resources.group_manager.lsnn
             chopper = API.getPlayerVehicle(player);
             CameraPosition = API.getEntityPosition(chopper) - new Vector3(0, 0, 3);
             CameraRotation = API.getEntityRotation(chopper);
+            var FocusX = CameraPosition.X;
+            var FocusY = CameraPosition.Y;
+            var FocusZ = CameraPosition.Z;
 
             foreach (var p in API.getAllPlayers())
             {
@@ -453,7 +465,7 @@ namespace RoleplayServer.resources.group_manager.lsnn
 
                 if (character.IsWatchingBroadcast)
                 {
-                    API.triggerClientEvent(p, "watch_chopper_broadcast", CameraPosition, CameraRotation, headline, chopper, offSet);
+                    API.triggerClientEvent(p, "watch_chopper_broadcast", CameraPosition, CameraRotation, headline, chopper, offSet, FocusX, FocusY, FocusZ);
                 }
             }
         }
