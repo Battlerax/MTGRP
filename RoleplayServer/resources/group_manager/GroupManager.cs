@@ -590,6 +590,18 @@ namespace RoleplayServer.resources.group_manager
             Groups = DatabaseManager.GroupTable.Find(Builders<Group>.Filter.Empty).ToList();
         }
 
+        [Command("setpaycheckbonus", GreedyArg = true)]
+        public void setpaycheckbonus_cmd(Client player, string amount)
+        {
+            Character character = API.getEntityData(player.handle, "Character");
+
+            if(character.Group.CommandType == 0) { return; }
+
+            GroupCommandPermCheck(character, 5);
+            character.Group.FactionPaycheckBonus = int.Parse(amount);
+            API.sendChatMessageToPlayer(player, "You have set your faction's paycheck bonus to $" + amount + ".");
+        }
+
         public static Group GetGroupById(int id)
         {
             if (id == 0 || id > Groups.Count)

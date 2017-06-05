@@ -85,6 +85,7 @@ namespace RoleplayServer.resources.player_manager
         private long TimeLoggedIn { get; set; }
 
         public long TimePlayed { get; set; }
+        public Timer PaycheckTimer { get; set; }
 
         //AME 
         [BsonIgnore]

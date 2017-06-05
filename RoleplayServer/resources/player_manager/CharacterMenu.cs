@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using GTANetworkServer;
 using GTANetworkShared;
 using MongoDB.Driver;
+using System.Timers;
 using RoleplayServer.resources.component_manager;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.database_manager;
@@ -130,6 +131,9 @@ namespace RoleplayServer.resources.player_manager
                         character.update_ped();
                         character.update_nametag();
                         character.StartTrackingTimePlayed();
+                        character.PaycheckTimer = new Timer { Interval = 1000 };
+                        character.PaycheckTimer.Elapsed += delegate { PlayerManager.SendPaycheckToPlayer(player) };
+                        character.PaycheckTimer.Start();
                         character.Money = 1000;
 
                         character.JobOne = JobManager.GetJobById(character.JobOneId);
@@ -335,6 +339,9 @@ namespace RoleplayServer.resources.player_manager
 
                     character.IsCreated = true;
                     character.StartTrackingTimePlayed();
+                    character.PaycheckTimer = new Timer { Interval = 1000 };
+                    character.PaycheckTimer.Elapsed += delegate { PlayerManager.SendPaycheckToPlayer(player) };
+                    character.PaycheckTimer.Start();
                     character.Save();
 
                     API.triggerClientEvent(player, "login_finished");

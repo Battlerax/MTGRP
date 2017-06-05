@@ -39,6 +39,7 @@ namespace RoleplayServer.resources.group_manager
 
         public DateTime DisbandDate { get; set; }
 
+        public int FactionPaycheckBonus { get; set; }
         public bool LockerSet { get; set; }
         public MarkerZone Locker { get; set; }
         public MarkerZone ArrestLocation { get; set; }
@@ -54,6 +55,7 @@ namespace RoleplayServer.resources.group_manager
 
             Locker = MarkerZone.None;
             ArrestLocation = MarkerZone.None;
+            FactionPaycheckBonus = 0;
         }
 
         public void Insert()
