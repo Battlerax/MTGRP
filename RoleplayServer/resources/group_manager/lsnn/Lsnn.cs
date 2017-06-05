@@ -16,11 +16,17 @@ namespace RoleplayServer.resources.group_manager.lsnn
             API.onResourceStart += startLsnn;
         }
 
+        public readonly Vector3 LSNNFrontDoor = new Vector3(-319.0662f, -609.8559f, 33.55819f);
+
         public void startLsnn()
         {
+            LSNNFrontDoorShape = API.createCylinderColShape(LSNNFrontDoor, 2f, 3f);
 
+            API.createMarker(1, LSNNFrontDoor - new Vector3(0, 0, 1f), new Vector3(), new Vector3(),
+                new Vector3(1f, 1f, 1f), 100, 51, 153, 255);
         }
 
+        public ColShape LSNNFrontDoorShape;
         public string headline = "Los Santos News Network";
         public int lottoSafe = 0;
         public int lottoPrice = 0;
@@ -249,7 +255,13 @@ namespace RoleplayServer.resources.group_manager.lsnn
         {
             Character character = API.getEntityData(player.handle, "Character");
 
-            //Check distance from LSNN building main office (still gotta find a good one)
+            //Check distance from LSNN building main office (need mapping, for now just door)
+
+            if (!IsAtLsnnDoor(player))
+            {
+                player.sendChatMessage("You must be at the LSNN building to purchase a lotto ticket.");
+                return;
+            }
 
             if (character.Money < lottoPrice)
             {
@@ -468,6 +480,11 @@ namespace RoleplayServer.resources.group_manager.lsnn
                     API.triggerClientEvent(p, "watch_chopper_broadcast", CameraPosition, CameraRotation, headline, chopper, offSet, FocusX, FocusY, FocusZ);
                 }
             }
+        }
+
+        public bool IsAtLsnnDoor(NetHandle entity)
+        {
+            return LSNNFrontDoorShape.containsEntity(entity);
         }
     }
 }
