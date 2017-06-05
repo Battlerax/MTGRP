@@ -227,7 +227,7 @@ namespace RoleplayServer.resources.vehicle_manager
 
             Character character = API.getEntityData(player.handle, "Character");
 
-            if (character.Group != veh.Group && veh.Group != Group.None)
+            if (veh.Group != null && character.Group != veh.Group && veh.Group != Group.None)
             {
                 {
                     API.sendChatMessageToPlayer(player, "You must be a member of " + veh.Group.Name + " to use this vehicle.");
