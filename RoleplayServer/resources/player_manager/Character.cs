@@ -148,6 +148,10 @@ namespace RoleplayServer.resources.player_manager
         public Character CallingPlayer { get; set; }
         [BsonIgnore]
         public System.Threading.Timer CallingTimer;
+
+        //Dropcar
+        public bool IsOnDropcar { get; set; }
+
         //Groups
         public int GroupId { get; set; }
         public int GroupRank { get; set; }

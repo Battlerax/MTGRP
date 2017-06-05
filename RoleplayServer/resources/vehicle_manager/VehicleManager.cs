@@ -41,7 +41,8 @@ namespace RoleplayServer.resources.vehicle_manager
             // Register callbacks
             API.onPlayerEnterVehicle += OnPlayerEnterVehicle;
             API.onVehicleDeath += OnVehicleDeath;
-            API.onPlayerExitVehicle += OnPlayerExitVehicle;
+            API.
+                Vehicle += OnPlayerExitVehicle;
             API.onPlayerDisconnected += API_onPlayerDisconnected;
 
             //Register for on character enter to show his cars.
@@ -275,6 +276,8 @@ namespace RoleplayServer.resources.vehicle_manager
 
             Character character = API.getEntityData(player.handle, "Character");
             character.LastVehicle = veh;
+
+            if (character.IsOnDropcar) { character.IsOnDropcar = false; }
         }
 
         public void OnVehicleDeath(NetHandle vehicleHandle)
