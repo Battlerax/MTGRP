@@ -266,13 +266,47 @@ namespace RoleplayServer.resources.core
             API.shared.sendChatMessageToPlayer(receiver, Color.Pm, "PM from " + PlayerManager.GetName(player) + ": " + text);
         }
 
-
-        /*[Command("pay", GreedyArg = true)]
-        public void pay_cmd(Client player, Client receiver, int amount)
+        [Command("giveweapon")]
+        public void giveweapon_cmd(Client player, string id)
         {
+            var receiver = PlayerManager.ParseClient(id);
             Character playerid = API.shared.getEntityData(player.handle, "Character");
             Character receiverid = API.shared.getEntityData(receiver.handle, "Character");
-            if (playerid.money < amount)
+
+            if (API.getPlayerWeapons(player).Length == 0)
+            {
+                player.sendChatMessage("You have no weapons on you.");
+                return;
+            }
+
+            if (GetDistanceBetweenPlayers(player, receiver) > 7)
+            {
+                API.sendChatMessageToPlayer(player, "That player is too far from you.");
+                return;
+            }
+
+            if ((int) API.getPlayerCurrentWeapon(player) == -1569615261)
+            {
+                player.sendChatMessage("You must be holding the weapon you want to hand over.");
+                return;
+            }
+
+            WeaponHash currentWeapon = API.getPlayerCurrentWeapon(player);
+            API.removePlayerWeapon(player, currentWeapon);
+            API.givePlayerWeapon(receiver, currentWeapon, 500, true, true);
+            NearbyMessage(player, 10, "~p~" + playerid.CharacterName + " handed a " + currentWeapon + " to " + receiverid.CharacterName + ".");
+            player.sendChatMessage("You gave a weapon (" + currentWeapon + ") to " + receiverid.CharacterName + ".");
+            receiver.sendChatMessage("You were given a weapon (" + currentWeapon + ") by " + playerid.CharacterName + ".");
+
+        }
+
+        [Command("pay", GreedyArg = true)]
+        public void pay_cmd(Client player, string id, string amount)
+        {
+            var receiver = PlayerManager.ParseClient(id);
+            Character playerid = API.shared.getEntityData(player.handle, "Character");
+            Character receiverid = API.shared.getEntityData(receiver.handle, "Character");
+            if (playerid.Money < int.Parse(amount))
             {
                 API.sendChatMessageToPlayer(player, "You don't have that amount on you.");
                 return;
@@ -280,27 +314,27 @@ namespace RoleplayServer.resources.core
 
             if (GetDistanceBetweenPlayers(player, receiver) > 7)
             {
-                API.sendChatMessageToPlayer(player, "That player is far from you.");
+                API.sendChatMessageToPlayer(player, "That player is too far from you.");
                 return;
             }
 
-            string messagetoplayer = "You have paid $" + amount + " to " + receiverid.character_name + ".";
+            string messagetoplayer = "You have paid $" + amount + " to " + receiverid.CharacterName + ".";
             API.sendChatMessageToPlayer(player, messagetoplayer);
-            string messagetoreceiver = "You have been paid $" + amount + " by" + playerid.character_name + ".";
+            string messagetoreceiver = "You have been paid $" + amount + " by" + playerid.CharacterName + ".";
             API.sendChatMessageToPlayer(receiver, messagetoreceiver);
-            string autome = playerid.character_name + " has paid " + receiverid.character_name + " some money.";
+            string autome = playerid.CharacterName + " has paid " + receiverid.CharacterName + " some money.";
             NearbyMessage(player, 10, autome);
-            playerid.money -= amount;
-            receiverid.money += amount;
+            playerid.Money -= int.Parse(amount);
+            receiverid.Money += int.Parse(amount);
         }
 
 
         [Command("givecheck", GreedyArg = true)]
-        public void givecheck_cmd(Client player, Client receiver, int amount)
+        public void givecheck_cmd(Client player, Client receiver, string amount)
         {
             Character playerid = API.shared.getEntityData(player.handle, "Character");
             Character receiverid = API.shared.getEntityData(receiver.handle, "Character");
-            if (playerid.bank_balance < amount)
+            if (playerid.BankBalance < int.Parse(amount))
             {
                 API.sendChatMessageToPlayer(player, "You don't have that amount in your bank account");
                 return;
@@ -313,16 +347,16 @@ namespace RoleplayServer.resources.core
             }
 
 
-            string messagetoplayer = "You have given $" + amount + " to " + receiverid.character_name + ". This has been taken from your bank balance.";
+            string messagetoplayer = "You have given $" + int.Parse(amount) + " to " + receiverid.CharacterName + ". This has been taken from your bank balance.";
             API.sendChatMessageToPlayer(player, messagetoplayer);
-            string messagetoreceiver = "You have been given a check for $" + amount + " from " + playerid.character_name + ".";
+            string messagetoreceiver = "You have been given a check for $" + amount + " from " + playerid.CharacterName + ".";
             API.sendChatMessageToPlayer(receiver, messagetoreceiver);
             API.sendChatMessageToPlayer(receiver, "You must visit the bank and use /redeemcheck to redeem the check balance.");
-            string autome = playerid.character_name + " signs a check and gives it to " + receiverid.character_name + ".";
+            string autome = playerid.CharacterName + " signs a check and gives it to " + receiverid.CharacterName + ".";
             NearbyMessage(player, 10, autome);
-            playerid.bank_balance -= amount;
-            receiverid.checks += amount;
-        }*/
+            playerid.BankBalance -= int.Parse(amount);
+            receiverid.ChequeBalance += int.Parse(amount);
+        }
 
         public const int RoleplayMe = 0;
         public const int RoleplayDo = 1;
