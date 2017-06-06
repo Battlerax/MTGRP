@@ -577,7 +577,7 @@ namespace RoleplayServer.resources.inventory
 
             //Just get the first one and take it.
             Character character = player.GetCharacter();
-            switch (GiveInventoryItem(character, items.First().Value))
+            switch (GiveInventoryItem(character, items.First().Value, items.First().Value.Amount))
             {
                 case GiveItemErrors.NotEnoughSpace:
                     API.sendNotificationToPlayer(player, "You don't have enough space in his inventory.");
