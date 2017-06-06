@@ -7,7 +7,7 @@ using RoleplayServer.resources.phone_manager;
 
 namespace RoleplayServer.resources.property_system
 {
-    public class ItemManager
+    public static class ItemManager
     {
         public static void SetDefaultPrices(Property prop)
         {
@@ -24,13 +24,34 @@ namespace RoleplayServer.resources.property_system
                     prop.ItemPrices.Add("6", 10); //Glasses
                     prop.ItemPrices.Add("7", 5); //Earrings
                     break;
+
+                case PropertyManager.PropertyTypes.TwentyFourSeven:
+                    prop.ItemPrices.Add("rope", 20); 
+                    prop.ItemPrices.Add("rags", 10);
+                    prop.ItemPrices.Add("phone", 500);
+                    break;
+
+                case PropertyManager.PropertyTypes.Hardware:
+                    prop.ItemPrices.Add("rope", 20);
+                    prop.ItemPrices.Add("rags", 10);
+                    prop.ItemPrices.Add("phone", 500);
+                    break;
             }
         }
 
-        public string[][] HardwareItems =
+        public static string[][] TwentyFourSevenItems =
         {
-            new [] {"1", "Phone", "100", nameof(Phone)},
-            new [] {""},
+            //ID, NAME, PRICE, DESCRIPTION
+            new [] {"rope", "Rope", "Used to tie people."},
+            new [] {"rags", "Rags", "Used to mute or blindfold people."},
+            new [] {"phone", "Phone", "Used to contact other people."},
+        };
+
+        public static string[][] HardwareItems =
+        {
+            //ID, NAME, PRICE, DESCRIPTION
+            new [] {"rope", "Rope", "Used to tie people."},
+            new [] {"rags", "Rags", "Used to mute or blindfold people."},
         };
     }
 }

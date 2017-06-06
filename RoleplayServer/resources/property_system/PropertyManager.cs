@@ -46,6 +46,7 @@ namespace RoleplayServer.resources.property_system
         }
 
         #region ColShapeKnowing
+
         private void API_onEntityExitColShape(ColShape colshape, GTANetworkShared.NetHandle entity)
         {
             if (API.getEntityType(entity) == EntityType.Player && colshape.hasData("property_enterance"))
@@ -55,7 +56,7 @@ namespace RoleplayServer.resources.property_system
                     API.resetEntityData(entity, "at_interance_property_id");
                 }
             }
-            
+
             if (API.getEntityType(entity) == EntityType.Player && colshape.hasData("property_interaction"))
             {
                 if (API.getEntityData(entity, "at_interaction_property_id") == colshape.getData("property_interaction"))
@@ -72,6 +73,7 @@ namespace RoleplayServer.resources.property_system
                 }
             }
         }
+
         private void API_onEntityEnterColShape(ColShape colshape, GTANetworkShared.NetHandle entity)
         {
             if (API.getEntityType(entity) == EntityType.Player && colshape.hasData("property_enterance"))
@@ -122,6 +124,7 @@ namespace RoleplayServer.resources.property_system
             }
             return null;
         }
+
         #endregion
 
         private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
@@ -138,10 +141,11 @@ namespace RoleplayServer.resources.property_system
                             API.sendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
                             return;
                         }
-                        prop.PropertyName = (string)arguments[1];
+                        prop.PropertyName = (string) arguments[1];
                         prop.Save();
                         prop.UpdateMarkers();
-                        API.sendChatMessageToPlayer(sender, $"[Property Manager] Name of Property #{id} was changed to: '{arguments[1]}'");
+                        API.sendChatMessageToPlayer(sender,
+                            $"[Property Manager] Name of Property #{id} was changed to: '{arguments[1]}'");
                     }
                     break;
 
@@ -183,7 +187,7 @@ namespace RoleplayServer.resources.property_system
                             return;
                         }
                         int sup;
-                        if (int.TryParse((string)arguments[1], out sup))
+                        if (int.TryParse((string) arguments[1], out sup))
                         {
                             prop.Supplies = sup;
                             prop.Save();
@@ -211,7 +215,8 @@ namespace RoleplayServer.resources.property_system
                         prop.EnteranceRot = sender.rotation;
                         prop.Save();
                         prop.UpdateMarkers();
-                        API.sendChatMessageToPlayer(sender, $"[Property Manager] Enterance position of property #{id} was changed.");
+                        API.sendChatMessageToPlayer(sender,
+                            $"[Property Manager] Enterance position of property #{id} was changed.");
                     }
                     break;
 
@@ -242,7 +247,7 @@ namespace RoleplayServer.resources.property_system
                             return;
                         }
                         int doorid;
-                        if (int.TryParse((string)arguments[1], out doorid))
+                        if (int.TryParse((string) arguments[1], out doorid))
                         {
                             if (Door.Doors.Exists(x => x.Id == doorid))
                             {
@@ -275,7 +280,9 @@ namespace RoleplayServer.resources.property_system
                         }
                         prop.IsTeleportable = !prop.IsTeleportable;
                         prop.Save();
-                        API.sendChatMessageToPlayer(sender, $"[Property Manager] Property #{id} was made to be '" + (prop.IsTeleportable ? "Teleportable" : "UnTeleportable") +  "'");
+                        API.sendChatMessageToPlayer(sender,
+                            $"[Property Manager] Property #{id} was made to be '" +
+                            (prop.IsTeleportable ? "Teleportable" : "UnTeleportable") + "'");
                     }
                     break;
 
@@ -298,7 +305,8 @@ namespace RoleplayServer.resources.property_system
                         prop.TargetRot = sender.rotation;
                         prop.TargetDimension = sender.dimension;
                         prop.Save();
-                        API.sendChatMessageToPlayer(sender, $"[Property Manager] Interior TP position of property #{id} was changed.");
+                        API.sendChatMessageToPlayer(sender,
+                            $"[Property Manager] Interior TP position of property #{id} was changed.");
                     }
                     break;
 
@@ -314,7 +322,9 @@ namespace RoleplayServer.resources.property_system
                         }
                         prop.IsInteractable = !prop.IsInteractable;
                         prop.Save();
-                        API.sendChatMessageToPlayer(sender, $"[Property Manager] Property #{id} was made to be '" + (prop.IsInteractable ? "Interactable" : "UnInteractable") + "'");
+                        API.sendChatMessageToPlayer(sender,
+                            $"[Property Manager] Property #{id} was made to be '" +
+                            (prop.IsInteractable ? "Interactable" : "UnInteractable") + "'");
                     }
                     break;
 
@@ -338,7 +348,8 @@ namespace RoleplayServer.resources.property_system
                         prop.InteractionDimension = sender.dimension;
                         prop.UpdateMarkers();
                         prop.Save();
-                        API.sendChatMessageToPlayer(sender, $"[Property Manager] Interaction position of property #{id} was changed.");
+                        API.sendChatMessageToPlayer(sender,
+                            $"[Property Manager] Interaction position of property #{id} was changed.");
                     }
                     break;
 
@@ -355,7 +366,9 @@ namespace RoleplayServer.resources.property_system
                         prop.IsLocked = !prop.IsLocked;
                         prop.UpdateLockStatus();
                         prop.Save();
-                        API.sendChatMessageToPlayer(sender, $"[Property Manager] Property #{id} was made to be '" + (prop.IsLocked ? "Locked" : "UnLocked") + "'");
+                        API.sendChatMessageToPlayer(sender,
+                            $"[Property Manager] Property #{id} was made to be '" +
+                            (prop.IsLocked ? "Locked" : "UnLocked") + "'");
                     }
                     break;
 
@@ -411,7 +424,7 @@ namespace RoleplayServer.resources.property_system
                             return;
                         }
                         var player = PlayerManager.ParseClient((string) arguments[1]);
-                        if(player == null)
+                        if (player == null)
                         {
                             API.sendChatMessageToPlayer(sender, "[Property Manager] Invalid Player Entered.");
                             return;
@@ -432,6 +445,10 @@ namespace RoleplayServer.resources.property_system
             {
                 case PropertyTypes.Clothing:
                     return "/buyclothes";
+                case PropertyTypes.TwentyFourSeven:
+                    return "/buy";
+                case PropertyTypes.Hardware:
+                    return "/buy";
             }
             return "";
         }

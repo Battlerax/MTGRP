@@ -72,6 +72,8 @@
 
   <script src="property_system/PropertyManager.js" type="client" lang="javascript"/>
   <script src="property_system/businesses/Clothing.js" type="client" lang="javascript"/>
+  <script src="property_system/businesses/GeneralBuying.js" type="client" lang="javascript"/>
 
-	<file src="jquery.js" />
+
+  <file src="jquery.js" />
 </meta>

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using GTANetworkServer;
 using MongoDB.Bson;
@@ -667,10 +668,27 @@ namespace RoleplayServer.resources.phone_manager
             API.triggerClientEvent(player, "phone_showphone", curTime.Hour, curTime.Minute);
         }
 
-        public bool DoesNumberExist(string num)
+        public static bool DoesNumberExist(string num)
         {
             var filter = Builders<PhoneNumber>.Filter.Eq(x => x.Number, num);
             return DatabaseManager.PhoneNumbersTable.Find(filter).Count() > 0;
+        }
+
+        public static string GetNewNumber(int size = 6)
+        {
+            Random rnd = new Random();
+            RestartNumberGenerate:
+            string number = "";
+            for (int i = 0; i < 6; i++)
+            {
+                var num = rnd.Next(0, 10);
+                number = number + num;
+            }
+            if (DoesNumberExist(number))
+            {
+                goto RestartNumberGenerate;
+            }
+            return number;
         }
     }
 }

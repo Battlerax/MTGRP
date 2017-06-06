@@ -119,6 +119,7 @@
     <Compile Include="resources\player_manager\player_interaction\PlayerInteraction.cs" />
     <Compile Include="resources\player_manager\player_list\PlayerList.cs" />
     <Compile Include="resources\property_system\businesses\Clothing.cs" />
+    <Compile Include="resources\property_system\businesses\GeneralBuying.cs" />
     <Compile Include="resources\property_system\ItemManager.cs" />
     <Compile Include="resources\property_system\Property.cs" />
     <Compile Include="resources\property_system\PropertyManager.cs" />
@@ -172,6 +173,7 @@
     <Content Include="resources\player_manager\player_list\PlayerList.html" />
     <Content Include="resources\player_manager\player_list\PlayerList.js" />
     <Content Include="resources\property_system\businesses\Clothing.js" />
+    <Content Include="resources\property_system\businesses\GeneralBuying.js" />
     <Content Include="resources\property_system\PropertyManager.js" />
     <Content Include="resources\rp_scripts\BankMenu.js" />
     <Content Include="resources\stylesheet\css\metro-colors.css" />
