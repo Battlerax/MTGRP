@@ -26,7 +26,7 @@ namespace RoleplayServer.resources.core
 
         public string CommandFriendlyName => "money";
         public string LongName => "Money";
-        public int Object => throw new NotImplementedException();
+        public int Object => 289396019;
 
 
         public int Amount { get; set; }
