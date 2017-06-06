@@ -254,13 +254,13 @@ API.onServerEventTrigger.connect((eventName, args) => {
 				break;
 			case 3:
 				API.setActiveCamera(creation_view);
-				undershirt_menu.Visible = true;
-				undershirt_menu.CurrentSelection = 0;
+				top_menu.Visible = true;
+				top_menu.CurrentSelection = 0;
 				break;
 			case 4:
 				API.setActiveCamera(creation_view);
-				top_menu.Visible = true;
-				top_menu.CurrentSelection = 0;
+				undershirt_menu.Visible = true;
+				undershirt_menu.CurrentSelection = 0;
 				break;
 			case 5:
 				API.setActiveCamera(facial_view);
