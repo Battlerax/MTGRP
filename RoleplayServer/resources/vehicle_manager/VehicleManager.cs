@@ -11,6 +11,7 @@
 
 
 using System;
+using System.Timers;
 using System.Collections.Generic;
 using System.Linq;
 using GTANetworkServer;
@@ -66,12 +67,12 @@ namespace RoleplayServer.resources.vehicle_manager
                     }
 
                     var veh = GetVehFromNetHandle(API.getPlayerVehicle(player));
-
+                    float payment = API.getVehicleHealth(API.getPlayerVehicle(player)) / 2;
                     veh.Respawn();
-                    character.Money += 500;
+                    character.Money += (int)payment;
                     character.IsOnDropcar = false;
                     API.triggerClientEvent(player, "dropcar_removewaypoint");
-                    player.sendChatMessage("Vehicle delivered. You earned $500.");
+                    player.sendChatMessage("Vehicle delivered. You earned $" + (int)payment);
                 }
             };
 
@@ -199,19 +200,37 @@ namespace RoleplayServer.resources.vehicle_manager
                 return;
             }
 
+            if (character.DropcarPrevention)
+            {
+                player.sendChatMessage("You can only do this every 15 minutes.");
+                return;
+            }
+
             var veh = GetVehFromNetHandle(API.getPlayerVehicle(player));
 
-            /*if (veh.Group != Group.None | veh.OwnerId != 0)
+            if (veh.Group != Group.None | veh.OwnerId != 0)
             {
                 API.sendChatMessageToPlayer(player, "This is an owned vehicle.");
                 return;
             }
-            */
+
 
             character.IsOnDropcar = true;
-            API.triggerClientEvent(player, "dropcar_setwaypoint", new Vector3(487.0575, -1334.377, 29.30219));
+            character.DropcarPrevention = true;
+            character.DropcarTimer = new Timer { Interval = 900000 };
+            character.DropcarTimer.Elapsed += delegate { resetDropcarTimer(player); };
+            character.DropcarTimer.Start();
+            API.triggerClientEvent(player, "dropcar_setwaypoint", new Vector3(487.0575, -1334.377, 29.30219) - new Vector3(0, 0, 1));
             player.sendChatMessage("A waypoint has been set. Take this vehicle to the waypoint to earn money.");
 
+        }
+
+        public void resetDropcarTimer(Client player)
+        {
+            Character character = API.getEntityData(player.handle, "Character");
+            player.sendChatMessage("You can now drop another vehicle.");
+            character.DropcarPrevention = false;
+            character.DropcarTimer.Stop();
         }
 
 
