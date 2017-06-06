@@ -555,6 +555,35 @@ namespace RoleplayServer.resources.property_system
                                 break;
                         }
                         break;
+
+                    case PropertyTypes.Hardware: case PropertyTypes.TwentyFourSeven:
+                        if (item == "")
+                        {
+                            API.sendChatMessageToPlayer(player, "Choose a type: ");
+                            string msg = "";
+                            foreach (var key in prop.ItemPrices.Keys)
+                            {
+                                msg += key + ",";
+                            }
+                            msg = msg.Remove(msg.Length - 1, 1);
+                            API.sendChatMessageToPlayer(player, msg);
+                            return;
+                        }
+                        if (price == 0)
+                        {
+                            API.sendChatMessageToPlayer(player, "[ERROR] Price can't be zero.");
+                            return;
+                        }
+
+                        if (!prop.ItemPrices.ContainsKey(item))
+                        {
+                            API.sendChatMessageToPlayer(player, "[ERROR] That type doesn't exist.");
+                            return;
+                        }
+
+                        prop.ItemPrices[item] = price;
+                        API.sendChatMessageToPlayer(player, $"Changed ~g~{item}~w~ price to {price}");
+                        break;
                 }
             }
             else
