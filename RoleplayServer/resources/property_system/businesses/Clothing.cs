@@ -4,6 +4,7 @@ using GTANetworkServer;
 using GTANetworkShared;
 using RoleplayServer.resources.component_manager;
 using RoleplayServer.resources.core;
+using RoleplayServer.resources.inventory;
 using RoleplayServer.resources.player_manager;
 
 namespace RoleplayServer.resources.property_system.businesses
@@ -151,13 +152,13 @@ namespace RoleplayServer.resources.property_system.businesses
                         break;
                 }
 
-                if (character.Money < price)
+                if (Money.GetCharacterMoney(character) < price)
                 {
                     API.sendChatMessageToPlayer(sender, "You don't have enough money.");
                     return;
                 }
 
-                character.Money -= price;
+                InventoryManager.DeleteInventoryItem(character, typeof(Money), price);
 
                 if (character.Model.Gender == Character.GenderMale)
                 {

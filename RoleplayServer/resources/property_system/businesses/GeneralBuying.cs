@@ -38,7 +38,7 @@ namespace RoleplayServer.resources.property_system.businesses
                 int price = prop.ItemPrices.SingleOrDefault(x => x.Key == itemName).Value;
 
                 //Make sure has enough money.
-                if (sender.GetCharacter().Money < price)
+                if (Money.GetCharacterMoney(sender.GetCharacter()) < price)                    
                 {
                     API.sendChatMessageToPlayer(sender, "Not Enough Money");
                     return;
@@ -73,7 +73,7 @@ namespace RoleplayServer.resources.property_system.businesses
                 switch (InventoryManager.GiveInventoryItem(sender.GetCharacter(), item))
                 {
                     case InventoryManager.GiveItemErrors.Success:
-                        sender.GetCharacter().Money -= price;
+                        InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
                         API.sendChatMessageToPlayer(sender, $"[BUSINESS] You have sucessfully bought a ~g~{name}~w~ for ~g~${price}.");
                         break;
 
