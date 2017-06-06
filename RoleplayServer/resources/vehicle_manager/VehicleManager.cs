@@ -41,7 +41,8 @@ namespace RoleplayServer.resources.vehicle_manager
             // Register callbacks
             API.onPlayerEnterVehicle += OnPlayerEnterVehicle;
             API.onVehicleDeath += OnVehicleDeath;
-            API.onPlayerExitVehicle += OnPlayerExitVehicle;
+            API.
+                Vehicle += OnPlayerExitVehicle;
             API.onPlayerDisconnected += API_onPlayerDisconnected;
 
             //Register for on character enter to show his cars.
@@ -145,11 +146,20 @@ namespace RoleplayServer.resources.vehicle_manager
             }
 
             ChatManager.NearbyMessage(player, 6f, "~p~" + player.name + " attempts to hotwire the vehicle.");
-            //var random = new Random(); RANDOMLY START OR HURT PLAYER.. FINISH TOOMORROW
 
-            API.setPlayerHealth(player, player.health - 10);
-            player.sendChatMessage("You attempted to hotwire the vehicle and got shocked!");
-            ChatManager.NearbyMessage(player, 6f, "~p~" + player.name + " failed to hotwire the vehicle.");
+            Random rand = new Random();
+
+            if (rand.Next(0, 2) == 0)
+            {
+                API.setVehicleEngineStatus(veh, true);
+                ChatManager.NearbyMessage(player, 6f, "~p~" + player.name + " succeeded in hotwiring the vehicle.");
+            }
+            else
+            {
+                API.setPlayerHealth(player, player.health - 10);
+                player.sendChatMessage("You attempted to hotwire the vehicle and got shocked!");
+                ChatManager.NearbyMessage(player, 6f, "~p~" + player.name + " failed to hotwire the vehicle.");
+            }
 
         }
 
@@ -266,6 +276,8 @@ namespace RoleplayServer.resources.vehicle_manager
 
             Character character = API.getEntityData(player.handle, "Character");
             character.LastVehicle = veh;
+
+            if (character.IsOnDropcar) { character.IsOnDropcar = false; }
         }
 
         public void OnVehicleDeath(NetHandle vehicleHandle)
