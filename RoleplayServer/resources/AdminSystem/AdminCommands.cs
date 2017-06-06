@@ -2,6 +2,7 @@
 using GTANetworkServer;
 using GTANetworkShared;
 using RoleplayServer.resources.core;
+using RoleplayServer.resources.inventory;
 using RoleplayServer.resources.player_manager;
 using RoleplayServer.resources.vehicle_manager;
 
@@ -166,7 +167,7 @@ namespace RoleplayServer.resources.AdminSystem
             if (account.AdminLevel == 0)
                 return;
 
-            character.Money = money;
+            InventoryManager.SetInventoryAmmount(character, typeof(Money), money);
             API.sendChatMessageToPlayer(player, $"You have sucessfully changed your money to ${money}.");
         }
 

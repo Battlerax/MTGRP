@@ -11,6 +11,8 @@ namespace RoleplayServer.resources.job_manager
 {
     public class Job
     {
+        public static readonly Job None = new Job();
+
         public int Id { get; set; }
 
         public string Name { get; set; }

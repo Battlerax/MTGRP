@@ -4,6 +4,7 @@ using System.Timers;
 using GTANetworkServer;
 using GTANetworkShared;
 using RoleplayServer.resources.core;
+using RoleplayServer.resources.inventory;
 using RoleplayServer.resources.player_manager;
 using RoleplayServer.resources.vehicle_manager;
 using Vehicle = RoleplayServer.resources.vehicle_manager.Vehicle;
@@ -59,8 +60,8 @@ namespace RoleplayServer.resources.job_manager.taxi
                 {
                     if (veh.Driver == character.TaxiDriver)
                     {
-                        veh.Driver.Money += character.TotalFare;
-                        character.Money -= character.TotalFare;
+                        InventoryManager.GiveInventoryItem(veh.Driver, new Money(), character.TotalFare);
+                        InventoryManager.DeleteInventoryItem(character, typeof(Money), character.TotalFare);
 
                         veh.Driver.Save();
                         character.Save();
@@ -306,9 +307,9 @@ namespace RoleplayServer.resources.job_manager.taxi
             c.TotalFare = (int)Math.Round(c.Client.position.DistanceTo(c.TaxiStart) / 100) * c.TaxiDriver.TaxiFare;
             var fareMsg = "";
 
-            if(c.TotalFare > c.Money)
+            if(c.TotalFare > Money.GetCharacterMoney(c))
             {
-                c.TotalFare = c.Money;
+                c.TotalFare = Money.GetCharacterMoney(c);
                 fareMsg = "(Client money maxed out)";
             }
 

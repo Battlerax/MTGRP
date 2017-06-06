@@ -6,6 +6,7 @@ using System.Timers;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.player_manager;
 using System;
+using RoleplayServer.resources.inventory;
 
 namespace RoleplayServer.resources.group_manager.lspd
 {
@@ -360,7 +361,7 @@ namespace RoleplayServer.resources.group_manager.lspd
 
             API.sendNotificationToPlayer(player, "You have arrested ~b~" + receiver.name + "~w~.");
             API.sendNotificationToPlayer(receiver, "You have been arrested by ~b~" + player.name + "~w~.");
-            receiverCharacter.Money -= fine;
+            InventoryManager.DeleteInventoryItem(receiverCharacter, typeof(Money), fine);
             receiverCharacter.jailTimeLeft = time * 1000;
             jailControl(receiver, time);
 
@@ -636,14 +637,14 @@ namespace RoleplayServer.resources.group_manager.lspd
                 return;
             }
 
-            if (character.ticketBalance > character.Money)
+            if (character.ticketBalance > Money.GetCharacterMoney(character))
             {
                 API.sendNotificationToPlayer(player, "~r~You cannot afford to pay for your tickets.");
                 return;
             }
 
             API.sendNotificationToPlayer(player, "~r~Congratulations! Your tickets have been paid off.");
-            character.Money -= character.ticketBalance;
+            InventoryManager.DeleteInventoryItem(character, typeof(Money), character.ticketBalance);
             character.Save();
             character.unpaidTickets = 0;
         }
