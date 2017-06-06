@@ -123,6 +123,9 @@ API.onServerEventTrigger.connect((eventName, args) => {
 		var player = API.getLocalPlayer();
 		menu_pool = API.getMenuPool();
 
+		API.setEntityPosition(player, new Vector3(403, -997, -99));
+		API.setEntityRotation(player, new Vector3(0, 0, 177.2663));
+
 		API.sendChatMessage("~g~Select the clothes you would like to buy.");
 		API.sendChatMessage("~y~NOTE: You can use the PLUS and MINUS keys to rotate your character!");
 

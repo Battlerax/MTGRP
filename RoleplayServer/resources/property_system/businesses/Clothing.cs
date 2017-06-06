@@ -457,8 +457,6 @@ namespace RoleplayServer.resources.property_system.businesses
             API.setEntityData(player, "clothing_id", biz.Id);
 
             API.freezePlayer(player, true);
-            API.setEntityPosition(player, new Vector3(403, -997, -99));
-            API.setEntityRotation(player, new Vector3(0, 0, 177.2663));
 
             var character = player.GetCharacter();
 
