@@ -14,6 +14,7 @@ namespace RoleplayServer.resources.job_manager
     {
         public const int TaxiJob = 1;
         public const int FisherJob = 2;
+        public const int MechanicJob = 3;
 
         public static List<Job> Jobs = new List<Job>();
 
