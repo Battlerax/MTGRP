@@ -6,6 +6,7 @@
 
 var player_money = null;
 var jail_time = 0;
+var mark = null;
 
 API.onServerEventTrigger.connect(function (eventName, args) {
     switch (eventName) {
@@ -18,6 +19,17 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 			jail_time = args[0];
 			break;
 		}
+
+        case "dropcar_setwaypoint":
+		    var location = args[0];
+            API.setWaypoint(location.X, location.Y);   
+			var mark = API.createMarker(1, location, new Vector3(), new Vector3(), new Vector3(1, 1, 1), 255, 0, 0, 255);
+            break;
+
+		case "dropcar_removewaypoint":
+			API.removeWaypoint();
+			API.deleteEntity(mark) ;
+			break;
     }
 });
 

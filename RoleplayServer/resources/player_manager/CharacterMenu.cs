@@ -132,7 +132,7 @@ namespace RoleplayServer.resources.player_manager
                         character.update_nametag();
                         character.StartTrackingTimePlayed();
                         character.PaycheckTimer = new Timer { Interval = 1000 };
-                        character.PaycheckTimer.Elapsed += delegate { PlayerManager.SendPaycheckToPlayer(player) };
+                        character.PaycheckTimer.Elapsed += delegate { PlayerManager.SendPaycheckToPlayer(player); };
                         character.PaycheckTimer.Start();
                         character.Money = 1000;
 
@@ -340,7 +340,7 @@ namespace RoleplayServer.resources.player_manager
                     character.IsCreated = true;
                     character.StartTrackingTimePlayed();
                     character.PaycheckTimer = new Timer { Interval = 1000 };
-                    character.PaycheckTimer.Elapsed += delegate { PlayerManager.SendPaycheckToPlayer(player) };
+                    character.PaycheckTimer.Elapsed += delegate { PlayerManager.SendPaycheckToPlayer(player); };
                     character.PaycheckTimer.Start();
                     character.Save();
 

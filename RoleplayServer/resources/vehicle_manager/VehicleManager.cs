@@ -27,12 +27,14 @@ namespace RoleplayServer.resources.vehicle_manager
     public class VehicleManager : Script
     {
         public static List<Vehicle> Vehicles = new List<Vehicle>();
-       
+
         /*
         * 
         * ========== CONSTRUCTOR =========
         * 
         */
+        public ColShape dropcarShape;
+        public Vector3 dropcarPosition = new Vector3(487.0575, -1334.377, 29.30219);
 
         public VehicleManager()
         {
@@ -41,8 +43,7 @@ namespace RoleplayServer.resources.vehicle_manager
             // Register callbacks
             API.onPlayerEnterVehicle += OnPlayerEnterVehicle;
             API.onVehicleDeath += OnVehicleDeath;
-            API.
-                Vehicle += OnPlayerExitVehicle;
+            API.onPlayerExitVehicle += OnPlayerExitVehicle;
             API.onPlayerDisconnected += API_onPlayerDisconnected;
 
             //Register for on character enter to show his cars.
@@ -50,6 +51,30 @@ namespace RoleplayServer.resources.vehicle_manager
 
             // Create vehicle table + 
             //load_all_unowned_vehicles();
+            dropcarShape = API.createCylinderColShape(dropcarPosition, 2f, 3f);
+
+            dropcarShape.onEntityEnterColShape += (shape, entity) =>
+            {
+                Client player;
+                if ((player = API.getPlayerFromHandle(entity)) != null)
+                {
+                    Character character = API.getEntityData(player.handle, "Character");
+
+                    if (!character.IsOnDropcar)
+                    {
+                        return;
+                    }
+
+                    var veh = GetVehFromNetHandle(API.getPlayerVehicle(player));
+
+                    veh.Respawn();
+                    character.Money += 500;
+                    character.IsOnDropcar = false;
+                    API.triggerClientEvent(player, "dropcar_removewaypoint");
+                    player.sendChatMessage("Vehicle delivered. You earned $500.");
+                }
+            };
+
 
             DebugManager.DebugMessage("[VehicleM] Vehicle Manager initalized!");
         }
@@ -160,6 +185,32 @@ namespace RoleplayServer.resources.vehicle_manager
                 player.sendChatMessage("You attempted to hotwire the vehicle and got shocked!");
                 ChatManager.NearbyMessage(player, 6f, "~p~" + player.name + " failed to hotwire the vehicle.");
             }
+
+        }
+
+        [Command("dropcar")]
+        public void dropcar_cmd(Client player)
+        {
+            Character character = API.getEntityData(player.handle, "Character");
+
+            if (player.isInVehicle == false)
+            {
+                API.sendChatMessageToPlayer(player, "You are not in a vehicle.");
+                return;
+            }
+
+            var veh = GetVehFromNetHandle(API.getPlayerVehicle(player));
+
+            /*if (veh.Group != Group.None | veh.OwnerId != 0)
+            {
+                API.sendChatMessageToPlayer(player, "This is an owned vehicle.");
+                return;
+            }
+            */
+
+            character.IsOnDropcar = true;
+            API.triggerClientEvent(player, "dropcar_setwaypoint", new Vector3(487.0575, -1334.377, 29.30219));
+            player.sendChatMessage("A waypoint has been set. Take this vehicle to the waypoint to earn money.");
 
         }
 
@@ -277,7 +328,12 @@ namespace RoleplayServer.resources.vehicle_manager
             Character character = API.getEntityData(player.handle, "Character");
             character.LastVehicle = veh;
 
-            if (character.IsOnDropcar) { character.IsOnDropcar = false; }
+            if (character.IsOnDropcar)
+            {
+                character.IsOnDropcar = false;
+                API.triggerClientEvent(player, "dropcar_removewaypoint");
+                player.sendChatMessage("You exited the vehicle. The dropcar has ended.");
+            }
         }
 
         public void OnVehicleDeath(NetHandle vehicleHandle)
