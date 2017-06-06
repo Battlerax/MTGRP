@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using GTANetworkServer;
 using GTANetworkShared;
 using RoleplayServer.resources.core;
+using RoleplayServer.resources.inventory;
 using RoleplayServer.resources.player_manager;
 
 namespace RoleplayServer.resources.vehicle_manager
@@ -106,11 +107,11 @@ namespace RoleplayServer.resources.vehicle_manager
                     if (character.OwnedVehicles.Count < VehicleManager.GetMaxOwnedVehicles(character.Client))
                     {
                         //make sure have money.
-                        if (character.Money >= price)
+                        if (Money.GetCharacterMoney(character) >= price)
                         {
                             //Do actual process.
-                            buyingFrom.Money += price;
-                            character.Money -= price;
+                            InventoryManager.GiveInventoryItem(buyingFrom, new Money(), price);
+                            InventoryManager.DeleteInventoryItem(character, typeof(Money), price);
                             veh.OwnerId = character.Id;
                             buyingFrom.OwnedVehicles.Remove(veh.Id);
                             character.OwnedVehicles.Add(veh.Id);

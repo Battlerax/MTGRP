@@ -25,10 +25,8 @@ namespace RoleplayServer.resources.inventory
 
             BsonClassMap.RegisterClassMap<BagItem>();
             BsonClassMap.RegisterClassMap<Phone>();
-            BsonClassMap.RegisterClassMap<TestItem>();
-
+            BsonClassMap.RegisterClassMap<Money>();
             #endregion
-
 
             API.onClientEventTrigger += API_onClientEventTrigger;
         }
@@ -61,6 +59,18 @@ namespace RoleplayServer.resources.inventory
         public delegate void StorageLoseItemHandler(IStorage sender, OnLoseItemEventArgs args);
         public static event StorageLoseItemHandler OnStorageLoseItem;
 
+        public class OnItemAmountUpdatedEventArgs : EventArgs
+        {
+            public Type Item { get; private set; }
+            public int Amount { get; private set; }
+            public OnItemAmountUpdatedEventArgs(Type item, int amount)
+            {
+                Item = item;
+                Amount = amount;
+            }
+        }
+        public delegate void OnItemAmountUpdatedEventHandler(IStorage sender, OnItemAmountUpdatedEventArgs args);
+        public static event OnItemAmountUpdatedEventHandler OnStorageItemUpdateAmount;
         #endregion
 
         public enum GiveItemErrors
@@ -122,6 +132,7 @@ namespace RoleplayServer.resources.inventory
                     //Add.
                     storage.Inventory.Add(item);
                     OnStorageGetItem?.Invoke(storage, new OnGetItemEventArgs(sentitem, amount));
+                    OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item.GetType(), item.Amount));
                     return GiveItemErrors.Success;
                 }
                 else
@@ -144,6 +155,7 @@ namespace RoleplayServer.resources.inventory
                         storage.Inventory.Remove(oldItem);
                     }
                     OnStorageGetItem?.Invoke(storage, new OnGetItemEventArgs(sentitem, amount));
+                    OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item.GetType(), oldItem.Amount));
                     return GiveItemErrors.Success;
                 }
                 else
@@ -228,6 +240,7 @@ namespace RoleplayServer.resources.inventory
                 if (storage.Inventory.RemoveAll(x => x.GetType() == item) > 0)
                 {
                     OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(item, amount));
+                    OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item, 0));
                     return true;
                 }
                 return false;
@@ -241,9 +254,16 @@ namespace RoleplayServer.resources.inventory
                     storage.Inventory.Remove(itm);
 
                 OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(item, amount));
+                OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item, itm.Amount));
                 return true;
             }
             return false;
+        }
+
+        public static void SetInventoryAmmount(IStorage storage, Type item, int amount)
+        {
+            DeleteInventoryItem(storage, item);
+            GiveInventoryItem(storage, ItemTypeToNewObject(item), amount);
         }
 
         /// <summary>

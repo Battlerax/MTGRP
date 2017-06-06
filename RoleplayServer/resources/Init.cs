@@ -13,6 +13,8 @@
 using GTANetworkServer;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.database_manager;
+using RoleplayServer.resources.inventory;
+using RoleplayServer.resources.player_manager;
 using RoleplayServer.resources.vehicle_manager;
 
 namespace RoleplayServer.resources
@@ -25,9 +27,20 @@ namespace RoleplayServer.resources
             DebugManager.DebugMessage("[INIT] Initalizing script...");
 
             API.onResourceStart += OnResourceStartHandler;
+            InventoryManager.OnStorageItemUpdateAmount += InventoryManager_OnStorageItemUpdateAmount;
 
             DebugManager.DebugManagerInit();
             DatabaseManager.DatabaseManagerInit();
+        }
+
+        private void InventoryManager_OnStorageItemUpdateAmount(IStorage sender,
+            InventoryManager.OnItemAmountUpdatedEventArgs args)
+        {
+            if (sender.GetType() == typeof(Character) && args.Item == typeof(Money))
+            {
+                Character c = (Character) sender;
+                API.shared.triggerClientEvent(c.Client, "update_money_display", args.Amount);
+            }
         }
 
         public void OnResourceStartHandler()
