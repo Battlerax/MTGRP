@@ -37,7 +37,7 @@ namespace RoleplayServer.resources.job_manager.taxi
             }
 
             API.setVehicleHealth(API.getPlayerVehicle(player), 1000);
-            InventoryManager.DeleteInventoryItem(character, typeof(EngineParts));
+            InventoryManager.DeleteInventoryItem(character, typeof(EngineParts), 1);
             player.sendChatMessage("Vehicle repaired.");
         }
 
@@ -63,7 +63,7 @@ namespace RoleplayServer.resources.job_manager.taxi
             veh.SpawnColors[0] = int.Parse(col1);
             veh.SpawnColors[1] = int.Parse(col2);
             veh.Save();
-            InventoryManager.DeleteInventoryItem(character, typeof(SprayPaint));
+            InventoryManager.DeleteInventoryItem(character, typeof(SprayPaint), 1);
             player.sendChatMessage("Vehicle painted.");
         }
 
