@@ -63,6 +63,15 @@ public class WeaponManager : Script
     {
         if (eventName == "clickeditem")
         {
+            if ((string)args[0] == "Bat")
+            {
+                if (moneyCheck(player, 40) == true)
+                {
+                    player.giveWeapon(API.weaponNameToModel((string)args[0]), 500, true, false);
+                    player.sendChatMessage("You have bought a ~g~" + (string)args[0]);
+                }
+            }
+
             if ((string)args[0] == "Pistol")
             {
                 if (moneyCheck(player, 4000) == true)
