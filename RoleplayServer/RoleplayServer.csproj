@@ -83,6 +83,7 @@
     <Compile Include="resources\core\DebugManager.cs" />
     <Compile Include="resources\core\ExtensionMethods.cs" />
     <Compile Include="resources\core\MarkerZone.cs" />
+    <Compile Include="resources\core\Money.cs" />
     <Compile Include="resources\core\TimeWeatherManager.cs" />
     <Compile Include="resources\database_manager\DatabaseManager.cs" />
     <Compile Include="resources\group_manager\Group.cs" />
@@ -97,7 +98,6 @@
     <Compile Include="resources\inventory\IInventoryItem.cs" />
     <Compile Include="resources\inventory\InventoryManager.cs" />
     <Compile Include="resources\inventory\IStorage.cs" />
-    <Compile Include="resources\inventory\TestItem.cs" />
     <Compile Include="resources\job_manager\fisher\Fish.cs" />
     <Compile Include="resources\job_manager\fisher\Fisher.cs" />
     <Compile Include="resources\job_manager\Job.cs" />

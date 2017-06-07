@@ -6,6 +6,7 @@ using GTANetworkServer;
 using GTANetworkShared;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.database_manager;
+using RoleplayServer.resources.inventory;
 using RoleplayServer.resources.player_manager;
 
 namespace RoleplayServer.resources.job_manager.fisher
@@ -161,7 +162,7 @@ namespace RoleplayServer.resources.job_manager.fisher
 
             var totalValue = character.FishOnHand.Sum(f => f.Key.calculate_value(f.Value));
 
-            character.Money += totalValue;
+            InventoryManager.GiveInventoryItem(character, new Money(), totalValue);
             character.FishOnHand.Clear();
             API.sendChatMessageToPlayer(player, "You have sold all of your fish for $" + totalValue);
         }
