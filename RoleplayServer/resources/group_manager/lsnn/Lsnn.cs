@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.player_manager;
 using RoleplayServer.resources.vehicle_manager;
+using RoleplayServer.resources.inventory;
 using System;
 using System.Timers;
 
@@ -28,8 +29,6 @@ namespace RoleplayServer.resources.group_manager.lsnn
 
         public ColShape LSNNFrontDoorShape;
         public string headline = "Los Santos News Network";
-        public int lottoSafe = 0;
-        public int lottoPrice = 0;
         public bool IsBroadcasting = false;
         public bool CameraSet = false;
         public bool chopperCamToggle = false;
@@ -250,6 +249,21 @@ namespace RoleplayServer.resources.group_manager.lsnn
             API.sendChatMessageToPlayer(player, count + " people are watching the broadcast.");
         }
 
+        [Command("setlottoprice")]
+        public void setlottoprice(Client player, string amount)
+        {
+            Character character = API.getEntityData(player.handle, "Character");
+
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLsnn)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "You must be a member of the LSNN to use that command.");
+                return;
+            }
+
+            character.Group.LottoPrice = int.Parse(amount);
+            API.sendChatMessageToPlayer(player, "You changed the lotto price to " + int.Parse(amount));
+        }
+
         [Command("buylottoticket")]
         public void buylottoticket(Client player)
         {
@@ -263,12 +277,17 @@ namespace RoleplayServer.resources.group_manager.lsnn
                 return;
             }
 
-            if (Money.GetCharacterMoney(character) < lottoPrice)
+            if (Money.GetCharacterMoney(character) < character.Group.LottoPrice)
             {
                 API.sendChatMessageToPlayer(player, "You cannot afford a lottery ticket!");
                 return;
             }
 
+            foreach (var i in GroupManager.Groups)
+            {
+                if (i.CommandType == Group.CommandTypeLsnn) { i.LottoSafe += i.LottoPrice; }
+            }
+            InventoryManager.DeleteInventoryItem(character, typeof(Money), character.Group.LottoPrice);
             character.HasLottoTicket = true;
             API.sendChatMessageToPlayer(player, "You purchased a lottery ticket. Good luck!");
         }
@@ -284,13 +303,13 @@ namespace RoleplayServer.resources.group_manager.lsnn
                 return;
             }
 
-            List<string> haveLottoTickets = new List<string>();
+            List<Character> haveLottoTickets = new List<Character>();
             var random = new Random();
             foreach (var c in PlayerManager.Players)
             {
                 if (c.HasLottoTicket == true)
                 {
-                    haveLottoTickets.Add(c.CharacterName);
+                    haveLottoTickets.Add(c);
                     c.HasLottoTicket = false;
                 }
             }
@@ -301,8 +320,11 @@ namespace RoleplayServer.resources.group_manager.lsnn
             }
 
             int index = random.Next(haveLottoTickets.Count);
+
+            InventoryManager.GiveInventoryItem(haveLottoTickets[index], new Money(), character.Group.LottoSafe);
             API.sendChatMessageToPlayer(player, "~p~ You pick a random name from the list of ticket owners..");
-            API.sendChatMessageToAll("~p~The winner of the lotto is ~y~" + haveLottoTickets[index] + "~p~!");
+            API.sendChatMessageToAll("~p~The winner of the lotto is ~y~" + haveLottoTickets[index].CharacterName + "~p~. They won " + character.Group.LottoSafe + "!");
+
         }
 
         [Command("watchbroadcast")]//HEADLINE FIX

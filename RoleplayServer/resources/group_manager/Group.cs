@@ -40,6 +40,9 @@ namespace RoleplayServer.resources.group_manager
 
         public DateTime DisbandDate { get; set; }
 
+        //Group misc
+        public int LottoSafe { get; set; }
+        public int LottoPrice { get; set; }
         public bool LockerSet { get; set; }
         public MarkerZone Locker { get; set; }
         public MarkerZone ArrestLocation { get; set; }
