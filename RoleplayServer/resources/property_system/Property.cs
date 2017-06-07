@@ -109,7 +109,7 @@ namespace RoleplayServer.resources.property_system
                     case PropertyManager.PropertyTypes.Clothing:
                         return 73;
                     case PropertyManager.PropertyTypes.Restaurent:
-                        return 0;
+                        return 93;
                 default:
                     return -1;
             }
