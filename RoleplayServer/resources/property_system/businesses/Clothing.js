@@ -123,7 +123,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
 		var player = API.getLocalPlayer();
 		menu_pool = API.getMenuPool();
 
-		API.setEntityPosition(player, new Vector3(403, -997, -99));
+		API.setEntityPosition(player, new Vector3(403, -997, -100));
 		API.setEntityRotation(player, new Vector3(0, 0, 177.2663));
 
 		API.sendChatMessage("~g~Select the clothes you would like to buy.");
@@ -518,11 +518,69 @@ API.onServerEventTrigger.connect((eventName, args) => {
 
 			}
 		break;
+
+		case "properties_buybag":
+			var pl = API.getLocalPlayer();
+
+			//Set pos.
+			API.setEntityPosition(pl, new Vector3(403, -997, -100));
+			API.setEntityRotation(pl, new Vector3(0, 0, 357.2663));
+			API.setActiveCamera(creation_view);
+
+			//remove curr bag
+			API.setPlayerClothes(pl, 5, 0, 0);
+
+			//menu
+			bags_menu = API.createMenu("Bags", "Select a bag that fits you.", 0, 0, 6);
+			API.setMenuBannerRectangle(bags_menu, 255, 60, 60, 255);
+
+			var bag_index;
+			var bag_variation;
+
+			var bagsList = JSON.parse(args[0]);
+			for (var a = 0; a < bagsList.length; a++) {
+				var list = new List(String);
+				for (var j = 0; j < parseInt(bagsList[a][1]); j++) {
+					list.Add((j + 1).toString());
+				}
+				bags_menu.AddItem(API.createListItem(bagsList[a][0], "Press enter to select and go back.", list, 0));
+			}
+
+			bags_menu.Visible = true;
+
+			bags_menu.OnIndexChange.connect(function(sender, index) {
+				bag_index = index;
+				bag_variation = 0;
+				API.triggerServerEvent("clothing_bag_preview", bag_index, bag_variation);
+			});
+
+			bags_menu.OnListChange.connect(function(sender, list, index) {
+				bag_variation = index;
+				API.triggerServerEvent("clothing_bag_preview", bag_index, bag_variation);
+			});
+
+			bags_menu.OnMenuClose.connect(function(menu) {
+				API.setActiveCamera(null);
+				API.triggerServerEvent("clothing_bag_closed");
+			});
+
+			bags_menu.OnItemSelect.connect(function(sender, item, index) {
+				API.sendChatMessage(`Would you like to buy this ~r~Bag~w~ for ~g~\$${args[1]}~w~ ? Enter 'yes' to confirm.`);
+				if (API.getUserInput("no", 4) === "yes") {
+					API.triggerServerEvent("clothing_buybag", bag_index, bag_variation);
+				}
+			});
+			break;
 	}
 });
+
+var bags_menu = null;
 
 API.onUpdate.connect(function () {
     if (menu_pool != null) {
         menu_pool.ProcessMenus();
     }
+
+	if (bags_menu !== null)
+		API.drawMenu(bags_menu);
 });

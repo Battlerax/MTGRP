@@ -5,6 +5,7 @@ using GTANetworkShared;
 using RoleplayServer.resources.component_manager;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.inventory;
+using RoleplayServer.resources.inventory.bags;
 using RoleplayServer.resources.player_manager;
 
 namespace RoleplayServer.resources.property_system.businesses
@@ -242,6 +243,64 @@ namespace RoleplayServer.resources.property_system.businesses
 
                 API.sendChatMessageToPlayer(sender, "You've successfully bought this.");
                 API.triggerClientEvent(sender, "clothing_boughtsucess", arguments[0], arguments[1], arguments[2]);
+            }
+            else if (eventName == "clothing_bag_preview")
+            {
+                var bagstyle = ComponentManager.ValidBags[(int)arguments[0]].ComponentId;
+                var bagvar = (int)ComponentManager.ValidBags[(int)arguments[0]].Variations.ToArray().GetValue((int)arguments[1]);
+                API.setPlayerClothes(sender, 5, bagstyle, bagvar - 1);
+            }
+            else if(eventName == "clothing_bag_closed")
+            {
+                API.freezePlayer(sender, false);
+                sender.position = API.getEntityData(sender, "clothing_lastpos");
+                sender.rotation = API.getEntityData(sender, "clothing_lastrot");
+
+                API.setPlayerClothes(sender, 5, 0, 0);
+
+                var bag = InventoryManager.DoesInventoryHaveItem<BagItem>(sender.GetCharacter());
+                if (bag.Length > 0)
+                {
+                    var bagg = (BagItem) bag[0];
+                    API.setPlayerClothes(sender, 5, bagg.BagType, bagg.BagDesign);
+                }
+            }
+            else if (eventName == "clothing_buybag")
+            {
+                var price = PropertyManager.Properties.Single(x => x.Id == sender.getData("clothing_id"))
+                    .ItemPrices["8"];
+
+                if (Money.GetCharacterMoney(sender.GetCharacter()) < price)
+                {
+                    API.sendChatMessageToPlayer(sender, "You don't have enough money.");
+                    return;
+                }
+
+                var bagstyle = ComponentManager.ValidBags[(int)arguments[0]].ComponentId;
+                var bagvar = (int)ComponentManager.ValidBags[(int)arguments[0]].Variations.ToArray().GetValue((int)arguments[1]) - 1;
+
+                var bag = new BagItem()
+                {
+                    BagType = bagstyle,
+                    BagDesign = bagvar
+                };
+                switch (InventoryManager.GiveInventoryItem(sender.GetCharacter(), bag))
+                {
+                    case InventoryManager.GiveItemErrors.Success:
+                        InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
+                        API.sendChatMessageToPlayer(sender, "You've successfully bought this.");
+                        break;
+                    case InventoryManager.GiveItemErrors.HasBlockingItem:
+                        API.sendChatMessageToPlayer(sender, "You have a blocking item.");
+                        break;
+                    case InventoryManager.GiveItemErrors.MaxAmountReached:
+                        API.sendChatMessageToPlayer(sender, "You have reached the maximum amount.");
+                        break;
+                    case InventoryManager.GiveItemErrors.NotEnoughSpace:
+                        API.sendChatMessageToPlayer(sender, "You don't have enough space for that item.");
+                        break;
+                }
+
             }
         }
 
@@ -552,6 +611,27 @@ namespace RoleplayServer.resources.property_system.businesses
 
             var prices = biz.ItemPrices.Select(x => x.Value).ToArray();
             API.triggerClientEvent(player, "properties_buyclothes", (character.Model.Gender == Character.GenderMale ? _maleComponents : _femaleComponents), API.toJson(oldClothes), API.toJson(prices));
+        }
+
+        [Command("buybag")]
+        public void buybag(Client player)
+        {
+            var biz = PropertyManager.IsAtPropertyInteraction(player);
+            if (biz?.Type != PropertyManager.PropertyTypes.Clothing)
+            {
+                API.sendChatMessageToPlayer(player, "You aren't at a clothing interaction point.");
+                return;
+            }
+
+            API.setEntityData(player, "clothing_lastpos", player.position);
+            API.setEntityData(player, "clothing_lastrot", player.rotation);
+            API.setEntityData(player, "clothing_id", biz.Id);
+
+            //Setup bag list.
+            var bagsList = ComponentManager.ValidBags.Select(x => new[] {x.Name, x.Variations.Count.ToString()}).ToArray();
+
+            API.freezePlayer(player, true);
+            API.triggerClientEvent(player, "properties_buybag", API.toJson(bagsList), biz.ItemPrices["8"]);
         }
     }
 }

@@ -444,7 +444,7 @@ namespace RoleplayServer.resources.property_system
             switch (type)
             {
                 case PropertyTypes.Clothing:
-                    return "/buyclothes";
+                    return "/buyclothes /buybag";
                 case PropertyTypes.TwentyFourSeven:
                     return "/buy";
                 case PropertyTypes.Hardware:
@@ -510,7 +510,7 @@ namespace RoleplayServer.resources.property_system
                     case PropertyTypes.Clothing:
                         if (item == "")
                         {                                                              //0    ,1    ,2          ,3          ,4   ,5   ,6      ,7
-                            API.sendChatMessageToPlayer(player, "[ERROR] Choose a type: [Pants,Shoes,Accessories,Undershirts,Tops,Hats,Glasses,Earrings]");
+                            API.sendChatMessageToPlayer(player, "[ERROR] Choose a type: [Pants,Shoes,Accessories,Undershirts,Tops,Hats,Glasses,Earrings,Bags]");
                             return;
                         }
                         if (price == 0)
@@ -551,6 +551,10 @@ namespace RoleplayServer.resources.property_system
                                 break;
                             case "earrings":
                                 prop.ItemPrices["7"] = price;
+                                API.sendChatMessageToPlayer(player, $"Changed ~g~Earrings~w~ price to {price}");
+                                break;
+                            case "bags":
+                                prop.ItemPrices["8"] = price;
                                 API.sendChatMessageToPlayer(player, $"Changed ~g~Earrings~w~ price to {price}");
                                 break;
                         }
@@ -640,13 +644,14 @@ namespace RoleplayServer.resources.property_system
         [Command("propertystorage")]
         public void PropertyStorage(Client player)
         {
-            var prop = IsAtPropertyInteraction(player);
+            var prop = IsAtPropertyEnterance(player) ?? IsAtPropertyInteraction(player);
             if (prop == null)
             {
-                API.sendChatMessageToPlayer(player, "You aren't at an enteraction point.");
+                API.sendChatMessageToPlayer(player, "You aren't at an interaction point or enterance.");
                 return;
             }
 
+            if(prop.Inventory == null) prop.Inventory = new List<IInventoryItem>();
             InventoryManager.ShowInventoryManager(player, player.GetCharacter(), prop, "Inventory: ", "Property: ");
         }
 

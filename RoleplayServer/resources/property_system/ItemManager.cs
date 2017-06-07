@@ -23,6 +23,9 @@ namespace RoleplayServer.resources.property_system
                     prop.ItemPrices.Add("5", 10); //Hats
                     prop.ItemPrices.Add("6", 10); //Glasses
                     prop.ItemPrices.Add("7", 5); //Earrings
+
+
+                    prop.ItemPrices.Add("8", 200); //Bags
                     break;
 
                 case PropertyManager.PropertyTypes.TwentyFourSeven:
