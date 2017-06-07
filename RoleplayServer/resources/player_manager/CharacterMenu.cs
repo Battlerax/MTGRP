@@ -130,7 +130,7 @@ namespace RoleplayServer.resources.player_manager
                         character.update_ped();
                         character.update_nametag();
                         character.StartTrackingTimePlayed();
-                        character.Money = 1000;
+                        API.shared.triggerClientEvent(player, "update_money_display", Money.GetCharacterMoney(character));
 
                         character.JobOne = JobManager.GetJobById(character.JobOneId);
                         character.Group = GroupManager.GetGroupById(character.GroupId);
