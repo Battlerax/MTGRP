@@ -160,6 +160,8 @@ namespace RoleplayServer.resources.property_system.businesses
                 }
 
                 InventoryManager.DeleteInventoryItem(character, typeof(Money), price);
+                var prop = PropertyManager.Properties.Single(x => x.Id == sender.getData("clothing_id"));
+                InventoryManager.GiveInventoryItem(prop, new Money(), price);
 
                 if (character.Model.Gender == Character.GenderMale)
                 {
@@ -288,6 +290,8 @@ namespace RoleplayServer.resources.property_system.businesses
                 {
                     case InventoryManager.GiveItemErrors.Success:
                         InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
+                        var prop = PropertyManager.Properties.Single(x => x.Id == sender.getData("clothing_id"));
+                        InventoryManager.GiveInventoryItem(prop, new Money(), price);
                         API.sendChatMessageToPlayer(sender, "You've successfully bought this.");
                         break;
                     case InventoryManager.GiveItemErrors.HasBlockingItem:

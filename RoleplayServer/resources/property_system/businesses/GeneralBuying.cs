@@ -101,6 +101,8 @@ namespace RoleplayServer.resources.property_system.businesses
                 {
                     case InventoryManager.GiveItemErrors.Success:
                         InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
+                        InventoryManager.GiveInventoryItem(prop, new Money(), price);
+
                         API.sendChatMessageToPlayer(sender, $"[BUSINESS] You have sucessfully bought a ~g~{name}~w~ for ~g~${price}.");
                         break;
 
