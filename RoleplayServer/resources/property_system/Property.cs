@@ -114,7 +114,7 @@ namespace RoleplayServer.resources.property_system
 
         public void CreateProperty()
         {
-            EnteranceString = OwnerId == 0 ? "Unowned. /buyproperty to buy it." : PropertyName;
+            EnteranceString = OwnerId == 0 ? $"Unowned. /buyproperty to buy it.\nCosts ~g~${PropertyPrice}~w~" : PropertyName;
 
             EnteranceMarker = new MarkerZone(EnterancePos, EnteranceRot)
             {

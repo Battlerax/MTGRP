@@ -597,6 +597,36 @@ namespace RoleplayServer.resources.property_system
             }
         }
 
+        [Command("buyproperty")]
+        public void Buyproperty(Client player)
+        {
+            var prop = IsAtPropertyEnterance(player);
+            if (prop == null)
+            {
+                API.sendChatMessageToPlayer(player, "You aren't at a property enterance.");
+                return;
+            }
+
+            if (prop.OwnerId != 0)
+            {
+                API.sendChatMessageToPlayer(player, "That property isn't for sale.");
+                return;
+            }
+
+            if (Money.GetCharacterMoney(player.GetCharacter()) < prop.PropertyPrice)
+            {
+                API.sendChatMessageToPlayer(player, "You don't have enough money to buy this property.");
+                return;
+            }
+
+            InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(Money), prop.PropertyPrice);
+            prop.OwnerId = player.GetCharacter().Id;
+            prop.Save();
+            prop.UpdateMarkers();
+
+            API.sendChatMessageToPlayer(player, $"You have sucessfully bought a ~r~{prop.Type}~w~ for ~g~{prop.PropertyPrice}~w~.");
+        }
+
         [Command("lockproperty")]
         public void LockProperty(Client player)
         {
