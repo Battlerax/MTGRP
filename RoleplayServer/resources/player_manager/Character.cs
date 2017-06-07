@@ -140,6 +140,10 @@ namespace RoleplayServer.resources.player_manager
 
         public Dictionary<Fish, int> FishOnHand = new Dictionary<Fish, int>();
 
+        //Mechanic related
+        public Timer FixcarTimer { get; set; }
+        public bool FixcarPrevention { get; set; }
+
         [BsonIgnore]
         public Character InCallWith { get; set; }
         [BsonIgnore]

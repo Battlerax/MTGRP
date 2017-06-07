@@ -31,6 +31,12 @@ namespace RoleplayServer.resources.job_manager.taxi
                 return;
             }
 
+            if (character.FixcarPrevention)
+            {
+                API.sendChatMessageToPlayer(player, "You must wait 2 minutes before fixing another car.");
+                return;
+            }
+
             if (InventoryManager.DoesInventoryHaveItem(character, typeof(EngineParts)).Length == 0)
             {
                 player.sendChatMessage("You don't have enough engine parts.");
@@ -39,6 +45,19 @@ namespace RoleplayServer.resources.job_manager.taxi
             API.setVehicleHealth(API.getPlayerVehicle(player), 1000);
             InventoryManager.DeleteInventoryItem(character, typeof(EngineParts), 1);
             player.sendChatMessage("Vehicle repaired.");
+            character.FixcarPrevention = true;
+            character.FixcarTimer = new Timer { Interval = 120000 };
+            character.FixcarTimer.Elapsed += delegate { FixCarReset(player); };
+            character.FixcarTimer.Start();
+        }
+
+        public void FixCarReset(Client player)
+        {
+            Character character = player.GetCharacter();
+
+            character.FixcarPrevention = false;
+            player.sendChatMessage("You can now fix another car.");
+            character.FixcarTimer.Stop();
         }
 
         [Command("paintcar")]
