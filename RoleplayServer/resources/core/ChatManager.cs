@@ -300,6 +300,7 @@ namespace RoleplayServer.resources.core
 
         }
 
+        /* PAY WILL BE CHANGED TO /GIVE AS MONEY IS NOW AN INVENTORY ITEM
         [Command("pay", GreedyArg = true)]
         public void pay_cmd(Client player, string id, string amount)
         {
@@ -355,8 +356,7 @@ namespace RoleplayServer.resources.core
             string autome = playerid.CharacterName + " signs a check and gives it to " + receiverid.CharacterName + ".";
             NearbyMessage(player, 10, autome);
             playerid.BankBalance -= int.Parse(amount);
-            receiverid.ChequeBalance += int.Parse(amount);
-        }
+        }*/
 
         public const int RoleplayMe = 0;
         public const int RoleplayDo = 1;

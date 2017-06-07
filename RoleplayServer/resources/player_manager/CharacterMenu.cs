@@ -166,6 +166,13 @@ namespace RoleplayServer.resources.player_manager
                             Lspd.jailControl(player, character.jailTimeLeft);
                         }
 
+                        if (character.DropcarPrevention)
+                        {
+                            character.DropcarTimer = new Timer { Interval = character.DropcarTimeLeft };
+                            character.DropcarTimer.Elapsed += delegate { vehicle_manager.VehicleManager.resetDropcarTimer(player); };
+                            character.DropcarTimer.Start();
+                        }
+
                         API.sendChatMessageToPlayer(player, "You have successfully loaded your character: " + charName);
                         API.triggerClientEvent(player, "login_finished");
                         OnCharacterLogin(this, new CharacterLoginEventArgs(character));

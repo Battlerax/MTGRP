@@ -154,6 +154,8 @@ namespace RoleplayServer.resources.player_manager
         public bool IsOnDropcar { get; set; }
         public bool DropcarPrevention { get; set; }
         public Timer DropcarTimer { get; set; }
+        public Timer DropcarTimeLeftTimer { get; set; }
+        public int DropcarTimeLeft { get; set; }
 
         //Groups
         public int GroupId { get; set; }

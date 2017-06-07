@@ -214,9 +214,12 @@ namespace RoleplayServer.resources.vehicle_manager
                 return;
             }
 
-
+            character.DropcarTimeLeft = 900000;
             character.IsOnDropcar = true;
             character.DropcarPrevention = true;
+            character.DropcarTimeLeftTimer = new Timer { Interval = 1000 };
+            character.DropcarTimeLeftTimer.Elapsed += delegate { updateTimer(player); };
+            character.DropcarTimeLeftTimer.Start();
             character.DropcarTimer = new Timer { Interval = 900000 };
             character.DropcarTimer.Elapsed += delegate { resetDropcarTimer(player); };
             character.DropcarTimer.Start();
@@ -225,12 +228,19 @@ namespace RoleplayServer.resources.vehicle_manager
 
         }
 
-        public void resetDropcarTimer(Client player)
+        public static void updateTimer(Client player)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = API.shared.getEntityData(player.handle, "Character");
+            character.DropcarTimeLeft -= 1000;
+        }
+
+        public static void resetDropcarTimer(Client player)
+        {
+            Character character = API.shared.getEntityData(player.handle, "Character");
             player.sendChatMessage("You can now drop another vehicle.");
             character.DropcarPrevention = false;
             character.DropcarTimer.Stop();
+            character.jailTimeLeftTimer.Stop();
         }
 
 

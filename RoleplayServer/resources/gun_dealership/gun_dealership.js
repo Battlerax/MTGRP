@@ -73,7 +73,7 @@ melee.Activated.connect(function(menu,item) {
 });
 //Melee
 
-Melee1.Activated.connect(function (menu, item) {
+melee1.Activated.connect(function (menu, item) {
 
     API.triggerServerEvent("clickeditem", "Bat", 40);
     API.sendNotification("You swipe your credit card to buy a ~g~Pistol");
