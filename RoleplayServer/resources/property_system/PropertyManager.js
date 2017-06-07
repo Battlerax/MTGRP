@@ -10,6 +10,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
         case "editproperty_showmenu":
             selID = args[0];
             editMenu = API.createMenu("Edit Property", "Select an action.", 0, 0, 6);
+	        API.setMenuBannerRectangle(editMenu, 255, 60, 60, 255);
             editMenu.AddItem(API.createMenuItem("Property Name", "Set the name of property that shows in marker."));
             editMenu.AddItem(API.createMenuItem("Change Type", "Change the type of property."));
             editMenu.AddItem(API.createMenuItem("Supplies", "Set the amount of supplied in business."));
