@@ -30,6 +30,7 @@ namespace RoleplayServer.resources.core
             if (API.hasEntityData(player, "IS_MOUTH_RAGGED"))
             {
                 API.sendChatMessageToPlayer(player, "You are ragged.");
+                e.Cancel = true;
                 return;
             }
 
