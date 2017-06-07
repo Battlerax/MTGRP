@@ -173,7 +173,7 @@ namespace RoleplayServer.resources.group_manager.lsnn
             CameraPosition = API.getEntityPosition(chopper) - new Vector3(0, 0, 3);
             CameraRotation = API.getEntityRotation(chopper);
             API.sendNotificationToPlayer(player, "The chopper camera has been turned ~b~on~w~.");
-            chopperRotation = new Timer { Interval = 1000 };
+            chopperRotation = new Timer { Interval = 500 };
             chopperRotation.Elapsed += delegate { updateChopperRotation(player); };
             chopperRotation.Start();
         }
@@ -263,7 +263,7 @@ namespace RoleplayServer.resources.group_manager.lsnn
                 return;
             }
 
-            if (character.Money < lottoPrice)
+            if (Money.GetCharacterMoney(character) < lottoPrice)
             {
                 API.sendChatMessageToPlayer(player, "You cannot afford a lottery ticket!");
                 return;
