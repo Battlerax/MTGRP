@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,7 +40,7 @@ namespace RoleplayServer.resources.property_system.businesses
                 int price = prop.ItemPrices.SingleOrDefault(x => x.Key == itemName).Value;
 
                 //Make sure has enough money.
-                if (Money.GetCharacterMoney(sender.GetCharacter()) < price)                    
+                if (Money.GetCharacterMoney(sender.GetCharacter()) < price)
                 {
                     API.sendChatMessageToPlayer(sender, "Not Enough Money");
                     return;
@@ -88,6 +89,49 @@ namespace RoleplayServer.resources.property_system.businesses
                             break;
                     }
                 }
+                else if (prop.Type == PropertyManager.PropertyTypes.Restaurent)
+                {
+                    switch (itemName)
+                    {
+                        case "sprunk":
+                            name = "Sprunk";
+                            item = new SprunkItem();
+                            break;
+
+                        case "custom1":
+                            InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
+                            sender.health += 15;
+                            if (sender.health > 100) sender.health = 100;
+                            API.sendChatMessageToPlayer(sender,
+                                $"[BUSINESS] You have sucessfully bought a ~g~{prop.RestaurentItems[0]}~w~ for ~g~${price}.");
+                            return;
+
+                        case "custom2":
+                            InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
+                            sender.health += 25;
+                            if (sender.health > 100) sender.health = 100;
+                            API.sendChatMessageToPlayer(sender,
+                                $"[BUSINESS] You have sucessfully bought a ~g~{prop.RestaurentItems[1]}~w~ for ~g~${price}.");
+                            return;
+
+                        case "custom3":
+                            InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
+                            sender.health += 25;
+                            if (sender.health > 100) sender.health = 100;
+                            API.sendChatMessageToPlayer(sender,
+                                $"[BUSINESS] You have sucessfully bought a ~g~{prop.RestaurentItems[2]}~w~ for ~g~${price}.");
+                            return;
+
+                        case "custom4":
+                            InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
+                            sender.health += 25;
+                            if (sender.health > 100) sender.health = 100;
+                            API.sendChatMessageToPlayer(sender,
+                                $"[BUSINESS] You have sucessfully bought a ~g~{prop.RestaurentItems[3]}~w~ for ~g~${price}.");
+                            return;
+                    }
+                }
+                
 
                 if (item == null)
                 {
@@ -103,15 +147,18 @@ namespace RoleplayServer.resources.property_system.businesses
                         InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
                         InventoryManager.GiveInventoryItem(prop, new Money(), price);
 
-                        API.sendChatMessageToPlayer(sender, $"[BUSINESS] You have sucessfully bought a ~g~{name}~w~ for ~g~${price}.");
+                        API.sendChatMessageToPlayer(sender,
+                            $"[BUSINESS] You have sucessfully bought a ~g~{name}~w~ for ~g~${price}.");
                         break;
 
                     case InventoryManager.GiveItemErrors.NotEnoughSpace:
-                        API.sendChatMessageToPlayer(sender, $"[BUSINESS] You dont have enough space for that item. Need {item.AmountOfSlots} Slots.");
+                        API.sendChatMessageToPlayer(sender,
+                            $"[BUSINESS] You dont have enough space for that item. Need {item.AmountOfSlots} Slots.");
                         break;
 
                     case InventoryManager.GiveItemErrors.MaxAmountReached:
-                        API.sendChatMessageToPlayer(sender, $"[BUSINESS] You have reached the maximum allowed ammount of that item.");
+                        API.sendChatMessageToPlayer(sender,
+                            $"[BUSINESS] You have reached the maximum allowed ammount of that item.");
                         break;
                 }
             }
@@ -133,9 +180,13 @@ namespace RoleplayServer.resources.property_system.businesses
                 List<string[]> itemsWithPrices = new List<string[]>();
                 foreach (var itm in ItemManager.HardwareItems)
                 {
-                    itemsWithPrices.Add(new[] { itm[0], itm[1], itm[2], prop.ItemPrices.SingleOrDefault(x => x.Key == itm[0]).Value.ToString() });
+                    itemsWithPrices.Add(new[]
+                    {
+                        itm[0], itm[1], itm[2], prop.ItemPrices.SingleOrDefault(x => x.Key == itm[0]).Value.ToString()
+                    });
                 }
-                API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()), "Hardware", prop.PropertyName);
+                API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()), "Hardware",
+                    prop.PropertyName);
             }
             else if (prop.Type == PropertyManager.PropertyTypes.TwentyFourSeven)
             {
@@ -143,11 +194,39 @@ namespace RoleplayServer.resources.property_system.businesses
                 List<string[]> itemsWithPrices = new List<string[]>();
                 foreach (var itm in ItemManager.TwentyFourSevenItems)
                 {
-                    itemsWithPrices.Add(new[] { itm[0], itm[1], itm[2], prop.ItemPrices.SingleOrDefault(x => x.Key == itm[0]).Value.ToString() });
+                    itemsWithPrices.Add(new[]
+                    {
+                        itm[0], itm[1], itm[2], prop.ItemPrices.SingleOrDefault(x => x.Key == itm[0]).Value.ToString()
+                    });
                 }
-                API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()), "24/7", prop.PropertyName);
+                API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()), "24/7",
+                    prop.PropertyName);
+            }
+            else if (prop.Type == PropertyManager.PropertyTypes.Restaurent)
+            {
+                API.freezePlayer(player, true);
+                List<string[]> itemsWithPrices = new List<string[]>();
+                for(int i = 0; i < 5; i++)
+                {
+                    if (i == 0)
+                    {
+                        itemsWithPrices.Add(new[]
+                        {
+                            "sprunk", "Sprunk", "", prop.ItemPrices["sprunk"].ToString()
+                        });
+                        continue;
+                    }
+
+                    itemsWithPrices.Add(new[]
+                    {
+                        "custom" + i, prop.RestaurentItems[i - 1], "", prop.ItemPrices["custom" + i].ToString()
+                    });
+                }
+                API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()), "Restaurent",
+                    prop.PropertyName);
             }
             else
+
             {
                 API.sendChatMessageToPlayer(player, "This property doesn't sell anything.");
             }

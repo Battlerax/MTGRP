@@ -29,7 +29,7 @@ namespace RoleplayServer.resources.property_system
                     break;
 
                 case PropertyManager.PropertyTypes.TwentyFourSeven:
-                    prop.ItemPrices.Add("rope", 20); 
+                    prop.ItemPrices.Add("rope", 20);
                     prop.ItemPrices.Add("rags", 10);
                     prop.ItemPrices.Add("sprunk", 5);
                     break;
@@ -38,6 +38,22 @@ namespace RoleplayServer.resources.property_system
                     prop.ItemPrices.Add("rope", 20);
                     prop.ItemPrices.Add("rags", 10);
                     prop.ItemPrices.Add("phone", 500);
+                    break;
+
+                //This is kind of a unique business.. item names are the id.. it doesn't have a general sell list like 24/7 and Hardware.
+                case PropertyManager.PropertyTypes.Restaurent:
+                    prop.ItemPrices.Add("sprunk", 5);
+                    prop.ItemPrices.Add("custom1", 50);
+                    prop.ItemPrices.Add("custom2", 100);
+                    prop.ItemPrices.Add("custom3", 100);
+                    prop.ItemPrices.Add("custom4", 100);
+                    prop.RestaurentItems = new string[]
+                    {
+                        "Food 1",
+                        "Food 2",
+                        "Food 3",
+                        "Food 4"
+                    };
                     break;
             }
         }

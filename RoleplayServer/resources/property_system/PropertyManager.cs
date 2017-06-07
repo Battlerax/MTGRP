@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using GTANetworkServer;
@@ -41,7 +43,8 @@ namespace RoleplayServer.resources.property_system
             Clothing,
             TwentyFourSeven,
             Hardware,
-            Bank
+            Bank,
+            Restaurent
         }
 
         #region ColShapeKnowing
@@ -450,6 +453,8 @@ namespace RoleplayServer.resources.property_system
                     return "/buy";
                 case PropertyTypes.Bank:
                     return "/balance /deposit /withdraw\n/wiretransfer /redeemcheck";
+                case PropertyTypes.Restaurent:
+                    return "/buy";
             }
             return "";
         }
@@ -492,6 +497,59 @@ namespace RoleplayServer.resources.property_system
                         prop.IsLocked ? "Property is locked." : "Property is not teleportable.");
                 }
             }
+        }
+
+        [Command("changefoodname", GreedyArg = true)]
+        public void Changefoodname_cmd(Client player, string item = "", string name = "")
+        {
+            var prop = IsAtPropertyEnterance(player) ?? IsAtPropertyInteraction(player);
+            if (prop == null)
+            {
+                API.sendChatMessageToPlayer(player, "You aren't at an enteraction point or enterance.");
+                return;
+            }
+
+            if (prop.OwnerId != player.GetCharacter().Id || prop.Type != PropertyTypes.Restaurent)
+            {
+                API.sendChatMessageToPlayer(player, "You aren't the owner or the business isn't a restaurent.");
+                return;
+            }
+
+            if (item == "")
+            {
+                API.sendChatMessageToPlayer(player, "[ERROR] Choose one: [custom1,custom2,custom3,custom4]");
+                return;
+            }
+            if (name == "")
+            {
+                API.sendChatMessageToPlayer(player, "[ERROR] Name can't be nothing.");
+                return;
+            }
+
+            if(prop.RestaurentItems == null) prop.RestaurentItems = new string[4];
+            switch (item)
+            {
+                case "custom1":
+                    prop.RestaurentItems[0] = name;
+                    API.sendChatMessageToPlayer(player, $"Changed custom1 name to '{name}'.");
+                    break;
+                case "custom2":
+                    prop.RestaurentItems[1] = name;
+                    API.sendChatMessageToPlayer(player, $"Changed custom2 name to '{name}'.");
+                    break;
+                case "custom3":
+                    prop.RestaurentItems[2] = name;
+                    API.sendChatMessageToPlayer(player, $"Changed custom3 name to '{name}'.");
+                    break;
+                case "custom4":
+                    prop.RestaurentItems[3] = name;
+                    API.sendChatMessageToPlayer(player, $"Changed custom4 name to '{name}'.");
+                    break;
+                default:
+                    API.sendChatMessageToPlayer(player, $"Invalid type.");
+                    break;
+            }
+            prop.Save();
         }
 
         [Command("manageprices")]
@@ -561,6 +619,43 @@ namespace RoleplayServer.resources.property_system
                         }
                         break;
 
+                        case PropertyTypes.Restaurent:
+                            if (item == "")
+                            {
+                                API.sendChatMessageToPlayer(player, "[ERROR] Choose a type: [sprunk,custom1,custom2,custom3,custom4]");
+                                return;
+                            }
+                            if (price == 0)
+                            {
+                                API.sendChatMessageToPlayer(player, "[ERROR] Price can't be zero.");
+                                return;
+                            }
+
+                            switch (item.ToLower())
+                            {
+                                case "sprunk":
+                                    prop.ItemPrices["sprunk"] = price;
+                                    API.sendChatMessageToPlayer(player, $"Changed ~g~Sprunk~w~ price to {price}");
+                                    break;
+                                case "custom1":
+                                    prop.ItemPrices["custom1"] = price;
+                                    API.sendChatMessageToPlayer(player, $"Changed ~g~Custom 1~w~ price to {price}");
+                                    break;
+                                case "custom2":
+                                    prop.ItemPrices["custom2"] = price;
+                                    API.sendChatMessageToPlayer(player, $"Changed ~g~Custom 2~w~ price to {price}");
+                                    break;
+                                case "custom3":
+                                    prop.ItemPrices["custom3"] = price;
+                                    API.sendChatMessageToPlayer(player, $"Changed ~g~Custom 3~w~ price to {price}");
+                                    break;
+                                case "custom4":
+                                    prop.ItemPrices["custom4"] = price;
+                                    API.sendChatMessageToPlayer(player, $"Changed ~g~Custom 4~w~ price to {price}");
+                                    break;
+                        }
+                        break;
+
                     case PropertyTypes.Hardware: case PropertyTypes.TwentyFourSeven:
                         if (item == "")
                         {
@@ -590,6 +685,7 @@ namespace RoleplayServer.resources.property_system
                         API.sendChatMessageToPlayer(player, $"Changed ~g~{item}~w~ price to {price}");
                         break;
                 }
+                prop.Save();
             }
             else
             {
