@@ -62,6 +62,7 @@ namespace RoleplayServer.resources.player_manager
 
         public List<int> Outfit = new List<int>();
         public List<int> OutfitVariation = new List<int>();
+        public List<WeaponHash> Weapons = new List<WeaponHash>();
 
         public int Age { get; set; }
         public string Birthday { get; set; }

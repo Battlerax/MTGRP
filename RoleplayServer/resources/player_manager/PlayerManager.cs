@@ -265,10 +265,13 @@ namespace RoleplayServer.resources.player_manager
         public void checkTime(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
-            var secondsLeft = (1 - character.GetTimePlayed()/3600) * 100;
+
+            TimeSpan t = TimeSpan.FromMilliseconds(character.GetTimePlayed());
+
+            var minutesLeft = 60 - t.TotalMinutes;
             API.sendChatMessageToPlayer(player, "The current server time is: " + DateTime.Now.ToString("h:mm:ss tt"));
             API.sendChatMessageToPlayer(player, "The current in-game time is: " + TimeWeatherManager.CurrentTime.ToString("h:mm:ss tt"));
-            API.sendChatMessageToPlayer(player, string.Format("Time until next paycheck: {0}" + " minutes.", secondsLeft));
+            API.sendChatMessageToPlayer(player, string.Format("Time until next paycheck: {0}" + " minutes.", minutesLeft));
         }
 
 
@@ -280,10 +283,17 @@ namespace RoleplayServer.resources.player_manager
             Account account = API.shared.getEntityData(receiver.handle, "Account");
             Account senderAccount = API.shared.getEntityData(receiver.handle, "Account");
 
+            TimeSpan t = TimeSpan.FromMilliseconds(character.GetTimePlayed());
+            string answer = string.Format("{0:D2}h:{1:D2}m:{2:D2}s:{3:D3}ms",
+                                    t.Hours,
+                                    t.Minutes,
+                                    t.Seconds,
+                                    t.Milliseconds);
+
             API.sendChatMessageToPlayer(sender, "________________PLAYER STATS________________");
             API.sendChatMessageToPlayer(sender, "~g~General:~g~");
-            API.sendChatMessageToPlayer(sender, string.Format("~h~Character name:~h~ {0} ~h~Account name:~h~ {1} ~h~ID:~h~ {2} ~h~Money:~h~ {3} ~h~Bank balance:~h~ {4} ~h~Playing hours:~h~ {5}", character.CharacterName, account.AccountName, character.Id, character.Money, character.BankBalance, character.TimePlayed));
-            API.sendChatMessageToPlayer(sender, string.Format("~h~Age:~h~ {0} ~h~Birthplace:~h~ {1} ~h~Birthday:~h~ {2} ~h~VIP level:~h~ {3} ~h~VIP expires:~h~ {4} ~h~Playing hours: {5}", character.Age, character.Birthplace, character.Birthday, account.VipLevel, account.VipExpirationDate, character.TimePlayed));
+            API.sendChatMessageToPlayer(sender, string.Format("~h~Character name:~h~ {0} ~h~Account name:~h~ {1} ~h~ID:~h~ {2} ~h~Money:~h~ {3} ~h~Bank balance:~h~ {4} ~h~Playing hours:~h~ {5}", character.CharacterName, account.AccountName, character.Id, character.Money, character.BankBalance, answer));
+            API.sendChatMessageToPlayer(sender, string.Format("~h~Age:~h~ {0} ~h~Birthplace:~h~ {1} ~h~Birthday:~h~ {2} ~h~VIP level:~h~ {3} ~h~VIP expires:~h~ {4}", character.Age, character.Birthplace, character.Birthday, account.VipLevel, account.VipExpirationDate));
             API.sendChatMessageToPlayer(sender, "~b~Faction/Jobs:~b~");
             API.sendChatMessageToPlayer(sender, string.Format("~h~Faction ID:~h~ {0} ~h~Rank:~h~ {1} ~h~Group name:~h~ {2} ~h~Job 1:~h~ {3} ~h~Job 2: {4}", character.GroupId, character.GroupRank, character.Group.Name, character.JobOne));
             API.sendChatMessageToPlayer(sender, "~r~Property:~r~");
