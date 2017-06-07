@@ -39,7 +39,6 @@ namespace RoleplayServer.resources.player_manager
         public Vector3 LastRot { get; set; }
         public int LastDimension { get; set; }
 
-            {
         public int BankBalance { get; set; }
 
         public PedHash Skin { get; set; }
