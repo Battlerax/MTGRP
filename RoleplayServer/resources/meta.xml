@@ -76,6 +76,8 @@
 	
 	<script src="door_manager/DoorManager.js" type="client" lang="javascript"/>  
 
+  <script src="core/items/RagManager.js" type="client" lang="javascript"/>
+  
   <script src="property_system/PropertyManager.js" type="client" lang="javascript"/>
   <script src="property_system/businesses/Clothing.js" type="client" lang="javascript"/>
   <script src="property_system/businesses/GeneralBuying.js" type="client" lang="javascript"/>

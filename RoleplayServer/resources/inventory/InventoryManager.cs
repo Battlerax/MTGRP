@@ -9,6 +9,7 @@ using GTANetworkShared;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using RoleplayServer.resources.core;
+using RoleplayServer.resources.core.Items;
 using RoleplayServer.resources.inventory.bags;
 using RoleplayServer.resources.phone_manager;
 using RoleplayServer.resources.player_manager;
@@ -26,6 +27,8 @@ namespace RoleplayServer.resources.inventory
             BsonClassMap.RegisterClassMap<BagItem>();
             BsonClassMap.RegisterClassMap<Phone>();
             BsonClassMap.RegisterClassMap<Money>();
+            BsonClassMap.RegisterClassMap<RopeItem>();
+            BsonClassMap.RegisterClassMap<RagsItem>();
             #endregion
 
             API.onClientEventTrigger += API_onClientEventTrigger;

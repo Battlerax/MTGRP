@@ -80,6 +80,9 @@
     <Compile Include="resources\core\Color.cs" />
     <Compile Include="resources\core\DebugManager.cs" />
     <Compile Include="resources\core\ExtensionMethods.cs" />
+    <Compile Include="resources\core\Items\RagsItem.cs" />
+    <Compile Include="resources\core\Items\RopeItem.cs" />
+    <Compile Include="resources\core\Items\RopeRagManager.cs" />
     <Compile Include="resources\core\MarkerZone.cs" />
     <Compile Include="resources\core\Money.cs" />
     <Compile Include="resources\core\TimeWeatherManager.cs" />
@@ -145,6 +148,7 @@
   <ItemGroup>
     <Content Include="resources\cef_resources\MTGVRP_LOGO_BIG.png" />
     <Content Include="resources\cef_resources\MTGVRP_LOGO_SMALL.png" />
+    <Content Include="resources\core\Items\RagManager.js" />
     <Content Include="resources\door_manager\DoorManager.js" />
     <Content Include="resources\group_manager\lspd\MDC\LSPDMDC.png" />
     <Content Include="resources\group_manager\lspd\MDC\MDC.js" />

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GTANetworkServer;
 using RoleplayServer.resources.core;
+using RoleplayServer.resources.core.Items;
 using RoleplayServer.resources.inventory;
 using RoleplayServer.resources.phone_manager;
 
@@ -58,6 +59,28 @@ namespace RoleplayServer.resources.property_system.businesses
                                 PhoneName = "default"
                             };
                             item = phone;
+                            break;
+
+                        case "rope":
+                            item = new RopeItem();
+                            break;
+
+                        case "rags":
+                            item = new RagsItem();
+                            break;
+                    }
+                }
+                else if (prop.Type == PropertyManager.PropertyTypes.Hardware)
+                {
+                    name = ItemManager.TwentyFourSevenItems.Single(x => x[0] == itemName)[1];
+                    switch (itemName)
+                    {
+                        case "rope":
+                            item = new RopeItem();
+                            break;
+
+                        case "rags":
+                            item = new RagsItem();
                             break;
                     }
                 }
