@@ -2,6 +2,7 @@
 using GTANetworkServer;
 using GTANetworkShared;
 using RoleplayServer.resources.core;
+using RoleplayServer.resources.inventory;
 using RoleplayServer.resources.player_manager;
 
 namespace RoleplayServer.resources.rp_scripts
@@ -166,14 +167,14 @@ namespace RoleplayServer.resources.rp_scripts
 
                                 if (BankAmount[withdrawIndex] == -1)
                                 {
-                                    character.Money += character.BankBalance;      
+                                    InventoryManager.GiveInventoryItem(character, new Money(), character.BankBalance);
                                     API.sendChatMessageToPlayer(player, "~y~[Bank of Los Santos]~w~ You have withdrawn ~g~$" + character.BankBalance + "~w~. New balance: ~g~$0~w~.");
                                     character.BankBalance = 0;
                                 }
                                 else
                                 {
                                     character.BankBalance -= BankAmount[withdrawIndex];
-                                    character.Money += BankAmount[withdrawIndex];
+                                    InventoryManager.GiveInventoryItem(character, new Money(), BankAmount[withdrawIndex]);
                                     API.sendChatMessageToPlayer(player, "~y~[Bank of Los Santos]~w~ You have withdrawn ~g~$" + BankAmount[withdrawIndex] + "~w~. New balance: ~g~$" + character.BankBalance + "~w~.");
                                 }
                                 
@@ -181,22 +182,23 @@ namespace RoleplayServer.resources.rp_scripts
                                 break;
                             case "Deposit cash":
                                 var depositIndex = (int)arguments[1];
-                                if (BankAmount[depositIndex] > character.Money)
+                                if (BankAmount[depositIndex] > Money.GetCharacterMoney(character))
                                 {
-                                    API.sendChatMessageToPlayer(player, "~r~ERROR:~w~ You do not have ~g~$" + BankAmount[depositIndex] + "~w~ on hand. Current money on hand: ~g~$" + character.Money + "~w~.");
+                                    API.sendChatMessageToPlayer(player, "~r~ERROR:~w~ You do not have ~g~$" + BankAmount[depositIndex] + "~w~ on hand. Current money on hand: ~g~$" + Money.GetCharacterMoney(character) + "~w~.");
                                     break;
                                 }
 
                                 if (BankAmount[depositIndex] == -1)
                                 {
-                                    character.BankBalance += character.Money;
-                                    API.sendChatMessageToPlayer(player, "~y~[Bank of Los Santos]~w~ You have deposited ~g~$" + character.Money + "~w~. New balance: ~g~$" + character.BankBalance + "~w~.");
-                                    character.Money = 0;
+                                    character.BankBalance += Money.GetCharacterMoney(character);
+                                    API.sendChatMessageToPlayer(player, "~y~[Bank of Los Santos]~w~ You have deposited ~g~$" + Money.GetCharacterMoney(character) + "~w~. New balance: ~g~$" + character.BankBalance + "~w~.");
+                                    InventoryManager.SetInventoryAmmount(character, typeof(Money), 0);
                                 }
                                 else
                                 {
                                     character.BankBalance += BankAmount[depositIndex];
-                                    character.Money -= BankAmount[depositIndex];
+                                    InventoryManager.DeleteInventoryItem(character, typeof(Money),
+                                        BankAmount[depositIndex]);
                                     API.sendChatMessageToPlayer(player, "~y~[Bank of Los Santos]~w~ You have deposited ~g~$" + BankAmount[depositIndex] + "~w~. New balance: ~g~$" + character.BankBalance + "~w~.");
                                 }
 
