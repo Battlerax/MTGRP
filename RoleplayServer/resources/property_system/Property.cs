@@ -95,13 +95,39 @@ namespace RoleplayServer.resources.property_system
             ExitMarker?.Destroy();
         }
 
+        private int GetBlip()
+        {
+            switch (Type)
+            {
+                    case PropertyManager.PropertyTypes.TwentyFourSeven:
+                        return 52;
+                    case PropertyManager.PropertyTypes.Hardware:
+                        return 446;
+                    case PropertyManager.PropertyTypes.Bank:
+                        return 207;
+                    case PropertyManager.PropertyTypes.Clothing:
+                        return 73;
+                default:
+                    return -1;
+            }
+        }
+
         public void CreateProperty()
         {
             EnteranceString = OwnerId == 0 ? "Unowned. /buyproperty to buy it." : PropertyName;
 
-            EnteranceMarker = new MarkerZone(EnterancePos, EnteranceRot) {LabelText = EnteranceString + "\n" + Type + "\n" + "ID: " + Id};
+            EnteranceMarker = new MarkerZone(EnterancePos, EnteranceRot)
+            {
+                LabelText = EnteranceString + "\n" + Type + "\n" + "ID: " + Id,
+                BlipSprite = GetBlip()
+            };
             EnteranceMarker.Create();
             EnteranceMarker.ColZone.setData("property_enterance", Id);
+            if (API.shared.doesEntityExist(EnteranceMarker.Blip))
+            {
+                API.shared.setBlipShortRange(EnteranceMarker.Blip, true);
+                API.shared.setBlipName(EnteranceMarker.Blip, PropertyName);
+            }
 
             if (IsInteractable)
             {
