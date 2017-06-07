@@ -31,7 +31,7 @@ namespace RoleplayServer.resources.property_system
                 case PropertyManager.PropertyTypes.TwentyFourSeven:
                     prop.ItemPrices.Add("rope", 20); 
                     prop.ItemPrices.Add("rags", 10);
-                    prop.ItemPrices.Add("phone", 500);
+                    prop.ItemPrices.Add("sprunk", 5);
                     break;
 
                 case PropertyManager.PropertyTypes.Hardware:
@@ -47,7 +47,7 @@ namespace RoleplayServer.resources.property_system
             //ID, NAME, PRICE, DESCRIPTION
             new [] {"rope", "Rope", "Used to tie people."},
             new [] {"rags", "Rags", "Used to mute or blindfold people."},
-            new [] {"phone", "Phone", "Used to contact other people."},
+            new [] {"sprunk", "Sprunk", "Used to get some health."},
         };
 
         public static string[][] HardwareItems =
@@ -55,6 +55,7 @@ namespace RoleplayServer.resources.property_system
             //ID, NAME, PRICE, DESCRIPTION
             new [] {"rope", "Rope", "Used to tie people."},
             new [] {"rags", "Rags", "Used to mute or blindfold people."},
+            new [] {"phone", "Phone", "Used to contact other people."},
         };
     }
 }

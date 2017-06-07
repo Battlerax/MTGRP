@@ -51,14 +51,8 @@ namespace RoleplayServer.resources.property_system.businesses
                     name = ItemManager.TwentyFourSevenItems.Single(x => x[0] == itemName)[1];
                     switch (itemName)
                     {
-                        case "phone":
-                            var number = PhoneManager.GetNewNumber();
-                            var phone = new Phone()
-                            {
-                                Number = number,
-                                PhoneName = "default"
-                            };
-                            item = phone;
+                        case "sprunk":
+                            item = new SprunkItem();
                             break;
 
                         case "rope":
@@ -75,6 +69,16 @@ namespace RoleplayServer.resources.property_system.businesses
                     name = ItemManager.TwentyFourSevenItems.Single(x => x[0] == itemName)[1];
                     switch (itemName)
                     {
+                        case "phone":
+                            var number = PhoneManager.GetNewNumber();
+                            var phone = new Phone()
+                            {
+                                Number = number,
+                                PhoneName = "default"
+                            };
+                            item = phone;
+                            break;
+
                         case "rope":
                             item = new RopeItem();
                             break;
@@ -127,7 +131,7 @@ namespace RoleplayServer.resources.property_system.businesses
                 List<string[]> itemsWithPrices = new List<string[]>();
                 foreach (var itm in ItemManager.HardwareItems)
                 {
-                    itemsWithPrices.Add(new[] { itm[0], itm[1], itm[2], prop.ItemPrices.Single(x => x.Key == itm[0]).Value.ToString() });
+                    itemsWithPrices.Add(new[] { itm[0], itm[1], itm[2], prop.ItemPrices.SingleOrDefault(x => x.Key == itm[0]).Value.ToString() });
                 }
                 API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()), "Hardware", prop.PropertyName);
             }
@@ -137,7 +141,7 @@ namespace RoleplayServer.resources.property_system.businesses
                 List<string[]> itemsWithPrices = new List<string[]>();
                 foreach (var itm in ItemManager.TwentyFourSevenItems)
                 {
-                    itemsWithPrices.Add(new[] { itm[0], itm[1], itm[2], prop.ItemPrices.Single(x => x.Key == itm[0]).Value.ToString() });
+                    itemsWithPrices.Add(new[] { itm[0], itm[1], itm[2], prop.ItemPrices.SingleOrDefault(x => x.Key == itm[0]).Value.ToString() });
                 }
                 API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()), "24/7", prop.PropertyName);
             }

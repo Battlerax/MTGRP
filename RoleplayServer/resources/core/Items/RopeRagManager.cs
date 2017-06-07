@@ -176,5 +176,21 @@ namespace RoleplayServer.resources.core.Items
                 API.sendNotificationToPlayer(player, "You aren't near that player.");
             }
         }
+
+        [Command("usesprunk")]
+        public void usesprunk_cmd(Client player)
+        {
+            var rag = InventoryManager.DoesInventoryHaveItem<SprunkItem>(player.GetCharacter());
+            if (rag.Length == 0)
+            {
+                API.sendChatMessageToPlayer(player, "You don't have a sprunk.");
+                return;
+            }
+
+            player.health += 10;
+            if (player.health > 100) player.health = 100;
+            ChatManager.RoleplayMessage(player, "drinks a sprunk.", ChatManager.RoleplayMe);
+            InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(SprunkItem), 1);
+        }
     }
 }

@@ -29,6 +29,7 @@ namespace RoleplayServer.resources.inventory
             BsonClassMap.RegisterClassMap<Money>();
             BsonClassMap.RegisterClassMap<RopeItem>();
             BsonClassMap.RegisterClassMap<RagsItem>();
+            BsonClassMap.RegisterClassMap<SprunkItem>();
             #endregion
 
             API.onClientEventTrigger += API_onClientEventTrigger;
