@@ -121,6 +121,7 @@
     <Compile Include="resources\player_manager\PlayerManager.cs" />
     <Compile Include="resources\player_manager\player_interaction\PlayerInteraction.cs" />
     <Compile Include="resources\player_manager\player_list\PlayerList.cs" />
+    <Compile Include="resources\property_system\businesses\Bank.cs" />
     <Compile Include="resources\property_system\businesses\Clothing.cs" />
     <Compile Include="resources\property_system\businesses\GeneralBuying.cs" />
     <Compile Include="resources\property_system\ItemManager.cs" />

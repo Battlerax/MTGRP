@@ -41,7 +41,6 @@ namespace RoleplayServer.resources.property_system
             Clothing,
             TwentyFourSeven,
             Hardware,
-            Restaurent,
             Bank
         }
 
@@ -449,6 +448,8 @@ namespace RoleplayServer.resources.property_system
                     return "/buy";
                 case PropertyTypes.Hardware:
                     return "/buy";
+                case PropertyTypes.Bank:
+                    return "/balance /deposit /withdraw\n/wiretransfer /redeemcheck";
             }
             return "";
         }
