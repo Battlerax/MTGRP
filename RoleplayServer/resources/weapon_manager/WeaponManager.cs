@@ -7,6 +7,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.player_manager;
+using RoleplayServer.resources.group_manager;
 
 namespace RoleplayServer.resources.weapon_manager
 {
@@ -17,17 +18,48 @@ namespace RoleplayServer.resources.weapon_manager
 
         }
 
-        public static bool DoesPlayerHaveAWeapon(Character player)
+        public static bool DoesPlayerHaveAWeapon(Client player)
         {
-            if (player.Weapons.Count() > 0) { return true; }
+            Character character = API.shared.getEntityData(player.handle, "Character");
+
+            if (character.Weapons.Count() > 0) { return true; }
             else { return false; }
         }
 
 
-        public static bool DoesPlayerHaveWeapon(Character player, Weapon weapon)
+        public static bool DoesPlayerHaveWeapon(Client player, string weaponname)
         {
-            if (player.Weapons.Contains(weapon)) { return true; }
-            else { return false; }
+            Character character = API.shared.getEntityData(player.handle, "Character");
+
+            foreach (Weapon i in character.Weapons)
+            {
+                if (i.WeaponName == weaponname) { return true; }
+            }
+
+            return false;
+        }
+
+        public void AddPlayerWeapon (Client player, string weaponname, int ammo)
+        {
+            Character character = API.shared.getEntityData(player.handle, "Character");
+
+            WeaponHash weaponhash = API.weaponNameToModel(weaponname);
+
+            Weapon weapon = new Weapon(weaponhash, weaponcomponent, weaponname, ammo);
+            character.Weapons.Add(weapon);
+        }
+
+        public void AddPlayerAdminWeapon(Character player,  string weaponname, int ammo)
+        {
+            Weapon weapon = new Weapon(weaponhash, weaponcomponent, weaponname, ammo, true);
+            player.Weapons.Add(weapon);
+        }
+
+        public void AddPlayerGroupWeapon(Character player, string weaponname, int ammo, string groupname)
+        {
+            Weapon weapon = new Weapon(weaponhash, weaponcomponent, weaponname, ammo);
+            weapon.Group = group;
+            player.Weapons.Add(weapon);
         }
 
         public void RemovePlayerWeapon(Character player, Weapon weapon)

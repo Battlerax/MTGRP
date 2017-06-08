@@ -125,6 +125,8 @@
     <Compile Include="resources\vehicle_manager\VehicleMenu.cs" />
     <Compile Include="resources\vehicle_manager\VehicleOwnership.cs" />
     <Compile Include="resources\vehicle_manager\vehicle_editor\VehicleEditor.cs" />
+    <Compile Include="resources\weapon_manager\Weapon.cs" />
+    <Compile Include="resources\weapon_manager\WeaponManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
