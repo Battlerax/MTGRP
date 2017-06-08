@@ -33,12 +33,6 @@ namespace RoleplayServer.resources.player_manager
         }
         public static event EventHandler<CharacterLoginEventArgs> OnCharacterLogin;
 
-        [Command("test")]
-        public void Test(Client sender)
-        {
-            API.setEntityPosition(sender.handle, new Vector3(-30.680381774902344,  -728.7491455078125,  44.271934509277344));
-        }
-
         public void OnClientEventTrigger(Client player, string eventName, params object[] arguments)
         {
             switch (eventName)

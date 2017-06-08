@@ -7,35 +7,61 @@ API.onServerEventTrigger.connect(function (openHelpMenu, args) {
                 .addMenuItem("Commands", "", true, true, "showCmds", "showHelpCmds")
                 .addMenuItem("Animations", "", true, true, "showCmds", "showAnimCmds")
                 .addMenuItem("Police", "", true, true, "showCmds", "showPolCmds")
+                .addMenuItem("Groups", "", true, true, "showCmds", "ShowGroupCmds")
                 .addMenuItem("Admin", "", true, true, "showCmds", "showAdCmds")
                 .addMenuItem("Rules", "", true, true, "showCmds", "sRules")
                 .addMenuItem("FAQ", "", true, true, "showCmds", "sFAQ")
+                
             break;
     }
 });
 function showCmds(group) {  
     if (group == "showHelpCmds") {
         API.sendChatMessage('~h~Here is the list of commands availible to you:');
-        API.sendChatMessage('/Time, /Stats, /rp, /b, /me, /ame, /(V)ip, /(N)ewbie, /o, /pm, /Myvehicles, /Buyvehicle');
-        API.sendChatMessage('/inv, /Give, /Drop, /Stash, /Managebag.');
+        API.sendChatMessage('/Time, /Stats, /rp, /b, /me, /ame, /(V)ip, /(N)ewbie, /o, /(S)hout, /pm, /Low, /(W)hisper');
+        API.sendChatMessage('/Inv, /Give, /Drop, /Stash, /Managebag, /Myvehicles, /Buyvehicle, /LockDoor, /UnlockDoor');
+        API.sendChatMessage('/Frisk, /Tie /Blindfold, /Unblindfold, /Rag, /Unrag, /PickUpStash, /JoinJob, /QuitJob,');
+        API.sendChatMessage('/SetPhoneName, /PickUp, /H, /Phone, /Detain, /Eject, /GetID, /Stats, /Time, /Atm,');
+        API.sendChatMessage('/ConfirmSellVehicle, /ConfirmBuyVehicle, ');
     }
     else if (group == "showAnimCmds") {
         API.sendChatMessage('~h~Here is the list of Animations:');
-        API.sendChatMessage('/Stopanim, /Hide, /Lookout, /Crowdcontrol, /Investigate, /Drink, /Crossarms, /Idle, /Lean,');
+        API.sendChatMessage('~h~/Stopanim~h~, /Hide, /Lookout, /Crowdcontrol, /Investigate, /Drink, /Crossarms, /Idle, /Lean,');
         API.sendChatMessage('/Reach, /Workout, /Smoke, /Binoculars, /Hobo, /Fallover, /Laydown, /Drunk, /Twitchy, /Signal,');
         API.sendChatMessage('/Cheer, /Drugdeal, /Gardening, /Guard, /Jog, /Getjiggy, /Sit, /Mech, /Yoga, /Bonghit,');
-        API.sendChatMessage('/Restrained, /MiddleFinger, /Salute, /Slowclap, /Facepalm, /Handsup, /CoverL, /CoverR');
-        API.sendChatMessage('/Clipboard, /Hammer, /Guitar  ');
+        API.sendChatMessage('/Restrained, /MiddleFinger, /Salute, /Slowclap, /Facepalm, /Handsup, /Clipboard, /Hammer,');
+        API.sendChatMessage('/Guitar.  ');
     }
     else if (group == "showPolCmds") {
         API.sendChatMessage("~h~Here is the list of commands availible to you:");
-        API.sendChatMessage("/Arrest, /Frisk, /Cuff, /Uncuff, /Detain, /(M)egaphone");
+        API.sendChatMessage("/Arrest, /Cuff, /Uncuff, /Detain, /(M)egaphone, /RecordCrime, /ShowCriminalRecord, ");
+        API.sendChatMessage("/ListCrimes, /CreateCrime, /EditCrime, /DeleteCrime, /Wanted, /Release, /BackupBeacon, ");
+        API.sendChatMessage("/AcceptBeacon, /Ticket, /UnpaidTickets, /AcceptCopTicket, /PayCopTickets, /Deploy, ");
+        API.sendChatMessage("/RemoveAllObjects, /SetLockerPos, /SetArrestPos, /SetDivisionRank,  ");
+    }
+    else if (group == "ShowGroupCmds") {
+        API.sendChatMessage("~h~Here is the list of commands availible to you:");
+        API.sendChatMessage("/RemoteUninvite, /SetRank, /SetDivision, /Group, /(r)adio, /ToggleRadio /Accept, ");
+        API.sendChatMessage("/QuitGroup, /Invite, /SetRankName, /SetDivisionName, /SetDivisionRankName, ");
     }
     else if (group == "showAdCmds") {
         API.sendChatMessage('~h~Here is the list of Admin Commands:');
-        API.sendChatMessage('/Agiveweapon, /Spec, /Specoff, /Setadmin, /Spawnveh, /Sethealth, /Setarmour, /Gotopos, /setphonenumber');
-        API.sendChatMessage('~r~TesterCMDs to be removed.');
-        API.sendChatMessage('~r~/makemeadmin, /givemeitem, /setmymoney');
+        API.sendChatMessage('Level 1:');
+        API.sendChatMessage('/');
+        API.sendChatMessage('Level 2:');
+        API.sendChatMessage('/Spec, /Specoff,');
+        API.sendChatMessage('Level 3:');
+        API.sendChatMessage('/Agiveweapon, /Setadmin, /Spawnveh, /Sethealth, /Setarmour, /GotoPos, /Goto');
+        API.sendChatMessage('/ShowPlayerCars, /GetPlayerCar, /SpawnVeh, /SaveVehicle');
+        API.sendChatMessage('Level 4:');
+        API.sendChatMessage('/ListGroups, /RespawnGroupvehicles, /ListGroupVehicles, /CreateGroup, /JobTypes, /CreateJob, /EditJob,');
+        API.sendChatMessage('/CreateJobZone, /DeleteJobZone, /ViewJobZone, /Set');
+        API.sendChatMessage('Level 5:');
+        API.sendChatMessage('/ManageDoors, /EditDoor, /CreateDoor');
+        API.sendChatMessage('Level 6:');
+        API.sendChatMessage('Level 7:');
+        API.sendChatMessage('~r~TesterCMDs to be removed. If not removed upon release please report it privatly to the Devs.');
+        API.sendChatMessage('~r~/makemeadmin, /givemeitem, /setmymoney, /givemebag, /SetMyClothes, /setphonenumber, /tele');
     }
     else if (group == "sRules") {
         API.sendChatMessage("To view all the rules head to ~h~MT-Gaming.com~h~ Here some basic server rules:");
