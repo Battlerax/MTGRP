@@ -81,7 +81,7 @@ namespace RoleplayServer.resources.property_system.businesses
             if (character.BankBalance >= amount)
             {
                 target.GetCharacter().BankBalance += amount;
-                InventoryManager.DeleteInventoryItem(character, typeof(Money), amount);
+                character.BankBalance -= amount;
                 ChatManager.RoleplayMessage(player, "wire transfers some money from their bank account.",
                     ChatManager.RoleplayMe);
                 API.sendChatMessageToPlayer(target,
