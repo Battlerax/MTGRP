@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GTANetworkServer;
+using MongoDB.Bson;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.inventory;
 using RoleplayServer.resources.player_manager;
@@ -103,7 +104,55 @@ namespace RoleplayServer.resources.property_system.businesses
                 return;
             }
 
-            API.sendChatMessageToPlayer(player, $"You have ~g~${player.GetCharacter().BankBalance}~w~ in your account.");
+            API.sendChatMessageToPlayer(player,
+                $"You have ~g~${player.GetCharacter().BankBalance}~w~ in your account.");
         }
-}
+
+        [Command("givecheck")]
+        public void GiveCheck_cmd(Client player, string id)
+        {
+            Client target = PlayerManager.ParseClient(id);
+            if (target == null)
+            {
+                API.sendChatMessageToPlayer(player, "That target doesn't exist.");
+                return;
+            }
+
+            if (player.position.DistanceTo(target.position) > 5.0)
+            {
+                API.sendChatMessageToPlayer(player, "Must be near the target.");
+                return;
+            }
+
+            
+        }
+    }
+
+    public class CheckItem : IInventoryItem
+    {
+        public ObjectId Id { get; set; }
+
+        public bool CanBeGiven => false;
+        public bool CanBeDropped => true;
+        public bool CanBeStashed => false;
+        public bool CanBeStacked => false;
+
+        public bool IsBlocking => false;
+
+        public int MaxAmount => -1;
+
+        public int AmountOfSlots => 5;
+
+        public string CommandFriendlyName => $"check_{FromName}";
+
+        public string LongName => $"Check (${CheckAmount}) From {FromName}";
+
+        public int Object => 0;
+
+        public int Amount { get; set; }
+
+        public int CheckAmount { get; set; }
+        public int FromId { get; set; }
+        public string FromName { get; set; }
+    }
 }
