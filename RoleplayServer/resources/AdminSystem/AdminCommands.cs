@@ -5,6 +5,7 @@ using RoleplayServer.resources.core;
 using RoleplayServer.resources.inventory;
 using RoleplayServer.resources.player_manager;
 using RoleplayServer.resources.vehicle_manager;
+using RoleplayServer.resources.weapon_manager;
 
 namespace RoleplayServer.resources.AdminSystem
 {
@@ -48,12 +49,12 @@ namespace RoleplayServer.resources.AdminSystem
         }
 
         [Command("agiveweapon")]
-        public void agiveweapon_cmd(Client player, string id, WeaponHash weaponHash, int ammo)
+        public void agiveweapon_cmd(Client player, string id, WeaponHash weaponHash)
         {
             var receiver = PlayerManager.ParseClient(id);
             Account account = API.getEntityData(player.handle, "Account");
 
-            if (account.AdminLevel == 0)
+            if (account.AdminLevel < 3)
                 return;
 
             if (receiver == null)
@@ -61,8 +62,9 @@ namespace RoleplayServer.resources.AdminSystem
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
-            API.givePlayerWeapon(receiver, weaponHash, ammo, true, true);
-            API.sendChatMessageToPlayer(player, "You have given Player ID: " + id + " a weapon.");
+
+            WeaponManager.AddAdminWeapon(player, weaponHash);
+            API.sendChatMessageToPlayer(player, "You have given Player ID: " + id + " a " + weaponHash);
         }
 
         [Command("sethealth")]

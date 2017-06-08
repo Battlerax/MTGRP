@@ -21,15 +21,13 @@ namespace RoleplayServer.resources.weapon_manager
 
         public Group Group { get; set; }
 
+        public bool IsPlayerWeapon { get; set; }
+        public bool IsGroupWeapon { get; set; }
         public bool IsAdminWeapon { get; set; }
 
-        public Weapon(WeaponHash weaponhash, WeaponComponent weaponattachment, string weaponname, int ammo, bool isadminweapon = false)
+        public Weapon(WeaponHash weaponhash)
         {
             WeaponHash = weaponhash;
-            WeaponAttachment = weaponattachment;
-            WeaponName = WeaponName;
-            Ammo = ammo;
-            IsAdminWeapon = isadminweapon;
         }
     }
 }

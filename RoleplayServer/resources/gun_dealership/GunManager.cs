@@ -3,18 +3,19 @@ using GTANetworkShared;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.player_manager;
 using RoleplayServer.resources.inventory;
+using RoleplayServer.resources.weapon_manager;
 
 
-public class WeaponManager : Script
+public class GunManager : Script
 {
 
-    public WeaponManager()
+    public GunManager()
     {
-        DebugManager.DebugMessage("[VehicleM] Initilizing weapons manager...");
+
 
         API.onResourceStart += OnResourceStart;
         API.onClientEventTrigger += OnClientEvent;
-        DebugManager.DebugMessage("[VehicleM] Weapons Manager initalized!");
+
     }
 
 
@@ -107,13 +108,13 @@ public class WeaponManager : Script
 
     }
 
-    public void buyWeapon(Client player, string weaponName)
+    public static void buyWeapon(Client player, string weaponName)
     {
-        Character character = API.getEntityData(player.handle, "Character");
+        Character character = API.shared.getEntityData(player.handle, "Character");
 
-        WeaponHash weapon = API.weaponNameToModel(weaponName);
-        player.giveWeapon(weapon, 500, true, false);
-        character.Weapons.Add(weapon);
+        WeaponHash weapon = API.shared.weaponNameToModel(weaponName);
+        WeaponManager.AddPlayerWeapon(player, weapon, weaponName);
+        
         player.sendChatMessage("You have bought a ~g~" + weaponName);
     }
 
