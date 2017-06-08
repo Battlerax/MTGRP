@@ -69,7 +69,7 @@ namespace RoleplayServer.resources.vehicle_manager
                     var veh = GetVehFromNetHandle(API.getPlayerVehicle(player));
                     float payment = API.getVehicleHealth(API.getPlayerVehicle(player)) / 2;
                     veh.Respawn();
-                    character.Money += (int)payment;
+                    inventory.InventoryManager.GiveInventoryItem(character, new Money(), (int) payment);
                     character.IsOnDropcar = false;
                     API.triggerClientEvent(player, "dropcar_removewaypoint");
                     player.sendChatMessage("Vehicle delivered. You earned $" + (int)payment);
@@ -244,12 +244,6 @@ namespace RoleplayServer.resources.vehicle_manager
             character.jailTimeLeftTimer.Stop();
         }
 
-        public void resetDropcarTimer(Client player)
-        {
-            Character character = API.getEntityData(player.handle, "Character");
-            character.DropcarPrevention = false;
-            character.DropcarTimer.Stop();
-        }
         /*
         * 
         * ========== CALLBACKS =========

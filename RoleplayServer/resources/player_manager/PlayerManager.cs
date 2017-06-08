@@ -294,9 +294,6 @@ namespace RoleplayServer.resources.player_manager
             API.sendChatMessageToPlayer(sender, "________________PLAYER STATS________________");
             API.sendChatMessageToPlayer(sender, "~g~General:~g~");
             API.sendChatMessageToPlayer(sender, string.Format("~h~Character name:~h~ {0} ~h~Account name:~h~ {1} ~h~ID:~h~ {2} ~h~Money:~h~ {3} ~h~Bank balance:~h~ {4} ~h~Playing hours:~h~ {5}", sender.name, account.AccountName, character.Id, Money.GetCharacterMoney(character), character.BankBalance, character.TimePlayed));
-            API.sendChatMessageToPlayer(sender, "~b~Faction:~b~");
-            API.sendChatMessageToPlayer(sender, string.Format("~h~Faction ID:~h~ {0} ~h~Rank:~h~ {1}", character.GroupId, character.GroupRank));
-            API.sendChatMessageToPlayer(sender, string.Format("~h~Character name:~h~ {0} ~h~Account name:~h~ {1} ~h~ID:~h~ {2} ~h~Money:~h~ {3} ~h~Bank balance:~h~ {4} ~h~Playing hours:~h~ {5}", character.CharacterName, account.AccountName, character.Id, character.Money, character.BankBalance, answer));
             API.sendChatMessageToPlayer(sender, string.Format("~h~Age:~h~ {0} ~h~Birthplace:~h~ {1} ~h~Birthday:~h~ {2} ~h~VIP level:~h~ {3} ~h~VIP expires:~h~ {4}", character.Age, character.Birthplace, character.Birthday, account.VipLevel, account.VipExpirationDate));
             API.sendChatMessageToPlayer(sender, "~b~Faction/Jobs:~b~");
             API.sendChatMessageToPlayer(sender, string.Format("~h~Faction ID:~h~ {0} ~h~Rank:~h~ {1} ~h~Group name:~h~ {2} ~h~Job 1:~h~ {3} ~h~Job 2: {4}", character.GroupId, character.GroupRank, character.Group.Name, character.JobOne));

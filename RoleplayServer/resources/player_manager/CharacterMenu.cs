@@ -134,7 +134,6 @@ namespace RoleplayServer.resources.player_manager
                         character.PaycheckTimer = new Timer { Interval = 1000 };
                         character.PaycheckTimer.Elapsed += delegate { PlayerManager.SendPaycheckToPlayer(player); };
                         character.PaycheckTimer.Start();
-                        character.Money = 1000;
                         API.shared.triggerClientEvent(player, "update_money_display", Money.GetCharacterMoney(character));
 
                         character.JobOne = JobManager.GetJobById(character.JobOneId);

@@ -30,19 +30,21 @@ namespace RoleplayServer.resources.core
             //Local Chat
             if (API.getEntityData(player, "MegaphoneStatus") == true)
             {
-                msg = character.rp_name() + " [MEGAPHONE]: " + msg;
+                msg = "~y~" + character.rp_name() + " [MEGAPHONE]: " + msg;
                 NearbyMessage(player, 30, msg);
+
             }
-            if (account.AdminDuty == 0)
+            else if (account.AdminDuty == true)
+            {
+                b_cmd(player, msg);
+                return;
+
+            }
+            else
             {
                 msg = character.rp_name() + " says: " + msg;
                 NearbyMessage(player, 15, msg);
             }
-            else
-            {
-                b_cmd(player, msg);
-            }
-           
             e.Cancel = true;
         }
 
@@ -203,7 +205,7 @@ namespace RoleplayServer.resources.core
         public void b_cmd(Client player, string text)
         {
             Account account = API.getEntityData(player.handle, "Account");
-            if(account.AdminDuty == 0)
+            if(account.AdminDuty == false)
             {
                 NearbyMessage(player, 10, "(( " + PlayerManager.GetName(player) + ": " + text + " ))", Color.Ooc);
             }
@@ -266,39 +268,6 @@ namespace RoleplayServer.resources.core
             API.shared.sendChatMessageToPlayer(receiver, Color.Pm, "PM from " + PlayerManager.GetName(player) + ": " + text);
         }
 
-        [Command("giveweapon")]
-        public void giveweapon_cmd(Client player, string id)
-        {
-            var receiver = PlayerManager.ParseClient(id);
-            Character playerid = API.shared.getEntityData(player.handle, "Character");
-            Character receiverid = API.shared.getEntityData(receiver.handle, "Character");
-
-            if (API.getPlayerWeapons(player).Length == 0)
-            {
-                player.sendChatMessage("You have no weapons on you.");
-                return;
-            }
-
-            if (GetDistanceBetweenPlayers(player, receiver) > 7)
-            {
-                API.sendChatMessageToPlayer(player, "That player is too far from you.");
-                return;
-            }
-
-            if ((int) API.getPlayerCurrentWeapon(player) == -1569615261)
-            {
-                player.sendChatMessage("You must be holding the weapon you want to hand over.");
-                return;
-            }
-
-            WeaponHash currentWeapon = API.getPlayerCurrentWeapon(player);
-            API.removePlayerWeapon(player, currentWeapon);
-            API.givePlayerWeapon(receiver, currentWeapon, 500, true, true);
-            NearbyMessage(player, 10, "~p~" + playerid.CharacterName + " handed a " + currentWeapon + " to " + receiverid.CharacterName + ".");
-            player.sendChatMessage("You gave a weapon (" + currentWeapon + ") to " + receiverid.CharacterName + ".");
-            receiver.sendChatMessage("You were given a weapon (" + currentWeapon + ") by " + playerid.CharacterName + ".");
-
-        }
 
         /* PAY WILL BE CHANGED TO /GIVE AS MONEY IS NOW AN INVENTORY ITEM
         [Command("pay", GreedyArg = true)]
