@@ -20,6 +20,11 @@ namespace RoleplayServer.resources.core.Items
                 API.sendChatMessageToPlayer(player, "That target doesn't exist.");
                 return;
             }
+            if (target == player)
+            {
+                API.sendChatMessageToPlayer(player, "You can't do that on yourself");
+                return;
+            }
             if (player.position.DistanceTo(target.position) <= 5.0)
             {
                 var tie = InventoryManager.DoesInventoryHaveItem<RopeItem>(player.GetCharacter());
@@ -50,6 +55,11 @@ namespace RoleplayServer.resources.core.Items
                 API.sendChatMessageToPlayer(player, "That target doesn't exist.");
                 return;
             }
+            if (target == player)
+            {
+                API.sendChatMessageToPlayer(player, "You can't do that on yourself");
+                return;
+            }
             if (player.position.DistanceTo(target.position) <= 5.0)
             {
                 if (!API.hasEntityData(target, "IS_TIED"))
@@ -74,6 +84,11 @@ namespace RoleplayServer.resources.core.Items
             if (target == null)
             {
                 API.sendChatMessageToPlayer(player, "That target doesn't exist.");
+                return;
+            }
+            if (target == player)
+            {
+                API.sendChatMessageToPlayer(player, "You can't do that on yourself");
                 return;
             }
             if (player.position.DistanceTo(target.position) <= 5.0)
@@ -106,6 +121,11 @@ namespace RoleplayServer.resources.core.Items
                 API.sendChatMessageToPlayer(player, "That target doesn't exist.");
                 return;
             }
+            if (target == player)
+            {
+                API.sendChatMessageToPlayer(player, "You can't do that on yourself");
+                return;
+            }
             if (player.position.DistanceTo(target.position) <= 5.0)
             {
                 if (!API.hasEntityData(target, "IS_BLINDFOLDED"))
@@ -130,6 +150,11 @@ namespace RoleplayServer.resources.core.Items
             if (target == null)
             {
                 API.sendChatMessageToPlayer(player, "That target doesn't exist.");
+                return;
+            }
+            if (target == player)
+            {
+                API.sendChatMessageToPlayer(player, "You can't do that on yourself");
                 return;
             }
             if (player.position.DistanceTo(target.position) <= 5.0)
@@ -159,6 +184,11 @@ namespace RoleplayServer.resources.core.Items
             if (target == null)
             {
                 API.sendChatMessageToPlayer(player, "That target doesn't exist.");
+                return;
+            }
+            if (target == player)
+            {
+                API.sendChatMessageToPlayer(player, "You can't do that on yourself");
                 return;
             }
             if (player.position.DistanceTo(target.position) <= 5.0)
