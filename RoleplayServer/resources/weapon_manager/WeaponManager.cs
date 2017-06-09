@@ -231,5 +231,24 @@ namespace RoleplayServer.resources.weapon_manager
             player.sendChatMessage("This player owns " + i + " weapons.");
 
         }
+
+        [Command("removeallweapons")]
+        public void removeallweapons_cmd(Client player, string id)
+        {
+            var receiver = PlayerManager.ParseClient(id);
+            Account account = API.shared.getEntityData(player.handle, "Account");
+            Character receiverid = API.shared.getEntityData(receiver.handle, "Character");
+
+            if (account.AdminLevel < 3)
+            {
+                return;
+            }
+
+            RemoveAllPlayerWeapons(player);
+
+            player.sendChatMessage("Weapons removed.");
+            receiver.sendChatMessage("All of your weapons were removed by " + account.AdminName);
+
+        }
     }
 }
