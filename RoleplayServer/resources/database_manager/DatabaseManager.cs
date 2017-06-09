@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
 using RoleplayServer.resources.core;
+using RoleplayServer.resources.door_manager;
 using RoleplayServer.resources.group_manager;
 using RoleplayServer.resources.group_manager.lspd;
 using RoleplayServer.resources.job_manager;
