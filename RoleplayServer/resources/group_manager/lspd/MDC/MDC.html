@@ -113,6 +113,7 @@
                     <tr>
                         <th>Phone Number</th>
                         <th>Time</th>
+                        <th>Location</th>
                         <th>Report</th>
                     </tr>
                 </thead>
@@ -169,10 +170,15 @@
                     <span class="icon mif-users"></span>
                     <span class="title">Citizen Search</span>
                 </div>
-                <div class="content">
+                <div class="content" style="height: 200px">
                     <div id="citizen_lookup" style="padding: 10px;">
 
                         <a style="font-family: BebasKai;font-size:25px">Name</a><br />
+                        <div class="input-control text">
+                            <input id="name_input" type="text">
+                        </div>
+                        <br/>
+                        <a style="font-family: BebasKai;font-size:25px">Phone Number</a><br />
                         <div class="input-control text">
                             <input id="name_input" type="text">
                         </div>
@@ -186,7 +192,7 @@
                     <span class="icon mif-automobile"></span>
                     <span class="title">Vehicle Search</span>
                 </div>
-                <div class="content">
+                <div class="content" style="height:200px">
                     <div id="vehicle_lookup" style="padding: 10px;">
                         <a style="font-family: BebasKai;font-size:25px">License Plate</a><br />
                         <div class="input-control text">
@@ -197,8 +203,8 @@
                 </div>
             </div>
             
-            <br/>
-            <div class="panel" style="width: 100%; height: 90%; margin-top: 30%;">
+          
+            <div class="panel" style="width: 100%; height: 90%; margin-top: 45%;">
                 <div class="heading">
                     <span class="icon mif-search"></span>
                     <span class="title"> Search Results</span>
@@ -342,7 +348,7 @@
         resourceCall("client_removeBolo", boloId);
     }
 
-    function html_add911(number, time, info) {
+    function html_add911(number, time, location, info) {
 
         //Make sure only last 20 calls are showed
         if ($('#911_table_body tr').length >= 20) {
@@ -353,6 +359,7 @@
         $('#911_table_body').prepend('<tr class="info"> \
                         <td style="color: black;font-family:BebasKai">' + number + '</td> \
                         <td style="color: black;font-family:BebasKai">' + time + '</td> \
+                        <td style="color: black;font-family:BebasKai">' + location + '</td> \
                         <td style="color: black;font-family:BebasKai">' + info + '</td></tr>');
     }
 

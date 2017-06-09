@@ -28,14 +28,16 @@ namespace RoleplayServer.resources.group_manager.lspd.MDC
 
     public class EmergencyCall
     {
-        public int PhoneNumber;
+        public string PhoneNumber;
         public DateTime Time;
         public string Info;
+        public string Location;
 
-        public EmergencyCall(int phoneNumber, string info)
+        public EmergencyCall(string phoneNumber, string info, string location)
         {
             PhoneNumber = phoneNumber;
             Info = info;
+            Location = location;
             Time = TimeWeatherManager.CurrentTime;
         }
     }
@@ -43,7 +45,7 @@ namespace RoleplayServer.resources.group_manager.lspd.MDC
     public class MDC : Script
     {
         public List<Bolo> ActiveBolos = new List<Bolo>();
-        public List<EmergencyCall> Active911s = new List<EmergencyCall>();
+        public static List<EmergencyCall> Active911s = new List<EmergencyCall>();
 
         public MDC()
         {
@@ -135,12 +137,12 @@ namespace RoleplayServer.resources.group_manager.lspd.MDC
 
         public void Send911ToClient(Client player, EmergencyCall call)
         {
-            API.triggerClientEvent(player, "add911", call.PhoneNumber, call.Time.ToString(), call.Info);
+            API.triggerClientEvent(player, "add911", call.PhoneNumber, call.Time.ToString(), call.Info, call.Location);
         }
 
-        public void Add911Call(int phoneNumber, string info)
+        public static void Add911Call(string phoneNumber, string info, string location)
         {
-            var emergencyCall = new EmergencyCall(phoneNumber, info);
+            var emergencyCall = new EmergencyCall(phoneNumber, info, location);
             Active911s.Add(emergencyCall);
         }
 

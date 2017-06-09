@@ -31,8 +31,61 @@ namespace RoleplayServer.resources.player_manager.login
         {
             switch (eventName)
             {
+                case "create_admin_pin":
+                {
+                    var adminPin = Convert.ToString(arguments[0]);
+
+                    if (adminPin.Length != 6)
+                    {
+                        API.sendChatMessageToPlayer(player, Color.AdminOrange,
+                            "Your pin must be exactly 6 characters long.");
+                        API.triggerClientEvent(player, "create_admin_pin");
+                    }
+
+                    Account account = API.getEntityData(player.handle, "Account");
+
+                    if (account.AdminLevel < 1)
+                    {
+                        API.sendChatMessageToPlayer(player, Color.AdminOrange, "You are not an admin anymore.");
+                        prepare_character_menu(player);
+                        return;
+                    }
+
+                    account.AdminPin = adminPin;
+                    account.Save();
+                    API.sendChatMessageToPlayer(player, Color.AdminOrange, "Admin pin successully set to: " + adminPin);
+                    prepare_character_menu(player);
+                    break;
+                }
+                case "admin_pin":
+                {
+                    var adminPin = Convert.ToString(arguments[0]);
+
+                    Account account = API.getEntityData(player, "Account");
+
+                    if (account.AdminLevel == 0)
+                    {
+                        API.sendChatMessageToPlayer(player, Color.AdminOrange, "You are not an admin anymore.");
+                        prepare_character_menu(player);
+                        return;
+                    }
+
+                    if (account.AdminPin.Equals(adminPin))
+                    {
+                        API.sendChatMessageToPlayer(player, Color.AdminOrange, "You have successfully logged in.");
+                        prepare_character_menu(player);
+                    }
+                    else
+                    {
+                        API.sendChatMessageToPlayer(player, Color.AdminOrange, "Incorrect pin.");
+                        //TO DO: SEND TO ADMIN THEY GOT IT WRONG 
+                        API.triggerClientEvent(player, "admin_pin");
+                    }
+                    break;
+                }
                 case "attempt_login":
-                    var inputPass = (string)arguments[0];
+                {
+                    var inputPass = (string) arguments[0];
 
 
                     if (inputPass.Length < 8)
@@ -86,10 +139,27 @@ namespace RoleplayServer.resources.player_manager.login
 
                             if (account.AdminLevel > 0)
                             {
-                                API.sendChatMessageToPlayer(player, Color.AdminOrange, "Welcome back Admin " + account.AdminName);
-                            }
+                                API.sendChatMessageToPlayer(player, Color.AdminOrange,
+                                    "Welcome back Admin " + account.AdminName);
 
-                            prepare_character_menu(player);
+                                if (account.AdminName.Equals(String.Empty))
+                                {
+                                    API.sendChatMessageToPlayer(player, Color.AdminOrange,
+                                        "You do not have an admin pin set. Please choose one now: ");
+                                    API.triggerClientEvent(player, "create_admin_pin");
+                                }
+                                else
+                                {
+                                    API.sendChatMessageToPlayer(player, Color.AdminOrange,
+                                        "Pleae login with your admin pin to continue.");
+                                    API.triggerClientEvent(player, "admin_pin");
+                                }
+
+                            }
+                            else
+                            {
+                                prepare_character_menu(player);
+                            }
                         }
                         else
                         {
@@ -100,7 +170,8 @@ namespace RoleplayServer.resources.player_manager.login
                     {
                         if (inputPass.Length < 8)
                         {
-                            API.triggerClientEvent(player, "Please choose a password that is at least 8 characters long.");
+                            API.triggerClientEvent(player,
+                                "Please choose a password that is at least 8 characters long.");
                             return;
                         }
 
@@ -126,10 +197,12 @@ namespace RoleplayServer.resources.player_manager.login
 
                         account.Register();
 
-                        API.sendChatMessageToPlayer(player, "You have successfully registered! Please select a character slot below to get started!");
+                        API.sendChatMessageToPlayer(player,
+                            "You have successfully registered! Please select a character slot below to get started!");
                         prepare_character_menu(player);
                     }
-                    break;
+                        break;
+                }
             }
         }
 

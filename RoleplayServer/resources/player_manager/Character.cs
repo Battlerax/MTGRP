@@ -39,21 +39,6 @@ namespace RoleplayServer.resources.player_manager
         public Vector3 LastRot { get; set; }
         public int LastDimension { get; set; }
 
-        private int _money;
-
-        public int Money
-        {
-            get { return _money; }
-            set
-            {
-                if (Client != null)
-                    API.shared.triggerClientEvent(Client, "update_money_display", value);
-
-                _money = value;
-            }
-        }
-
-
         public int BankBalance { get; set; }
 
         public PedHash Skin { get; set; }
@@ -156,6 +141,7 @@ namespace RoleplayServer.resources.player_manager
 
         public Dictionary<Fish, int> FishOnHand = new Dictionary<Fish, int>();
 
+        //Phone
         [BsonIgnore]
         public Character InCallWith { get; set; }
         [BsonIgnore]
@@ -164,6 +150,9 @@ namespace RoleplayServer.resources.player_manager
         public Character CallingPlayer { get; set; }
         [BsonIgnore]
         public System.Threading.Timer CallingTimer;
+        [BsonIgnore]
+        public bool Calling911 { get; set; }
+
         //Groups
         public int GroupId { get; set; }
         public int GroupRank { get; set; }
@@ -245,7 +234,6 @@ namespace RoleplayServer.resources.player_manager
             LastPos = new Vector3(0.0, 0.0, 0.0);
             LastRot = new Vector3(0.0, 0.0, 0.0);
 
-            Money = 0;
             BankBalance = 0;
 
             Skin = PedHash.FreemodeMale01;
