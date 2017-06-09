@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using GTANetworkServer;
 using GTANetworkShared;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.player_manager;
 using RoleplayServer.resources.group_manager;
@@ -37,8 +33,12 @@ namespace RoleplayServer.resources.weapon_manager
 
             if (!DoesPlayerHaveWeapon(player, player.currentWeapon))
             {
-                player.sendChatMessage("You are not supposed to have this weapon.."); //<--- TEST - REMOVE LATER
-                                                                                      //BAN THE PLAYER
+                foreach (var p in API.getAllPlayers())
+                {
+                    Account account = API.shared.getEntityData(p, "Account");
+
+                    if (account.AdminLevel > 1) { p.sendChatMessage("~r~ [WARNING]: " + player.nametag + " HAS A WEAPON THEY SHOULD NOT HAVE. TAKE ACTION."); }
+                }
                 return;
             }
 
