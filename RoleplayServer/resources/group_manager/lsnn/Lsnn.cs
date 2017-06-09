@@ -2,6 +2,7 @@
 using GTANetworkShared;
 using System.Collections.Generic;
 using RoleplayServer.resources.core;
+using RoleplayServer.resources.door_manager;
 using RoleplayServer.resources.player_manager;
 using RoleplayServer.resources.vehicle_manager;
 using RoleplayServer.resources.inventory;

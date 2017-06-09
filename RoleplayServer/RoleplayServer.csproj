@@ -87,6 +87,8 @@
     <Compile Include="resources\core\TimeWeatherManager.cs" />
     <Compile Include="resources\core\Whitelist.cs" />
     <Compile Include="resources\database_manager\DatabaseManager.cs" />
+    <Compile Include="resources\door_manager\Door.cs" />
+    <Compile Include="resources\door_manager\DoorManager.cs" />
     <Compile Include="resources\group_manager\Group.cs" />
     <Compile Include="resources\group_manager\GroupManager.cs" />
     <Compile Include="resources\group_manager\lsnn\Lsnn.cs" />
@@ -142,6 +144,7 @@
     <Content Include="resources\cef_resources\LSPDMDC.png" />
     <Content Include="resources\cef_resources\MTGVRP_LOGO_BIG.png" />
     <Content Include="resources\cef_resources\MTGVRP_LOGO_SMALL.png" />
+    <Content Include="resources\door_manager\DoorManager.js" />
     <Content Include="resources\group_manager\lsnn\LowerThird.html" />
     <Content Include="resources\group_manager\lsnn\Lsnn.js" />
     <Content Include="resources\inventory\ManageInv.html" />
