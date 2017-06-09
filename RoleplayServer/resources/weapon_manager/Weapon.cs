@@ -14,7 +14,6 @@ namespace RoleplayServer.resources.weapon_manager
         public ObjectId Id { get; set; }
 
         public WeaponHash WeaponHash { get; set; }
-        public string WeaponName { get; set; }
 
         public int Ammo { get; set; }
         public WeaponComponent WeaponAttachment { get; set; }

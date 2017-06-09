@@ -84,14 +84,13 @@ namespace RoleplayServer.resources.weapon_manager
 
         }
 
-        public static void AddPlayerWeapon (Client player, WeaponHash weaponhash, string weaponname = "Unsafe")
+        public static void AddPlayerWeapon (Client player, WeaponHash weaponhash)
         {
             Character character = API.shared.getEntityData(player.handle, "Character");
 
             if (DoesPlayerHaveWeapon(player, weaponhash)) { RemovePlayerWeapon(player, weaponhash); }
             Weapon weapon = new Weapon(weaponhash);
             weapon.IsPlayerWeapon = true;
-            weapon.WeaponName = weaponname;
         
             character.Weapons.Add(weapon);
             character.Save();
@@ -99,28 +98,26 @@ namespace RoleplayServer.resources.weapon_manager
 
         }
 
-        public static void AddAdminWeapon(Client player,  WeaponHash weaponhash, string weaponname = "Unsafe")
+        public static void AddAdminWeapon(Client player,  WeaponHash weaponhash)
         {
             Character character = API.shared.getEntityData(player.handle, "Character");
 
             if (DoesPlayerHaveWeapon(player, weaponhash)) { RemovePlayerWeapon(player, weaponhash); }
             Weapon weapon = new Weapon(weaponhash);
             weapon.IsAdminWeapon = true;
-            weapon.WeaponName = weaponname;
 
             character.Weapons.Add(weapon);
             character.Save();
             API.shared.givePlayerWeapon(player, weaponhash, 9999, false, true);
         }
 
-        public static void AddGroupWeapon(Client player, WeaponHash weaponhash, Group group, string weaponname = "Unsafe")
+        public static void AddGroupWeapon(Client player, WeaponHash weaponhash, Group group)
         {
             Character character = API.shared.getEntityData(player.handle, "Character");
 
             if (DoesPlayerHaveWeapon(player, weaponhash)) { RemovePlayerWeapon(player, weaponhash); }
             Weapon weapon = new Weapon(weaponhash);
             weapon.IsGroupWeapon = true;
-            weapon.WeaponName = weaponname;
             weapon.Group = group;
 
             character.Weapons.Add(weapon);
@@ -163,17 +160,6 @@ namespace RoleplayServer.resources.weapon_manager
 
         }
 
-        public string GetPlayerWeaponName(Client player, WeaponHash weapon)
-        {
-            Character playerid = API.shared.getEntityData(player.handle, "Character");
-
-            foreach (Weapon w in playerid.Weapons)
-            {
-                if (weapon == w.WeaponHash) { return w.WeaponName; }
-            }
-            return "Unsafe";
-        }
-
 
 
         [Command("giveweapon")]
@@ -203,10 +189,9 @@ namespace RoleplayServer.resources.weapon_manager
 
             WeaponHash currentWeapon = API.getPlayerCurrentWeapon(player);
             TradeWeapon(player, receiver, currentWeapon);
-            string weaponName = GetPlayerWeaponName(player, currentWeapon);
-            player.sendChatMessage("You gave a weapon (" + weaponName + ") to " + receiverid.CharacterName + ".");
-            receiver.sendChatMessage("You were given a weapon (" + weaponName + ") by " + playerid.CharacterName + ".");
-            ChatManager.NearbyMessage(player, 10, "~p~" + playerid.CharacterName + " handed a " +  weaponName + " to " + receiverid.CharacterName + ".");
+            player.sendChatMessage("You gave a weapon (" + currentWeapon + ") to " + receiverid.CharacterName + ".");
+            receiver.sendChatMessage("You were given a weapon (" + currentWeapon + ") by " + playerid.CharacterName + ".");
+            ChatManager.NearbyMessage(player, 10, "~p~" + playerid.CharacterName + " handed a " +  currentWeapon + " to " + receiverid.CharacterName + ".");
         }
 
         [Command("dropweapon")]
@@ -221,23 +206,29 @@ namespace RoleplayServer.resources.weapon_manager
             }
 
             RemovePlayerWeapon(player, currentWeapon);
-            string weaponName = GetPlayerWeaponName(player, currentWeapon);
-            ChatManager.NearbyMessage(player, 10, "~p~" + player.GetCharacter().CharacterName + " dropped their " + weaponName + ".");
+            ChatManager.NearbyMessage(player, 10, "~p~" + player.GetCharacter().CharacterName + " dropped their " + currentWeapon + ".");
         }
 
         [Command("listweapons")]
-        public void listweapons_cmd(Client player)
+        public void listweapons_cmd(Client player, string id)
         {
-            Character playerid = API.shared.getEntityData(player.handle, "Character");
+            var receiver = PlayerManager.ParseClient(id);
+            Account account = API.shared.getEntityData(player.handle, "Account");
+            Character receiverid = API.shared.getEntityData(receiver.handle, "Character");
+
+            if (account.AdminLevel < 3)
+            {
+                return;
+            }
 
             int i = 0;
-            foreach (Weapon w in playerid.Weapons)
+            foreach (Weapon w in receiverid.Weapons)
             {
          
-                API.sendChatMessageToPlayer(player, i + " " + w.WeaponHash +  " " + w.WeaponName);
-                API.sendChatMessageToPlayer(player, "Count: " + playerid.Weapons.Count());
+                player.sendChatMessage("Weapon " + i + ": " + w.WeaponHash);
                 i++;
             }
+            player.sendChatMessage("This player owns " + i + " weapons.");
 
         }
     }
