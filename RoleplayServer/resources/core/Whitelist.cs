@@ -17,6 +17,12 @@ namespace RoleplayServer.resources.core
              "NortonPlays",
              "Millingtonlol",
              "Ahmad45123",
+
+             //Kevin & Friends
+             "maniac1994",
+             "DontCallMeKevin",
+             "Wilko0103",
+             "Maxispio",
         };
 
         public Whitelist()

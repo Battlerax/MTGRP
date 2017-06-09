@@ -123,8 +123,6 @@ namespace RoleplayServer.resources.player_manager
         [BsonIgnore]
         public int PerfectCatchStrength { get; set; }
 
-        public Dictionary<Fish, int> FishOnHand = new Dictionary<Fish, int>();
-
         //Phone
         [BsonIgnore]
         public Character InCallWith { get; set; }
