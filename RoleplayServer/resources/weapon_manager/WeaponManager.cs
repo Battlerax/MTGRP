@@ -45,7 +45,7 @@ namespace RoleplayServer.resources.weapon_manager
 
             Weapon currentWeapon = GetCurrentWeapon(player);
 
-            if (currentWeapon.Group != null || currentWeapon.Group != character.Group)
+            if (currentWeapon.Group != character.Group)
             {
                 RemovePlayerWeapon(player, weapon);
                 player.sendChatMessage("You must be a member of " + currentWeapon.Group.Name + " to use this weapon. It was removed.");
@@ -147,11 +147,19 @@ namespace RoleplayServer.resources.weapon_manager
             }
         }
 
+        public static void GivePlayerWeapon(Client player, Weapon weapon)
+        {
+            Character character = API.shared.getEntityData(player.handle, "Character");
+
+            if (DoesPlayerHaveWeapon(player, weapon.WeaponHash)) { RemovePlayerWeapon(player, weapon.WeaponHash); }
+
+            character.Weapons.Add(weapon);
+        }
 
         public void TradeWeapon(Client player, Client receiver, Weapon weapon)
         {
             RemovePlayerWeapon(player, weapon.WeaponHash);
-            AddPlayerWeapon(receiver, weapon);
+            GivePlayerWeapon(receiver, weapon);
 
         }
 
