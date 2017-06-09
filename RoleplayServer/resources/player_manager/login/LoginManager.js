@@ -37,6 +37,14 @@ API.onServerEventTrigger.connect(function (eventName, args) {
             API.destroyCefBrowser(login_browser);
             API.setCefDrawState(false);
             break;
+        case "admin_pin_check":
+            var adminPin = API.getUserInput("", 6);
+            API.triggerServerEvent("admin_pin", adminPin);
+            break;
+        case "create_admin_pin":
+            var adminPinCreate = API.getUserInput("", 6);
+            API.triggerServerEvent("create_admin_pin", adminPinCreate);
+            break;
     }
 });
 

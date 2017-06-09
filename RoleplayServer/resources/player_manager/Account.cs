@@ -13,7 +13,8 @@ namespace RoleplayServer.resources.player_manager
         public string AccountName { get; set; }
         public int AdminLevel { get; set; }
         public string AdminName { get; set; }
-        public bool AdminDuty { get; set; }
+        public string AdminPin { get; set; }
+        public int AdminDuty { get; set; }
         public int DevLevel { get; set; }
         public string Password { get; set; }
         public string Salt { get; set; }
@@ -45,6 +46,7 @@ namespace RoleplayServer.resources.player_manager
                 Id = a.Id;
                 AdminLevel = a.AdminLevel;
                 AdminName = a.AdminName;
+                AdminPin = a.AdminPin;
                 AdminDuty = a.AdminDuty;
                 DevLevel = a.DevLevel;
                 Password = a.Password;
