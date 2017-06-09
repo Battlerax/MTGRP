@@ -113,7 +113,7 @@ public class GunManager : Script
         Character character = API.shared.getEntityData(player.handle, "Character");
 
         WeaponHash weapon = API.shared.weaponNameToModel(weaponName);
-        WeaponManager.AddPlayerWeapon(player, weapon, weaponName);
+        WeaponManager.CreateWeapon(player, weapon, WeaponTint.Normal, true);
         
         player.sendChatMessage("You have bought a ~g~" + weaponName);
     }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Timers;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.player_manager;
+using RoleplayServer.resources.weapon_manager;
 using System;
 using RoleplayServer.resources.inventory;
 
@@ -766,26 +767,21 @@ namespace RoleplayServer.resources.group_manager.lspd
 
         public void GiveLspdEquipment(Client player, int type = 0)
         {
-            API.removeAllPlayerWeapons(player);
-
+            WeaponManager.RemoveAllPlayerWeapons(player);
+            Character character = API.getEntityData(player.handle, "Character");
             switch (type)
             {
                 case 0:
-                    API.givePlayerWeapon(player, WeaponHash.StunGun, 1, false, true);
-                    API.givePlayerWeapon(player, WeaponHash.Nightstick, 1, false, true);
-                    API.givePlayerWeapon(player, WeaponHash.Pistol, 250, false, true);
-                    API.givePlayerWeapon(player, WeaponHash.Flashlight, 1, false, true);
-
-                    API.setPlayerWeaponTint(player, WeaponHash.Pistol, WeaponTint.LSPD);
+                    WeaponManager.CreateWeapon(player, WeaponHash.StunGun, WeaponTint.LSPD, false, false, true, character.Group);
+                    WeaponManager.CreateWeapon(player, WeaponHash.Nightstick, WeaponTint.LSPD, false, false, true, character.Group);
+                    WeaponManager.CreateWeapon(player, WeaponHash.Pistol, WeaponTint.LSPD, false, false, true, character.Group);
+                    WeaponManager.CreateWeapon(player, WeaponHash.Flashlight, WeaponTint.LSPD, false, false, true, character.Group);
                     break;
                 case 1:
-                    API.givePlayerWeapon(player, WeaponHash.CombatPistol, 250, false, true);
-                    API.givePlayerWeapon(player, WeaponHash.CombatPDW, 300, false, true);
-                    API.givePlayerWeapon(player, WeaponHash.SmokeGrenade, 3, false, true);
-                    API.givePlayerWeapon(player, WeaponHash.BZGas, 3, false, true);
-
-                    API.setPlayerWeaponTint(player, WeaponHash.CombatPistol, WeaponTint.LSPD);
-                    API.setPlayerWeaponTint(player, WeaponHash.CombatPDW, WeaponTint.LSPD);
+                    WeaponManager.CreateWeapon(player, WeaponHash.CombatPistol, WeaponTint.LSPD, false, false, true, character.Group);
+                    WeaponManager.CreateWeapon(player, WeaponHash.CombatPDW, WeaponTint.LSPD, false, false, true, character.Group);
+                    WeaponManager.CreateWeapon(player, WeaponHash.SmokeGrenade, WeaponTint.LSPD, false, false, true, character.Group);
+                    WeaponManager.CreateWeapon(player, WeaponHash.BZGas, WeaponTint.LSPD, false, false, true, character.Group);
                     break;
             }
             API.setPlayerHealth(player, 100);
@@ -836,7 +832,7 @@ namespace RoleplayServer.resources.group_manager.lspd
             else
                 API.shared.setEntityPosition(player, jailThree);
 
-            API.shared.removeAllPlayerWeapons(player);
+            WeaponManager.RemoveAllPlayerWeapons(player);
             character.isJailed = true;
 
             API.shared.sendChatMessageToPlayer(player, "You have been placed in jail for " + character.jailTimeLeft/60/1000 + " minutes.");

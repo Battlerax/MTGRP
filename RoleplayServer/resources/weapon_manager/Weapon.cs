@@ -14,9 +14,10 @@ namespace RoleplayServer.resources.weapon_manager
         public ObjectId Id { get; set; }
 
         public WeaponHash WeaponHash { get; set; }
+        public WeaponTint WeaponTint { get; set; }
+        public WeaponComponent WeaponComponent { get; set; }
 
         public int Ammo { get; set; }
-        public WeaponComponent WeaponAttachment { get; set; }
 
         public Group Group { get; set; }
 
@@ -24,9 +25,13 @@ namespace RoleplayServer.resources.weapon_manager
         public bool IsGroupWeapon { get; set; }
         public bool IsAdminWeapon { get; set; }
 
-        public Weapon(WeaponHash weaponhash)
+        public Weapon(WeaponHash weaponhash, WeaponTint weapontint, bool isplayerweapon, bool isadminweapon, bool isgroupweapon)
         {
             WeaponHash = weaponhash;
+            WeaponTint = weapontint;
+            IsPlayerWeapon = isplayerweapon;
+            IsAdminWeapon = isadminweapon;
+            IsGroupWeapon = isgroupweapon;
         }
     }
 }

@@ -30,8 +30,9 @@ namespace RoleplayServer.resources.weapon_manager
             Character character = API.shared.getEntityData(player.handle, "Character");
 
             if (character == null) { return; }
+            if (weapon == WeaponHash.Unarmed) { return; }
 
-            if (!DoesPlayerHaveWeapon(player, player.currentWeapon))
+            if (!DoesPlayerHaveWeapon(player, weapon))
             {
                 foreach (var p in API.getAllPlayers())
                 {
@@ -66,7 +67,7 @@ namespace RoleplayServer.resources.weapon_manager
         }
 
 
-        public static bool DoesPlayerHaveWeapon(Client player, WeaponHash weaponhash)
+        public static bool DoesPlayerHaveWeapon(Client player, WeaponHash weapon)
         {
             Character character = API.shared.getEntityData(player.handle, "Character");
 
@@ -74,74 +75,101 @@ namespace RoleplayServer.resources.weapon_manager
             {
                 foreach (Weapon i in character.Weapons)
                 {
-                    if (i.WeaponHash == weaponhash || (int)weaponhash == -1569615261) { return true; }
+                    if (i.WeaponHash == weapon) { return true; }
                 }
             }
 
             return false;
+        }
 
-
+        public static void CreateWeapon(Client player, WeaponHash weaponhash, WeaponTint weapontint = WeaponTint.Normal, bool isplayerweapon = false, bool isadminweapon = false, bool isgroupweapon = false, Group group = null)
+        {
+            Weapon weapon = new Weapon(weaponhash, weapontint, isplayerweapon, isadminweapon, isgroupweapon);
+            if (isplayerweapon) { AddPlayerWeapon(player, weapon); }
+            if (isadminweapon) { AddAdminWeapon(player, weapon); }
+            if (isgroupweapon) { AddGroupWeapon(player, weapon, group); }
 
         }
 
-        public static void AddPlayerWeapon (Client player, WeaponHash weaponhash)
+        public static void AddPlayerWeapon (Client player, Weapon weapon)
         {
             Character character = API.shared.getEntityData(player.handle, "Character");
 
-            if (DoesPlayerHaveWeapon(player, weaponhash)) { RemovePlayerWeapon(player, weaponhash); }
-            Weapon weapon = new Weapon(weaponhash);
-            weapon.IsPlayerWeapon = true;
+            if (DoesPlayerHaveWeapon(player, weapon.WeaponHash)) { RemovePlayerWeapon(player, weapon.WeaponHash); }
         
             character.Weapons.Add(weapon);
-            character.Save();
-            API.shared.givePlayerWeapon(player, weaponhash, 9999, false, true);
+            API.shared.givePlayerWeapon(player, weapon.WeaponHash, 9999, true, true);
+            API.shared.setPlayerWeaponTint(player, weapon.WeaponHash, weapon.WeaponTint);
 
         }
 
-        public static void AddAdminWeapon(Client player,  WeaponHash weaponhash)
+        public static void AddAdminWeapon(Client player,  Weapon weapon)
         {
             Character character = API.shared.getEntityData(player.handle, "Character");
 
-            if (DoesPlayerHaveWeapon(player, weaponhash)) { RemovePlayerWeapon(player, weaponhash); }
-            Weapon weapon = new Weapon(weaponhash);
-            weapon.IsAdminWeapon = true;
+            if (DoesPlayerHaveWeapon(player, weapon.WeaponHash)) { RemovePlayerWeapon(player, weapon.WeaponHash); }
 
             character.Weapons.Add(weapon);
-            character.Save();
-            API.shared.givePlayerWeapon(player, weaponhash, 9999, false, true);
+            API.shared.givePlayerWeapon(player, weapon.WeaponHash, 9999, true, true);
+            API.shared.setPlayerWeaponTint(player, weapon.WeaponHash, weapon.WeaponTint);
         }
 
-        public static void AddGroupWeapon(Client player, WeaponHash weaponhash, Group group)
+        public static void AddGroupWeapon(Client player, Weapon weapon, Group group)
         {
             Character character = API.shared.getEntityData(player.handle, "Character");
 
-            if (DoesPlayerHaveWeapon(player, weaponhash)) { RemovePlayerWeapon(player, weaponhash); }
-            Weapon weapon = new Weapon(weaponhash);
-            weapon.IsGroupWeapon = true;
-            weapon.Group = group;
+            if (DoesPlayerHaveWeapon(player, weapon.WeaponHash)) { RemovePlayerWeapon(player, weapon.WeaponHash); }
 
             character.Weapons.Add(weapon);
-            character.Save();
-            API.shared.givePlayerWeapon(player, weaponhash, 9999, false, true);
+            API.shared.givePlayerWeapon(player, weapon.WeaponHash, 9999, true, true);
+            API.shared.setPlayerWeaponTint(player, weapon.WeaponHash, weapon.WeaponTint);
         }
 
-        public static void RemovePlayerWeapon(Client player, WeaponHash weaponhash)
+        public static void RemovePlayerWeapon(Client player, WeaponHash weapon)
         {
-            if (DoesPlayerHaveWeapon(player, weaponhash))
+            if (DoesPlayerHaveWeapon(player, weapon))
             {
                 Character character = API.shared.getEntityData(player.handle, "Character");
 
-                foreach (Weapon weapon in character.Weapons.ToList())
+                foreach (Weapon w in character.Weapons)
                 {
-                    if (weapon.WeaponHash == weaponhash)
+                    if (w.WeaponHash == weapon)
                     {
-                        character.Weapons.Remove(weapon);
-                        API.shared.removePlayerWeapon(player, weapon.WeaponHash);
+                        character.Weapons.Remove(w);
+                        API.shared.removePlayerWeapon(player, w.WeaponHash);
                     }
+                }
+
+            }
+        }
+
+        public static void SetWeaponTint(Client player, WeaponHash weaponhash, WeaponTint weapontint)
+        {
+            Character character = API.shared.getEntityData(player.handle, "Character");
+
+            foreach(Weapon weapon in character.Weapons.ToList())
+            {
+                if (weapon.WeaponHash == weaponhash)
+                {
+                    weapon.WeaponTint = weapontint;
+                    API.shared.setPlayerWeaponTint(player, weaponhash, weapontint);
                 }
             }
         }
-       
+
+        public static void SetWeaponComponent(Client player, WeaponHash weaponhash, WeaponComponent weaponcomponent)
+        {
+            Character character = API.shared.getEntityData(player.handle, "Character");
+
+            foreach (Weapon weapon in character.Weapons.ToList())
+            {
+                if (weapon.WeaponHash == weaponhash)
+                {
+                    weapon.WeaponComponent = weaponcomponent;
+                    API.shared.givePlayerWeaponComponent(player, weaponhash, weaponcomponent);
+                }
+            }
+        }
 
         public static void RemoveAllPlayerWeapons(Client player)
         {
@@ -153,11 +181,27 @@ namespace RoleplayServer.resources.weapon_manager
             }
         }
 
-        public void TradeWeapon(Client player, Client receiver, WeaponHash weapon)
+
+        public void TradeWeapon(Client player, Client receiver, Weapon weapon)
         {
-            RemovePlayerWeapon(player, weapon);
+            RemovePlayerWeapon(player, weapon.WeaponHash);
             AddPlayerWeapon(receiver, weapon);
 
+        }
+
+        public static Weapon GetCurrentWeapon(Client player)
+        {
+            Character character = API.shared.getEntityData(player.handle, "Character");
+
+            WeaponHash currentWeapon = player.currentWeapon;
+
+            foreach (Weapon weapon in character.Weapons)
+            {
+                if (weapon.WeaponHash == currentWeapon) { return weapon; }
+            }
+
+            Weapon firstWeapon = character.Weapons[0];
+            return firstWeapon;
         }
 
 
@@ -188,7 +232,8 @@ namespace RoleplayServer.resources.weapon_manager
             }
 
             WeaponHash currentWeapon = API.getPlayerCurrentWeapon(player);
-            TradeWeapon(player, receiver, currentWeapon);
+            Weapon weapon = GetCurrentWeapon(player);
+            TradeWeapon(player, receiver, weapon);
             player.sendChatMessage("You gave a weapon (" + currentWeapon + ") to " + receiverid.CharacterName + ".");
             receiver.sendChatMessage("You were given a weapon (" + currentWeapon + ") by " + playerid.CharacterName + ".");
             ChatManager.NearbyMessage(player, 10, "~p~" + playerid.CharacterName + " handed a " +  currentWeapon + " to " + receiverid.CharacterName + ".");

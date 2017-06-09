@@ -63,7 +63,7 @@ namespace RoleplayServer.resources.AdminSystem
                 return;
             }
 
-            WeaponManager.AddAdminWeapon(player, weaponHash);
+            WeaponManager.CreateWeapon(player, weaponHash, WeaponTint.Normal, false, true);
             API.sendChatMessageToPlayer(player, "You have given Player ID: " + id + " a " + weaponHash);
         }
 
