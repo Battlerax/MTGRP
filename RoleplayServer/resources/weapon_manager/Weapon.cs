@@ -1,4 +1,5 @@
-﻿using GTANetworkServer;
+﻿using System;
+using GTANetworkServer;
 using GTANetworkShared;
 using MongoDB.Bson;
 using RoleplayServer.resources.group_manager;
@@ -27,7 +28,7 @@ namespace RoleplayServer.resources.weapon_manager
         public bool CanBeGiven => true;
         public bool CanBeDropped => true;
         public bool CanBeStashed => true;
-        public bool CanBeStacked => true;
+        public bool CanBeStacked => false;
         public bool IsBlocking => false;
 
         public int MaxAmount => -1;
@@ -53,6 +54,11 @@ namespace RoleplayServer.resources.weapon_manager
             IsAdminWeapon = isadminweapon;
             IsGroupWeapon = isgroupweapon;
             Group = group;
+        }
+
+        public static explicit operator Weapon(Type v)
+        {
+            throw new NotImplementedException();
         }
     }
 }

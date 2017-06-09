@@ -1,9 +1,11 @@
 ﻿using System.Linq;
+using System;
 using GTANetworkServer;
 using GTANetworkShared;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.player_manager;
 using RoleplayServer.resources.group_manager;
+using RoleplayServer.resources.inventory;
 
 namespace RoleplayServer.resources.weapon_manager
 {
@@ -14,15 +16,46 @@ namespace RoleplayServer.resources.weapon_manager
             API.onPlayerWeaponSwitch += API_onPlayerWeaponSwitch;
             API.onPlayerWeaponAmmoChange += API_onPlayerWeaponAmmoChange;
             CharacterMenu.OnCharacterLogin += CharacterMenu_OnCharacterLogin;
+            InventoryManager.OnStorageGetItem += InventoryManager_OnStorageGetItem;
+            InventoryManager.OnStorageLoseItem += InventoryManager_OnStorageLoseItem;
+            CharacterMenu.OnCharacterLogin += CharacterMenu_OnCharacterLogin;
 
             DebugManager.DebugMessage("[WeaponM] Weapon Manager initalized!");
         }
 
         private void CharacterMenu_OnCharacterLogin(object sender, CharacterMenu.CharacterLoginEventArgs e)
         {
-            foreach (Weapon weapon in e.character.Weapons.ToList())
+            var items = InventoryManager.DoesInventoryHaveItem(e.character, typeof(Weapon));
+            if (items.Length == 1)
             {
-                GivePlayerWeapon(e.character.Client, weapon);
+                Weapon item = (Weapon)items[0];
+                GivePlayerWeapon(e.character.Client, item);
+            }
+        }
+
+        private void InventoryManager_OnStorageLoseItem(IStorage sender, InventoryManager.OnLoseItemEventArgs args)
+        {
+            if (sender.GetType() == typeof(Character))
+            {
+                if (args.Item.GetType() == typeof(Weapon))
+                {
+                    Character chr = (Character)sender;
+                    Weapon item = (Weapon) args.Item;
+                    RemovePlayerWeapon(chr.Client, item.WeaponHash );
+                }
+            }
+        }
+
+        private void InventoryManager_OnStorageGetItem(IStorage sender, InventoryManager.OnGetItemEventArgs args)
+        {
+            if (sender.GetType() == typeof(Character))
+            {
+                if (args.Item.GetType() == typeof(Weapon))
+                {
+                    Character chr = (Character)sender;
+                    Weapon item = (Weapon)args.Item;
+                    GivePlayerWeapon(chr.Client, item);
+                }
             }
         }
 
@@ -169,7 +202,7 @@ namespace RoleplayServer.resources.weapon_manager
 
             API.shared.givePlayerWeapon(player, weapon.WeaponHash, 9999, true, true);
             API.shared.setPlayerWeaponTint(player, weapon.WeaponHash, weapon.WeaponTint);
-            API.shared.givePlayerWeaponComponent(player, weapon.WeaponHash, weapon.WeaponComponent);
+            //API.shared.givePlayerWeaponComponent(player, weapon.WeaponHash, weapon.WeaponComponent);
 
             inventory.InventoryManager.GiveInventoryItem(character, weapon, 1);
         }
@@ -191,8 +224,7 @@ namespace RoleplayServer.resources.weapon_manager
             {
                 if (weapon.WeaponHash == currentWeapon) { return weapon; }
             }
-
-            return new Weapon();
+            return new Weapon(WeaponHash.Unarmed, WeaponTint.Normal, true, false, false, Group.None);
         }
 
 
