@@ -47,7 +47,7 @@ namespace RoleplayServer.resources.player_manager.player_interaction
 
                                     var isStunned = API.fetchNativeFromPlayer<bool>(interactClient,
                                         Hash.IS_PED_BEING_STUNNED, interactHandle, 0);
-
+                                   
                                     if (interactCharacter.AreHandsUp == false && isStunned == false)
                                     {
                                         API.sendChatMessageToPlayer(player, Color.White,
@@ -218,7 +218,7 @@ namespace RoleplayServer.resources.player_manager.player_interaction
             API.sendChatMessageToPlayer(player, "You have ejected ~b~" + receiver.name + "~w~ from your vehicle.");
             API.sendChatMessageToPlayer(receiver, "~b~" + player.name + "~w~ has ejected you from their vehicle.");
             API.setPlayerIntoVehicle(receiver, player.vehicle.handle, seatNumber);
-            API.warpPlayerOutOfVehicle(receiver, API.getPlayerVehicle(receiver));
+            API.warpPlayerOutOfVehicle(receiver);
         }
  
         public void FollowPlayer(Character c, bool isDrag)

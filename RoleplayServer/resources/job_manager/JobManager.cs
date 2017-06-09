@@ -67,11 +67,11 @@ namespace RoleplayServer.resources.job_manager
             Character character = player.GetCharacter();
             var veh = VehicleManager.GetVehFromNetHandle(vehicle);
 
-            if(veh?.JobId != 0)
+            if (veh?.JobId != 0)
             {
-                if (API.getPlayerVehicleSeat(player) == -1 && veh.Job != character.JobOne)
-                {
-                    API.warpPlayerOutOfVehicle(player, vehicle);
+                if (API.getPlayerVehicleSeat(player) == -1 && veh.Job != character.JobOne && veh.Job != Job.None)
+                { 
+                    API.warpPlayerOutOfVehicle(player);
                     API.sendPictureNotificationToPlayer(player, "This vehicle is only available to " + veh.Job.Name, "CHAR_BLOCKED", 0, 1, "Server", "~r~Vehicle Locked");
                 }
             }
@@ -392,7 +392,7 @@ namespace RoleplayServer.resources.job_manager
         public static Job GetJobById(int id)
         {
             if (id == 0 || id > Jobs.Count )
-                return null;
+                return Job.None;
 
             return (Job)Jobs.ToArray().GetValue(id - 1);
         }

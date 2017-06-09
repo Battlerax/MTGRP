@@ -2,10 +2,10 @@
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <link href="../../stylesheet/css/metro.css" rel="stylesheet" />
-    <link href="../../stylesheet/css/metro-icons.css" rel="stylesheet" />
-    <script src="../../jquery.js"></script>
-    <script src="../../stylesheet/js/metro.js"></script>
+    <link href="../../../stylesheet/css/metro.css" rel="stylesheet" />
+    <link href="../../../stylesheet/css/metro-icons.css" rel="stylesheet" />
+    <script src="../../../jquery.js"></script>
+    <script src="../../../stylesheet/js/metro.js"></script>
     
     <style>
 
@@ -18,7 +18,7 @@
             top: 25%;
             left: 35%;
 
-            background-image: url("../../cef_resources/LSPDMDC.png");
+            background-image: url("LSPDMDC.png");
             background-size: cover;
             background-repeat: no-repeat;
 
@@ -95,6 +95,7 @@
        
         <div id="prism_menu" class="menu_item">PRISM Search</div>
         <div id="highcommand_menu" class="menu_item">High Command</div>
+        <div id="Logoff" class="menu_item" style="color:red" onclick="html_mdc_close()">Log out</div>
     </div>
     
     
@@ -102,12 +103,12 @@
         
         <div id="announcement_content" style="padding: 25px">
             <a style="color: #01AAD4; font-family: BebasKai;font-size:40px">Latest Announcement: </a>
-            <p style="color: white; font-family: BebasKai;font-size:25px"> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam a sapien nec augue commodo gravida. Donec fringilla tortor et ex fermentum laoreet. Vivamus lacinia ut nunc vel egestas. Nulla ut imperdiet lectus, non sollicitudin magna. Fusce dictum nisl sit amet massa posuere ultrices. Suspendisse hendrerit mi at rutrum mollis. Etiam lacinia tortor in scelerisque euismod. Quisque eleifend sed libero ut feugiat. Donec dapibus cursus turpis. Nulla facilisi. Quisque faucibus egestas fringilla. </p>
+            <p id="announcement_text" style="color: white; font-family: BebasKai;font-size:25px"> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam a sapien nec augue commodo gravida. Donec fringilla tortor et ex fermentum laoreet. Vivamus lacinia ut nunc vel egestas. Nulla ut imperdiet lectus, non sollicitudin magna. Fusce dictum nisl sit amet massa posuere ultrices. Suspendisse hendrerit mi at rutrum mollis. Etiam lacinia tortor in scelerisque euismod. Quisque eleifend sed libero ut feugiat. Donec dapibus cursus turpis. Nulla facilisi. Quisque faucibus egestas fringilla. </p>
         </div>
         
         <div id="911_content" style="padding: 25px; display: none; overflow: auto; max-height: 335px;">
             
-            <table class="table border striped">
+            <table class="table border striped" id="911_table">
                 <thead>
                     <tr>
                         <th>Phone Number</th>
@@ -121,7 +122,7 @@
         
         <div id="bolo_content" style="padding: 25px; display: none; overflow: auto; max-height: 335px;"> 
             
-            <button class="button">Add BOLO</button>
+            <button class="button" onclick="boloDialog()">Add BOLO</button>
             <table class="table border ">
                 <thead>
                     <tr>
@@ -134,6 +135,32 @@
                 <tbody id="bolo_table_body"></tbody>
             </table>
            
+            <div data-role="dialog" id="bolo_dialog"
+                 data-width="400"
+                 data-height="250"
+                 class="shadow">
+                
+                <div class="margin20">
+                    <h1>Create BOLO</h1>
+                    <h4 style="padding-top:5px;">Information</h4>
+                    <div class="input-control text full-size"><input type="text" id="bolo_info"></div>
+                    
+                    <div class="input-control select">
+                        <select id="priority_select">
+                            <option value="1" style="color: green;font-weight: bold">Low priority</option>
+                            <option value="2" style="color: yellowgreen;font-weight: bold">Medium priority</option>
+                            <option value="3" style="color: red;font-weight: bold">High priority</option>
+                        </select>
+                    </div>
+                    
+                    <br/>
+                    <button class="button success" onclick="html_sendBoloToServer($('#bolo_info').val(), $('#priority_select').val())"><span class="mif-my-location"></span> Create</button>  
+                    <button class="button warning" onclick="metroDialog.close('#bolo_dialog')"><span class="mif-cross"></span> Cancel</button>
+               
+                 </div>
+
+            </div>
+
         </div>
         
         <div id="prism_content" style="padding: 25px; display: none; overflow: auto; max-height: 335px;"> 
@@ -201,14 +228,15 @@
         <div id="highcommand_content" style="padding: 25px; display: none">
             <a style="color: #01AAD4; font-family: BebasKai;font-size:40px">Latest Announcement: </a>
             <div class="input-control textarea" style="resize: none; overflow-y: hidden; height: 200px; width:600px">
-                <textarea></textarea>
+                <textarea id="announcement_textarea_input"></textarea>
             </div>
-            <button id="update_announcement" class="button success"><span class="mif-checkmark"></span> Update</button>
+            <button id="update_announcement" class="button success" onclick="html_update_announcement()"><span class="mif-checkmark"></span> Update</button>
         </div>
-
+        
+        
+        
     </div>
 </div>
-
 
 </body>
 </html>
@@ -223,18 +251,11 @@
     $('#911_menu').click(() => {
         hide_all();
         set_active('#911_menu', '#911_content');
-
-        add_911("12345", "5:44PM", "Physical altercation in alderwood mall.");
     });
 
     $('#bolo_menu').click(() => {
         hide_all();
         set_active('#bolo_menu', '#bolo_content');
-
-        add_bolo("Sergei Chenko",
-            "4:20PM",
-            "success",
-            "Black Sultan, one male occupant unarmed last seen in Los Santos");
     });
 
     $('#prism_menu').click(() => {
@@ -244,6 +265,7 @@
 
     $('#highcommand_menu').click(() => {
         hide_all();
+        document.getElementById('announcement_textarea_input').value = $('#announcement_text').text();
         set_active('#highcommand_menu', '#highcommand_content');
     });
 
@@ -274,19 +296,76 @@
         $('#911_table_body').empty();
     }
 
-    function add_bolo(officer, time, priority, info) { 
-        $('#bolo_table_body').append('<tr class=\"' + priority + '\"> \
-                        <td style="color: black;font-family:BebasKai">' + officer + '</td> \
-                        <td style="color: black;font-family:BebasKai">' + time + '</td> \
-                        <td style="color: black;font-family:BebasKai">' + info + '</td>\
-                        <td><button class="square-button mini-button place-right warning"><span class="mif-cross"></span></button></tr>');
+    function html_addBolo(boloId, officer, time, priority, info) {
+        if ($("#boloId_" + boloId).length == 0) {
+
+            var priorityClass = "success";
+            if (priority == 2) {
+                priorityClass = "warning";
+            }
+            else if (priority == 3) {
+                priorityClass = "error";
+            }
+
+            $('#bolo_table_body').prepend('<tr id=\"boloId_' +
+                boloId +
+                '\" class=\"' +
+                priorityClass +
+                '\"> \
+                        <td style="color: black;font-family:BebasKai">' +
+                officer +
+                '</td> \
+                        <td style="color: black;font-family:BebasKai">' +
+                time +
+                '</td> \
+                        <td style="color: black;font-family:BebasKai">' +
+                info +
+                '</td>\
+                        <td><button class="square-button mini-button place-right warning" onclick=\"html_removeBolo(' +
+                boloId +
+                ')\"><span class="mif-cross"></span></button></tr>');
+        }
+    }
+    
+    function html_sendBoloToServer(info, priority) {
+        resourceCall("client_sendBoloToServer", info, priority);
+        metroDialog.close('#bolo_dialog')
     }
 
-    function add_911(number, time, info) {
-        $('#911_table_body').append('<tr class="info"> \
+    function boloDialog() {
+        metroDialog.open('#bolo_dialog');
+        $('#pm_msg').focus();
+    }
+
+    function html_removeBolo(boloId) {
+        $('#boloId_' + boloId).remove();
+        resourceCall("client_removeBolo", boloId);
+    }
+
+    function html_add911(number, time, info) {
+
+        //Make sure only last 20 calls are showed
+        if ($('#911_table_body tr').length >= 20) {
+            console.log("too many");
+            $('#911_table_body tr:eq(19)').remove();
+        }
+
+        $('#911_table_body').prepend('<tr class="info"> \
                         <td style="color: black;font-family:BebasKai">' + number + '</td> \
                         <td style="color: black;font-family:BebasKai">' + time + '</td> \
                         <td style="color: black;font-family:BebasKai">' + info + '</td></tr>');
+    }
+
+    function html_update_announcement() {
+        var annoucementText = document.getElementById('announcement_textarea_input').value;
+        if (annoucementText.length > 0) {
+            $('#announcement_text').text(annoucementText);
+            resourceCall("client_updateMdcAnnoucement", announcement_text);
+        }
+    }
+
+    function html_mdc_close() {
+        resourceCall("client_mdc_close");
     }
 
 </script>

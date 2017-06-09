@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using GTANetworkShared;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.database_manager;
 using RoleplayServer.resources.door_manager;
+using RoleplayServer.resources.inventory;
 using RoleplayServer.resources.player_manager;
 using RoleplayServer.resources.vehicle_manager;
 
@@ -134,10 +136,10 @@ namespace RoleplayServer.resources.vehicle_dealership
 
                 if (selectedCar == null) return;
 
-                if (character.Money >= Convert.ToInt32(selectedCar[2]))
+                if (Money.GetCharacterMoney(character) >= Convert.ToInt32(selectedCar[2]))
                 {
                     //Remove price.
-                    character.Money -= Convert.ToInt32(selectedCar[2]);
+                    InventoryManager.DeleteInventoryItem(character, typeof(Money), Convert.ToInt32(selectedCar[2]));
 
                     //Spawn positions.
                     Vector3[] spawnPoss =
