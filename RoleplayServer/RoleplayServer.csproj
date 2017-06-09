@@ -93,7 +93,7 @@
     <Compile Include="resources\group_manager\lspd\CriminalRecord.cs" />
     <Compile Include="resources\group_manager\lspd\Lspd.cs" />
     <Compile Include="resources\group_manager\lspd\MDC\MDC.cs" />
-    <Compile Include="resources\gun_dealership\GunManager.cs" />
+    <Compile Include="resources\gun_dealership\GunDealership.cs" />
     <Compile Include="resources\Init.cs" />
     <Compile Include="resources\inventory\bags\BagItem.cs" />
     <Compile Include="resources\inventory\bags\BagManager.cs" />

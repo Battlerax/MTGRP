@@ -32,6 +32,7 @@ namespace RoleplayServer.resources.player_manager
         {
             AccountName = "default_account";
             AdminLevel = 0;
+            AdminPin = string.Empty;
             Password = string.Empty;
             Salt = string.Empty;
         }

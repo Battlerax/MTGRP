@@ -13,6 +13,16 @@ namespace RoleplayServer.resources.core
         private static readonly List<string> WhitelistedNames = new List<string>
         {
              "ChenkoRules",
+             "nickson1993",
+             "NortonPlays",
+             "Millingtonlol",
+             "Ahmad45123",
+
+             //Kevin & Friends
+             "maniac1994",
+             "DontCallMeKevin",
+             "Wilko0103",
+             "Maxispio",
         };
 
         public Whitelist()

@@ -6,10 +6,10 @@ using RoleplayServer.resources.inventory;
 using RoleplayServer.resources.weapon_manager;
 
 
-public class GunManager : Script
+public class GunDealership : Script
 {
 
-    public GunManager()
+    public GunDealership()
     {
 
 

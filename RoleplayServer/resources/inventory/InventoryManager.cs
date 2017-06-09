@@ -10,6 +10,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.inventory.bags;
+using RoleplayServer.resources.job_manager.fisher;
 using RoleplayServer.resources.phone_manager;
 using RoleplayServer.resources.player_manager;
 using RoleplayServer.resources.weapon_manager;
@@ -27,6 +28,7 @@ namespace RoleplayServer.resources.inventory
             BsonClassMap.RegisterClassMap<BagItem>();
             BsonClassMap.RegisterClassMap<Phone>();
             BsonClassMap.RegisterClassMap<Money>();
+            BsonClassMap.RegisterClassMap<Fish>();
             BsonClassMap.RegisterClassMap<Weapon>();
             #endregion
 
