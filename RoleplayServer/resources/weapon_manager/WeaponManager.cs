@@ -26,10 +26,9 @@ namespace RoleplayServer.resources.weapon_manager
         private void CharacterMenu_OnCharacterLogin(object sender, CharacterMenu.CharacterLoginEventArgs e)
         {
             var items = InventoryManager.DoesInventoryHaveItem(e.character, typeof(Weapon));
-            if (items.Length == 1)
+            foreach (Weapon weapon in items)
             {
-                Weapon item = (Weapon)items[0];
-                GivePlayerWeapon(e.character.Client, item);
+                GivePlayerWeapon(e.character.Client, weapon);
             }
         }
 

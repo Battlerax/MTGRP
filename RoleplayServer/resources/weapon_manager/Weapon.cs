@@ -41,11 +41,6 @@ namespace RoleplayServer.resources.weapon_manager
 
         public int Amount { get; set; }
 
-        public Weapon()
-        {
-
-        }
-
         public Weapon(WeaponHash weaponhash, WeaponTint weapontint, bool isplayerweapon, bool isadminweapon, bool isgroupweapon, Group group)
         {
             WeaponHash = weaponhash;
@@ -54,11 +49,6 @@ namespace RoleplayServer.resources.weapon_manager
             IsAdminWeapon = isadminweapon;
             IsGroupWeapon = isgroupweapon;
             Group = group;
-        }
-
-        public static explicit operator Weapon(Type v)
-        {
-            throw new NotImplementedException();
         }
     }
 }
