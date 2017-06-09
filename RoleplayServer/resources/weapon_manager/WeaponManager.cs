@@ -13,8 +13,17 @@ namespace RoleplayServer.resources.weapon_manager
         {
             API.onPlayerWeaponSwitch += API_onPlayerWeaponSwitch;
             API.onPlayerWeaponAmmoChange += API_onPlayerWeaponAmmoChange;
+            CharacterMenu.OnCharacterLogin += CharacterMenu_OnCharacterLogin;
 
             DebugManager.DebugMessage("[WeaponM] Weapon Manager initalized!");
+        }
+
+        private void CharacterMenu_OnCharacterLogin(object sender, CharacterMenu.CharacterLoginEventArgs e)
+        {
+            foreach (Weapon weapon in e.character.Weapons.ToList())
+            {
+                GivePlayerWeapon(e.character.Client, weapon);
+            }
         }
 
         private void API_onPlayerWeaponAmmoChange(Client player, WeaponHash weapon, int ammo)
@@ -48,9 +57,9 @@ namespace RoleplayServer.resources.weapon_manager
 
             Weapon currentWeapon = GetCurrentWeapon(player);
 
-            if (currentWeapon.Group != character.Group)
+            if (currentWeapon.Group != character.Group && currentWeapon.Group != null)
             {
-                RemovePlayerWeapon(player, weapon);
+                RemovePlayerWeapon(player, currentWeapon.WeaponHash);
                 player.sendChatMessage("You must be a member of " + currentWeapon.Group.Name + " to use this weapon. It was removed.");
             }
 
@@ -80,18 +89,15 @@ namespace RoleplayServer.resources.weapon_manager
             return false;
         }
 
-        public static void CreateWeapon(Client player, WeaponHash weaponhash, WeaponTint weapontint = WeaponTint.Normal, bool isplayerweapon = false, bool isadminweapon = false, bool isgroupweapon = false)
+        public static void CreateWeapon(Client player, WeaponHash weaponhash, WeaponTint weapontint = WeaponTint.Normal, 
+            bool isplayerweapon = false, bool isadminweapon = false, bool isgroupweapon = false)
         {
             Character character = API.shared.getEntityData(player.handle, "Character");
 
-            Weapon weapon = new Weapon(weaponhash, weapontint, isplayerweapon, isadminweapon, isgroupweapon, character.Group);
+            Weapon weapon = new Weapon(weaponhash, weapontint, isplayerweapon, 
+                isadminweapon, isgroupweapon, character.Group);
 
-            if (DoesPlayerHaveWeapon(player, weapon.WeaponHash)) { RemovePlayerWeapon(player, weapon.WeaponHash); }
-
-            character.Weapons.Add(weapon);
-            API.shared.givePlayerWeapon(player, weapon.WeaponHash, 9999, true, true);
-            API.shared.setPlayerWeaponTint(player, weapon.WeaponHash, weapon.WeaponTint);
-            inventory.InventoryManager.GiveInventoryItem(character, weapon, 1);
+            GivePlayerWeapon(player, weapon);
 
         }
 
@@ -150,6 +156,7 @@ namespace RoleplayServer.resources.weapon_manager
             {
                 RemovePlayerWeapon(player, weapon.WeaponHash);
             }
+            API.shared.removeAllPlayerWeapons(player); //for assurance.
         }
 
         public static void GivePlayerWeapon(Client player, Weapon weapon)
@@ -159,6 +166,12 @@ namespace RoleplayServer.resources.weapon_manager
             if (DoesPlayerHaveWeapon(player, weapon.WeaponHash)) { RemovePlayerWeapon(player, weapon.WeaponHash); }
 
             character.Weapons.Add(weapon);
+
+            API.shared.givePlayerWeapon(player, weapon.WeaponHash, 9999, true, true);
+            API.shared.setPlayerWeaponTint(player, weapon.WeaponHash, weapon.WeaponTint);
+            API.shared.givePlayerWeaponComponent(player, weapon.WeaponHash, weapon.WeaponComponent);
+
+            inventory.InventoryManager.GiveInventoryItem(character, weapon, 1);
         }
 
         public void TradeWeapon(Client player, Client receiver, Weapon weapon)
@@ -172,15 +185,14 @@ namespace RoleplayServer.resources.weapon_manager
         {
             Character character = API.shared.getEntityData(player.handle, "Character");
 
-            WeaponHash currentWeapon = player.currentWeapon;
+            WeaponHash currentWeapon = API.shared.getPlayerCurrentWeapon(player);
 
             foreach (Weapon weapon in character.Weapons)
             {
                 if (weapon.WeaponHash == currentWeapon) { return weapon; }
             }
 
-            Weapon firstWeapon = character.Weapons[0];
-            return firstWeapon;
+            return new Weapon();
         }
 
 

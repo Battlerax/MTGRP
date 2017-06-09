@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using GTANetworkServer;
+﻿using GTANetworkServer;
 using GTANetworkShared;
 using MongoDB.Bson;
 using RoleplayServer.resources.group_manager;
 using RoleplayServer.resources.inventory;
-using MongoDB.Bson.Serialization.Attributes;
+
 
 namespace RoleplayServer.resources.weapon_manager
 {

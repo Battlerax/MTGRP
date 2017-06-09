@@ -8,6 +8,7 @@ using RoleplayServer.resources.job_manager;
 using RoleplayServer.resources.phone_manager;
 using RoleplayServer.resources.player_manager;
 using RoleplayServer.resources.vehicle_manager;
+using RoleplayServer.resources.weapon_manager;
 
 namespace RoleplayServer.resources.database_manager
 {

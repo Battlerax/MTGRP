@@ -172,6 +172,7 @@ namespace RoleplayServer.resources.player_manager
         public static void SendPaycheckToPlayer(Client player)
         {
             Character character = API.shared.getEntityData(player.handle, "Character");
+            if(character != null)
             if ( character.GetTimePlayed() % 3600 == 0)
             {
                 int paycheckAmount = CalculatePaycheck(player);
