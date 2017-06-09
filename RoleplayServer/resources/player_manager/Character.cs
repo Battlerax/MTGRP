@@ -125,6 +125,7 @@ namespace RoleplayServer.resources.player_manager
 
         public Dictionary<Fish, int> FishOnHand = new Dictionary<Fish, int>();
 
+        //Phone
         [BsonIgnore]
         public Character InCallWith { get; set; }
         [BsonIgnore]
@@ -133,6 +134,9 @@ namespace RoleplayServer.resources.player_manager
         public Character CallingPlayer { get; set; }
         [BsonIgnore]
         public System.Threading.Timer CallingTimer;
+        [BsonIgnore]
+        public bool Calling911 { get; set; }
+
         //Groups
         public int GroupId { get; set; }
         public int GroupRank { get; set; }

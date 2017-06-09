@@ -26,7 +26,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
         case "add911":
 
             //number, time, info
-            mdcBrowser.call("html_add911", args[0], args[1], args[2]);
+            mdcBrowser.call("html_add911", args[0], args[1], args[2], args[3]);
             break;
 
         case "addBolo":
