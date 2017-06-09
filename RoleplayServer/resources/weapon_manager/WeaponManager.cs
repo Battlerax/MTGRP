@@ -32,7 +32,10 @@ namespace RoleplayServer.resources.weapon_manager
             if (character == null) { return; }
             if (weapon == WeaponHash.Unarmed) { return; }
 
-            if (!DoesPlayerHaveWeapon(player, weapon))
+            WeaponHash currentPlayerWeapon = API.getPlayerCurrentWeapon(player);
+
+
+            if (!DoesPlayerHaveWeapon(player, currentPlayerWeapon) && currentPlayerWeapon != WeaponHash.Unarmed)
             {
                 foreach (var p in API.getAllPlayers())
                 {
@@ -77,11 +80,11 @@ namespace RoleplayServer.resources.weapon_manager
             return false;
         }
 
-        public static void CreateWeapon(Client player, WeaponHash weaponhash, WeaponTint weapontint = WeaponTint.Normal, bool isplayerweapon = false, bool isadminweapon = false, bool isgroupweapon = false, Group group = null)
+        public static void CreateWeapon(Client player, WeaponHash weaponhash, WeaponTint weapontint = WeaponTint.Normal, bool isplayerweapon = false, bool isadminweapon = false, bool isgroupweapon = false)
         {
-            Weapon weapon = new Weapon(weaponhash, weapontint, isplayerweapon, isadminweapon, isgroupweapon, group);
-
             Character character = API.shared.getEntityData(player.handle, "Character");
+
+            Weapon weapon = new Weapon(weaponhash, weapontint, isplayerweapon, isadminweapon, isgroupweapon, character.Group);
 
             if (DoesPlayerHaveWeapon(player, weapon.WeaponHash)) { RemovePlayerWeapon(player, weapon.WeaponHash); }
 

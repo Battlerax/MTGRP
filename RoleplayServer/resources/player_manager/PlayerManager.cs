@@ -278,11 +278,18 @@ namespace RoleplayServer.resources.player_manager
 
         //Show player stats (admins can show stats of other players).
 
-        public void showStats(Client sender, Client receiver)
+        public void showStats(Client sender, Client receiver = null)
         {
-            Character character = API.getEntityData(receiver.handle, "Character");
-            Account account = API.shared.getEntityData(receiver.handle, "Account");
-            Account senderAccount = API.shared.getEntityData(receiver.handle, "Account");
+            Character character = API.getEntityData(sender.handle, "Character");
+            Account account = API.shared.getEntityData(sender.handle, "Account");
+
+            if (receiver != null)
+            {
+                character = API.getEntityData(receiver.handle, "Character");
+                account = API.shared.getEntityData(receiver.handle, "Account");
+            }
+
+            Account senderAccount = API.shared.getEntityData(sender.handle, "Account");
 
             TimeSpan t = TimeSpan.FromMilliseconds(character.GetTimePlayed());
             string answer = string.Format("{0:D2}h:{1:D2}m:{2:D2}s:{3:D3}ms",
@@ -296,7 +303,7 @@ namespace RoleplayServer.resources.player_manager
             API.sendChatMessageToPlayer(sender, string.Format("~h~Character name:~h~ {0} ~h~Account name:~h~ {1} ~h~ID:~h~ {2} ~h~Money:~h~ {3} ~h~Bank balance:~h~ {4} ~h~Playing hours:~h~ {5}", sender.name, account.AccountName, character.Id, Money.GetCharacterMoney(character), character.BankBalance, character.TimePlayed));
             API.sendChatMessageToPlayer(sender, string.Format("~h~Age:~h~ {0} ~h~Birthplace:~h~ {1} ~h~Birthday:~h~ {2} ~h~VIP level:~h~ {3} ~h~VIP expires:~h~ {4}", character.Age, character.Birthplace, character.Birthday, account.VipLevel, account.VipExpirationDate));
             API.sendChatMessageToPlayer(sender, "~b~Faction/Jobs:~b~");
-            API.sendChatMessageToPlayer(sender, string.Format("~h~Faction ID:~h~ {0} ~h~Rank:~h~ {1} ~h~Group name:~h~ {2} ~h~Job 1:~h~ {3} ~h~Job 2: {4}", character.GroupId, character.GroupRank, character.Group.Name, character.JobOne));
+            //API.sendChatMessageToPlayer(sender, string.Format("~h~Faction ID:~h~ {0} ~h~Rank:~h~ {1} ~h~Group name:~h~ {2} ~h~Job 1:~h~ {3} ~h~Job 2: {4}", character.GroupId, character.GroupRank, character.Group.Name, character.JobOne));
             API.sendChatMessageToPlayer(sender, "~r~Property:~r~");
             //Show property info..
 
