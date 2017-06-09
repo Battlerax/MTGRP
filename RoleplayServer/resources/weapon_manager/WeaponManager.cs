@@ -88,6 +88,7 @@ namespace RoleplayServer.resources.weapon_manager
             character.Weapons.Add(weapon);
             API.shared.givePlayerWeapon(player, weapon.WeaponHash, 9999, true, true);
             API.shared.setPlayerWeaponTint(player, weapon.WeaponHash, weapon.WeaponTint);
+            inventory.InventoryManager.GiveInventoryItem(character, weapon, 1);
 
         }
 
@@ -103,6 +104,7 @@ namespace RoleplayServer.resources.weapon_manager
                     {
                         character.Weapons.Remove(w);
                         API.shared.removePlayerWeapon(player, w.WeaponHash);
+                        inventory.InventoryManager.DeleteInventoryItem(character, typeof(Weapon), -1);
                     }
                 }
 

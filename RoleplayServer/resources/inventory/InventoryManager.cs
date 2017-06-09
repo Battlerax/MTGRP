@@ -12,6 +12,7 @@ using RoleplayServer.resources.core;
 using RoleplayServer.resources.inventory.bags;
 using RoleplayServer.resources.phone_manager;
 using RoleplayServer.resources.player_manager;
+using RoleplayServer.resources.weapon_manager;
 
 namespace RoleplayServer.resources.inventory
 {
@@ -26,6 +27,7 @@ namespace RoleplayServer.resources.inventory
             BsonClassMap.RegisterClassMap<BagItem>();
             BsonClassMap.RegisterClassMap<Phone>();
             BsonClassMap.RegisterClassMap<Money>();
+            BsonClassMap.RegisterClassMap<Weapon>();
             #endregion
 
             API.onClientEventTrigger += API_onClientEventTrigger;
