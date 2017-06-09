@@ -85,6 +85,7 @@
     <Compile Include="resources\core\MarkerZone.cs" />
     <Compile Include="resources\core\Money.cs" />
     <Compile Include="resources\core\TimeWeatherManager.cs" />
+    <Compile Include="resources\core\Whitelist.cs" />
     <Compile Include="resources\database_manager\DatabaseManager.cs" />
     <Compile Include="resources\group_manager\Group.cs" />
     <Compile Include="resources\group_manager\GroupManager.cs" />
