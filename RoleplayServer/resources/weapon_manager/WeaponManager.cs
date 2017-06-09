@@ -43,17 +43,12 @@ namespace RoleplayServer.resources.weapon_manager
                 return;
             }
 
-            foreach (Weapon playerWeapon in character.Weapons)
+            Weapon currentWeapon = GetCurrentWeapon(player);
+
+            if (currentWeapon.Group != null || currentWeapon.Group != character.Group)
             {
-                if (playerWeapon.WeaponHash == weapon)
-                {
-                    if (playerWeapon.IsGroupWeapon == true && playerWeapon.Group != character.Group && character.Group != null)
-                    {
-                        RemovePlayerWeapon(player, weapon);
-                        player.sendChatMessage("You must be a member of " + playerWeapon.Group.Name + " to use this weapon. It was removed.");
-                    }
-                }
-                
+                RemovePlayerWeapon(player, weapon);
+                player.sendChatMessage("You must be a member of " + currentWeapon.Group.Name + " to use this weapon. It was removed.");
             }
 
         }
@@ -84,27 +79,8 @@ namespace RoleplayServer.resources.weapon_manager
 
         public static void CreateWeapon(Client player, WeaponHash weaponhash, WeaponTint weapontint = WeaponTint.Normal, bool isplayerweapon = false, bool isadminweapon = false, bool isgroupweapon = false, Group group = null)
         {
-            Weapon weapon = new Weapon(weaponhash, weapontint, isplayerweapon, isadminweapon, isgroupweapon);
-            if (isplayerweapon) { AddPlayerWeapon(player, weapon); }
-            if (isadminweapon) { AddAdminWeapon(player, weapon); }
-            if (isgroupweapon) { AddGroupWeapon(player, weapon, group); }
+            Weapon weapon = new Weapon(weaponhash, weapontint, isplayerweapon, isadminweapon, isgroupweapon, group);
 
-        }
-
-        public static void AddPlayerWeapon (Client player, Weapon weapon)
-        {
-            Character character = API.shared.getEntityData(player.handle, "Character");
-
-            if (DoesPlayerHaveWeapon(player, weapon.WeaponHash)) { RemovePlayerWeapon(player, weapon.WeaponHash); }
-        
-            character.Weapons.Add(weapon);
-            API.shared.givePlayerWeapon(player, weapon.WeaponHash, 9999, true, true);
-            API.shared.setPlayerWeaponTint(player, weapon.WeaponHash, weapon.WeaponTint);
-
-        }
-
-        public static void AddAdminWeapon(Client player,  Weapon weapon)
-        {
             Character character = API.shared.getEntityData(player.handle, "Character");
 
             if (DoesPlayerHaveWeapon(player, weapon.WeaponHash)) { RemovePlayerWeapon(player, weapon.WeaponHash); }
@@ -112,17 +88,7 @@ namespace RoleplayServer.resources.weapon_manager
             character.Weapons.Add(weapon);
             API.shared.givePlayerWeapon(player, weapon.WeaponHash, 9999, true, true);
             API.shared.setPlayerWeaponTint(player, weapon.WeaponHash, weapon.WeaponTint);
-        }
 
-        public static void AddGroupWeapon(Client player, Weapon weapon, Group group)
-        {
-            Character character = API.shared.getEntityData(player.handle, "Character");
-
-            if (DoesPlayerHaveWeapon(player, weapon.WeaponHash)) { RemovePlayerWeapon(player, weapon.WeaponHash); }
-
-            character.Weapons.Add(weapon);
-            API.shared.givePlayerWeapon(player, weapon.WeaponHash, 9999, true, true);
-            API.shared.setPlayerWeaponTint(player, weapon.WeaponHash, weapon.WeaponTint);
         }
 
         public static void RemovePlayerWeapon(Client player, WeaponHash weapon)
@@ -131,7 +97,7 @@ namespace RoleplayServer.resources.weapon_manager
             {
                 Character character = API.shared.getEntityData(player.handle, "Character");
 
-                foreach (Weapon w in character.Weapons)
+                foreach (Weapon w in character.Weapons.ToList())
                 {
                     if (w.WeaponHash == weapon)
                     {
@@ -175,7 +141,7 @@ namespace RoleplayServer.resources.weapon_manager
         {
             Character character = API.shared.getEntityData(player.handle, "Character");
 
-            foreach (Weapon weapon in character.Weapons)
+            foreach (Weapon weapon in character.Weapons.ToList())
             {
                 RemovePlayerWeapon(player, weapon.WeaponHash);
             }
