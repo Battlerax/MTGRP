@@ -61,11 +61,8 @@ namespace RoleplayServer.resources.database_manager
         {
             var filter = Builders<BsonDocument>.Filter.Eq("_id", tableName);
             var update = Builders<BsonDocument>.Update.Inc("sequence", 1);
-            var result = _countersTable.FindOneAndUpdate(filter, update, new FindOneAndUpdateOptions<BsonDocument> { IsUpsert = true });
-            if (result == null)
-            {
-                return 1;
-            }
+            var result = _countersTable.FindOneAndUpdate(filter, update, new FindOneAndUpdateOptions<BsonDocument> { IsUpsert = true }) ??
+                         _countersTable.FindOneAndUpdate(filter, update, new FindOneAndUpdateOptions<BsonDocument> { IsUpsert = true }); //Not sure why do I need to do this lol but it works.
             return result.GetValue("sequence").ToInt32();
         }
     }
