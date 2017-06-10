@@ -80,7 +80,8 @@ namespace RoleplayServer.resources.inventory
             NotEnoughSpace,
             HasBlockingItem,
             MaxAmountReached,
-            Success
+            Success,
+            HasSimilarItem
         }
         private static IInventoryItem CloneItem(IInventoryItem item, int amount = -1)
         {
@@ -121,6 +122,11 @@ namespace RoleplayServer.resources.inventory
             var oldItem = storage.Inventory.FirstOrDefault(x => x.GetType() == item.GetType());
             if (oldItem == null || oldItem.CanBeStacked == false)
             {
+                if (oldItem?.CommandFriendlyName == sentitem.CommandFriendlyName)
+                {
+                    return GiveItemErrors.HasSimilarItem;
+                }
+
                 if (item.MaxAmount != -1 && oldItem?.Amount >= item.MaxAmount)
                 {
                     return GiveItemErrors.MaxAmountReached;
@@ -142,6 +148,11 @@ namespace RoleplayServer.resources.inventory
             }
             else
             {
+                if (sentitem.CanBeStacked && oldItem.CommandFriendlyName == sentitem.CommandFriendlyName)
+                {
+                    return GiveItemErrors.HasSimilarItem;
+                }
+
                 if (item.MaxAmount != -1 && oldItem.Amount >= item.MaxAmount)
                 {
                     return GiveItemErrors.MaxAmountReached;
