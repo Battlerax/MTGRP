@@ -492,7 +492,7 @@ namespace RoleplayServer.resources.inventory
 
             //Make sure he does have such amount.
             var sendersItem = DoesInventoryHaveItem(sender, item);
-            if (sendersItem.Length != 1 || sendersItem[0].Amount < amount)
+            if (sendersItem.Length != 1 || sendersItem[0].Amount < amount || amount <= 0)
             {
                 API.sendNotificationToPlayer(player, "You don't have that item or you don't have that amount or there is more than 1 item with that name.");
                 return;
@@ -533,6 +533,9 @@ namespace RoleplayServer.resources.inventory
 
                     //Remove from their inv.
                     DeleteInventoryItem(sender, sendersItem[0].GetType(), amount, x => x == sendersItem[0]);
+
+                    //RP
+                    ChatManager.RoleplayMessage(player, $"gives an item to {target.rp_name()}", ChatManager.RoleplayMe);
                     break;
             }
         }
@@ -544,7 +547,7 @@ namespace RoleplayServer.resources.inventory
 
             //Get in inv.
             var sendersItem = DoesInventoryHaveItem(character, item);
-            if (sendersItem.Length != 1 || sendersItem[0].Amount < amount)
+            if (sendersItem.Length != 1 || sendersItem[0].Amount < amount || amount <= 0)
             {
                 API.sendNotificationToPlayer(player, "You don't have that item or you don't have that amount or there is more than 1 item with that name.");
                 return;
@@ -557,7 +560,11 @@ namespace RoleplayServer.resources.inventory
             }
 
             if (DeleteInventoryItem(character, sendersItem[0].GetType(), amount, x => x == sendersItem[0]))
+            {
                 API.sendNotificationToPlayer(player, "Item(s) was sucessfully dropped.");
+                //RP
+                ChatManager.RoleplayMessage(player, $"drops an item.", ChatManager.RoleplayMe);
+            }
         }
 
         #region Stashing System: 
@@ -570,7 +577,7 @@ namespace RoleplayServer.resources.inventory
 
             //Get in inv.
             var sendersItem = DoesInventoryHaveItem(character, item);
-            if (sendersItem.Length != 1 || sendersItem[0].Amount < amount)
+            if (sendersItem.Length != 1 || sendersItem[0].Amount < amount || amount <= 0)
             {
                 API.sendNotificationToPlayer(player, "You don't have that item or you don't have that amount.");
                 return;
@@ -591,6 +598,8 @@ namespace RoleplayServer.resources.inventory
 
             //Send message.
             API.sendNotificationToPlayer(player, $"You have sucessfully stashed ~g~{amount} {sendersItem[0].LongName}~w~. Use /pickupstash to take it.");
+            //RP
+            ChatManager.RoleplayMessage(player, $"stashs an item.", ChatManager.RoleplayMe);
         }
 
         [Command("pickupstash")]
@@ -625,6 +634,9 @@ namespace RoleplayServer.resources.inventory
                     //Remove object and item from list.
                     API.deleteEntity(items.First().Key);
                     stashedItems.Remove(items.First().Key);
+
+                    //RP
+                    ChatManager.RoleplayMessage(player, $"picks an item from the ground.", ChatManager.RoleplayMe);
                     break;
             }
         }
