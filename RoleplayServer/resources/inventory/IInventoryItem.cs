@@ -19,6 +19,7 @@ namespace RoleplayServer.resources.inventory
         bool CanBeGiven { get; }
         bool CanBeDropped { get; }
         bool CanBeStashed { get; }
+        bool CanBeStacked { get; } //NO for stuff like IDs and YES for stuff like engine parts.
         bool IsBlocking { get; } //if true, users inv cannot be updated anyway while its in their inv.
         int MaxAmount { get; } //Negative one for infinte.
 

@@ -119,7 +119,7 @@ namespace RoleplayServer.resources.inventory
 
             //Check if player has simliar item.
             var oldItem = storage.Inventory.FirstOrDefault(x => x.GetType() == item.GetType());
-            if (oldItem == null || oldItem.CommandFriendlyName == sentitem.CommandFriendlyName)
+            if (oldItem == null || oldItem.CanBeStacked == false)
             {
                 if (item.MaxAmount != -1 && oldItem?.Amount >= item.MaxAmount)
                 {
