@@ -56,8 +56,7 @@ namespace RoleplayServer.resources.core
                     return;
                 }
             }
-
-            if (account.AdminDuty == 0)
+            if (account.AdminDuty == false)
             {
                 msg = character.rp_name() + " says: " + msg;
                 NearbyMessage(player, 15, msg);
@@ -86,10 +85,17 @@ namespace RoleplayServer.resources.core
         public void newbie_cmd(Client player, string message)
         {
             Account account = API.getEntityData(player.handle, "Account");
+            Character character = API.getEntityData(player.handle, "Character");
 
             if (NewbieStatus == false && account.AdminLevel == 0)
             {
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~Newbie chat is currently disabled.");
+                return;
+            }
+
+            if (character.VMutedExpiration > DateTime.Now)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~You are muted from newbie chat.");
                 return;
             }
 
@@ -140,6 +146,7 @@ namespace RoleplayServer.resources.core
         public void vip_chat(Client player, string message)
         {
             Account account = API.getEntityData(player.handle, "Account");
+            Character character = API.getEntityData(player.handle, "Character");
 
             if (VipStatus == false && account.AdminLevel == 0)
             {
@@ -147,7 +154,13 @@ namespace RoleplayServer.resources.core
                 return;
             }
 
-            if(account.VipLevel == 0)
+            if (character.VMutedExpiration > DateTime.Now)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~You are muted from VIP chat.");
+                return;
+            }
+
+            if (account.VipLevel == 0)
             {
                 API.sendNotificationToPlayer(player, "~y~You must be a VIP to use VIP chat.");
                 return;
@@ -251,7 +264,7 @@ namespace RoleplayServer.resources.core
         public void b_cmd(Client player, string text)
         {
             Account account = API.getEntityData(player.handle, "Account");
-            if(account.AdminDuty == 0)
+            if(account.AdminDuty == false)
             {
                 NearbyMessage(player, 10, "(( " + PlayerManager.GetName(player) + ": " + text + " ))", Color.Ooc);
             }
@@ -261,6 +274,25 @@ namespace RoleplayServer.resources.core
             }
         }
         
+        [Command("admin", Alias = "a", GreedyArg = true)]
+        public void admin_cmd(Client player,  string text)
+        {
+            Account account = API.getEntityData(player.handle, "Account");
+
+            if(account.AdminLevel > 0)
+            {
+                foreach (var c in API.getAllPlayers())
+                {
+                    Account receiverAccount = API.getEntityData(player.handle, "Account");
+
+                    if (receiverAccount.AdminLevel > 0)
+                    {
+                        API.sendChatMessageToPlayer(c, Color.AdminChat, "[A] " + account.AdminName + text);
+                    }
+                }
+            }
+        }
+
         [Command("rp", GreedyArg = true)]
         public void rp_cmd(Client player, string id, string text)
         {

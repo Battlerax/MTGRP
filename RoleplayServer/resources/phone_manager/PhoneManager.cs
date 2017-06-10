@@ -182,7 +182,7 @@ namespace RoleplayServer.resources.phone_manager
         {
             Account account = API.getEntityData(player.handle, "Account");
             Character character = API.getEntityData(player.handle, "Character");
-            if (account.AdminDuty == 0 && character.InCallWith != Character.None)
+            if (account.AdminDuty == false && character.InCallWith != Character.None)
             {
                 Character talkingTo = character.InCallWith;
                 string phonemsg;
@@ -205,7 +205,7 @@ namespace RoleplayServer.resources.phone_manager
                 e.Cancel = true;
                 e.Reason = "Phone";
             }
-            else if (account.AdminDuty == 0 && character.Calling911 == true)
+            else if (account.AdminDuty == false && character.Calling911 == true)
             {
                 //API.getZoneName(player.position);
 
