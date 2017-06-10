@@ -28,32 +28,39 @@ namespace RoleplayServer.resources.core
             Character character = API.getEntityData(player.handle, "Character");
 
             //Local Chat
-            if (API.getEntityData(player, "MegaphoneStatus") == true)
+            if (API.hasEntityData(player, "MegaphoneStatus"))
             {
-                msg = "[MEGAPHONE] " + character.rp_name() + " says: " +  msg;
-                NearbyMessage(player, 30, msg);
-                return;
+                if (API.getEntityData(player, "MegaphoneStatus") == true)
+                {
+                    msg = "[MEGAPHONE] " + character.rp_name() + " says: " + msg;
+                    NearbyMessage(player, 30, msg);
+                    e.Cancel = true;
+                    return;
+                }
             }
 
-            if (API.getEntityData(player, "MicStatus") == true)
+            if (API.hasEntityData(player, "MicStatus"))
             {
-                msg = "~p~ [BROADCAST] " + character.CharacterName + " : " + msg;
-                broadcastMessage(msg);
-                return;
+                if (API.getEntityData(player, "MicStatus") == true)
+                {
+                    msg = "~p~ [BROADCAST] " + character.CharacterName + " : " + msg;
+                    broadcastMessage(msg);
+                    e.Cancel = true;
+                    return;
+                }
             }
 
             if (account.AdminDuty == 0)
             {
                 msg = character.rp_name() + " says: " + msg;
                 NearbyMessage(player, 15, msg);
-                return;
+                e.Cancel = true;
             }
             else
             {
                 b_cmd(player, msg);
+                e.Cancel = true;
             }
-           
-            e.Cancel = true;
         }
 
         public void broadcastMessage(string msg)
