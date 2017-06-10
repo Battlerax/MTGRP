@@ -25,7 +25,7 @@ namespace RoleplayServer.resources.property_system.businesses
             }
 
             var character = player.GetCharacter();
-            if (Money.GetCharacterMoney(character) >= amount)
+            if (Money.GetCharacterMoney(character) >= amount && amount > 0)
             {
                 character.BankBalance += amount;
                 InventoryManager.DeleteInventoryItem(character, typeof(Money), amount);
@@ -49,7 +49,7 @@ namespace RoleplayServer.resources.property_system.businesses
             }
 
             var character = player.GetCharacter();
-            if (character.BankBalance >= amount)
+            if (character.BankBalance >= amount && amount > 0)
             {
                 character.BankBalance -= amount;
                 InventoryManager.GiveInventoryItem(character, new Money(), amount);
@@ -80,7 +80,7 @@ namespace RoleplayServer.resources.property_system.businesses
             }
 
             var character = player.GetCharacter();
-            if (character.BankBalance >= amount)
+            if (character.BankBalance >= amount && amount > 0)
             {
                 target.GetCharacter().BankBalance += amount;
                 character.BankBalance -= amount;
