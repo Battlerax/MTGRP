@@ -226,6 +226,7 @@ namespace RoleplayServer.resources.group_manager
                 character.Group.Locker.Location = character.Client.position;
                 character.Group.Locker.Rotation = character.Client.rotation;
                 character.Group.Locker.Dimension = character.Client.dimension;
+                character.Group.Locker.LabelText = "LSPD Locker Room~n~/locker";
                 character.Group.Locker.Refresh();
                 character.Group.Save();
             }
@@ -560,7 +561,6 @@ namespace RoleplayServer.resources.group_manager
                     character.GroupRank = 1;
                     character.GroupId = amount;
                     character.Group = GetGroupById(amount);
-                    character.Group.CommandType = amount;
                     character.Save();
                     character.Group.Save();
                     API.sendChatMessageToPlayer(player, "You have set " + PlayerManager.GetName(receiver) + "[" + id + "]" + "'s faction to " + amount + ", " + character.Group.Name + ".");
@@ -573,17 +573,25 @@ namespace RoleplayServer.resources.group_manager
         }
 
         [Command("creategroup", GreedyArg = true)]
-        public void creategroup_cmd(Client player, int type, string name)
+        public void creategroup_cmd(Client player, int type, string name, string commandtype = "0")
         {
+        
             Account account = API.getEntityData(player.handle, "Account");
             if (account.AdminLevel < 4)
                 return;
 
+            if (type == 1 && int.Parse(commandtype) == 0)
+            {
+                player.sendChatMessage("Factions of type 1 must have a command type greater than 0");
+                return;
+            }
 
             var group = new Group();
 
             group.Name = name;
             group.Type = type;
+            if (type != 1) { group.CommandType = 0; }
+            else { group.CommandType = int.Parse(commandtype); }
             group.Insert();
 
             API.sendChatMessageToPlayer(player, Color.Grey, "You have created group " + group.Id + " ( " + group.Name + ", Type: " + group.Type + " ). Use /editgroup to edit it.");
