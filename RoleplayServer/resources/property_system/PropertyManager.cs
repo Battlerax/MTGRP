@@ -44,7 +44,7 @@ namespace RoleplayServer.resources.property_system
             TwentyFourSeven,
             Hardware,
             Bank,
-            Restaurent
+            Restaurant
         }
 
         #region ColShapeKnowing
@@ -453,7 +453,7 @@ namespace RoleplayServer.resources.property_system
                     return "/buy";
                 case PropertyTypes.Bank:
                     return "/balance /deposit /withdraw\n/wiretransfer /redeemcheck";
-                case PropertyTypes.Restaurent:
+                case PropertyTypes.Restaurant:
                     return "/buy";
             }
             return "";
@@ -509,9 +509,9 @@ namespace RoleplayServer.resources.property_system
                 return;
             }
 
-            if (prop.OwnerId != player.GetCharacter().Id || prop.Type != PropertyTypes.Restaurent)
+            if (prop.OwnerId != player.GetCharacter().Id || prop.Type != PropertyTypes.Restaurant)
             {
-                API.sendChatMessageToPlayer(player, "You aren't the owner or the business isn't a restaurent.");
+                API.sendChatMessageToPlayer(player, "You aren't the owner or the business isn't a Restaurant.");
                 return;
             }
 
@@ -526,23 +526,23 @@ namespace RoleplayServer.resources.property_system
                 return;
             }
 
-            if(prop.RestaurentItems == null) prop.RestaurentItems = new string[4];
+            if(prop.RestaurantItems == null) prop.RestaurantItems = new string[4];
             switch (item)
             {
                 case "custom1":
-                    prop.RestaurentItems[0] = name;
+                    prop.RestaurantItems[0] = name;
                     API.sendChatMessageToPlayer(player, $"Changed custom1 name to '{name}'.");
                     break;
                 case "custom2":
-                    prop.RestaurentItems[1] = name;
+                    prop.RestaurantItems[1] = name;
                     API.sendChatMessageToPlayer(player, $"Changed custom2 name to '{name}'.");
                     break;
                 case "custom3":
-                    prop.RestaurentItems[2] = name;
+                    prop.RestaurantItems[2] = name;
                     API.sendChatMessageToPlayer(player, $"Changed custom3 name to '{name}'.");
                     break;
                 case "custom4":
-                    prop.RestaurentItems[3] = name;
+                    prop.RestaurantItems[3] = name;
                     API.sendChatMessageToPlayer(player, $"Changed custom4 name to '{name}'.");
                     break;
                 default:
@@ -619,7 +619,7 @@ namespace RoleplayServer.resources.property_system
                         }
                         break;
 
-                        case PropertyTypes.Restaurent:
+                        case PropertyTypes.Restaurant:
                             if (item == "")
                             {
                                 API.sendChatMessageToPlayer(player, "[ERROR] Choose a type: [sprunk,custom1,custom2,custom3,custom4]");

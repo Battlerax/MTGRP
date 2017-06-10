@@ -41,13 +41,13 @@ namespace RoleplayServer.resources.property_system
                     break;
 
                 //This is kind of a unique business.. item names are the id.. it doesn't have a general sell list like 24/7 and Hardware.
-                case PropertyManager.PropertyTypes.Restaurent:
+                case PropertyManager.PropertyTypes.Restaurant:
                     prop.ItemPrices.Add("sprunk", 5);
                     prop.ItemPrices.Add("custom1", 50);
                     prop.ItemPrices.Add("custom2", 100);
                     prop.ItemPrices.Add("custom3", 100);
                     prop.ItemPrices.Add("custom4", 100);
-                    prop.RestaurentItems = new string[]
+                    prop.RestaurantItems = new string[]
                     {
                         "Food 1",
                         "Food 2",

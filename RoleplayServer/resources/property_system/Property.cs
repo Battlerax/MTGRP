@@ -50,7 +50,7 @@ namespace RoleplayServer.resources.property_system
         public int PropertyPrice { get; set; }
 
         public Dictionary<string,int> ItemPrices { get; set; }
-        public string[] RestaurentItems;
+        public string[] RestaurantItems;
 
         [BsonIgnore]
         public MarkerZone EnteranceMarker { get; set; }
@@ -108,7 +108,7 @@ namespace RoleplayServer.resources.property_system
                         return 207;
                     case PropertyManager.PropertyTypes.Clothing:
                         return 73;
-                    case PropertyManager.PropertyTypes.Restaurent:
+                    case PropertyManager.PropertyTypes.Restaurant:
                         return 93;
                 default:
                     return -1;

@@ -89,7 +89,7 @@ namespace RoleplayServer.resources.property_system.businesses
                             break;
                     }
                 }
-                else if (prop.Type == PropertyManager.PropertyTypes.Restaurent)
+                else if (prop.Type == PropertyManager.PropertyTypes.Restaurant)
                 {
                     switch (itemName)
                     {
@@ -103,7 +103,7 @@ namespace RoleplayServer.resources.property_system.businesses
                             sender.health += 15;
                             if (sender.health > 100) sender.health = 100;
                             API.sendChatMessageToPlayer(sender,
-                                $"[BUSINESS] You have sucessfully bought a ~g~{prop.RestaurentItems[0]}~w~ for ~g~${price}.");
+                                $"[BUSINESS] You have sucessfully bought a ~g~{prop.RestaurantItems[0]}~w~ for ~g~${price}.");
                             return;
 
                         case "custom2":
@@ -111,7 +111,7 @@ namespace RoleplayServer.resources.property_system.businesses
                             sender.health += 25;
                             if (sender.health > 100) sender.health = 100;
                             API.sendChatMessageToPlayer(sender,
-                                $"[BUSINESS] You have sucessfully bought a ~g~{prop.RestaurentItems[1]}~w~ for ~g~${price}.");
+                                $"[BUSINESS] You have sucessfully bought a ~g~{prop.RestaurantItems[1]}~w~ for ~g~${price}.");
                             return;
 
                         case "custom3":
@@ -119,7 +119,7 @@ namespace RoleplayServer.resources.property_system.businesses
                             sender.health += 25;
                             if (sender.health > 100) sender.health = 100;
                             API.sendChatMessageToPlayer(sender,
-                                $"[BUSINESS] You have sucessfully bought a ~g~{prop.RestaurentItems[2]}~w~ for ~g~${price}.");
+                                $"[BUSINESS] You have sucessfully bought a ~g~{prop.RestaurantItems[2]}~w~ for ~g~${price}.");
                             return;
 
                         case "custom4":
@@ -127,7 +127,7 @@ namespace RoleplayServer.resources.property_system.businesses
                             sender.health += 25;
                             if (sender.health > 100) sender.health = 100;
                             API.sendChatMessageToPlayer(sender,
-                                $"[BUSINESS] You have sucessfully bought a ~g~{prop.RestaurentItems[3]}~w~ for ~g~${price}.");
+                                $"[BUSINESS] You have sucessfully bought a ~g~{prop.RestaurantItems[3]}~w~ for ~g~${price}.");
                             return;
                     }
                 }
@@ -202,7 +202,7 @@ namespace RoleplayServer.resources.property_system.businesses
                 API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()), "24/7",
                     prop.PropertyName);
             }
-            else if (prop.Type == PropertyManager.PropertyTypes.Restaurent)
+            else if (prop.Type == PropertyManager.PropertyTypes.Restaurant)
             {
                 API.freezePlayer(player, true);
                 List<string[]> itemsWithPrices = new List<string[]>();
@@ -219,10 +219,10 @@ namespace RoleplayServer.resources.property_system.businesses
 
                     itemsWithPrices.Add(new[]
                     {
-                        "custom" + i, prop.RestaurentItems[i - 1], "", prop.ItemPrices["custom" + i].ToString()
+                        "custom" + i, prop.RestaurantItems[i - 1], "", prop.ItemPrices["custom" + i].ToString()
                     });
                 }
-                API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()), "Restaurent",
+                API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()), "Restaurant",
                     prop.PropertyName);
             }
             else
