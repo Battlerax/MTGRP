@@ -305,7 +305,6 @@ namespace RoleplayServer.resources.property_system
                         }
                         prop.TargetPos = sender.position;
                         prop.TargetRot = sender.rotation;
-                        prop.TargetDimension = sender.dimension;
                         prop.Save();
                         API.sendChatMessageToPlayer(sender,
                             $"[Property Manager] Interior TP position of property #{id} was changed.");

@@ -27,7 +27,9 @@ namespace RoleplayServer.resources.property_system
         public bool IsTeleportable { get; set; }
         public Vector3 TargetPos { get; set; }
         public Vector3 TargetRot { get; set; }
-        public int TargetDimension { get; set; }
+
+        [BsonIgnore]
+        public int TargetDimension => Id + 1000;
 
         public int MainDoorId { get; set; }
 
