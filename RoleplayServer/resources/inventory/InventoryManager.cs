@@ -50,9 +50,9 @@ namespace RoleplayServer.resources.inventory
 
         public class OnLoseItemEventArgs : EventArgs
         {
-            public Type Item { get; private set; }
+            public IInventoryItem Item { get; private set; }
             public int Amount { get; private set; }
-            public OnLoseItemEventArgs(Type item, int amount)
+            public OnLoseItemEventArgs(IInventoryItem item, int amount)
             {
                 Item = item;
                 Amount = amount;
@@ -250,9 +250,13 @@ namespace RoleplayServer.resources.inventory
             if (storage.Inventory == null) storage.Inventory = new List<IInventoryItem>();
             if (amount == -1)
             {
+                IInventoryItem[] items = storage.Inventory.FindAll(x => x.GetType() == item).ToArray();
                 if (storage.Inventory.RemoveAll(x => x.GetType() == item) > 0)
                 {
-                    OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(item, amount));
+                    foreach (var i in items)
+                    {
+                        OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(i, amount));
+                    }
                     OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item, 0));
                     return true;
                 }
@@ -266,11 +270,23 @@ namespace RoleplayServer.resources.inventory
                 if (itm.Amount <= 0)
                     storage.Inventory.Remove(itm);
 
-                OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(item, amount));
+                OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(itm, amount));
                 OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item, itm.Amount));
                 return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// Removes an item from storage.
+        /// </summary>
+        /// <param name="storage">The storage to remove from.</param>
+        /// <param name="amount">Amount to be removed, -1 for all.</param>
+        /// <param name="predicate">The predicate to be used, can be null for none</param>
+        /// <returns>true if something was removed and false if nothing was removed.</returns>
+        public static bool DeleteInventoryItem<T>(IStorage storage, int amount = -1, Func<IInventoryItem, bool> predicate = null)
+        {
+            return DeleteInventoryItem(storage, typeof(T), amount, predicate);
         }
 
         public static void SetInventoryAmmount(IStorage storage, Type item, int amount)
