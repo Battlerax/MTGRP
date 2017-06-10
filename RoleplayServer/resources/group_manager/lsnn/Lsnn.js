@@ -1,6 +1,19 @@
 
-var lowerthird;
 
+var funcToBeCalled = "";
+var args;
+function setToBeCalled(func /* args */) {
+	var a = Array.prototype.slice.call(arguments, 1);
+	funcToBeCalled = func;
+	args = a;
+}
+function cefLoaded() {
+	if (funcToBeCalled !== "") {
+		lowerthird.call(funcToBeCalled, ...args);
+	}
+}
+
+var lowerthird;
 API.onServerEventTrigger.connect(function (eventName, args) {
     switch (eventName) {
 		
@@ -13,7 +26,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 			API.setCefBrowserPosition(lowerthird, 800, 700);
 			API.loadPageCefBrowser(lowerthird, "group_manager/lsnn/LowerThird.html");
 			API.setCefDrawState(true);
-			lowerthird.call("settitle", args[2]);
+	        setToBeCalled("settitle", args[2]);
 			break;
 
 		case "watch_chopper_broadcast":
@@ -27,7 +40,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 			API.setCefBrowserPosition(lowerthird, 800, 700);
 			API.loadPageCefBrowser(lowerthird, "group_manager/lsnn/LowerThirdChopper.html");
 			API.setCefDrawState(true);
-			lowerthird.call("settitle", args[2]);
+			setToBeCalled("settitle", args[2]);
 			break;
 
 		case "unwatch_broadcast":
