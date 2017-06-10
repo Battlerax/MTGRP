@@ -53,7 +53,7 @@ namespace RoleplayServer.resources.player_manager
         public string Birthday { get; set; }
         public string Birthplace { get; set; }
 
-        public string playerCrimes{ get; set; }
+        public string playerCrimes { get; set; }
 
         [BsonIgnore]
         public Client Client { get; set; }
@@ -64,10 +64,9 @@ namespace RoleplayServer.resources.player_manager
         public bool IsOnAsk { get; set; }
         public bool HasActiveAsk { get; set; }
         public bool HasActiveReport { get; set; }
-        public bool ReportMuted { get; set; }
         public bool ReportCreated { get; set; }
         public Timer ReportTimer { get; set; }
-        public Timer ReportMutedTimer { get; set; }
+        public DateTime ReportMuteExpires { get; set; }
 
         //Jobs
         public int JobOneId { get; set; }
@@ -96,8 +95,8 @@ namespace RoleplayServer.resources.player_manager
         public long OocCooldown { get; set; }
 
         //Chat mutes
-        public bool NMuted { get; set; }
-        public bool VMuted { get; set; }
+        public DateTime NMutedExpiration { get; set; }
+        public DateTime VMutedExpiration { get; set; }
         public Timer NMutedTimer { get; set; }
         public Timer VMutedTimer { get; set; }
 

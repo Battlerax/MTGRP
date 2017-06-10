@@ -115,8 +115,9 @@ namespace RoleplayServer.resources.player_manager.login
 
                         if (hashedPass == account.Password)
                         {
+                            int result = DateTime.Compare(account.TempBanExpiration, DateTime.Now);
 
-                            if (account.IsTempbanned == true && account.TempBanExpiration > DateTime.Now)
+                            if (account.IsTempbanned == true && result == 1)
                             {
                                 API.sendChatMessageToPlayer(player, "~r~You are temp-banned from this server. You will be unbanned in " + (account.TempBanExpiration - DateTime.Now).TotalDays + " days.");
                                 API.sendNotificationToPlayer(player, "~r~You are temp-banned from this server. You will be unbanned in " + (account.TempBanExpiration - DateTime.Now).TotalDays + " days.");
@@ -133,6 +134,7 @@ namespace RoleplayServer.resources.player_manager.login
                                 return;
                             }
 
+                               
                             API.sendChatMessageToPlayer(player, "~g~ You have successfully logged in!");
 
                             account.IsLoggedIn = true;
@@ -274,7 +276,9 @@ namespace RoleplayServer.resources.player_manager.login
 
             if (hashedPass == account.Password)
             {
-                if (account.IsTempbanned == true && account.TempBanExpiration > DateTime.Now)
+                int result = DateTime.Compare(account.TempBanExpiration, DateTime.Now);
+
+                if (account.IsTempbanned == true && result == 1)
                 {
                     API.sendChatMessageToPlayer(player, "~r~You are temp-banned from this server. You will be unbanned in " + (account.TempBanExpiration - DateTime.Now).TotalDays + " days.");
                     API.sendNotificationToPlayer(player, "~r~You are temp-banned from this server. You will be unbanned in " + (account.TempBanExpiration - DateTime.Now).TotalDays + " days.");

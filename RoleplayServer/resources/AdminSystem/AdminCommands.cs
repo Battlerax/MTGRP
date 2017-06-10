@@ -473,7 +473,7 @@ namespace RoleplayServer.resources.AdminSystem
         {
             Character character = API.getEntityData(player, "Character");
 
-            if (character.ReportMuted == true)
+            if (character.ReportMuteExpires > DateTime.Now)
             {
                 API.sendChatMessageToPlayer(player, "You are muted from creating reports/ask requests.");
                 return;
@@ -668,7 +668,7 @@ namespace RoleplayServer.resources.AdminSystem
         {
             Character character = API.getEntityData(player, "Character");
 
-            if (character.ReportMuted == true)
+            if (character.ReportMuteExpires > DateTime.Now)
             {
                 API.sendChatMessageToPlayer(player, "You are muted from creating reports/ask requests.");
                 return;
@@ -703,22 +703,20 @@ namespace RoleplayServer.resources.AdminSystem
                 return;
             }
 
-            if (receivercharacter.NMuted == false)
+            int result = DateTime.Compare(receivercharacter.NMutedExpiration, DateTime.Now);
+
+            if (result <= 0)
             {
-                receivercharacter.NMuted = true;
                 API.sendChatMessageToPlayer(player, "You have muted ~b~" + receiver.nametag + "~w~ from newbie chat for 1 hour.");
                 API.sendChatMessageToPlayer(receiver, "You have been ~r~muted ~w~from newbie chat for 1 hour.");
-                receivercharacter.NMutedTimer = new Timer() { Interval = 3600000 };
-                receivercharacter.NMutedTimer.Elapsed += delegate { NMuteTimer(player); };
-                receivercharacter.NMutedTimer.Start();
+                receivercharacter.NMutedExpiration = DateTime.Now.AddHours(1);
                 return;
             }
             else
             {
-                receivercharacter.NMuted = false;
                 API.sendChatMessageToPlayer(receiver, "You have been ~r~unmmuted ~w~from newbie chat.");
                 API.sendChatMessageToPlayer(player, "You have unmuted ~b~" + receiver.nametag + "~w~ from newbie chat.");
-                receivercharacter.NMutedTimer.Stop();
+                receivercharacter.NMutedExpiration = DateTime.Now;
             }
 
         }
@@ -739,22 +737,20 @@ namespace RoleplayServer.resources.AdminSystem
                 return;
             }
 
-            if (receivercharacter.VMuted == false)
+            int result = DateTime.Compare(receivercharacter.VMutedExpiration, DateTime.Now);
+
+            if (result <= 0)
             {
-                receivercharacter.VMuted = true;
                 API.sendChatMessageToPlayer(player, "You have muted ~b~" + receiver.nametag + "~w~ from VIP chat for 1 hour.");
                 API.sendChatMessageToPlayer(receiver, "You have been ~r~muted ~w~from VIP chat for 1 hour.");
-                receivercharacter.VMutedTimer = new Timer() { Interval = 3600000 };
-                receivercharacter.VMutedTimer.Elapsed += delegate { VMuteTimer(player); };
-                receivercharacter.VMutedTimer.Start();
+                receivercharacter.VMutedExpiration = DateTime.Now.AddHours(1);
                 return;
             }
             else
             {
-                receivercharacter.VMuted = false;
                 API.sendChatMessageToPlayer(receiver, "You have been ~r~unmmuted ~w~from VIP chat.");
                 API.sendChatMessageToPlayer(player, "You have unmuted ~b~" + receiver.nametag + "~w~ from VIP chat.");
-                receivercharacter.VMutedTimer.Stop();
+                receivercharacter.VMutedExpiration = DateTime.Now;
             }
 
         }
@@ -775,22 +771,20 @@ namespace RoleplayServer.resources.AdminSystem
                 return;
             }
 
-            if (receivercharacter.ReportMuted == false)
+            int result = DateTime.Compare(receivercharacter.ReportMuteExpires, DateTime.Now);
+
+            if (result <= 0)
             {
-                receivercharacter.ReportMuted = true;
                 API.sendChatMessageToPlayer(player, "You have muted ~b~" + receiver.nametag + "~w~from creating reports.");
                 API.sendChatMessageToPlayer(receiver, "You have been ~r~muted ~w~from making reports.");
-                receivercharacter.ReportMutedTimer = new Timer() { Interval = 3600000 };
-                receivercharacter.ReportMutedTimer.Elapsed += delegate { reportMuteTimer(player); };
-                receivercharacter.ReportMutedTimer.Start();
+                receivercharacter.ReportMuteExpires = DateTime.Now.AddHours(1);
                 return;
             }
             else
             {
-                receivercharacter.ReportMuted = false;
                 API.sendChatMessageToPlayer(receiver, "You have been ~r~unmmuted ~w~from making reports.");
                 API.sendChatMessageToPlayer(player, "You have unmuted ~b~" + receiver.nametag + "~w~from creating reports.");
-                receivercharacter.ReportMutedTimer.Stop();
+                receivercharacter.ReportMuteExpires = DateTime.Now;
             }
 
         }
@@ -1258,33 +1252,6 @@ namespace RoleplayServer.resources.AdminSystem
 
             character.ReportCreated = false;
             character.ReportTimer.Stop();
-        }
-
-        public void reportMuteTimer(Client player)
-        {
-            Character character = API.getEntityData(player, "Character");
-
-            API.sendChatMessageToPlayer(player, "You have been ~r~unmuted~w~ from creating reports.");
-            character.ReportMuted = false;
-            character.ReportMutedTimer.Stop();
-        }
-
-        public void NMuteTimer(Client player)
-        {
-            Character character = API.getEntityData(player, "Character");
-
-            API.sendChatMessageToPlayer(player, "You have been ~r~unmuted~w~ from newbie chat.");
-            character.NMuted = false;
-            character.NMutedTimer.Stop();
-        }
-
-        public void VMuteTimer(Client player)
-        {
-            Character character = API.getEntityData(player, "Character");
-
-            API.sendChatMessageToPlayer(player, "You have been ~r~unmuted~w~ from VIP chat.");
-            character.VMuted = false;
-            character.VMutedTimer.Stop();
         }
     }
 }

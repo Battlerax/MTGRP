@@ -79,7 +79,7 @@ namespace RoleplayServer.resources.core
                 return;
             }
 
-            if (character.NMuted == true)
+            if (character.VMutedExpiration > DateTime.Now)
             {
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~You are muted from newbie chat.");
                 return;
@@ -140,7 +140,7 @@ namespace RoleplayServer.resources.core
                 return;
             }
 
-            if (character.VMuted == true)
+            if (character.VMutedExpiration > DateTime.Now)
             {
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~You are muted from VIP chat.");
                 return;

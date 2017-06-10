@@ -204,7 +204,7 @@ namespace RoleplayServer.resources.phone_manager
                 e.Cancel = true;
                 e.Reason = "Phone";
             }
-            else if (account.AdminDuty == 0 && character.Calling911 == true)
+            else if (account.AdminDuty == false && character.Calling911 == true)
             {
                 //API.getZoneName(player.position);
 
