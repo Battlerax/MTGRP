@@ -7,6 +7,11 @@ var hour;
 var minute;
 
 function setTime(hr, me) {
+	//Set background now:
+	$("#phonebase-image").css("background", 'url("phone-base.png")');
+ 	$("#phonebase-image").css("background-repeat", "no-repeat");
+ 	$("#phonebase-image").css("background-size", "100% 100%");
+
     hour = hr;
     minute = me;
     $("#time strong").text(zeroPad(hour, 2) + ":" + zeroPad(minute, 2));
