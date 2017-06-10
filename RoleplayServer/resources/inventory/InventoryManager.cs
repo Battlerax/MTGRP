@@ -26,7 +26,6 @@ namespace RoleplayServer.resources.inventory
             BsonClassMap.RegisterClassMap<BagItem>();
             BsonClassMap.RegisterClassMap<Phone>();
             BsonClassMap.RegisterClassMap<Money>();
-            BsonClassMap.RegisterClassMap<TestItem>();
             BsonClassMap.RegisterClassMap<EngineParts>();
             BsonClassMap.RegisterClassMap<SprayPaint>();
             #endregion

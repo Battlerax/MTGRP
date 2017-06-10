@@ -95,9 +95,11 @@
     <Compile Include="resources\Init.cs" />
     <Compile Include="resources\inventory\bags\BagItem.cs" />
     <Compile Include="resources\inventory\bags\BagManager.cs" />
+    <Compile Include="resources\inventory\inventory_items\EngineParts.cs" />
     <Compile Include="resources\inventory\IInventoryItem.cs" />
     <Compile Include="resources\inventory\InventoryManager.cs" />
     <Compile Include="resources\inventory\IStorage.cs" />
+    <Compile Include="resources\inventory\inventory_items\SprayPaint.cs" />
     <Compile Include="resources\job_manager\fisher\Fish.cs" />
     <Compile Include="resources\job_manager\fisher\Fisher.cs" />
     <Compile Include="resources\job_manager\Job.cs" />
