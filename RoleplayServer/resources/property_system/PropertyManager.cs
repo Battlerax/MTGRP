@@ -51,9 +51,9 @@ namespace RoleplayServer.resources.property_system
 
         private void API_onEntityExitColShape(ColShape colshape, GTANetworkShared.NetHandle entity)
         {
-            if (API.getEntityType(entity) == EntityType.Player && colshape.hasData("property_enterance"))
+            if (API.getEntityType(entity) == EntityType.Player && colshape.hasData("property_entrance"))
             {
-                if (API.getEntityData(entity, "at_interance_property_id") == colshape.getData("property_enterance"))
+                if (API.getEntityData(entity, "at_interance_property_id") == colshape.getData("property_entrance"))
                 {
                     API.resetEntityData(entity, "at_interance_property_id");
                 }
@@ -78,9 +78,9 @@ namespace RoleplayServer.resources.property_system
 
         private void API_onEntityEnterColShape(ColShape colshape, GTANetworkShared.NetHandle entity)
         {
-            if (API.getEntityType(entity) == EntityType.Player && colshape.hasData("property_enterance"))
+            if (API.getEntityType(entity) == EntityType.Player && colshape.hasData("property_entrance"))
             {
-                API.setEntityData(entity, "at_interance_property_id", colshape.getData("property_enterance"));
+                API.setEntityData(entity, "at_interance_property_id", colshape.getData("property_entrance"));
             }
 
             if (API.getEntityType(entity) == EntityType.Player && colshape.hasData("property_interaction"))
@@ -94,7 +94,7 @@ namespace RoleplayServer.resources.property_system
             }
         }
 
-        public static Property IsAtPropertyEnterance(Client player)
+        public static Property IsAtPropertyEntrance(Client player)
         {
             if (API.shared.hasEntityData(player, "at_interance_property_id"))
             {
@@ -203,7 +203,7 @@ namespace RoleplayServer.resources.property_system
                     }
                     break;
 
-                case "editproperty_setenterancepos":
+                case "editproperty_setentrancepos":
                     if (sender.GetAccount().AdminLevel >= 5)
                     {
                         var id = Convert.ToInt32(arguments[0]);
@@ -213,16 +213,16 @@ namespace RoleplayServer.resources.property_system
                             API.sendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
                             return;
                         }
-                        prop.EnterancePos = sender.position;
-                        prop.EnteranceRot = sender.rotation;
+                        prop.EntrancePos = sender.position;
+                        prop.EntranceRot = sender.rotation;
                         prop.Save();
                         prop.UpdateMarkers();
                         API.sendChatMessageToPlayer(sender,
-                            $"[Property Manager] Enterance position of property #{id} was changed.");
+                            $"[Property Manager] Entrance position of property #{id} was changed.");
                     }
                     break;
 
-                case "editproperty_gotoenterance":
+                case "editproperty_gotoentrance":
                     if (sender.GetAccount().AdminLevel >= 5)
                     {
                         var id = Convert.ToInt32(arguments[0]);
@@ -232,8 +232,8 @@ namespace RoleplayServer.resources.property_system
                             API.sendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
                             return;
                         }
-                        sender.position = prop.EnterancePos;
-                        sender.rotation = prop.EnteranceRot;
+                        sender.position = prop.EntrancePos;
+                        sender.rotation = prop.EntranceRot;
                         sender.dimension = 0;
                     }
                     break;
@@ -462,7 +462,7 @@ namespace RoleplayServer.resources.property_system
         [Command("enter")]
         public void Enterproperty(Client player)
         {
-            var prop = IsAtPropertyEnterance(player);
+            var prop = IsAtPropertyEntrance(player);
             if (prop != null)
             {
                 if (prop.IsTeleportable && (!prop.IsLocked || prop.OwnerId == player.GetCharacter().Id))
@@ -487,8 +487,8 @@ namespace RoleplayServer.resources.property_system
             {
                 if (prop.IsTeleportable && (!prop.IsLocked || prop.OwnerId == player.GetCharacter().Id))
                 {
-                    player.position = prop.EnterancePos;
-                    player.rotation = prop.EnteranceRot;
+                    player.position = prop.EntrancePos;
+                    player.rotation = prop.EntranceRot;
                     player.dimension = 0;
                 }
                 else
@@ -502,10 +502,10 @@ namespace RoleplayServer.resources.property_system
         [Command("changefoodname", GreedyArg = true)]
         public void Changefoodname_cmd(Client player, string item = "", string name = "")
         {
-            var prop = IsAtPropertyEnterance(player) ?? IsAtPropertyInteraction(player);
+            var prop = IsAtPropertyEntrance(player) ?? IsAtPropertyInteraction(player);
             if (prop == null)
             {
-                API.sendChatMessageToPlayer(player, "You aren't at an enteraction point or enterance.");
+                API.sendChatMessageToPlayer(player, "You aren't at an enteraction point or entrance.");
                 return;
             }
 
@@ -555,10 +555,10 @@ namespace RoleplayServer.resources.property_system
         [Command("manageprices")]
         public void Manageprices(Client player, string item = "", int price = 0)
         {
-            var prop = IsAtPropertyEnterance(player) ?? IsAtPropertyInteraction(player);
+            var prop = IsAtPropertyEntrance(player) ?? IsAtPropertyInteraction(player);
             if (prop == null)
             {
-                API.sendChatMessageToPlayer(player, "You aren't at an enteraction point or enterance.");
+                API.sendChatMessageToPlayer(player, "You aren't at an enteraction point or entrance.");
                 return;
             }
 
@@ -696,10 +696,10 @@ namespace RoleplayServer.resources.property_system
         [Command("buyproperty")]
         public void Buyproperty(Client player)
         {
-            var prop = IsAtPropertyEnterance(player);
+            var prop = IsAtPropertyEntrance(player);
             if (prop == null)
             {
-                API.sendChatMessageToPlayer(player, "You aren't at a property enterance.");
+                API.sendChatMessageToPlayer(player, "You aren't at a property entrance.");
                 return;
             }
 
@@ -726,10 +726,10 @@ namespace RoleplayServer.resources.property_system
         [Command("lockproperty")]
         public void LockProperty(Client player)
         {
-            var prop = IsAtPropertyEnterance(player) ?? IsAtPropertyInteraction(player);
+            var prop = IsAtPropertyEntrance(player) ?? IsAtPropertyInteraction(player);
             if (prop == null)
             {
-                API.sendChatMessageToPlayer(player, "You aren't at an enteraction point or enterance.");
+                API.sendChatMessageToPlayer(player, "You aren't at an enteraction point or entrance.");
                 return;
             }
 
@@ -749,10 +749,10 @@ namespace RoleplayServer.resources.property_system
         [Command("propertyname", GreedyArg = true)]
         public void PropertyName(Client player, string name)
         {
-            var prop = IsAtPropertyEnterance(player) ?? IsAtPropertyInteraction(player);
+            var prop = IsAtPropertyEntrance(player) ?? IsAtPropertyInteraction(player);
             if (prop == null)
             {
-                API.sendChatMessageToPlayer(player, "You aren't at an enteraction point or enterance.");
+                API.sendChatMessageToPlayer(player, "You aren't at an enteraction point or entrance.");
                 return;
             }
 
@@ -771,10 +771,10 @@ namespace RoleplayServer.resources.property_system
         [Command("propertystorage")]
         public void PropertyStorage(Client player)
         {
-            var prop = IsAtPropertyEnterance(player) ?? IsAtPropertyInteraction(player);
+            var prop = IsAtPropertyEntrance(player) ?? IsAtPropertyInteraction(player);
             if (prop == null)
             {
-                API.sendChatMessageToPlayer(player, "You aren't at an interaction point or enterance.");
+                API.sendChatMessageToPlayer(player, "You aren't at an interaction point or entrance.");
                 return;
             }
 

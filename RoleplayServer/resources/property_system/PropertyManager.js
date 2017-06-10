@@ -14,8 +14,8 @@ API.onServerEventTrigger.connect((eventName, args) => {
             editMenu.AddItem(API.createMenuItem("Property Name", "Set the name of property that shows in marker."));
             editMenu.AddItem(API.createMenuItem("Change Type", "Change the type of property."));
             editMenu.AddItem(API.createMenuItem("Supplies", "Set the amount of supplied in business."));
-            editMenu.AddItem(API.createMenuItem("Move Property", "Move enterance."));
-            editMenu.AddItem(API.createMenuItem("Goto Property", "Teleport to enterance."));
+            editMenu.AddItem(API.createMenuItem("Move Property", "Move entrance."));
+            editMenu.AddItem(API.createMenuItem("Goto Property", "Teleport to entrance."));
             editMenu.AddItem(API.createMenuItem("Set main door.", "Set this with the doorid that needs to be locked/unlocked via /lockproperty."));
             editMenu.AddItem(API.createMenuItem("Toggle Teleportable", "Set if person can /enter or not."));
             editMenu.AddItem(API.createMenuItem("Change Teleport Position", "Change the teleport position on /enter."));
@@ -70,7 +70,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
                         break;
 
                     case 4:
-                        API.triggerServerEvent("editproperty_gotoenterance", selID);
+                        API.triggerServerEvent("editproperty_gotoentrance", selID);
                         break;
 
                     case 5:
@@ -151,7 +151,7 @@ API.onUpdate.connect(function() {
     if (API.isControlJustPressed(24)) {
         if (changingPropertyPos === true) {
             changingPropertyPos = false;
-            API.triggerServerEvent("editproperty_setenterancepos", selID);
+            API.triggerServerEvent("editproperty_setentrancepos", selID);
         } 
         else if (changingTeleportPos === true) {
             changingTeleportPos = false;

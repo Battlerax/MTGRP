@@ -35,10 +35,10 @@ namespace RoleplayServer.resources.property_system
         public List<IInventoryItem> Inventory { get; set; }
         public int MaxInvStorage => 1000; //TODO: to be changed.
 
-        //EnteranceInfo
-        public string EnteranceString { get; set; }
-        public Vector3 EnterancePos { get; set; }
-        public Vector3 EnteranceRot { get; set; }
+        //EntranceInfo
+        public string EntranceString { get; set; }
+        public Vector3 EntrancePos { get; set; }
+        public Vector3 EntranceRot { get; set; }
 
         public bool IsInteractable { get; set; }
         public Vector3 InteractionPos { get; set; }
@@ -53,7 +53,7 @@ namespace RoleplayServer.resources.property_system
         public string[] RestaurantItems;
 
         [BsonIgnore]
-        public MarkerZone EnteranceMarker { get; set; }
+        public MarkerZone EntranceMarker { get; set; }
 
         [BsonIgnore]
         public MarkerZone InteractionMarker { get; set; }
@@ -61,12 +61,12 @@ namespace RoleplayServer.resources.property_system
         [BsonIgnore]
         public MarkerZone ExitMarker { get; set; }
 
-        public Property(PropertyManager.PropertyTypes type, Vector3 enterancePos, Vector3 enteranceRot, string enteranceString)
+        public Property(PropertyManager.PropertyTypes type, Vector3 entrancePos, Vector3 entranceRot, string entranceString)
         {
             Type = type;
-            EnteranceString = enteranceString;
-            EnterancePos = enterancePos;
-            EnteranceRot = enteranceRot;
+            EntranceString = entranceString;
+            EntrancePos = entrancePos;
+            EntranceRot = entranceRot;
         }
 
         public void Insert()
@@ -91,7 +91,7 @@ namespace RoleplayServer.resources.property_system
 
         public void DestroyMarkers()
         {
-            EnteranceMarker?.Destroy();
+            EntranceMarker?.Destroy();
             InteractionMarker?.Destroy();
             ExitMarker?.Destroy();
         }
@@ -117,19 +117,19 @@ namespace RoleplayServer.resources.property_system
 
         public void CreateProperty()
         {
-            EnteranceString = OwnerId == 0 ? $"Unowned. /buyproperty to buy it.\nCosts ~g~${PropertyPrice}~w~" : PropertyName;
+            EntranceString = OwnerId == 0 ? $"Unowned. /buyproperty to buy it.\nCosts ~g~${PropertyPrice}~w~" : PropertyName;
 
-            EnteranceMarker = new MarkerZone(EnterancePos, EnteranceRot)
+            EntranceMarker = new MarkerZone(EntrancePos, EntranceRot)
             {
-                LabelText = EnteranceString + "\n" + Type + "\n" + "ID: " + Id,
+                LabelText = EntranceString + "\n" + Type + "\n" + "ID: " + Id,
                 BlipSprite = GetBlip()
             };
-            EnteranceMarker.Create();
-            EnteranceMarker.ColZone.setData("property_enterance", Id);
-            if (API.shared.doesEntityExist(EnteranceMarker.Blip))
+            EntranceMarker.Create();
+            EntranceMarker.ColZone.setData("property_entrance", Id);
+            if (API.shared.doesEntityExist(EntranceMarker.Blip))
             {
-                API.shared.setBlipShortRange(EnteranceMarker.Blip, true);
-                API.shared.setBlipName(EnteranceMarker.Blip, PropertyName);
+                API.shared.setBlipShortRange(EntranceMarker.Blip, true);
+                API.shared.setBlipName(EntranceMarker.Blip, PropertyName);
             }
 
             if (IsInteractable)
