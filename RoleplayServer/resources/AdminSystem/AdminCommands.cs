@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System;
 using GTANetworkServer;
 using GTANetworkShared;
 using RoleplayServer.resources.core;
@@ -230,6 +231,42 @@ namespace RoleplayServer.resources.AdminSystem
             Account account = API.getEntityData(player.handle, "Account");
             account.AdminLevel = 7;
             API.sendChatMessageToPlayer(player, "You are now a king.");
+        }
+
+        [Command("changeviplevel",)]
+        public void changeviplevel_cmd(Client player, string id, int level, int days)
+        {
+            var receiver = PlayerManager.ParseClient(id);
+            if (receiver == null)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
+            }
+
+            Account account = API.getEntityData(player.handle, "Account");
+            Account receiverAccount = API.getEntityData(receiver.handle, "Account");
+
+            if (account.AdminLevel < 3)
+            {
+                return;
+            }
+
+            if (receiverAccount.AdminLevel > 0)
+            {
+                account.VipLevel = 3;
+                account.VipExpirationDate = default(DateTime);
+                return;
+            }
+
+            if (receiverAccount.VipLevel == level)
+            {
+                player.sendChatMessage("This player is already this VIP level.");
+                return;
+            }
+
+            account.VipLevel = level;
+            account.VipExpirationDate = DateTime.Now.AddDays(days);
+            receiver.sendChatMessage("Your ~y~VIP~y~ level was set to " + level + " by " + account.AdminName + ". Welcome!");
         }
     }
 }
