@@ -566,17 +566,18 @@ namespace RoleplayServer.resources.property_system
 
             if (prop.OwnerId == player.GetCharacter().Id)
             {
+                if (price <= 0)
+                {
+                    API.sendChatMessageToPlayer(player, "[ERROR] Price can't be zero.");
+                    return;
+                }
+
                 switch (prop.Type)
                 {
                     case PropertyTypes.Clothing:
                         if (item == "")
                         {                                                              //0    ,1    ,2          ,3          ,4   ,5   ,6      ,7
                             API.sendChatMessageToPlayer(player, "[ERROR] Choose a type: [Pants,Shoes,Accessories,Undershirts,Tops,Hats,Glasses,Earrings,Bags]");
-                            return;
-                        }
-                        if (price == 0)
-                        {
-                            API.sendChatMessageToPlayer(player, "[ERROR] Price can't be zero.");
                             return;
                         }
 
@@ -627,11 +628,6 @@ namespace RoleplayServer.resources.property_system
                                 API.sendChatMessageToPlayer(player, "[ERROR] Choose a type: [sprunk,custom1,custom2,custom3,custom4]");
                                 return;
                             }
-                            if (price == 0)
-                            {
-                                API.sendChatMessageToPlayer(player, "[ERROR] Price can't be zero.");
-                                return;
-                            }
 
                             switch (item.ToLower())
                             {
@@ -669,11 +665,6 @@ namespace RoleplayServer.resources.property_system
                             }
                             msg = msg.Remove(msg.Length - 1, 1);
                             API.sendChatMessageToPlayer(player, msg);
-                            return;
-                        }
-                        if (price == 0)
-                        {
-                            API.sendChatMessageToPlayer(player, "[ERROR] Price can't be zero.");
                             return;
                         }
 
