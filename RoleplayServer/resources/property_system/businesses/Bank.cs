@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -109,7 +110,7 @@ namespace RoleplayServer.resources.property_system.businesses
         }
 
         [Command("givecheck")]
-        public void GiveCheck_cmd(Client player, string id)
+        public void GiveCheck_cmd(Client player, string id, int amount)
         {
             Client target = PlayerManager.ParseClient(id);
             if (target == null)
@@ -123,8 +124,50 @@ namespace RoleplayServer.resources.property_system.businesses
                 API.sendChatMessageToPlayer(player, "Must be near the target.");
                 return;
             }
+            Character c = player.GetCharacter();
 
-            
+            if (c.BankBalance < amount || amount <= 0)
+            {
+                API.sendChatMessageToPlayer(player, "You don't have that amount in your bank balance.");
+                return;
+            }
+
+            c.BankBalance -= amount;
+            var item = InventoryManager.DoesInventoryHaveItem<CheckItem>(target.GetCharacter());
+            if (item.Length == 0)
+            {
+                InventoryManager.GiveInventoryItem(target.GetCharacter(), new CheckItem() {CheckAmount = amount});
+            }
+            else
+            {
+                item[0].CheckAmount += amount;
+            }
+
+            ChatManager.RoleplayMessage(player, $"hands a check to {target.GetCharacter().rp_name()}.",
+                ChatManager.RoleplayMe);
+        }
+
+        [Command("redeemcheck")]
+        public void Redeemcheck_cmd(Client player)
+        {
+            var prop = PropertyManager.IsAtPropertyInteraction(player);
+            if (prop == null || prop?.Type == PropertyManager.PropertyTypes.Bank)
+            {
+                API.sendChatMessageToPlayer(player, "You aren't at a bank interaction.");
+                return;
+            }
+
+            Character c = player.GetCharacter();
+            var item = InventoryManager.DoesInventoryHaveItem<CheckItem>(c);
+            if (item.Length > 0)
+            {
+                c.BankBalance += item[0].CheckAmount;
+                InventoryManager.DeleteInventoryItem(c, typeof(CheckItem));
+            }
+            else
+            {
+                API.sendChatMessageToPlayer(player, "You don't have a check to redeem.");
+            }
         }
     }
 
@@ -141,18 +184,16 @@ namespace RoleplayServer.resources.property_system.businesses
 
         public int MaxAmount => -1;
 
-        public int AmountOfSlots => 5;
+        public int AmountOfSlots => 0;
 
-        public string CommandFriendlyName => $"check_{FromName}";
+        public string CommandFriendlyName => "check";
 
-        public string LongName => $"Check (${CheckAmount}) From {FromName}";
+        public string LongName => $"Check (${CheckAmount})";
 
         public int Object => 0;
 
         public int Amount { get; set; }
 
         public int CheckAmount { get; set; }
-        public int FromId { get; set; }
-        public string FromName { get; set; }
     }
 }
