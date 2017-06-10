@@ -1,7 +1,4 @@
 #phonebase-image {
-    background: url("phone-base.png");
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
     width: 400px;
     height: 580px;
     z-index:1;

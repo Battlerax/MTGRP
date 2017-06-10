@@ -37,13 +37,23 @@ namespace RoleplayServer.resources.core
             //Local Chat
             if (API.getEntityData(player, "MegaphoneStatus") == true)
             {
-                msg = character.rp_name() + " [MEGAPHONE]: " + msg;
+                msg = "[MEGAPHONE] " + character.rp_name() + " says: " +  msg;
                 NearbyMessage(player, 30, msg);
+                return;
             }
+
+            if (API.getEntityData(player, "MicStatus") == true)
+            {
+                msg = "~p~ [BROADCAST] " + character.CharacterName + " : " + msg;
+                broadcastMessage(msg);
+                return;
+            }
+
             if (account.AdminDuty == 0)
             {
                 msg = character.rp_name() + " says: " + msg;
                 NearbyMessage(player, 15, msg);
+                return;
             }
             else
             {
@@ -51,6 +61,18 @@ namespace RoleplayServer.resources.core
             }
            
             e.Cancel = true;
+        }
+
+        public void broadcastMessage(string msg)
+        {
+            foreach (var i in API.getAllPlayers())
+            {
+                Character character = API.getEntityData(i.handle, "Character");
+                if(character.IsWatchingBroadcast == true)
+                {
+                    API.sendChatMessageToPlayer(i, msg);
+                }
+            }
         }
 
         [Command("newbiechat", Alias = "n", GreedyArg = true)]
@@ -78,6 +100,8 @@ namespace RoleplayServer.resources.core
                 c.NewbieCooldown = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds() + 60;
             }
         }
+
+       
 
         [Command("ooc", Alias = "o", GreedyArg = true)]
         public void ooc_cmd(Client player, string message)
@@ -288,64 +312,6 @@ namespace RoleplayServer.resources.core
             API.shared.sendChatMessageToPlayer(player, Color.Pm, "PM to " + PlayerManager.GetName(receiver) + ": " + text);
             API.shared.sendChatMessageToPlayer(receiver, Color.Pm, "PM from " + PlayerManager.GetName(player) + ": " + text);
         }
-
-
-        /*[Command("pay", GreedyArg = true)]
-        public void pay_cmd(Client player, Client receiver, int amount)
-        {
-            Character playerid = API.shared.getEntityData(player.handle, "Character");
-            Character receiverid = API.shared.getEntityData(receiver.handle, "Character");
-            if (playerid.money < amount)
-            {
-                API.sendChatMessageToPlayer(player, "You don't have that amount on you.");
-                return;
-            }
-
-            if (GetDistanceBetweenPlayers(player, receiver) > 7)
-            {
-                API.sendChatMessageToPlayer(player, "That player is far from you.");
-                return;
-            }
-
-            string messagetoplayer = "You have paid $" + amount + " to " + receiverid.character_name + ".";
-            API.sendChatMessageToPlayer(player, messagetoplayer);
-            string messagetoreceiver = "You have been paid $" + amount + " by" + playerid.character_name + ".";
-            API.sendChatMessageToPlayer(receiver, messagetoreceiver);
-            string autome = playerid.character_name + " has paid " + receiverid.character_name + " some money.";
-            NearbyMessage(player, 10, autome);
-            playerid.money -= amount;
-            receiverid.money += amount;
-        }
-
-
-        [Command("givecheck", GreedyArg = true)]
-        public void givecheck_cmd(Client player, Client receiver, int amount)
-        {
-            Character playerid = API.shared.getEntityData(player.handle, "Character");
-            Character receiverid = API.shared.getEntityData(receiver.handle, "Character");
-            if (playerid.bank_balance < amount)
-            {
-                API.sendChatMessageToPlayer(player, "You don't have that amount in your bank account");
-                return;
-            }
-
-            if (GetDistanceBetweenPlayers(player, receiver) > 7)
-            {
-                API.sendChatMessageToPlayer(player, "That player is far from you.");
-                return;
-            }
-
-
-            string messagetoplayer = "You have given $" + amount + " to " + receiverid.character_name + ". This has been taken from your bank balance.";
-            API.sendChatMessageToPlayer(player, messagetoplayer);
-            string messagetoreceiver = "You have been given a check for $" + amount + " from " + playerid.character_name + ".";
-            API.sendChatMessageToPlayer(receiver, messagetoreceiver);
-            API.sendChatMessageToPlayer(receiver, "You must visit the bank and use /redeemcheck to redeem the check balance.");
-            string autome = playerid.character_name + " signs a check and gives it to " + receiverid.character_name + ".";
-            NearbyMessage(player, 10, autome);
-            playerid.bank_balance -= amount;
-            receiverid.checks += amount;
-        }*/
 
         public const int RoleplayMe = 0;
         public const int RoleplayDo = 1;

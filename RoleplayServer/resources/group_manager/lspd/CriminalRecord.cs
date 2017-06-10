@@ -2,6 +2,7 @@
 using MongoDB.Bson;
 using RoleplayServer.resources.database_manager;
 using System.Collections.Generic;
+using MongoDB.Driver;
 
 namespace RoleplayServer.resources.group_manager.lspd
 {
@@ -29,6 +30,12 @@ namespace RoleplayServer.resources.group_manager.lspd
         public void Insert()
         {
             DatabaseManager.CriminalRecordTable.InsertOne(this);
+        }
+
+        public void Save()
+        {
+            var filter = Builders<CriminalRecord>.Filter.Eq("_id", Id);
+            DatabaseManager.CriminalRecordTable.ReplaceOne(filter, this);
         }
     }
 }
