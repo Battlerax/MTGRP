@@ -55,7 +55,8 @@ namespace RoleplayServer.resources.player_manager
                         character.CharacterName + " from your group has left the server. (" + reason + ")");
                 }
 
-
+                var account = player.GetAccount();
+                account.Save();
                 character.LastPos = player.position;
                 character.LastRot = player.rotation;
                 character.GetTimePlayed(); //Update time played before save.

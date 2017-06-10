@@ -41,6 +41,8 @@ namespace RoleplayServer.resources.player_manager
                     Account account = player.GetAccount();
                     var charName = (string)arguments[0];
 
+                    account.LastIp = player.address;
+
                     if(charName == "Create new character")
                     {
                         charName = (string)arguments[1];
