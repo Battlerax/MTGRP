@@ -73,12 +73,21 @@ namespace RoleplayServer.resources.job_manager.fisher
                         var fish = (Fish) c.CatchingFish;
                         fish.ActualWeight = weight;
 
-                        if (InventoryManager.GiveInventoryItem(c, fish) != InventoryManager.GiveItemErrors.Success)
+                        var status = InventoryManager.GiveInventoryItem(c, fish);
+                        switch (status)
                         {
-                            API.sendChatMessageToPlayer(player,
-                                "An error occured when adding the fish to your inventory.");
+                            case InventoryManager.GiveItemErrors.HasBlockingItem:
+                                API.sendChatMessageToPlayer(player, Color.White, "An error occured while adding fish to inventory: HasBlockingItem");
+                                break;
+                            case InventoryManager.GiveItemErrors.MaxAmountReached:
+                                API.sendChatMessageToPlayer(player, Color.White,
+                                    "You have the max amount of this fish in your inventory.");
+                                break;
+                            case InventoryManager.GiveItemErrors.NotEnoughSpace:
+                                API.sendChatMessageToPlayer(player, Color.White,
+                                    "Your inventory does not have enough space for another fish. You throw the fish back into the water.");
+                                break;
                         }
-                        //c.FishOnHand.Add(c.CatchingFish, (int) weight);
                     }
                     break;
 
