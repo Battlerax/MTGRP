@@ -14,6 +14,7 @@ using RoleplayServer.resources.inventory.bags;
 using RoleplayServer.resources.job_manager.fisher;
 using RoleplayServer.resources.phone_manager;
 using RoleplayServer.resources.player_manager;
+using RoleplayServer.resources.property_system.businesses;
 
 namespace RoleplayServer.resources.inventory
 {
@@ -32,6 +33,8 @@ namespace RoleplayServer.resources.inventory
             BsonClassMap.RegisterClassMap<RopeItem>();
             BsonClassMap.RegisterClassMap<RagsItem>();
             BsonClassMap.RegisterClassMap<SprunkItem>();
+            BsonClassMap.RegisterClassMap<CheckItem>();
+
             #endregion
 
             API.onClientEventTrigger += API_onClientEventTrigger;

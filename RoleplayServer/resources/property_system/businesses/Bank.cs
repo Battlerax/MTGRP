@@ -151,7 +151,7 @@ namespace RoleplayServer.resources.property_system.businesses
         public void Redeemcheck_cmd(Client player)
         {
             var prop = PropertyManager.IsAtPropertyInteraction(player);
-            if (prop == null || prop?.Type == PropertyManager.PropertyTypes.Bank)
+            if (prop == null || prop?.Type != PropertyManager.PropertyTypes.Bank)
             {
                 API.sendChatMessageToPlayer(player, "You aren't at a bank interaction.");
                 return;
@@ -162,6 +162,7 @@ namespace RoleplayServer.resources.property_system.businesses
             if (item.Length > 0)
             {
                 c.BankBalance += item[0].CheckAmount;
+                API.sendChatMessageToPlayer(player, $"You have redemeed ~g~${item[0].CheckAmount}~w~. Balance now is: ~g~${c.BankBalance}");
                 InventoryManager.DeleteInventoryItem(c, typeof(CheckItem));
             }
             else
