@@ -32,7 +32,14 @@ namespace RoleplayServer.resources.core
             {
                 msg = "~y~" + character.rp_name() + " [MEGAPHONE]: " + msg;
                 NearbyMessage(player, 30, msg);
+                return;
+            }
 
+            if (API.getEntityData(player, "MicStatus") == true)
+            {
+                msg = "~p~ [BROADCAST] " + character.CharacterName + " : " + msg;
+                broadcastMessage(msg);
+                return;
             }
             else if (account.AdminDuty == true)
             {
@@ -46,6 +53,18 @@ namespace RoleplayServer.resources.core
                 NearbyMessage(player, 15, msg);
             }
             e.Cancel = true;
+        }
+
+        public void broadcastMessage(string msg)
+        {
+            foreach (var i in API.getAllPlayers())
+            {
+                Character character = API.getEntityData(i.handle, "Character");
+                if(character.IsWatchingBroadcast == true)
+                {
+                    API.sendChatMessageToPlayer(i, msg);
+                }
+            }
         }
 
         [Command("newbiechat", Alias = "n", GreedyArg = true)]
@@ -73,6 +92,8 @@ namespace RoleplayServer.resources.core
                 c.NewbieCooldown = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds() + 60;
             }
         }
+
+       
 
         [Command("ooc", Alias = "o", GreedyArg = true)]
         public void ooc_cmd(Client player, string message)

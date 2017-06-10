@@ -8,7 +8,6 @@ using GTANetworkServer;
 using GTANetworkShared;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.database_manager;
-using RoleplayServer.resources.door_manager;
 using RoleplayServer.resources.inventory;
 using RoleplayServer.resources.player_manager;
 using RoleplayServer.resources.vehicle_manager;

@@ -123,7 +123,7 @@ namespace RoleplayServer.resources.group_manager.lspd
             }
         }
         [Command("recordcrime", GreedyArg = true)]
-        public void recordcrimes_cmd(Client player, string id, string crimeid)
+        public void recordcrimes_cmd(Client player, string id, int crimeid)
         {
             var receiver = PlayerManager.ParseClient(id);
 
@@ -142,17 +142,17 @@ namespace RoleplayServer.resources.group_manager.lspd
                 return;
             }
 
-            receiverCharacter.activeCrime = true;
-            foreach(var i in Crime.Crimes.ToList())
-            {
-                if (crimeid == i.Id.ToString())
-                {
-                    receiverCharacter.RecordCrime(receiverCharacter.CharacterName, character.CharacterName, i);
-                }
-            }
-            API.sendNotificationToPlayer(player, "You have recorded " + receiver.nametag + " for committing a crime.");
-            API.sendNotificationToPlayer(receiver, player.nametag + " has recorded a crime you committed: ~r~" + Crime.Crimes[int.Parse(crimeid)].Name + "~w~.");
+            var crime = Crime.Crimes.Find(c => c.Id == crimeid);
 
+            if (crime == null)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "No crime with that ID exists.");
+                return;
+            }
+
+            receiverCharacter.RecordCrime(character.Id.ToString(), crime);
+            API.sendNotificationToPlayer(player, "You have recorded " + receiver.nametag + " for committing: " + crime.Name);
+            API.sendNotificationToPlayer(receiver, player.nametag + " has recorded a crime you committed: ~r~" + crime.Name + "~w~.");
         }
 
         [Command("showcriminalrecord", GreedyArg = true)]
@@ -188,9 +188,6 @@ namespace RoleplayServer.resources.group_manager.lspd
                     API.sendChatMessageToPlayer(player, "Type: " + i.Crime.Type + "Crime: " + i.Crime.Name + " Date issued: " + i.DateTime + " Recording officer: " + i.OfficerId);
                 }
             }
-
-
-
         }
 
         [Command("listcrimes")]
@@ -210,8 +207,8 @@ namespace RoleplayServer.resources.group_manager.lspd
             }
         }
 
-        [Command("createcrime")]
-        public void createcrime_cmd(Client player, string type, string crimeName, int jailTime, int fine)
+        [Command("createcrime", GreedyArg=true)]
+        public void createcrime_cmd(Client player, string type, int jailTime, int fine, string crimeName)
         {
             Character character = API.getEntityData(player.handle, "Character");
 
@@ -290,14 +287,10 @@ namespace RoleplayServer.resources.group_manager.lspd
 
             foreach (var c in PlayerManager.Players)
             {
-                foreach(var i in c.GetCriminalRecord())
+                if (c.HasActiveCriminalRecord() > 0)
                 {
-                    if (i.ActiveCrime == true)
-                    {
-                        API.sendChatMessageToPlayer(player, c.CharacterName + " is wanted for " + i.Crime.Name + " .");
-                    }
+                    API.sendChatMessageToPlayer(player, c.CharacterName + " is wanted with " + c.HasActiveCriminalRecord() + " crimes.");
                 }
-
             }
         }
 
@@ -324,7 +317,7 @@ namespace RoleplayServer.resources.group_manager.lspd
                 return;
             }
 
-            if (receiverCharacter.activeCrime == false)
+            if (receiverCharacter.HasActiveCriminalRecord() == 0)
             {
                 API.sendChatMessageToPlayer(player, "This player has no active crimes.");
             }
@@ -350,13 +343,16 @@ namespace RoleplayServer.resources.group_manager.lspd
             int time = 0;
             int fine = 0;
 
-            foreach (var j in receiverCharacter.GetCriminalRecord())
+            var criminalRecord = receiverCharacter.GetCriminalRecord();
+
+            foreach (var j in criminalRecord)
             {
                 if (j.ActiveCrime == true)
                 {
                     time += j.Crime.JailTime;
                     fine += j.Crime.Fine;
                     j.ActiveCrime = false;
+                    j.Save();
                 }
             }
 
@@ -437,6 +433,7 @@ namespace RoleplayServer.resources.group_manager.lspd
                 {
                     API.sendChatMessageToPlayer(player, $"* ~r~{item.LongName}~w~[{item.CommandFriendlyName}] ({item.Amount})");
                 }
+                API.sendChatMessageToPlayer(player, "-------------PLAYER INVENTORY-------------");
             }
             API.sendChatMessageToPlayer(player, "Players must be cuffed or have their hands up before you can frisk them.");
 

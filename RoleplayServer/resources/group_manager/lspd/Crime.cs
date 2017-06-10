@@ -13,7 +13,7 @@ namespace RoleplayServer.resources.group_manager.lspd
         public static List<Crime> Crimes = new List<Crime>();
 
         [BsonId]
-        public ObjectId Id { get; set; }
+        public int Id { get; set; }
 
         public string Type { get; set; }
         public string Name { get; set; }
@@ -49,7 +49,7 @@ namespace RoleplayServer.resources.group_manager.lspd
 
         public static void InsertCrime(string type, string name, int jailTime, int fine)
         {
-            var crime = new Crime(type, name, jailTime, fine);
+            var crime = new Crime(type, name, jailTime, fine) {Id = DatabaseManager.GetNextId("crimes")};
             crime.Insert();
             Crimes.Add(crime);
         }
