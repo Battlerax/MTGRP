@@ -10,6 +10,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.inventory.bags;
+using RoleplayServer.resources.job_manager.fisher;
 using RoleplayServer.resources.phone_manager;
 using RoleplayServer.resources.player_manager;
 
@@ -28,6 +29,7 @@ namespace RoleplayServer.resources.inventory
             BsonClassMap.RegisterClassMap<Money>();
             BsonClassMap.RegisterClassMap<EngineParts>();
             BsonClassMap.RegisterClassMap<SprayPaint>();
+            BsonClassMap.RegisterClassMap<Fish>();
             #endregion
 
             API.onClientEventTrigger += API_onClientEventTrigger;
@@ -50,9 +52,9 @@ namespace RoleplayServer.resources.inventory
 
         public class OnLoseItemEventArgs : EventArgs
         {
-            public Type Item { get; private set; }
+            public IInventoryItem Item { get; private set; }
             public int Amount { get; private set; }
-            public OnLoseItemEventArgs(Type item, int amount)
+            public OnLoseItemEventArgs(IInventoryItem item, int amount)
             {
                 Item = item;
                 Amount = amount;
@@ -80,7 +82,8 @@ namespace RoleplayServer.resources.inventory
             NotEnoughSpace,
             HasBlockingItem,
             MaxAmountReached,
-            Success
+            Success,
+            HasSimilarItem
         }
         private static IInventoryItem CloneItem(IInventoryItem item, int amount = -1)
         {
@@ -121,6 +124,11 @@ namespace RoleplayServer.resources.inventory
             var oldItem = storage.Inventory.FirstOrDefault(x => x.GetType() == item.GetType());
             if (oldItem == null || oldItem.CanBeStacked == false)
             {
+                if (oldItem?.CommandFriendlyName == sentitem.CommandFriendlyName)
+                {
+                    return GiveItemErrors.HasSimilarItem;
+                }
+
                 if (item.MaxAmount != -1 && oldItem?.Amount >= item.MaxAmount)
                 {
                     return GiveItemErrors.MaxAmountReached;
@@ -142,6 +150,11 @@ namespace RoleplayServer.resources.inventory
             }
             else
             {
+                if (sentitem.CanBeStacked && oldItem.CommandFriendlyName == sentitem.CommandFriendlyName)
+                {
+                    return GiveItemErrors.HasSimilarItem;
+                }
+
                 if (item.MaxAmount != -1 && oldItem.Amount >= item.MaxAmount)
                 {
                     return GiveItemErrors.MaxAmountReached;
@@ -239,9 +252,13 @@ namespace RoleplayServer.resources.inventory
             if (storage.Inventory == null) storage.Inventory = new List<IInventoryItem>();
             if (amount == -1)
             {
+                IInventoryItem[] items = storage.Inventory.FindAll(x => x.GetType() == item).ToArray();
                 if (storage.Inventory.RemoveAll(x => x.GetType() == item) > 0)
                 {
-                    OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(item, amount));
+                    foreach (var i in items)
+                    {
+                        OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(i, amount));
+                    }
                     OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item, 0));
                     return true;
                 }
@@ -255,11 +272,23 @@ namespace RoleplayServer.resources.inventory
                 if (itm.Amount <= 0)
                     storage.Inventory.Remove(itm);
 
-                OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(item, amount));
+                OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(itm, amount));
                 OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item, itm.Amount));
                 return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// Removes an item from storage.
+        /// </summary>
+        /// <param name="storage">The storage to remove from.</param>
+        /// <param name="amount">Amount to be removed, -1 for all.</param>
+        /// <param name="predicate">The predicate to be used, can be null for none</param>
+        /// <returns>true if something was removed and false if nothing was removed.</returns>
+        public static bool DeleteInventoryItem<T>(IStorage storage, int amount = -1, Func<IInventoryItem, bool> predicate = null)
+        {
+            return DeleteInventoryItem(storage, typeof(T), amount, predicate);
         }
 
         public static void SetInventoryAmmount(IStorage storage, Type item, int amount)
@@ -465,7 +494,7 @@ namespace RoleplayServer.resources.inventory
 
             //Make sure he does have such amount.
             var sendersItem = DoesInventoryHaveItem(sender, item);
-            if (sendersItem.Length != 1 || sendersItem[0].Amount < amount)
+            if (sendersItem.Length != 1 || sendersItem[0].Amount < amount || amount <= 0)
             {
                 API.sendNotificationToPlayer(player, "You don't have that item or you don't have that amount or there is more than 1 item with that name.");
                 return;
@@ -506,6 +535,9 @@ namespace RoleplayServer.resources.inventory
 
                     //Remove from their inv.
                     DeleteInventoryItem(sender, sendersItem[0].GetType(), amount, x => x == sendersItem[0]);
+
+                    //RP
+                    ChatManager.RoleplayMessage(player, $"gives an item to {target.rp_name()}", ChatManager.RoleplayMe);
                     break;
             }
         }
@@ -517,7 +549,7 @@ namespace RoleplayServer.resources.inventory
 
             //Get in inv.
             var sendersItem = DoesInventoryHaveItem(character, item);
-            if (sendersItem.Length != 1 || sendersItem[0].Amount < amount)
+            if (sendersItem.Length != 1 || sendersItem[0].Amount < amount || amount <= 0)
             {
                 API.sendNotificationToPlayer(player, "You don't have that item or you don't have that amount or there is more than 1 item with that name.");
                 return;
@@ -530,7 +562,11 @@ namespace RoleplayServer.resources.inventory
             }
 
             if (DeleteInventoryItem(character, sendersItem[0].GetType(), amount, x => x == sendersItem[0]))
+            {
                 API.sendNotificationToPlayer(player, "Item(s) was sucessfully dropped.");
+                //RP
+                ChatManager.RoleplayMessage(player, $"drops an item.", ChatManager.RoleplayMe);
+            }
         }
 
         #region Stashing System: 
@@ -543,7 +579,7 @@ namespace RoleplayServer.resources.inventory
 
             //Get in inv.
             var sendersItem = DoesInventoryHaveItem(character, item);
-            if (sendersItem.Length != 1 || sendersItem[0].Amount < amount)
+            if (sendersItem.Length != 1 || sendersItem[0].Amount < amount || amount <= 0)
             {
                 API.sendNotificationToPlayer(player, "You don't have that item or you don't have that amount.");
                 return;
@@ -564,6 +600,8 @@ namespace RoleplayServer.resources.inventory
 
             //Send message.
             API.sendNotificationToPlayer(player, $"You have sucessfully stashed ~g~{amount} {sendersItem[0].LongName}~w~. Use /pickupstash to take it.");
+            //RP
+            ChatManager.RoleplayMessage(player, $"stashs an item.", ChatManager.RoleplayMe);
         }
 
         [Command("pickupstash")]
@@ -598,6 +636,9 @@ namespace RoleplayServer.resources.inventory
                     //Remove object and item from list.
                     API.deleteEntity(items.First().Key);
                     stashedItems.Remove(items.First().Key);
+
+                    //RP
+                    ChatManager.RoleplayMessage(player, $"picks an item from the ground.", ChatManager.RoleplayMe);
                     break;
             }
         }

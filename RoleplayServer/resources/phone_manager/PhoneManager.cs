@@ -8,6 +8,7 @@ using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.database_manager;
+using RoleplayServer.resources.group_manager.lspd.MDC;
 using RoleplayServer.resources.inventory;
 using RoleplayServer.resources.player_manager;
 
@@ -203,6 +204,20 @@ namespace RoleplayServer.resources.phone_manager
                 e.Cancel = true;
                 e.Reason = "Phone";
             }
+            else if (account.AdminDuty == 0 && character.Calling911 == true)
+            {
+                //API.getZoneName(player.position);
+
+                var charitems = InventoryManager.DoesInventoryHaveItem(character, typeof(Phone));
+                var charphone = (Phone)charitems[0];
+
+                MDC.Add911Call(charphone.Number, msg, "Los Santos");
+
+                API.sendChatMessageToPlayer(player, Color.Grey, "911 Operator says: Thank you for reporting your emergency, a unit will be dispatched shortly.");
+                character.Calling911 = false;
+                e.Cancel = true;
+                e.Reason = "Phone";
+            }
         }
 
 
@@ -358,6 +373,14 @@ namespace RoleplayServer.resources.phone_manager
 
             if (IsDigitsOnly(input))
             {
+                if (input.Equals("911", StringComparison.OrdinalIgnoreCase))
+                {
+                    ChatManager.AmeLabelMessage(player, "takes out their phone and presses a few numbers..", 4000);
+                    sender.Calling911 = true;
+                    API.sendChatMessageToPlayer(player, Color.Grey, "911 Operator says: Los Santos Police Department, what is the nature of your emergency?");
+                    return;
+                }
+
                 if (!DoesNumberExist(input))
                 {
                     API.sendChatMessageToPlayer(player, Color.White,

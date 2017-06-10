@@ -33,7 +33,7 @@ namespace RoleplayServer.resources.core
 
         public static int GetCharacterMoney(Character c)
         {
-            return InventoryManager.DoesInventoryHaveItem<Money>(c)?[0]?.Amount ?? 0;
+            return InventoryManager.DoesInventoryHaveItem<Money>(c)?.FirstOrDefault()?.Amount ?? 0;
         }
 }
 }
