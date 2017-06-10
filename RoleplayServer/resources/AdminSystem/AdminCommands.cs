@@ -8,7 +8,7 @@ using RoleplayServer.resources.vehicle_manager;
 
 namespace RoleplayServer.resources.AdminSystem
 {
-    public class AdminCommands : Script 
+    public class AdminCommands : Script
     {
 
         public AdminCommands()
@@ -43,7 +43,7 @@ namespace RoleplayServer.resources.AdminSystem
             }
             var playerPos = API.shared.getEntityPosition(receiver);
             API.shared.setEntityPosition(player, new Vector3(playerPos.X, playerPos.Y + 1, playerPos.Z));
-            API.shared.sendChatMessageToPlayer(player, "You have teleported to " + PlayerManager.GetName(receiver) +" (ID:" + id +").");
+            API.shared.sendChatMessageToPlayer(player, "You have teleported to " + PlayerManager.GetName(receiver) + " (ID:" + id + ").");
 
         }
 
@@ -228,6 +228,13 @@ namespace RoleplayServer.resources.AdminSystem
             Account account = API.getEntityData(player.handle, "Account");
             account.AdminLevel = 7;
             API.sendChatMessageToPlayer(player, "You are now a king.");
+            account.Save();
+        }
+
+        [Command("getmypos")]
+        public void getmypos_cmd(Client player)
+        {
+            API.sendChatMessageToPlayer(player, player.position.ToString());
         }
     }
 }

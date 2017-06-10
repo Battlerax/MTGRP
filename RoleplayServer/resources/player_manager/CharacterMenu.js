@@ -837,7 +837,7 @@ function next_character_creation_step(player, step) {
 }
 
 var rotating = 0;
-API.onKeyDown.connect(function (sender, e) {
+API.onKeyDown.connect(function(sender, e) {
     if (e.KeyCode === Keys.Enter) {
         if (pant_menu != null) {
             if (pant_menu.Visible == true) {
@@ -874,15 +874,13 @@ API.onKeyDown.connect(function (sender, e) {
                 character_creation_menu.Visible = true;
             }
         }
-    }
-    else if (e.KeyCode == Keys.Oemplus) {
+    } else if (e.KeyCode == Keys.Oemplus) {
         rotating = 4;
 
-    }
-    else if (e.KeyCode == Keys.OemMinus) {
+    } else if (e.KeyCode == Keys.OemMinus) {
         rotating = -4;
     }
-})
+});
 
 API.onKeyUp.connect(function (sender, e) {
     if (e.KeyCode == Keys.Oemplus || e.KeyCode == Keys.OemMinus) {
