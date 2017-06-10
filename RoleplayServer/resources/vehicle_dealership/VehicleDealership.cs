@@ -23,7 +23,7 @@ namespace RoleplayServer.resources.vehicle_dealership
         {
             new[] {"Quad", "-2128233223", "8000"},
             new[] {"Faggio", "-1842748181", "5000"},
-            new[] {"Hexer", "-301427732", "25000"},
+            new[] {"Hexer", "301427732", "25000"},
             new[] {"Sanchez", "788045382", "12000"},
             new[] {"PCJ", "-909201658", "23000"},
             new[] {"Bagger", "-2140431165", "14000"}
