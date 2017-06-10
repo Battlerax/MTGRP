@@ -470,6 +470,7 @@ namespace RoleplayServer.resources.property_system
                     player.position = prop.TargetPos;
                     player.rotation = prop.TargetRot;
                     player.dimension = prop.TargetDimension;
+                    ChatManager.RoleplayMessage(player, $"has entered {prop.PropertyName}.", ChatManager.RoleplayMe);
                 }
                 else
                 {
@@ -490,6 +491,7 @@ namespace RoleplayServer.resources.property_system
                     player.position = prop.EntrancePos;
                     player.rotation = prop.EntranceRot;
                     player.dimension = 0;
+                    ChatManager.RoleplayMessage(player, $"has exited the building.", ChatManager.RoleplayMe);
                 }
                 else
                 {
