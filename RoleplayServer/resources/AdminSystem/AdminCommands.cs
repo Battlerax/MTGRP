@@ -69,7 +69,7 @@ namespace RoleplayServer.resources.AdminSystem
             Character character = API.shared.getEntityData(player.handle, "Character");
             Character receiverCharacter = API.shared.getEntityData(receiver.handle, "Character");
 
-            if (account.AdminLevel == 0)
+            if (account.AdminLevel < 7)
                 return;
 
             if (receiver == null)
