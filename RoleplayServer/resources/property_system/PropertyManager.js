@@ -19,7 +19,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
             editMenu.AddItem(API.createMenuItem("Set main door.", "Set this with the doorid that needs to be locked/unlocked via /lockproperty."));
             editMenu.AddItem(API.createMenuItem("Toggle Teleportable", "Set if person can /enter or not."));
             editMenu.AddItem(API.createMenuItem("Change Teleport Position", "Change the teleport position on /enter."));
-            editMenu.AddItem(API.createMenuItem("Toggle Enteractable", "Set can interact."));
+            editMenu.AddItem(API.createMenuItem("Toggle Interactable", "Set can interact."));
             editMenu.AddItem(API.createMenuItem("Move Interaction Point", "Moves the interaction point."));
             editMenu.AddItem(API.createMenuItem("Toggle Property Locked", "Set property as locked or not."));
             editMenu.AddItem(API.createMenuItem("Set Price", "Set property's price."));

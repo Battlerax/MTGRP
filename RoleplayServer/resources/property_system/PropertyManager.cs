@@ -505,7 +505,7 @@ namespace RoleplayServer.resources.property_system
             var prop = IsAtPropertyEntrance(player) ?? IsAtPropertyInteraction(player);
             if (prop == null)
             {
-                API.sendChatMessageToPlayer(player, "You aren't at an enteraction point or entrance.");
+                API.sendChatMessageToPlayer(player, "You aren't at an interaction point or entrance.");
                 return;
             }
 
@@ -558,7 +558,7 @@ namespace RoleplayServer.resources.property_system
             var prop = IsAtPropertyEntrance(player) ?? IsAtPropertyInteraction(player);
             if (prop == null)
             {
-                API.sendChatMessageToPlayer(player, "You aren't at an enteraction point or entrance.");
+                API.sendChatMessageToPlayer(player, "You aren't at an interaction point or entrance.");
                 return;
             }
 
@@ -729,7 +729,7 @@ namespace RoleplayServer.resources.property_system
             var prop = IsAtPropertyEntrance(player) ?? IsAtPropertyInteraction(player);
             if (prop == null)
             {
-                API.sendChatMessageToPlayer(player, "You aren't at an enteraction point or entrance.");
+                API.sendChatMessageToPlayer(player, "You aren't at an interaction point or entrance.");
                 return;
             }
 
@@ -752,7 +752,7 @@ namespace RoleplayServer.resources.property_system
             var prop = IsAtPropertyEntrance(player) ?? IsAtPropertyInteraction(player);
             if (prop == null)
             {
-                API.sendChatMessageToPlayer(player, "You aren't at an enteraction point or entrance.");
+                API.sendChatMessageToPlayer(player, "You aren't at an interaction point or entrance.");
                 return;
             }
 
