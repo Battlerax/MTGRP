@@ -162,6 +162,7 @@
     <Content Include="resources\core\Items\RagManager.js" />
     <Content Include="resources\door_manager\DoorManager.js" />
     <Content Include="resources\group_manager\lsnn\LowerThird.html" />
+    <Content Include="resources\group_manager\lsnn\LowerThirdChopper.html" />
     <Content Include="resources\group_manager\lsnn\Lsnn.js" />
     <Content Include="resources\group_manager\lspd\MDC\LSPDMDC.png" />
     <Content Include="resources\group_manager\lspd\MDC\MDC.html" />
