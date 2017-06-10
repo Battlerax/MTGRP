@@ -80,6 +80,7 @@
     <Compile Include="resources\AdminSystem\AdminReports.cs" />
     <Compile Include="resources\AdminSystem\PlayerWarns.cs" />
     <Compile Include="resources\component_manager\ComponentManager.cs" />
+    <Compile Include="resources\core\Animations.cs" />
     <Compile Include="resources\core\ChatManager.cs" />
     <Compile Include="resources\core\Color.cs" />
     <Compile Include="resources\core\DebugManager.cs" />

@@ -222,6 +222,8 @@ namespace RoleplayServer.resources.player_manager
 
         public List<IInventoryItem> Inventory { get; set; }
 
+        public bool CanDoAnim { get; set; }
+
         [BsonIgnore]
         public int MaxInvStorage => 100; //TODO: change this later on.
 
