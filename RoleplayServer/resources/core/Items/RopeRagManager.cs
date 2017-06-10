@@ -34,7 +34,7 @@ namespace RoleplayServer.resources.core.Items
                     return;
                 }
 
-                API.setEntityData(target, "IS_TIED", true);
+                target.GetCharacter().IsTied = true;
                 API.freezePlayer(target, true);
                 ChatManager.RoleplayMessage(player, $"ties {target.GetCharacter().rp_name()}", ChatManager.RoleplayMe);
 
@@ -62,13 +62,13 @@ namespace RoleplayServer.resources.core.Items
             }
             if (player.position.DistanceTo(target.position) <= 5.0)
             {
-                if (!API.hasEntityData(target, "IS_TIED"))
+                if (!target.GetCharacter().IsTied)
                 {
                     API.sendChatMessageToPlayer(player, "That player isn't tied.");
                     return;
                 }
                 API.freezePlayer(target, false);
-                API.resetEntityData(target, "IS_TIED");
+                target.GetCharacter().IsTied = false;
                 ChatManager.RoleplayMessage(player, $"unties {target.GetCharacter().rp_name()}", ChatManager.RoleplayMe);
             }
             else
@@ -100,7 +100,7 @@ namespace RoleplayServer.resources.core.Items
                     return;
                 }
 
-                API.setEntityData(target, "IS_BLINDFOLDED", true);
+                target.GetCharacter().IsBlindfolded = true;
                 API.triggerClientEvent(target, "blindfold_intiate");
                 ChatManager.RoleplayMessage(player, $"blindfolds {target.GetCharacter().rp_name()}", ChatManager.RoleplayMe);
 
@@ -128,12 +128,12 @@ namespace RoleplayServer.resources.core.Items
             }
             if (player.position.DistanceTo(target.position) <= 5.0)
             {
-                if (!API.hasEntityData(target, "IS_BLINDFOLDED"))
+                if (!target.GetCharacter().IsBlindfolded)
                 {
                     API.sendChatMessageToPlayer(player, "That player isn't blindfolded.");
                     return;
                 }
-                API.resetEntityData(target, "IS_BLINDFOLDED");
+                target.GetCharacter().IsBlindfolded = false;
                 API.triggerClientEvent(target, "blindfold_cancel");
                 ChatManager.RoleplayMessage(player, $"unblindfolds {target.GetCharacter().rp_name()}", ChatManager.RoleplayMe);
             }
@@ -166,7 +166,7 @@ namespace RoleplayServer.resources.core.Items
                     return;
                 }
 
-                API.setEntityData(target, "IS_MOUTH_RAGGED", true);
+                target.GetCharacter().IsRagged = true;
                 ChatManager.RoleplayMessage(player, $"rags {target.GetCharacter().rp_name()}", ChatManager.RoleplayMe);
 
                 InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(RagsItem), 1);
@@ -193,12 +193,12 @@ namespace RoleplayServer.resources.core.Items
             }
             if (player.position.DistanceTo(target.position) <= 5.0)
             {
-                if (!API.hasEntityData(target, "IS_MOUTH_RAGGED"))
+                if (!target.GetCharacter().IsRagged)
                 {
                     API.sendChatMessageToPlayer(player, "That player isn't ragged.");
                     return;
                 }
-                API.resetEntityData(target, "IS_MOUTH_RAGGED");
+                target.GetCharacter().IsRagged = false;
                 ChatManager.RoleplayMessage(player, $"unrags {target.GetCharacter().rp_name()}", ChatManager.RoleplayMe);
             }
             else
