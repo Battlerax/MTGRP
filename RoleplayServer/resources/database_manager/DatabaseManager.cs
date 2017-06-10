@@ -7,6 +7,7 @@ using RoleplayServer.resources.group_manager.lspd;
 using RoleplayServer.resources.job_manager;
 using RoleplayServer.resources.phone_manager;
 using RoleplayServer.resources.player_manager;
+using RoleplayServer.resources.property_system;
 using RoleplayServer.resources.vehicle_manager;
 
 namespace RoleplayServer.resources.database_manager
@@ -25,7 +26,9 @@ namespace RoleplayServer.resources.database_manager
         public static IMongoCollection<PhoneContact> ContactTable;
         public static IMongoCollection<PhoneMessage> MessagesTable;
         public static IMongoCollection<Group> GroupTable;
+        public static IMongoCollection<Property> PropertyTable;
         public static IMongoCollection<Door> DoorsTable;
+
         public static IMongoCollection<Crime> CrimeTable;
         public static IMongoCollection<CriminalRecord> CriminalRecordTable;
 
@@ -45,7 +48,9 @@ namespace RoleplayServer.resources.database_manager
             ContactTable = _database.GetCollection<PhoneContact>("phonecontacts");
             MessagesTable = _database.GetCollection<PhoneMessage>("phonemessages");
             GroupTable = _database.GetCollection<Group>("groups");
+            PropertyTable = _database.GetCollection<Property>("properties");
             DoorsTable = _database.GetCollection<Door>("doors");
+
             CrimeTable = _database.GetCollection<Crime>("crimes");
             CriminalRecordTable = _database.GetCollection<CriminalRecord>("criminalrecords");
 
@@ -56,11 +61,8 @@ namespace RoleplayServer.resources.database_manager
         {
             var filter = Builders<BsonDocument>.Filter.Eq("_id", tableName);
             var update = Builders<BsonDocument>.Update.Inc("sequence", 1);
-            var result = _countersTable.FindOneAndUpdate(filter, update, new FindOneAndUpdateOptions<BsonDocument> { IsUpsert = true });
-            if (result == null)
-            {
-                return 1;
-            }
+            var result = _countersTable.FindOneAndUpdate(filter, update, new FindOneAndUpdateOptions<BsonDocument> { IsUpsert = true }) ??
+                         _countersTable.FindOneAndUpdate(filter, update, new FindOneAndUpdateOptions<BsonDocument> { IsUpsert = true }); //Not sure why do I need to do this lol but it works.
             return result.GetValue("sequence").ToInt32();
         }
     }

@@ -6,6 +6,7 @@ using MongoDB.Driver;
 using RoleplayServer.resources.core;
 using RoleplayServer.resources.database_manager;
 using RoleplayServer.resources.player_manager;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace RoleplayServer.resources.group_manager
 {
@@ -16,6 +17,7 @@ namespace RoleplayServer.resources.group_manager
 
         public static readonly Group None = new Group();
 
+        [BsonId]
         public int Id { get; set; }
 
         public string Name { get; set; }

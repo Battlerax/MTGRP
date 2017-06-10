@@ -23,7 +23,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 			var wbres = API.getScreenResolution();
 			lowerthird = API.createCefBrowser(wbres.Width, wbres.Height);
 			API.waitUntilCefBrowserInit(lowerthird);
-			API.setCefBrowserPosition(lowerthird, 800, 700);
+			API.setCefBrowserPosition(lowerthird, wbres.Width - 1200, wbres.Height - 300);
 			API.loadPageCefBrowser(lowerthird, "group_manager/lsnn/LowerThird.html");
 			API.setCefDrawState(true);
 	        setToBeCalled("settitle", args[2]);
@@ -43,9 +43,18 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 			setToBeCalled("settitle", args[2]);
 			break;
 
+		case "update_chopper_cam":
+			var wcCamView = API.createCamera(args[0], args[1]);
+			API.attachCameraToEntity(wcCamView, args[3], args[4]);
+			API.setActiveCamera(wcCamView);
+		    API.callNative("0xBB7454BAFF08FE25", args[5], args[6], args[7], 0.0, 0.0, 0.0); 
+			break;
+
 		case "unwatch_broadcast":
 		    API.setActiveCamera(null);
+			if(lowerthird != null){
 		    API.destroyCefBrowser(lowerthird);
+			}
 			API.callNative("0x31B73D1EA9F01DA2");
 			API.setCefDrawState(false);
 		    break;

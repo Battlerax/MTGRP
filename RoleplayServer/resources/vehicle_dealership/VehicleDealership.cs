@@ -91,9 +91,20 @@ namespace RoleplayServer.resources.vehicle_dealership
             new Vector3(-56.77422f, -1097.052f, 26.42235f)
         };
 
+        private List<MarkerZone> _markerZones = new List<MarkerZone>();
         public VehicleDealership()
         {
             API.onClientEventTrigger += API_onClientEventTrigger;
+
+            //Setup the blip.
+            foreach (var loc in _dealershipsLocations)
+            {
+                var marker = new MarkerZone(loc, new Vector3()) {BlipSprite = 100, LabelText = "/buyvehicle"};
+                marker.Create();
+                API.shared.setBlipShortRange(marker.Blip, true);
+                API.shared.setBlipName(marker.Blip, "Vehicle Dealership");
+                _markerZones.Add(marker);
+            }
         }
 
         private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
