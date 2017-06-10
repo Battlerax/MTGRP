@@ -64,6 +64,9 @@ namespace RoleplayServer.resources.vehicle_manager
         public bool IsSpawned { get; set; }
 
         [BsonIgnore]
+        public bool IsVip { get; set; }
+
+        [BsonIgnore]
         public NetHandle Blip { get; set; }
 
         [BsonIgnore]

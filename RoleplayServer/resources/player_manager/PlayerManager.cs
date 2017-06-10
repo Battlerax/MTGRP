@@ -24,6 +24,7 @@ namespace RoleplayServer.resources.player_manager
             DebugManager.DebugMessage("[PlayerM] Player Manager initalized.");
         }
 
+        //TODO: CHANGED ONCE THE LS GOV IS ADDED
         public static int basepaycheck = 500;
         public static int taxationAmount = 4;
         public static int VIPBonusLevelOne = 10;

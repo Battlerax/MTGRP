@@ -399,6 +399,45 @@ namespace RoleplayServer.resources.group_manager.lspd
 
         }
 
+        [Command("cuff", GreedyArg = true)]
+        public void cuff_cmd(Client player, string id)
+        {
+            var receiver = PlayerManager.ParseClient(id);
+
+            Character character = API.getEntityData(player.handle, "Character");
+            Character receivercharacter = API.getEntityData(receiver, "Character");
+
+            if (receiver == null)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
+            }
+
+            if (receiver == player)
+            {
+                API.sendNotificationToPlayer(player, "~r~You can't cuff yourself!");
+            }
+
+            if (API.getEntityPosition(player).DistanceToSquared(API.getEntityPosition(receiver)) > 16f)
+            {
+                API.sendNotificationToPlayer(player, "~r~You're too far away!");
+                return;
+            }
+
+            var isStunned = API.fetchNativeFromPlayer<bool>(player, Hash.IS_PED_BEING_STUNNED, receiver, 0);
+
+            if (receivercharacter.AreHandsUp == false && isStunned == false)
+            {
+                player.sendChatMessage("Players must have their hands up or must be tazed before they can be cuffed.");
+            }
+
+            API.sendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, receivercharacter, true);
+            receivercharacter.IsCuffed = true;
+            API.playPlayerAnimation(receiver, (1 << 0 | 1 << 4 | 1 << 5), "mp_arresting", "idle");
+
+            ChatManager.RoleplayMessage(player, "places handcuffs onto " + receivercharacter.rp_name(), ChatManager.RoleplayMe);
+        }
+
         [Command("frisk", GreedyArg = true)]
         public void frisk_cmd(Client player, string id)
         {

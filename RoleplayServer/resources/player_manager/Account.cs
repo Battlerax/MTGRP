@@ -14,7 +14,7 @@ namespace RoleplayServer.resources.player_manager
         public int AdminLevel { get; set; }
         public string AdminName { get; set; }
         public string AdminPin { get; set; }
-        public int AdminDuty { get; set; }
+        public bool AdminDuty { get; set; }
         public int DevLevel { get; set; }
         public string Password { get; set; }
         public string Salt { get; set; }

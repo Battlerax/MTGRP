@@ -233,7 +233,7 @@ namespace RoleplayServer.resources.AdminSystem
             API.sendChatMessageToPlayer(player, "You are now a king.");
         }
 
-        [Command("changeviplevel",)]
+        [Command("changeviplevel", GreedyArg = true)]
         public void changeviplevel_cmd(Client player, string id, int level, int days)
         {
             var receiver = PlayerManager.ParseClient(id);
@@ -266,7 +266,39 @@ namespace RoleplayServer.resources.AdminSystem
 
             account.VipLevel = level;
             account.VipExpirationDate = DateTime.Now.AddDays(days);
+            account.Save();
+
             receiver.sendChatMessage("Your ~y~VIP~y~ level was set to " + level + " by " + account.AdminName + ". Welcome!");
+            foreach (var p in API.getAllPlayers())
+            {
+                Account paccount = API.getEntityData(p.handle, "Account");
+                
+                if (paccount.VipLevel > 0) { p.sendChatMessage(receiver.GetCharacter().CharacterName + " has become a level " + level + " ~y~VIP~y~!"); }
+            }
+        }
+
+        [Command("addviptime", GreedyArg = true)]
+        public void addviptime_cmd(Client player, string id, string days)
+        {
+            var receiver = PlayerManager.ParseClient(id);
+            if (receiver == null)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
+            }
+
+            Account account = API.getEntityData(player.handle, "Account");
+            Account receiverAccount = API.getEntityData(receiver.handle, "Account");
+
+            if (account.AdminLevel < 3)
+            {
+                return;
+            }
+
+            account.VipExpirationDate = account.VipExpirationDate.AddDays(int.Parse(days));
+            account.Save();
+
+            receiver.sendChatMessage("Your ~y~VIP~y~ days were increased by " + int.Parse(days) + " days by " + account.AdminName + "!");
         }
     }
 }

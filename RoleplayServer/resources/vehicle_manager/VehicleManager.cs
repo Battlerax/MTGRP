@@ -307,17 +307,31 @@ namespace RoleplayServer.resources.vehicle_manager
             API.setBlipTransparency(veh.Blip, 0);
 
             Character character = API.getEntityData(player.handle, "Character");
+            Account account = API.getEntityData(player.handle, "Account");
 
+            //IS A GROUP VEHICLE
             if (veh.Group != null && character.Group != veh.Group && veh.Group != Group.None)
             {
                 {
                     API.sendChatMessageToPlayer(player, "You must be a member of " + veh.Group.Name + " to use this vehicle.");
-                    API.setEntityPosition(player, API.getEntityPosition(vehicleHandle) + new Vector3(-1, 0, 0));
+                    API.warpPlayerOutOfVehicle(player);
                     return;
                 }
             }
-            API.sendChatMessageToPlayer(player, "~w~[VehicleM] You have entered vehicle ~r~" + Vehicles.IndexOf(veh) + "(Owned by: " + PlayerManager.Players.SingleOrDefault(x => x.Id == veh.OwnerId)?.CharacterName + ")");
-            API.sendChatMessageToPlayer(player, "~y~ Press \"N\" on your keyboard to access the vehicle menu.");
+
+            //IS A VIP VEHICLE
+            if (veh.IsVip == true && account.VipLevel <= 1 && API.getPlayerVehicleSeat(player) == -1)
+            {
+                player.sendChatMessage("This is a ~y~VIP~y~ vehicle. You must be a VIP to drive it.");
+                API.warpPlayerOutOfVehicle(player);
+                return;
+            }
+
+            if (account.AdminLevel > 1)
+            {
+                API.sendChatMessageToPlayer(player, "~w~[VehicleM] You have entered vehicle ~r~" + Vehicles.IndexOf(veh) + "(Owned by: " + PlayerManager.Players.SingleOrDefault(x => x.Id == veh.OwnerId)?.CharacterName + ")");
+                API.sendChatMessageToPlayer(player, "~y~ Press \"N\" on your keyboard to access the vehicle menu.");
+            }
 
             //Vehicle Interaction Menu Setup
             var vehInfo = API.getVehicleDisplayName(veh.VehModel) + " - " + veh.LicensePlate;
