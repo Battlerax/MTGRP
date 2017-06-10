@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Timers;
 using GTANetworkServer;
@@ -69,7 +70,15 @@ namespace RoleplayServer.resources.job_manager.fisher
                             "You caught a " + c.CatchingFish.Name + " that weighs " + (int)weight + " pounds. It is worth about $" + c.CatchingFish.calculate_value((int)weight));
                         API.stopPlayerAnimation(player);
 
-                        c.FishOnHand.Add(c.CatchingFish, (int) weight);
+                        var fish = (Fish) c.CatchingFish;
+                        fish.ActualWeight = weight;
+
+                        if (InventoryManager.GiveInventoryItem(c, fish) != InventoryManager.GiveItemErrors.Success)
+                        {
+                            API.sendChatMessageToPlayer(player,
+                                "An error occured when adding the fish to your inventory.");
+                        }
+                        //c.FishOnHand.Add(c.CatchingFish, (int) weight);
                     }
                     break;
 
@@ -128,9 +137,13 @@ namespace RoleplayServer.resources.job_manager.fisher
             Character character = API.getEntityData(player.handle, "Character");
 
             API.sendChatMessageToPlayer(player, Color.White, "----------------------------------------------");
-            foreach (var f in character.FishOnHand)
+            foreach (var f in character.Inventory)
             {
-                API.sendChatMessageToPlayer(player, Color.Grey, f.Key.Name + " - " + f.Value + " pounds");
+                if (f.GetType() == typeof(Fish))
+                {
+                    var fish = (Fish) f;
+                    API.sendChatMessageToPlayer(player, Color.Grey, fish.LongName + " (" + fish.ActualWeight + " lbs)");
+                }
             }
             API.sendChatMessageToPlayer(player, Color.White, "----------------------------------------------");
         }
@@ -160,10 +173,19 @@ namespace RoleplayServer.resources.job_manager.fisher
                 return;
             }
 
-            var totalValue = character.FishOnHand.Sum(f => f.Key.calculate_value(f.Value));
+            var totalValue = 0;
 
+            foreach (var f in character.Inventory)
+            {
+                if (f.GetType() == typeof(Fish))
+                {
+                    var fish = (Fish) f;
+                    totalValue += fish.calculate_value();
+                }
+            }
+
+            InventoryManager.DeleteInventoryItem(character, typeof(Fish));
             InventoryManager.GiveInventoryItem(character, new Money(), totalValue);
-            character.FishOnHand.Clear();
             API.sendChatMessageToPlayer(player, "You have sold all of your fish for $" + totalValue);
         }
 

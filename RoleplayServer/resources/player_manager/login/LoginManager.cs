@@ -57,7 +57,7 @@ namespace RoleplayServer.resources.player_manager.login
                     prepare_character_menu(player);
                     break;
                 }
-                case "admin_pin":
+                case "admin_pin_check":
                 {
                     var adminPin = Convert.ToString(arguments[0]);
 
@@ -79,7 +79,7 @@ namespace RoleplayServer.resources.player_manager.login
                     {
                         API.sendChatMessageToPlayer(player, Color.AdminOrange, "Incorrect pin.");
                         //TO DO: SEND TO ADMIN THEY GOT IT WRONG 
-                        API.triggerClientEvent(player, "admin_pin");
+                        API.triggerClientEvent(player, "admin_pin_check");
                     }
                     break;
                 }
@@ -141,8 +141,9 @@ namespace RoleplayServer.resources.player_manager.login
                             {
                                 API.sendChatMessageToPlayer(player, Color.AdminOrange,
                                     "Welcome back Admin " + account.AdminName);
+                                    API.shared.triggerClientEvent(player, "hide_login_browser");
 
-                                if (account.AdminName.Equals(String.Empty))
+                                if (account.AdminPin.Equals(string.Empty))
                                 {
                                     API.sendChatMessageToPlayer(player, Color.AdminOrange,
                                         "You do not have an admin pin set. Please choose one now: ");
@@ -152,9 +153,9 @@ namespace RoleplayServer.resources.player_manager.login
                                 {
                                     API.sendChatMessageToPlayer(player, Color.AdminOrange,
                                         "Pleae login with your admin pin to continue.");
-                                    API.triggerClientEvent(player, "admin_pin");
+                                    API.triggerClientEvent(player, "admin_pin_check");
                                 }
-
+                               
                             }
                             else
                             {
