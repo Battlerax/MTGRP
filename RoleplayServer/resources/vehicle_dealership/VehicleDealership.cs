@@ -91,17 +91,20 @@ namespace RoleplayServer.resources.vehicle_dealership
             new Vector3(-56.77422f, -1097.052f, 26.42235f)
         };
 
+        private List<MarkerZone> _markerZones = new List<MarkerZone>();
         public VehicleDealership()
         {
             API.onClientEventTrigger += API_onClientEventTrigger;
 
-            //Setup dealership doors.
-            /*
-            int i = API.exported.doormanager.registerDoor(1417577297, new Vector3(-60.54582, -1094.749, 26.88872));
-            API.exported.doormanager.setDoorState(i, false, 1);
-            i = API.exported.doormanager.registerDoor(2059227086, new Vector3(-59.89302, -1092.952, 26.88362));
-            API.exported.doormanager.setDoorState(i, false, 1);
-            */
+            //Setup the blip.
+            foreach (var loc in _dealershipsLocations)
+            {
+                var marker = new MarkerZone(loc, new Vector3()) {BlipSprite = 100, LabelText = "/buyvehicle"};
+                marker.Create();
+                API.shared.setBlipShortRange(marker.Blip, true);
+                API.shared.setBlipName(marker.Blip, "Vehicle Dealership");
+                _markerZones.Add(marker);
+            }
         }
 
         private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
