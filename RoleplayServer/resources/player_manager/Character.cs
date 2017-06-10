@@ -225,6 +225,16 @@ namespace RoleplayServer.resources.player_manager
         [BsonIgnore]
         public int MaxInvStorage => 100; //TODO: change this later on.
 
+        [BsonIgnore]
+        public bool IsTied;
+
+        [BsonIgnore]
+        public bool IsBlindfolded;
+
+        [BsonIgnore]
+        public bool IsRagged;
+
+
         public Character()
         {
             Id = 0;

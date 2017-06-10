@@ -27,8 +27,8 @@ namespace RoleplayServer.resources.phone_manager
         public bool IsBlocking => false;
         public int MaxAmount => 1;
 
-        public string CommandFriendlyName => "phone_" + PhoneName;
-        public string LongName => "Phone " + PhoneName;
+        public string CommandFriendlyName => "phone";
+        public string LongName => "Phone (" + PhoneName + ")";
         public int Object => 0;
 
         #endregion

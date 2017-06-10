@@ -27,32 +27,46 @@ namespace RoleplayServer.resources.core
             Account account = API.getEntityData(player.handle, "Account");
             Character character = API.getEntityData(player.handle, "Character");
 
-            //Local Chat
-            if (API.getEntityData(player, "MegaphoneStatus") == true)
+            if (API.hasEntityData(player, "IS_MOUTH_RAGGED"))
             {
-                msg = "[MEGAPHONE] " + character.rp_name() + " says: " +  msg;
-                NearbyMessage(player, 30, msg);
+                API.sendChatMessageToPlayer(player, "You are ragged.");
+                e.Cancel = true;
                 return;
             }
 
-            if (API.getEntityData(player, "MicStatus") == true)
+            //Local Chat
+            if (API.hasEntityData(player, "MegaphoneStatus"))
             {
-                msg = "~p~ [BROADCAST] " + character.CharacterName + " : " + msg;
-                broadcastMessage(msg);
-                return;
+                if (API.getEntityData(player, "MegaphoneStatus") == true)
+                {
+                    msg = "[MEGAPHONE] " + character.rp_name() + " says: " + msg;
+                    NearbyMessage(player, 30, msg);
+                    e.Cancel = true;
+                    return;
+                }
+            }
+
+            if (API.hasEntityData(player, "MicStatus"))
+            {
+                if (API.getEntityData(player, "MicStatus") == true)
+                {
+                    msg = "~p~ [BROADCAST] " + character.CharacterName + " : " + msg;
+                    broadcastMessage(msg);
+                    e.Cancel = true;
+                    return;
+                }
             }
             if (account.AdminDuty == false)
             {
                 msg = character.rp_name() + " says: " + msg;
                 NearbyMessage(player, 15, msg);
-                return;
+                e.Cancel = true;
             }
             else
             {
                 b_cmd(player, msg);
+                e.Cancel = true;
             }
-           
-            e.Cancel = true;
         }
 
         public void broadcastMessage(string msg)
@@ -227,12 +241,22 @@ namespace RoleplayServer.resources.core
         [Command("shout", Alias = "s", GreedyArg = true)]
         public void shout_cmd(Client player, string text)
         {
+            if (API.hasEntityData(player, "IS_MOUTH_RAGGED"))
+            {
+                API.sendChatMessageToPlayer(player, "You are ragged.");
+                return;
+            }
             NearbyMessage(player, 25, PlayerManager.GetName(player) + " shouts: " + text);
         }
 
         [Command("low", GreedyArg = true)]
         public void low_cmd(Client player, string text)
         {
+            if (API.hasEntityData(player, "IS_MOUTH_RAGGED"))
+            {
+                API.sendChatMessageToPlayer(player, "You are ragged.");
+                return;
+            }
             NearbyMessage(player, 5, PlayerManager.GetName(player) + " whispers: " + text, Color.Grey);
         }
 
@@ -287,6 +311,12 @@ namespace RoleplayServer.resources.core
         [Command("whisper", Alias = "w", GreedyArg = true)]
         public void w_cmd(Client player, string id, string text)
         {
+            if (API.hasEntityData(player, "IS_MOUTH_RAGGED"))
+            {
+                API.sendChatMessageToPlayer(player, "You are ragged.");
+                return;
+            }
+
             var receiver = PlayerManager.ParseClient(id);
 
             if (receiver == null)
