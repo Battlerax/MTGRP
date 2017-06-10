@@ -37,10 +37,12 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GTANetworkServer">
+    <Reference Include="GTANetworkServer, Version=0.1.385.714, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\GTANetworkServer.exe</HintPath>
     </Reference>
-    <Reference Include="GTANetworkShared">
+    <Reference Include="GTANetworkShared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=60c67de1b3b675de, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\GTANetworkShared.dll</HintPath>
     </Reference>
     <Reference Include="MongoDB.Bson, Version=2.4.3.23, Culture=neutral, processorArchitecture=MSIL">
@@ -89,10 +91,10 @@
     <Compile Include="resources\door_manager\DoorManager.cs" />
     <Compile Include="resources\group_manager\Group.cs" />
     <Compile Include="resources\group_manager\GroupManager.cs" />
+    <Compile Include="resources\group_manager\lsnn\Lsnn.cs" />
     <Compile Include="resources\group_manager\lspd\Crime.cs" />
     <Compile Include="resources\group_manager\lspd\CriminalRecord.cs" />
     <Compile Include="resources\group_manager\lspd\Lspd.cs" />
-    <Compile Include="resources\group_manager\lspd\MDC\MDC.cs" />
     <Compile Include="resources\Init.cs" />
     <Compile Include="resources\inventory\bags\BagItem.cs" />
     <Compile Include="resources\inventory\bags\BagManager.cs" />
@@ -139,12 +141,12 @@
     <None Include="tsconfig.json" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="resources\cef_resources\LSPDMDC.png" />
     <Content Include="resources\cef_resources\MTGVRP_LOGO_BIG.png" />
     <Content Include="resources\cef_resources\MTGVRP_LOGO_SMALL.png" />
     <Content Include="resources\door_manager\DoorManager.js" />
-    <Content Include="resources\group_manager\lspd\MDC\LSPDMDC.png" />
-    <Content Include="resources\group_manager\lspd\MDC\MDC.js" />
-    <Content Include="resources\group_manager\lspd\MDC\MDC.html" />
+    <Content Include="resources\group_manager\lsnn\LowerThird.html" />
+    <Content Include="resources\group_manager\lsnn\Lsnn.js" />
     <Content Include="resources\inventory\ManageInv.html" />
     <Content Include="resources\group_manager\lspd\Lspd.js" />
     <Content Include="resources\group_manager\lspd\MDC.html" />
@@ -198,7 +200,6 @@
   <ItemGroup>
     <Content Include="resources\inventory\InventoryManager.js" />
     <TypeScriptCompile Include="resources\group_manager\lspd\LspdLocker.ts" />
-    <TypeScriptCompile Include="resources\group_manager\lspd\MDC\MDC.ts" />
     <TypeScriptCompile Include="resources\job_manager\fisher\Fisher.ts" />
     <TypeScriptCompile Include="resources\job_manager\JobManager.ts" />
     <Content Include="resources\phone_manager\gui\apps\dialpad.html" />

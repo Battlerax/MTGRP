@@ -186,6 +186,11 @@ namespace RoleplayServer.resources.player_manager
         public int unpaidTickets { get; set; }
         public bool radioToggle { get; set; }
 
+        //LSNN Related
+        public bool IsWatchingBroadcast { get; set; }
+        public bool HasMic { get; set; }
+        public bool HasLottoTicket { get; set; }
+        public bool HasCamera { get; set; }
         //Player Interaction
         [BsonIgnore]
         public Character FollowingPlayer { get; set; }
