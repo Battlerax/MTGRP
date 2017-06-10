@@ -215,6 +215,7 @@ namespace RoleplayServer.resources.property_system
                         }
                         prop.EntrancePos = sender.position;
                         prop.EntranceRot = sender.rotation;
+                        prop.EntranceDimension = sender.dimension;
                         prop.Save();
                         prop.UpdateMarkers();
                         API.sendChatMessageToPlayer(sender,
@@ -489,7 +490,7 @@ namespace RoleplayServer.resources.property_system
                 {
                     player.position = prop.EntrancePos;
                     player.rotation = prop.EntranceRot;
-                    player.dimension = 0;
+                    player.dimension = prop.EntranceDimension;
                     ChatManager.RoleplayMessage(player, $"has exited the building.", ChatManager.RoleplayMe);
                 }
                 else

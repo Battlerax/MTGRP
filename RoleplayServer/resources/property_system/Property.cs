@@ -41,6 +41,7 @@ namespace RoleplayServer.resources.property_system
         public string EntranceString { get; set; }
         public Vector3 EntrancePos { get; set; }
         public Vector3 EntranceRot { get; set; }
+        public int EntranceDimension { get; set; }
 
         public bool IsInteractable { get; set; }
         public Vector3 InteractionPos { get; set; }
@@ -121,7 +122,7 @@ namespace RoleplayServer.resources.property_system
         {
             EntranceString = OwnerId == 0 ? $"Unowned. /buyproperty to buy it.\nCosts ~g~${PropertyPrice}~w~" : PropertyName;
 
-            EntranceMarker = new MarkerZone(EntrancePos, EntranceRot)
+            EntranceMarker = new MarkerZone(EntrancePos, EntranceRot, EntranceDimension)
             {
                 LabelText = EntranceString + "\n" + Type + "\n" + "ID: " + Id,
                 BlipSprite = GetBlip()
@@ -146,7 +147,7 @@ namespace RoleplayServer.resources.property_system
 
             if (IsTeleportable)
             {
-                ExitMarker = new MarkerZone(TargetPos, TargetRot) { LabelText = "/exit" };
+                ExitMarker = new MarkerZone(TargetPos, TargetRot, TargetDimension) { LabelText = "/exit" };
                 ExitMarker.Create();
                 ExitMarker.ColZone.setData("property_exit", Id);
             }
