@@ -99,6 +99,7 @@
     <Compile Include="resources\group_manager\lspd\Crime.cs" />
     <Compile Include="resources\group_manager\lspd\CriminalRecord.cs" />
     <Compile Include="resources\group_manager\lspd\Lspd.cs" />
+    <Compile Include="resources\group_manager\lspd\MDC\MDC.cs" />
     <Compile Include="resources\Init.cs" />
     <Compile Include="resources\inventory\bags\BagItem.cs" />
     <Compile Include="resources\inventory\bags\BagManager.cs" />
@@ -158,9 +159,12 @@
     <Content Include="resources\door_manager\DoorManager.js" />
     <Content Include="resources\group_manager\lsnn\LowerThird.html" />
     <Content Include="resources\group_manager\lsnn\Lsnn.js" />
+    <Content Include="resources\group_manager\lspd\MDC\LSPDMDC.png" />
+    <Content Include="resources\group_manager\lspd\MDC\MDC.html" />
+    <Content Include="resources\group_manager\lspd\MDC\MDC.js" />
+    <Content Include="resources\group_manager\lspd\MDC\MDC.ts" />
     <Content Include="resources\inventory\ManageInv.html" />
     <Content Include="resources\group_manager\lspd\Lspd.js" />
-    <Content Include="resources\group_manager\lspd\MDC.html" />
     <Content Include="resources\job_manager\taxi\TaxiJob.js" />
     <Content Include="resources\jquery.js" />
     <Content Include="resources\meta.xml">
