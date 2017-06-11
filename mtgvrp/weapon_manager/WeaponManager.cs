@@ -7,6 +7,7 @@ using RoleplayServer.player_manager;
 using RoleplayServer.group_manager;
 using RoleplayServer.inventory;
 
+namespace RoleplayServer.weapon_manager
 {
     class WeaponManager : Script
     {

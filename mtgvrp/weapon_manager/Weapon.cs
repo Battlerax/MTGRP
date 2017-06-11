@@ -6,6 +6,7 @@ using RoleplayServer.group_manager;
 using RoleplayServer.inventory;
 
 
+namespace RoleplayServer.weapon_manager
 {
     public class Weapon : IInventoryItem
     {
