@@ -41,11 +41,11 @@ API.onServerEventTrigger.connect((eventName, args) => {
             vehDealerList.Visible = true;
 
             //Set.
-            API.callNative("0xBB7454BAFF08FE25", 230.5009, -990.5709, -99.49818, 0.0, 0.0, 0.0); //STREAMING::_SET_FOCUS_AREA
             API.setEntityPositionFrozen(API.getLocalPlayer(), true);
             var newCamera = API.createCamera(new Vector3(223.5987, -990.639, -96.99989), new Vector3(0, 0, 0));
             API.setActiveCamera(newCamera);
             API.pointCameraAtPosition(newCamera, new Vector3(230.5009, -990.5709, -99.49818));
+	        API.callNative("13507514344510389797", 230.5009, -990.5709, -99.49818, 0.0, 0.0, 0.0); //STREAMING::_SET_FOCUS_AREA
 
             API.sendChatMessage("~g~NOTE: You can use the PLUS and MINUS keys to rotate your vehicle!");
 
@@ -65,8 +65,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
                     var realArr = JSON.parse(args[index]);
                     if (currentVeh != null)
                         API.deleteEntity(currentVeh);
-                    currentVeh = API.createVehicle(parseInt(realArr[oindex][1]), new Vector3(230.5009, -990.5709, -99.49818), 0);
-                    API.setEntityRotation(currentVeh, new Vector3(0.03913954, -0.07241886, 179.1236));
+                    currentVeh = API.createVehicle(parseInt(realArr[oindex][1]), new Vector3(230.5009, -990.5709, -99.49818), new Vector3(0.03913954, -0.07241886, 179.1236));
                 });
 
                 currentVehicleList.OnMenuClose.connect(function (closesender) {
@@ -78,7 +77,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
                 API.setEntityPositionFrozen(API.getLocalPlayer(), false);
                 if (currentVeh != null)
                     API.deleteEntity(currentVeh);
-                API.callNative("0x31B73D1EA9F01DA2"); //STREAMING::CLEAR_FOCUS
+                API.callNative("3582399230505917858"); //STREAMING::CLEAR_FOCUS
                 API.setActiveCamera(null);
                 vehDealerList = null;
                 currentVehicleList = null;
@@ -89,7 +88,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
             API.setEntityPositionFrozen(API.getLocalPlayer(), false);
             if (currentVeh != null)
                 API.deleteEntity(currentVeh);
-            API.callNative("0x31B73D1EA9F01DA2"); //STREAMING::CLEAR_FOCUS
+            API.callNative("3582399230505917858"); //STREAMING::CLEAR_FOCUS
             API.setActiveCamera(null);
             vehDealerList = null;
             currentVehicleList = null;

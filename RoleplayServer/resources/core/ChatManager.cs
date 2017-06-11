@@ -27,7 +27,7 @@ namespace RoleplayServer.resources.core
             Account account = API.getEntityData(player.handle, "Account");
             Character character = API.getEntityData(player.handle, "Character");
 
-            if (API.hasEntityData(player, "IS_MOUTH_RAGGED"))
+            if (character.IsRagged)
             {
                 API.sendChatMessageToPlayer(player, "You are ragged.");
                 e.Cancel = true;

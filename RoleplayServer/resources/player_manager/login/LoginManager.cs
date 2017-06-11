@@ -143,7 +143,7 @@ namespace RoleplayServer.resources.player_manager.login
                             {
                                 API.sendChatMessageToPlayer(player, Color.AdminOrange,
                                     "Welcome back Admin " + account.AdminName);
-                                    API.shared.triggerClientEvent(player, "hide_login_browser");
+                                API.shared.triggerClientEvent(player, "hide_login_browser");
 
                                 if (account.AdminPin.Equals(string.Empty))
                                 {
