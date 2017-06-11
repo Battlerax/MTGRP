@@ -243,6 +243,36 @@ namespace RoleplayServer.resources.vehicle_manager
             character.DropcarTimer.Stop();
             character.jailTimeLeftTimer.Stop();
         }
+        [Command("lock")]
+        public void Lockvehicle_cmd(Client player)
+        {
+            Vehicle lastVeh = null;
+            float lastPos = 5f;
+            foreach (Vehicle veh in Vehicles)
+            {
+                if(veh.IsSpawned == false) continue;
+                
+                if (API.getEntityPosition(veh.NetHandle).DistanceTo(player.position) < lastPos)
+                {
+                    lastVeh = veh;
+                }
+            }
+
+            if (lastVeh == null) return;
+            if (!DoesPlayerHaveVehicleAccess(player, lastVeh)) return;
+
+            var lockState = API.getVehicleLocked(lastVeh.NetHandle);
+            if (lockState)
+            {
+                API.setVehicleLocked(lastVeh.NetHandle, false);
+                ChatManager.RoleplayMessage(player, "unlocks the doors of the vehicle.", ChatManager.RoleplayMe);
+            }
+            else
+            {
+                API.setVehicleLocked(lastVeh.NetHandle, true);
+                ChatManager.RoleplayMessage(player, "locks the doors of the vehicle.", ChatManager.RoleplayMe);
+            }
+        }
 
         /*
         * 

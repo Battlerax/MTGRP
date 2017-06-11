@@ -51,15 +51,24 @@ namespace RoleplayServer.resources.player_manager
         public List<Weapon> Weapons = new List<Weapon>();
 
         public int Age { get; set; }
+        public int AdminActions { get; set; }
         public string Birthday { get; set; }
         public string Birthplace { get; set; }
 
-        public string playerCrimes{ get; set; }
+        public string playerCrimes { get; set; }
 
         [BsonIgnore]
         public Client Client { get; set; }
 
         public Vehicle LastVehicle { get; set; }
+
+        //Reports
+        public bool IsOnAsk { get; set; }
+        public bool HasActiveAsk { get; set; }
+        public bool HasActiveReport { get; set; }
+        public bool ReportCreated { get; set; }
+        public Timer ReportTimer { get; set; }
+        public DateTime ReportMuteExpires { get; set; }
 
         //Jobs
         public int JobOneId { get; set; }
@@ -87,6 +96,12 @@ namespace RoleplayServer.resources.player_manager
 
         [BsonIgnore]
         public long OocCooldown { get; set; }
+
+        //Chat mutes
+        public DateTime NMutedExpiration { get; set; }
+        public DateTime VMutedExpiration { get; set; }
+        public Timer NMutedTimer { get; set; }
+        public Timer VMutedTimer { get; set; }
 
         //Job zone related
         [BsonIgnore]
@@ -218,8 +233,20 @@ namespace RoleplayServer.resources.player_manager
 
         public List<IInventoryItem> Inventory { get; set; }
 
+        public bool CanDoAnim { get; set; }
+
         [BsonIgnore]
         public int MaxInvStorage => 100; //TODO: change this later on.
+
+        [BsonIgnore]
+        public bool IsTied;
+
+        [BsonIgnore]
+        public bool IsBlindfolded;
+
+        [BsonIgnore]
+        public bool IsRagged;
+
 
         public Character()
         {

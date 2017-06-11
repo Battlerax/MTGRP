@@ -40,9 +40,7 @@ namespace RoleplayServer.resources.component_manager
 
         public static List<Component> ValidFemaleEars = new List<Component>();
         public static List<Component> ValidMaleEars = new List<Component>();
-        
-        
-       
+
         private static int[] _forbiddenMasks = { };
         private static int[] _forbiddenBags = { };
 
@@ -1181,6 +1179,76 @@ namespace RoleplayServer.resources.component_manager
             ValidFemaleEars.Add(new Component(Component.ComponentTypeEars, Character.GenderFemale, 15, new List<int>() { 1, 2, 3 }, "Style 16"));
             ValidFemaleEars.Add(new Component(Component.ComponentTypeEars, Character.GenderFemale, 16, new List<int>() { 1, 2, 3 }, "Style 17"));
             ValidFemaleEars.Add(new Component(Component.ComponentTypeEars, Character.GenderFemale, 17, new List<int>() { 1, 2, 3 }, "Style 18"));
+
+            /* ================ BAGS ================ */
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 0, new List<int>() { 1 }, "None"));
+
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 1, new List<int>() { 1 }, "Colored Bag Size 1"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 2, new List<int>() { 1 }, "Colored Bag Size 2"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 3, new List<int>() { 1 }, "Colored Bag Size 3"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 4, new List<int>() { 1 }, "Colored Bag Size 4"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 5, new List<int>() { 1 }, "Colored Bag Size 5"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 6, new List<int>() { 1 }, "Colored Bag Size 6"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 7, new List<int>() { 1 }, "Colored Bag Size 7"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 19, new List<int>() { 1 }, "Colored Bag Size 8"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 48, new List<int>() { 1 }, "Colored Bag Size 9"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 62, new List<int>() { 1 }, "Colored Bag Size 10"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 63, new List<int>() { 1 }, "Colored Bag Size 11"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 68, new List<int>() { 1 }, "Colored Bag Size 12"));
+
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 10, new List<int>() { 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25, 26 }, "Backback With Flag Size 1"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 11, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 }, "Backback With Flag Size 1"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 12, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 }, "Backback With Flag Size 2"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 13, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 }, "Backback With Flag Size 3"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 14, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 }, "Backback With Flag Size 4"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 15, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 }, "Backback With Flag Size 5"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 16, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 }, "Backback With Flag Size 6"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 17, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 }, "Backback With Flag Size 7"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 18, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 }, "Backback With Flag Size 8"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 49, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 }, "Backback With Flag Size 9"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 64, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 }, "Backback With Flag Size 10"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 67, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 }, "Backback With Flag Size 11"));
+
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 21, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 }, "Backback With Flag 2 Size 1"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 22, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 }, "Backback With Flag 2 Size 2"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 23, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 }, "Backback With Flag 2 Size 3"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 24, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 }, "Backback With Flag 2 Size 4"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 25, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 }, "Backback With Flag 2 Size 5"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 26, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 }, "Backback With Flag 2 Size 6"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 27, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 }, "Backback With Flag 2 Size 7"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 28, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 }, "Backback With Flag 2 Size 8"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 29, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 }, "Backback With Flag 2 Size 9"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 50, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 }, "Backback With Flag 2 Size 10"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 65, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 }, "Backback With Flag 2 Size 11"));
+
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 31, new List<int>() { 1, 2, 3, 4 }, "Colored Bag 2 Size 1"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 32, new List<int>() { 1, 2, 3, 4 }, "Colored Bag 2 Size 2"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 33, new List<int>() { 1, 2, 3, 4 }, "Colored Bag 2 Size 3"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 34, new List<int>() { 1, 2, 3, 4 }, "Colored Bag 2 Size 4"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 35, new List<int>() { 1, 2, 3, 4 }, "Colored Bag 2 Size 5"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 36, new List<int>() { 1, 2, 3, 4 }, "Colored Bag 2 Size 6"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 37, new List<int>() { 1, 2, 3, 4 }, "Colored Bag 2 Size 7"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 38, new List<int>() { 1, 2, 3, 4 }, "Colored Bag 2 Size 8"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 39, new List<int>() { 1, 2, 3, 4 }, "Colored Bag 2 Size 9"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 51, new List<int>() { 1, 2, 3, 4 }, "Colored Bag 2 Size 10"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 66, new List<int>() { 1, 2, 3, 4 }, "Colored Bag 2 Size 11"));
+
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 40, new List<int>() { 1 }, "Duffle Bag 1"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 41, new List<int>() { 1 }, "Duffle Bag 2"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 44, new List<int>() { 1 }, "Duffle Bag 3"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 45, new List<int>() {1}, "Duffle Bag 4"));
+
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 52, new List<int>() { 1,2,3,4,5,6,7,8,9 }, "Colored Bag 3 Size 1"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 53, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, "Colored Bag 3 Size 2"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 54, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, "Colored Bag 3 Size 3"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 55, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, "Colored Bag 3 Size 4"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 56, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, "Colored Bag 3 Size 5"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 57, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, "Colored Bag 3 Size 6"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 58, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, "Colored Bag 3 Size 7"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 59, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, "Colored Bag 3 Size 8"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 60, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, "Colored Bag 3 Size 9"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 61, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, "Colored Bag 3 Size 10"));
+            ValidBags.Add(new Component(Component.ComponentTypeBags, 0, 69, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, "Colored Bag 3 Size 11"));
 
             DebugManager.DebugMessage("[ComponentM] Component Manager initialized!");
         }

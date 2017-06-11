@@ -3,18 +3,22 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using RoleplayServer.resources.database_manager;
+using RoleplayServer.resources.AdminSystem;
+using System.Collections.Generic;
 
 namespace RoleplayServer.resources.player_manager
 {
     public class Account
     {
+        public List<PlayerWarns> PlayerWarns = new List<PlayerWarns>();
         public ObjectId Id { get; set; }
 
         public string AccountName { get; set; }
         public int AdminLevel { get; set; }
         public string AdminName { get; set; }
-        public string AdminPin { get; set; }
+
         public bool AdminDuty { get; set; }
+        public string AdminPin { get; set; }
         public int DevLevel { get; set; }
         public string Password { get; set; }
         public string Salt { get; set; }
@@ -23,6 +27,12 @@ namespace RoleplayServer.resources.player_manager
         public DateTime VipExpirationDate { get; set; }
 
         public string LastIp { get; set; }
+
+        public DateTime TempBanExpiration { get; set; }
+        public bool IsTempbanned { get; set; }
+        public int TempbanLevel { get; set; }
+        public bool IsBanned { get; set; }
+        public string BanReason { get; set; }
 
         [BsonIgnore]
         public bool IsLoggedIn { get; set; }
@@ -58,6 +68,11 @@ namespace RoleplayServer.resources.player_manager
 
                 LastIp = a.LastIp;
 
+                TempbanLevel = a.TempbanLevel;
+                IsBanned = a.IsBanned;
+                PlayerWarns = a.PlayerWarns;
+                TempBanExpiration = a.TempBanExpiration;
+                IsTempbanned = a.IsTempbanned;
                 break;
             }
         }
@@ -70,7 +85,7 @@ namespace RoleplayServer.resources.player_manager
         public void Save()
         {
             var filter = Builders<Account>.Filter.Eq("_id", Id);
-            DatabaseManager.AccountTable.ReplaceOneAsync(filter, this, new UpdateOptions { IsUpsert = true });
+            DatabaseManager.AccountTable.ReplaceOne(filter, this);
         }
 
         public bool is_registered()

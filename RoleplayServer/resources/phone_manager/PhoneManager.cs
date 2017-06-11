@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using GTANetworkServer;
 using MongoDB.Bson;
@@ -204,7 +205,7 @@ namespace RoleplayServer.resources.phone_manager
                 e.Cancel = true;
                 e.Reason = "Phone";
             }
-            else if (account.AdminDuty == 0 && character.Calling911 == true)
+            else if (account.AdminDuty == false && character.Calling911 == true)
             {
                 //API.getZoneName(player.position);
 
@@ -213,8 +214,12 @@ namespace RoleplayServer.resources.phone_manager
 
                 MDC.Add911Call(charphone.Number, msg, "Los Santos");
 
+                var newmsg = "[Phone]" + character.rp_name() + " says: " + msg;
+                ChatManager.NearbyMessage(player, 15, newmsg);
+
                 API.sendChatMessageToPlayer(player, Color.Grey, "911 Operator says: Thank you for reporting your emergency, a unit will be dispatched shortly.");
-                character.Calling911 = false;
+                h_cmd(player);
+
                 e.Cancel = true;
                 e.Reason = "Phone";
             }
@@ -274,7 +279,7 @@ namespace RoleplayServer.resources.phone_manager
             Character character = player.GetCharacter();
             Character talkingTo;
 
-            if (character.InCallWith == Character.None && character.CallingPlayer == Character.None)
+            if (character.InCallWith == Character.None && character.CallingPlayer == Character.None && character.Calling911 == false)
             {
                 API.sendChatMessageToPlayer(player, "You are not on a phone call.");
                 return;
@@ -299,6 +304,12 @@ namespace RoleplayServer.resources.phone_manager
                 API.sendChatMessageToPlayer(talkingTo.Client, "The other party has ended the call.");
                 API.triggerClientEvent(player, "phone_call-closed");
                 API.triggerClientEvent(talkingTo.Client, "phone_call-closed");
+            }
+            else if (character.Calling911 == true)
+            {
+                character.Calling911 = false;
+                API.sendChatMessageToPlayer(player, "You have terminated the call.");
+                API.triggerClientEvent(player, "phone_call-closed");
             }
         }
 
@@ -378,6 +389,7 @@ namespace RoleplayServer.resources.phone_manager
                     ChatManager.AmeLabelMessage(player, "takes out their phone and presses a few numbers..", 4000);
                     sender.Calling911 = true;
                     API.sendChatMessageToPlayer(player, Color.Grey, "911 Operator says: Los Santos Police Department, what is the nature of your emergency?");
+                    API.triggerClientEvent(player, "phone_calling", "LSPD", input);
                     return;
                 }
 
@@ -690,10 +702,27 @@ namespace RoleplayServer.resources.phone_manager
             API.triggerClientEvent(player, "phone_showphone", curTime.Hour, curTime.Minute);
         }
 
-        public bool DoesNumberExist(string num)
+        public static bool DoesNumberExist(string num)
         {
             var filter = Builders<PhoneNumber>.Filter.Eq(x => x.Number, num);
             return DatabaseManager.PhoneNumbersTable.Find(filter).Count() > 0;
+        }
+
+        public static string GetNewNumber(int size = 6)
+        {
+            Random rnd = new Random();
+            RestartNumberGenerate:
+            string number = "";
+            for (int i = 0; i < 6; i++)
+            {
+                var num = rnd.Next(0, 10);
+                number = number + num;
+            }
+            if (DoesNumberExist(number))
+            {
+                goto RestartNumberGenerate;
+            }
+            return number;
         }
     }
 }

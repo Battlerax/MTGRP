@@ -27,7 +27,24 @@ namespace RoleplayServer.resources.core
             Account account = API.getEntityData(player.handle, "Account");
             Character character = API.getEntityData(player.handle, "Character");
 
+            if (character.IsRagged)
+            {
+                API.sendChatMessageToPlayer(player, "You are ragged.");
+                e.Cancel = true;
+                return;
+            }
+
             //Local Chat
+            if (API.hasEntityData(player, "MegaphoneStatus"))
+            {
+                if (API.getEntityData(player, "MegaphoneStatus") == true)
+                {
+                    msg = "[MEGAPHONE] " + character.rp_name() + " says: " + msg;
+                    NearbyMessage(player, 30, msg);
+                    e.Cancel = true;
+                    return;
+                }
+            }
             if (API.getEntityData(player, "MegaphoneStatus") == true)
             {
                 msg = "~y~" + character.rp_name() + " [MEGAPHONE]: " + msg;
@@ -35,24 +52,27 @@ namespace RoleplayServer.resources.core
                 return;
             }
 
-            if (API.getEntityData(player, "MicStatus") == true)
+            if (API.hasEntityData(player, "MicStatus"))
             {
-                msg = "~p~ [BROADCAST] " + character.CharacterName + " : " + msg;
-                broadcastMessage(msg);
-                return;
+                if (API.getEntityData(player, "MicStatus") == true)
+                {
+                    msg = "~p~ [BROADCAST] " + character.CharacterName + " : " + msg;
+                    broadcastMessage(msg);
+                    e.Cancel = true;
+                    return;
+                }
             }
-            else if (account.AdminDuty == true)
-            {
-                b_cmd(player, msg);
-                return;
-
-            }
-            else
+            if (account.AdminDuty == false)
             {
                 msg = character.rp_name() + " says: " + msg;
                 NearbyMessage(player, 15, msg);
+                e.Cancel = true;
             }
-            e.Cancel = true;
+            else
+            {
+                b_cmd(player, msg);
+                e.Cancel = true;
+            }
         }
 
         public void broadcastMessage(string msg)
@@ -71,10 +91,17 @@ namespace RoleplayServer.resources.core
         public void newbie_cmd(Client player, string message)
         {
             Account account = API.getEntityData(player.handle, "Account");
+            Character character = API.getEntityData(player.handle, "Character");
 
             if (NewbieStatus == false && account.AdminLevel == 0)
             {
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~Newbie chat is currently disabled.");
+                return;
+            }
+
+            if (character.VMutedExpiration > DateTime.Now)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~You are muted from newbie chat.");
                 return;
             }
 
@@ -125,6 +152,7 @@ namespace RoleplayServer.resources.core
         public void vip_chat(Client player, string message)
         {
             Account account = API.getEntityData(player.handle, "Account");
+            Character character = API.getEntityData(player.handle, "Character");
 
             if (VipStatus == false && account.AdminLevel == 0)
             {
@@ -132,7 +160,13 @@ namespace RoleplayServer.resources.core
                 return;
             }
 
-            if(account.VipLevel == 0)
+            if (character.VMutedExpiration > DateTime.Now)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~You are muted from VIP chat.");
+                return;
+            }
+
+            if (account.VipLevel == 0)
             {
                 API.sendNotificationToPlayer(player, "~y~You must be a VIP to use VIP chat.");
                 return;
@@ -213,12 +247,22 @@ namespace RoleplayServer.resources.core
         [Command("shout", Alias = "s", GreedyArg = true)]
         public void shout_cmd(Client player, string text)
         {
+            if (API.hasEntityData(player, "IS_MOUTH_RAGGED"))
+            {
+                API.sendChatMessageToPlayer(player, "You are ragged.");
+                return;
+            }
             NearbyMessage(player, 25, PlayerManager.GetName(player) + " shouts: " + text);
         }
 
         [Command("low", GreedyArg = true)]
         public void low_cmd(Client player, string text)
         {
+            if (API.hasEntityData(player, "IS_MOUTH_RAGGED"))
+            {
+                API.sendChatMessageToPlayer(player, "You are ragged.");
+                return;
+            }
             NearbyMessage(player, 5, PlayerManager.GetName(player) + " whispers: " + text, Color.Grey);
         }
 
@@ -236,6 +280,25 @@ namespace RoleplayServer.resources.core
             }
         }
         
+        [Command("admin", Alias = "a", GreedyArg = true)]
+        public void admin_cmd(Client player,  string text)
+        {
+            Account account = API.getEntityData(player.handle, "Account");
+
+            if(account.AdminLevel > 0)
+            {
+                foreach (var c in API.getAllPlayers())
+                {
+                    Account receiverAccount = API.getEntityData(player.handle, "Account");
+
+                    if (receiverAccount.AdminLevel > 0)
+                    {
+                        API.sendChatMessageToPlayer(c, Color.AdminChat, "[A] " + account.AdminName + ": " + text);
+                    }
+                }
+            }
+        }
+
         [Command("rp", GreedyArg = true)]
         public void rp_cmd(Client player, string id, string text)
         {
@@ -254,6 +317,12 @@ namespace RoleplayServer.resources.core
         [Command("whisper", Alias = "w", GreedyArg = true)]
         public void w_cmd(Client player, string id, string text)
         {
+            if (API.hasEntityData(player, "IS_MOUTH_RAGGED"))
+            {
+                API.sendChatMessageToPlayer(player, "You are ragged.");
+                return;
+            }
+
             var receiver = PlayerManager.ParseClient(id);
 
             if (receiver == null)

@@ -115,6 +115,26 @@ namespace RoleplayServer.resources.player_manager.login
 
                         if (hashedPass == account.Password)
                         {
+                            int result = DateTime.Compare(account.TempBanExpiration, DateTime.Now);
+
+                            if (account.IsTempbanned == true && result == 1)
+                            {
+                                API.sendChatMessageToPlayer(player, "~r~You are temp-banned from this server. You will be unbanned in " + (account.TempBanExpiration - DateTime.Now).TotalDays + " days.");
+                                API.sendNotificationToPlayer(player, "~r~You are temp-banned from this server. You will be unbanned in " + (account.TempBanExpiration - DateTime.Now).TotalDays + " days.");
+                                API.kickPlayer(player);
+                                AdminSystem.AdminCommands.sendtoAllAdmins(account.AccountName + "attempted to log in to a temp-banned account.");
+                                return;
+                            }
+                            if (account.IsBanned == true)
+                            {
+                                API.sendChatMessageToPlayer(player, "~r~You are banned from this server. Visit MT-Gaming.com to submit an unban appeal. ");
+                                API.sendNotificationToPlayer(player, "~r~You are banned from this server. Visit MT-Gaming.com to submit an unban appeal.");
+                                API.kickPlayer(player);
+                                AdminSystem.AdminCommands.sendtoAllAdmins(account.AccountName + "attempted to log in to a banned account.");
+                                return;
+                            }
+
+                               
                             API.sendChatMessageToPlayer(player, "~g~ You have successfully logged in!");
 
                             account.IsLoggedIn = true;
@@ -123,7 +143,7 @@ namespace RoleplayServer.resources.player_manager.login
                             {
                                 API.sendChatMessageToPlayer(player, Color.AdminOrange,
                                     "Welcome back Admin " + account.AdminName);
-                                    API.shared.triggerClientEvent(player, "hide_login_browser");
+                                API.shared.triggerClientEvent(player, "hide_login_browser");
 
                                 if (account.AdminPin.Equals(string.Empty))
                                 {
@@ -256,6 +276,27 @@ namespace RoleplayServer.resources.player_manager.login
 
             if (hashedPass == account.Password)
             {
+                int result = DateTime.Compare(account.TempBanExpiration, DateTime.Now);
+
+                if (account.IsTempbanned == true && result == 1)
+                {
+                    API.sendChatMessageToPlayer(player, "~r~You are temp-banned from this server. You will be unbanned in " + (account.TempBanExpiration - DateTime.Now).TotalDays + " days.");
+                    API.sendNotificationToPlayer(player, "~r~You are temp-banned from this server. You will be unbanned in " + (account.TempBanExpiration - DateTime.Now).TotalDays + " days.");
+                    API.kickPlayer(player);
+                    AdminSystem.AdminCommands.sendtoAllAdmins(account.AccountName + "attempted to log in to a temp-banned account.");
+                    return;
+                }
+                if (account.IsBanned == true)
+                {
+                    API.sendChatMessageToPlayer(player, "~r~You are banned from this server for the following reason: ");
+                    API.sendChatMessageToPlayer(player, account.BanReason);
+                    API.sendNotificationToPlayer(player, "~r~You are banned from this server for the following reason: ");
+                    API.sendNotificationToPlayer(player, account.BanReason);
+                    API.kickPlayer(player);
+                    AdminSystem.AdminCommands.sendtoAllAdmins(account.AccountName + "attempted to log in to a banned account.");
+                    return;
+                }
+
                 API.sendChatMessageToPlayer(player, "~g~ You have successfully logged in!");
 
                 account.IsLoggedIn = true;

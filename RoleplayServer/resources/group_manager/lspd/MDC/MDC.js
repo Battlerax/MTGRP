@@ -18,9 +18,8 @@ API.onServerEventTrigger.connect(function (eventName, args) {
             API.setCefDrawState(true);
             API.setCanOpenChat(false);
             API.showCursor(true);
-
-            API.sleep(500);
-            API.triggerServerEvent("requestMdcInformation");
+            API.waitUntilCefBrowserLoaded(mdcBrowser);
+            
             break;
 
         case "add911":
@@ -43,6 +42,11 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 });
 
 //From HTML 
+
+function MdcLoaded() {
+    API.triggerServerEvent("requestMdcInformation");
+    mdcBrowser.call("setImageBackground");
+}
 
 function client_updateMdcAnnoucement(text) {
     API.triggerServerEvent("server_updateMdcAnnouncement", text);

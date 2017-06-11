@@ -151,10 +151,17 @@ namespace RoleplayServer.resources.door_manager
                         int prop;
                         if (int.TryParse((string)arguments[1], out prop))
                         {
-                            //TODO: check for valid property.
-                            door.PropertyId = prop;
-                            door.Save();
-                            API.sendChatMessageToPlayer(sender, "[Door Manager] PropertyID set to " + prop + " for door id:" + door.Id);
+                            if (Door.Doors.Exists(x => x.Id == prop))
+                            {
+                                door.PropertyId = prop;
+                                door.Save();
+                                API.sendChatMessageToPlayer(sender,
+                                    "[Door Manager] PropertyID set to " + prop + " for door id:" + door.Id);
+                            }
+                            else
+                            {
+                                API.sendChatMessageToPlayer(sender, "Invalid door id.");
+                            }
                         }
                     }
                     break;

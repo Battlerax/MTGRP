@@ -69,7 +69,7 @@ namespace RoleplayServer.resources.group_manager.lsnn
 
                         API.triggerClientEvent(c, "unwatch_broadcast");
                         receivercharacter.IsWatchingBroadcast = false;
-                        API.sendChatMessageToPlayer(c, "~p~The LSNN broadcast has concluded.");
+                        API.sendChatMessageToPlayer(player, "~p~" + character.CharacterName + " has stopped the broadcast.");
                     }
                     
                     if (receivercharacter.HasMic == true && receivercharacter.Group.CommandType != Group.CommandTypeLsnn)
@@ -81,12 +81,12 @@ namespace RoleplayServer.resources.group_manager.lsnn
                 return;
             }
             API.sendChatMessageToPlayer(player, "Broadcast started.");
-            API.sendChatMessageToAll("~p~An LSNN broadcast has been started. /watchbroadcast to tune in!");
+            API.sendChatMessageToAll("~p~" + character.CharacterName + " has started a broadcast. /watchbroadcast to tune in!");
             IsBroadcasting = true;
 
         }
 
-        [Command("editheadline")]//Problem with headline CEF
+        [Command("editheadline", GreedyArg = false)]
         public void editbanner_cmd(Client player, string text)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -128,6 +128,7 @@ namespace RoleplayServer.resources.group_manager.lsnn
             CameraPosition = XYInFrontOfPoint(pos, angle, 1) - new Vector3(0, 0, 0.5);
             var camRot = API.getEntityRotation(player.handle) + new Vector3(0, 0, 180);
             API.sendNotificationToPlayer(player, "A camera has been placed on your position.");
+            ChatManager.NearbyMessage(player, 10, "~p~" + character.CharacterName + " sets down a news camera");
             var camera = API.createObject(API.getHashKey("p_tv_cam_02_s"), CameraPosition, CameraRotation);
             character.HasCamera = false;
             CameraSet = true;
@@ -154,11 +155,27 @@ namespace RoleplayServer.resources.group_manager.lsnn
 
             if (chopperCamToggle == true)
             {
-                API.sendNotificationToPlayer(player, "The chopper camera has been turned ~r~off~w~.");
-                CameraSet = false;
-                chopperCamToggle = false;
-                chopperRotation.Stop();
-                return;
+                if (IsBroadcasting == true)
+                {
+                    foreach (var c in API.getAllPlayers())
+                    {
+                        Character receivercharacter = API.getEntityData(c, "Character");
+                        if (receivercharacter.IsWatchingBroadcast)
+                        {
+
+                            API.triggerClientEvent(c, "unwatch_broadcast");
+                            receivercharacter.IsWatchingBroadcast = false;
+                            API.sendChatMessageToPlayer(c, "~p~The LSNN camera has been turned off.");
+                        }
+                    }
+
+                    API.sendNotificationToPlayer(player, "The chopper camera has been turned ~r~off~w~.");
+                    ChatManager.NearbyMessage(player, 10, "~p~" + character.CharacterName + " has turned off the chopper cam.");
+                    CameraSet = false;
+                    chopperCamToggle = false;
+                    chopperRotation.Stop();
+                    return;
+                }
             }
 
             if (CameraSet == true)
@@ -173,10 +190,12 @@ namespace RoleplayServer.resources.group_manager.lsnn
             CameraPosition = API.getEntityPosition(chopper) - new Vector3(0, 0, 3);
             CameraRotation = API.getEntityRotation(chopper);
             API.sendNotificationToPlayer(player, "The chopper camera has been turned ~b~on~w~.");
+            ChatManager.NearbyMessage(player, 10, "~p~" + character.CharacterName + " has turned on the chopper cam.");
             chopperRotation = new Timer { Interval = 3000 };
             chopperRotation.Elapsed += delegate { updateChopperRotation(player); };
             chopperRotation.Start();
         }
+
 
         [Command("pickupcamera")]
         public void pickupcamera_cmd(Client player)
@@ -219,6 +238,7 @@ namespace RoleplayServer.resources.group_manager.lsnn
                         if (player.position.DistanceTo(API.getEntityPosition(v.NetHandle)) < 3f)
                         {
                             API.sendChatMessageToPlayer(player, "You grabbed a camera from the news vehicle.");
+                            ChatManager.NearbyMessage(player, 10, "~p~" + character.CharacterName + " reaches into the news vehicle, pulling out a camera.");
                             character.HasCamera = true;
                             return;
                         }
@@ -230,6 +250,7 @@ namespace RoleplayServer.resources.group_manager.lsnn
 
             var playerPos = API.getEntityPosition(player);
             API.sendNotificationToPlayer(player, "You are carrying a camera.", true);
+            ChatManager.NearbyMessage(player, 10, character.CharacterName + "~p~ picks up the news camera.");
             API.deleteObject(player, playerPos, API.getHashKey("p_tv_cam_02_s"));
             character.HasCamera = true;
             CameraSet = false;
@@ -500,7 +521,7 @@ namespace RoleplayServer.resources.group_manager.lsnn
 
                 if (character.IsWatchingBroadcast)
                 {
-                    API.triggerClientEvent(p, "watch_chopper_broadcast", CameraPosition, CameraRotation, headline, chopper, offSet, FocusX, FocusY, FocusZ);
+                    API.triggerClientEvent(p, "update_chopper_cam", CameraPosition, CameraRotation, headline, chopper, offSet, FocusX, FocusY, FocusZ);
                 }
             }
         }
