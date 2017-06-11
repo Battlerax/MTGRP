@@ -17,7 +17,7 @@ using RoleplayServer.inventory;
 using RoleplayServer.player_manager;
 using RoleplayServer.vehicle_manager;
 
-namespace RoleplayServer.resources
+namespace RoleplayServer
 {
     public class Init : Script
     { 
