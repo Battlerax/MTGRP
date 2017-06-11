@@ -143,7 +143,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="stylesheet\fonts\BebasKai-Regular.otf" />
+    <None Include="stylesheet\fonts\BebasKai-Regular.woff" />
     <None Include="stylesheet\fonts\housescript.woff" />
     <None Include="stylesheet\fonts\housescript.woff2" />
     <None Include="stylesheet\fonts\metro.eot" />
@@ -158,15 +158,19 @@
     <Content Include="cef_resources\MTGVRP_LOGO_SMALL.png" />
     <Content Include="core\Items\RagManager.js" />
     <Content Include="door_manager\DoorManager.js" />
+    <Content Include="group_manager\GroupEditor.html" />
     <Content Include="group_manager\lsnn\LowerThird.html" />
     <Content Include="group_manager\lsnn\LowerThirdChopper.html" />
     <Content Include="group_manager\lsnn\Lsnn.js" />
+    <Content Include="group_manager\lspd\Lspd.ts" />
+    <Content Include="group_manager\lspd\LspdLocker.js" />
     <Content Include="group_manager\lspd\MDC\LSPDMDC.png" />
     <Content Include="group_manager\lspd\MDC\MDC.html" />
     <Content Include="group_manager\lspd\MDC\MDC.js" />
     <Content Include="group_manager\lspd\MDC\MDC.ts" />
     <Content Include="inventory\ManageInv.html" />
     <Content Include="group_manager\lspd\Lspd.js" />
+    <Content Include="job_manager\fisher\Fisher.js" />
     <Content Include="job_manager\taxi\TaxiJob.js" />
     <Content Include="jquery.js" />
     <Content Include="meta.xml">
@@ -186,6 +190,7 @@
     <Content Include="player_manager\login\LoginManager.js" />
     <Content Include="player_manager\PlayerManager.js" />
     <Content Include="player_manager\player_interaction\PlayerInteraction.html" />
+    <Content Include="player_manager\player_interaction\PlayerInteraction.js" />
     <Content Include="player_manager\player_list\PlayerList.html" />
     <Content Include="player_manager\player_list\PlayerList.js" />
     <Content Include="property_system\businesses\Clothing.js" />
@@ -207,6 +212,7 @@
     <Content Include="stylesheet\fonts\metro.svg" />
     <Content Include="stylesheet\js\metro.js" />
     <Content Include="stylesheet\js\metro.min.js" />
+    <Content Include="types-gtanetwork\Enums.js" />
     <Content Include="vehicle_dealership\vehicledealer.js" />
     <Content Include="vehicle_manager\VehicleOwnership.js" />
     <Content Include="vehicle_manager\vehicle_editor\VehicleEdit.js" />
