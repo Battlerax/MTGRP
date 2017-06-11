@@ -150,7 +150,7 @@ namespace RoleplayServer.resources.group_manager.lspd.MDC
         {
             var orderedBolo = ActiveBolos.OrderByDescending(b => b.Time);
 
-            foreach (var b in orderedBolo)
+            foreach (var b in orderedBolo.Reverse())
             {
                 SendBoloToClient(player, b);
             }
@@ -159,7 +159,7 @@ namespace RoleplayServer.resources.group_manager.lspd.MDC
         public void SendAll911ToClient(Client player)
         {
             var ordered911 = Active911s.OrderByDescending(c => c.Time).Take(20);
-            foreach (var c in ordered911)
+            foreach (var c in ordered911.Reverse())
             {
                 Send911ToClient(player, c);
             }

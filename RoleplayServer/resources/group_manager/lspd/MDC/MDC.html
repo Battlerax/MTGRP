@@ -17,12 +17,6 @@
             margin: -100px 0 0 -200px;
             top: 25%;
             left: 35%;
-
-            background-image: url("LSPDMDC.png");
-            background-size: cover;
-            background-repeat: no-repeat;
-
-            background-color: rgba(0, 0, 0, 0.25);
         }
 
         .inner_menu {
@@ -78,7 +72,7 @@
 </head>
 <body>
     
-<div class="panel main_container">
+<div class="panel main_container" id="main">
         
 
     <div class="inner_menu">
@@ -249,6 +243,10 @@
 
 <script>
 
+    $(document).ready(function() {
+        resourceCall("MdcLoaded");
+    });
+
     $('#announcement_menu').click(() => {
         hide_all();
         set_active('#announcement_menu', '#announcement_content');
@@ -274,6 +272,13 @@
         document.getElementById('announcement_textarea_input').value = $('#announcement_text').text();
         set_active('#highcommand_menu', '#highcommand_content');
     });
+
+    function setImageBackground() {
+        $("#main").css("background", 'url("LSPDMDC.png")');
+        $("#main").css("background-repeat", "no-repeat");
+        $("#main").css("background-size", "cover");
+        $("#main").css("background-color", "rgba(0,0,0,0.25");
+    }
 
     function hide_all() {
         $('#announcement_content').css("display", "none");
