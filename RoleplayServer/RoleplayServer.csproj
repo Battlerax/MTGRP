@@ -37,13 +37,11 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GTANetworkServer, Version=0.1.385.714, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\GTANetworkServer.exe</HintPath>
+    <Reference Include="GTANetworkServer">
+      <HintPath>..\..\GTANetworkServer.exe</HintPath>
     </Reference>
-    <Reference Include="GTANetworkShared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=60c67de1b3b675de, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\GTANetworkShared.dll</HintPath>
+    <Reference Include="GTANetworkShared">
+      <HintPath>..\..\GTANetworkShared.dll</HintPath>
     </Reference>
     <Reference Include="MongoDB.Bson, Version=2.4.3.23, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MongoDB.Bson.2.4.3\lib\net45\MongoDB.Bson.dll</HintPath>
