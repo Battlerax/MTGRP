@@ -67,7 +67,7 @@ namespace RoleplayServer.resources.property_system.businesses
                 }
                 else if (prop.Type == PropertyManager.PropertyTypes.Hardware)
                 {
-                    name = ItemManager.TwentyFourSevenItems.Single(x => x[0] == itemName)[1];
+                    name = ItemManager.HardwareItems.Single(x => x[0] == itemName)[1];
                     switch (itemName)
                     {
                         case "phone":
