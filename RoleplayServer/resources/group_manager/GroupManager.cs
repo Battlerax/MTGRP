@@ -232,7 +232,41 @@ namespace RoleplayServer.resources.group_manager
             }
           
             API.sendChatMessageToPlayer(player, Color.White, "You have moved the LSPD locker location.");
-            character.Group.LockerSet = true;
+            return;
+        }
+
+        [Command("setfrontdeskpos")]
+        public void setfrontdeskpos_cmd(Client player)
+        {
+            Character character = API.getEntityData(player.handle, "Character");
+
+            GroupCommandPermCheck(character, 10);
+
+            if (character.Group.Type != Group.CommandTypeLspd)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "Only the LSPD may use this command.");
+                return;
+            }
+
+            if (character.Group.FrontDesk == MarkerZone.None)
+            {
+                character.Group.FrontDesk = new MarkerZone(character.Client.position, character.Client.rotation,
+                    character.Client.dimension)
+                { LabelText = "LSPD Front Desk~n~/paycoptickets" };
+                character.Group.Save();
+                character.Group.FrontDesk.Create();
+            }
+            else
+            {
+                character.Group.FrontDesk.Location = character.Client.position;
+                character.Group.FrontDesk.Rotation = character.Client.rotation;
+                character.Group.FrontDesk.Dimension = character.Client.dimension;
+                character.Group.FrontDesk.LabelText = "LSPD Front Desk~n~/paycoptickets";
+                character.Group.FrontDesk.Refresh();
+                character.Group.Save();
+            }
+
+            API.sendChatMessageToPlayer(player, Color.White, "You have moved the LSPD front desk location.");
             return;
         }
 
@@ -263,6 +297,7 @@ namespace RoleplayServer.resources.group_manager
                 character.Group.ArrestLocation.Location = character.Client.position;
                 character.Group.ArrestLocation.Rotation = character.Client.rotation;
                 character.Group.ArrestLocation.Dimension = character.Client.dimension;
+                character.Group.ArrestLocation.LabelText = "Arrest Location~n~/arrest";
                 character.Group.ArrestLocation.Refresh();
             }
 

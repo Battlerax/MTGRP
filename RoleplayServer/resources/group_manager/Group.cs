@@ -46,6 +46,7 @@ namespace RoleplayServer.resources.group_manager
         public int LottoSafe { get; set; }
         public int LottoPrice { get; set; }
         public bool LockerSet { get; set; }
+        public MarkerZone FrontDesk { get; set; }
         public MarkerZone Locker { get; set; }
         public MarkerZone ArrestLocation { get; set; }
 
@@ -60,6 +61,7 @@ namespace RoleplayServer.resources.group_manager
 
             Locker = MarkerZone.None;
             ArrestLocation = MarkerZone.None;
+            FrontDesk = MarkerZone.None;
         }
 
         public void Insert()
@@ -108,6 +110,70 @@ namespace RoleplayServer.resources.group_manager
                             continue;
                         }
                         c.LockerZoneGroup = Group.None;
+                    }
+                };
+            }
+
+            FrontDesk.Create();
+
+            if (FrontDesk != MarkerZone.None)
+            {
+
+                FrontDesk.ColZone.onEntityEnterColShape += (shape, entity) =>
+                {
+                    if (API.shared.getEntityType(entity) != EntityType.Player)
+                    {
+                        return;
+                    }
+                    foreach (var c in PlayerManager.Players)
+                    {
+                        if (c.Client != entity) { continue; }
+                    }
+                };
+                FrontDesk.ColZone.onEntityExitColShape += (shape, entity) =>
+                {
+                    if (API.shared.getEntityType(entity) != EntityType.Player)
+                    {
+                        return;
+                    }
+                    foreach (var c in PlayerManager.Players)
+                    {
+                        if (c.Client != entity)
+                        {
+                            continue;
+                        }
+                    }
+                };
+            }
+
+            ArrestLocation.Create();
+
+            if (ArrestLocation != MarkerZone.None)
+            {
+
+                ArrestLocation.ColZone.onEntityEnterColShape += (shape, entity) =>
+                {
+                    if (API.shared.getEntityType(entity) != EntityType.Player)
+                    {
+                        return;
+                    }
+                    foreach (var c in PlayerManager.Players)
+                    {
+                        if (c.Client != entity) { continue; }
+                    }
+                };
+                ArrestLocation.ColZone.onEntityExitColShape += (shape, entity) =>
+                {
+                    if (API.shared.getEntityType(entity) != EntityType.Player)
+                    {
+                        return;
+                    }
+                    foreach (var c in PlayerManager.Players)
+                    {
+                        if (c.Client != entity)
+                        {
+                            continue;
+                        }
                     }
                 };
             }
