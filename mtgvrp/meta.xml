@@ -2,7 +2,7 @@
     <info name="Init" author="Chenko" type="gamemode" />
 
 	<!-- MAIN script with all *.cs files. -->
-	<script src="bin/Debug/RoleplayServer.dll" type="server" lang="compiled"/>
+	<script src="bin/Debug/mtgvrp.dll" type="server" lang="compiled"/>
 
 	<!-- BANK -->
 	<script src="rp_scripts/BankMenu.js" type="client" lang="javascript"/>

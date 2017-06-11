@@ -191,7 +191,7 @@ namespace RoleplayServer.phone_manager
                 var charphone = (Phone)charitems[0];
                 var targetphone = (Phone)targetitems[0];
                 var newmsg = "[Phone]" + character.rp_name() + " says: " + msg;
-                ChatManager.NearbyMessage(player, 15, newmsg);
+                ChatManager.NearbyMessage(player, 15, newmsg, Color.Grey);
                 if (targetphone.HasContactWithNumber(charphone.Number))
                 {
                     phonemsg = "[" + targetphone.Contacts.Find(pc => pc.Number == charphone.Number).Name + "]" +
@@ -215,7 +215,7 @@ namespace RoleplayServer.phone_manager
                 Mdc.Add911Call(charphone.Number, msg, "Los Santos");
 
                 var newmsg = "[Phone]" + character.rp_name() + " says: " + msg;
-                ChatManager.NearbyMessage(player, 15, newmsg);
+                ChatManager.NearbyMessage(player, 15, newmsg, Color.Grey);
 
                 API.sendChatMessageToPlayer(player, Color.Grey, "911 Operator says: Thank you for reporting your emergency, a unit will be dispatched shortly.");
                 h_cmd(player);

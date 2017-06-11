@@ -74,6 +74,7 @@ namespace RoleplayServer.player_manager
 
                         API.sendChatMessageToPlayer(player, "Welcome to Los Santos, " + charName + "! Let's get started with what you look like!");
                         API.freezePlayer(player, true);
+                 
                         API.triggerClientEvent(player, "show_character_creation_menu");
                     }
                     else

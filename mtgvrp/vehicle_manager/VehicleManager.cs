@@ -274,6 +274,35 @@ namespace RoleplayServer.vehicle_manager
             }
         }
 
+        [Command("respawnveh")]
+        public void respawnveh_cmd(Client player, string nethandle, bool originalPos = true)
+        {
+            var account = player.GetAccount();
+            if (account.AdminLevel < 4)
+            {
+                return;
+            }
+
+            var vehicle = Vehicles.Find(v => v.NetHandle.ToString() == nethandle);
+            if (vehicle == null)
+            {
+                API.sendChatMessageToPlayer(player, Color.White,
+                    "~r~[ERROR]~w~ No vehicle was found with that nethandle.");
+                return;
+            }
+
+            if (originalPos == true)
+            {
+                vehicle.Respawn();
+            }
+            else
+            {
+                vehicle.Respawn(API.getEntityPosition(vehicle.NetHandle));
+            }
+            API.sendChatMessageToPlayer(player, Color.White, "You have respawned the vehicle with net handle " + nethandle);
+            return;
+        }
+
         /*
         * 
         * ========== CALLBACKS =========

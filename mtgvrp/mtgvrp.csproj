@@ -7,15 +7,15 @@
     <ProjectGuid>{09075C29-31A7-4C4B-9095-0CF5E65DD723}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RoleplayServer</RootNamespace>
-    <AssemblyName>RoleplayServer</AssemblyName>
+    <RootNamespace>mtgvrp</RootNamespace>
+    <AssemblyName>mtgvrp</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -37,11 +37,13 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GTANetworkServer">
-      <HintPath>..\..\GTANetworkServer.exe</HintPath>
+    <Reference Include="GTANetworkServer, Version=0.1.517.602, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\gtanetwork.api.0.1.517.602\lib\GTANetworkServer.exe</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="GTANetworkShared">
-      <HintPath>..\..\GTANetworkShared.dll</HintPath>
+    <Reference Include="GTANetworkShared, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\gtanetwork.api.0.1.517.602\lib\GTANetworkShared.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="MongoDB.Bson, Version=2.4.3.23, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MongoDB.Bson.2.4.3\lib\net45\MongoDB.Bson.dll</HintPath>

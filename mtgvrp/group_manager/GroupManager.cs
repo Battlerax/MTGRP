@@ -27,7 +27,7 @@ namespace RoleplayServer.group_manager
         [Command("listgroups")]
         public void listgroups_cmd(Client player)
         {
-            Account acc = API.getEntityData(player.handle, "Account");
+            Account acc = player.GetAccount();
 
             if (acc.AdminLevel < 4)
                 return;
@@ -44,28 +44,57 @@ namespace RoleplayServer.group_manager
             }
             API.sendChatMessageToPlayer(player, "---------------------------------------------------------------------------------- ");
         }
-        
+
+        [Command("setgroupmapicon", GreedyArg = true)]
+        public void setgroupmapicon_cmd(Client player, int groupId, int mapIconType, string mapIconText = "")
+        {
+            var account = player.GetAccount();
+            if (account.AdminLevel < 5)
+            {
+                return;
+            }
+
+            var group = GetGroupById(groupId);
+            if (group == Group.None)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "~r~[ERROR]~w~ No group found with ID " + groupId);
+                return;
+            }
+
+            group.MapIconId = mapIconType;
+            group.MapIconPos = player.position;
+            group.MapIconText = mapIconText;
+            group.Save();
+            group.UpdateMapIcon();
+            API.sendChatMessageToPlayer(player, Color.Grey,
+                "You have updated " + group.Name + "'s map icon to sprite " + group.MapIconId + " and text: " +
+                group.MapIconText);
+        }
 
         [Command("respawngroupvehicles")]
-        public void respawngroupvehicles_cmd(Client player, string groupId)
+        public void respawngroupvehicles_cmd(Client player, int groupId)
         {
-            Account account = API.getEntityData(player.handle, "Account");
+            var account = player.GetAccount();
 
             if (account.AdminLevel < 4)
             {
                 return;
             }
 
-            int j = 0;
-            foreach(var z in VehicleManager.Vehicles)
+            var group = GetGroupById(groupId);
+            if (group == Group.None)
             {
-                if (z.GroupId == int.Parse(groupId))
-                {
-                    VehicleManager.respawn_vehicle(z);
-                    j++;
-                }
+                API.sendChatMessageToPlayer(player, Color.White, "~r~[ERROR]~w~ No group found with ID " + groupId);
+                return;
             }
-            API.sendChatMessageToPlayer(player, j + string.Format("{0} vehicles have been respawned for group {1}.", j, groupId));
+
+            var vehiclesToRespawn = VehicleManager.Vehicles.FindAll(v => v.Group == group);
+            foreach(var v in vehiclesToRespawn)
+            {
+                v.Respawn();
+            }
+            API.sendChatMessageToPlayer(player,
+                vehiclesToRespawn + " vehicles have been respawned for group: " + group.Name);
         }
 
  
@@ -73,8 +102,8 @@ namespace RoleplayServer.group_manager
         [Command("listgroupvehicles")]
         public void listgroupvehicles_cmd(Client player, string id)
         {
-            Character character = API.getEntityData(player.handle, "Character");
-            Account account = API.getEntityData(player.handle, "Account");
+            Character character = player.GetCharacter();
+            Account account = player.GetAccount();
 
             if (account.AdminLevel < 4)
             {
@@ -95,27 +124,82 @@ namespace RoleplayServer.group_manager
 
         }
 
-        [Command("remoteuninvite")]
-        public void remoteunivite_cmd(Client player, string playername)
+        [Command("uninvite")]
+        public void uninvite_cmd(Client player, string nameToFind)
         {
-            Character sender = API.getEntityData(player.handle, "Character");
+            var character = player.GetCharacter();
 
-            GroupCommandPermCheck(sender, 6);
+            GroupCommandPermCheck(character, 6);
 
-            var filter = Builders<Character>.Filter.Eq("CharacterName", playername);
-            var foundCharacters = DatabaseManager.CharacterTable.Find(filter).ToList();
+            var clientToUninvite = PlayerManager.ParseClient(nameToFind);
 
-            foreach (var c in foundCharacters)
+            if (clientToUninvite == null)
             {
-                if (c.GroupId == sender.GroupId)
+                var filter = Builders<Character>.Filter.Eq("CharacterName", nameToFind);
+                var foundCharacters = DatabaseManager.CharacterTable.Find(filter).ToList();
+
+                if (foundCharacters.Count == 0)
                 {
+                    API.sendChatMessageToPlayer(player, Color.White,
+                        "~r~[ERROR]~w~ No player online or offline found with that name.");
+                    return;
+                }
+
+                foreach (var c in foundCharacters)
+                {
+                    if (c.GroupId != character.GroupId)
+                    {
+                        API.sendChatMessageToPlayer(player, Color.White,
+                            "~r~[ERROR]~w~ That player is not in the same group as you.");
+                        return;
+                    }
+
+                    if (c.GroupRank >= character.GroupRank)
+                    {
+                        API.sendChatMessageToPlayer(player, Color.White,
+                            "~r~[ERROR]~w~ You cannot uninvite the same or higher rank.");
+                        return;
+                    }
+
                     c.GroupId = 0;
-                    c.Group = null;
                     c.GroupRank = 0;
                     c.Save();
+
+                    API.sendChatMessageToPlayer(player, Color.White,
+                        "You have uninvited " + c.CharacterName + " from your group: " + character.Group.Name);
+
+                    SendGroupMessage(player,
+                        c.CharacterName + " has left the group. (Remote-uninvited by " + character.CharacterName + ")");
                 }
-                API.sendChatMessageToPlayer(player, "You have remote-uninvited " + c.CharacterName + " from the " + sender.Group.Name + ".");
-                break;
+            }
+            else
+            {
+                var charToUninvite = clientToUninvite.GetCharacter();
+
+                if (charToUninvite.Group != character.Group)
+                {
+                    API.sendChatMessageToPlayer(player, Color.White,
+                        "~r~[ERROR]~w~ That player is not in the same group as you.");
+                    return;
+                }
+
+                if (charToUninvite.GroupRank >= character.GroupRank)
+                {
+                    API.sendChatMessageToPlayer(player, Color.White,
+                       "~r~[ERROR]~w~ You cannot uninvite the same or higher rank.");
+                    return;
+                }
+
+                charToUninvite.Group = Group.None;
+                charToUninvite.GroupId = 0;
+                charToUninvite.GroupRank = 0;
+                charToUninvite.Save();
+
+                API.sendChatMessageToPlayer(player, Color.White,
+                    "You have uninvited " + charToUninvite.CharacterName + " from your group: " + character.Group.Name);
+
+                SendGroupMessage(player,
+                    charToUninvite.CharacterName + " has left the group. (Uninvited by " + character.CharacterName + ")");
             }
         }
 
@@ -130,7 +214,7 @@ namespace RoleplayServer.group_manager
                 return;
             }
 
-            Character sender = API.getEntityData(player.handle, "Character");
+            Character sender = player.GetCharacter();
             GroupCommandPermCheck(sender, 5);
 
             Character member = API.getEntityData(receiver.handle, "Character");
@@ -175,7 +259,7 @@ namespace RoleplayServer.group_manager
                 return;
             }
 
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
             GroupCommandPermCheck(character, 7);
 
             Character receiverChar = API.getEntityData(receiver.handle, "Character");
@@ -201,110 +285,6 @@ namespace RoleplayServer.group_manager
             }
         }
 
-        [Command("setlockerpos")]
-        public void setlockerpos_cmd(Client player)
-        {
-            Character character = API.getEntityData(player.handle, "Character");
-
-            GroupCommandPermCheck(character, 10);
-
-            if (character.Group.Type != Group.CommandTypeLspd)
-            {
-                API.sendChatMessageToPlayer(player, Color.White, "Only the LSPD may use this command.");
-                return;
-            }
-
-            if (character.Group.Locker == MarkerZone.None)
-            {
-                character.Group.Locker = new MarkerZone(character.Client.position, character.Client.rotation,
-                    character.Client.dimension) {LabelText = "LSPD Locker Room~n~/locker"};
-                character.Group.Save();
-                character.Group.Locker.Create();
-            }
-            else
-            {
-                character.Group.Locker.Location = character.Client.position;
-                character.Group.Locker.Rotation = character.Client.rotation;
-                character.Group.Locker.Dimension = character.Client.dimension;
-                character.Group.Locker.LabelText = "LSPD Locker Room~n~/locker";
-                character.Group.Locker.Refresh();
-                character.Group.Save();
-            }
-          
-            API.sendChatMessageToPlayer(player, Color.White, "You have moved the LSPD locker location.");
-            return;
-        }
-
-        [Command("setfrontdeskpos")]
-        public void setfrontdeskpos_cmd(Client player)
-        {
-            Character character = API.getEntityData(player.handle, "Character");
-
-            GroupCommandPermCheck(character, 10);
-
-            if (character.Group.Type != Group.CommandTypeLspd)
-            {
-                API.sendChatMessageToPlayer(player, Color.White, "Only the LSPD may use this command.");
-                return;
-            }
-
-            if (character.Group.FrontDesk == MarkerZone.None)
-            {
-                character.Group.FrontDesk = new MarkerZone(character.Client.position, character.Client.rotation,
-                    character.Client.dimension)
-                { LabelText = "LSPD Front Desk~n~/paycoptickets" };
-                character.Group.Save();
-                character.Group.FrontDesk.Create();
-            }
-            else
-            {
-                character.Group.FrontDesk.Location = character.Client.position;
-                character.Group.FrontDesk.Rotation = character.Client.rotation;
-                character.Group.FrontDesk.Dimension = character.Client.dimension;
-                character.Group.FrontDesk.LabelText = "LSPD Front Desk~n~/paycoptickets";
-                character.Group.FrontDesk.Refresh();
-                character.Group.Save();
-            }
-
-            API.sendChatMessageToPlayer(player, Color.White, "You have moved the LSPD front desk location.");
-            return;
-        }
-
-        [Command("setarrestpos")]
-        public void setarrestpos_cmd(Client player)
-
-        {
-            Character character = API.getEntityData(player.handle, "Character");
-
-            GroupCommandPermCheck(character, 10);
-
-            if (character.Group.Type != Group.CommandTypeLspd)
-            {
-                API.sendChatMessageToPlayer(player, Color.White, "Only the LSPD may use this command.");
-                return;
-            }
-
-            if (character.Group.ArrestLocation == MarkerZone.None)
-            {
-                character.Group.ArrestLocation = new MarkerZone(character.Client.position, character.Client.rotation,
-                        character.Client.dimension)
-                    {LabelText = "Arrest Location~n~/arrest"};
-
-                character.Group.ArrestLocation.Create();
-            }
-            else
-            {
-                character.Group.ArrestLocation.Location = character.Client.position;
-                character.Group.ArrestLocation.Rotation = character.Client.rotation;
-                character.Group.ArrestLocation.Dimension = character.Client.dimension;
-                character.Group.ArrestLocation.LabelText = "Arrest Location~n~/arrest";
-                character.Group.ArrestLocation.Refresh();
-            }
-
-            API.sendChatMessageToPlayer(player, Color.White, "You have moved the LSPD arrest location.");
-        }
-
-
         [Command("setdivisionrank")]
         public void setdivisionrank_cmd(Client player, string id, int rank)
         {
@@ -321,7 +301,7 @@ namespace RoleplayServer.group_manager
                 return;
             }
 
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
             GroupCommandPermCheck(character, 7, true, 4);
 
             Character receiverChar = API.getEntityData(receiver.handle, "Character");
@@ -361,7 +341,7 @@ namespace RoleplayServer.group_manager
 
             if (GroupCommandPermCheck(API.getEntityData(player.handle, "Character"), 1)){
 
-                Character character = API.getEntityData(player.handle, "Character");
+                Character character = player.GetCharacter();
                 SendGroupMessage(player, "[G][" + character.GroupRank + "] " + GetRankName(character) + " " + character.CharacterName + " : " + "~w~" + message);
             }
         }
@@ -373,7 +353,7 @@ namespace RoleplayServer.group_manager
             if (GroupCommandPermCheck(API.getEntityData(player.handle, "Character"), 1))
             {
 
-                Character character = API.getEntityData(player.handle, "Character");
+                Character character = player.GetCharacter();
 
                 if (character.RadioToggle == false)
                 {
@@ -381,14 +361,18 @@ namespace RoleplayServer.group_manager
                     return;
                 }
 
-                SendRadioMessage(player, "~b~[RADIO][" + character.GroupRank + "] " + GetRankName(character) + " " + character.CharacterName + " : " + "~w~" + message);
+                var radioMsg = "~b~[RADIO][" + character.GroupRank + "] " + GetRankName(character) + " " +
+                               character.CharacterName + " : " + "~w~" + message;
+
+                ChatManager.NearbyMessage(player, 15, radioMsg, Color.Grey);
+                SendRadioMessage(player, radioMsg);
             }
         }
 
         [Command("toggleradio", GreedyArg = true)]
         public void toggleradio_cmd(Client player)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (character.RadioToggle == false)
             {
@@ -407,7 +391,7 @@ namespace RoleplayServer.group_manager
         {
             if (option == "groupinvitation")
             {
-                Character character = API.getEntityData(player.handle, "Character");
+                Character character = player.GetCharacter();
                 Character inviteSender = API.getEntityData(player.handle, "GroupInvitation");
 
                 if (inviteSender == null)
@@ -432,7 +416,7 @@ namespace RoleplayServer.group_manager
         [Command("quitgroup")]
         public void quitgroup_cmd(Client player)
         {
-            Character sender = API.getEntityData(player.handle, "Character");
+            Character sender = player.GetCharacter();
 
             if(sender.GroupId == 0)
             {
@@ -460,7 +444,7 @@ namespace RoleplayServer.group_manager
                 return;
             }
 
-            Character sender = API.getEntityData(player.handle, "Character");
+            Character sender = player.GetCharacter();
             GroupCommandPermCheck(sender, 6);
 
             Character invitedchar = API.getEntityData(invited.handle, "Character");
@@ -474,7 +458,7 @@ namespace RoleplayServer.group_manager
         [Command("setrankname", GreedyArg = true)]
         public void setrankname_cmd(Client player, int rankId, string rankname)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
             GroupCommandPermCheck(character, 5);
                
             
@@ -493,7 +477,7 @@ namespace RoleplayServer.group_manager
         [Command("setdivisionname", GreedyArg = true)]
         public void setdivisionname_cmd(Client player, int divId, string divname)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
             GroupCommandPermCheck(character, 5, true, 4);
 
           
@@ -512,7 +496,7 @@ namespace RoleplayServer.group_manager
         [Command("setdivisionrankname", GreedyArg = true)]
         public void setdivisonrankname_cmd(Client player, int divId, int rankId, string rankName)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
             GroupCommandPermCheck(character, 5, true, 4);
 
             if (divId < 1 || divId > 5)
@@ -538,80 +522,11 @@ namespace RoleplayServer.group_manager
             API.sendChatMessageToPlayer(player, Color.White, "You have changed rank " + (rankId + 1) + "'s name in the " + character.Group.Divisions[divId] + " division to " + rankName);
         }
 
-        [Command("set")]
-        public void set_cmd(Client player, string id, string option, int amount)
-        {
-            var receiver = PlayerManager.ParseClient(id);
-
-            if (receiver == null)
-            {
-                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
-                return;
-            }
-
-            Account account = API.getEntityData(player.handle, "Account");
-           
-            if (account.AdminLevel == 0)
-                return;
-
-            Character character = API.getEntityData(player.handle, "Character");
-
-            switch (option)
-            {
-                case "group":
-                    if (GetGroupById(amount).Type == 1)
-                    {
-                        API.sendChatMessageToPlayer(player, Color.Grey, "You are attempting to set a player into a faction. Use /set faction instead.");
-                        return;
-                    }
-
-                    character.GroupRank = 1;
-                    character.GroupId = amount;
-                    character.Group = GetGroupById(amount);
-                    character.Save();
-                    character.Group.Save();
-                    API.sendChatMessageToPlayer(player, "You have set " + PlayerManager.GetName(receiver) + "[" + id + "]" + "'s group to " + amount + ", " + character.Group.Name + ".");
-                    break;
-
-                case "grouprank":
-                    if (amount < 1 || amount > 10)
-                    {
-                        API.sendChatMessageToPlayer(player, Color.Grey, "Valid group ranks are between 1 and 10.");
-                        return;
-                    }
-
-                    character.GroupRank = amount;
-                    character.Save();
-                    character.Group.Save();
-                    API.sendChatMessageToPlayer(player, "You have set " + PlayerManager.GetName(receiver) + "[" + id + "]" + "'s group rank to " + amount + ".");
-                    break;
-
-                case "faction":
-                    if (GetGroupById(amount).Type == 2)
-                    {
-                        API.sendChatMessageToPlayer(player, Color.Grey, "You are attempting to set a player into a group. Use /set group instead.");
-                        return;
-                    }
-
-                    character.GroupRank = 1;
-                    character.GroupId = amount;
-                    character.Group = GetGroupById(amount);
-                    character.Save();
-                    character.Group.Save();
-                    API.sendChatMessageToPlayer(player, "You have set " + PlayerManager.GetName(receiver) + "[" + id + "]" + "'s faction to " + amount + ", " + character.Group.Name + ".");
-                    break;
-
-                default:
-                    API.sendChatMessageToPlayer(player, Color.White, "Valid options are: group, grouprank, faction");
-                    break;
-            }
-        }
-
         [Command("creategroup", GreedyArg = true)]
         public void creategroup_cmd(Client player, int type, string name, string commandtype = "0")
         {
-        
-            Account account = API.getEntityData(player.handle, "Account");
+
+            Account account = player.GetAccount();
             if (account.AdminLevel < 4)
                 return;
 
@@ -709,6 +624,7 @@ namespace RoleplayServer.group_manager
             foreach (var g in Groups)
             {
                 g.register_markerzones();
+                g.UpdateMapIcon();
             }
 
             DebugManager.DebugMessage("Loaded " + Groups.Count + " groups from the database.");

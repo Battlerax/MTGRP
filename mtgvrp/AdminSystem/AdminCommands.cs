@@ -12,6 +12,7 @@ using RoleplayServer.group_manager.lspd;
 using RoleplayServer.database_manager;
 using RoleplayServer.AdminSystem;
 using MongoDB.Driver;
+using RoleplayServer.group_manager;
 using RoleplayServer.weapon_manager;
 
 namespace RoleplayServer.AdminSystem
@@ -98,6 +99,42 @@ namespace RoleplayServer.AdminSystem
             {
                 API.sendChatMessageToPlayer(player, Color.White, "You cannot set a higher admin level than yours or set someone to a level above yours.");
             }
+        }
+
+        [Command("makemeleader")]
+        public void makemeleader(Client player, string playerid, int groupId)
+        {
+            var account = player.GetAccount();
+            if (account.AdminLevel < 5)
+            {
+                return;
+            }
+
+            var leaderClient = PlayerManager.ParseClient(playerid);
+            if (leaderClient == null)
+            {
+                API.sendChatMessageToPlayer(player, Color.Grey, "~r~[ERROR]~w~ That player is not online.");
+                return;
+            }
+
+            var leaderChar = leaderClient.GetCharacter();
+
+            var group = GroupManager.GetGroupById(groupId);
+            if (group == Group.None)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "~r~[ERROR]~w~ That group ID is not valid.");
+                return;
+            }
+
+            leaderChar.Group = group;
+            leaderChar.GroupRank = 10;
+            leaderChar.Save();
+
+            API.sendChatMessageToPlayer(leaderClient, Color.White, "You have been made the leader of " + group.Name);
+            API.sendChatMessageToPlayer(player, Color.Grey, "You have made " + leaderChar.CharacterName + " the leader of " + group.Name);
+
+            GroupManager.SendGroupMessage(player,
+                leaderChar.CharacterName + " has joined the group. (Made leader by " + player.GetCharacter().CharacterName + ")");
         }
 
         [Command("gotopos")]
