@@ -28,9 +28,7 @@ namespace RoleplayServer.group_manager
 
         public List<string> RankNames = new List<string> { "R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9", "R10" };
         public List<string> Divisions = new List<string> { "D1", "D2", "D3", "D4", "D5" };
-        //public Dictionary<string, Tuple<Vector3, Vector3, VehicleHash, int, int>> GroupVehicles = new Dictionary<string, Tuple<Vector3, Vector3, VehicleHash, int, int>>();
-
-
+       
         public List<List<string>> DivisionRanks = new List<List<string>>
         {
             new List<string> {"DR1", "DR2", "DR3", "DR4", "DR5"},
@@ -50,6 +48,12 @@ namespace RoleplayServer.group_manager
         public MarkerZone Locker { get; set; }
         public MarkerZone ArrestLocation { get; set; }
 
+        public int MapIconId { get; set; }
+        public Vector3 MapIconPos { get; set; }
+        public string MapIconText { get; set; }
+        [BsonIgnore]
+        public Blip MapIcon { get; set; }
+
         public Group()
         {
             Id = 0;
@@ -62,6 +66,10 @@ namespace RoleplayServer.group_manager
             Locker = MarkerZone.None;
             ArrestLocation = MarkerZone.None;
             FrontDesk = MarkerZone.None;
+
+            MapIconId = 0;
+            MapIconPos = new Vector3();
+            MapIconText = string.Empty;
         }
 
         public void Insert()
@@ -76,6 +84,21 @@ namespace RoleplayServer.group_manager
             DatabaseManager.GroupTable.ReplaceOne(filter, this);
         }
 
+        public void UpdateMapIcon()
+        {
+            if (MapIcon == null && MapIconId != 0)
+            {
+                MapIcon = API.shared.createBlip(MapIconPos);
+                API.shared.setBlipSprite(MapIcon, MapIconId);
+                API.shared.setBlipName(MapIcon, MapIconText);
+            }
+            else if(MapIcon != null)
+            {
+                API.shared.setBlipPosition(MapIcon, MapIconPos);
+                API.shared.setBlipSprite(MapIcon, MapIconId);
+                API.shared.setBlipName(MapIcon, MapIconText);
+            }
+        }
 
         public void register_markerzones()
         {

@@ -269,6 +269,8 @@ namespace RoleplayServer.player_manager
             InCallWith = Character.None;
             BeingCalledBy = Character.None;
             CallingPlayer = Character.None;
+
+            RadioToggle = true;
         }
 
         public void Insert()
