@@ -46,15 +46,14 @@ namespace RoleplayServer.vehicle_manager
         public Timer RespawnTimer { get; set; }
 
         public int VehType { get; set; }
-
-        public int JobId { get; set; }
+       
         [BsonIgnore]
         public Job Job { get; set; }
-
-        public int GroupId { get; set; }
+        public int JobId { get; set; }
 
         [BsonIgnore]
         public Group Group { get; set; }
+        public int GroupId { get; set; }
 
         [BsonIgnore]
         public NetHandle NetHandle { get; private set; }

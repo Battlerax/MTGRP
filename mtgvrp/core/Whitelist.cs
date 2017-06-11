@@ -17,6 +17,8 @@ namespace RoleplayServer.core
              "NortonPlays",
              "Millingtonlol",
              "Ahmad45123",
+             "Colm692",
+             "XeroTheGreat",
 
              //Kevin & Friends
              "maniac1994",
