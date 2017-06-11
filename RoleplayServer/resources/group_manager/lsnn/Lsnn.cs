@@ -86,7 +86,7 @@ namespace RoleplayServer.resources.group_manager.lsnn
 
         }
 
-        [Command("editheadline")]//Problem with headline CEF
+        [Command("editheadline", GreedyArg = false)]
         public void editbanner_cmd(Client player, string text)
         {
             Character character = API.getEntityData(player.handle, "Character");

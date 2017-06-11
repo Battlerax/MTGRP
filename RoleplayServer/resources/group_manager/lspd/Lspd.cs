@@ -24,28 +24,16 @@ namespace RoleplayServer.resources.group_manager.lspd
         public static readonly Vector3 jailTwo = new Vector3(458.7058f, -998.1188f, 24.91487f);
         public static readonly Vector3 jailThree = new Vector3(459.6695f, -994.0704f, 24.91487f);
         public static readonly Vector3 freeJail = new Vector3(427.7434f, -976.0182f, 30.70999f);
-        public readonly Vector3 PoliceStationPos = new Vector3(441.9734f, -981.1342f, 30.6896f);
         public readonly Vector3 jailPosOne = new Vector3(461.8065, -994.4086, 25.06443);
         public readonly Vector3 jailPosTwo = new Vector3(461.8065, -997.6583, 25.06443);
         public readonly Vector3 jailPosThree = new Vector3(461.8065, -1001.302, 25.06443);
 
-        //LSPD Shapes
-        public ColShape StationShape;
-        public ColShape arrestShape;
 
         public LinkedList<GTANetworkServer.Object> objects = new LinkedList<GTANetworkServer.Object>();
 
 
         public void startLspd()
         {
-            var jailShapeOne = API.createSphereColShape(jailOne, 3.7f);
-            var jailShapeTwo = API.createSphereColShape(jailTwo, 3.7f);
-            var jailShapeThree = API.createSphereColShape(jailThree, 3.7f);
-
-            StationShape = API.createCylinderColShape(PoliceStationPos, 2f, 3f);
-
-            API.createMarker(1, PoliceStationPos - new Vector3(0, 0, 1f), new Vector3(), new Vector3(),
-                new Vector3(1f, 1f, 1f), 100, 51, 153, 255);
 
         }
 
@@ -122,7 +110,7 @@ namespace RoleplayServer.resources.group_manager.lspd
             }
         }
         [Command("recordcrime", GreedyArg = true)]
-        public void recordcrimes_cmd(Client player, string id, int crimeid)
+        public void recordcrimes_cmd(Client player, string id, string crimeid)
         {
             var receiver = PlayerManager.ParseClient(id);
 
@@ -141,7 +129,7 @@ namespace RoleplayServer.resources.group_manager.lspd
                 return;
             }
 
-            var crime = Crime.Crimes.Find(c => c.Id == crimeid);
+            var crime = Crime.Crimes.Find(c => c.Id == int.Parse(crimeid));
 
             if (crime == null)
             {
@@ -149,7 +137,7 @@ namespace RoleplayServer.resources.group_manager.lspd
                 return;
             }
 
-            receiverCharacter.RecordCrime(character.Id.ToString(), crime);
+            receiverCharacter.RecordCrime(character.CharacterName, crime);
             API.sendNotificationToPlayer(player, "You have recorded " + receiver.nametag + " for committing: " + crime.Name);
             API.sendNotificationToPlayer(receiver, player.nametag + " has recorded a crime you committed: ~r~" + crime.Name + "~w~.");
         }
@@ -622,10 +610,16 @@ namespace RoleplayServer.resources.group_manager.lspd
         {
             Character character = API.getEntityData(player.handle, "Character");
 
-            if (IsInPoliceStation(player) == false)
+            foreach (Group group in GroupManager.Groups)
             {
-                API.sendNotificationToPlayer(player, "~r~You are not at the front desk of the police station.");
-                return;
+                if (group.CommandType == Group.CommandTypeLspd)
+                {
+                    if (player.position.DistanceTo(group.FrontDesk.Location) > 5)
+                    {
+                        API.sendNotificationToPlayer(player, "~r~You are not at the front desk of the police station.");
+                        return;
+                    }
+                }
             }
 
             if (character.unpaidTickets == 0)
@@ -866,16 +860,6 @@ namespace RoleplayServer.resources.group_manager.lspd
             character.jailTimer.Stop();
             character.jailTimeLeftTimer.Stop();
 
-        }
-
-        public bool arrestPointCheck(NetHandle entity)
-        {
-            return arrestShape.containsEntity(entity);
-        }
-
-        public bool IsInPoliceStation(NetHandle entity)
-        {
-            return StationShape.containsEntity(entity);
         }
     }
 }

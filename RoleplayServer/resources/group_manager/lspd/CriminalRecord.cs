@@ -8,7 +8,6 @@ namespace RoleplayServer.resources.group_manager.lspd
 {
     public class CriminalRecord
     {
-        public static List<CriminalRecord> Crimes = new List<CriminalRecord>();
 
         public ObjectId Id { get; set; }
 
