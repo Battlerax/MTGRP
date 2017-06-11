@@ -122,7 +122,7 @@ namespace RoleplayServer.player_manager.login
                                 API.sendChatMessageToPlayer(player, "~r~You are temp-banned from this server. You will be unbanned in " + (account.TempBanExpiration - DateTime.Now).TotalDays + " days.");
                                 API.sendNotificationToPlayer(player, "~r~You are temp-banned from this server. You will be unbanned in " + (account.TempBanExpiration - DateTime.Now).TotalDays + " days.");
                                 API.kickPlayer(player);
-                                AdminSystem.AdminCommands.sendtoAllAdmins(account.AccountName + "attempted to log in to a temp-banned account.");
+                                AdminSystem.AdminCommands.SendtoAllAdmins(account.AccountName + "attempted to log in to a temp-banned account.");
                                 return;
                             }
                             if (account.IsBanned == true)
@@ -130,7 +130,7 @@ namespace RoleplayServer.player_manager.login
                                 API.sendChatMessageToPlayer(player, "~r~You are banned from this server. Visit MT-Gaming.com to submit an unban appeal. ");
                                 API.sendNotificationToPlayer(player, "~r~You are banned from this server. Visit MT-Gaming.com to submit an unban appeal.");
                                 API.kickPlayer(player);
-                                AdminSystem.AdminCommands.sendtoAllAdmins(account.AccountName + "attempted to log in to a banned account.");
+                                AdminSystem.AdminCommands.SendtoAllAdmins(account.AccountName + "attempted to log in to a banned account.");
                                 return;
                             }
 
@@ -283,7 +283,7 @@ namespace RoleplayServer.player_manager.login
                     API.sendChatMessageToPlayer(player, "~r~You are temp-banned from this server. You will be unbanned in " + (account.TempBanExpiration - DateTime.Now).TotalDays + " days.");
                     API.sendNotificationToPlayer(player, "~r~You are temp-banned from this server. You will be unbanned in " + (account.TempBanExpiration - DateTime.Now).TotalDays + " days.");
                     API.kickPlayer(player);
-                    AdminSystem.AdminCommands.sendtoAllAdmins(account.AccountName + "attempted to log in to a temp-banned account.");
+                    AdminSystem.AdminCommands.SendtoAllAdmins(account.AccountName + "attempted to log in to a temp-banned account.");
                     return;
                 }
                 if (account.IsBanned == true)
@@ -293,7 +293,7 @@ namespace RoleplayServer.player_manager.login
                     API.sendNotificationToPlayer(player, "~r~You are banned from this server for the following reason: ");
                     API.sendNotificationToPlayer(player, account.BanReason);
                     API.kickPlayer(player);
-                    AdminSystem.AdminCommands.sendtoAllAdmins(account.AccountName + "attempted to log in to a banned account.");
+                    AdminSystem.AdminCommands.SendtoAllAdmins(account.AccountName + "attempted to log in to a banned account.");
                     return;
                 }
 

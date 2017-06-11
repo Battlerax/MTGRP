@@ -8,7 +8,7 @@ namespace RoleplayServer.core
 
        
 
-        private static bool USE_WHITELIST = true;
+        private static bool _useWhitelist = true;
 
         private static readonly List<string> WhitelistedNames = new List<string>
         {
@@ -28,12 +28,12 @@ namespace RoleplayServer.core
         public Whitelist()
         {
             API.onPlayerConnected += WhiteList_OnPlayerConnect;
-            API.consoleOutput("[WHITELIST] Whitelist is " + ((USE_WHITELIST == true) ? ("Active") : ("Inactive")));
+            API.consoleOutput("[WHITELIST] Whitelist is " + ((_useWhitelist == true) ? ("Active") : ("Inactive")));
         }
 
         public void WhiteList_OnPlayerConnect(Client player)
         {
-            if (USE_WHITELIST == true)
+            if (_useWhitelist == true)
             {
                 if (!WhitelistedNames.Contains(player.socialClubName))
                 {

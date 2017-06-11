@@ -31,7 +31,7 @@ namespace RoleplayServer
         }
         
         [Command("stopanim")]
-        public void stopanim(Client player, string id)
+        public void Stopanim(Client player, string id)
         {
             API.stopPlayerAnimation(player);
             Character character = API.getEntityData(player.handle, "Character");
@@ -39,7 +39,7 @@ namespace RoleplayServer
         }
 
         [Command("hide", "~y~Syntax /Hide 1 - 13")]
-        public void hide(Client player, int number)
+        public void Hide(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -96,7 +96,7 @@ namespace RoleplayServer
             }
         }
         [Command("lookout", "~y~Syntax /lookout 1 - 4")]
-        public void lookout(Client player, int number)
+        public void Lookout(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -126,7 +126,7 @@ namespace RoleplayServer
             }
         }
         [Command("crowdcontrol", "~y~Syntax /crowdcontrol 1 - 3")]
-        public void crowdcontrol(Client player, int number)
+        public void Crowdcontrol(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -153,7 +153,7 @@ namespace RoleplayServer
             }
         }
         [Command("investigate", "~y~Syntax /investigate 1 - 9")]
-        public void investigate(Client player, int number)
+        public void Investigate(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -198,7 +198,7 @@ namespace RoleplayServer
             }
         }
         [Command("drink", "~y~Syntax /drink 1 - 12")]
-        public void drink(Client player, int number)
+        public void Drink(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -252,7 +252,7 @@ namespace RoleplayServer
             }
         }
         [Command("crossarms", "~y~Syntax /crossarms 1 - 15")]
-        public void crossarms(Client player, int number)
+        public void Crossarms(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -315,7 +315,7 @@ namespace RoleplayServer
             }
         }
         [Command("idle", "~y~Syntax /idle 1 - 28")]
-        public void idle(Client player, int number)
+        public void Idle(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -418,7 +418,7 @@ namespace RoleplayServer
             }
         }
         [Command("lean", "~y~Syntax /lean 1 - 38")]
-        public void lean(Client player, int number)
+        public void Lean(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -550,7 +550,7 @@ namespace RoleplayServer
             }
         }
         [Command("reach", "~y~Syntax /reach 1 - 2")]
-        public void reach(Client player, int number)
+        public void Reach(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -574,7 +574,7 @@ namespace RoleplayServer
             }
         }
         [Command("workout", "~y~Syntax /workout 1 - 12")]
-        public void workout(Client player, int number)
+        public void Workout(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -628,7 +628,7 @@ namespace RoleplayServer
             }
         }
         [Command("smoke", "~y~Syntax /smoke 1 - 13")]
-        public void smoke(Client player, int number)
+        public void Smoke(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -685,7 +685,7 @@ namespace RoleplayServer
             }
         }
         [Command("binoculars", "~y~Syntax /binoculars 1 - 6")]
-        public void binoculars(Client player, int number)
+        public void Binoculars(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -721,7 +721,7 @@ namespace RoleplayServer
             }
         }
         [Command("hobo", "~y~Syntax /hobo 1 - 9")]
-        public void hobo(Client player, int number)
+        public void Hobo(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -766,7 +766,7 @@ namespace RoleplayServer
             }
         }
         [Command("fallover", "~y~Syntax /fallover 1 - 7")]
-        public void fallover(Client player, int number)
+        public void Fallover(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -805,7 +805,7 @@ namespace RoleplayServer
             }
         }
         [Command("laydown", "~y~Syntax /laydown 1 - 12")]
-        public void laydown(Client player, int number)
+        public void Laydown(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -859,7 +859,7 @@ namespace RoleplayServer
             }
         }
         [Command("drunk", "~y~Syntax /drunk 1 - 2")]
-        public void drunk(Client player, int number)
+        public void Drunk(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -883,7 +883,7 @@ namespace RoleplayServer
             }
         }
         [Command("twitchy", "~y~Syntax /twitchy 1 - 4")]
-        public void twitchy(Client player, int number)
+        public void Twitchy(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -913,7 +913,7 @@ namespace RoleplayServer
             }
         }
         [Command("signal", "~y~Syntax /signal 1 - 3")]
-        public void signal(Client player, int number)
+        public void Signal(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -940,7 +940,7 @@ namespace RoleplayServer
             }
         }
         [Command("cheer", "~y~Syntax /cheer 1 - 8")]
-        public void cheer(Client player, int number)
+        public void Cheer(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -982,7 +982,7 @@ namespace RoleplayServer
             }
         }
         [Command("clipboard", "~y~Syntax /clipboard 1 - 3")]
-        public void clipboard(Client player, int number)
+        public void Clipboard(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -1009,7 +1009,7 @@ namespace RoleplayServer
             }
         }
         [Command("drugdeal", "~y~Syntax /drugdeal 1 - 3")]
-        public void drugdeal(Client player, int number)
+        public void Drugdeal(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -1036,7 +1036,7 @@ namespace RoleplayServer
             }
         }
         [Command("gardening", "~y~Syntax /gardening 1 - 4")]
-        public void gardening(Client player, int number)
+        public void Gardening(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -1066,7 +1066,7 @@ namespace RoleplayServer
             }
         }
         [Command("guard", "~y~Syntax /guard 1 - 9")]
-        public void guard(Client player, int number)
+        public void Guard(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -1111,7 +1111,7 @@ namespace RoleplayServer
             }
         }
         [Command("hammer", "~y~Syntax /hammer 1 - 2")]
-        public void hammer(Client player, int number)
+        public void Hammer(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -1135,7 +1135,7 @@ namespace RoleplayServer
             }
         }
         [Command("jog", "~y~Syntax /jog 1 - 6")]
-        public void jog(Client player, int number)
+        public void Jog(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -1171,7 +1171,7 @@ namespace RoleplayServer
             }
         }
         [Command("guitar", "~y~Syntax /guitar 1 - 3")]
-        public void guitar(Client player, int number)
+        public void Guitar(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -1198,7 +1198,7 @@ namespace RoleplayServer
             }
         }
         [Command("getjiggy", "~y~Syntax /getjiggy 1 - 4")]
-        public void getjiggy(Client player, int number)
+        public void Getjiggy(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -1228,7 +1228,7 @@ namespace RoleplayServer
             }
         }
         [Command("sit", "~y~Syntax /sit 1 - 9")]
-        public void sit(Client player, int number)
+        public void Sit(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -1273,7 +1273,7 @@ namespace RoleplayServer
             }
         }
         [Command("mech", "~y~Syntax /mech 1 - 5")]
-        public void mech(Client player, int number)
+        public void Mech(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -1306,7 +1306,7 @@ namespace RoleplayServer
             }
         }
         [Command("yoga", "~y~Syntax /yoga 1 - 2")]
-        public void yoga(Client player, int number)
+        public void Yoga(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -1330,7 +1330,7 @@ namespace RoleplayServer
             }
         }
         [Command("bonghit", "~y~Syntax /bonghit 1 - 4")]
-        public void bonghit(Client player, int number)
+        public void Bonghit(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -1361,7 +1361,7 @@ namespace RoleplayServer
 }
 
         [Command("middlefinger")]
-        public void middlefinger(Client player)
+        public void Middlefinger(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -1374,7 +1374,7 @@ namespace RoleplayServer
             }
         }
         [Command("salute")]
-        public void salute(Client player)
+        public void Salute(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -1387,7 +1387,7 @@ namespace RoleplayServer
             }
         }
         [Command("slowclap")]
-        public void slowclap(Client player)
+        public void Slowclap(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -1400,7 +1400,7 @@ namespace RoleplayServer
             }
         }
         [Command("facepalm")]
-        public void facepalm(Client player)
+        public void Facepalm(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -1413,7 +1413,7 @@ namespace RoleplayServer
             }
         }
         [Command("handsup")]// allowed tp be cuffed
-        public void handsup(Client player)
+        public void Handsup(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -1427,7 +1427,7 @@ namespace RoleplayServer
             }
         }
         [Command("restrained")]// allowed to be cuffed
-        public void restrained(Client player)
+        public void Restrained(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)

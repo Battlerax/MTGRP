@@ -15,7 +15,7 @@ namespace RoleplayServer.door_manager
     public class Door
     {
         [BsonIgnore]
-        public const ulong SET_STATE_OF_CLOSEST_DOOR_OF_TYPE = 0xF82D8F1926A02C3D;
+        public const ulong SetStateOfClosestDoorOfType = 0xF82D8F1926A02C3D;
 
         [BsonIgnore]
         public static List<Door> Doors = new List<Door>(); 
@@ -86,7 +86,7 @@ namespace RoleplayServer.door_manager
             {
                 var player = API.shared.getPlayerFromHandle(person);
                 if (player == null) continue;
-                API.shared.sendNativeToPlayer(player, SET_STATE_OF_CLOSEST_DOOR_OF_TYPE,
+                API.shared.sendNativeToPlayer(player, SetStateOfClosestDoorOfType,
                     Hash, Position.X, Position.Y, Position.Z,
                     Locked, State, false);
             }
@@ -100,7 +100,7 @@ namespace RoleplayServer.door_manager
 
                 if (player == null) return;
 
-                API.shared.sendNativeToPlayer(player, SET_STATE_OF_CLOSEST_DOOR_OF_TYPE,
+                API.shared.sendNativeToPlayer(player, SetStateOfClosestDoorOfType,
                     Hash, Position.X, Position.Y, Position.Z,
                     Locked, State, false);
             }

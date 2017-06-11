@@ -618,7 +618,7 @@ namespace RoleplayServer.property_system.businesses
         }
 
         [Command("buybag")]
-        public void buybag(Client player)
+        public void Buybag(Client player)
         {
             var biz = PropertyManager.IsAtPropertyInteraction(player);
             if (biz?.Type != PropertyManager.PropertyTypes.Clothing)

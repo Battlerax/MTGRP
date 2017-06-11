@@ -212,7 +212,7 @@ namespace RoleplayServer.phone_manager
                 var charitems = InventoryManager.DoesInventoryHaveItem(character, typeof(Phone));
                 var charphone = (Phone)charitems[0];
 
-                MDC.Add911Call(charphone.Number, msg, "Los Santos");
+                Mdc.Add911Call(charphone.Number, msg, "Los Santos");
 
                 var newmsg = "[Phone]" + character.rp_name() + " says: " + msg;
                 ChatManager.NearbyMessage(player, 15, newmsg);

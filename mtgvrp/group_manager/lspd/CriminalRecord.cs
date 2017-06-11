@@ -17,13 +17,13 @@ namespace RoleplayServer.group_manager.lspd
         public DateTime DateTime { get; set; }
         public bool ActiveCrime { get; set; }
 
-        public CriminalRecord(string characterId, string arrestingOfficerId, Crime crime, bool Activecrime)
+        public CriminalRecord(string characterId, string arrestingOfficerId, Crime crime, bool activecrime)
         {
             CharacterId = characterId;
             OfficerId = arrestingOfficerId;
             Crime = crime;
             DateTime = DateTime.Now;
-            ActiveCrime = Activecrime;
+            ActiveCrime = activecrime;
         }
 
         public void Insert()

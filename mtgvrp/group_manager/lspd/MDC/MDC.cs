@@ -42,12 +42,12 @@ namespace RoleplayServer.group_manager.lspd.MDC
         }
     }
 
-    public class MDC : Script
+    public class Mdc : Script
     {
         public List<Bolo> ActiveBolos = new List<Bolo>();
-        public static List<EmergencyCall> Active911s = new List<EmergencyCall>();
+        public static List<EmergencyCall> Active911S = new List<EmergencyCall>();
 
-        public MDC()
+        public Mdc()
         {
             API.onClientEventTrigger += MDC_onClientEventTrigger;
         }
@@ -143,7 +143,7 @@ namespace RoleplayServer.group_manager.lspd.MDC
         public static void Add911Call(string phoneNumber, string info, string location)
         {
             var emergencyCall = new EmergencyCall(phoneNumber, info, location);
-            Active911s.Add(emergencyCall);
+            Active911S.Add(emergencyCall);
         }
 
         public void SendAllBoloToClient(Client player)
@@ -158,7 +158,7 @@ namespace RoleplayServer.group_manager.lspd.MDC
 
         public void SendAll911ToClient(Client player)
         {
-            var ordered911 = Active911s.OrderByDescending(c => c.Time).Take(20);
+            var ordered911 = Active911S.OrderByDescending(c => c.Time).Take(20);
             foreach (var c in ordered911.Reverse())
             {
                 Send911ToClient(player, c);

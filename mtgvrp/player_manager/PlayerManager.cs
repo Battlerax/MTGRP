@@ -155,7 +155,7 @@ namespace RoleplayServer.player_manager
         }
 
         [Command("stats")]          //Stats command
-        public void getStatistics(Client sender, string id = null)
+        public void GetStatistics(Client sender, string id = null)
         {
             var receiver = PlayerManager.ParseClient(id);
             Character character = API.getEntityData(sender.handle, "Character");
@@ -167,14 +167,14 @@ namespace RoleplayServer.player_manager
                 {
                     API.sendNotificationToPlayer(sender, "You can't see other player's stats.");
                 }
-                showStats(sender);
+                ShowStats(sender);
             }
-            showStats(sender, receiver);
+            ShowStats(sender, receiver);
         }
 
         //Show time and time until paycheck.
         [Command("time")]
-        public void checkTime(Client player)
+        public void CheckTime(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
             var secondsLeft = 3600 - character.GetTimePlayed();
@@ -184,12 +184,12 @@ namespace RoleplayServer.player_manager
 
 
         //Show player stats (admins can show stats of other players).
-        public void showStats(Client sender)
+        public void ShowStats(Client sender)
         {
-            showStats(sender, sender);
+            ShowStats(sender, sender);
         }
  
-        public void showStats(Client sender, Client receiver)
+        public void ShowStats(Client sender, Client receiver)
         {
             Character character = API.getEntityData(receiver.handle, "Character");
             Account account = API.shared.getEntityData(receiver.handle, "Account");

@@ -167,21 +167,21 @@ namespace RoleplayServer.vehicle_manager
         private void CharacterMenu_OnCharacterLogin(object sender, CharacterMenu.CharacterLoginEventArgs e)
         {
             //Load them.
-            Vehicles.AddRange(DatabaseManager.VehicleTable.Find(x => x.OwnerId == e.character.Id).ToList());
+            Vehicles.AddRange(DatabaseManager.VehicleTable.Find(x => x.OwnerId == e.Character.Id).ToList());
 
             //Spawn his cars.
-            var maxVehs = GetMaxOwnedVehicles(e.character.Client);
-            if (maxVehs > e.character.OwnedVehicles.Count) maxVehs = e.character.OwnedVehicles.Count;
+            var maxVehs = GetMaxOwnedVehicles(e.Character.Client);
+            if (maxVehs > e.Character.OwnedVehicles.Count) maxVehs = e.Character.OwnedVehicles.Count;
             for (int i = 0; i < maxVehs; i++)
             {
                 var car =
                     Vehicles.SingleOrDefault(
-                        x => x.Id == e.character.OwnedVehicles[i] && x.OwnerId == e.character.Id);
+                        x => x.Id == e.Character.OwnedVehicles[i] && x.OwnerId == e.Character.Id);
                 if (car == null)
                     continue;
 
                 if (spawn_vehicle(car) != 1)
-                    API.consoleOutput($"There was an error spawning vehicle #{car.Id} of {e.character.CharacterName}.");
+                    API.consoleOutput($"There was an error spawning vehicle #{car.Id} of {e.Character.CharacterName}.");
             }
         }
 
@@ -207,9 +207,9 @@ namespace RoleplayServer.vehicle_manager
 
             //Delete.
             Vehicles.RemoveAll(x => x.OwnerId == character.Id);
-            if (character.isJailed)
+            if (character.IsJailed)
             {
-                character.jailTimer.Stop();
+                character.JailTimer.Stop();
             }
         }
 

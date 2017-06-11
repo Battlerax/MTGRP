@@ -24,11 +24,11 @@ namespace RoleplayServer.player_manager
         //On Character Enter Event.
         public class CharacterLoginEventArgs : EventArgs
         {
-            public readonly Character character;
+            public readonly Character Character;
 
             public CharacterLoginEventArgs(Character chr)
             {
-                character = chr;
+                Character = chr;
             }
         }
         public static event EventHandler<CharacterLoginEventArgs> OnCharacterLogin;
@@ -153,9 +153,9 @@ namespace RoleplayServer.player_manager
                             }
                         }
 
-                        if (character.isJailed)
+                        if (character.IsJailed)
                         {
-                            Lspd.jailControl(player, character.jailTimeLeft);
+                            Lspd.JailControl(player, character.JailTimeLeft);
                         }
 
                         API.sendChatMessageToPlayer(player, "You have successfully loaded your character: " + charName);

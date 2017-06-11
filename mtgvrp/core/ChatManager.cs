@@ -51,7 +51,7 @@ namespace RoleplayServer.core
                 if (API.getEntityData(player, "MicStatus") == true)
                 {
                     msg = "~p~ [BROADCAST] " + character.CharacterName + " : " + msg;
-                    broadcastMessage(msg);
+                    BroadcastMessage(msg);
                     e.Cancel = true;
                     return;
                 }
@@ -69,7 +69,7 @@ namespace RoleplayServer.core
             }
         }
 
-        public void broadcastMessage(string msg)
+        public void BroadcastMessage(string msg)
         {
             foreach (var i in API.getAllPlayers())
             {

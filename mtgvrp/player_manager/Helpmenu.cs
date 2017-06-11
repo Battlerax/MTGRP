@@ -23,13 +23,13 @@ using RoleplayServer.AdminSystem;
 
 namespace RoleplayServer.player_manager
 {
-    public class openHelpmenu : Script
+    public class OpenHelpmenu : Script
     {
-        public void openHelpMenu()
+        public void OpenHelpMenu()
         {
-            API.onClientEventTrigger += onClientEvent;
+            API.onClientEventTrigger += OnClientEvent;
         }
-        public void onClientEvent(Client player, string id, params object[] arguments)
+        public void OnClientEvent(Client player, string id, params object[] arguments)
         {
         }
         [Command("help")]

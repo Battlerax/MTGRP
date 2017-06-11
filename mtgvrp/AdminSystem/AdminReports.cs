@@ -33,9 +33,9 @@ namespace RoleplayServer.AdminSystem
             Reports.Remove(name);
         }
 
-        public static void InsertReport(int type, string name, string ReportMessage, string target = null)
+        public static void InsertReport(int type, string name, string reportMessage, string target = null)
         {
-            var report = new AdminReports(type, name, ReportMessage, target);
+            var report = new AdminReports(type, name, reportMessage, target);
             Reports.Add(report);
         }
 

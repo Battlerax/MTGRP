@@ -53,7 +53,7 @@ namespace RoleplayServer.player_manager
         public string Birthday { get; set; }
         public string Birthplace { get; set; }
 
-        public string playerCrimes { get; set; }
+        public string PlayerCrimes { get; set; }
 
         [BsonIgnore]
         public Client Client { get; set; }
@@ -177,12 +177,12 @@ namespace RoleplayServer.player_manager
 
         private int _time;
 
-        public Timer jailTimeLeftTimer { get; set; }
-        public Timer jailTimer { get; set; }
-        public bool isJailed { get; set; }
-        public int sentTicketAmount { get; set; }
+        public Timer JailTimeLeftTimer { get; set; }
+        public Timer JailTimer { get; set; }
+        public bool IsJailed { get; set; }
+        public int SentTicketAmount { get; set; }
 
-        public int jailTimeLeft
+        public int JailTimeLeft
         {
             get { return _time; }
             set
@@ -195,10 +195,10 @@ namespace RoleplayServer.player_manager
         }
 
         public Timer TicketTimer { get; set; }
-        public bool sentTicket { get; set; }
-        public int ticketBalance { get; set; }
-        public int unpaidTickets { get; set; }
-        public bool radioToggle { get; set; }
+        public bool SentTicket { get; set; }
+        public int TicketBalance { get; set; }
+        public int UnpaidTickets { get; set; }
+        public bool RadioToggle { get; set; }
 
         //LSNN Related
         public bool IsWatchingBroadcast { get; set; }

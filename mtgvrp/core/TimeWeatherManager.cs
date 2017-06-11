@@ -14,7 +14,7 @@ namespace RoleplayServer.core
 {
     public class TimeWeatherManager : Script
     {
-        private Timer weatherTimeTimer;
+        private Timer _weatherTimeTimer;
 
         public TimeWeatherManager()
         {
@@ -30,7 +30,7 @@ namespace RoleplayServer.core
 
         private void API_onResourceStop()
         {
-            weatherTimeTimer.Stop();
+            _weatherTimeTimer.Stop();
             API.consoleOutput("Unload Weather Module.");
         }
 
@@ -38,10 +38,10 @@ namespace RoleplayServer.core
         {
             API.consoleOutput("Loading Weather Module.");
 
-            weatherTimeTimer = new Timer(60000);
-            weatherTimeTimer.Elapsed += WeatherTimeTimer_Elapsed;
-            weatherTimeTimer.AutoReset = true;
-            weatherTimeTimer.Start();
+            _weatherTimeTimer = new Timer(60000);
+            _weatherTimeTimer.Elapsed += WeatherTimeTimer_Elapsed;
+            _weatherTimeTimer.AutoReset = true;
+            _weatherTimeTimer.Start();
             WeatherTimeTimer_Elapsed(this, null);
 
             API.consoleOutput("Weather Updated To LA.");

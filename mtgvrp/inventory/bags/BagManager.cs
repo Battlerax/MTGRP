@@ -20,11 +20,11 @@ namespace RoleplayServer.inventory.bags
 
         private void CharacterMenu_OnCharacterLogin(object sender, CharacterMenu.CharacterLoginEventArgs e)
         {
-            var items = InventoryManager.DoesInventoryHaveItem(e.character, typeof(BagItem));
+            var items = InventoryManager.DoesInventoryHaveItem(e.Character, typeof(BagItem));
             if (items.Length == 1)
             {
                 BagItem item = (BagItem)items[0];
-                API.setPlayerClothes(e.character.Client, 5, item.BagType, item.BagDesign);
+                API.setPlayerClothes(e.Character.Client, 5, item.BagType, item.BagDesign);
             }
         }
 
@@ -75,7 +75,7 @@ namespace RoleplayServer.inventory.bags
             API.sendChatMessageToPlayer(player, InventoryManager.GiveInventoryItem(player.GetCharacter(), new BagItem() { BagDesign = design, BagType = type }, 1, true).ToString());
         }
         [Command("setmyclothes")]
-        public void setmyclothes(Client player, int slot, int drawable, int texture)
+        public void Setmyclothes(Client player, int slot, int drawable, int texture)
         {
             API.setPlayerClothes(player, slot, drawable, texture);
         }

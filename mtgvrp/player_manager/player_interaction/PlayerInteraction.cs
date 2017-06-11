@@ -146,7 +146,7 @@ namespace RoleplayServer.player_manager.player_interaction
         }
 
         [Command("detain", GreedyArg = true)]
-        public void detainPlayer(Client player, string id, int seatNumber)
+        public void DetainPlayer(Client player, string id, int seatNumber)
         {
 
             var receiver = PlayerManager.ParseClient(id);
@@ -187,7 +187,7 @@ namespace RoleplayServer.player_manager.player_interaction
         }
 
         [Command("eject", GreedyArg = true)]
-        public void ejectPlayer(Client player, string id, int seatNumber)
+        public void EjectPlayer(Client player, string id, int seatNumber)
         {
             var receiver = PlayerManager.ParseClient(id);
 

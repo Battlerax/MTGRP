@@ -575,7 +575,7 @@ namespace RoleplayServer.inventory
         }
 
         #region Stashing System: 
-        private Dictionary<NetHandle, IInventoryItem> stashedItems = new Dictionary<NetHandle, IInventoryItem>();
+        private Dictionary<NetHandle, IInventoryItem> _stashedItems = new Dictionary<NetHandle, IInventoryItem>();
 
         [Command("stash")]
         public void stash_cmd(Client player, string item, int amount)
@@ -598,7 +598,7 @@ namespace RoleplayServer.inventory
 
             //Create object and add to list.
             var droppedObject = API.createObject(sendersItem[0].Object, player.position.Subtract(new Vector3(0, 0, 1)), new Vector3(0, 0, 0));
-            stashedItems.Add(droppedObject, CloneItem(sendersItem[0], amount));
+            _stashedItems.Add(droppedObject, CloneItem(sendersItem[0], amount));
 
             //Decrease.
             DeleteInventoryItem(character, sendersItem[0].GetType(), amount, x => x == sendersItem[0]);
@@ -613,7 +613,7 @@ namespace RoleplayServer.inventory
         public void pickupstash_cmd(Client player)
         {
             //Check if near any stash.
-            var items = stashedItems.Where(x => API.getEntityPosition(x.Key).DistanceTo(player.position) <= 3).ToArray();
+            var items = _stashedItems.Where(x => API.getEntityPosition(x.Key).DistanceTo(player.position) <= 3).ToArray();
             if (!items.Any())
             {
                 API.sendNotificationToPlayer(player, "You aren't near any stash.");
@@ -640,7 +640,7 @@ namespace RoleplayServer.inventory
 
                     //Remove object and item from list.
                     API.deleteEntity(items.First().Key);
-                    stashedItems.Remove(items.First().Key);
+                    _stashedItems.Remove(items.First().Key);
 
                     //RP
                     ChatManager.RoleplayMessage(player, $"picks an item from the ground.", ChatManager.RoleplayMe);
