@@ -63,11 +63,12 @@ namespace RoleplayServer.resources.property_system.businesses
                         case "rags":
                             item = new RagsItem();
                             break;
+
                     }
                 }
                 else if (prop.Type == PropertyManager.PropertyTypes.Hardware)
                 {
-                    name = ItemManager.TwentyFourSevenItems.Single(x => x[0] == itemName)[1];
+                    name = ItemManager.HardwareItems.Single(x => x[0] == itemName)[1];
                     switch (itemName)
                     {
                         case "phone":
@@ -86,6 +87,14 @@ namespace RoleplayServer.resources.property_system.businesses
 
                         case "rags":
                             item = new RagsItem();
+                            break;
+
+                        case "engineparts":
+                            item = new EngineParts();
+                            break;
+
+                        case "spraypaint":
+                            item = new SprayPaint();
                             break;
                     }
                 }
