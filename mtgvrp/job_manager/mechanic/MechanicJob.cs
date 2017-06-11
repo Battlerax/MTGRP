@@ -3,12 +3,12 @@ using System.Collections;
 using System.Timers;
 using GTANetworkServer;
 using GTANetworkShared;
-using RoleplayServer.resources.player_manager;
-using RoleplayServer.resources.vehicle_manager;
-using RoleplayServer.resources.inventory;
-using RoleplayServer.resources.core;
+using RoleplayServer.player_manager;
+using RoleplayServer.vehicle_manager;
+using RoleplayServer.inventory;
+using RoleplayServer.core;
 
-namespace RoleplayServer.resources.job_manager.taxi
+namespace RoleplayServer.job_manager.taxi
 {
     public class MechanicJob : Script
     {
