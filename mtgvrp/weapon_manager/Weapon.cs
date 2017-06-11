@@ -2,11 +2,10 @@
 using GTANetworkServer;
 using GTANetworkShared;
 using MongoDB.Bson;
-using RoleplayServer.resources.group_manager;
-using RoleplayServer.resources.inventory;
+using RoleplayServer.group_manager;
+using RoleplayServer.inventory;
 
 
-namespace RoleplayServer.resources.weapon_manager
 {
     public class Weapon : IInventoryItem
     {

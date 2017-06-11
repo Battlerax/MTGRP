@@ -15,6 +15,7 @@ using RoleplayServer.job_manager.fisher;
 using RoleplayServer.job_manager.taxi;
 using RoleplayServer.phone_manager;
 using Vehicle = RoleplayServer.vehicle_manager.Vehicle;
+using RoleplayServer.weapon_manager;
 
 namespace RoleplayServer.player_manager
 {

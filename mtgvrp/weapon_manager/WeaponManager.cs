@@ -2,12 +2,11 @@
 using System;
 using GTANetworkServer;
 using GTANetworkShared;
-using RoleplayServer.resources.core;
-using RoleplayServer.resources.player_manager;
-using RoleplayServer.resources.group_manager;
-using RoleplayServer.resources.inventory;
+using RoleplayServer.core;
+using RoleplayServer.player_manager;
+using RoleplayServer.group_manager;
+using RoleplayServer.inventory;
 
-namespace RoleplayServer.resources.weapon_manager
 {
     class WeaponManager : Script
     {
@@ -25,10 +24,10 @@ namespace RoleplayServer.resources.weapon_manager
 
         private void CharacterMenu_OnCharacterLogin(object sender, CharacterMenu.CharacterLoginEventArgs e)
         {
-            var items = InventoryManager.DoesInventoryHaveItem(e.character, typeof(Weapon));
+            var items = InventoryManager.DoesInventoryHaveItem(e.Character, typeof(Weapon));
             foreach (Weapon weapon in items)
             {
-                GivePlayerWeapon(e.character.Client, weapon);
+                GivePlayerWeapon(e.Character.Client, weapon);
             }
         }
 

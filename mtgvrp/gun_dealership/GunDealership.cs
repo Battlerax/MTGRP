@@ -1,10 +1,9 @@
 ﻿using GTANetworkServer;
 using GTANetworkShared;
-using RoleplayServer.resources.core;
-using RoleplayServer.resources.player_manager;
-using RoleplayServer.resources.inventory;
-using RoleplayServer.resources.weapon_manager;
-
+using RoleplayServer.core;
+using RoleplayServer.player_manager;
+using RoleplayServer.inventory;
+using RoleplayServer.weapon_manager;
 
 public class GunDealership : Script
 {

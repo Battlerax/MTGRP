@@ -7,6 +7,7 @@ using RoleplayServer.core;
 using RoleplayServer.player_manager;
 using System;
 using RoleplayServer.inventory;
+using RoleplayServer.weapon_manager;
 
 namespace RoleplayServer.group_manager.lspd
 {
@@ -862,7 +863,7 @@ namespace RoleplayServer.group_manager.lspd
                 API.shared.setEntityPosition(player, JailThree);
 
             WeaponManager.RemoveAllPlayerWeapons(player);
-            character.isJailed = true;
+            character.IsJailed = true;
 
             API.shared.sendChatMessageToPlayer(player, "You have been placed in jail for " + character.JailTimeLeft/60/1000 + " minutes.");
 

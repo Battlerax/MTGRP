@@ -241,7 +241,7 @@ namespace RoleplayServer.vehicle_manager
             player.sendChatMessage("You can now drop another vehicle.");
             character.DropcarPrevention = false;
             character.DropcarTimer.Stop();
-            character.jailTimeLeftTimer.Stop();
+            character.JailTimeLeftTimer.Stop();
         }
         [Command("lock")]
         public void Lockvehicle_cmd(Client player)

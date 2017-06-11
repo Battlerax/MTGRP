@@ -12,6 +12,7 @@ using RoleplayServer.group_manager.lspd;
 using RoleplayServer.database_manager;
 using RoleplayServer.AdminSystem;
 using MongoDB.Driver;
+using RoleplayServer.weapon_manager;
 
 namespace RoleplayServer.AdminSystem
 {
@@ -35,7 +36,7 @@ namespace RoleplayServer.AdminSystem
                     AdminReports.InsertReport(3, player.nametag, (string)arguments[0]);
                     SendtoAllAdmins("~g~[REPORT]~w~ " + PlayerManager.GetName(player) + " (ID:" + playerid + "): " + (string)arguments[0]);
                     API.sendChatMessageToPlayer(player, "Report submitted.");
-                    StartReportTimer(player);
+                    startReportTimer(player);
                     character.HasActiveReport = true;
                     break;
 
@@ -52,7 +53,7 @@ namespace RoleplayServer.AdminSystem
                     AdminReports.InsertReport(2, player.nametag, (string)arguments[0], PlayerManager.GetName(receiver) + " (ID:" + id + ")");
                     SendtoAllAdmins("~g~[REPORT]~w~ " + PlayerManager.GetName(player) + " (ID:" + senderid + ")" + " reported " + PlayerManager.GetName(receiver) + " (ID:" + id + ") for " + (string)arguments[0]);
                     API.sendChatMessageToPlayer(player, "Report submitted.");
-                    StartReportTimer(player);
+                    startReportTimer(player);
                     senderchar.HasActiveReport = true;
                     break;
 
@@ -685,7 +686,7 @@ namespace RoleplayServer.AdminSystem
             AdminReports.InsertReport(1, player.nametag, message);
             SendtoAllAdmins("~g~[ASK]~w~ " + PlayerManager.GetName(player) + ": " + message);
             API.sendChatMessageToPlayer(player, "~b~Ask request submitted. ~w~Moderators have been informed and will be with you soon.");
-            StartReportTimer(player);
+            startReportTimer(player);
         }
 
         [Command("nmute", GreedyArg = true)]

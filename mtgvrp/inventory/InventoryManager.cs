@@ -15,6 +15,7 @@ using RoleplayServer.job_manager.fisher;
 using RoleplayServer.phone_manager;
 using RoleplayServer.player_manager;
 using RoleplayServer.property_system.businesses;
+using RoleplayServer.weapon_manager;
 
 namespace RoleplayServer.inventory
 {
