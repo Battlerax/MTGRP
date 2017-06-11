@@ -32,7 +32,7 @@ namespace RoleplayServer.inventory.bags
         {
             if (sender.GetType() == typeof(Character))
             {
-                if (args.Item == typeof(BagItem))
+                if (args.Item.GetType() == typeof(BagItem))
                 {
                     Character chr = (Character)sender;
                     API.setPlayerClothes(chr.Client, 5, 0, 0);
