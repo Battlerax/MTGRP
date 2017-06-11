@@ -214,8 +214,12 @@ namespace RoleplayServer.resources.phone_manager
 
                 MDC.Add911Call(charphone.Number, msg, "Los Santos");
 
+                var newmsg = "[Phone]" + character.rp_name() + " says: " + msg;
+                ChatManager.NearbyMessage(player, 15, newmsg);
+
                 API.sendChatMessageToPlayer(player, Color.Grey, "911 Operator says: Thank you for reporting your emergency, a unit will be dispatched shortly.");
-                character.Calling911 = false;
+                h_cmd(player);
+
                 e.Cancel = true;
                 e.Reason = "Phone";
             }
@@ -275,7 +279,7 @@ namespace RoleplayServer.resources.phone_manager
             Character character = player.GetCharacter();
             Character talkingTo;
 
-            if (character.InCallWith == Character.None && character.CallingPlayer == Character.None)
+            if (character.InCallWith == Character.None && character.CallingPlayer == Character.None && character.Calling911 == false)
             {
                 API.sendChatMessageToPlayer(player, "You are not on a phone call.");
                 return;
@@ -300,6 +304,12 @@ namespace RoleplayServer.resources.phone_manager
                 API.sendChatMessageToPlayer(talkingTo.Client, "The other party has ended the call.");
                 API.triggerClientEvent(player, "phone_call-closed");
                 API.triggerClientEvent(talkingTo.Client, "phone_call-closed");
+            }
+            else if (character.Calling911 == true)
+            {
+                character.Calling911 = false;
+                API.sendChatMessageToPlayer(player, "You have terminated the call.");
+                API.triggerClientEvent(player, "phone_call-closed");
             }
         }
 
@@ -379,6 +389,7 @@ namespace RoleplayServer.resources.phone_manager
                     ChatManager.AmeLabelMessage(player, "takes out their phone and presses a few numbers..", 4000);
                     sender.Calling911 = true;
                     API.sendChatMessageToPlayer(player, Color.Grey, "911 Operator says: Los Santos Police Department, what is the nature of your emergency?");
+                    API.triggerClientEvent(player, "phone_calling", "LSPD", input);
                     return;
                 }
 

@@ -33,9 +33,12 @@ API.onServerEventTrigger.connect(function (eventName, args) {
             login_browser.call("login_error", args[0]);
             break;
         case "hide_login_browser":
-            API.showCursor(false);
-            API.destroyCefBrowser(login_browser);
-            API.setCefDrawState(false);
+            if (login_browser != null) {
+                API.showCursor(false);
+                API.destroyCefBrowser(login_browser);
+                API.setCefDrawState(false);
+                login_browser = null;
+            }
             break;
         case "admin_pin_check":
             var adminPin = API.getUserInput("", 6);
