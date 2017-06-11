@@ -5,7 +5,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 
-namespace RoleplayServer.resources.AdminSystem
+namespace RoleplayServer.AdminSystem
 {
     public class AdminReports
     {

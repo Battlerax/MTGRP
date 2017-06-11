@@ -4,16 +4,16 @@ using System.Collections.Generic;
 using GTANetworkServer;
 using GTANetworkShared;
 using System.Timers;
-using RoleplayServer.resources.core;
-using RoleplayServer.resources.inventory;
-using RoleplayServer.resources.player_manager;
-using RoleplayServer.resources.vehicle_manager;
-using RoleplayServer.resources.group_manager.lspd;
-using RoleplayServer.resources.database_manager;
-using RoleplayServer.resources.AdminSystem;
+using RoleplayServer.core;
+using RoleplayServer.inventory;
+using RoleplayServer.player_manager;
+using RoleplayServer.vehicle_manager;
+using RoleplayServer.group_manager.lspd;
+using RoleplayServer.database_manager;
+using RoleplayServer.AdminSystem;
 using MongoDB.Driver;
 
-namespace RoleplayServer.resources.AdminSystem
+namespace RoleplayServer.AdminSystem
 {
     public class AdminCommands : Script
     {

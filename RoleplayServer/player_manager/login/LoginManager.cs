@@ -2,10 +2,10 @@
 using System.Security.Cryptography;
 using GTANetworkServer;
 using MongoDB.Driver;
-using RoleplayServer.resources.core;
-using RoleplayServer.resources.database_manager;
+using RoleplayServer.core;
+using RoleplayServer.database_manager;
 
-namespace RoleplayServer.resources.player_manager.login
+namespace RoleplayServer.player_manager.login
 {
     class LoginManager : Script
     {

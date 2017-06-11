@@ -16,12 +16,12 @@ using System.Threading.Tasks;
 using GTANetworkServer;
 using GTANetworkShared;
 using MongoDB.Driver;
-using RoleplayServer.resources.database_manager;
-using RoleplayServer.resources.group_manager;
-using RoleplayServer.resources.job_manager;
-using RoleplayServer.resources.AdminSystem;
+using RoleplayServer.database_manager;
+using RoleplayServer.group_manager;
+using RoleplayServer.job_manager;
+using RoleplayServer.AdminSystem;
 
-namespace RoleplayServer.resources.player_manager
+namespace RoleplayServer.player_manager
 {
     public class openHelpmenu : Script
     {

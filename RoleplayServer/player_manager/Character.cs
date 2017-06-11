@@ -6,17 +6,17 @@ using GTANetworkServer;
 using GTANetworkShared;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
-using RoleplayServer.resources.database_manager;
-using RoleplayServer.resources.group_manager;
-using RoleplayServer.resources.inventory;
-using RoleplayServer.resources.group_manager.lspd;
-using RoleplayServer.resources.job_manager;
-using RoleplayServer.resources.job_manager.fisher;
-using RoleplayServer.resources.job_manager.taxi;
-using RoleplayServer.resources.phone_manager;
-using Vehicle = RoleplayServer.resources.vehicle_manager.Vehicle;
+using RoleplayServer.database_manager;
+using RoleplayServer.group_manager;
+using RoleplayServer.inventory;
+using RoleplayServer.group_manager.lspd;
+using RoleplayServer.job_manager;
+using RoleplayServer.job_manager.fisher;
+using RoleplayServer.job_manager.taxi;
+using RoleplayServer.phone_manager;
+using Vehicle = RoleplayServer.vehicle_manager.Vehicle;
 
-namespace RoleplayServer.resources.player_manager
+namespace RoleplayServer.player_manager
 {
     public class Character : IStorage
     {

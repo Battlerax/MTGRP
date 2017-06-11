@@ -1,6 +1,6 @@
 ﻿using GTANetworkServer;
 
-namespace RoleplayServer.resources.core
+namespace RoleplayServer.core
 {
     public static class DebugManager
     {

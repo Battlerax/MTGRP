@@ -5,12 +5,12 @@ using System.Linq;
 using System.Timers;
 using GTANetworkServer;
 using GTANetworkShared;
-using RoleplayServer.resources.core;
-using RoleplayServer.resources.database_manager;
-using RoleplayServer.resources.inventory;
-using RoleplayServer.resources.player_manager;
+using RoleplayServer.core;
+using RoleplayServer.database_manager;
+using RoleplayServer.inventory;
+using RoleplayServer.player_manager;
 
-namespace RoleplayServer.resources.job_manager.fisher
+namespace RoleplayServer.job_manager.fisher
 {
     public class Fisher : Script
     {

@@ -10,7 +10,7 @@ using GTANetworkServer;
 using GTANetworkShared;
 using NodaTime;
 
-namespace RoleplayServer.resources.core
+namespace RoleplayServer.core
 {
     public class TimeWeatherManager : Script
     {

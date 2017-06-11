@@ -2,12 +2,12 @@ using System.Collections.Generic;
 using GTANetworkServer;
 using GTANetworkShared;
 using MongoDB.Driver;
-using RoleplayServer.resources.core;
-using RoleplayServer.resources.database_manager;
-using RoleplayServer.resources.player_manager;
-using RoleplayServer.resources.vehicle_manager;
+using RoleplayServer.core;
+using RoleplayServer.database_manager;
+using RoleplayServer.player_manager;
+using RoleplayServer.vehicle_manager;
 
-namespace RoleplayServer.resources.group_manager
+namespace RoleplayServer.group_manager
 {
     public class GroupManager : Script
     {

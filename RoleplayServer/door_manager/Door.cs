@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 using GTANetworkServer;
 using GTANetworkShared;
 using MongoDB.Bson.Serialization.Attributes;
-using RoleplayServer.resources.database_manager;
-using RoleplayServer.resources.player_manager;
-using Vehicle = RoleplayServer.resources.vehicle_manager.Vehicle;
+using RoleplayServer.database_manager;
+using RoleplayServer.player_manager;
+using Vehicle = RoleplayServer.vehicle_manager.Vehicle;
 
-namespace RoleplayServer.resources.door_manager
+namespace RoleplayServer.door_manager
 {
     public class Door
     {

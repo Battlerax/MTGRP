@@ -15,12 +15,12 @@ using GTANetworkServer;
 using GTANetworkShared;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
-using RoleplayServer.resources.database_manager;
-using RoleplayServer.resources.job_manager;
-using RoleplayServer.resources.player_manager;
-using RoleplayServer.resources.group_manager;
+using RoleplayServer.database_manager;
+using RoleplayServer.job_manager;
+using RoleplayServer.player_manager;
+using RoleplayServer.group_manager;
 
-namespace RoleplayServer.resources.vehicle_manager
+namespace RoleplayServer.vehicle_manager
 {
     public class Vehicle
     {

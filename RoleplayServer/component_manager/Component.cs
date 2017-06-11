@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using MongoDB.Bson;
 
-namespace RoleplayServer.resources.component_manager
+namespace RoleplayServer.component_manager
 {
     public class Component
     {

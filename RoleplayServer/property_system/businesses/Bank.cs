@@ -6,11 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using GTANetworkServer;
 using MongoDB.Bson;
-using RoleplayServer.resources.core;
-using RoleplayServer.resources.inventory;
-using RoleplayServer.resources.player_manager;
+using RoleplayServer.core;
+using RoleplayServer.inventory;
+using RoleplayServer.player_manager;
 
-namespace RoleplayServer.resources.property_system.businesses
+namespace RoleplayServer.property_system.businesses
 {
     class Bank : Script
     {

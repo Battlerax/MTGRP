@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GTANetworkServer;
-using RoleplayServer.resources.player_manager;
+using RoleplayServer.player_manager;
 
-namespace RoleplayServer.resources.core
+namespace RoleplayServer.core
 {
     public static class ClientEx
     {

@@ -8,13 +8,13 @@ using GTANetworkServer;
 using GTANetworkShared;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using RoleplayServer.resources.core;
-using RoleplayServer.resources.database_manager;
-using RoleplayServer.resources.door_manager;
-using RoleplayServer.resources.inventory;
-using RoleplayServer.resources.vehicle_manager;
+using RoleplayServer.core;
+using RoleplayServer.database_manager;
+using RoleplayServer.door_manager;
+using RoleplayServer.inventory;
+using RoleplayServer.vehicle_manager;
 
-namespace RoleplayServer.resources.property_system
+namespace RoleplayServer.property_system
 {
     public class Property : IStorage
     {

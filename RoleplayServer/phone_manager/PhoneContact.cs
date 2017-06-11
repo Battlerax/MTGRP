@@ -1,9 +1,9 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
-using RoleplayServer.resources.database_manager;
+using RoleplayServer.database_manager;
 
-namespace RoleplayServer.resources.phone_manager
+namespace RoleplayServer.phone_manager
 {
     public class PhoneContact
     {

@@ -1,9 +1,9 @@
 ﻿using System;
 using GTANetworkServer;
 using GTANetworkShared;
-using RoleplayServer.resources.player_manager;
+using RoleplayServer.player_manager;
 
-namespace RoleplayServer.resources.core
+namespace RoleplayServer.core
 {
     public class ChatManager : Script
     {

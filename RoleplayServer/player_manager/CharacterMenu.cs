@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using GTANetworkServer;
 using GTANetworkShared;
 using MongoDB.Driver;
-using RoleplayServer.resources.component_manager;
-using RoleplayServer.resources.core;
-using RoleplayServer.resources.database_manager;
-using RoleplayServer.resources.group_manager;
-using RoleplayServer.resources.job_manager;
-using RoleplayServer.resources.phone_manager;
-using RoleplayServer.resources.group_manager.lspd;
-using RoleplayServer.resources.inventory;
+using RoleplayServer.component_manager;
+using RoleplayServer.core;
+using RoleplayServer.database_manager;
+using RoleplayServer.group_manager;
+using RoleplayServer.job_manager;
+using RoleplayServer.phone_manager;
+using RoleplayServer.group_manager.lspd;
+using RoleplayServer.inventory;
 
-namespace RoleplayServer.resources.player_manager
+namespace RoleplayServer.player_manager
 {
     class CharacterMenu : Script
     {

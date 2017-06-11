@@ -2,13 +2,13 @@
 using System.Linq;
 using GTANetworkServer;
 using GTANetworkShared;
-using RoleplayServer.resources.component_manager;
-using RoleplayServer.resources.core;
-using RoleplayServer.resources.inventory;
-using RoleplayServer.resources.inventory.bags;
-using RoleplayServer.resources.player_manager;
+using RoleplayServer.component_manager;
+using RoleplayServer.core;
+using RoleplayServer.inventory;
+using RoleplayServer.inventory.bags;
+using RoleplayServer.player_manager;
 
-namespace RoleplayServer.resources.property_system.businesses
+namespace RoleplayServer.property_system.businesses
 {
     class Clothing : Script
     {

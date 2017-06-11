@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MongoDB.Bson;
-using RoleplayServer.resources.inventory;
+using RoleplayServer.inventory;
 
-namespace RoleplayServer.resources.core.Items
+namespace RoleplayServer.core.Items
 {
     class SprunkItem : IInventoryItem
     {

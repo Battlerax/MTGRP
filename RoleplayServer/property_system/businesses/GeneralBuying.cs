@@ -5,12 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GTANetworkServer;
-using RoleplayServer.resources.core;
-using RoleplayServer.resources.core.Items;
-using RoleplayServer.resources.inventory;
-using RoleplayServer.resources.phone_manager;
+using RoleplayServer.core;
+using RoleplayServer.core.Items;
+using RoleplayServer.inventory;
+using RoleplayServer.phone_manager;
 
-namespace RoleplayServer.resources.property_system.businesses
+namespace RoleplayServer.property_system.businesses
 {
     class GeneralBuying : Script
     {

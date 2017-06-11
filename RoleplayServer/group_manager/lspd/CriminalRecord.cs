@@ -1,10 +1,10 @@
 ﻿using System;
 using MongoDB.Bson;
-using RoleplayServer.resources.database_manager;
+using RoleplayServer.database_manager;
 using System.Collections.Generic;
 using MongoDB.Driver;
 
-namespace RoleplayServer.resources.group_manager.lspd
+namespace RoleplayServer.group_manager.lspd
 {
     public class CriminalRecord
     {

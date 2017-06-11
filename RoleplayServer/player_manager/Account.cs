@@ -2,11 +2,11 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
-using RoleplayServer.resources.database_manager;
-using RoleplayServer.resources.AdminSystem;
+using RoleplayServer.database_manager;
+using RoleplayServer.AdminSystem;
 using System.Collections.Generic;
 
-namespace RoleplayServer.resources.player_manager
+namespace RoleplayServer.player_manager
 {
     public class Account
     {

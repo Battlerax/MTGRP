@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GTANetworkServer;
-using RoleplayServer.resources.core;
-using RoleplayServer.resources.player_manager;
+using RoleplayServer.core;
+using RoleplayServer.player_manager;
 
-namespace RoleplayServer.resources.inventory.bags
+namespace RoleplayServer.inventory.bags
 {
     class BagManager : Script
     {

@@ -4,10 +4,10 @@ using System.Linq;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
-using RoleplayServer.resources.database_manager;
-using RoleplayServer.resources.inventory;
+using RoleplayServer.database_manager;
+using RoleplayServer.inventory;
 
-namespace RoleplayServer.resources.phone_manager
+namespace RoleplayServer.phone_manager
 {
     public class Phone : IInventoryItem
     {

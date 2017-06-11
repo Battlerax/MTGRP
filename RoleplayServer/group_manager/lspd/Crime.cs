@@ -4,9 +4,9 @@ using System.Linq;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
-using RoleplayServer.resources.database_manager;
+using RoleplayServer.database_manager;
 
-namespace RoleplayServer.resources.group_manager.lspd
+namespace RoleplayServer.group_manager.lspd
 {
     public class Crime
     {

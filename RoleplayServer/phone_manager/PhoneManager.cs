@@ -7,13 +7,13 @@ using GTANetworkServer;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
-using RoleplayServer.resources.core;
-using RoleplayServer.resources.database_manager;
-using RoleplayServer.resources.group_manager.lspd.MDC;
-using RoleplayServer.resources.inventory;
-using RoleplayServer.resources.player_manager;
+using RoleplayServer.core;
+using RoleplayServer.database_manager;
+using RoleplayServer.group_manager.lspd.MDC;
+using RoleplayServer.inventory;
+using RoleplayServer.player_manager;
 
-namespace RoleplayServer.resources.phone_manager
+namespace RoleplayServer.phone_manager
 {
     public class PhoneManager : Script
     {

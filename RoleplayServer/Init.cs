@@ -11,11 +11,11 @@
 
 
 using GTANetworkServer;
-using RoleplayServer.resources.core;
-using RoleplayServer.resources.database_manager;
-using RoleplayServer.resources.inventory;
-using RoleplayServer.resources.player_manager;
-using RoleplayServer.resources.vehicle_manager;
+using RoleplayServer.core;
+using RoleplayServer.database_manager;
+using RoleplayServer.inventory;
+using RoleplayServer.player_manager;
+using RoleplayServer.vehicle_manager;
 
 namespace RoleplayServer.resources
 {

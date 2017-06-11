@@ -1,4 +1,4 @@
-﻿namespace RoleplayServer.resources.core
+﻿namespace RoleplayServer.core
 {
     public class Color
     {

@@ -1,4 +1,4 @@
-﻿namespace RoleplayServer.resources.player_manager
+﻿namespace RoleplayServer.player_manager
 {
     public class Model
     {

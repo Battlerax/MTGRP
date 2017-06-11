@@ -8,15 +8,15 @@ using GTANetworkServer;
 using GTANetworkShared;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
-using RoleplayServer.resources.core;
-using RoleplayServer.resources.core.Items;
-using RoleplayServer.resources.inventory.bags;
-using RoleplayServer.resources.job_manager.fisher;
-using RoleplayServer.resources.phone_manager;
-using RoleplayServer.resources.player_manager;
-using RoleplayServer.resources.property_system.businesses;
+using RoleplayServer.core;
+using RoleplayServer.core.Items;
+using RoleplayServer.inventory.bags;
+using RoleplayServer.job_manager.fisher;
+using RoleplayServer.phone_manager;
+using RoleplayServer.player_manager;
+using RoleplayServer.property_system.businesses;
 
-namespace RoleplayServer.resources.inventory
+namespace RoleplayServer.inventory
 {
     class InventoryManager : Script
     {

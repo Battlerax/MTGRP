@@ -1,9 +1,9 @@
 ﻿using System;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using RoleplayServer.resources.inventory;
+using RoleplayServer.inventory;
 
-namespace RoleplayServer.resources.job_manager.fisher
+namespace RoleplayServer.job_manager.fisher
 {
     public class Fish : IInventoryItem
     {

@@ -3,12 +3,12 @@ using GTANetworkShared;
 using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
-using RoleplayServer.resources.core;
-using RoleplayServer.resources.player_manager;
+using RoleplayServer.core;
+using RoleplayServer.player_manager;
 using System;
-using RoleplayServer.resources.inventory;
+using RoleplayServer.inventory;
 
-namespace RoleplayServer.resources.group_manager.lspd
+namespace RoleplayServer.group_manager.lspd
 {
     class Lspd : Script
     {

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GTANetworkServer;
-using RoleplayServer.resources.inventory;
-using RoleplayServer.resources.player_manager;
+using RoleplayServer.inventory;
+using RoleplayServer.player_manager;
 
-namespace RoleplayServer.resources.core.Items
+namespace RoleplayServer.core.Items
 {
     class RopeRagManager : Script
     {

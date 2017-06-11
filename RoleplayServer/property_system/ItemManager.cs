@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using RoleplayServer.resources.phone_manager;
+using RoleplayServer.phone_manager;
 
-namespace RoleplayServer.resources.property_system
+namespace RoleplayServer.property_system
 {
     public static class ItemManager
     {

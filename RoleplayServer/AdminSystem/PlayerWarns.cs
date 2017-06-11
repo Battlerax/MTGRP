@@ -2,7 +2,7 @@
 using MongoDB.Bson;
 
 
-namespace RoleplayServer.resources.AdminSystem
+namespace RoleplayServer.AdminSystem
 {
     public class PlayerWarns
     {

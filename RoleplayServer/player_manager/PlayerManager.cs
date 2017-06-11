@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using GTANetworkServer;
 using GTANetworkShared;
-using RoleplayServer.resources.core;
-using RoleplayServer.resources.group_manager;
-using RoleplayServer.resources.inventory;
+using RoleplayServer.core;
+using RoleplayServer.group_manager;
+using RoleplayServer.inventory;
 
-namespace RoleplayServer.resources.player_manager
+namespace RoleplayServer.player_manager
 {
     class PlayerManager : Script
     {

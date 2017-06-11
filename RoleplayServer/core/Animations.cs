@@ -12,8 +12,8 @@ using System.Text;
 using System.Threading.Tasks;
 using GTANetworkServer;
 using GTANetworkShared;
-using RoleplayServer.resources.player_manager;
-using RoleplayServer.resources.core;
+using RoleplayServer.player_manager;
+using RoleplayServer.core;
 
 namespace RoleplayServer
 {

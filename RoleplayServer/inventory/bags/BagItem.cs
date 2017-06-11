@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using GTANetworkServer;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using RoleplayServer.resources.player_manager;
+using RoleplayServer.player_manager;
 
-namespace RoleplayServer.resources.inventory.bags
+namespace RoleplayServer.inventory.bags
 {
     [BsonDiscriminator("BagItem")]
     class BagItem : IStorage, IInventoryItem

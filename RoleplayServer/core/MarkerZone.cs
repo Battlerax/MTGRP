@@ -2,7 +2,7 @@
 using GTANetworkShared;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace RoleplayServer.resources.core
+namespace RoleplayServer.core
 {
     public class MarkerZone
     {

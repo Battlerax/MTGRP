@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using RoleplayServer.resources.database_manager;
+using RoleplayServer.database_manager;
 
-namespace RoleplayServer.resources.phone_manager
+namespace RoleplayServer.phone_manager
 {
     public class PhoneMessage
     {

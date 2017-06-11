@@ -1,16 +1,16 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
-using RoleplayServer.resources.core;
-using RoleplayServer.resources.door_manager;
-using RoleplayServer.resources.group_manager;
-using RoleplayServer.resources.group_manager.lspd;
-using RoleplayServer.resources.job_manager;
-using RoleplayServer.resources.phone_manager;
-using RoleplayServer.resources.player_manager;
-using RoleplayServer.resources.property_system;
-using RoleplayServer.resources.vehicle_manager;
+using RoleplayServer.core;
+using RoleplayServer.door_manager;
+using RoleplayServer.group_manager;
+using RoleplayServer.group_manager.lspd;
+using RoleplayServer.job_manager;
+using RoleplayServer.phone_manager;
+using RoleplayServer.player_manager;
+using RoleplayServer.property_system;
+using RoleplayServer.vehicle_manager;
 
-namespace RoleplayServer.resources.database_manager
+namespace RoleplayServer.database_manager
 {
     public static class DatabaseManager
     {

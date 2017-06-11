@@ -1,15 +1,15 @@
 ﻿using GTANetworkServer;
 using GTANetworkShared;
 using System.Collections.Generic;
-using RoleplayServer.resources.core;
-using RoleplayServer.resources.door_manager;
-using RoleplayServer.resources.player_manager;
-using RoleplayServer.resources.vehicle_manager;
-using RoleplayServer.resources.inventory;
+using RoleplayServer.core;
+using RoleplayServer.door_manager;
+using RoleplayServer.player_manager;
+using RoleplayServer.vehicle_manager;
+using RoleplayServer.inventory;
 using System;
 using System.Timers;
 
-namespace RoleplayServer.resources.group_manager.lsnn
+namespace RoleplayServer.group_manager.lsnn
 {
     class Lsnn : Script
     {
