@@ -18,8 +18,6 @@ namespace RoleplayServer.group_manager.lsgov
             API.onResourceStart += StartLsgov;
         }
 
-        public readonly Vector3 LsnnFrontDoor = new Vector3(-319.0662f, -609.8559f, 33.55819f);
-
         public void StartLsgov()
         {
 
@@ -61,7 +59,7 @@ namespace RoleplayServer.group_manager.lsgov
 
             Character character = API.shared.getEntityData(player, "Character");
 
-            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov) { return; }
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov || character.GroupRank < 7) { return; }
             taxationAmount = int.Parse(percentage);
         }
 
@@ -70,7 +68,7 @@ namespace RoleplayServer.group_manager.lsgov
         {
             Character character = API.shared.getEntityData(player, "Character");
 
-            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov) { return; }
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov || character.GroupRank < 7) { return; }
             basepaycheck = int.Parse(amount);
             API.sendChatMessageToPlayer(player, "Base paycheck set to $" + amount + ".");
         }
