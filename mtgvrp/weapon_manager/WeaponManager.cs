@@ -25,10 +25,9 @@ namespace RoleplayServer.weapon_manager
 
         private void CharacterMenu_OnCharacterLogin(object sender, CharacterMenu.CharacterLoginEventArgs e)
         {
-            var items = InventoryManager.DoesInventoryHaveItem(e.Character, typeof(Weapon));
-            foreach (Weapon weapon in items)
+            foreach (Weapon weapon in e.Character.Weapons)
             {
-                GivePlayerWeapon(e.Character.Client, weapon);
+                API.givePlayerWeapon(e.Character.Client, weapon.WeaponHash, 9999, true, true);
             }
         }
 
@@ -40,7 +39,14 @@ namespace RoleplayServer.weapon_manager
                 {
                     Character chr = (Character)sender;
                     Weapon item = (Weapon) args.Item;
-                    RemovePlayerWeapon(chr.Client, item.WeaponHash );
+                    foreach(Weapon w in chr.Weapons.ToList())
+                    {
+                        if (w.WeaponHash == item.WeaponHash)
+                        {
+                            chr.Weapons.Remove(w);
+                        }
+                    }
+                    API.removePlayerWeapon(chr.Client, item.WeaponHash);
                 }
             }
         }
@@ -82,6 +88,7 @@ namespace RoleplayServer.weapon_manager
                 {
                     Account account = API.shared.getEntityData(p, "Account");
 
+                    API.removePlayerWeapon(player, currentPlayerWeapon);
                     if (account.AdminLevel > 1) { p.sendChatMessage("~r~ [WARNING]: " + player.nametag + " HAS A WEAPON THEY SHOULD NOT HAVE. TAKE ACTION."); }
                 }
                 return;
@@ -89,10 +96,10 @@ namespace RoleplayServer.weapon_manager
 
             Weapon currentWeapon = GetCurrentWeapon(player);
 
-            if (currentWeapon.Group != character.Group && currentWeapon.Group != null)
+            if (currentWeapon.Group != character.Group && currentWeapon.Group != Group.None)
             {
-                RemovePlayerWeapon(player, currentWeapon.WeaponHash);
-                player.sendChatMessage("You must be a member of " + currentWeapon.Group.Name + " to use this weapon. It was removed.");
+                RemoveAllPlayerWeapons(player);
+                player.sendChatMessage("You must be a member of " + currentWeapon.Group.Name + " to use this weapon. Your weapons were removed.");
             }
 
         }
@@ -133,25 +140,6 @@ namespace RoleplayServer.weapon_manager
 
         }
 
-        public static void RemovePlayerWeapon(Client player, WeaponHash weapon)
-        {
-            if (DoesPlayerHaveWeapon(player, weapon))
-            {
-                Character character = API.shared.getEntityData(player.handle, "Character");
-
-                foreach (Weapon w in character.Weapons.ToList())
-                {
-                    if (w.WeaponHash == weapon)
-                    {
-                        character.Weapons.Remove(w);
-                        API.shared.removePlayerWeapon(player, w.WeaponHash);
-                        inventory.InventoryManager.DeleteInventoryItem(character, typeof(Weapon), -1);
-                    }
-                }
-
-            }
-        }
-
         public static void SetWeaponTint(Client player, WeaponHash weaponhash, WeaponTint weapontint)
         {
             Character character = API.shared.getEntityData(player.handle, "Character");
@@ -184,18 +172,19 @@ namespace RoleplayServer.weapon_manager
         {
             Character character = API.shared.getEntityData(player.handle, "Character");
 
+            InventoryManager.DeleteInventoryItem(character, typeof(Weapon), -1);
             foreach (Weapon weapon in character.Weapons.ToList())
             {
-                RemovePlayerWeapon(player, weapon.WeaponHash);
+                character.Weapons.Remove(weapon);
             }
-            API.shared.removeAllPlayerWeapons(player); //for assurance.
+            API.shared.removeAllPlayerWeapons(player);
         }
 
         public static void GivePlayerWeapon(Client player, Weapon weapon)
         {
             Character character = API.shared.getEntityData(player.handle, "Character");
 
-            if (DoesPlayerHaveWeapon(player, weapon.WeaponHash)) { RemovePlayerWeapon(player, weapon.WeaponHash); }
+            if (DoesPlayerHaveWeapon(player, weapon.WeaponHash)) { return; }
 
             character.Weapons.Add(weapon);
 
@@ -203,14 +192,7 @@ namespace RoleplayServer.weapon_manager
             API.shared.setPlayerWeaponTint(player, weapon.WeaponHash, weapon.WeaponTint);
             //API.shared.givePlayerWeaponComponent(player, weapon.WeaponHash, weapon.WeaponComponent);
 
-            inventory.InventoryManager.GiveInventoryItem(character, weapon, 1);
-        }
-
-        public void TradeWeapon(Client player, Client receiver, Weapon weapon)
-        {
-            RemovePlayerWeapon(player, weapon.WeaponHash);
-            GivePlayerWeapon(receiver, weapon);
-
+            InventoryManager.GiveInventoryItem(character, weapon, 1);
         }
 
         public static Weapon GetCurrentWeapon(Client player)
@@ -224,56 +206,6 @@ namespace RoleplayServer.weapon_manager
                 if (weapon.WeaponHash == currentWeapon) { return weapon; }
             }
             return new Weapon(WeaponHash.Unarmed, WeaponTint.Normal, true, false, false, Group.None);
-        }
-
-
-
-        [Command("giveweapon")]
-        public void giveweapon_cmd(Client player, string id)
-        {
-            var receiver = PlayerManager.ParseClient(id);
-            Character playerid = API.shared.getEntityData(player.handle, "Character");
-            Character receiverid = API.shared.getEntityData(receiver.handle, "Character");
-
-            if (!DoesPlayerHaveAWeapon(player))
-            {
-                player.sendChatMessage("You have no weapons on you.");
-                return;
-            }
-
-            if (player.position.DistanceTo(receiver.position) > 7)
-            {
-                API.sendChatMessageToPlayer(player, "That player is too far from you.");
-                return;
-            }
-
-            if ((int)API.getPlayerCurrentWeapon(player) == -1569615261)
-            {
-                player.sendChatMessage("You must be holding the weapon you want to hand over.");
-                return;
-            }
-
-            WeaponHash currentWeapon = API.getPlayerCurrentWeapon(player);
-            Weapon weapon = GetCurrentWeapon(player);
-            TradeWeapon(player, receiver, weapon);
-            player.sendChatMessage("You gave a weapon (" + currentWeapon + ") to " + receiverid.CharacterName + ".");
-            receiver.sendChatMessage("You were given a weapon (" + currentWeapon + ") by " + playerid.CharacterName + ".");
-            ChatManager.NearbyMessage(player, 10, "~p~" + playerid.CharacterName + " handed a " +  currentWeapon + " to " + receiverid.CharacterName + ".");
-        }
-
-        [Command("dropweapon")]
-        public void drop_cmd(Client player)
-        {
-            WeaponHash currentWeapon = API.getPlayerCurrentWeapon(player);
-
-            if ((int) currentWeapon == -1569615261)
-            {
-                player.sendChatMessage("You must be holding the weapon you want to drop.");
-                return;
-            }
-
-            RemovePlayerWeapon(player, currentWeapon);
-            ChatManager.NearbyMessage(player, 10, "~p~" + player.GetCharacter().CharacterName + " dropped their " + currentWeapon + ".");
         }
 
         [Command("listweapons")]

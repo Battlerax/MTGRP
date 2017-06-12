@@ -44,7 +44,8 @@ namespace RoleplayServer.property_system
             TwentyFourSeven,
             Hardware,
             Bank,
-            Restaurant
+            Restaurant,
+            Advertising
         }
 
         #region ColShapeKnowing
@@ -455,6 +456,8 @@ namespace RoleplayServer.property_system
                     return "/balance /deposit /withdraw\n/wiretransfer /redeemcheck";
                 case PropertyTypes.Restaurant:
                     return "/buy";
+                case PropertyTypes.Advertising:
+                    return "/advertise";
             }
             return "";
         }
@@ -677,6 +680,31 @@ namespace RoleplayServer.property_system
                         prop.ItemPrices[item] = price;
                         API.sendChatMessageToPlayer(player, $"Changed ~g~{item}~w~ price to {price}");
                         break;
+
+                    case PropertyTypes.Advertising:
+                        if (item == "")
+                        {
+                            API.sendChatMessageToPlayer(player, "Choose a type: ");
+                            string msg = "";
+                            foreach (var key in prop.ItemPrices.Keys)
+                            {
+                                msg += key + ",";
+                            }
+                            msg = msg.Remove(msg.Length - 1, 1);
+                            API.sendChatMessageToPlayer(player, msg);
+                            return;
+                        }
+
+                        if (!prop.ItemPrices.ContainsKey(item))
+                        {
+                            API.sendChatMessageToPlayer(player, "[ERROR] That type doesn't exist.");
+                            return;
+                        }
+
+                        prop.ItemPrices[item] = price;
+                        API.sendChatMessageToPlayer(player, $"Changed ~g~{item}~w~ price to {price}");
+                        break;
+
                 }
                 prop.Save();
             }

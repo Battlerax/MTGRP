@@ -76,30 +76,25 @@ melee.Activated.connect(function(menu,item) {
 melee1.Activated.connect(function (menu, item) {
 
     API.triggerServerEvent("clickeditem", "Bat", 40);
-    API.sendNotification("You swipe your credit card to buy a ~g~Pistol");
 });
 
 // pistols event
 pistols1.Activated.connect(function (menu, item) {
 
     API.triggerServerEvent("clickeditem", "Pistol", 4000);
-    API.sendNotification("You swipe your credit card to buy a ~g~Pistol");
 });
 
 pistols2.Activated.connect(function (menu, item) {
 
     API.triggerServerEvent("clickeditem", "CombatPistol", 4700);
-    API.sendNotification("You swipe your credit card to buy a ~g~Combat Pistol");
 });
 
 pistols3.Activated.connect(function (menu, item) {
 
     API.triggerServerEvent("clickeditem", "HeavyPistol", 6500);
-    API.sendNotification("You swipe your credit card to buy a ~g~.50 Pistol");
 });
 
 pistols4.Activated.connect(function (menu, item) {
 
     API.triggerServerEvent("clickeditem", "Revolver", 8000);
-    API.sendNotification("You swipe your credit card to buy a ~g~Revolver");
 });

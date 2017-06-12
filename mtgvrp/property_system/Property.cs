@@ -52,6 +52,7 @@ namespace RoleplayServer.property_system
 
         public int PropertyPrice { get; set; }
 
+        public int AdvertisingPrice { get; set; }
         public Dictionary<string,int> ItemPrices { get; set; }
         public string[] RestaurantItems;
 

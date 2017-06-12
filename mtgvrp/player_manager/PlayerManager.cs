@@ -4,6 +4,7 @@ using GTANetworkServer;
 using GTANetworkShared;
 using RoleplayServer.core;
 using RoleplayServer.group_manager;
+using RoleplayServer.weapon_manager;
 using RoleplayServer.inventory;
 
 namespace RoleplayServer.player_manager
@@ -18,10 +19,18 @@ namespace RoleplayServer.player_manager
 
             API.onPlayerConnected += OnPlayerConnected;
             API.onPlayerDisconnected += OnPlayerDisconnected;
-
+            API.onPlayerDeath += API_onPlayerDeath;
             API.onClientEventTrigger += API_onClientEventTrigger;
 
             DebugManager.DebugMessage("[PlayerM] Player Manager initalized.");
+        }
+
+        private void API_onPlayerDeath(Client player, NetHandle entityKiller, int weapon)
+        {
+            WeaponManager.RemoveAllPlayerWeapons(player);
+            API.sendNotificationToPlayer(player, "You were revived by the ~b~Los Santos Medical Department ~w~ and were charged 500$ for hospital fees.");
+            InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(Money), 500);
+
         }
 
         //TODO: CHANGED ONCE THE LS GOV IS ADDED
@@ -260,7 +269,7 @@ namespace RoleplayServer.player_manager
             {
                 if (receiver != sender)
                 {
-                    API.sendNotificationToPlayer(sender, "You can't see other player's stats.");
+                    return;
                 }
                 ShowStats(sender);
             }

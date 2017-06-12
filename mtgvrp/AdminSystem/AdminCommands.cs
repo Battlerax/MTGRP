@@ -247,7 +247,7 @@ namespace RoleplayServer.AdminSystem
                 return;
             }
 
-            WeaponManager.CreateWeapon(player, weaponHash, WeaponTint.Normal, false, true);
+            WeaponManager.CreateWeapon(receiver, weaponHash, WeaponTint.Normal, false, true);
             API.sendChatMessageToPlayer(player, "You have given Player ID: " + id + " a " + weaponHash);
         }
 

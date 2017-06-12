@@ -10,7 +10,6 @@ namespace RoleplayServer.weapon_manager
 {
     public class Weapon : IInventoryItem
     {
-        public ObjectId Id { get; set; }
 
         public WeaponHash WeaponHash { get; set; }
         public WeaponTint WeaponTint { get; set; }
@@ -25,6 +24,9 @@ namespace RoleplayServer.weapon_manager
         public bool IsGroupWeapon { get; set; }
         public bool IsAdminWeapon { get; set; }
 
+        #region inv-related
+        public ObjectId Id { get; set; }
+
         public bool CanBeGiven => true;
         public bool CanBeDropped => true;
         public bool CanBeStashed => true;
@@ -38,8 +40,14 @@ namespace RoleplayServer.weapon_manager
         public string LongName => WeaponHash.ToString();
         public int Object => 289396019;
 
-
         public int Amount { get; set; }
+
+        #endregion
+
+        public Weapon()
+        {
+
+        }
 
         public Weapon(WeaponHash weaponhash, WeaponTint weapontint, bool isplayerweapon, bool isadminweapon, bool isgroupweapon, Group group)
         {

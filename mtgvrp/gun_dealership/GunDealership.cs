@@ -52,7 +52,7 @@ public class GunDealership : Script
 
         if (Money.GetCharacterMoney(character) - weaponCost < 0)
         {
-            API.sendChatMessageToPlayer(sender, "~rYou cannot afford this weapon.");
+            API.sendChatMessageToPlayer(sender, "~r~You cannot afford this weapon.");
             return false;
         }
 

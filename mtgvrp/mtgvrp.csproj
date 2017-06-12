@@ -135,7 +135,7 @@
     <Compile Include="property_system\ItemManager.cs" />
     <Compile Include="property_system\Property.cs" />
     <Compile Include="property_system\PropertyManager.cs" />
-    <Compile Include="rp_scripts\Advertisements.cs" />
+    <Compile Include="property_system\businesses\Advertising.cs" />
     <Compile Include="rp_scripts\BankMenu.cs" />
     <Compile Include="vehicle_dealership\VehicleDealership.cs" />
     <Compile Include="vehicle_manager\Vehicle.cs" />
