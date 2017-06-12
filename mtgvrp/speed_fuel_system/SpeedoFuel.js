@@ -5,6 +5,8 @@
 var myBrowser = null;
 
 API.onPlayerEnterVehicle.connect((vehicle) => {
+	if (API.getPlayerVehicleSeat(API.getLocalPlayer()) !== -1) return;
+
 	var res = API.getScreenResolution();
 	var width = 380;
 	var height = 190;
@@ -26,6 +28,8 @@ function loaded() {
 }
 
 API.onPlayerExitVehicle.connect((vehicle) => {
+	if (API.getPlayerVehicleSeat(API.getLocalPlayer()) !== -1) return;
+
 	API.destroyCefBrowser(myBrowser);
 	API.setCefDrawState(false);
 	myBrowser = null;
