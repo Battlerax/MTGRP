@@ -1,4 +1,5 @@
 ﻿using GTANetworkServer;
+using GTANetworkShared;
 using RoleplayServer.player_manager;
 
 
@@ -67,10 +68,25 @@ namespace RoleplayServer.group_manager.lsgov
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov || character.Group.CommandType != Group.CommandTypeLSGov || character.GroupRank < 7) { return; }
 
-            foreach(var receiver in PlayerManager.Players)
+            foreach (var receiver in PlayerManager.Players)
             {
                 API.sendChatMessageToPlayer(receiver.Client, "[Government] " + character.CharacterName + " says: " + text);
             }
+        }
+
+        //DEPLOY A PODIUM AS MAYOR OR HIGH RANKING LSPD
+        [Command("deploypodium")]
+        public void deploypodium_cmd(Client player)
+        {
+            Character character = API.shared.getEntityData(player, "Character");
+
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov || character.Group.CommandType != Group.CommandTypeLSGov || character.GroupRank < 7) { return; }
+
+            var playerpos = API.getEntityPosition(player);
+            var playerrot = API.getEntityRotation(player);
+            var playerDimension = API.getEntityDimension(player);
+
+            //DEPLOY A PODIUM WHEN MAPPING IS READY
         }
 
     }
