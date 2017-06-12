@@ -1,5 +1,9 @@
 ﻿API.onServerEventTrigger.connect((eventName, args) => {
-
+	switch (eventName) {
+	case "fuel_updatevalue":
+		myBrowser.call("setFuel", args[0]);
+		break;
+	}
 });
 
 var myBrowser = null;
@@ -25,10 +29,12 @@ function loaded() {
 	var speed = API.getVehicleMaxSpeed(API.getEntityModel(vehicle));
 	var intSpeed = Math.round(speed * 4); //m/s to km/h  | I know this is not a real correct rate but the game for some reason isnt accurate so I increased the rate to make sure speed never goes above max.
 	myBrowser.call("setupSpeed", intSpeed);
+
+	API.triggerServerEvent("fuel_getvehiclefuel");
 }
 
 API.onPlayerExitVehicle.connect((vehicle) => {
-	if (API.getPlayerVehicleSeat(API.getLocalPlayer()) !== -1) return;
+	if(myBrowser === null) return;
 
 	API.destroyCefBrowser(myBrowser);
 	API.setCefDrawState(false);

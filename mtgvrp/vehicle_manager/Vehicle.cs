@@ -13,6 +13,7 @@
 using System.Timers;
 using GTANetworkServer;
 using GTANetworkShared;
+using mtgvrp.speed_fuel_system;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using RoleplayServer.database_manager;
@@ -68,6 +69,8 @@ namespace RoleplayServer.vehicle_manager
         [BsonIgnore]
         public Character Driver { get; set; }
 
+        public int Fuel { get; set; }
+
         public Vehicle()
         {
             Id = 0;
@@ -78,6 +81,7 @@ namespace RoleplayServer.vehicle_manager
             SpawnColors = new int[2];
             SpawnDimension = 0;
             LicensePlate = "DEFAULT";
+            Fuel = 100;
 
             RespawnDelay = 600;
             VehType = VehTypeTemp;
