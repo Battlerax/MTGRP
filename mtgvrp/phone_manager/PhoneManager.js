@@ -11,7 +11,7 @@ function showPhoneIfNotShown() {
             res.Width - width,
             res.Height - height);
         API.loadPageCefBrowser(myBrowser, "phone_manager/gui/main.html");
-        API.setCefDrawState(true);
+        //API.setCefDrawState(true);
         API.waitUntilCefBrowserLoaded(myBrowser);
         return true;
     }
@@ -121,7 +121,7 @@ var isMouseShown = false;
 API.onKeyUp.connect(function(sender, e) {
     if (myBrowser !== null && e.KeyCode === Keys.Escape) {
         API.destroyCefBrowser(myBrowser);
-        API.setCefDrawState(false);
+        //API.setCefDrawState(false);
         API.showCursor(false);
         API.setCanOpenChat(true);
         myBrowser = null;

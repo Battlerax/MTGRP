@@ -19,7 +19,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
             API.sendChatMessage("Loading page..."):
             API.loadPageCefBrowser(mdcBrowser, "group_manager/lspd/MDC/MDC.html");
             API.sendChatMessage("Page loaded.");
-            API.setCefDrawState(true);
+            //API.setCefDrawState(true);
             API.setCanOpenChat(false);
             API.sendChatMessage("Openeding MDC, requesting information.");
 
@@ -32,7 +32,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 
             API.showCursor(false);
             API.destroyCefBrowser(mdcBrowser);
-            API.setCefDrawState(false);
+            //API.setCefDrawState(false);
             break;
 
         case "add911":
