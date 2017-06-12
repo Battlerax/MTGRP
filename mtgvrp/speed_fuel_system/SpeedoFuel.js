@@ -32,6 +32,9 @@ API.onPlayerExitVehicle.connect((vehicle) => {
 	myBrowser = null;
 });
 
+var lastPos = "";
+var posUpdateTick = 0;
+
 API.onUpdate.connect(() => {
 	if (myBrowser !== null) {
 		var vehicule = API.getPlayerVehicle(API.getLocalPlayer());
@@ -43,5 +46,15 @@ API.onUpdate.connect(() => {
 		);
 		speed = Math.floor(speed * 3.6);
 		myBrowser.call("setSpeed", speed);
+	}
+
+	if (lastPos !== "") {
+		API.drawText("~w~" + lastPos, 20, API.getScreenResolution().Height - 300, 1, 115, 186, 131, 255, 4, 0, false, true, 0);
+	}
+
+	posUpdateTick += 1;
+	if (posUpdateTick === 120) {
+		posUpdateTick = 0;
+		lastPos = API.getZoneName(API.getEntityPosition(API.getLocalPlayer()));
 	}
 });
