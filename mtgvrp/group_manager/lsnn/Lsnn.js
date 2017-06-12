@@ -25,7 +25,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 			API.waitUntilCefBrowserInit(lowerthird);
 			API.setCefBrowserPosition(lowerthird, wbres.Width - 1200, wbres.Height - 300);
 			API.loadPageCefBrowser(lowerthird, "group_manager/lsnn/LowerThird.html");
-			API.setCefDrawState(true);
+			////API.setCefDrawState(true);
 	        setToBeCalled("settitle", args[2]);
 			break;
 
@@ -39,7 +39,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 			API.waitUntilCefBrowserInit(lowerthird);
 			API.setCefBrowserPosition(lowerthird, 800, 700);
 			API.loadPageCefBrowser(lowerthird, "group_manager/lsnn/LowerThirdChopper.html");
-			API.setCefDrawState(true);
+			////API.setCefDrawState(true);
 			setToBeCalled("settitle", args[2]);
 			break;
 
@@ -56,7 +56,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 		    API.destroyCefBrowser(lowerthird);
 			}
 			API.callNative("0x31B73D1EA9F01DA2");
-			API.setCefDrawState(false);
+			////API.setCefDrawState(false);
 		    break;
     }
 });

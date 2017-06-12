@@ -36,7 +36,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
             if (login_browser != null) {
                 API.showCursor(false);
                 API.destroyCefBrowser(login_browser);
-                API.setCefDrawState(false);
+                //API.setCefDrawState(false);
                 login_browser = null;
             }
             break;
