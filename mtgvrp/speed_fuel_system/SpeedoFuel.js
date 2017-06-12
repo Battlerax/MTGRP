@@ -6,13 +6,13 @@ var myBrowser = null;
 
 API.onPlayerEnterVehicle.connect((vehicle) => {
 	var res = API.getScreenResolution();
-	var width = 600;
-	var height = 300;
+	var width = 380;
+	var height = 190;
 	myBrowser = API.createCefBrowser(width, height);
 	API.waitUntilCefBrowserInit(myBrowser);
 	API.setCefBrowserPosition(myBrowser,
 		300,
-		res.Height - height + 40);
+		res.Height - height - 10);
 	API.loadPageCefBrowser(myBrowser, "speed_fuel_system/SpeedoFuel.html");
 	API.setCefDrawState(true);
 	API.waitUntilCefBrowserLoaded(myBrowser);
@@ -21,8 +21,7 @@ API.onPlayerEnterVehicle.connect((vehicle) => {
 function loaded() {
 	var vehicle = API.getPlayerVehicle(API.getLocalPlayer());
 	var speed = API.getVehicleMaxSpeed(API.getEntityModel(vehicle));
-	var intSpeed = Math.round(speed * 4); //The max speed from the game is so small for some reason, doing this to get it big xD
-	API.sendChatMessage("Speed: " + intSpeed);
+	var intSpeed = Math.round(speed * 4); //m/s to km/h  | I know this is not a real correct rate but the game for some reason isnt accurate so I increased the rate to make sure speed never goes above max.
 	myBrowser.call("setupSpeed", intSpeed);
 }
 
