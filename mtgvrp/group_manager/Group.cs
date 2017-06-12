@@ -42,6 +42,12 @@ namespace RoleplayServer.group_manager
         public DateTime DisbandDate { get; set; }
 
         //Group misc
+        public int basepaycheck { get; set; }
+        public int taxationAmount { get; set; }
+        public int VIPBonusLevelOne { get; set; }
+        public int VIPBonusLevelTwo { get; set; }
+        public int VIPBonusLevelThree { get; set; }
+
         public int LottoSafe { get; set; }
         public int LottoPrice { get; set; }
         public bool LockerSet { get; set; }
@@ -62,7 +68,6 @@ namespace RoleplayServer.group_manager
             Type = 0;
             CommandType = 0;
             Motd = "Welcome To Group";
-
 
             Locker = MarkerZone.None;
             ArrestLocation = MarkerZone.None;

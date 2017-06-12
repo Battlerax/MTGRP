@@ -1,13 +1,6 @@
 ﻿using GTANetworkServer;
-using GTANetworkShared;
-using System.Collections.Generic;
-using RoleplayServer.core;
-using RoleplayServer.door_manager;
 using RoleplayServer.player_manager;
-using RoleplayServer.vehicle_manager;
-using RoleplayServer.inventory;
-using System;
-using System.Timers;
+
 
 namespace RoleplayServer.group_manager.lsgov
 {
@@ -15,44 +8,36 @@ namespace RoleplayServer.group_manager.lsgov
     {
         public lsgov()
         {
-            API.onResourceStart += StartLsgov;
-        }
-
-        public void StartLsgov()
-        {
 
         }
 
-        public static int basepaycheck = 500;
-        public static int taxationAmount = 4;
-        public static int VIPBonusLevelOne = 10;
-        public static int VIPBonusLevelTwo = 20;
-        public static int VIPBonusLevelThree = 30;
-
+        //SET VIP BONUS PERCENTAGE (ONLY FOR ADMINS)
         [Command("setvipbonus")]
         public void setvipbonus_cmd(Client player, string viplevel, string percentage)
         {
             Account account = API.shared.getEntityData(player.handle, "Account");
+            Character character = API.shared.getEntityData(player, "Character");
 
             if (account.AdminLevel < 6) { return; }
 
             switch (viplevel)
             {
                 case "1":
-                    VIPBonusLevelOne = int.Parse(percentage);
+                    character.Group.VIPBonusLevelOne = int.Parse(percentage);
                     break;
 
                 case "2":
-                    VIPBonusLevelTwo = int.Parse(percentage);
+                    character.Group.VIPBonusLevelTwo = int.Parse(percentage);
                     break;
 
                 case "3":
-                    VIPBonusLevelThree = int.Parse(percentage);
+                    character.Group.VIPBonusLevelThree = int.Parse(percentage);
                     break;
             }
             player.sendChatMessage("You have set VIP level " + viplevel + "'s paycheck bonus to " + percentage + "%.");
         }
 
+        //SET TAXATION FOR PAYCHECKS AS MAYOR/OFFICIAL
         [Command("settax")]
         public void settax_cmd(Client player, string percentage)
         {
@@ -60,17 +45,32 @@ namespace RoleplayServer.group_manager.lsgov
             Character character = API.shared.getEntityData(player, "Character");
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov || character.GroupRank < 7) { return; }
-            taxationAmount = int.Parse(percentage);
+            character.Group.taxationAmount = int.Parse(percentage);
         }
 
+        //SET BASE PAYCHECK AS MAYOR/OFFICIAL
         [Command("setbasepaycheck", GreedyArg = true)]
         public void setbasepaycheck_cmd(Client player, string amount)
         {
             Character character = API.shared.getEntityData(player, "Character");
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov || character.GroupRank < 7) { return; }
-            basepaycheck = int.Parse(amount);
+            character.Group.basepaycheck = int.Parse(amount);
             API.sendChatMessageToPlayer(player, "Base paycheck set to $" + amount + ".");
+        }
+
+        //GOVERNMENT ANNOUNCEMENT AS MAYOR OR HIGH RANKING LSPD
+        [Command("gov", GreedyArg = true)]
+        public void gov_cmd(Client player, string text)
+        {
+            Character character = API.shared.getEntityData(player, "Character");
+
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov || character.Group.CommandType != Group.CommandTypeLSGov || character.GroupRank < 7) { return; }
+
+            foreach(var receiver in PlayerManager.Players)
+            {
+                API.sendChatMessageToPlayer(receiver.Client, "[Government] " + character.CharacterName + " says: " + text);
+            }
         }
 
     }
