@@ -13,7 +13,7 @@ API.onPlayerEnterVehicle.connect((vehicle) => {
 	if (API.getPlayerVehicleSeat(API.getLocalPlayer()) !== -1) return;
 
 	var res = API.getScreenResolution();
-	var width = 380;
+	var width = 440;
 	var height = 225;
 	myBrowser = API.createCefBrowser(width, height);
 	API.waitUntilCefBrowserInit(myBrowser);
@@ -46,7 +46,6 @@ var posUpdateTick = Date.now();
 
 function getDirectionName(direction) {
 	var angle = Math.round(direction.Z);
-	API.sendChatMessage("HEY: " + angle);
 	if (angle >= -23 && angle < 23)
 		return "N";
 	else if (angle >= 23 && angle < 67)
@@ -67,7 +66,29 @@ function getDirectionName(direction) {
 		return "NO";
 }
 
+var lastZone = "";
+var lastStreet = "";
+var lastDirection = "";
+
+var screenRes = null;
+
 API.onUpdate.connect(() => {
+
+	//ZoneStreet name.
+	if (Date.now() >= posUpdateTick) {
+		posUpdateTick = Date.now() + 1000;
+		var pos = API.getEntityPosition(API.getLocalPlayer());
+		lastStreet = API.getStreetName(pos);
+		lastZone = API.getZoneName(pos);
+
+		if(myBrowser !== null)
+			myBrowser.call("setZoneStreet", lastStreet, lastZone);
+	}
+
+	//Direction
+	var rot = API.getEntityRotation(API.getLocalPlayer());
+	lastDirection = getDirectionName(rot);
+
 	if (myBrowser !== null) {
 		var vehicule = API.getPlayerVehicle(API.getLocalPlayer());
 		var velocity = API.getEntityVelocity(vehicule);
@@ -79,15 +100,20 @@ API.onUpdate.connect(() => {
 		speed = Math.floor(speed * 3.6);
 		myBrowser.call("setSpeed", speed);
 
-		//Direction
-		var rot = API.getEntityRotation(API.getLocalPlayer());
-		myBrowser.call("setDirection", getDirectionName(rot));
+		//Set dir.
+		myBrowser.call("setDirection", lastDirection);
 
-		//ZoneStreet name.
-		if (Date.now() >= posUpdateTick) {
-			posUpdateTick = Date.now() + 1000;
-			var pos = API.getEntityPosition(API.getLocalPlayer());
-			myBrowser.call("setZoneStreet", API.getStreetName(pos), API.getZoneName(pos));
-		}
+	} else {
+		if (screenRes === null)
+			screenRes = API.getScreenResolution();
+
+		if (lastDirection !== "")
+			API.drawText(lastDirection, 310, screenRes.Height - 155, 1, 225, 225, 225, 255, 4, 0, false, true, 0);
+
+		if(lastStreet !== "")
+			API.drawText(lastStreet, 365, screenRes.Height - 150, 0.5, 225, 225, 225, 255, 4, 0, false, true, 0);
+
+		if(lastZone !== "")
+			API.drawText(lastZone, 365, screenRes.Height - 125, 0.5, 225, 225, 225, 255, 4, 0, false, true, 0);
 	}
 });
