@@ -4,7 +4,7 @@
 	<script src="../jquery.js"></script>
 	<script src="../stylesheet/js/raphael-2.1.4.min.js"></script>
 	<script src="../stylesheet/js/justgage.js"></script>
-    
+
 	<script>
 
 		var $myFuelGauge;
@@ -14,8 +14,8 @@
 			resourceCall("loaded");
 		});
 
-		$(document).ready(function () {
-			
+		$(document).ready(function() {
+
 			$mySpeedGauge = new JustGage({
 				id: "speed",
 				value: 0,
@@ -37,19 +37,21 @@
 				symbol: '%',
 				titlePosition: "below",
 				valueFontColor: "#FFFFFF",
-				customSectors: [{
-					color: '#ff0000',
-					lo: 0,
-					hi: 20
-				}, {
-					color: '#ffff00',
-					lo: 20,
-					hi: 30
-				}, {
-					color: '#00ff00',
-					lo: 30,
-					hi: 100
-				}]
+				customSectors: [
+					{
+						color: '#ff0000',
+						lo: 0,
+						hi: 20
+					}, {
+						color: '#ffff00',
+						lo: 20,
+						hi: 30
+					}, {
+						color: '#00ff00',
+						lo: 30,
+						hi: 100
+					}
+				]
 			});
 
 		});
@@ -60,33 +62,65 @@
 
 		var maxSpeed;
 
-        function setSpeed(amount) {
-	        $mySpeedGauge.refresh(amount, maxSpeed);
-        }
+		function setSpeed(amount) {
+			$mySpeedGauge.refresh(amount, maxSpeed);
+		}
 
 		function setupSpeed(max) {
 			maxSpeed = max;
 		}
+
+        function setZoneStreet(street, zone) {
+	        $("#zone").text(street + ", " + zone);
+        }
+
+    function setDirection(dir) {
+	    $("#direction").text(dir);
+    }
 	</script>
-    
+
 	<style>
 		#speed {
 			width: 300px;
 			height: 160px;
 		}
 
-        #fuel {
-	        width: 300px;
-	        height: 160px;
-        }
+		#fuel {
+			width: 300px;
+			height: 160px;
+		}
+
+		#direction {
+			position: fixed;
+			font-size: 30px;
+			top: 60px;
+			color: black;
+			text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
+			text-align: center;
+			width: 350px;
+		}
+
+		#zone {
+			color: white;
+			text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+		}
 	</style>
 
 </head>
 
 <body>
-<div style="background: rgba(0, 0, 0, 0.5); border-radius: 30px; width: 360px; height: 160px;">
-	<div id="speed" style="position: fixed; left: -50px;"></div>
-	<div id="fuel" style="position: fixed; left: 120px;"></div>
+<div style="background: rgba(0, 0, 0, 0.5); border-radius: 30px; border: 3px black solid; width: 360px; height: 200px; font-family: sans-serif;">
+	<div style="text-align: center; margin-top: 10px; font-size: 20px;">
+		<span id="zone"></span>
+	</div>
+
+	<div style="margin-top: 5px;">
+        <div id="speed" style="position: fixed; left: -50px;"></div>
+		<div id="direction">
+			E
+		</div>
+		<div id="fuel" style="position: fixed; left: 120px;"></div>
+	</div>
 </div>
 </body>
 </html>
