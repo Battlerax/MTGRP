@@ -50,8 +50,16 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 
         character_menu.OnItemSelect.connect(function (sender, item, index) {
             if (item.Text == "Create new character") {
-                var desired_name = API.getUserInput("Enter desired username here", 64);
-                API.triggerServerEvent("OnCharacterMenuSelect", item.Text, desired_name);
+	            API.sendChatMessage("* Enter your desired character name: ");
+                
+				var res = false;
+				while (res === false) {
+					API.sendChatMessage("Character name must be similar to: ~g~John_Doe~w~.");
+					var desiredName = API.getUserInput("", 64);
+					var patt = new RegExp("^[A-Z][a-z]+_[A-Z][a-z]+$");
+					res = patt.test(desiredName);
+				}
+				API.triggerServerEvent("OnCharacterMenuSelect", item.Text, desiredName);
             }
             else {
                 API.triggerServerEvent("OnCharacterMenuSelect", item.Text);
