@@ -41,11 +41,11 @@ API.onServerEventTrigger.connect(function (eventName, args) {
             }
             break;
         case "admin_pin_check":
-            var adminPin = API.getUserInput("", 6);
+            var adminPin = API.getUserInput("", 5);
             API.triggerServerEvent("admin_pin_check", adminPin);
             break;
         case "create_admin_pin":
-            var adminPinCreate = API.getUserInput("", 6);
+            var adminPinCreate = API.getUserInput("", 5);
             API.triggerServerEvent("create_admin_pin", adminPinCreate);
             break;
     }
