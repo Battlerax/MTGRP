@@ -577,60 +577,11 @@ namespace RoleplayServer.property_system
 
                 switch (prop.Type)
                 {
-                    case PropertyTypes.Clothing:
-                        if (item == "")
-                        {
-                            //0    ,1    ,2          ,3          ,4   ,5   ,6      ,7
-                            API.sendChatMessageToPlayer(player,
-                                "[ERROR] Choose a type: [Pants,Shoes,Accessories,Undershirts,Tops,Hats,Glasses,Earrings,Bags]");
-                            return;
-                        }
-
-                        switch (item.ToLower())
-                        {
-                            case "pants":
-                                prop.ItemPrices["0"] = price;
-                                API.sendChatMessageToPlayer(player, $"Changed ~g~Pants~w~ price to {price}");
-                                break;
-                            case "shoes":
-                                prop.ItemPrices["1"] = price;
-                                API.sendChatMessageToPlayer(player, $"Changed ~g~Shoes~w~ price to {price}");
-                                break;
-                            case "accessories":
-                                prop.ItemPrices["2"] = price;
-                                API.sendChatMessageToPlayer(player, $"Changed ~g~Accessories~w~ price to {price}");
-                                break;
-                            case "undershirts":
-                                prop.ItemPrices["3"] = price;
-                                API.sendChatMessageToPlayer(player, $"Changed ~g~Undershirts~w~ price to {price}");
-                                break;
-                            case "tops":
-                                prop.ItemPrices["4"] = price;
-                                API.sendChatMessageToPlayer(player, $"Changed ~g~Tops~w~ price to {price}");
-                                break;
-                            case "hats":
-                                prop.ItemPrices["5"] = price;
-                                API.sendChatMessageToPlayer(player, $"Changed ~g~Hats~w~ price to {price}");
-                                break;
-                            case "glasses":
-                                prop.ItemPrices["6"] = price;
-                                API.sendChatMessageToPlayer(player, $"Changed ~g~Glasses~w~ price to {price}");
-                                break;
-                            case "earrings":
-                                prop.ItemPrices["7"] = price;
-                                API.sendChatMessageToPlayer(player, $"Changed ~g~Earrings~w~ price to {price}");
-                                break;
-                            case "bags":
-                                prop.ItemPrices["8"] = price;
-                                API.sendChatMessageToPlayer(player, $"Changed ~g~Earrings~w~ price to {price}");
-                                break;
-                        }
-                        break;
-
                     case PropertyTypes.Hardware:
                     case PropertyTypes.TwentyFourSeven:
                     case PropertyTypes.GasStation:
                     case PropertyTypes.Restaurant:
+                    case PropertyTypes.Clothing:
                         if (item == "")
                         {
                             API.sendChatMessageToPlayer(player, "Choose a type: ");

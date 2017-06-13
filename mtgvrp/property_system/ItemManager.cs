@@ -15,14 +15,14 @@ namespace RoleplayServer.property_system
             switch (prop.Type)
             {
                 case PropertyManager.PropertyTypes.Clothing:
-                    prop.ItemPrices.Add("0", 30); //Pants
-                    prop.ItemPrices.Add("1", 40); //Shoes
-                    prop.ItemPrices.Add("2", 10); //Accessories
-                    prop.ItemPrices.Add("3", 20); //Undershirts
-                    prop.ItemPrices.Add("4", 20); //Tops
-                    prop.ItemPrices.Add("5", 10); //Hats
-                    prop.ItemPrices.Add("6", 10); //Glasses
-                    prop.ItemPrices.Add("7", 5); //Earrings
+                    prop.ItemPrices.Add("pants", 30); //Pants
+                    prop.ItemPrices.Add("shoes", 40); //Shoes
+                    prop.ItemPrices.Add("accessories", 10); //Accessories
+                    prop.ItemPrices.Add("undershirts", 20); //Undershirts
+                    prop.ItemPrices.Add("tops", 20); //Tops
+                    prop.ItemPrices.Add("hats", 10); //Hats
+                    prop.ItemPrices.Add("glasses", 10); //Glasses
+                    prop.ItemPrices.Add("earrings", 5); //Earrings
 
 
                     prop.ItemPrices.Add("8", 200); //Bags
