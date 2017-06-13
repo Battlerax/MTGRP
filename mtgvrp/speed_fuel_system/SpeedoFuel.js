@@ -38,7 +38,6 @@ API.onPlayerExitVehicle.connect((vehicle) => {
 	if(myBrowser === null) return;
 
 	API.destroyCefBrowser(myBrowser);
-	API.setCefDrawState(false);
 	myBrowser = null;
 });
 
