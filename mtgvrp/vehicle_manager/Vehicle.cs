@@ -151,7 +151,7 @@ namespace RoleplayServer.vehicle_manager
 
             IsSpawned = true;
 
-            if (OwnerId == 0)
+            if (OwnerId == 0 && GroupId == 0)
             {
                 Fuel = 25;
             }
