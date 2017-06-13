@@ -45,17 +45,26 @@ API.onPlayerExitVehicle.connect((vehicle) => {
 var posUpdateTick = Date.now();
 
 function getDirectionName(direction) {
-	var radians = Math.atan2(direction.Y, direction.X);
-
-	var compassReading = radians * (180 / Math.PI);
-
-	var coordNames = ["N", "NE", "E", "SE", "S", "SW", "W", "NW", "N"];
-	var coordIndex = Math.round(compassReading / 45);
-	if (coordIndex < 0) {
-		coordIndex = coordIndex + 8;
-	};
-
-	return coordNames[coordIndex]; // returns the coordinate value
+	var angle = Math.round(direction.Z);
+	API.sendChatMessage("HEY: " + angle);
+	if (angle >= -23 && angle < 23)
+		return "N";
+	else if (angle >= 23 && angle < 67)
+		return "NE";
+	else if (angle >= 67 && angle < 112)
+		return "E";
+	else if (angle >= 112 && angle < 156)
+		return "SE";
+	else if ((angle >= 156 && angle < 180) || (angle < -156 && angle >= -180))
+		return "S";
+	else if (angle < -23 && angle >= -67)
+		return "NW";
+	else if (angle < -67 && angle >= -112)
+		return "W";
+	else if (angle < -112 && angle >= -156)
+		return "SW";
+	else
+		return "NO";
 }
 
 API.onUpdate.connect(() => {
@@ -71,7 +80,8 @@ API.onUpdate.connect(() => {
 		myBrowser.call("setSpeed", speed);
 
 		//Direction
-		myBrowser.call("setDirection", getDirectionName(API.getGameplayCamDir()));
+		var rot = API.getEntityRotation(API.getLocalPlayer());
+		myBrowser.call("setDirection", getDirectionName(rot));
 
 		//ZoneStreet name.
 		if (Date.now() >= posUpdateTick) {
