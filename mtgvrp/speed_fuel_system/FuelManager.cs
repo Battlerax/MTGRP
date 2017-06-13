@@ -89,9 +89,9 @@ namespace mtgvrp.speed_fuel_system
 
                     var pendingFuel = fuel;
 
-                    if (pendingFuel > 100 || pendingFuel + veh.Fuel > 100)
+                    if (pendingFuel > 100 || pendingFuel + veh.Fuel > 100 || pendingFuel < 0)
                     {
-                        API.sendChatMessageToPlayer(player, "Vehicle fuel can't be above 100.");
+                        API.sendChatMessageToPlayer(player, "Vehicle fuel can't be above 100 or negative.");
                     }
 
                     if (Money.GetCharacterMoney(player.GetCharacter()) < pendingFuel * prop.ItemPrices["gas"])
