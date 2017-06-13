@@ -55,6 +55,10 @@ namespace RoleplayServer.property_system
                         "Food 4"
                     };
                     break;
+
+                case PropertyManager.PropertyTypes.GasStation:
+                    prop.ItemPrices.Add("gas", 3);
+                    break;
             }
         }
 

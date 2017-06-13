@@ -20,6 +20,7 @@ using RoleplayServer.database_manager;
 using RoleplayServer.job_manager;
 using RoleplayServer.player_manager;
 using RoleplayServer.group_manager;
+using RoleplayServer.property_system;
 
 namespace RoleplayServer.vehicle_manager
 {
@@ -70,6 +71,12 @@ namespace RoleplayServer.vehicle_manager
         public Character Driver { get; set; }
 
         public int Fuel { get; set; }
+
+        [BsonIgnore]
+        public System.Threading.Timer FuelingTimer { get; set; }
+
+        [BsonIgnore]
+        public Property RefuelProp { get; set; }
 
         public Vehicle()
         {
