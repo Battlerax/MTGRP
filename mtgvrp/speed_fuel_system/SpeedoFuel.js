@@ -38,7 +38,6 @@ API.onPlayerExitVehicle.connect((vehicle) => {
 	if(myBrowser === null) return;
 
 	API.destroyCefBrowser(myBrowser);
-	API.setCefDrawState(false);
 	myBrowser = null;
 });
 
@@ -49,19 +48,19 @@ function getDirectionName(direction) {
 	if (angle >= -23 && angle < 23)
 		return "N";
 	else if (angle >= 23 && angle < 67)
-		return "NE";
+		return "NW";
 	else if (angle >= 67 && angle < 112)
-		return "E";
+		return "W";
 	else if (angle >= 112 && angle < 156)
-		return "SE";
+		return "SW";
 	else if ((angle >= 156 && angle < 180) || (angle < -156 && angle >= -180))
 		return "S";
 	else if (angle < -23 && angle >= -67)
-		return "NW";
+		return "NE";
 	else if (angle < -67 && angle >= -112)
-		return "W";
+		return "E";
 	else if (angle < -112 && angle >= -156)
-		return "SW";
+		return "SE";
 	else
 		return "NO";
 }
