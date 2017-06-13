@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using mtgvrp.speed_fuel_system;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using RoleplayServer.core;
 using RoleplayServer.door_manager;
@@ -28,7 +29,6 @@ namespace RoleplayServer.database_manager
         public static IMongoCollection<Group> GroupTable;
         public static IMongoCollection<Property> PropertyTable;
         public static IMongoCollection<Door> DoorsTable;
-
         public static IMongoCollection<Crime> CrimeTable;
         public static IMongoCollection<CriminalRecord> CriminalRecordTable;
 
@@ -50,7 +50,6 @@ namespace RoleplayServer.database_manager
             GroupTable = _database.GetCollection<Group>("groups");
             PropertyTable = _database.GetCollection<Property>("properties");
             DoorsTable = _database.GetCollection<Door>("doors");
-
             CrimeTable = _database.GetCollection<Crime>("crimes");
             CriminalRecordTable = _database.GetCollection<CriminalRecord>("criminalrecords");
 

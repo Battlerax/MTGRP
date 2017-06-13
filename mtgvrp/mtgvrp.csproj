@@ -135,6 +135,7 @@
     <Compile Include="property_system\Property.cs" />
     <Compile Include="property_system\PropertyManager.cs" />
     <Compile Include="rp_scripts\BankMenu.cs" />
+    <Compile Include="speed_fuel_system\FuelManager.cs" />
     <Compile Include="vehicle_dealership\VehicleDealership.cs" />
     <Compile Include="vehicle_manager\Vehicle.cs" />
     <Compile Include="vehicle_manager\VehicleManager.cs" />
@@ -199,6 +200,8 @@
     <Content Include="property_system\businesses\GeneralBuying.js" />
     <Content Include="property_system\PropertyManager.js" />
     <Content Include="rp_scripts\BankMenu.js" />
+    <Content Include="speed_fuel_system\SpeedoFuel.html" />
+    <Content Include="speed_fuel_system\SpeedoFuel.js" />
     <Content Include="stylesheet\css\metro-colors.css" />
     <Content Include="stylesheet\css\metro-colors.min.css" />
     <Content Include="stylesheet\css\metro-icons.css" />
@@ -212,8 +215,10 @@
     <Content Include="stylesheet\css\metro.css" />
     <Content Include="stylesheet\css\metro.min.css" />
     <Content Include="stylesheet\fonts\metro.svg" />
+    <Content Include="stylesheet\js\justgage.js" />
     <Content Include="stylesheet\js\metro.js" />
     <Content Include="stylesheet\js\metro.min.js" />
+    <Content Include="stylesheet\js\raphael-2.1.4.min.js" />
     <Content Include="types-gtanetwork\Enums.js" />
     <Content Include="vehicle_dealership\vehicledealer.js" />
     <Content Include="vehicle_manager\VehicleOwnership.js" />

@@ -113,6 +113,8 @@ namespace RoleplayServer.property_system
                         return 73;
                     case PropertyManager.PropertyTypes.Restaurant:
                         return 93;
+                    case PropertyManager.PropertyTypes.GasStation:
+                        return 361;
                 default:
                     return -1;
             }

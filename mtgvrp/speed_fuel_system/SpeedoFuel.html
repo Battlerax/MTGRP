@@ -1,0 +1,92 @@
+﻿<html>
+
+<head>
+	<script src="../jquery.js"></script>
+	<script src="../stylesheet/js/raphael-2.1.4.min.js"></script>
+	<script src="../stylesheet/js/justgage.js"></script>
+    
+	<script>
+
+		var $myFuelGauge;
+		var $mySpeedGauge;
+
+		$(document).ready(function() {
+			resourceCall("loaded");
+		});
+
+		$(document).ready(function () {
+			
+			$mySpeedGauge = new JustGage({
+				id: "speed",
+				value: 0,
+				min: 0,
+				max: 100,
+				title: "Speed",
+				label: ' KM/H',
+				titlePosition: "below",
+				pointer: true,
+				valueFontColor: "#FFFFFF"
+			});
+
+			$myFuelGauge = new JustGage({
+				id: "fuel",
+				value: 0,
+				min: 0,
+				max: 100,
+				title: "Fuel",
+				symbol: '%',
+				titlePosition: "below",
+				valueFontColor: "#FFFFFF",
+				customSectors: [{
+					color: '#ff0000',
+					lo: 0,
+					hi: 20
+				}, {
+					color: '#ffff00',
+					lo: 20,
+					hi: 30
+				}, {
+					color: '#00ff00',
+					lo: 30,
+					hi: 100
+				}]
+			});
+
+		});
+
+		function setFuel(amount) {
+			$myFuelGauge.refresh(amount);
+		}
+
+		var maxSpeed;
+
+        function setSpeed(amount) {
+	        $mySpeedGauge.refresh(amount, maxSpeed);
+        }
+
+		function setupSpeed(max) {
+			maxSpeed = max;
+		}
+	</script>
+    
+	<style>
+		#speed {
+			width: 300px;
+			height: 160px;
+		}
+
+        #fuel {
+	        width: 300px;
+	        height: 160px;
+        }
+	</style>
+
+</head>
+
+<body>
+<div style="background: rgba(0, 0, 0, 0.5); border-radius: 30px; width: 360px; height: 160px;">
+	<div id="speed" style="position: fixed; left: -50px;"></div>
+	<div id="fuel" style="position: fixed; left: 120px;"></div>
+</div>
+</body>
+</html>

@@ -54,6 +54,15 @@ namespace RoleplayServer.vehicle_manager
 
                             var engineState = API.shared.getVehicleEngineStatus(vehicleHandle);
 
+                            if (!engineState)
+                            {
+                                if (vehicle.Fuel <= 0)
+                                {
+                                    API.sendChatMessageToPlayer(player, "The vehicle has no fuel.");
+                                    return;
+                                }
+                            }
+
                             if (vehAccess)
                             {
                                 if (engineState)
