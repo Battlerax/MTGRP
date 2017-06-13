@@ -144,10 +144,20 @@ namespace RoleplayServer.property_system
 
             if (IsInteractable)
             {
-                InteractionMarker = new MarkerZone(InteractionPos, InteractionRot, InteractionDimension)
+                if (Type != PropertyManager.PropertyTypes.GasStation)
                 {
-                    LabelText = PropertyManager.GetInteractText(Type)
-                };
+                    InteractionMarker = new MarkerZone(InteractionPos, InteractionRot, InteractionDimension)
+                    {
+                        LabelText = PropertyManager.GetInteractText(Type)
+                    };
+                }
+                else
+                {
+                    InteractionMarker = new MarkerZone(InteractionPos, InteractionRot, InteractionDimension, 10)
+                    {
+                        LabelText = PropertyManager.GetInteractText(Type)
+                    };
+                }
                 InteractionMarker.Create();
                 InteractionMarker.ColZone.setData("property_interaction", Id);
             }
