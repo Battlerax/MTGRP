@@ -29,21 +29,35 @@ namespace RoleplayServer
             AllowPlayerControl = 1 << 5,
             Cancellable = 1 << 7
         }
-
-        [Command("item")]
+        //--------------------------------------
+        [Command("item")]//test cmd needs removing
         public void item(Client player)
         {
             NetHandle WeaponObject = API.createObject(-121802573, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
             API.attachEntityToEntity(WeaponObject, player, "24817", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
             API.setEntityData(player, "Guitar1", WeaponObject);
         }
+        
+        [Command("pedanim")]//test cmd needs removing
+        public void pedanim(Client player)
+        {
+            API.playPedAnimation(player, true, "amb@world_human_aa_coffee@idle_a", "idle_a");
+        }
+        [Command("stoppedanim")]//test cmd needs removing
+        public void stoppedanim(Client player)
+        {
+            API.stopPedAnimation(player);
+        }
+        //--------------------------------------
 
         [Command("stopanim")]
         public void stopanim(Client player, string id)
         {
             API.stopPlayerAnimation(player);
+            API.stopPedAnimation(player);
             Character character = API.getEntityData(player.handle, "Character");
             character.AreHandsUp = false;
+            API.getEntityData(player, "AnimObject");
         }
 
         [Command("hide", "~y~Syntax /Hide 1 - 13")]
@@ -213,40 +227,76 @@ namespace RoleplayServer
             {
                 switch (number)
                 {
-                    case 1:
+                    case 1:// can in right hand
+                        NetHandle can = API.createObject(-1321253704, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(can, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", can);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@code_human_wander_drinking@beer@female@base", "static");
                         break;
                     case 2:
+                        NetHandle can2 = API.createObject(-1321253704, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(can2, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", can2);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@code_human_wander_drinking@beer@male@base", "static");
                         break;
-                    case 3:
+                    case 3://Coffee in right hand
+                        NetHandle coffee = API.createObject(-163314598, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(coffee, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", coffee);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_aa_coffee@base", "base");
                         break;
                     case 4:
+                        NetHandle coffee2 = API.createObject(-163314598, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(coffee2, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", coffee2);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_aa_coffee@idle_a", "idle_a");
                         break;
-                    case 5:
+                    case 5:// beer in right hand 683570518 
+                        NetHandle beer = API.createObject(683570518, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(beer, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", beer);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_drinking@beer@female@base", "base");
                         break;
                     case 6:
+                        NetHandle beer1 = API.createObject(683570518, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(beer1, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", beer1);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_drinking@beer@female@idle_a", "idle_f");
                         break;
                     case 7:
+                        NetHandle beer2 = API.createObject(683570518, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(beer2, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", beer2);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_drinking@beer@male@base", "base");
                         break;
                     case 8:
+                        NetHandle beer3 = API.createObject(683570518, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(beer3, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", beer3);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_drinking@beer@male@idle_a", "idle_a");
                         break;
-                    case 9:
+                    case 9://coffee
+                        NetHandle coffee3 = API.createObject(-163314598, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(coffee3, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", coffee3);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_drinking@coffee@female@base", "base");
                         break;
                     case 10:
+                        NetHandle coffee4 = API.createObject(-163314598, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(coffee4, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", coffee4);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_drinking@coffee@female@idle_a", "idle_a");
                         break;
                     case 11:
+                        NetHandle coffee5 = API.createObject(-163314598, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(coffee5, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", coffee5);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_drinking@coffee@male@base", "base");
                         break;
                     case 12:
+                        NetHandle coffee6 = API.createObject(-163314598, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(coffee6, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", coffee6);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_drinking@coffee@male@idle_a", "idle_a");
                         break;
                     default:
