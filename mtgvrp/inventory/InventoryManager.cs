@@ -138,14 +138,14 @@ namespace RoleplayServer.inventory
             var oldItem = storage.Inventory.FirstOrDefault(x => x.GetType() == item.GetType());
             if (oldItem == null || oldItem.CanBeStacked == false)
             {
-                if (oldItem?.CommandFriendlyName == sentitem.CommandFriendlyName)
-                {
-                    return GiveItemErrors.HasSimilarItem;
-                }
-
                 if (maxAmount != -1 && oldItem?.Amount >= maxAmount)
                 {
                     return GiveItemErrors.MaxAmountReached;
+                }
+
+                if (oldItem?.CommandFriendlyName == sentitem.CommandFriendlyName)
+                {
+                    return GiveItemErrors.HasSimilarItem;
                 }
                 //Check if has enough space.
                 if ((GetInventoryFilledSlots(storage) + item.Amount * item.AmountOfSlots) <= storage.MaxInvStorage)
@@ -164,14 +164,15 @@ namespace RoleplayServer.inventory
             }
             else
             {
-                if (sentitem.CanBeStacked && oldItem.CommandFriendlyName == sentitem.CommandFriendlyName)
-                {
-                    return GiveItemErrors.HasSimilarItem;
-                }
 
                 if (maxAmount != -1 && oldItem.Amount >= maxAmount)
                 {
                     return GiveItemErrors.MaxAmountReached;
+                }
+
+                if (sentitem.CanBeStacked && oldItem.CommandFriendlyName == sentitem.CommandFriendlyName)
+                {
+                    return GiveItemErrors.HasSimilarItem;
                 }
 
                 //Make sure there is space again.
@@ -332,14 +333,21 @@ namespace RoleplayServer.inventory
                 return;
             }
 
-            string[][] leftItems =
-                activeLeft.Inventory.Where(x => x.GetType() != typeof(BagItem))
+            string[][] leftItems;
+            if (activeRight.GetType() == typeof(BagItem))
+            {
+                leftItems = activeLeft.Inventory.Where(x => x.GetType() != typeof(BagItem))
                     .Select(x => new[] {x.Id.ToString(), x.LongName, x.CommandFriendlyName, x.Amount.ToString()})
                     .ToArray();
+            }
+            else
+            {
+                leftItems = activeLeft.Inventory.Select(x => new[] { x.Id.ToString(), x.LongName, x.CommandFriendlyName, x.Amount.ToString() })
+                    .ToArray();
+            }
 
             string[][] rightItems =
-                activeRight.Inventory.Where(x => x.GetType() != typeof(BagItem))
-                    .Select(x => new[] {x.Id.ToString(), x.LongName, x.CommandFriendlyName, x.Amount.ToString()})
+                activeRight.Inventory.Select(x => new[] {x.Id.ToString(), x.LongName, x.CommandFriendlyName, x.Amount.ToString()})
                     .ToArray();
 
             var leftJson = API.shared.toJson(leftItems);

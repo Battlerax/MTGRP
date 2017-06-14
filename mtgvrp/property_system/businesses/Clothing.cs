@@ -284,7 +284,8 @@ namespace RoleplayServer.property_system.businesses
                 var bag = new BagItem()
                 {
                     BagType = bagstyle,
-                    BagDesign = bagvar
+                    BagDesign = bagvar,
+                    BagName = "default"
                 };
                 switch (InventoryManager.GiveInventoryItem(sender.GetCharacter(), bag))
                 {

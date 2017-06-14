@@ -226,7 +226,7 @@ namespace RoleplayServer.phone_manager
         }
 
 
-        [Command("setphonename", GreedyArg = true)]
+        [Command("setphonename")]
         public void setphonename_cmd(Client player, string name)
         {
             Character character = API.shared.getEntityData(player.handle, "Character");
