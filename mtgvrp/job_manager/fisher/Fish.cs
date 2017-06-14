@@ -19,7 +19,7 @@ namespace RoleplayServer.job_manager.fisher
 
         public bool CanBeDropped => true;
         public bool CanBeGiven => true;
-        public bool CanBeStacked => false;
+        public bool CanBeStacked => true;
         public bool CanBeStashed => true;
         public bool IsBlocking => false;
         public Dictionary<Type, int> MaxAmount => new Dictionary<Type, int>();
