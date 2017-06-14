@@ -125,6 +125,15 @@ namespace RoleplayServer.inventory
             if(storage.Inventory.FirstOrDefault(x => x.IsBlocking == true) != null && ignoreBlocking == false)
                 return GiveItemErrors.HasBlockingItem;
 
+            int maxAmount = -1;
+            foreach (var amnt in item.MaxAmount)
+            {
+                if (amnt.Key == storage.GetType())
+                {
+                    maxAmount = amnt.Value;
+                }
+            }
+
             //Check if player has simliar item.
             var oldItem = storage.Inventory.FirstOrDefault(x => x.GetType() == item.GetType());
             if (oldItem == null || oldItem.CanBeStacked == false)
@@ -134,7 +143,7 @@ namespace RoleplayServer.inventory
                     return GiveItemErrors.HasSimilarItem;
                 }
 
-                if (item.MaxAmount != -1 && oldItem?.Amount >= item.MaxAmount)
+                if (maxAmount != -1 && oldItem?.Amount >= maxAmount)
                 {
                     return GiveItemErrors.MaxAmountReached;
                 }
@@ -160,7 +169,7 @@ namespace RoleplayServer.inventory
                     return GiveItemErrors.HasSimilarItem;
                 }
 
-                if (item.MaxAmount != -1 && oldItem.Amount >= item.MaxAmount)
+                if (maxAmount != -1 && oldItem.Amount >= maxAmount)
                 {
                     return GiveItemErrors.MaxAmountReached;
                 }

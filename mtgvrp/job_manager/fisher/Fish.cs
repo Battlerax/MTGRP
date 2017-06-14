@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using RoleplayServer.inventory;
@@ -21,7 +22,7 @@ namespace RoleplayServer.job_manager.fisher
         public bool CanBeStacked => false;
         public bool CanBeStashed => true;
         public bool IsBlocking => false;
-        public int MaxAmount => -1;
+        public Dictionary<Type, int> MaxAmount => new Dictionary<Type, int>();
 
         public string CommandFriendlyName => Name.Replace(" ", "") + "_" + ActualWeight;
         public string LongName => Name;

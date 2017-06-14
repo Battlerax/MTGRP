@@ -21,7 +21,7 @@ namespace RoleplayServer.core
         public bool CanBeStacked => true;
         public bool IsBlocking => false;
 
-        public int MaxAmount => -1;
+        public Dictionary<Type, int> MaxAmount => new Dictionary<Type, int>();
         public int AmountOfSlots => 0;
 
         public string CommandFriendlyName => "money";

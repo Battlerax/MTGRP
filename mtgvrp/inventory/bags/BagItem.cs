@@ -30,7 +30,14 @@ namespace RoleplayServer.inventory.bags
         public bool CanBeStacked => false;
         public bool CanBeStashed => true;
         public bool IsBlocking => false;
-        public int MaxAmount => 1;
+        public Dictionary<Type, int> MaxAmount
+        {
+            get
+            {
+                var itm = new Dictionary<Type, int> { { typeof(Character), 1 } };
+                return itm;
+            }
+        }
 
         public string CommandFriendlyName => $"Bag{BagType}{BagDesign}";
 

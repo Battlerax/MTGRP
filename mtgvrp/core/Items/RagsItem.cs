@@ -19,7 +19,7 @@ namespace RoleplayServer.core.Items
 
         public bool IsBlocking => false;
 
-        public int MaxAmount => -1;
+        public Dictionary<Type, int> MaxAmount => new Dictionary<Type, int>();
 
         public int AmountOfSlots => 5;
 

@@ -6,6 +6,9 @@ using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using RoleplayServer.database_manager;
 using RoleplayServer.inventory;
+using RoleplayServer.inventory.bags;
+using RoleplayServer.player_manager;
+using RoleplayServer.property_system;
 
 namespace RoleplayServer.phone_manager
 {
@@ -25,9 +28,17 @@ namespace RoleplayServer.phone_manager
         public bool CanBeStacked => false;
         public bool CanBeStashed => true;
         public bool IsBlocking => false;
-        public int MaxAmount => 1;
 
-        public string CommandFriendlyName => "phone";
+        public Dictionary<Type, int> MaxAmount
+        {
+            get
+            {
+                var itm = new Dictionary<Type, int> {{typeof(Character), 1}};
+                return itm;
+            }
+        }
+
+        public string CommandFriendlyName => "phone_" + PhoneName;
         public string LongName => "Phone (" + PhoneName + ")";
         public int Object => 0;
 
