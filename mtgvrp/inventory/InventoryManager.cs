@@ -407,6 +407,9 @@ namespace RoleplayServer.inventory
                         case InventoryManager.GiveItemErrors.MaxAmountReached:
                             API.sendNotificationToPlayer(sender, "Reached max amount of that item in target storage.");
                             break;
+                        case InventoryManager.GiveItemErrors.HasSimilarItem:
+                            API.sendNotificationToPlayer(sender, "You can't have 2 of this item with the same name, change it if possible.");
+                            break;
                         case InventoryManager.GiveItemErrors.Success:
                             //Remove from player.
                             InventoryManager.DeleteInventoryItem(storages.Key, playerItem.GetType(), amount,
@@ -469,6 +472,9 @@ namespace RoleplayServer.inventory
                             break;
                         case InventoryManager.GiveItemErrors.MaxAmountReached:
                             API.sendNotificationToPlayer(sender, "Reached max amount of that item in target storage.");
+                            break;
+                        case InventoryManager.GiveItemErrors.HasSimilarItem:
+                            API.sendNotificationToPlayer(sender, "You can't have 2 of this item with the same name, change it if possible.");
                             break;
                         case InventoryManager.GiveItemErrors.Success:
                             //Remove from player.
