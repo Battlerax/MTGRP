@@ -20,7 +20,7 @@ namespace RoleplayServer
     class Animations : Script
     {
 
-            [Flags]
+        [Flags]
         public enum AnimationFlags
         {
             Loop = 1 << 0,
@@ -29,17 +29,39 @@ namespace RoleplayServer
             AllowPlayerControl = 1 << 5,
             Cancellable = 1 << 7
         }
+        //--------------------------------------
+        [Command("item")]//test cmd needs removing
+        public void item(Client player)
+        {
+            NetHandle WeaponObject = API.createObject(-121802573, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+            API.attachEntityToEntity(WeaponObject, player, "24817", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+            API.setEntityData(player, "Guitar1", WeaponObject);
+        }
         
+        [Command("pedanim")]//test cmd needs removing
+        public void pedanim(Client player)
+        {
+            API.playPedAnimation(player, true, "amb@world_human_aa_coffee@idle_a", "idle_a");
+        }
+        [Command("stoppedanim")]//test cmd needs removing
+        public void stoppedanim(Client player)
+        {
+            API.stopPedAnimation(player);
+        }
+        //--------------------------------------
+
         [Command("stopanim")]
-        public void Stopanim(Client player, string id)
+        public void stopanim(Client player, string id)
         {
             API.stopPlayerAnimation(player);
+            API.stopPedAnimation(player);
             Character character = API.getEntityData(player.handle, "Character");
             character.AreHandsUp = false;
+            API.getEntityData(player, "AnimObject");
         }
 
         [Command("hide", "~y~Syntax /Hide 1 - 13")]
-        public void Hide(Client player, int number)
+        public void hide(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -96,7 +118,7 @@ namespace RoleplayServer
             }
         }
         [Command("lookout", "~y~Syntax /lookout 1 - 4")]
-        public void Lookout(Client player, int number)
+        public void lookout(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -126,7 +148,7 @@ namespace RoleplayServer
             }
         }
         [Command("crowdcontrol", "~y~Syntax /crowdcontrol 1 - 3")]
-        public void Crowdcontrol(Client player, int number)
+        public void crowdcontrol(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -153,7 +175,7 @@ namespace RoleplayServer
             }
         }
         [Command("investigate", "~y~Syntax /investigate 1 - 9")]
-        public void Investigate(Client player, int number)
+        public void investigate(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -198,47 +220,83 @@ namespace RoleplayServer
             }
         }
         [Command("drink", "~y~Syntax /drink 1 - 12")]
-        public void Drink(Client player, int number)
+        public void drink(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
             {
                 switch (number)
                 {
-                    case 1:
+                    case 1:// can in right hand
+                        NetHandle can = API.createObject(-1321253704, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(can, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", can);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@code_human_wander_drinking@beer@female@base", "static");
                         break;
                     case 2:
+                        NetHandle can2 = API.createObject(-1321253704, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(can2, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", can2);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@code_human_wander_drinking@beer@male@base", "static");
                         break;
-                    case 3:
+                    case 3://Coffee in right hand
+                        NetHandle coffee = API.createObject(-163314598, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(coffee, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", coffee);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_aa_coffee@base", "base");
                         break;
                     case 4:
+                        NetHandle coffee2 = API.createObject(-163314598, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(coffee2, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", coffee2);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_aa_coffee@idle_a", "idle_a");
                         break;
-                    case 5:
+                    case 5:// beer in right hand 683570518 
+                        NetHandle beer = API.createObject(683570518, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(beer, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", beer);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_drinking@beer@female@base", "base");
                         break;
                     case 6:
+                        NetHandle beer1 = API.createObject(683570518, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(beer1, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", beer1);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_drinking@beer@female@idle_a", "idle_f");
                         break;
                     case 7:
+                        NetHandle beer2 = API.createObject(683570518, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(beer2, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", beer2);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_drinking@beer@male@base", "base");
                         break;
                     case 8:
+                        NetHandle beer3 = API.createObject(683570518, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(beer3, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", beer3);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_drinking@beer@male@idle_a", "idle_a");
                         break;
-                    case 9:
+                    case 9://coffee
+                        NetHandle coffee3 = API.createObject(-163314598, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(coffee3, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", coffee3);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_drinking@coffee@female@base", "base");
                         break;
                     case 10:
+                        NetHandle coffee4 = API.createObject(-163314598, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(coffee4, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", coffee4);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_drinking@coffee@female@idle_a", "idle_a");
                         break;
                     case 11:
+                        NetHandle coffee5 = API.createObject(-163314598, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(coffee5, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", coffee5);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_drinking@coffee@male@base", "base");
                         break;
                     case 12:
+                        NetHandle coffee6 = API.createObject(-163314598, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(coffee6, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", coffee6);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_drinking@coffee@male@idle_a", "idle_a");
                         break;
                     default:
@@ -252,7 +310,7 @@ namespace RoleplayServer
             }
         }
         [Command("crossarms", "~y~Syntax /crossarms 1 - 15")]
-        public void Crossarms(Client player, int number)
+        public void crossarms(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -315,7 +373,7 @@ namespace RoleplayServer
             }
         }
         [Command("idle", "~y~Syntax /idle 1 - 28")]
-        public void Idle(Client player, int number)
+        public void idle(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -418,7 +476,7 @@ namespace RoleplayServer
             }
         }
         [Command("lean", "~y~Syntax /lean 1 - 38")]
-        public void Lean(Client player, int number)
+        public void lean(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -446,10 +504,16 @@ namespace RoleplayServer
                     case 7:
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_leaning@female@coffee@idle_a", "idle_a");
                         break;
-                    case 8:
+                    case 8://Right hand
+                        NetHandle smoker = API.createObject(175300549, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(smoker, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", smoker);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_leaning@female@smoke@base", "base");
                         break;
                     case 9:
+                        NetHandle smoker2 = API.createObject(175300549, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(smoker2, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", smoker2);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_leaning@female@smoke@idle_a", "idle_a");
                         break;
                     case 10:
@@ -550,7 +614,7 @@ namespace RoleplayServer
             }
         }
         [Command("reach", "~y~Syntax /reach 1 - 2")]
-        public void Reach(Client player, int number)
+        public void reach(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -574,7 +638,7 @@ namespace RoleplayServer
             }
         }
         [Command("workout", "~y~Syntax /workout 1 - 12")]
-        public void Workout(Client player, int number)
+        public void workout(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -628,7 +692,7 @@ namespace RoleplayServer
             }
         }
         [Command("smoke", "~y~Syntax /smoke 1 - 13")]
-        public void Smoke(Client player, int number)
+        public void smoke(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -636,42 +700,81 @@ namespace RoleplayServer
                 switch (number)
                 {
                     case 1:
+                        NetHandle smoker = API.createObject(175300549, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(smoker, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", smoker);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_aa_smoke@male@idle_a", "idle_c");
                         break;
                     case 2:
+                        NetHandle smoker2 = API.createObject(175300549, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(smoker2, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", smoker2);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_aa_smoke@male@idle_a", "idle_a");
                         break;
                     case 3:
+                        NetHandle smoker3 = API.createObject(175300549, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(smoker3, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", smoker3);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_prostitute@french@base", "idle_a");
                         break;
                     case 4:
+                        NetHandle smoker4 = API.createObject(175300549, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(smoker4, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", smoker4);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_smoking@female@base", "base");
                         break;
                     case 5:
+                        NetHandle smoker5 = API.createObject(175300549, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(smoker5, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", smoker5);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_smoking@female@idle_a", "idle_a");
                         break;
                     case 6:
+                        NetHandle smoker6 = API.createObject(175300549, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(smoker6, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", smoker6);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_smoking@male@male_a@base", "base");
                         break;
                     case 7:
+                        NetHandle smoker7 = API.createObject(175300549, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(smoker7, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", smoker7);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_smoking@male@male_a@idle_a", "idle_c");
                         break;
                     case 8:
+                        NetHandle smoker8 = API.createObject(175300549, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(smoker8, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", smoker8);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_smoking@male@male_b@base", "base");
                         break;
                     case 9:
+                        NetHandle smoker9 = API.createObject(175300549, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(smoker9, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", smoker9);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_smoking@male@male_b@idle_a", "idle_b");
                         break;
-                    case 10:
+                    case 10://Cigar object for pot
+                        NetHandle pot1 = API.createObject(-1425058769, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(pot1, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", pot1);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_smoking_pot@female@base", "base");
                         break;
                     case 11:
+                        NetHandle pot2 = API.createObject(-1425058769, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(pot2, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", pot2);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_smoking_pot@female@idle_a", "idle_b");
                         break;
                     case 12:
+                        NetHandle pot3 = API.createObject(-1425058769, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(pot3, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", pot3);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_smoking_pot@male@base", "base");
                         break;
                     case 13:
+                        NetHandle pot4 = API.createObject(-1425058769, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(pot4, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", pot4);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_smoking_pot@male@idle_a", "idle_c");
                         break;
                     default:
@@ -685,29 +788,47 @@ namespace RoleplayServer
             }
         }
         [Command("binoculars", "~y~Syntax /binoculars 1 - 6")]
-        public void Binoculars(Client player, int number)
+        public void binoculars(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
             {
                 switch (number)
                 {
-                    case 1:
+                    case 1://Added to right hand, same for the rest
+                        NetHandle Binocu = API.createObject(985101275, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(Binocu, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", Binocu);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_binoculars@female@base", "base");
                         break;
                     case 2:
+                        NetHandle Binocu2 = API.createObject(985101275, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(Binocu2, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", Binocu2);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_binoculars@female@idle_a", "idle_b");
                         break;
                     case 3:
+                        NetHandle Binocu3 = API.createObject(985101275, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(Binocu3, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", Binocu3);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_binoculars@female@idle_b", "idle_f");
                         break;
                     case 4:
+                        NetHandle Binocu4 = API.createObject(985101275, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(Binocu4, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", Binocu4);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_binoculars@female@idle_b", "idle_f");
                         break;
                     case 5:
+                        NetHandle Binocu5 = API.createObject(985101275, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(Binocu5, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", Binocu5);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_binoculars@female@idle_b", "idle_f");
                         break;
                     case 6:
+                        NetHandle Binocu6 = API.createObject(985101275, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(Binocu6, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", Binocu6);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_binoculars@female@idle_b", "idle_f");
                         break;
                     default:
@@ -721,20 +842,29 @@ namespace RoleplayServer
             }
         }
         [Command("hobo", "~y~Syntax /hobo 1 - 9")]
-        public void Hobo(Client player, int number)
+        public void hobo(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
             {
                 switch (number)
                 {
-                    case 1:
+                    case 1://On right hand, todo: add other signs to the the different animations
+                        NetHandle hobo1 = API.createObject(-245386275, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(hobo1, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", hobo1);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_bum_freeway@male@base", "base");
                         break;
                     case 2:
+                        NetHandle hobo2 = API.createObject(-245386275, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(hobo2, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", hobo2);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_bum_freeway@male@idle_a", "idle_a");
                         break;
                     case 3:
+                        NetHandle hobo3 = API.createObject(-245386275, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(hobo3, player, "57005", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", hobo3);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_bum_freeway@male@idle_b", "idle_d");
                         break;
                     case 4:
@@ -766,7 +896,7 @@ namespace RoleplayServer
             }
         }
         [Command("fallover", "~y~Syntax /fallover 1 - 7")]
-        public void Fallover(Client player, int number)
+        public void fallover(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -805,7 +935,7 @@ namespace RoleplayServer
             }
         }
         [Command("laydown", "~y~Syntax /laydown 1 - 12")]
-        public void Laydown(Client player, int number)
+        public void laydown(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -859,7 +989,7 @@ namespace RoleplayServer
             }
         }
         [Command("drunk", "~y~Syntax /drunk 1 - 2")]
-        public void Drunk(Client player, int number)
+        public void drunk(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -883,7 +1013,7 @@ namespace RoleplayServer
             }
         }
         [Command("twitchy", "~y~Syntax /twitchy 1 - 4")]
-        public void Twitchy(Client player, int number)
+        public void twitchy(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -913,7 +1043,7 @@ namespace RoleplayServer
             }
         }
         [Command("signal", "~y~Syntax /signal 1 - 3")]
-        public void Signal(Client player, int number)
+        public void signal(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -940,7 +1070,7 @@ namespace RoleplayServer
             }
         }
         [Command("cheer", "~y~Syntax /cheer 1 - 8")]
-        public void Cheer(Client player, int number)
+        public void cheer(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -982,7 +1112,7 @@ namespace RoleplayServer
             }
         }
         [Command("clipboard", "~y~Syntax /clipboard 1 - 3")]
-        public void Clipboard(Client player, int number)
+        public void clipboard(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -1009,7 +1139,7 @@ namespace RoleplayServer
             }
         }
         [Command("drugdeal", "~y~Syntax /drugdeal 1 - 3")]
-        public void Drugdeal(Client player, int number)
+        public void drugdeal(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -1036,7 +1166,7 @@ namespace RoleplayServer
             }
         }
         [Command("gardening", "~y~Syntax /gardening 1 - 4")]
-        public void Gardening(Client player, int number)
+        public void gardening(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -1066,7 +1196,7 @@ namespace RoleplayServer
             }
         }
         [Command("guard", "~y~Syntax /guard 1 - 9")]
-        public void Guard(Client player, int number)
+        public void guard(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -1111,7 +1241,7 @@ namespace RoleplayServer
             }
         }
         [Command("hammer", "~y~Syntax /hammer 1 - 2")]
-        public void Hammer(Client player, int number)
+        public void hammer(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -1135,7 +1265,7 @@ namespace RoleplayServer
             }
         }
         [Command("jog", "~y~Syntax /jog 1 - 6")]
-        public void Jog(Client player, int number)
+        public void jog(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -1171,17 +1301,23 @@ namespace RoleplayServer
             }
         }
         [Command("guitar", "~y~Syntax /guitar 1 - 3")]
-        public void Guitar(Client player, int number)
+        public void guitar(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
             {
                 switch (number)
                 {
-                    case 1:
+                    case 1://Acoustic guitar
+                        NetHandle Guitar1 = API.createObject(-121802573, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(Guitar1, player, "24817", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", Guitar1);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_musician@guitar@male@base", "base");
                         break;
-                    case 2:
+                    case 2://Eletric guitar
+                        NetHandle Guitar2 = API.createObject(-121802573, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.attachEntityToEntity(Guitar2, player, "24817", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        API.setEntityData(player, "AnimObject", Guitar2);
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_musician@guitar@male@idle_a", "idle_a");
                         break;
                     case 3:
@@ -1198,7 +1334,7 @@ namespace RoleplayServer
             }
         }
         [Command("getjiggy", "~y~Syntax /getjiggy 1 - 4")]
-        public void Getjiggy(Client player, int number)
+        public void getjiggy(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -1228,7 +1364,7 @@ namespace RoleplayServer
             }
         }
         [Command("sit", "~y~Syntax /sit 1 - 9")]
-        public void Sit(Client player, int number)
+        public void sit(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -1273,7 +1409,7 @@ namespace RoleplayServer
             }
         }
         [Command("mech", "~y~Syntax /mech 1 - 5")]
-        public void Mech(Client player, int number)
+        public void mech(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -1306,7 +1442,7 @@ namespace RoleplayServer
             }
         }
         [Command("yoga", "~y~Syntax /yoga 1 - 2")]
-        public void Yoga(Client player, int number)
+        public void yoga(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -1330,7 +1466,7 @@ namespace RoleplayServer
             }
         }
         [Command("bonghit", "~y~Syntax /bonghit 1 - 4")]
-        public void Bonghit(Client player, int number)
+        public void bonghit(Client player, int number)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -1358,14 +1494,14 @@ namespace RoleplayServer
             {
                 API.sendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
-}
+        }
 
         [Command("middlefinger")]
-        public void Middlefinger(Client player)
+        public void middlefinger(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
-            {          
+            {
                 API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "anim@mp_player_intcelebrationmale@finger", "finger");
             }
             else
@@ -1374,7 +1510,7 @@ namespace RoleplayServer
             }
         }
         [Command("salute")]
-        public void Salute(Client player)
+        public void salute(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -1387,7 +1523,7 @@ namespace RoleplayServer
             }
         }
         [Command("slowclap")]
-        public void Slowclap(Client player)
+        public void slowclap(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -1400,7 +1536,7 @@ namespace RoleplayServer
             }
         }
         [Command("facepalm")]
-        public void Facepalm(Client player)
+        public void facepalm(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -1413,7 +1549,7 @@ namespace RoleplayServer
             }
         }
         [Command("handsup")]// allowed tp be cuffed
-        public void Handsup(Client player)
+        public void handsup(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
@@ -1427,7 +1563,7 @@ namespace RoleplayServer
             }
         }
         [Command("restrained")]// allowed to be cuffed
-        public void Restrained(Client player)
+        public void restrained(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
             if (character.CanDoAnim == true)
