@@ -238,6 +238,7 @@ namespace RoleplayServer.player_manager.login
                 API.sendChatMessageToPlayer(player, "This account is unregistered! Use /register [password] to register it.");
             }
 
+            API.sendChatMessageToPlayer(player, "Press ~g~F12~w~ to disable CEF and login manually.");
             API.triggerClientEvent(player, "onPlayerConnectedEx", account.is_registered());
         }
 

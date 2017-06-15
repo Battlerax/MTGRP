@@ -55,3 +55,12 @@ function attempt_login(password) {
     API.triggerServerEvent("attempt_login", password);
 }
 
+API.onKeyDown.connect((sender, e) =>
+{
+	if (e.KeyCode === Keys.F12 && login_browser !== null) {
+		API.showCursor(false);
+		API.setCanOpenChat(true);
+		API.destroyCefBrowser(login_browser);
+		login_browser = null;
+	}
+});
