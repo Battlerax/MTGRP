@@ -197,16 +197,19 @@ namespace RoleplayServer.player_manager
 
             API.sendChatMessageToPlayer(sender, "________________PLAYER STATS________________");
             API.sendChatMessageToPlayer(sender, "~g~General:~g~");
-            API.sendChatMessageToPlayer(sender, string.Format("~h~Character name:~h~ {0} ~h~Account name:~h~ {1} ~h~ID:~h~ {2} ~h~Money:~h~ {3} ~h~Bank balance:~h~ {4} ~h~Playing hours:~h~ {5}", sender.name, account.AccountName, character.Id, Money.GetCharacterMoney(character), character.BankBalance, character.TimePlayed));
+            API.sendChatMessageToPlayer(sender,
+                $"~h~Character name:~h~ {sender.name} ~h~Account name:~h~ {account.AccountName} ~h~ID:~h~ {character.Id} ~h~Money:~h~ {Money.GetCharacterMoney(character)} ~h~Bank balance:~h~ {character.BankBalance} ~h~Playing hours:~h~ {character.TimePlayed}");
             API.sendChatMessageToPlayer(sender, "~b~Faction:~b~");
-            API.sendChatMessageToPlayer(sender, string.Format("~h~Faction ID:~h~ {0} ~h~Rank:~h~ {1}", character.GroupId, character.GroupRank));
+            API.sendChatMessageToPlayer(sender,
+                $"~h~Faction ID:~h~ {character.GroupId} ~h~Rank:~h~ {character.GroupRank}");
             API.sendChatMessageToPlayer(sender, "~r~Property:~r~");
             //Show property info..
 
             if (senderAccount.AdminLevel > 0)
             {
                 API.sendChatMessageToPlayer(sender, "~y~Admin:~y~");
-                API.sendChatMessageToPlayer(sender, string.Format("~h~Admin level:~h~ {0} ~h~ Admin name:~h~ {1} ~h~Last vehicle:~h~ {2} ~h~Dimension:~h~ {3} ~h~Last IP:~h~ {4}", account.AdminLevel, account.AdminName, character.LastVehicle, character.LastDimension, account.LastIp));
+                API.sendChatMessageToPlayer(sender,
+                    $"~h~Admin level:~h~ {account.AdminLevel} ~h~ Admin name:~h~ {account.AdminName} ~h~Last vehicle:~h~ {character.LastVehicle} ~h~Dimension:~h~ {character.LastDimension} ~h~Last IP:~h~ {account.LastIp}");
             }
         }
     }
