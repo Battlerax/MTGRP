@@ -170,11 +170,6 @@ namespace RoleplayServer.inventory
                     return GiveItemErrors.MaxAmountReached;
                 }
 
-                if (sentitem.CanBeStacked && oldItem.CommandFriendlyName == sentitem.CommandFriendlyName)
-                {
-                    return GiveItemErrors.HasSimilarItem;
-                }
-
                 //Make sure there is space again.
                 if ((GetInventoryFilledSlots(storage) + item.Amount * item.AmountOfSlots) <= storage.MaxInvStorage)
                 {
