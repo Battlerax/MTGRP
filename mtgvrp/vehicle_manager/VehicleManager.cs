@@ -259,6 +259,12 @@ namespace RoleplayServer.vehicle_manager
                     return;
                 }
             }
+            if (API.getVehicleLocked(vehicleHandle))
+            {
+                API.warpPlayerOutOfVehicle(player);
+                API.sendChatMessageToPlayer(player, "~r~The vehicle is locked.");
+                return;
+            }
             API.sendChatMessageToPlayer(player, "~w~[VehicleM] You have entered vehicle ~r~" + Vehicles.IndexOf(veh) + "(Owned by: " + PlayerManager.Players.SingleOrDefault(x => x.Id == veh.OwnerId)?.CharacterName + ")");
             API.sendChatMessageToPlayer(player, "~y~ Press \"N\" on your keyboard to access the vehicle menu.");
 
