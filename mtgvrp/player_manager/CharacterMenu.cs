@@ -63,7 +63,7 @@ namespace RoleplayServer.player_manager
                         {
                             CharacterName = charName,
                             AccountId = account.Id.ToString(),
-                            Client = player
+                            Client = player,
                         };
 
                         character.Insert();
@@ -307,11 +307,11 @@ namespace RoleplayServer.player_manager
                 case "finish_character_creation":
                 {
                     Character character = API.getEntityData(player.handle, "Character");
-                    character.Age = (int)arguments[0];
-                    character.Birthday = (string)arguments[1];
-                    character.Birthplace = (string)arguments[2];
+                    character.Age = (int) arguments[0];
+                    character.Birthday = (string) arguments[1];
+                    character.Birthplace = (string) arguments[2];
 
-                    if((int)arguments[3] == 0) //Airport spawn
+                    if ((int) arguments[3] == 0) //Airport spawn
                     {
                         character.LastPos = new Vector3(-1037.253, -2736.865, 13.76621);
                         character.LastRot = new Vector3(0, 0, -37);
@@ -329,8 +329,14 @@ namespace RoleplayServer.player_manager
                     API.setEntityRotation(player.handle, character.LastRot);
                     API.setEntityDimension(player.handle, 0);
                     API.freezePlayer(player, false);
-                    API.sendChatMessageToPlayer(player, "~g~You have successfully created your character: " + character.CharacterName + "!");
-                    API.sendChatMessageToPlayer(player, "~g~If you have any questions please use /n(ewbie) chat or /ask for moderator assitance.");
+                    API.sendChatMessageToPlayer(player,
+                        "~g~You have successfully created your character: " + character.CharacterName + "!");
+                    API.sendChatMessageToPlayer(player,
+                        "~g~If you have any questions please use /n(ewbie) chat or /ask for moderator assitance.");
+
+                    //Startup money.
+                    character.BankBalance = 20000;
+                    InventoryManager.GiveInventoryItem(character, new Money(), 5000);
 
                     character.IsCreated = true;
                     character.StartTrackingTimePlayed();
