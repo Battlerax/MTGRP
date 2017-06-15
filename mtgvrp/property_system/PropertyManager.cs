@@ -439,6 +439,11 @@ namespace RoleplayServer.property_system
                             $"[Property Manager] Owner of Property #{id} was changed to: '{player.GetCharacter().CharacterName}'");
                     }
                     break;
+
+
+                case "attempt_enter_prop":
+                    Enterproperty(sender);
+                    break;
             }
         }
 
