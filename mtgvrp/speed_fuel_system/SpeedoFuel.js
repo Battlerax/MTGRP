@@ -13,7 +13,7 @@ API.onPlayerEnterVehicle.connect((vehicle) => {
 	if (API.getPlayerVehicleSeat(API.getLocalPlayer()) !== -1) return;
 
 	var res = API.getScreenResolution();
-	var width = 440;
+	var width = 470;
 	var height = 225;
 	myBrowser = API.createCefBrowser(width, height);
 	API.waitUntilCefBrowserInit(myBrowser);
