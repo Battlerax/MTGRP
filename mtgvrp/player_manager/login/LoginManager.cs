@@ -21,9 +21,6 @@ namespace RoleplayServer.player_manager.login
             API.onPlayerFinishedDownload += OnPlayerFinishedDownload;
             API.onClientEventTrigger += API_onClientEventTrigger;
 
-            //API.onChatCommand += OnChatCommandHandler;
-            API.onChatMessage += OnPlayerChat;
-
             DebugManager.DebugMessage("[LoginM] Login Manager initalized.");
         }
 
@@ -206,15 +203,6 @@ namespace RoleplayServer.player_manager.login
                     }
                         break;
                 }
-            }
-        }
-
-        public void OnPlayerChat(Client player, string message, CancelEventArgs e)
-        {
-            Account account = player.GetAccount();
-            if(account.IsLoggedIn == false)
-            {
-                e.Cancel = true;
             }
         }
 
