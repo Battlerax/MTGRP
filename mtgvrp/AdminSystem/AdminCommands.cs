@@ -62,7 +62,7 @@ namespace RoleplayServer.AdminSystem
         }
 
         [Command("set", GreedyArg = true)]
-        public void Set(Client player, string target, string var, string value)
+        public void SetCharacterData(Client player, string target, string var, string value)
         {
             var acc = player.GetAccount();
             if (acc.AdminLevel >= 5)
@@ -74,7 +74,7 @@ namespace RoleplayServer.AdminSystem
                     return;
                 }
 
-                var recChar = receiver.GetAccount();
+                var recChar = receiver.GetCharacter();
                 var prop = recChar.GetType().GetProperties().SingleOrDefault(x => x.Name == var);
                 if (prop == null)
                 {
@@ -93,6 +93,7 @@ namespace RoleplayServer.AdminSystem
 
                     prop.SetValue(recChar, val);
                     API.sendChatMessageToPlayer(player, $"Sucessfully set {var} to the value: {value}");
+                    recChar.Save();
                 }
                 else if (prop.PropertyType == typeof(bool))
                 {
@@ -105,11 +106,13 @@ namespace RoleplayServer.AdminSystem
 
                     prop.SetValue(recChar, val);
                     API.sendChatMessageToPlayer(player, $"Sucessfully set {var} to the value: {value}");
+                    recChar.Save();
                 }
                 else if (prop.PropertyType == typeof(bool))
                 {
                     prop.SetValue(recChar, value);
                     API.sendChatMessageToPlayer(player, $"Sucessfully set {var} to the value: {value}");
+                    recChar.Save();
                 }
                 else
                 {
