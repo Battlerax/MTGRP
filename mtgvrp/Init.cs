@@ -48,6 +48,11 @@ namespace RoleplayServer
 
         public void OnResourceStartHandler()
         {
+            //For Dealership.
+            API.removeIpl("fakeint"); // remove the IPL "fakeint"
+            API.requestIpl("shr_int"); // Request the IPL "shr_int"
+            API.consoleOutput("[INIT] Unloaded fakeint IPL and loaded shr_int IPL.!");
+
             VehicleManager.load_all_unowned_vehicles();
             API.consoleOutput("[INIT] Script initalized!");
         }
