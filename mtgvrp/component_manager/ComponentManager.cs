@@ -378,7 +378,6 @@ namespace RoleplayServer.component_manager
 
             /* ================ MALE TOPS ================ */
 
-            ValidMaleTops.Add(new Component(Component.ComponentTypeTops, Character.GenderMale, 15, new List<int>() { 1 }, "None"));
             ValidMaleTops.Add(new Component(Component.ComponentTypeTops, Character.GenderMale, 0, new List<int>() { 1, 2, 3, 4, 5, 6, 8, 9, 12 }, "Style 1"));
             ValidMaleTops.Add(new Component(Component.ComponentTypeTops, Character.GenderMale, 1, new List<int>() { 1, 2, 4, 5, 6, 7, 8, 9, 12, 13, 15 }, "Style 2"));
             ValidMaleTops.Add(new Component(Component.ComponentTypeTops, Character.GenderMale, 3, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }, "Style 3"));
