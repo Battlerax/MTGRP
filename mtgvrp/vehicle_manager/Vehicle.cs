@@ -10,6 +10,7 @@
  * */
 
 
+using System.Collections.Generic;
 using System.Timers;
 using GTANetworkServer;
 using GTANetworkShared;
@@ -20,12 +21,18 @@ using RoleplayServer.database_manager;
 using RoleplayServer.job_manager;
 using RoleplayServer.player_manager;
 using RoleplayServer.group_manager;
+using RoleplayServer.inventory;
 using RoleplayServer.property_system;
 
 namespace RoleplayServer.vehicle_manager
 {
-    public class Vehicle
+    public class Vehicle : IStorage
     {
+
+        //Inventory System
+        public List<IInventoryItem> Inventory { get; set; }
+        public int MaxInvStorage => 1000; //TODO: to be changed to be for each vehicle class
+
         [BsonIgnore]
         public const int VehTypeTemp = 0;
         [BsonIgnore]

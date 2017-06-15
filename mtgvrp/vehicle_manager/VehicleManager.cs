@@ -21,6 +21,7 @@ using RoleplayServer.database_manager;
 using RoleplayServer.job_manager;
 using RoleplayServer.player_manager;
 using RoleplayServer.group_manager;
+using RoleplayServer.inventory;
 
 namespace RoleplayServer.vehicle_manager
 {
@@ -120,20 +121,32 @@ namespace RoleplayServer.vehicle_manager
 
         }
 
+        [Command("vstorage")]
+        public void VehicleStorage(Client player)
+        {
+            var lastVeh = GetNearestVehicle(player);
+
+            if (lastVeh == null) return;
+            if (!DoesPlayerHaveVehicleAccess(player, lastVeh))
+            {
+                API.sendChatMessageToPlayer(player, "You must have access to the vehicle.");
+                return;
+            }
+
+            if (!API.getVehicleDoorState(lastVeh.NetHandle, 5))
+            {
+                API.sendChatMessageToPlayer(player, "Trunk must be open to access the storage.");
+                return;
+            }
+
+            if (lastVeh.Inventory == null) lastVeh.Inventory = new List<IInventoryItem>();
+            InventoryManager.ShowInventoryManager(player, player.GetCharacter(), lastVeh, "Inventory: ", "Vehicle: ");
+        }
+
         [Command("lock")]
         public void Lockvehicle_cmd(Client player)
         {
-            Vehicle lastVeh = null;
-            float lastPos = 5f;
-            foreach (Vehicle veh in Vehicles)
-            {
-                if(veh.IsSpawned == false) continue;
-                
-                if (API.getEntityPosition(veh.NetHandle).DistanceTo(player.position) < lastPos)
-                {
-                    lastVeh = veh;
-                }
-            }
+            var lastVeh = GetNearestVehicle(player);
 
             if (lastVeh == null) return;
             if (!DoesPlayerHaveVehicleAccess(player, lastVeh)) return;
@@ -314,6 +327,22 @@ namespace RoleplayServer.vehicle_manager
         * ========== FUNCTIONS =========
         * 
         */
+
+        public static Vehicle GetNearestVehicle(Client player, float radius = 5f)
+        {
+            Vehicle lastVeh = null;
+            float lastPos = radius;
+            foreach (Vehicle veh in Vehicles)
+            {
+                if (veh.IsSpawned == false) continue;
+
+                if (API.shared.getEntityPosition(veh.NetHandle).DistanceTo(player.position) < lastPos)
+                {
+                    lastVeh = veh;
+                }
+            }
+            return lastVeh;
+        }
 
         public static int GetMaxOwnedVehicles(Client chr)
         {

@@ -14,7 +14,6 @@ using System;
 using System.Linq;
 using GTANetworkServer;
 using GTANetworkShared;
-using mtgvrp.core;
 using RoleplayServer.core;
 using RoleplayServer.database_manager;
 using RoleplayServer.inventory;
