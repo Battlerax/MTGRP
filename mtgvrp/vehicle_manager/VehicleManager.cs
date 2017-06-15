@@ -120,13 +120,6 @@ namespace RoleplayServer.vehicle_manager
 
         }
 
-        [Command("tele")]
-        public void Tele(Client player)
-        {
-            API.setEntityPosition(player.handle, new Vector3(403, -996, -99));
-            API.sendChatMessageToPlayer(player, "teleported");
-        }
-
         [Command("lock")]
         public void Lockvehicle_cmd(Client player)
         {
