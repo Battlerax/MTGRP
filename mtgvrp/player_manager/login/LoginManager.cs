@@ -303,10 +303,28 @@ namespace RoleplayServer.player_manager.login
 
                 if (account.AdminLevel > 0)
                 {
-                    API.sendChatMessageToPlayer(player, Color.AdminOrange, "Welcome back Admin " + account.AdminName);
-                }
+                    API.sendChatMessageToPlayer(player, Color.AdminOrange,
+                        "Welcome back Admin " + account.AdminName);
+                    API.shared.triggerClientEvent(player, "hide_login_browser");
 
-                prepare_character_menu(player);
+                    if (account.AdminPin.Equals(string.Empty))
+                    {
+                        API.sendChatMessageToPlayer(player, Color.AdminOrange,
+                            "You do not have an admin pin set. Please choose one now: ");
+                        API.triggerClientEvent(player, "create_admin_pin");
+                    }
+                    else
+                    {
+                        API.sendChatMessageToPlayer(player, Color.AdminOrange,
+                            "Pleae login with your admin pin to continue.");
+                        API.triggerClientEvent(player, "admin_pin_check");
+                    }
+
+                }
+                else
+                {
+                    prepare_character_menu(player);
+                }
             }
             else
             {
