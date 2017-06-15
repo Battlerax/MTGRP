@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using GTANetworkServer;
 using GTANetworkShared;
@@ -60,6 +61,62 @@ namespace RoleplayServer.AdminSystem
             }
         }
 
+        [Command("set", GreedyArg = true)]
+        public void Set(Client player, string target, string var, string value)
+        {
+            var acc = player.GetAccount();
+            if (acc.AdminLevel >= 5)
+            {
+                var receiver = PlayerManager.ParseClient(target);
+                if (receiver == null)
+                {
+                    API.sendChatMessageToPlayer(player, Color.White, "That player is not connected.");
+                    return;
+                }
+
+                var recChar = receiver.GetAccount();
+                var prop = recChar.GetType().GetProperties().SingleOrDefault(x => x.Name == var);
+                if (prop == null)
+                {
+                    API.sendChatMessageToPlayer(player, Color.White, "There is no such property.");
+                    return;
+                }
+
+                if (prop.PropertyType == typeof(int))
+                {
+                    int val;
+                    if (!int.TryParse(value, out val))
+                    {
+                        API.sendChatMessageToPlayer(player, "That property is an integer.");
+                        return;
+                    }
+
+                    prop.SetValue(recChar, val);
+                    API.sendChatMessageToPlayer(player, $"Sucessfully set {var} to the value: {value}");
+                }
+                else if (prop.PropertyType == typeof(bool))
+                {
+                    bool val;
+                    if (!bool.TryParse(value, out val))
+                    {
+                        API.sendChatMessageToPlayer(player, "That property is a bool.");
+                        return;
+                    }
+
+                    prop.SetValue(recChar, val);
+                    API.sendChatMessageToPlayer(player, $"Sucessfully set {var} to the value: {value}");
+                }
+                else if (prop.PropertyType == typeof(bool))
+                {
+                    prop.SetValue(recChar, value);
+                    API.sendChatMessageToPlayer(player, $"Sucessfully set {var} to the value: {value}");
+                }
+                else
+                {
+                    API.sendChatMessageToPlayer(player, "Unknown Type.");
+                }
+            }
+        }
 
         [Command("setadminlevel")]
         public void setrank_cmd(Client player, string id, int level)
