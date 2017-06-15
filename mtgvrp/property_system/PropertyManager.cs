@@ -625,35 +625,35 @@ namespace RoleplayServer.property_system
                         }
                         break;
 
-                        case PropertyTypes.Restaurant:
-                            if (item == "")
-                            {
-                                API.sendChatMessageToPlayer(player, "[ERROR] Choose a type: [sprunk,custom1,custom2,custom3,custom4]");
-                                return;
-                            }
+                    case PropertyTypes.Restaurant:
+                        if (item == "")
+                        {
+                            API.sendChatMessageToPlayer(player, "[ERROR] Choose a type: [sprunk,custom1,custom2,custom3,custom4]");
+                            return;
+                        }
 
-                            switch (item.ToLower())
-                            {
-                                case "sprunk":
-                                    prop.ItemPrices["sprunk"] = price;
-                                    API.sendChatMessageToPlayer(player, $"Changed ~g~Sprunk~w~ price to {price}");
-                                    break;
-                                case "custom1":
-                                    prop.ItemPrices["custom1"] = price;
-                                    API.sendChatMessageToPlayer(player, $"Changed ~g~Custom 1~w~ price to {price}");
-                                    break;
-                                case "custom2":
-                                    prop.ItemPrices["custom2"] = price;
-                                    API.sendChatMessageToPlayer(player, $"Changed ~g~Custom 2~w~ price to {price}");
-                                    break;
-                                case "custom3":
-                                    prop.ItemPrices["custom3"] = price;
-                                    API.sendChatMessageToPlayer(player, $"Changed ~g~Custom 3~w~ price to {price}");
-                                    break;
-                                case "custom4":
-                                    prop.ItemPrices["custom4"] = price;
-                                    API.sendChatMessageToPlayer(player, $"Changed ~g~Custom 4~w~ price to {price}");
-                                    break;
+                        switch (item.ToLower())
+                        {
+                            case "sprunk":
+                                prop.ItemPrices["sprunk"] = price;
+                                API.sendChatMessageToPlayer(player, $"Changed ~g~Sprunk~w~ price to {price}");
+                                break;
+                            case "custom1":
+                                prop.ItemPrices["custom1"] = price;
+                                API.sendChatMessageToPlayer(player, $"Changed ~g~Custom 1~w~ price to {price}");
+                                break;
+                            case "custom2":
+                                prop.ItemPrices["custom2"] = price;
+                                API.sendChatMessageToPlayer(player, $"Changed ~g~Custom 2~w~ price to {price}");
+                                break;
+                            case "custom3":
+                                prop.ItemPrices["custom3"] = price;
+                                API.sendChatMessageToPlayer(player, $"Changed ~g~Custom 3~w~ price to {price}");
+                                break;
+                            case "custom4":
+                                prop.ItemPrices["custom4"] = price;
+                                API.sendChatMessageToPlayer(player, $"Changed ~g~Custom 4~w~ price to {price}");
+                                break;
                         }
                         break;
 
@@ -684,27 +684,18 @@ namespace RoleplayServer.property_system
                     case PropertyTypes.Advertising:
                         if (item == "")
                         {
-                            API.sendChatMessageToPlayer(player, "Choose a type: ");
-                            string msg = "";
-                            foreach (var key in prop.ItemPrices.Keys)
-                            {
-                                msg += key + ",";
-                            }
-                            msg = msg.Remove(msg.Length - 1, 1);
-                            API.sendChatMessageToPlayer(player, msg);
+                            API.sendChatMessageToPlayer(player, "[ERROR] Choose a type: [advertprice]");
                             return;
                         }
 
-                        if (!prop.ItemPrices.ContainsKey(item))
+                        switch (item.ToLower())
                         {
-                            API.sendChatMessageToPlayer(player, "[ERROR] That type doesn't exist.");
-                            return;
+                            case "advertprice":
+                                prop.ItemPrices["advertprice"] = price;
+                                API.sendChatMessageToPlayer(player, $"Changed ~g~advert price~w~ price to {price}");
+                                break;
                         }
-
-                        prop.ItemPrices[item] = price;
-                        API.sendChatMessageToPlayer(player, $"Changed ~g~{item}~w~ price to {price}");
                         break;
-
                 }
                 prop.Save();
             }
