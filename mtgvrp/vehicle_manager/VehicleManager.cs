@@ -154,6 +154,7 @@ namespace RoleplayServer.vehicle_manager
             API.sendChatMessageToPlayer(player, "teleported");
         }
 
+        /*
         [Command("hotwire")]
         public void hotwire_cmd(Client player)
         {
@@ -188,7 +189,7 @@ namespace RoleplayServer.vehicle_manager
             }
 
         }
-
+        */
         [Command("dropcar")]
         public void dropcar_cmd(Client player)
         {
@@ -400,7 +401,7 @@ namespace RoleplayServer.vehicle_manager
             if (API.getPlayerVehicleSeat(player) == -1)
             {
                 veh.Driver = character;
-                API.sendChatMessageToPlayer(player, "~y~/hotwire to hotwire this vehicle.");
+                API.sendChatMessageToPlayer(player, "~y~Press 'N' to access the vehicle menu.");
             }
         }
 
