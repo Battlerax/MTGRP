@@ -45,7 +45,7 @@ namespace RoleplayServer.group_manager.lsgov
 
             Character character = API.shared.getEntityData(player, "Character");
 
-            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov || character.GroupRank < 7) { return; }
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov && character.GroupRank < 7) { return; }
             character.Group.taxationAmount = int.Parse(percentage);
         }
 
@@ -55,7 +55,7 @@ namespace RoleplayServer.group_manager.lsgov
         {
             Character character = API.shared.getEntityData(player, "Character");
 
-            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov || character.GroupRank < 7) { return; }
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov && character.GroupRank < 7) { return; }
             character.Group.basepaycheck = int.Parse(amount);
             API.sendChatMessageToPlayer(player, "Base paycheck set to $" + amount + ".");
         }
