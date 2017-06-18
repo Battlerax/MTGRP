@@ -150,10 +150,7 @@ namespace mtgvrp.player_manager
 
         //Dropcar
         public bool IsOnDropcar { get; set; }
-        public bool DropcarPrevention { get; set; }
-        public Timer DropcarTimer { get; set; }
-        public Timer DropcarTimeLeftTimer { get; set; }
-        public int DropcarTimeLeft { get; set; }
+        public DateTime DropcarReset { get; set; }
 
         [BsonIgnore]
         public bool Calling911 { get; set; }

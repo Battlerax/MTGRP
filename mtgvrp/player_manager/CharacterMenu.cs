@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Timers;
 using System.Collections.Generic;
 using GTANetworkServer;
 using GTANetworkShared;
@@ -162,13 +163,6 @@ namespace mtgvrp.player_manager
                         if (character.IsJailed)
                         {
                             Lspd.JailControl(player, character.JailTimeLeft);
-                        }
-
-                        if (character.DropcarPrevention)
-                        {
-                            character.DropcarTimer = new Timer { Interval = character.DropcarTimeLeft };
-                            character.DropcarTimer.Elapsed += delegate { vehicle_manager.VehicleManager.resetDropcarTimer(player); };
-                            character.DropcarTimer.Start();
                         }
 
                         API.sendChatMessageToPlayer(player, "You have successfully loaded your character: " + charName);

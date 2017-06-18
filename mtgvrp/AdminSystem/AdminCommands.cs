@@ -3,6 +3,7 @@ using System.Linq;
 using System.Timers;
 using GTANetworkServer;
 using GTANetworkShared;
+using mtgvrp.weapon_manager;
 using mtgvrp.core;
 using mtgvrp.database_manager;
 using mtgvrp.group_manager;

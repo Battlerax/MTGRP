@@ -2,10 +2,11 @@
 using System.Timers;
 using GTANetworkServer;
 using GTANetworkShared;
-using RoleplayServer.core;
-using RoleplayServer.inventory;
-using RoleplayServer.player_manager;
-using RoleplayServer.phone_manager;
+using mtgvrp.core;
+using mtgvrp.inventory;
+using mtgvrp.player_manager;
+using mtgvrp.phone_manager;
+using mtgvrp.property_system;
 using System.Linq;
 
 namespace RoleplayServer.property_system.businesses
@@ -38,7 +39,7 @@ namespace RoleplayServer.property_system.businesses
 
             if (Money.GetCharacterMoney(character) - price < 0)
             {
-                API.sendChatMessageToPlayer(player, "~r~Advertising costs " + biz.AdvertisingPrice + "$. You don't have enough money.");
+                API.sendChatMessageToPlayer(player, "~r~Advertising costs " + price + "$. You don't have enough money.");
                 return;
             }
 

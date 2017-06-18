@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using GTANetworkServer;
 using GTANetworkShared;
+using mtgvrp.weapon_manager;
+using mtgvrp.inventory;
 using mtgvrp.core;
 using mtgvrp.group_manager;
 

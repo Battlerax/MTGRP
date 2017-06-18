@@ -1,20 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 using GTANetworkServer;
 using GTANetworkShared;
 using MongoDB.Bson;
-using RoleplayServer.group_manager;
-using RoleplayServer.inventory;
+using mtgvrp.group_manager;
+using mtgvrp.inventory;
 
 
-namespace RoleplayServer.weapon_manager
-{
     public class Weapon : IInventoryItem
     {
 
         public WeaponHash WeaponHash { get; set; }
         public WeaponTint WeaponTint { get; set; }
         public WeaponComponent WeaponComponent { get; set; }
-      
+
 
         public int Ammo { get; set; }
 
@@ -42,6 +41,8 @@ namespace RoleplayServer.weapon_manager
 
         public int Amount { get; set; }
 
+        Dictionary<Type, int> IInventoryItem.MaxAmount => throw new NotImplementedException();
+
         #endregion
 
         public Weapon()
@@ -59,4 +60,3 @@ namespace RoleplayServer.weapon_manager
             Group = group;
         }
     }
-}
