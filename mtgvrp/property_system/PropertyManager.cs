@@ -1,20 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
 using GTANetworkServer;
 using GTANetworkShared;
+using mtgvrp.core;
+using mtgvrp.database_manager;
+using mtgvrp.door_manager;
+using mtgvrp.inventory;
+using mtgvrp.player_manager;
 using MongoDB.Driver;
-using RoleplayServer.core;
-using RoleplayServer.database_manager;
-using RoleplayServer.door_manager;
-using RoleplayServer.inventory;
-using RoleplayServer.player_manager;
 
-namespace RoleplayServer.property_system
+namespace mtgvrp.property_system
 {
     public class PropertyManager : Script
     {

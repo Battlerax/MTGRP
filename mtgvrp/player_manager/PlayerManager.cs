@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using GTANetworkServer;
 using GTANetworkShared;
-using RoleplayServer.core;
-using RoleplayServer.group_manager;
-using RoleplayServer.inventory;
+using mtgvrp.core;
+using mtgvrp.group_manager;
 
-namespace RoleplayServer.player_manager
+namespace mtgvrp.player_manager
 {
     class PlayerManager : Script
     {

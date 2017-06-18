@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using GTANetworkServer;
 using GTANetworkShared;
+using mtgvrp.database_manager;
 using MongoDB.Bson.Serialization.Attributes;
-using RoleplayServer.database_manager;
-using RoleplayServer.player_manager;
-using Vehicle = RoleplayServer.vehicle_manager.Vehicle;
 
-namespace RoleplayServer.door_manager
+namespace mtgvrp.door_manager
 {
     public class Door
     {

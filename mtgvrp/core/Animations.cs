@@ -6,16 +6,11 @@
 // Will wait till release to make changes that the community suggests
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using GTANetworkServer;
 using GTANetworkShared;
-using RoleplayServer.player_manager;
-using RoleplayServer.core;
+using mtgvrp.player_manager;
 
-namespace RoleplayServer
+namespace mtgvrp.core
 {
     class Animations : Script
     {

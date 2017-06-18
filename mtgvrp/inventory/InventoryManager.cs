@@ -2,21 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using GTANetworkServer;
 using GTANetworkShared;
+using mtgvrp.core;
+using mtgvrp.core.Items;
+using mtgvrp.inventory.bags;
+using mtgvrp.job_manager.fisher;
+using mtgvrp.phone_manager;
+using mtgvrp.player_manager;
+using mtgvrp.property_system.businesses;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
-using RoleplayServer.core;
-using RoleplayServer.core.Items;
-using RoleplayServer.inventory.bags;
-using RoleplayServer.job_manager.fisher;
-using RoleplayServer.phone_manager;
-using RoleplayServer.player_manager;
-using RoleplayServer.property_system.businesses;
 
-namespace RoleplayServer.inventory
+namespace mtgvrp.inventory
 {
     class InventoryManager : Script
     {

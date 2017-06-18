@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
 using GTANetworkServer;
-using RoleplayServer.job_manager;
-using RoleplayServer.player_manager;
-using RoleplayServer.group_manager;
+using mtgvrp.group_manager;
+using mtgvrp.job_manager;
+using mtgvrp.player_manager;
 
-namespace RoleplayServer.vehicle_manager.vehicle_editor
+namespace mtgvrp.vehicle_manager.vehicle_editor
 {
     class VehicleEditor : Script
     {

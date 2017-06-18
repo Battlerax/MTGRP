@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 using GTANetworkServer;
 using GTANetworkShared;
+using mtgvrp.core;
+using mtgvrp.database_manager;
+using mtgvrp.player_manager;
 using MongoDB.Driver;
-using RoleplayServer.core;
-using RoleplayServer.database_manager;
 
-using RoleplayServer.player_manager;
-
-namespace RoleplayServer.job_manager
+namespace mtgvrp.job_manager
 {
     public class Job
     {

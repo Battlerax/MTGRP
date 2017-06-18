@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using mtgvrp.database_manager;
+using mtgvrp.inventory;
+using mtgvrp.player_manager;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
-using RoleplayServer.database_manager;
-using RoleplayServer.inventory;
-using RoleplayServer.inventory.bags;
-using RoleplayServer.player_manager;
-using RoleplayServer.property_system;
 
-namespace RoleplayServer.phone_manager
+namespace mtgvrp.phone_manager
 {
     public class Phone : IInventoryItem
     {

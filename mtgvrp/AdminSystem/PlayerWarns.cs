@@ -1,8 +1,7 @@
 ﻿using System;
 using MongoDB.Bson;
 
-
-namespace RoleplayServer.AdminSystem
+namespace mtgvrp.AdminSystem
 {
     public class PlayerWarns
     {

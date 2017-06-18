@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using GTANetworkServer;
-using GTANetworkShared;
-using RoleplayServer.component_manager;
-using RoleplayServer.core;
-using RoleplayServer.inventory;
-using RoleplayServer.inventory.bags;
-using RoleplayServer.player_manager;
+using mtgvrp.component_manager;
+using mtgvrp.core;
+using mtgvrp.inventory;
+using mtgvrp.inventory.bags;
+using mtgvrp.player_manager;
 
-namespace RoleplayServer.property_system.businesses
+namespace mtgvrp.property_system.businesses
 {
     class Clothing : Script
     {

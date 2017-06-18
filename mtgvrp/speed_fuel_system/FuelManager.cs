@@ -8,12 +8,13 @@ using System.Threading.Tasks;
 using System.Timers;
 using GTANetworkServer;
 using GTANetworkShared;
+using mtgvrp.core;
+using mtgvrp.inventory;
+using mtgvrp.player_manager;
+using mtgvrp.property_system;
+using mtgvrp.vehicle_manager;
 using MongoDB.Driver;
-using RoleplayServer.core;
-using RoleplayServer.inventory;
-using RoleplayServer.player_manager;
-using RoleplayServer.property_system;
-using RoleplayServer.vehicle_manager;
+using Vehicle = mtgvrp.vehicle_manager.Vehicle;
 
 namespace mtgvrp.speed_fuel_system
 {
@@ -36,7 +37,7 @@ namespace mtgvrp.speed_fuel_system
             if (eventName == "fuel_getvehiclefuel" && API.isPlayerInAnyVehicle(sender) &&
                 API.getPlayerVehicleSeat(sender) == -1)
             {
-                RoleplayServer.vehicle_manager.Vehicle veh = API.getEntityData(API.getPlayerVehicle(sender), "Vehicle");
+                Vehicle veh = API.getEntityData(API.getPlayerVehicle(sender), "Vehicle");
                 API.triggerClientEvent(sender, "fuel_updatevalue", veh.Fuel);
             }
         }
@@ -76,7 +77,7 @@ namespace mtgvrp.speed_fuel_system
                 if (API.isPlayerInAnyVehicle(player) && API.getPlayerVehicleSeat(player) == -1)
                 {
                     var vehEntity = API.getPlayerVehicle(player);
-                    RoleplayServer.vehicle_manager.Vehicle veh = API.getEntityData(vehEntity, "Vehicle");
+                    Vehicle veh = API.getEntityData(vehEntity, "Vehicle");
 
                     if (API.getVehicleEngineStatus(vehEntity))
                     {
@@ -133,7 +134,7 @@ namespace mtgvrp.speed_fuel_system
                 if (vehEntity == vehicle)
                 {
                     API.sendChatMessageToPlayer(player, "Ended Refuel.");
-                    RoleplayServer.vehicle_manager.Vehicle veh = API.getEntityData(vehicle, "Vehicle");
+                    Vehicle veh = API.getEntityData(vehicle, "Vehicle");
                     veh.FuelingTimer?.Dispose();
                     API.freezePlayer(player, false);
                     veh.Save();
@@ -146,7 +147,7 @@ namespace mtgvrp.speed_fuel_system
             var handles = (NetHandle[]) vars;
             Client playerEntity = API.getPlayerFromHandle((NetHandle) handles[0]);
             NetHandle vehEntity = (NetHandle) handles[1];
-            RoleplayServer.vehicle_manager.Vehicle veh = API.getEntityData(vehEntity, "Vehicle");
+            Vehicle veh = API.getEntityData(vehEntity, "Vehicle");
             Character c = API.getEntityData(playerEntity, "Character");
 
             if (API.getVehicleEngineStatus(vehEntity))

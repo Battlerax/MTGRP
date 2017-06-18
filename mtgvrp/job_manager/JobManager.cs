@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using GTANetworkServer;
 using GTANetworkShared;
+using mtgvrp.core;
+using mtgvrp.database_manager;
+using mtgvrp.player_manager;
+using mtgvrp.vehicle_manager;
 using MongoDB.Driver;
-using RoleplayServer.core;
-using RoleplayServer.database_manager;
-using RoleplayServer.player_manager;
-using RoleplayServer.vehicle_manager;
 
-namespace RoleplayServer.job_manager
+namespace mtgvrp.job_manager
 {
     public class JobManager : Script
     {
@@ -89,7 +89,7 @@ namespace RoleplayServer.job_manager
 
             var job = GetJobById(character.JobZone);
 
-            if (job == null)
+            if (job == Job.None)
             {
                 API.sendChatMessageToPlayer(player, "null job");
                 return;
@@ -114,7 +114,7 @@ namespace RoleplayServer.job_manager
 
             API.sendChatMessageToPlayer(player, Color.Grey, "You have quit your job as a " + character.JobOne.Name);
             character.JobOneId = 0;
-            character.JobOne = null;
+            character.JobOne = Job.None;
             character.Save();
         }
 
@@ -148,9 +148,11 @@ namespace RoleplayServer.job_manager
             };
 
 
+            job.JoinPos.ColZoneSize = 5;
             job.JoinPos.Create();
             job.register_job_marker_events();
             job.Insert();
+            Jobs.Add(job);
             API.sendChatMessageToPlayer(player, Color.Grey, "You have created job " + job.Id + " ( " + job.Name + ", Type: " + job.Type + " ). Use /editjob to edit it.");
         }
 
@@ -162,7 +164,7 @@ namespace RoleplayServer.job_manager
                 return;
 
             var job = GetJobById(jobId);
-            if (job == null)
+            if (job == Job.None)
             {
                 API.sendChatMessageToPlayer(player, Color.White, "~r~ERROR:~w~ Invalid job ID entered.");
                 return;
@@ -192,7 +194,7 @@ namespace RoleplayServer.job_manager
                     break;
                 case "misc_one_loc":
 
-                    if (job.MiscOne == null)
+                    if (job.MiscOne == MarkerZone.None)
                     {
                         job.MiscOne = new MarkerZone(player.position, player.rotation, player.dimension)
                         {
@@ -212,7 +214,7 @@ namespace RoleplayServer.job_manager
                     break;
 
                 case "misc_one_name":
-                    if (job.MiscOne == null)
+                    if (job.MiscOne == MarkerZone.None)
                     {
                         job.MiscOne = new MarkerZone(player.position, player.rotation, player.dimension)
                         {
@@ -230,7 +232,7 @@ namespace RoleplayServer.job_manager
                     break;
                 case "misc_two_loc":
 
-                    if (job.MiscTwo == null)
+                    if (job.MiscTwo == MarkerZone.None)
                     {
                         job.MiscTwo = new MarkerZone(player.position, player.rotation, player.dimension)
                         {
@@ -249,7 +251,7 @@ namespace RoleplayServer.job_manager
                     API.sendChatMessageToPlayer(player, Color.White, "You have changed Job " + job.Id + "'s misc two location to your current position");
                     break;
                 case "misc_two_name":
-                    if (job.MiscTwo == null)
+                    if (job.MiscTwo == MarkerZone.None)
                     {
                         job.MiscTwo = new MarkerZone(player.position, player.rotation, player.dimension)
                         {
@@ -280,7 +282,7 @@ namespace RoleplayServer.job_manager
                 return;
 
             var job = GetJobById(jobId);
-            if (job == null)
+            if (job == Job.None)
             {
                 API.sendChatMessageToPlayer(player, Color.White, "~r~ERROR:~w~ Invalid job ID entered.");
                 return;
@@ -315,7 +317,7 @@ namespace RoleplayServer.job_manager
                 return;
 
             var job = GetJobById(jobId);
-            if (job == null)
+            if (job == Job.None)
             {
                 API.sendChatMessageToPlayer(player, Color.White, "~r~ERROR:~w~ Invalid job ID entered.");
                 return;
@@ -340,7 +342,7 @@ namespace RoleplayServer.job_manager
                 return;
 
             var job = GetJobById(jobId);
-            if (job == null)
+            if (job == Job.None)
             {
                 API.sendChatMessageToPlayer(player, Color.White, "~r~ERROR:~w~ Invalid job ID entered.");
                 return;

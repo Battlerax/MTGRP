@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
-using GTANetworkServer;
-using RoleplayServer.core;
-using RoleplayServer.player_manager;
+﻿using GTANetworkServer;
+using mtgvrp.core;
+using mtgvrp.player_manager;
 
-namespace RoleplayServer.inventory.bags
+namespace mtgvrp.inventory.bags
 {
     class BagManager : Script
     {

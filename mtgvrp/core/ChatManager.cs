@@ -1,12 +1,12 @@
 ﻿using System;
 using GTANetworkServer;
 using GTANetworkShared;
-using RoleplayServer.group_manager.lspd.MDC;
-using RoleplayServer.inventory;
-using RoleplayServer.phone_manager;
-using RoleplayServer.player_manager;
+using mtgvrp.group_manager.lspd.MDC;
+using mtgvrp.inventory;
+using mtgvrp.phone_manager;
+using mtgvrp.player_manager;
 
-namespace RoleplayServer.core
+namespace mtgvrp.core
 {
     public class ChatManager : Script
     {

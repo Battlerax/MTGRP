@@ -1,17 +1,16 @@
-﻿using mtgvrp.speed_fuel_system;
+﻿using mtgvrp.core;
+using mtgvrp.door_manager;
+using mtgvrp.group_manager;
+using mtgvrp.group_manager.lspd;
+using mtgvrp.job_manager;
+using mtgvrp.phone_manager;
+using mtgvrp.player_manager;
+using mtgvrp.property_system;
+using mtgvrp.vehicle_manager;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using RoleplayServer.core;
-using RoleplayServer.door_manager;
-using RoleplayServer.group_manager;
-using RoleplayServer.group_manager.lspd;
-using RoleplayServer.job_manager;
-using RoleplayServer.phone_manager;
-using RoleplayServer.player_manager;
-using RoleplayServer.property_system;
-using RoleplayServer.vehicle_manager;
 
-namespace RoleplayServer.database_manager
+namespace mtgvrp.database_manager
 {
     public static class DatabaseManager
     {

@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GTANetworkServer;
+using mtgvrp.player_manager;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using RoleplayServer.player_manager;
 
-namespace RoleplayServer.inventory.bags
+namespace mtgvrp.inventory.bags
 {
     [BsonDiscriminator("BagItem")]
     class BagItem : IStorage, IInventoryItem

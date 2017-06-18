@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using GTANetworkServer;
 using GTANetworkShared;
-using MongoDB.Bson;
+using mtgvrp.core;
+using mtgvrp.database_manager;
+using mtgvrp.door_manager;
+using mtgvrp.inventory;
 using MongoDB.Bson.Serialization.Attributes;
-using RoleplayServer.core;
-using RoleplayServer.database_manager;
-using RoleplayServer.door_manager;
-using RoleplayServer.inventory;
-using RoleplayServer.vehicle_manager;
 
-namespace RoleplayServer.property_system
+namespace mtgvrp.property_system
 {
     public class Property : IStorage
     {

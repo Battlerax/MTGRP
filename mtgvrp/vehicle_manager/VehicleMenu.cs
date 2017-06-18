@@ -1,10 +1,10 @@
 ﻿using System;
 using GTANetworkServer;
 using GTANetworkShared;
-using RoleplayServer.core;
-using RoleplayServer.player_manager;
+using mtgvrp.core;
+using mtgvrp.player_manager;
 
-namespace RoleplayServer.vehicle_manager
+namespace mtgvrp.vehicle_manager
 {
     class VehicleMenu : Script
     {

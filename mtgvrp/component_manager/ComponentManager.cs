@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using GTANetworkServer;
-using RoleplayServer.core;
-using RoleplayServer.player_manager;
+using mtgvrp.core;
+using mtgvrp.player_manager;
 
-namespace RoleplayServer.component_manager
+namespace mtgvrp.component_manager
 {
     class ComponentManager : Script
     {

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using mtgvrp.inventory;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using RoleplayServer.inventory;
 
-namespace RoleplayServer.job_manager.fisher
+namespace mtgvrp.job_manager.fisher
 {
     public class Fish : IInventoryItem
     {

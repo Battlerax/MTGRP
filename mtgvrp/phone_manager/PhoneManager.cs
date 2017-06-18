@@ -4,16 +4,15 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using GTANetworkServer;
+using mtgvrp.core;
+using mtgvrp.database_manager;
+using mtgvrp.inventory;
+using mtgvrp.player_manager;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
-using RoleplayServer.core;
-using RoleplayServer.database_manager;
-using RoleplayServer.group_manager.lspd.MDC;
-using RoleplayServer.inventory;
-using RoleplayServer.player_manager;
 
-namespace RoleplayServer.phone_manager
+namespace mtgvrp.phone_manager
 {
     public class PhoneManager : Script
     {
@@ -677,13 +676,13 @@ namespace RoleplayServer.phone_manager
             return number;
         }
     }
-}
 
 /* To store numbers for phone. */
-public class PhoneNumber
-{
-    [BsonId]
-    public ObjectId Id { get; set; }
-    public ObjectId PhoneId { get; set; }
-    public string Number { get; set; }
+    public class PhoneNumber
+    {
+        [BsonId]
+        public ObjectId Id { get; set; }
+        public ObjectId PhoneId { get; set; }
+        public string Number { get; set; }
+    }
 }

@@ -14,17 +14,16 @@ using System.Collections.Generic;
 using System.Timers;
 using GTANetworkServer;
 using GTANetworkShared;
-using mtgvrp.speed_fuel_system;
+using mtgvrp.database_manager;
+using mtgvrp.group_manager;
+using mtgvrp.inventory;
+using mtgvrp.job_manager;
+using mtgvrp.player_manager;
+using mtgvrp.property_system;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
-using RoleplayServer.database_manager;
-using RoleplayServer.job_manager;
-using RoleplayServer.player_manager;
-using RoleplayServer.group_manager;
-using RoleplayServer.inventory;
-using RoleplayServer.property_system;
 
-namespace RoleplayServer.vehicle_manager
+namespace mtgvrp.vehicle_manager
 {
     public class Vehicle : IStorage
     {

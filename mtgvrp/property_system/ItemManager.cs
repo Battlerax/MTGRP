@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RoleplayServer.phone_manager;
+﻿using System.Collections.Generic;
 
-namespace RoleplayServer.property_system
+namespace mtgvrp.property_system
 {
     public static class ItemManager
     {

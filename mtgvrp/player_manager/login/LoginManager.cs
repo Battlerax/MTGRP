@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Security.Cryptography;
 using GTANetworkServer;
+using mtgvrp.core;
+using mtgvrp.database_manager;
 using MongoDB.Driver;
-using RoleplayServer.core;
-using RoleplayServer.database_manager;
 
-namespace RoleplayServer.player_manager.login
+namespace mtgvrp.player_manager.login
 {
     class LoginManager : Script
     {

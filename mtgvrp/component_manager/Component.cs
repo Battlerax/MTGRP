@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using MongoDB.Bson;
 
-namespace RoleplayServer.component_manager
+namespace mtgvrp.component_manager
 {
     public class Component
     {

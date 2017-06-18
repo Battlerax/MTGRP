@@ -1,21 +1,18 @@
-﻿using System.Linq;
-using System;
-using System.CodeDom;
-using System.Collections.Generic;
+﻿using System;
+using System.Linq;
+using System.Timers;
 using GTANetworkServer;
 using GTANetworkShared;
-using System.Timers;
-using RoleplayServer.core;
-using RoleplayServer.inventory;
-using RoleplayServer.player_manager;
-using RoleplayServer.vehicle_manager;
-using RoleplayServer.group_manager.lspd;
-using RoleplayServer.database_manager;
-using RoleplayServer.AdminSystem;
+using mtgvrp.core;
+using mtgvrp.database_manager;
+using mtgvrp.group_manager;
+using mtgvrp.group_manager.lspd;
+using mtgvrp.inventory;
+using mtgvrp.player_manager;
+using mtgvrp.vehicle_manager;
 using MongoDB.Driver;
-using RoleplayServer.group_manager;
 
-namespace RoleplayServer.AdminSystem
+namespace mtgvrp.AdminSystem
 {
     public class AdminCommands : Script
     {
@@ -186,6 +183,7 @@ namespace RoleplayServer.AdminSystem
             }
 
             leaderChar.Group = group;
+            leaderChar.GroupId = group.Id;
             leaderChar.GroupRank = 10;
             leaderChar.Save();
 
@@ -465,7 +463,7 @@ namespace RoleplayServer.AdminSystem
                 return;
             }
 
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = API.getEntityData(receiver.handle, "Character");
             API.sendChatMessageToPlayer(player, "----------------------------------------------");
             API.sendChatMessageToPlayer(player, $"Vehicles Owned By {character.CharacterName}");
             foreach (var carid in character.OwnedVehicles)

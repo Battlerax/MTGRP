@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
 using System.Timers;
 using GTANetworkServer;
-using GTANetworkShared;
-using RoleplayServer.core;
-using RoleplayServer.database_manager;
-using RoleplayServer.inventory;
-using RoleplayServer.player_manager;
+using mtgvrp.core;
+using mtgvrp.inventory;
+using mtgvrp.player_manager;
 
-namespace RoleplayServer.job_manager.fisher
+namespace mtgvrp.job_manager.fisher
 {
     public class Fisher : Script
     {

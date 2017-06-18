@@ -1,4 +1,4 @@
-﻿namespace RoleplayServer.core
+﻿namespace mtgvrp.core
 {
     public class Color
     {
