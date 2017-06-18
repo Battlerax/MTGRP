@@ -1,10 +1,10 @@
 ﻿using System;
 using GTANetworkServer;
 using GTANetworkShared;
-using RoleplayServer.core;
-using RoleplayServer.player_manager;
+using mtgvrp.core;
+using mtgvrp.player_manager;
 
-namespace RoleplayServer.vehicle_manager
+namespace mtgvrp.vehicle_manager
 {
     class VehicleMenu : Script
     {
@@ -53,6 +53,15 @@ namespace RoleplayServer.vehicle_manager
                         case "engine":
 
                             var engineState = API.shared.getVehicleEngineStatus(vehicleHandle);
+
+                            if (!engineState)
+                            {
+                                if (vehicle.Fuel <= 0)
+                                {
+                                    API.sendChatMessageToPlayer(player, "The vehicle has no fuel.");
+                                    return;
+                                }
+                            }
 
                             if (vehAccess)
                             {

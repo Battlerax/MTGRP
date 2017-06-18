@@ -1,6 +1,6 @@
 ﻿using GTANetworkServer;
 
-namespace RoleplayServer.core
+namespace mtgvrp.core
 {
     public static class DebugManager
     {

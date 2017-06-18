@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Security.Cryptography;
 using GTANetworkServer;
+using mtgvrp.core;
+using mtgvrp.database_manager;
 using MongoDB.Driver;
-using RoleplayServer.core;
-using RoleplayServer.database_manager;
 
-namespace RoleplayServer.player_manager.login
+namespace mtgvrp.player_manager.login
 {
     class LoginManager : Script
     {
@@ -20,9 +20,6 @@ namespace RoleplayServer.player_manager.login
             API.onPlayerConnected += OnPlayerConnected;
             API.onPlayerFinishedDownload += OnPlayerFinishedDownload;
             API.onClientEventTrigger += API_onClientEventTrigger;
-
-            //API.onChatCommand += OnChatCommandHandler;
-            API.onChatMessage += OnPlayerChat;
 
             DebugManager.DebugMessage("[LoginM] Login Manager initalized.");
         }
@@ -209,15 +206,6 @@ namespace RoleplayServer.player_manager.login
             }
         }
 
-        public void OnPlayerChat(Client player, string message, CancelEventArgs e)
-        {
-            Account account = player.GetAccount();
-            if(account.IsLoggedIn == false)
-            {
-                e.Cancel = true;
-            }
-        }
-
         public void OnPlayerConnected(Client player)
         {
             DebugManager.DebugMessage("[LoginM] " + player.name + " has connected to the server. (IP: " + player.address + ")");
@@ -238,6 +226,7 @@ namespace RoleplayServer.player_manager.login
                 API.sendChatMessageToPlayer(player, "This account is unregistered! Use /register [password] to register it.");
             }
 
+            API.sendChatMessageToPlayer(player, "Press ~g~F12~w~ to disable CEF and login manually.");
             API.triggerClientEvent(player, "onPlayerConnectedEx", account.is_registered());
         }
 
@@ -303,10 +292,28 @@ namespace RoleplayServer.player_manager.login
 
                 if (account.AdminLevel > 0)
                 {
-                    API.sendChatMessageToPlayer(player, Color.AdminOrange, "Welcome back Admin " + account.AdminName);
-                }
+                    API.sendChatMessageToPlayer(player, Color.AdminOrange,
+                        "Welcome back Admin " + account.AdminName);
+                    API.shared.triggerClientEvent(player, "hide_login_browser");
 
-                prepare_character_menu(player);
+                    if (account.AdminPin.Equals(string.Empty))
+                    {
+                        API.sendChatMessageToPlayer(player, Color.AdminOrange,
+                            "You do not have an admin pin set. Please choose one now: ");
+                        API.triggerClientEvent(player, "create_admin_pin");
+                    }
+                    else
+                    {
+                        API.sendChatMessageToPlayer(player, Color.AdminOrange,
+                            "Pleae login with your admin pin to continue.");
+                        API.triggerClientEvent(player, "admin_pin_check");
+                    }
+
+                }
+                else
+                {
+                    prepare_character_menu(player);
+                }
             }
             else
             {

@@ -1,10 +1,9 @@
 ﻿using System;
+using mtgvrp.database_manager;
 using MongoDB.Bson;
-using RoleplayServer.database_manager;
-using System.Collections.Generic;
 using MongoDB.Driver;
 
-namespace RoleplayServer.group_manager.lspd
+namespace mtgvrp.group_manager.lspd
 {
     public class CriminalRecord
     {

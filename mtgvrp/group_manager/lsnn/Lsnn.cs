@@ -1,15 +1,14 @@
-﻿using GTANetworkServer;
-using GTANetworkShared;
+﻿using System;
 using System.Collections.Generic;
-using RoleplayServer.core;
-using RoleplayServer.door_manager;
-using RoleplayServer.player_manager;
-using RoleplayServer.vehicle_manager;
-using RoleplayServer.inventory;
-using System;
 using System.Timers;
+using GTANetworkServer;
+using GTANetworkShared;
+using mtgvrp.core;
+using mtgvrp.inventory;
+using mtgvrp.player_manager;
+using mtgvrp.vehicle_manager;
 
-namespace RoleplayServer.group_manager.lsnn
+namespace mtgvrp.group_manager.lsnn
 {
     class Lsnn : Script
     {

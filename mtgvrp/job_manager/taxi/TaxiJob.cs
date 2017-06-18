@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Timers;
 using GTANetworkServer;
 using GTANetworkShared;
-using RoleplayServer.core;
-using RoleplayServer.inventory;
-using RoleplayServer.player_manager;
-using RoleplayServer.vehicle_manager;
-using Vehicle = RoleplayServer.vehicle_manager.Vehicle;
+using mtgvrp.core;
+using mtgvrp.inventory;
+using mtgvrp.player_manager;
+using mtgvrp.vehicle_manager;
+using Vehicle = mtgvrp.vehicle_manager.Vehicle;
 
-namespace RoleplayServer.job_manager.taxi
+namespace mtgvrp.job_manager.taxi
 {
     public class TaxiJob : Script
     {

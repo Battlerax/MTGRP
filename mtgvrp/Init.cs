@@ -11,13 +11,13 @@
 
 
 using GTANetworkServer;
-using RoleplayServer.core;
-using RoleplayServer.database_manager;
-using RoleplayServer.inventory;
-using RoleplayServer.player_manager;
-using RoleplayServer.vehicle_manager;
+using mtgvrp.core;
+using mtgvrp.database_manager;
+using mtgvrp.inventory;
+using mtgvrp.player_manager;
+using mtgvrp.vehicle_manager;
 
-namespace RoleplayServer
+namespace mtgvrp
 {
     public class Init : Script
     { 
@@ -45,6 +45,11 @@ namespace RoleplayServer
 
         public void OnResourceStartHandler()
         {
+            //For Dealership.
+            API.removeIpl("fakeint"); // remove the IPL "fakeint"
+            API.requestIpl("shr_int"); // Request the IPL "shr_int"
+            API.consoleOutput("[INIT] Unloaded fakeint IPL and loaded shr_int IPL.!");
+
             VehicleManager.load_all_unowned_vehicles();
             API.consoleOutput("[INIT] Script initalized!");
         }

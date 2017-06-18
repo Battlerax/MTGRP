@@ -1,9 +1,9 @@
+using mtgvrp.database_manager;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
-using RoleplayServer.database_manager;
 
-namespace RoleplayServer.phone_manager
+namespace mtgvrp.phone_manager
 {
     public class PhoneContact
     {

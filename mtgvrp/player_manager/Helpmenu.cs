@@ -8,20 +8,9 @@
 
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using GTANetworkServer;
-using GTANetworkShared;
-using MongoDB.Driver;
-using RoleplayServer.database_manager;
-using RoleplayServer.group_manager;
-using RoleplayServer.job_manager;
-using RoleplayServer.AdminSystem;
 
-namespace RoleplayServer.player_manager
+namespace mtgvrp.player_manager
 {
     public class OpenHelpmenu : Script
     {

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using GTANetworkServer;
-using RoleplayServer.AdminSystem;
-using RoleplayServer.core;
+using mtgvrp.AdminSystem;
+using mtgvrp.core;
 
-namespace RoleplayServer.player_manager.player_list
+namespace mtgvrp.player_manager.player_list
 {
     public class PlayerList : Script
     {

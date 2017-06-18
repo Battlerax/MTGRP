@@ -2,9 +2,9 @@
 using System.Timers;
 using GTANetworkServer;
 using GTANetworkShared;
-using RoleplayServer.core;
+using mtgvrp.core;
 
-namespace RoleplayServer.player_manager.player_interaction
+namespace mtgvrp.player_manager.player_interaction
 {
     class PlayerInteraction : Script
     {

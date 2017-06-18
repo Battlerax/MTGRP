@@ -1,16 +1,16 @@
-﻿using MongoDB.Bson;
+﻿using mtgvrp.core;
+using mtgvrp.door_manager;
+using mtgvrp.group_manager;
+using mtgvrp.group_manager.lspd;
+using mtgvrp.job_manager;
+using mtgvrp.phone_manager;
+using mtgvrp.player_manager;
+using mtgvrp.property_system;
+using mtgvrp.vehicle_manager;
+using MongoDB.Bson;
 using MongoDB.Driver;
-using RoleplayServer.core;
-using RoleplayServer.door_manager;
-using RoleplayServer.group_manager;
-using RoleplayServer.group_manager.lspd;
-using RoleplayServer.job_manager;
-using RoleplayServer.phone_manager;
-using RoleplayServer.player_manager;
-using RoleplayServer.property_system;
-using RoleplayServer.vehicle_manager;
 
-namespace RoleplayServer.database_manager
+namespace mtgvrp.database_manager
 {
     public static class DatabaseManager
     {
@@ -28,7 +28,6 @@ namespace RoleplayServer.database_manager
         public static IMongoCollection<Group> GroupTable;
         public static IMongoCollection<Property> PropertyTable;
         public static IMongoCollection<Door> DoorsTable;
-
         public static IMongoCollection<Crime> CrimeTable;
         public static IMongoCollection<CriminalRecord> CriminalRecordTable;
 
@@ -50,7 +49,6 @@ namespace RoleplayServer.database_manager
             GroupTable = _database.GetCollection<Group>("groups");
             PropertyTable = _database.GetCollection<Property>("properties");
             DoorsTable = _database.GetCollection<Door>("doors");
-
             CrimeTable = _database.GetCollection<Crime>("crimes");
             CriminalRecordTable = _database.GetCollection<CriminalRecord>("criminalrecords");
 

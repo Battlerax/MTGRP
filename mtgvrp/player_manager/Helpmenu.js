@@ -22,7 +22,9 @@ function showCmds(group) {
         API.sendChatMessage('/Inv, /Give, /Drop, /Stash, /Managebag, /Myvehicles, /Buyvehicle, /LockDoor, /UnlockDoor');
         API.sendChatMessage('/Frisk, /Tie /Blindfold, /Unblindfold, /Rag, /Unrag, /PickUpStash, /JoinJob, /QuitJob,');
         API.sendChatMessage('/SetPhoneName, /PickUp, /H, /Phone, /Detain, /Eject, /GetID, /Stats, /Time, /Atm,');
-        API.sendChatMessage('/ConfirmSellVehicle, /ConfirmBuyVehicle, ');
+        API.sendChatMessage('/ConfirmSellVehicle, /ConfirmBuyVehicle, /BuyProperty, /atm, /enter, /exit, /phone,');
+        API.sendChatMessage('/Lotto, /WatchBroadcast, /StopWatching, /UseSprunk, /Admins.');
+        API.sendChatMessage('~R~These are all general cmds for hte beta, some are missing and not organised fully.');
     }
     else if (group == "showAnimCmds") {
         API.sendChatMessage('~h~Here is the list of Animations:');

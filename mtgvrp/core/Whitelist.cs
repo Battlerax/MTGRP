@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using GTANetworkServer;
 
-namespace RoleplayServer.core
+namespace mtgvrp.core
 {
     public class Whitelist : Script
     {
@@ -19,6 +19,7 @@ namespace RoleplayServer.core
              "Ahmad45123",
              "Colm692",
              "XeroTheGreat",
+             "ImToro",
 
              //Kevin & Friends
              "maniac1994",

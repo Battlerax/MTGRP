@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO.Ports;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using GTANetworkServer;
-using RoleplayServer.core;
-using RoleplayServer.core.Items;
-using RoleplayServer.inventory;
-using RoleplayServer.phone_manager;
+using mtgvrp.core;
+using mtgvrp.core.Items;
+using mtgvrp.inventory;
+using mtgvrp.phone_manager;
 
-namespace RoleplayServer.property_system.businesses
+namespace mtgvrp.property_system.businesses
 {
     class GeneralBuying : Script
     {

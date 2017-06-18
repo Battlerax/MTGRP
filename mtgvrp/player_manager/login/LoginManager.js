@@ -36,16 +36,16 @@ API.onServerEventTrigger.connect(function (eventName, args) {
             if (login_browser != null) {
                 API.showCursor(false);
                 API.destroyCefBrowser(login_browser);
-                API.setCefDrawState(false);
+                //API.setCefDrawState(false);
                 login_browser = null;
             }
             break;
         case "admin_pin_check":
-            var adminPin = API.getUserInput("", 6);
+            var adminPin = API.getUserInput("", 5);
             API.triggerServerEvent("admin_pin_check", adminPin);
             break;
         case "create_admin_pin":
-            var adminPinCreate = API.getUserInput("", 6);
+            var adminPinCreate = API.getUserInput("", 5);
             API.triggerServerEvent("create_admin_pin", adminPinCreate);
             break;
     }
@@ -55,3 +55,12 @@ function attempt_login(password) {
     API.triggerServerEvent("attempt_login", password);
 }
 
+API.onKeyDown.connect((sender, e) =>
+{
+	if (e.KeyCode === Keys.F12 && login_browser !== null) {
+		API.showCursor(false);
+		API.setCanOpenChat(true);
+		API.destroyCefBrowser(login_browser);
+		login_browser = null;
+	}
+});

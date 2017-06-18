@@ -1,21 +1,18 @@
-﻿using System.Linq;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using System.Linq;
+using System.Timers;
 using GTANetworkServer;
 using GTANetworkShared;
-using System.Timers;
-using RoleplayServer.core;
-using RoleplayServer.inventory;
-using RoleplayServer.player_manager;
-using RoleplayServer.vehicle_manager;
-using RoleplayServer.group_manager.lspd;
-using RoleplayServer.database_manager;
-using RoleplayServer.AdminSystem;
+using mtgvrp.core;
+using mtgvrp.database_manager;
+using mtgvrp.group_manager;
+using mtgvrp.group_manager.lspd;
+using mtgvrp.inventory;
+using mtgvrp.player_manager;
+using mtgvrp.vehicle_manager;
 using MongoDB.Driver;
-using RoleplayServer.group_manager;
-using RoleplayServer.weapon_manager;
 
-namespace RoleplayServer.AdminSystem
+namespace mtgvrp.AdminSystem
 {
     public class AdminCommands : Script
     {
@@ -61,6 +58,65 @@ namespace RoleplayServer.AdminSystem
             }
         }
 
+        [Command("set", GreedyArg = true)]
+        public void SetCharacterData(Client player, string target, string var, string value)
+        {
+            var acc = player.GetAccount();
+            if (acc.AdminLevel >= 5)
+            {
+                var receiver = PlayerManager.ParseClient(target);
+                if (receiver == null)
+                {
+                    API.sendChatMessageToPlayer(player, Color.White, "That player is not connected.");
+                    return;
+                }
+
+                var recChar = receiver.GetCharacter();
+                var prop = recChar.GetType().GetProperties().SingleOrDefault(x => x.Name == var);
+                if (prop == null)
+                {
+                    API.sendChatMessageToPlayer(player, Color.White, "There is no such property.");
+                    return;
+                }
+
+                if (prop.PropertyType == typeof(int))
+                {
+                    int val;
+                    if (!int.TryParse(value, out val))
+                    {
+                        API.sendChatMessageToPlayer(player, "That property is an integer.");
+                        return;
+                    }
+
+                    prop.SetValue(recChar, val);
+                    API.sendChatMessageToPlayer(player, $"Sucessfully set {var} to the value: {value}");
+                    recChar.Save();
+                }
+                else if (prop.PropertyType == typeof(bool))
+                {
+                    bool val;
+                    if (!bool.TryParse(value, out val))
+                    {
+                        API.sendChatMessageToPlayer(player, "That property is a bool.");
+                        return;
+                    }
+
+                    prop.SetValue(recChar, val);
+                    API.sendChatMessageToPlayer(player, $"Sucessfully set {var} to the value: {value}");
+                    recChar.Save();
+                }
+                else if (prop.PropertyType == typeof(bool))
+                {
+                    prop.SetValue(recChar, value);
+                    API.sendChatMessageToPlayer(player, $"Sucessfully set {var} to the value: {value}");
+                    recChar.Save();
+                }
+                else
+                {
+                    API.sendChatMessageToPlayer(player, "Unknown Type.");
+                }
+            }
+        }
 
         [Command("setadminlevel")]
         public void setrank_cmd(Client player, string id, int level)
@@ -127,6 +183,7 @@ namespace RoleplayServer.AdminSystem
             }
 
             leaderChar.Group = group;
+            leaderChar.GroupId = group.Id;
             leaderChar.GroupRank = 10;
             leaderChar.Save();
 
@@ -407,7 +464,7 @@ namespace RoleplayServer.AdminSystem
                 return;
             }
 
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = API.getEntityData(receiver.handle, "Character");
             API.sendChatMessageToPlayer(player, "----------------------------------------------");
             API.sendChatMessageToPlayer(player, $"Vehicles Owned By {character.CharacterName}");
             foreach (var carid in character.OwnedVehicles)

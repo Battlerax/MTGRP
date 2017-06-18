@@ -1,13 +1,11 @@
 ﻿using System;
-using GTANetworkServer;
-using GTANetworkShared;
-using RoleplayServer.player_manager;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting;
-using RoleplayServer.core;
+using GTANetworkServer;
+using mtgvrp.core;
+using mtgvrp.player_manager;
 
-namespace RoleplayServer.group_manager.lspd.MDC
+namespace mtgvrp.group_manager.lspd.MDC
 {
     public class Bolo
     {

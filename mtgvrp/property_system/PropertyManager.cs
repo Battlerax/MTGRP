@@ -1,20 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
 using GTANetworkServer;
 using GTANetworkShared;
+using mtgvrp.core;
+using mtgvrp.database_manager;
+using mtgvrp.door_manager;
+using mtgvrp.inventory;
+using mtgvrp.player_manager;
 using MongoDB.Driver;
-using RoleplayServer.core;
-using RoleplayServer.database_manager;
-using RoleplayServer.door_manager;
-using RoleplayServer.inventory;
-using RoleplayServer.player_manager;
 
-namespace RoleplayServer.property_system
+namespace mtgvrp.property_system
 {
     public class PropertyManager : Script
     {
@@ -45,7 +41,8 @@ namespace RoleplayServer.property_system
             Hardware,
             Bank,
             Restaurant,
-            Advertising
+            Advertising,
+            GasStation,
         }
 
         #region ColShapeKnowing
@@ -439,6 +436,11 @@ namespace RoleplayServer.property_system
                             $"[Property Manager] Owner of Property #{id} was changed to: '{player.GetCharacter().CharacterName}'");
                     }
                     break;
+
+
+                case "attempt_enter_prop":
+                    Enterproperty(sender);
+                    break;
             }
         }
 
@@ -458,6 +460,8 @@ namespace RoleplayServer.property_system
                     return "/buy";
                 case PropertyTypes.Advertising:
                     return "/advertise";
+                case PropertyTypes.GasStation:
+                    return "/refuel /refillgascan";
             }
             return "";
         }
@@ -531,7 +535,7 @@ namespace RoleplayServer.property_system
                 return;
             }
 
-            if(prop.RestaurantItems == null) prop.RestaurantItems = new string[4];
+            if (prop.RestaurantItems == null) prop.RestaurantItems = new string[4];
             switch (item)
             {
                 case "custom1":
@@ -577,95 +581,15 @@ namespace RoleplayServer.property_system
 
                 switch (prop.Type)
                 {
-                    case PropertyTypes.Clothing:
-                        if (item == "")
-                        {                                                              //0    ,1    ,2          ,3          ,4   ,5   ,6      ,7
-                            API.sendChatMessageToPlayer(player, "[ERROR] Choose a type: [Pants,Shoes,Accessories,Undershirts,Tops,Hats,Glasses,Earrings,Bags]");
-                            return;
-                        }
-
-                        switch (item.ToLower())
-                        {
-                            case "pants":
-                                prop.ItemPrices["0"] = price;
-                                API.sendChatMessageToPlayer(player, $"Changed ~g~Pants~w~ price to {price}");
-                                break;
-                            case "shoes":
-                                prop.ItemPrices["1"] = price;
-                                API.sendChatMessageToPlayer(player, $"Changed ~g~Shoes~w~ price to {price}");
-                                break;
-                            case "accessories":
-                                prop.ItemPrices["2"] = price;
-                                API.sendChatMessageToPlayer(player, $"Changed ~g~Accessories~w~ price to {price}");
-                                break;
-                            case "undershirts":
-                                prop.ItemPrices["3"] = price;
-                                API.sendChatMessageToPlayer(player, $"Changed ~g~Undershirts~w~ price to {price}");
-                                break;
-                            case "tops":
-                                prop.ItemPrices["4"] = price;
-                                API.sendChatMessageToPlayer(player, $"Changed ~g~Tops~w~ price to {price}");
-                                break;
-                            case "hats":
-                                prop.ItemPrices["5"] = price;
-                                API.sendChatMessageToPlayer(player, $"Changed ~g~Hats~w~ price to {price}");
-                                break;
-                            case "glasses":
-                                prop.ItemPrices["6"] = price;
-                                API.sendChatMessageToPlayer(player, $"Changed ~g~Glasses~w~ price to {price}");
-                                break;
-                            case "earrings":
-                                prop.ItemPrices["7"] = price;
-                                API.sendChatMessageToPlayer(player, $"Changed ~g~Earrings~w~ price to {price}");
-                                break;
-                            case "bags":
-                                prop.ItemPrices["8"] = price;
-                                API.sendChatMessageToPlayer(player, $"Changed ~g~Earrings~w~ price to {price}");
-                                break;
-                        }
-                        break;
-
+                    case PropertyTypes.Hardware:
+                    case PropertyTypes.TwentyFourSeven:
+                    case PropertyTypes.GasStation:
                     case PropertyTypes.Restaurant:
-                        if (item == "")
-                        {
-                            API.sendChatMessageToPlayer(player, "[ERROR] Choose a type: [sprunk,custom1,custom2,custom3,custom4]");
-                            return;
-                        }
-
-                        switch (item.ToLower())
-                        {
-                            case "sprunk":
-                                prop.ItemPrices["sprunk"] = price;
-                                API.sendChatMessageToPlayer(player, $"Changed ~g~Sprunk~w~ price to {price}");
-                                break;
-                            case "custom1":
-                                prop.ItemPrices["custom1"] = price;
-                                API.sendChatMessageToPlayer(player, $"Changed ~g~Custom 1~w~ price to {price}");
-                                break;
-                            case "custom2":
-                                prop.ItemPrices["custom2"] = price;
-                                API.sendChatMessageToPlayer(player, $"Changed ~g~Custom 2~w~ price to {price}");
-                                break;
-                            case "custom3":
-                                prop.ItemPrices["custom3"] = price;
-                                API.sendChatMessageToPlayer(player, $"Changed ~g~Custom 3~w~ price to {price}");
-                                break;
-                            case "custom4":
-                                prop.ItemPrices["custom4"] = price;
-                                API.sendChatMessageToPlayer(player, $"Changed ~g~Custom 4~w~ price to {price}");
-                                break;
-                        }
-                        break;
-
-                    case PropertyTypes.Hardware: case PropertyTypes.TwentyFourSeven:
+                    case PropertyTypes.Clothing:
                         if (item == "")
                         {
                             API.sendChatMessageToPlayer(player, "Choose a type: ");
-                            string msg = "";
-                            foreach (var key in prop.ItemPrices.Keys)
-                            {
-                                msg += key + ",";
-                            }
+                            string msg = prop.ItemPrices.Keys.Aggregate("", (current, key) => current + (key + ","));
                             msg = msg.Remove(msg.Length - 1, 1);
                             API.sendChatMessageToPlayer(player, msg);
                             return;
@@ -732,7 +656,8 @@ namespace RoleplayServer.property_system
             prop.Save();
             prop.UpdateMarkers();
 
-            API.sendChatMessageToPlayer(player, $"You have sucessfully bought a ~r~{prop.Type}~w~ for ~g~{prop.PropertyPrice}~w~.");
+            API.sendChatMessageToPlayer(player,
+                $"You have sucessfully bought a ~r~{prop.Type}~w~ for ~g~{prop.PropertyPrice}~w~.");
         }
 
         [Command("lockproperty")]
@@ -790,7 +715,7 @@ namespace RoleplayServer.property_system
                 return;
             }
 
-            if(prop.Inventory == null) prop.Inventory = new List<IInventoryItem>();
+            if (prop.Inventory == null) prop.Inventory = new List<IInventoryItem>();
             InventoryManager.ShowInventoryManager(player, player.GetCharacter(), prop, "Inventory: ", "Property: ");
         }
 
@@ -805,11 +730,27 @@ namespace RoleplayServer.property_system
                 property.Insert();
                 property.CreateProperty();
                 Properties.Add(property);
-                API.sendChatMessageToPlayer(player, "You have sucessfully create a property of type " + type.ToString());
-            } 
+                API.sendChatMessageToPlayer(player,
+                    "You have sucessfully create a property of type " + type.ToString());
+            }
         }
 
-        [Command("editproperty")]
+        [Command("propertytypes")]
+        public void Propertytypes(Client player)
+        {
+            var account = player.GetAccount();
+            if (account.AdminLevel >= 5)
+            {
+                API.sendChatMessageToPlayer(player, "______ Listing Property Types ______");
+                foreach (var type in Enum.GetNames(typeof(PropertyTypes)))
+                {
+                    API.sendChatMessageToPlayer(player, "* " + type);
+                }
+                API.sendChatMessageToPlayer(player, "____________________________________");
+            }
+        }
+
+    [Command("editproperty")]
         public void edit_property(Client player, int id)
         {
             var account = player.GetAccount();

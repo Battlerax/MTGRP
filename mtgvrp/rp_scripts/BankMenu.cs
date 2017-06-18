@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using GTANetworkServer;
 using GTANetworkShared;
-using RoleplayServer.core;
-using RoleplayServer.inventory;
-using RoleplayServer.player_manager;
+using mtgvrp.core;
+using mtgvrp.inventory;
+using mtgvrp.player_manager;
 
-namespace RoleplayServer.rp_scripts
+namespace mtgvrp.rp_scripts
 {
     public class Test : Script
     {

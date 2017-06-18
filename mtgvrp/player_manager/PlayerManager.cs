@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using GTANetworkServer;
 using GTANetworkShared;
-using RoleplayServer.core;
-using RoleplayServer.group_manager;
-using RoleplayServer.weapon_manager;
-using RoleplayServer.inventory;
+using mtgvrp.core;
+using mtgvrp.group_manager;
 
-namespace RoleplayServer.player_manager
+namespace mtgvrp.player_manager
 {
     class PlayerManager : Script
     {
@@ -305,6 +303,7 @@ namespace RoleplayServer.player_manager
 
             API.sendChatMessageToPlayer(sender, "________________PLAYER STATS________________");
             API.sendChatMessageToPlayer(sender, "~g~General:~g~");
+
             API.sendChatMessageToPlayer(sender, string.Format("~h~Character name:~h~ {0} ~h~Account name:~h~ {1} ~h~ID:~h~ {2} ~h~Money:~h~ {3} ~h~Bank balance:~h~ {4} ~h~Playing hours:~h~ {5}", sender.name, account.AccountName, character.Id, Money.GetCharacterMoney(character), character.BankBalance, character.TimePlayed));
             API.sendChatMessageToPlayer(sender, string.Format("~h~Age:~h~ {0} ~h~Birthplace:~h~ {1} ~h~Birthday:~h~ {2} ~h~VIP level:~h~ {3} ~h~VIP expires:~h~ {4}", character.Age, character.Birthplace, character.Birthday, account.VipLevel, account.VipExpirationDate));
             API.sendChatMessageToPlayer(sender, "~b~Faction/Jobs:~b~");
@@ -315,7 +314,8 @@ namespace RoleplayServer.player_manager
             if (senderAccount.AdminLevel > 0)
             {
                 API.sendChatMessageToPlayer(sender, "~y~Admin:~y~");
-                API.sendChatMessageToPlayer(sender, string.Format("~h~Admin level:~h~ {0} ~h~ Admin name:~h~ {1} ~h~Last vehicle:~h~ {2} ~h~Dimension:~h~ {3} ~h~Last IP:~h~ {4}", account.AdminLevel, account.AdminName, character.LastVehicle, character.LastDimension, account.LastIp));
+                API.sendChatMessageToPlayer(sender,
+                    $"~h~Admin level:~h~ {account.AdminLevel} ~h~ Admin name:~h~ {account.AdminName} ~h~Last vehicle:~h~ {character.LastVehicle} ~h~Dimension:~h~ {character.LastDimension} ~h~Last IP:~h~ {account.LastIp}");
             }
         }
     }

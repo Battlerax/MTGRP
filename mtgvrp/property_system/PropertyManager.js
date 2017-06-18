@@ -163,3 +163,10 @@ API.onUpdate.connect(function() {
         }
     }
 });
+
+API.onKeyDown.connect((sender, e) =>
+{
+	if (e.KeyCode === Keys.C && API.isChatOpen() === false) {
+		API.triggerServerEvent("attempt_enter_prop");
+	}
+});

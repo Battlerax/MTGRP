@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GTANetworkServer;
-using RoleplayServer.player_manager;
+﻿using GTANetworkServer;
+using mtgvrp.player_manager;
 
-namespace RoleplayServer.core
+namespace mtgvrp.core
 {
     public static class ClientEx
     {

@@ -2,18 +2,17 @@
 using System.Collections.Generic;
 using GTANetworkServer;
 using GTANetworkShared;
+using mtgvrp.component_manager;
+using mtgvrp.core;
+using mtgvrp.database_manager;
+using mtgvrp.group_manager;
+using mtgvrp.group_manager.lspd;
+using mtgvrp.inventory;
+using mtgvrp.job_manager;
+using mtgvrp.phone_manager;
 using MongoDB.Driver;
-using System.Timers;
-using RoleplayServer.component_manager;
-using RoleplayServer.core;
-using RoleplayServer.database_manager;
-using RoleplayServer.group_manager;
-using RoleplayServer.job_manager;
-using RoleplayServer.phone_manager;
-using RoleplayServer.group_manager.lspd;
-using RoleplayServer.inventory;
 
-namespace RoleplayServer.player_manager
+namespace mtgvrp.player_manager
 {
     class CharacterMenu : Script
     {
@@ -64,7 +63,7 @@ namespace RoleplayServer.player_manager
                         {
                             CharacterName = charName,
                             AccountId = account.Id.ToString(),
-                            Client = player
+                            Client = player,
                         };
 
                         character.Insert();
@@ -74,7 +73,8 @@ namespace RoleplayServer.player_manager
 
                         API.sendChatMessageToPlayer(player, "Welcome to Los Santos, " + charName + "! Let's get started with what you look like!");
                         API.freezePlayer(player, true);
-                 
+                        API.setEntityDimension(player, player.GetCharacter().Id + 1);
+
                         API.triggerClientEvent(player, "show_character_creation_menu");
                     }
                     else
@@ -116,6 +116,7 @@ namespace RoleplayServer.player_manager
                             API.sendChatMessageToPlayer(player, "Welcome back, " + character.CharacterName + "! Let's finish figuring out what you look like!");
                             character.update_ped();
                             API.freezePlayer(player, true);
+                            API.setEntityDimension(player, player.GetCharacter().Id + 1);
                             API.triggerClientEvent(player, "show_character_creation_menu");
                             return;
                         }
@@ -146,7 +147,7 @@ namespace RoleplayServer.player_manager
                         API.setEntityPosition(player.handle, character.LastPos);
                         API.setEntityRotation(player.handle, character.LastRot);
                         API.setEntityDimension(player.handle, character.LastDimension);
-
+                        
                         if (character.Group != Group.None)
                         {
                             GroupManager.SendGroupMessage(player,
@@ -316,11 +317,11 @@ namespace RoleplayServer.player_manager
                 case "finish_character_creation":
                 {
                     Character character = API.getEntityData(player.handle, "Character");
-                    character.Age = (int)arguments[0];
-                    character.Birthday = (string)arguments[1];
-                    character.Birthplace = (string)arguments[2];
+                    character.Age = (int) arguments[0];
+                    character.Birthday = (string) arguments[1];
+                    character.Birthplace = (string) arguments[2];
 
-                    if((int)arguments[3] == 0) //Airport spawn
+                    if ((int) arguments[3] == 0) //Airport spawn
                     {
                         character.LastPos = new Vector3(-1037.253, -2736.865, 13.76621);
                         character.LastRot = new Vector3(0, 0, -37);
@@ -338,8 +339,14 @@ namespace RoleplayServer.player_manager
                     API.setEntityRotation(player.handle, character.LastRot);
                     API.setEntityDimension(player.handle, 0);
                     API.freezePlayer(player, false);
-                    API.sendChatMessageToPlayer(player, "~g~You have successfully created your character: " + character.CharacterName + "!");
-                    API.sendChatMessageToPlayer(player, "~g~If you have any questions please use /n(ewbie) chat or /ask for moderator assitance.");
+                    API.sendChatMessageToPlayer(player,
+                        "~g~You have successfully created your character: " + character.CharacterName + "!");
+                    API.sendChatMessageToPlayer(player,
+                        "~g~If you have any questions please use /n(ewbie) chat or /ask for moderator assitance.");
+
+                    //Startup money.
+                    character.BankBalance = 20000;
+                    InventoryManager.GiveInventoryItem(character, new Money(), 5000);
 
                     character.IsCreated = true;
                     character.StartTrackingTimePlayed();

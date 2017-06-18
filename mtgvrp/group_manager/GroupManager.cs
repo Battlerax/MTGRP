@@ -1,13 +1,12 @@
 using System.Collections.Generic;
 using GTANetworkServer;
-using GTANetworkShared;
+using mtgvrp.core;
+using mtgvrp.database_manager;
+using mtgvrp.player_manager;
+using mtgvrp.vehicle_manager;
 using MongoDB.Driver;
-using RoleplayServer.core;
-using RoleplayServer.database_manager;
-using RoleplayServer.player_manager;
-using RoleplayServer.vehicle_manager;
 
-namespace RoleplayServer.group_manager
+namespace mtgvrp.group_manager
 {
     public class GroupManager : Script
     {

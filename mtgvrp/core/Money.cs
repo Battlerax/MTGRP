@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using mtgvrp.inventory;
+using mtgvrp.player_manager;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using RoleplayServer.inventory;
-using RoleplayServer.player_manager;
 
-namespace RoleplayServer.core
+namespace mtgvrp.core
 {
     public class Money : IInventoryItem
     {
@@ -21,7 +19,7 @@ namespace RoleplayServer.core
         public bool CanBeStacked => true;
         public bool IsBlocking => false;
 
-        public int MaxAmount => -1;
+        public Dictionary<Type, int> MaxAmount => new Dictionary<Type, int>();
         public int AmountOfSlots => 0;
 
         public string CommandFriendlyName => "money";

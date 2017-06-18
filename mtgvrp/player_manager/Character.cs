@@ -1,23 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Timers;
 using GTANetworkServer;
 using GTANetworkShared;
+using mtgvrp.database_manager;
+using mtgvrp.group_manager;
+using mtgvrp.group_manager.lspd;
+using mtgvrp.inventory;
+using mtgvrp.job_manager;
+using mtgvrp.job_manager.fisher;
+using mtgvrp.job_manager.taxi;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
-using RoleplayServer.database_manager;
-using RoleplayServer.group_manager;
-using RoleplayServer.inventory;
-using RoleplayServer.group_manager.lspd;
-using RoleplayServer.job_manager;
-using RoleplayServer.job_manager.fisher;
-using RoleplayServer.job_manager.taxi;
-using RoleplayServer.phone_manager;
-using Vehicle = RoleplayServer.vehicle_manager.Vehicle;
-using RoleplayServer.weapon_manager;
+using Vehicle = mtgvrp.vehicle_manager.Vehicle;
 
-namespace RoleplayServer.player_manager
+namespace mtgvrp.player_manager
 {
     public class Character : IStorage
     {
@@ -233,6 +230,7 @@ namespace RoleplayServer.player_manager
 
         public List<IInventoryItem> Inventory { get; set; }
 
+        [BsonIgnore]
         public bool CanDoAnim { get; set; }
 
         [BsonIgnore]
@@ -282,6 +280,7 @@ namespace RoleplayServer.player_manager
             CallingPlayer = Character.None;
 
             RadioToggle = true;
+            CanDoAnim = true;
         }
 
         public void Insert()

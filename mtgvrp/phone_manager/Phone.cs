@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using mtgvrp.database_manager;
+using mtgvrp.inventory;
+using mtgvrp.player_manager;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
-using RoleplayServer.database_manager;
-using RoleplayServer.inventory;
 
-namespace RoleplayServer.phone_manager
+namespace mtgvrp.phone_manager
 {
     public class Phone : IInventoryItem
     {
@@ -25,9 +26,17 @@ namespace RoleplayServer.phone_manager
         public bool CanBeStacked => false;
         public bool CanBeStashed => true;
         public bool IsBlocking => false;
-        public int MaxAmount => 1;
 
-        public string CommandFriendlyName => "phone";
+        public Dictionary<Type, int> MaxAmount
+        {
+            get
+            {
+                var itm = new Dictionary<Type, int> {{typeof(Character), 1}};
+                return itm;
+            }
+        }
+
+        public string CommandFriendlyName => "phone_" + PhoneName;
         public string LongName => "Phone (" + PhoneName + ")";
         public int Object => 0;
 

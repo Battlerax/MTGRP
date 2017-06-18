@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using GTANetworkServer;
-using GTANetworkShared;
-using RoleplayServer.component_manager;
-using RoleplayServer.core;
-using RoleplayServer.inventory;
-using RoleplayServer.inventory.bags;
-using RoleplayServer.player_manager;
+using mtgvrp.component_manager;
+using mtgvrp.core;
+using mtgvrp.inventory;
+using mtgvrp.inventory.bags;
+using mtgvrp.player_manager;
 
-namespace RoleplayServer.property_system.businesses
+namespace mtgvrp.property_system.businesses
 {
     class Clothing : Script
     {
@@ -121,35 +120,35 @@ namespace RoleplayServer.property_system.businesses
                 {
                     case Component.ComponentTypeLegs:
                         price = PropertyManager.Properties.Single(x => x.Id == sender.getData("clothing_id"))
-                            .ItemPrices["0"];
+                            .ItemPrices["pants"];
                         break;
                     case Component.ComponentTypeShoes:
                         price = PropertyManager.Properties.Single(x => x.Id == sender.getData("clothing_id"))
-                            .ItemPrices["1"];
+                            .ItemPrices["shoes"];
                         break;
                     case Component.ComponentTypeAccessories:
                         price = PropertyManager.Properties.Single(x => x.Id == sender.getData("clothing_id"))
-                            .ItemPrices["2"];
+                            .ItemPrices["accessories"];
                         break;
                     case Component.ComponentTypeUndershirt:
                         price = PropertyManager.Properties.Single(x => x.Id == sender.getData("clothing_id"))
-                            .ItemPrices["3"];
+                            .ItemPrices["undershirts"];
                         break;
                     case Component.ComponentTypeTops:
                         price = PropertyManager.Properties.Single(x => x.Id == sender.getData("clothing_id"))
-                            .ItemPrices["4"];
+                            .ItemPrices["tops"];
                         break;
                     case Component.ComponentTypeHats:
                         price = PropertyManager.Properties.Single(x => x.Id == sender.getData("clothing_id"))
-                            .ItemPrices["5"];
+                            .ItemPrices["hats"];
                         break;
                     case Component.ComponentTypeGlasses:
                         price = PropertyManager.Properties.Single(x => x.Id == sender.getData("clothing_id"))
-                            .ItemPrices["6"];
+                            .ItemPrices["glasses"];
                         break;
                     case Component.ComponentTypeEars:
                         price = PropertyManager.Properties.Single(x => x.Id == sender.getData("clothing_id"))
-                            .ItemPrices["7"];
+                            .ItemPrices["earrings"];
                         break;
                 }
 
@@ -284,7 +283,8 @@ namespace RoleplayServer.property_system.businesses
                 var bag = new BagItem()
                 {
                     BagType = bagstyle,
-                    BagDesign = bagvar
+                    BagDesign = bagvar,
+                    BagName = "default"
                 };
                 switch (InventoryManager.GiveInventoryItem(sender.GetCharacter(), bag))
                 {

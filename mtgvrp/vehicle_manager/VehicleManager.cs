@@ -9,21 +9,21 @@
  * 
  * */
 
-
 using System;
 using System.Timers;
 using System.Collections.Generic;
 using System.Linq;
 using GTANetworkServer;
 using GTANetworkShared;
+using mtgvrp.core;
+using mtgvrp.database_manager;
+using mtgvrp.group_manager;
+using mtgvrp.inventory;
+using mtgvrp.job_manager;
+using mtgvrp.player_manager;
 using MongoDB.Driver;
-using RoleplayServer.core;
-using RoleplayServer.database_manager;
-using RoleplayServer.job_manager;
-using RoleplayServer.player_manager;
-using RoleplayServer.group_manager;
 
-namespace RoleplayServer.vehicle_manager
+namespace mtgvrp.vehicle_manager
 {
     public class VehicleManager : Script
     {
@@ -147,11 +147,26 @@ namespace RoleplayServer.vehicle_manager
 
         }
 
-        [Command("tele")]
-        public void Tele(Client player)
+        [Command("vstorage")]
+        public void VehicleStorage(Client player)
         {
-            API.setEntityPosition(player.handle, new Vector3(403, -996, -99));
-            API.sendChatMessageToPlayer(player, "teleported");
+            var lastVeh = GetNearestVehicle(player);
+
+            if (lastVeh == null) return;
+            if (!DoesPlayerHaveVehicleAccess(player, lastVeh))
+            {
+                API.sendChatMessageToPlayer(player, "You must have access to the vehicle.");
+                return;
+            }
+
+            if (!API.getVehicleDoorState(lastVeh.NetHandle, 5))
+            {
+                API.sendChatMessageToPlayer(player, "Trunk must be open to access the storage.");
+                return;
+            }
+
+            if (lastVeh.Inventory == null) lastVeh.Inventory = new List<IInventoryItem>();
+            InventoryManager.ShowInventoryManager(player, player.GetCharacter(), lastVeh, "Inventory: ", "Vehicle: ");
         }
 
         /*
@@ -247,17 +262,7 @@ namespace RoleplayServer.vehicle_manager
         [Command("lock")]
         public void Lockvehicle_cmd(Client player)
         {
-            Vehicle lastVeh = null;
-            float lastPos = 5f;
-            foreach (Vehicle veh in Vehicles)
-            {
-                if(veh.IsSpawned == false) continue;
-                
-                if (API.getEntityPosition(veh.NetHandle).DistanceTo(player.position) < lastPos)
-                {
-                    lastVeh = veh;
-                }
-            }
+            var lastVeh = GetNearestVehicle(player);
 
             if (lastVeh == null) return;
             if (!DoesPlayerHaveVehicleAccess(player, lastVeh)) return;
@@ -390,8 +395,17 @@ namespace RoleplayServer.vehicle_manager
             if (account.AdminLevel > 1)
             {
                 API.sendChatMessageToPlayer(player, "~w~[VehicleM] You have entered vehicle ~r~" + Vehicles.IndexOf(veh) + "(Owned by: " + PlayerManager.Players.SingleOrDefault(x => x.Id == veh.OwnerId)?.CharacterName + ")");
-                API.sendChatMessageToPlayer(player, "~y~ Press \"N\" on your keyboard to access the vehicle menu.");
             }
+            
+            if (API.getVehicleLocked(vehicleHandle))
+            {
+                API.warpPlayerOutOfVehicle(player);
+                API.sendChatMessageToPlayer(player, "~r~The vehicle is locked.");
+                return;
+            }
+            
+            API.sendChatMessageToPlayer(player, "~y~ Press \"N\" on your keyboard to access the vehicle menu.");
+
 
             //Vehicle Interaction Menu Setup
             var vehInfo = API.getVehicleDisplayName(veh.VehModel) + " - " + veh.LicensePlate;
@@ -454,6 +468,22 @@ namespace RoleplayServer.vehicle_manager
         * ========== FUNCTIONS =========
         * 
         */
+
+        public static Vehicle GetNearestVehicle(Client player, float radius = 5f)
+        {
+            Vehicle lastVeh = null;
+            float lastPos = radius;
+            foreach (Vehicle veh in Vehicles)
+            {
+                if (veh.IsSpawned == false) continue;
+
+                if (API.shared.getEntityPosition(veh.NetHandle).DistanceTo(player.position) < lastPos)
+                {
+                    lastVeh = veh;
+                }
+            }
+            return lastVeh;
+        }
 
         public static int GetMaxOwnedVehicles(Client chr)
         {

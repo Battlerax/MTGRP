@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GTANetworkServer;
+using mtgvrp.player_manager;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using RoleplayServer.player_manager;
 
-namespace RoleplayServer.inventory.bags
+namespace mtgvrp.inventory.bags
 {
     [BsonDiscriminator("BagItem")]
     class BagItem : IStorage, IInventoryItem
@@ -30,11 +26,18 @@ namespace RoleplayServer.inventory.bags
         public bool CanBeStacked => false;
         public bool CanBeStashed => true;
         public bool IsBlocking => false;
-        public int MaxAmount => 1;
+        public Dictionary<Type, int> MaxAmount
+        {
+            get
+            {
+                var itm = new Dictionary<Type, int> { { typeof(Character), 1 } };
+                return itm;
+            }
+        }
 
-        public string CommandFriendlyName => $"Bag{BagType}{BagDesign}";
+        public string CommandFriendlyName => $"bag_{BagName}";
 
-        public string LongName => $"Bag, Type {BagType} Design {BagDesign}";
+        public string LongName => $"Bag, {BagName}";
 
         public int Object
         {
@@ -58,20 +61,11 @@ namespace RoleplayServer.inventory.bags
         }
 
         //TODO: to be changed, not sure how much it should be.
-        public int MaxInvStorage
-        {
-            get
-            {
-                //If its the heist bag, its 1000 big and if its any other, 500.
-                if (BagType == 40 || BagType == 41 || BagType == 44 || BagType == 45)
-                    return 1000;
-
-                return 500;
-            }
-        }
+        public int MaxInvStorage => 500;
 
         public int BagType { get; set; }
         public int BagDesign { get; set; }
 
+        public string BagName { get; set; }
     }
 }
