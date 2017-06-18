@@ -60,6 +60,8 @@ namespace mtgvrp.property_system
         [BsonIgnore]
         public MarkerZone ExitMarker { get; set; }
 
+        public int AdvertisingPrice { get; set; }
+
         public Property(PropertyManager.PropertyTypes type, Vector3 entrancePos, Vector3 entranceRot,
             string entranceString)
         {

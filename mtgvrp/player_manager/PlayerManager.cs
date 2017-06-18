@@ -6,6 +6,8 @@ using mtgvrp.weapon_manager;
 using mtgvrp.inventory;
 using mtgvrp.core;
 using mtgvrp.group_manager;
+using mtgvrp.inventory;
+using mtgvrp.weapon_manager;
 
 namespace mtgvrp.player_manager
 {

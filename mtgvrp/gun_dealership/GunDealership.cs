@@ -1,8 +1,8 @@
 ﻿using GTANetworkServer;
 using GTANetworkShared;
 using mtgvrp.core;
-using mtgvrp.player_manager;
 using mtgvrp.inventory;
+using mtgvrp.player_manager;
 using mtgvrp.weapon_manager;
 
 public class GunDealership : Script

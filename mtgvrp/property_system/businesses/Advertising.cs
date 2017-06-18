@@ -2,14 +2,14 @@
 using System.Timers;
 using GTANetworkServer;
 using GTANetworkShared;
+using System.Linq;
 using mtgvrp.core;
 using mtgvrp.inventory;
-using mtgvrp.player_manager;
 using mtgvrp.phone_manager;
+using mtgvrp.player_manager;
 using mtgvrp.property_system;
-using System.Linq;
 
-namespace RoleplayServer.property_system.businesses
+namespace mtgvrp.property_system.businesses
 {
     public class Advertising : Script
     {

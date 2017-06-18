@@ -12,6 +12,7 @@ using mtgvrp.job_manager.fisher;
 using mtgvrp.job_manager.taxi;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
+using mtgvrp.weapon_manager;
 using Vehicle = mtgvrp.vehicle_manager.Vehicle;
 
 namespace mtgvrp.player_manager
