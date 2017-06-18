@@ -11,6 +11,7 @@ using mtgvrp.job_manager.fisher;
 using mtgvrp.phone_manager;
 using mtgvrp.player_manager;
 using mtgvrp.property_system.businesses;
+using mtgvrp.weapon_manager;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 

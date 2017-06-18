@@ -4,6 +4,8 @@ using GTANetworkServer;
 using GTANetworkShared;
 using mtgvrp.core;
 using mtgvrp.group_manager;
+using mtgvrp.inventory;
+using mtgvrp.weapon_manager;
 
 namespace mtgvrp.player_manager
 {

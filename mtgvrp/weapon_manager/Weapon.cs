@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using GTANetworkServer;
 using GTANetworkShared;
+using mtgvrp.group_manager;
+using mtgvrp.inventory;
+using mtgvrp.player_manager;
 using MongoDB.Bson;
-using RoleplayServer.group_manager;
-using RoleplayServer.inventory;
 
 
-namespace RoleplayServer.weapon_manager
+namespace mtgvrp.weapon_manager
 {
     public class Weapon : IInventoryItem
     {
@@ -33,7 +35,7 @@ namespace RoleplayServer.weapon_manager
         public bool CanBeStacked => false;
         public bool IsBlocking => false;
 
-        public int MaxAmount => -1;
+        public Dictionary<Type, int> MaxAmount => new Dictionary<Type, int>(-1);
         public int AmountOfSlots => 0;
 
         public string CommandFriendlyName => WeaponHash.ToString();
@@ -58,5 +60,6 @@ namespace RoleplayServer.weapon_manager
             IsGroupWeapon = isgroupweapon;
             Group = group;
         }
+
     }
 }

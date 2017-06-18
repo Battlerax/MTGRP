@@ -10,6 +10,7 @@ using mtgvrp.group_manager.lspd;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;
 using mtgvrp.vehicle_manager;
+using mtgvrp.weapon_manager;
 using MongoDB.Driver;
 
 namespace mtgvrp.AdminSystem

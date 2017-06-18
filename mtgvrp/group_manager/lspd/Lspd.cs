@@ -6,6 +6,7 @@ using GTANetworkShared;
 using mtgvrp.core;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;
+using mtgvrp.weapon_manager;
 
 namespace mtgvrp.group_manager.lspd
 {

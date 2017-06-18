@@ -2,12 +2,14 @@
 using System;
 using GTANetworkServer;
 using GTANetworkShared;
-using RoleplayServer.core;
-using RoleplayServer.player_manager;
-using RoleplayServer.group_manager;
-using RoleplayServer.inventory;
+using mtgvrp.core;
+using mtgvrp.group_manager;
+using mtgvrp.inventory;
+using mtgvrp.player_manager;
+using mtgvrp.weapon_manager;
 
-namespace RoleplayServer.weapon_manager
+
+namespace mtgvrp.weapon_manager
 {
     class WeaponManager : Script
     {
