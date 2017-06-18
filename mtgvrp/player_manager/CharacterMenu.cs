@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using GTANetworkServer;
 using GTANetworkShared;
+using mtgvrp.component_manager;
+using mtgvrp.core;
+using mtgvrp.database_manager;
+using mtgvrp.group_manager;
+using mtgvrp.group_manager.lspd;
+using mtgvrp.inventory;
+using mtgvrp.job_manager;
+using mtgvrp.phone_manager;
 using MongoDB.Driver;
-using RoleplayServer.component_manager;
-using RoleplayServer.core;
-using RoleplayServer.database_manager;
-using RoleplayServer.group_manager;
-using RoleplayServer.job_manager;
-using RoleplayServer.phone_manager;
-using RoleplayServer.group_manager.lspd;
-using RoleplayServer.inventory;
 
-namespace RoleplayServer.player_manager
+namespace mtgvrp.player_manager
 {
     class CharacterMenu : Script
     {
@@ -144,7 +144,7 @@ namespace RoleplayServer.player_manager
                         API.setEntityPosition(player.handle, character.LastPos);
                         API.setEntityRotation(player.handle, character.LastRot);
                         API.setEntityDimension(player.handle, character.LastDimension);
-
+                        
                         if (character.Group != Group.None)
                         {
                             GroupManager.SendGroupMessage(player,
