@@ -26,6 +26,43 @@ namespace mtgvrp.core
              "DontCallMeKevin",
              "Wilko0103",
              "Maxispio",
+
+             //Admins
+             "Eagle2404",
+
+             //Closed Beta
+             "MTGFord",
+             "CnrGTA",
+             "Mooneyyy26",
+             "22403681",
+             "TheSmoothie",
+             "boomitswill",
+             "YoBoyDallas",
+             "JackoDon",
+             "Hambooger69",
+             "DualSkulz",
+             "iMerle",
+             "Charpur",
+             "YepityS",
+             "Boca11",
+             "ItzJordan",
+             "ToastyTheZombie",
+             "unlivedpoem",
+             "Shaneboy7780",
+             "Dreamvenoms",
+             "SwirlyD",
+             "SirRichTea",
+             "IICreedx",
+             "SovietLeninFluxx",
+             "XcRaZyToMX",
+             "SlipkyMTG",
+             "NotoriousVIII",
+             "cEmmet",
+             "BigTucks",
+             "Westingham",
+             "Nowin.V1",
+             "Connor123k",
+             "Juuuusoo",
         };
 
         public Whitelist()
