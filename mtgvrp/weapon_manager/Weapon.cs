@@ -35,7 +35,7 @@ using mtgvrp.inventory;
         public bool CanBeStacked => false;
         public bool IsBlocking => false;
 
-        public Dictionary<Type, int> MaxAmount => new Dictionary<Type, int>(-1);
+        public Dictionary<Type, int> MaxAmount => new Dictionary<Type, int>();
         public int AmountOfSlots => 0;
 
         public string CommandFriendlyName => WeaponHash.ToString();
