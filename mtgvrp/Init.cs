@@ -20,11 +20,17 @@ using mtgvrp.vehicle_manager;
 namespace mtgvrp
 {
     public class Init : Script
-    { 
+    {
+        public static string SERVER_NAME = "[EN] MT-Gaming V-RP Test Server";
+        public static string SERVER_VERSION = "v0.0.620";
+        public static string SERVER_WEBSITE = "www.mt-gaming.com";
+
         public Init()
         {
 
             DebugManager.DebugMessage("[INIT] Initalizing script...");
+
+            API.setServerName(SERVER_NAME + " ~r~[" + SERVER_VERSION + "] ~b~| ~g~" + SERVER_WEBSITE);
 
             API.onResourceStart += OnResourceStartHandler;
             InventoryManager.OnStorageItemUpdateAmount += InventoryManager_OnStorageItemUpdateAmount;
