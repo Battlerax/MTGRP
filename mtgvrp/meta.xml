@@ -37,8 +37,6 @@
 	<script src="vehicle_dealership/vehicledealer.js" type="client" lang="javascript"/>
 	<script src="vehicle_manager/VehicleOwnership.js" type="client" lang="javascript"/>
 
-  <script src="gun_dealership/gun_dealership.js" type="client" lang="javascript"/>
-
   <!-- Bag System-->
   <script src="inventory/InventoryManager.js" type="client" lang="javascript"/>
   <file src="inventory/ManageInv.html"/>

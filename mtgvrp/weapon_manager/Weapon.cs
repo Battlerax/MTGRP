@@ -4,13 +4,10 @@ using GTANetworkServer;
 using GTANetworkShared;
 using mtgvrp.group_manager;
 using mtgvrp.inventory;
-using mtgvrp.player_manager;
 using MongoDB.Bson;
-using mtgvrp.group_manager;
-using mtgvrp.inventory;
 
 
-    public class Weapon : IInventoryItem
+public class Weapon : IInventoryItem
     {
 
         public WeaponHash WeaponHash { get; set; }
@@ -43,8 +40,6 @@ using mtgvrp.inventory;
         public int Object => 289396019;
 
         public int Amount { get; set; }
-
-        Dictionary<Type, int> IInventoryItem.MaxAmount => throw new NotImplementedException();
 
         #endregion
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using GTANetworkShared;
 
 namespace mtgvrp.property_system
 {
@@ -54,6 +55,14 @@ namespace mtgvrp.property_system
                 case PropertyManager.PropertyTypes.GasStation:
                     prop.ItemPrices.Add("gas", 3);
                     break;
+
+                case PropertyManager.PropertyTypes.Ammunation:
+                    prop.ItemPrices.Add("bat", 40);
+                    prop.ItemPrices.Add("pistol", 4000);
+                    prop.ItemPrices.Add("combat_pistol", 4700);
+                    prop.ItemPrices.Add("heavy_pistol", 6500);
+                    prop.ItemPrices.Add("revolver", 8000);
+                    break;
             }
         }
 
@@ -71,6 +80,16 @@ namespace mtgvrp.property_system
             new [] {"rope", "Rope", "Used to tie people."},
             new [] {"rags", "Rags", "Used to mute or blindfold people."},
             new [] {"phone", "Phone", "Used to contact other people."},
+        };
+
+        public static string[][] AmmunationItems =
+        {
+            //ID, NAME, PRICE, DESCRIPTION
+            new[] {"bat", "Bat", "Used to tie people."},
+            new[] {"pistol", "Pistol", "A standard issue 9mm pistol. Great for self defense."},
+            new[] {"combat_pistol", "Combat Pistol", "A combat pistol specialized for tight spaces and accuracy."},
+            new[] {"heavy_pistol", "Heavy Pistol", "A pistol specialized to leave a mark."},
+            new[] { "revolver", "Revolver", "For when you want to feel like a cowboy"},
         };
     }
 }

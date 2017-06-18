@@ -97,7 +97,7 @@ namespace mtgvrp.weapon_manager
 
             Weapon currentWeapon = GetCurrentWeapon(player);
 
-            if (currentWeapon.Group != character.Group && currentWeapon.Group != Group.None)
+            if (currentWeapon.Group != character.Group && currentWeapon.Group != Group.None && currentWeapon.IsGroupWeapon == true)
             {
                 RemoveAllPlayerWeapons(player);
                 player.sendChatMessage("You must be a member of " + currentWeapon.Group.Name + " to use this weapon. Your weapons were removed.");

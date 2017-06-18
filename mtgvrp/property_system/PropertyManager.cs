@@ -43,6 +43,7 @@ namespace mtgvrp.property_system
             Restaurant,
             Advertising,
             GasStation,
+            Ammunation,
         }
 
         #region ColShapeKnowing
@@ -462,6 +463,8 @@ namespace mtgvrp.property_system
                     return "/advertise";
                 case PropertyTypes.GasStation:
                     return "/refuel /refillgascan";
+                case PropertyTypes.Ammunation:
+                    return "/buy";
             }
             return "";
         }
@@ -750,7 +753,7 @@ namespace mtgvrp.property_system
             }
         }
 
-    [Command("editproperty")]
+        [Command("editproperty")]
         public void edit_property(Client player, int id)
         {
             var account = player.GetAccount();
