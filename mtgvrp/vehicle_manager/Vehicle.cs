@@ -10,20 +10,28 @@
  * */
 
 
+using System.Collections.Generic;
 using System.Timers;
 using GTANetworkServer;
 using GTANetworkShared;
+using mtgvrp.database_manager;
+using mtgvrp.group_manager;
+using mtgvrp.inventory;
+using mtgvrp.job_manager;
+using mtgvrp.player_manager;
+using mtgvrp.property_system;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
-using RoleplayServer.database_manager;
-using RoleplayServer.job_manager;
-using RoleplayServer.player_manager;
-using RoleplayServer.group_manager;
 
-namespace RoleplayServer.vehicle_manager
+namespace mtgvrp.vehicle_manager
 {
-    public class Vehicle
+    public class Vehicle : IStorage
     {
+
+        //Inventory System
+        public List<IInventoryItem> Inventory { get; set; }
+        public int MaxInvStorage => 1000; //TODO: to be changed to be for each vehicle class
+
         [BsonIgnore]
         public const int VehTypeTemp = 0;
         [BsonIgnore]
@@ -63,10 +71,21 @@ namespace RoleplayServer.vehicle_manager
         public bool IsSpawned { get; set; }
 
         [BsonIgnore]
+        public bool IsVip { get; set; }
+
+        [BsonIgnore]
         public NetHandle Blip { get; set; }
 
         [BsonIgnore]
         public Character Driver { get; set; }
+
+        public int Fuel { get; set; }
+
+        [BsonIgnore]
+        public System.Threading.Timer FuelingTimer { get; set; }
+
+        [BsonIgnore]
+        public Property RefuelProp { get; set; }
 
         public Vehicle()
         {
@@ -78,6 +97,7 @@ namespace RoleplayServer.vehicle_manager
             SpawnColors = new int[2];
             SpawnDimension = 0;
             LicensePlate = "DEFAULT";
+            Fuel = 100;
 
             RespawnDelay = 600;
             VehType = VehTypeTemp;
@@ -139,6 +159,11 @@ namespace RoleplayServer.vehicle_manager
             OwnerClient = PlayerManager.ParseClient(OwnerId.ToString());
 
             IsSpawned = true;
+
+            if (OwnerId == 0 && GroupId == 0)
+            {
+                Fuel = 25;
+            }
 
             return 1; // Successful spawn
         }

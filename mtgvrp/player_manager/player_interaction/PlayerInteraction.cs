@@ -2,9 +2,9 @@
 using System.Timers;
 using GTANetworkServer;
 using GTANetworkShared;
-using RoleplayServer.core;
+using mtgvrp.core;
 
-namespace RoleplayServer.player_manager.player_interaction
+namespace mtgvrp.player_manager.player_interaction
 {
     class PlayerInteraction : Script
     {
@@ -174,20 +174,21 @@ namespace RoleplayServer.player_manager.player_interaction
                 return;
             }
 
-            if (API.getEntityPosition(player).DistanceToSquared(API.getEntityPosition(receiver)) > 20f)
+            if (API.getEntityPosition(player).DistanceToSquared(API.getEntityPosition(receiver)) > 10f)
             {
                 API.sendChatMessageToPlayer(player, "~r~You're too far away!");
                 return;
             }
 
+            API.setPlayerIntoVehicle(receiver, player.vehicle.handle, seatNumber);
             API.sendChatMessageToPlayer(player, "~g~You have detained " + receiver.name + " into a vehicle.");
             API.sendChatMessageToPlayer(receiver, "~g~You were detained by " + player.name + " into a vehicle.");
-            API.setPlayerIntoVehicle(receiver, player.vehicle.handle, seatNumber);
+
 
         }
 
         [Command("eject", GreedyArg = true)]
-        public void EjectPlayer(Client player, string id, int seatNumber)
+        public void ejectPlayer(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
 
@@ -215,10 +216,9 @@ namespace RoleplayServer.player_manager.player_interaction
                 return;
             }
 
+            API.warpPlayerOutOfVehicle(receiver);
             API.sendChatMessageToPlayer(player, "You have ejected ~b~" + receiver.name + "~w~ from your vehicle.");
             API.sendChatMessageToPlayer(receiver, "~b~" + player.name + "~w~ has ejected you from their vehicle.");
-            API.setPlayerIntoVehicle(receiver, player.vehicle.handle, seatNumber);
-            API.warpPlayerOutOfVehicle(receiver);
         }
  
         public void FollowPlayer(Character c, bool isDrag)

@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GTANetworkServer;
-using RoleplayServer.inventory;
-using RoleplayServer.player_manager;
+﻿using GTANetworkServer;
+using mtgvrp.inventory;
+using mtgvrp.player_manager;
 
-namespace RoleplayServer.core.Items
+namespace mtgvrp.core.Items
 {
     class RopeRagManager : Script
     {

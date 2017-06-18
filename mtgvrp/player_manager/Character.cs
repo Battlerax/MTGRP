@@ -1,22 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Timers;
 using GTANetworkServer;
 using GTANetworkShared;
+using mtgvrp.database_manager;
+using mtgvrp.group_manager;
+using mtgvrp.group_manager.lspd;
+using mtgvrp.inventory;
+using mtgvrp.job_manager;
+using mtgvrp.job_manager.fisher;
+using mtgvrp.job_manager.taxi;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
-using RoleplayServer.database_manager;
-using RoleplayServer.group_manager;
-using RoleplayServer.inventory;
-using RoleplayServer.group_manager.lspd;
-using RoleplayServer.job_manager;
-using RoleplayServer.job_manager.fisher;
-using RoleplayServer.job_manager.taxi;
-using RoleplayServer.phone_manager;
-using Vehicle = RoleplayServer.vehicle_manager.Vehicle;
+using mtgvrp.weapon_manager;
+using Vehicle = mtgvrp.vehicle_manager.Vehicle;
 
-namespace RoleplayServer.player_manager
+namespace mtgvrp.player_manager
 {
     public class Character : IStorage
     {
@@ -47,6 +46,7 @@ namespace RoleplayServer.player_manager
 
         public List<int> Outfit = new List<int>();
         public List<int> OutfitVariation = new List<int>();
+        public List<Weapon> Weapons = new List<Weapon>();
 
         public int Age { get; set; }
         public int AdminActions { get; set; }
@@ -79,6 +79,7 @@ namespace RoleplayServer.player_manager
         private long TimeLoggedIn { get; set; }
 
         public long TimePlayed { get; set; }
+        public Timer PaycheckTimer { get; set; }
 
         //AME 
         [BsonIgnore]
@@ -147,6 +148,11 @@ namespace RoleplayServer.player_manager
         public Character CallingPlayer { get; set; }
         [BsonIgnore]
         public System.Threading.Timer CallingTimer;
+
+        //Dropcar
+        public bool IsOnDropcar { get; set; }
+        public DateTime DropcarReset { get; set; }
+
         [BsonIgnore]
         public bool Calling911 { get; set; }
 
@@ -222,6 +228,7 @@ namespace RoleplayServer.player_manager
 
         public List<IInventoryItem> Inventory { get; set; }
 
+        [BsonIgnore]
         public bool CanDoAnim { get; set; }
 
         [BsonIgnore]
@@ -271,6 +278,7 @@ namespace RoleplayServer.player_manager
             CallingPlayer = Character.None;
 
             RadioToggle = true;
+            CanDoAnim = true;
         }
 
         public void Insert()

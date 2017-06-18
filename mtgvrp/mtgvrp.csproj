@@ -67,6 +67,9 @@
       <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.0.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.3.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -135,13 +138,17 @@
     <Compile Include="property_system\ItemManager.cs" />
     <Compile Include="property_system\Property.cs" />
     <Compile Include="property_system\PropertyManager.cs" />
+    <Compile Include="property_system\businesses\Advertising.cs" />
     <Compile Include="rp_scripts\BankMenu.cs" />
+    <Compile Include="speed_fuel_system\FuelManager.cs" />
     <Compile Include="vehicle_dealership\VehicleDealership.cs" />
     <Compile Include="vehicle_manager\Vehicle.cs" />
     <Compile Include="vehicle_manager\VehicleManager.cs" />
     <Compile Include="vehicle_manager\VehicleMenu.cs" />
     <Compile Include="vehicle_manager\VehicleOwnership.cs" />
     <Compile Include="vehicle_manager\vehicle_editor\VehicleEditor.cs" />
+    <Compile Include="weapon_manager\Weapon.cs" />
+    <Compile Include="weapon_manager\WeaponManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -159,6 +166,7 @@
     <Content Include="AdminSystem\Reports.js" />
     <Content Include="cef_resources\MTGVRP_LOGO_BIG.png" />
     <Content Include="cef_resources\MTGVRP_LOGO_SMALL.png" />
+    <Content Include="core\HTMLPage1.html" />
     <Content Include="core\Items\RagManager.js" />
     <Content Include="door_manager\DoorManager.js" />
     <Content Include="group_manager\GroupEditor.html" />
@@ -200,6 +208,8 @@
     <Content Include="property_system\businesses\GeneralBuying.js" />
     <Content Include="property_system\PropertyManager.js" />
     <Content Include="rp_scripts\BankMenu.js" />
+    <Content Include="speed_fuel_system\SpeedoFuel.html" />
+    <Content Include="speed_fuel_system\SpeedoFuel.js" />
     <Content Include="stylesheet\css\metro-colors.css" />
     <Content Include="stylesheet\css\metro-colors.min.css" />
     <Content Include="stylesheet\css\metro-icons.css" />
@@ -213,8 +223,10 @@
     <Content Include="stylesheet\css\metro.css" />
     <Content Include="stylesheet\css\metro.min.css" />
     <Content Include="stylesheet\fonts\metro.svg" />
+    <Content Include="stylesheet\js\justgage.js" />
     <Content Include="stylesheet\js\metro.js" />
     <Content Include="stylesheet\js\metro.min.js" />
+    <Content Include="stylesheet\js\raphael-2.1.4.min.js" />
     <Content Include="types-gtanetwork\Enums.js" />
     <Content Include="vehicle_dealership\vehicledealer.js" />
     <Content Include="vehicle_manager\VehicleOwnership.js" />

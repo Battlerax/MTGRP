@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using mtgvrp.inventory;
 using MongoDB.Bson;
-using RoleplayServer.inventory;
 
-namespace RoleplayServer.core.Items
+namespace mtgvrp.core.Items
 {
     class RagsItem : IInventoryItem
     {
@@ -19,7 +16,7 @@ namespace RoleplayServer.core.Items
 
         public bool IsBlocking => false;
 
-        public int MaxAmount => -1;
+        public Dictionary<Type, int> MaxAmount => new Dictionary<Type, int>();
 
         public int AmountOfSlots => 5;
 

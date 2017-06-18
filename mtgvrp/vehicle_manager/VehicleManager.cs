@@ -9,30 +9,33 @@
  * 
  * */
 
-
 using System;
+using System.Timers;
 using System.Collections.Generic;
 using System.Linq;
 using GTANetworkServer;
 using GTANetworkShared;
+using mtgvrp.core;
+using mtgvrp.database_manager;
+using mtgvrp.group_manager;
+using mtgvrp.inventory;
+using mtgvrp.job_manager;
+using mtgvrp.player_manager;
 using MongoDB.Driver;
-using RoleplayServer.core;
-using RoleplayServer.database_manager;
-using RoleplayServer.job_manager;
-using RoleplayServer.player_manager;
-using RoleplayServer.group_manager;
 
-namespace RoleplayServer.vehicle_manager
+namespace mtgvrp.vehicle_manager
 {
     public class VehicleManager : Script
     {
         public static List<Vehicle> Vehicles = new List<Vehicle>();
-       
+
         /*
         * 
         * ========== CONSTRUCTOR =========
         * 
         */
+        public ColShape dropcarShape;
+        public Vector3 dropcarPosition = new Vector3(487.0575, -1334.377, 29.30219);
 
         public VehicleManager()
         {
@@ -49,6 +52,30 @@ namespace RoleplayServer.vehicle_manager
 
             // Create vehicle table + 
             //load_all_unowned_vehicles();
+            dropcarShape = API.createCylinderColShape(dropcarPosition, 2f, 3f);
+
+            dropcarShape.onEntityEnterColShape += (shape, entity) =>
+            {
+                Client player;
+                if ((player = API.getPlayerFromHandle(entity)) != null)
+                {
+                    Character character = API.getEntityData(player.handle, "Character");
+
+                    if (!character.IsOnDropcar)
+                    {
+                        return;
+                    }
+
+                    var veh = GetVehFromNetHandle(API.getPlayerVehicle(player));
+                    float payment = API.getVehicleHealth(API.getPlayerVehicle(player)) / 2;
+                    veh.Respawn();
+                    inventory.InventoryManager.GiveInventoryItem(character, new Money(), (int) payment);
+                    character.IsOnDropcar = false;
+                    API.triggerClientEvent(player, "dropcar_removewaypoint");
+                    player.sendChatMessage("Vehicle delivered. You earned $" + (int)payment);
+                }
+            };
+
 
             DebugManager.DebugMessage("[VehicleM] Vehicle Manager initalized!");
         }
@@ -120,27 +147,99 @@ namespace RoleplayServer.vehicle_manager
 
         }
 
-        [Command("tele")]
-        public void Tele(Client player)
+        [Command("vstorage")]
+        public void VehicleStorage(Client player)
         {
-            API.setEntityPosition(player.handle, new Vector3(403, -996, -99));
-            API.sendChatMessageToPlayer(player, "teleported");
+            var lastVeh = GetNearestVehicle(player);
+
+            if (lastVeh == null) return;
+            if (!DoesPlayerHaveVehicleAccess(player, lastVeh))
+            {
+                API.sendChatMessageToPlayer(player, "You must have access to the vehicle.");
+                return;
+            }
+
+            if (!API.getVehicleDoorState(lastVeh.NetHandle, 5))
+            {
+                API.sendChatMessageToPlayer(player, "Trunk must be open to access the storage.");
+                return;
+            }
+
+            if (lastVeh.Inventory == null) lastVeh.Inventory = new List<IInventoryItem>();
+            InventoryManager.ShowInventoryManager(player, player.GetCharacter(), lastVeh, "Inventory: ", "Vehicle: ");
+        }
+
+        /*
+        [Command("hotwire")]
+        public void hotwire_cmd(Client player)
+        {
+            if (player.isInVehicle == false)
+            {
+                API.sendChatMessageToPlayer(player, "You are not in a vehicle.");
+                return;
+            }
+
+            var veh = API.getPlayerVehicle(player);
+
+            if (API.getVehicleEngineStatus(veh) == true)
+            {
+                API.sendChatMessageToPlayer(player, "This vehicle is already started.");
+                return;
+            }
+
+            ChatManager.NearbyMessage(player, 6f, "~p~" + player.name + " attempts to hotwire the vehicle.");
+
+            Random rand = new Random();
+
+            if (rand.Next(0, 2) == 0)
+            {
+                API.setVehicleEngineStatus(veh, true);
+                ChatManager.NearbyMessage(player, 6f, "~p~" + player.name + " succeeded in hotwiring the vehicle.");
+            }
+            else
+            {
+                API.setPlayerHealth(player, player.health - 10);
+                player.sendChatMessage("You attempted to hotwire the vehicle and got shocked!");
+                ChatManager.NearbyMessage(player, 6f, "~p~" + player.name + " failed to hotwire the vehicle.");
+            }
+
+        }
+        */
+        [Command("dropcar")]
+        public void dropcar_cmd(Client player)
+        {
+            Character character = API.getEntityData(player.handle, "Character");
+
+            if (player.isInVehicle == false)
+            {
+                API.sendChatMessageToPlayer(player, "You are not in a vehicle.");
+                return;
+            }
+
+            if (DateTime.Now < character.DropcarReset)
+            {
+                player.sendChatMessage("You can only do this every 15 minutes.");
+                return;
+            }
+
+            var veh = GetVehFromNetHandle(API.getPlayerVehicle(player));
+
+            if (veh.Group != Group.None || veh.OwnerId != 0)
+            {
+                API.sendChatMessageToPlayer(player, "This is an owned vehicle.");
+                return;
+            }
+
+            character.DropcarReset.AddMinutes(15);
+            API.triggerClientEvent(player, "dropcar_setwaypoint", new Vector3(487.0575, -1334.377, 29.30219) - new Vector3(0, 0, 1));
+            player.sendChatMessage("A waypoint has been set. Take this vehicle to the waypoint to earn money.");
+
         }
 
         [Command("lock")]
         public void Lockvehicle_cmd(Client player)
         {
-            Vehicle lastVeh = null;
-            float lastPos = 5f;
-            foreach (Vehicle veh in Vehicles)
-            {
-                if(veh.IsSpawned == false) continue;
-                
-                if (API.getEntityPosition(veh.NetHandle).DistanceTo(player.position) < lastPos)
-                {
-                    lastVeh = veh;
-                }
-            }
+            var lastVeh = GetNearestVehicle(player);
 
             if (lastVeh == null) return;
             if (!DoesPlayerHaveVehicleAccess(player, lastVeh)) return;
@@ -250,17 +349,40 @@ namespace RoleplayServer.vehicle_manager
             API.setBlipTransparency(veh.Blip, 0);
 
             Character character = API.getEntityData(player.handle, "Character");
+            Account account = API.getEntityData(player.handle, "Account");
 
+            //IS A GROUP VEHICLE
             if (veh.Group != null && character.Group != veh.Group && veh.Group != Group.None)
             {
                 {
                     API.sendChatMessageToPlayer(player, "You must be a member of " + veh.Group.Name + " to use this vehicle.");
-                    API.setEntityPosition(player, API.getEntityPosition(vehicleHandle) + new Vector3(-1, 0, 0));
+                    API.warpPlayerOutOfVehicle(player);
                     return;
                 }
             }
-            API.sendChatMessageToPlayer(player, "~w~[VehicleM] You have entered vehicle ~r~" + Vehicles.IndexOf(veh) + "(Owned by: " + PlayerManager.Players.SingleOrDefault(x => x.Id == veh.OwnerId)?.CharacterName + ")");
+
+            //IS A VIP VEHICLE
+            if (veh.IsVip == true && account.VipLevel <= 1 && API.getPlayerVehicleSeat(player) == -1)
+            {
+                player.sendChatMessage("This is a ~y~VIP~y~ vehicle. You must be a VIP to drive it.");
+                API.warpPlayerOutOfVehicle(player);
+                return;
+            }
+
+            if (account.AdminLevel > 1)
+            {
+                API.sendChatMessageToPlayer(player, "~w~[VehicleM] You have entered vehicle ~r~" + Vehicles.IndexOf(veh) + "(Owned by: " + PlayerManager.Players.SingleOrDefault(x => x.Id == veh.OwnerId)?.CharacterName + ")");
+            }
+            
+            if (API.getVehicleLocked(vehicleHandle))
+            {
+                API.warpPlayerOutOfVehicle(player);
+                API.sendChatMessageToPlayer(player, "~r~The vehicle is locked.");
+                return;
+            }
+            
             API.sendChatMessageToPlayer(player, "~y~ Press \"N\" on your keyboard to access the vehicle menu.");
+
 
             //Vehicle Interaction Menu Setup
             var vehInfo = API.getVehicleDisplayName(veh.VehModel) + " - " + veh.LicensePlate;
@@ -270,6 +392,7 @@ namespace RoleplayServer.vehicle_manager
             if (API.getPlayerVehicleSeat(player) == -1)
             {
                 veh.Driver = character;
+                API.sendChatMessageToPlayer(player, "~y~Press 'N' to access the vehicle menu.");
             }
         }
 
@@ -298,6 +421,13 @@ namespace RoleplayServer.vehicle_manager
 
             Character character = API.getEntityData(player.handle, "Character");
             character.LastVehicle = veh;
+
+            if (character.IsOnDropcar)
+            {
+                character.IsOnDropcar = false;
+                API.triggerClientEvent(player, "dropcar_removewaypoint");
+                player.sendChatMessage("You exited the vehicle. The dropcar has ended.");
+            }
         }
 
         public void OnVehicleDeath(NetHandle vehicleHandle)
@@ -315,6 +445,22 @@ namespace RoleplayServer.vehicle_manager
         * ========== FUNCTIONS =========
         * 
         */
+
+        public static Vehicle GetNearestVehicle(Client player, float radius = 5f)
+        {
+            Vehicle lastVeh = null;
+            float lastPos = radius;
+            foreach (Vehicle veh in Vehicles)
+            {
+                if (veh.IsSpawned == false) continue;
+
+                if (API.shared.getEntityPosition(veh.NetHandle).DistanceTo(player.position) < lastPos)
+                {
+                    lastVeh = veh;
+                }
+            }
+            return lastVeh;
+        }
 
         public static int GetMaxOwnedVehicles(Client chr)
         {

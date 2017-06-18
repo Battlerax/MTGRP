@@ -1,12 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using mtgvrp.AdminSystem;
+using mtgvrp.database_manager;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
-using RoleplayServer.database_manager;
-using RoleplayServer.AdminSystem;
-using System.Collections.Generic;
 
-namespace RoleplayServer.player_manager
+namespace mtgvrp.player_manager
 {
     public class Account
     {

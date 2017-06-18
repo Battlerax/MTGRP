@@ -1,17 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using GTANetworkServer;
 using GTANetworkShared;
+using mtgvrp.core;
+using mtgvrp.database_manager;
+using mtgvrp.group_manager;
+using mtgvrp.player_manager;
 using MongoDB.Driver;
-using RoleplayServer.core;
-using RoleplayServer.database_manager;
-using RoleplayServer.group_manager;
-using RoleplayServer.player_manager;
 
-namespace RoleplayServer.door_manager
+namespace mtgvrp.door_manager
 {
     public class DoorManager : Script
     {

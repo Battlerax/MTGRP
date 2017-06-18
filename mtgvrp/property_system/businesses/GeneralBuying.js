@@ -8,9 +8,9 @@ API.onServerEventTrigger.connect((eventName, args) => {
 
 			var items = JSON.parse(args[0]);
 			for (var i = 0; i < items.length; i++) {
-				menu.AddItem(API.createMenuItem(items[i][1] + `	~g~(\$${items[i][3]})`, items[i][2]));
+				menu.AddItem(API.createMenuItem(items[i][1] + `\t~g~(\$${items[i][3]})`, items[i][2]));
 			}
-
+           
 			menu.Visible = true;
 
 			menu.OnItemSelect.connect((sender, item, index) => {

@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using GTANetworkServer;
 using GTANetworkShared;
-using MongoDB.Bson;
+using mtgvrp.core;
+using mtgvrp.database_manager;
+using mtgvrp.door_manager;
+using mtgvrp.inventory;
 using MongoDB.Bson.Serialization.Attributes;
-using RoleplayServer.core;
-using RoleplayServer.database_manager;
-using RoleplayServer.door_manager;
-using RoleplayServer.inventory;
-using RoleplayServer.vehicle_manager;
 
-namespace RoleplayServer.property_system
+namespace mtgvrp.property_system
 {
     public class Property : IStorage
     {
@@ -35,10 +29,12 @@ namespace RoleplayServer.property_system
 
         //Inventory System
         public List<IInventoryItem> Inventory { get; set; }
+
         public int MaxInvStorage => 1000; //TODO: to be changed.
 
         //EntranceInfo
         public string EntranceString { get; set; }
+
         public Vector3 EntrancePos { get; set; }
         public Vector3 EntranceRot { get; set; }
         public int EntranceDimension { get; set; }
@@ -52,7 +48,7 @@ namespace RoleplayServer.property_system
 
         public int PropertyPrice { get; set; }
 
-        public Dictionary<string,int> ItemPrices { get; set; }
+        public Dictionary<string, int> ItemPrices { get; set; }
         public string[] RestaurantItems;
 
         [BsonIgnore]
@@ -64,7 +60,10 @@ namespace RoleplayServer.property_system
         [BsonIgnore]
         public MarkerZone ExitMarker { get; set; }
 
-        public Property(PropertyManager.PropertyTypes type, Vector3 entrancePos, Vector3 entranceRot, string entranceString)
+        public int AdvertisingPrice { get; set; }
+
+        public Property(PropertyManager.PropertyTypes type, Vector3 entrancePos, Vector3 entranceRot,
+            string entranceString)
         {
             Type = type;
             EntranceString = entranceString;
@@ -103,16 +102,20 @@ namespace RoleplayServer.property_system
         {
             switch (Type)
             {
-                    case PropertyManager.PropertyTypes.TwentyFourSeven:
-                        return 52;
-                    case PropertyManager.PropertyTypes.Hardware:
-                        return 446;
-                    case PropertyManager.PropertyTypes.Bank:
-                        return 207;
-                    case PropertyManager.PropertyTypes.Clothing:
-                        return 73;
-                    case PropertyManager.PropertyTypes.Restaurant:
-                        return 93;
+                case PropertyManager.PropertyTypes.TwentyFourSeven:
+                    return 52;
+                case PropertyManager.PropertyTypes.Hardware:
+                    return 446;
+                case PropertyManager.PropertyTypes.Bank:
+                    return 207;
+                case PropertyManager.PropertyTypes.Clothing:
+                    return 73;
+                case PropertyManager.PropertyTypes.Restaurant:
+                    return 93;
+                case PropertyManager.PropertyTypes.GasStation:
+                    return 361;
+                case PropertyManager.PropertyTypes.Ammunation:
+                    return 110;
                 default:
                     return -1;
             }
@@ -120,7 +123,9 @@ namespace RoleplayServer.property_system
 
         public void CreateProperty()
         {
-            EntranceString = OwnerId == 0 ? $"Unowned. /buyproperty to buy it.\nCosts ~g~${PropertyPrice}~w~" : PropertyName;
+            EntranceString = OwnerId == 0
+                ? $"Unowned. /buyproperty to buy it.\nCosts ~g~${PropertyPrice}~w~"
+                : PropertyName;
 
             EntranceMarker = new MarkerZone(EntrancePos, EntranceRot, EntranceDimension)
             {
@@ -137,17 +142,27 @@ namespace RoleplayServer.property_system
 
             if (IsInteractable)
             {
-                InteractionMarker = new MarkerZone(InteractionPos, InteractionRot, InteractionDimension)
+                if (Type != PropertyManager.PropertyTypes.GasStation)
                 {
-                    LabelText = PropertyManager.GetInteractText(Type)
-                };
+                    InteractionMarker = new MarkerZone(InteractionPos, InteractionRot, InteractionDimension)
+                    {
+                        LabelText = PropertyManager.GetInteractText(Type)
+                    };
+                }
+                else
+                {
+                    InteractionMarker = new MarkerZone(InteractionPos, InteractionRot, InteractionDimension, 10)
+                    {
+                        LabelText = PropertyManager.GetInteractText(Type)
+                    };
+                }
                 InteractionMarker.Create();
                 InteractionMarker.ColZone.setData("property_interaction", Id);
             }
 
             if (IsTeleportable)
             {
-                ExitMarker = new MarkerZone(TargetPos, TargetRot, TargetDimension) { LabelText = "/exit" };
+                ExitMarker = new MarkerZone(TargetPos, TargetRot, TargetDimension) {LabelText = "/exit"};
                 ExitMarker.Create();
                 ExitMarker.ColZone.setData("property_exit", Id);
             }

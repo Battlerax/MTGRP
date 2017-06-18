@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using GTANetworkServer;
 using GTANetworkShared;
-using MongoDB.Driver;
-using RoleplayServer.core;
-using RoleplayServer.database_manager;
-using RoleplayServer.player_manager;
+using mtgvrp.core;
+using mtgvrp.database_manager;
+using mtgvrp.player_manager;
 using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Driver;
 
-namespace RoleplayServer.group_manager
+namespace mtgvrp.group_manager
 {
     public class Group
     {
@@ -50,6 +50,7 @@ namespace RoleplayServer.group_manager
 
         public int LottoSafe { get; set; }
         public int LottoPrice { get; set; }
+        public int FactionPaycheckBonus { get; set; }
         public bool LockerSet { get; set; }
         public MarkerZone FrontDesk { get; set; }
         public MarkerZone Locker { get; set; }
@@ -76,6 +77,7 @@ namespace RoleplayServer.group_manager
             MapIconId = 0;
             MapIconPos = new Vector3();
             MapIconText = string.Empty;
+            FactionPaycheckBonus = 0;
         }
 
         public void Insert()

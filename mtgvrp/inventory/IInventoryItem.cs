@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace RoleplayServer.inventory
+namespace mtgvrp.inventory
 {
     public interface IInventoryItem
     {
@@ -21,7 +17,7 @@ namespace RoleplayServer.inventory
         bool CanBeStashed { get; }
         bool CanBeStacked { get; } //NO for stuff like IDs and YES for stuff like engine parts.
         bool IsBlocking { get; } //if true, users inv cannot be updated anyway while its in their inv.
-        int MaxAmount { get; } //Negative one for infinte.
+        Dictionary<Type, int> MaxAmount { get; } //Negative one for infinte. Default
 
         //Amount of slots it takes.
         int AmountOfSlots { get; }

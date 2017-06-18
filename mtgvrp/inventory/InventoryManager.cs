@@ -2,21 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using GTANetworkServer;
 using GTANetworkShared;
+using mtgvrp.core;
+using mtgvrp.core.Items;
+using mtgvrp.inventory.bags;
+using mtgvrp.job_manager.fisher;
+using mtgvrp.phone_manager;
+using mtgvrp.player_manager;
+using mtgvrp.property_system.businesses;
+using mtgvrp.weapon_manager;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
-using RoleplayServer.core;
-using RoleplayServer.core.Items;
-using RoleplayServer.inventory.bags;
-using RoleplayServer.job_manager.fisher;
-using RoleplayServer.phone_manager;
-using RoleplayServer.player_manager;
-using RoleplayServer.property_system.businesses;
 
-namespace RoleplayServer.inventory
+namespace mtgvrp.inventory
 {
     class InventoryManager : Script
     {
@@ -35,6 +34,7 @@ namespace RoleplayServer.inventory
             BsonClassMap.RegisterClassMap<SprunkItem>();
             BsonClassMap.RegisterClassMap<CheckItem>();
 
+            BsonClassMap.RegisterClassMap<Weapon>();
             #endregion
 
             API.onClientEventTrigger += API_onClientEventTrigger;
@@ -125,18 +125,27 @@ namespace RoleplayServer.inventory
             if(storage.Inventory.FirstOrDefault(x => x.IsBlocking == true) != null && ignoreBlocking == false)
                 return GiveItemErrors.HasBlockingItem;
 
+            int maxAmount = -1;
+            foreach (var amnt in item.MaxAmount)
+            {
+                if (amnt.Key == storage.GetType())
+                {
+                    maxAmount = amnt.Value;
+                }
+            }
+
             //Check if player has simliar item.
             var oldItem = storage.Inventory.FirstOrDefault(x => x.GetType() == item.GetType());
             if (oldItem == null || oldItem.CanBeStacked == false)
             {
+                if (maxAmount != -1 && oldItem?.Amount >= maxAmount)
+                {
+                    return GiveItemErrors.MaxAmountReached;
+                }
+
                 if (oldItem?.CommandFriendlyName == sentitem.CommandFriendlyName)
                 {
                     return GiveItemErrors.HasSimilarItem;
-                }
-
-                if (item.MaxAmount != -1 && oldItem?.Amount >= item.MaxAmount)
-                {
-                    return GiveItemErrors.MaxAmountReached;
                 }
                 //Check if has enough space.
                 if ((GetInventoryFilledSlots(storage) + item.Amount * item.AmountOfSlots) <= storage.MaxInvStorage)
@@ -155,12 +164,8 @@ namespace RoleplayServer.inventory
             }
             else
             {
-                if (sentitem.CanBeStacked && oldItem.CommandFriendlyName == sentitem.CommandFriendlyName)
-                {
-                    return GiveItemErrors.HasSimilarItem;
-                }
 
-                if (item.MaxAmount != -1 && oldItem.Amount >= item.MaxAmount)
+                if (maxAmount != -1 && oldItem.Amount >= maxAmount)
                 {
                     return GiveItemErrors.MaxAmountReached;
                 }
@@ -323,14 +328,21 @@ namespace RoleplayServer.inventory
                 return;
             }
 
-            string[][] leftItems =
-                activeLeft.Inventory.Where(x => x.GetType() != typeof(BagItem))
+            string[][] leftItems;
+            if (activeRight.GetType() == typeof(BagItem))
+            {
+                leftItems = activeLeft.Inventory.Where(x => x.GetType() != typeof(BagItem))
                     .Select(x => new[] {x.Id.ToString(), x.LongName, x.CommandFriendlyName, x.Amount.ToString()})
                     .ToArray();
+            }
+            else
+            {
+                leftItems = activeLeft.Inventory.Select(x => new[] { x.Id.ToString(), x.LongName, x.CommandFriendlyName, x.Amount.ToString() })
+                    .ToArray();
+            }
 
             string[][] rightItems =
-                activeRight.Inventory.Where(x => x.GetType() != typeof(BagItem))
-                    .Select(x => new[] {x.Id.ToString(), x.LongName, x.CommandFriendlyName, x.Amount.ToString()})
+                activeRight.Inventory.Select(x => new[] {x.Id.ToString(), x.LongName, x.CommandFriendlyName, x.Amount.ToString()})
                     .ToArray();
 
             var leftJson = API.shared.toJson(leftItems);
@@ -398,6 +410,9 @@ namespace RoleplayServer.inventory
                         case InventoryManager.GiveItemErrors.MaxAmountReached:
                             API.sendNotificationToPlayer(sender, "Reached max amount of that item in target storage.");
                             break;
+                        case InventoryManager.GiveItemErrors.HasSimilarItem:
+                            API.sendNotificationToPlayer(sender, "You can't have 2 of this item with the same name, change it if possible.");
+                            break;
                         case InventoryManager.GiveItemErrors.Success:
                             //Remove from player.
                             InventoryManager.DeleteInventoryItem(storages.Key, playerItem.GetType(), amount,
@@ -460,6 +475,9 @@ namespace RoleplayServer.inventory
                             break;
                         case InventoryManager.GiveItemErrors.MaxAmountReached:
                             API.sendNotificationToPlayer(sender, "Reached max amount of that item in target storage.");
+                            break;
+                        case InventoryManager.GiveItemErrors.HasSimilarItem:
+                            API.sendNotificationToPlayer(sender, "You can't have 2 of this item with the same name, change it if possible.");
                             break;
                         case InventoryManager.GiveItemErrors.Success:
                             //Remove from player.

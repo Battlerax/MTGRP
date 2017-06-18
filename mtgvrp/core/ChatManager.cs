@@ -1,9 +1,12 @@
 ﻿using System;
 using GTANetworkServer;
 using GTANetworkShared;
-using RoleplayServer.player_manager;
+using mtgvrp.group_manager.lspd.MDC;
+using mtgvrp.inventory;
+using mtgvrp.phone_manager;
+using mtgvrp.player_manager;
 
-namespace RoleplayServer.core
+namespace mtgvrp.core
 {
     public class ChatManager : Script
     {
@@ -27,6 +30,12 @@ namespace RoleplayServer.core
             Account account = API.getEntityData(player.handle, "Account");
             Character character = API.getEntityData(player.handle, "Character");
 
+            if (account.IsLoggedIn == false)
+            {
+                e.Cancel = true;
+                return;
+            }
+
             if (character.IsRagged)
             {
                 API.sendChatMessageToPlayer(player, "You are ragged.");
@@ -34,7 +43,6 @@ namespace RoleplayServer.core
                 return;
             }
 
-            //Local Chat
             if (API.hasEntityData(player, "MegaphoneStatus"))
             {
                 if (API.getEntityData(player, "MegaphoneStatus") == true)
@@ -44,6 +52,12 @@ namespace RoleplayServer.core
                     e.Cancel = true;
                     return;
                 }
+            }
+            if (API.getEntityData(player, "MegaphoneStatus") == true)
+            {
+                msg = "~y~" + character.rp_name() + " [MEGAPHONE]: " + msg;
+                NearbyMessage(player, 30, msg);
+                return;
             }
 
             if (API.hasEntityData(player, "MicStatus"))
@@ -56,6 +70,52 @@ namespace RoleplayServer.core
                     return;
                 }
             }
+
+            //Phone
+            if (account.AdminDuty == false && character.InCallWith != Character.None)
+            {
+                Character talkingTo = character.InCallWith;
+                string phonemsg;
+                var charitems = InventoryManager.DoesInventoryHaveItem(character, typeof(Phone));
+                var targetitems = InventoryManager.DoesInventoryHaveItem(character, typeof(Phone));
+                var charphone = (Phone)charitems[0];
+                var targetphone = (Phone)targetitems[0];
+                var newmsg = "[Phone]" + character.rp_name() + " says: " + msg;
+                ChatManager.NearbyMessage(player, 15, newmsg, Color.Grey);
+                if (targetphone.HasContactWithNumber(charphone.Number))
+                {
+                    phonemsg = "[" + targetphone.Contacts.Find(pc => pc.Number == charphone.Number).Name + "]" +
+                               character.rp_name() + " says: " + msg;
+                }
+                else
+                {
+                    phonemsg = "[" + charphone.Number + "]" + character.rp_name() + " says: " + msg;
+                }
+                API.sendChatMessageToPlayer(talkingTo.Client, Color.Grey, phonemsg);
+                e.Cancel = true;
+                e.Reason = "Phone";
+                return;
+            }
+            if (account.AdminDuty == false && character.Calling911 == true)
+            {
+                //API.getZoneName(player.position);
+
+                var charitems = InventoryManager.DoesInventoryHaveItem(character, typeof(Phone));
+                var charphone = (Phone)charitems[0];
+
+                Mdc.Add911Call(charphone.Number, msg, "Los Santos");
+
+                var newmsg = "[Phone]" + character.rp_name() + " says: " + msg;
+                ChatManager.NearbyMessage(player, 15, newmsg, Color.Grey);
+
+                API.sendChatMessageToPlayer(player, Color.Grey, "911 Operator says: Thank you for reporting your emergency, a unit will be dispatched shortly.");
+                PhoneManager.h_cmd(player);
+
+                e.Cancel = true;
+                e.Reason = "Phone";
+                return;
+            }
+
             if (account.AdminDuty == false)
             {
                 msg = character.rp_name() + " says: " + msg;

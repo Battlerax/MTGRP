@@ -15,7 +15,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
             API.waitUntilCefBrowserInit(mdcBrowser);
             API.setCefBrowserPosition(mdcBrowser, 0, 0);
             API.loadPageCefBrowser(mdcBrowser, "group_manager/lspd/MDC/MDC.html");
-            API.setCefDrawState(true);
+            //API.setCefDrawState(true);
             API.setCanOpenChat(false);
             API.showCursor(true);
             API.waitUntilCefBrowserLoaded(mdcBrowser);
@@ -63,7 +63,7 @@ function client_sendBoloToServer(info, priority) {
 function client_mdc_close() {
     API.destroyCefBrowser(mdcBrowser);
     API.showCursor(false);
-    API.setCefDrawState(false);
+    //API.setCefDrawState(false);
     API.setCanOpenChat(true);
     API.triggerServerEvent("server_mdc_close");
 }

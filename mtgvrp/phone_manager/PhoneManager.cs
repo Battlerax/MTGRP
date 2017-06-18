@@ -4,16 +4,15 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using GTANetworkServer;
+using mtgvrp.core;
+using mtgvrp.database_manager;
+using mtgvrp.inventory;
+using mtgvrp.player_manager;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
-using RoleplayServer.core;
-using RoleplayServer.database_manager;
-using RoleplayServer.group_manager.lspd.MDC;
-using RoleplayServer.inventory;
-using RoleplayServer.player_manager;
 
-namespace RoleplayServer.phone_manager
+namespace mtgvrp.phone_manager
 {
     public class PhoneManager : Script
     {
@@ -21,7 +20,6 @@ namespace RoleplayServer.phone_manager
         {
             DebugManager.DebugMessage("[PhoneM] Initalizing Phone Manager...");
 
-            API.onChatMessage += OnChatMessage;
             API.onClientEventTrigger += API_onClientEventTrigger;
 
             DebugManager.DebugMessage("[PhoneM] Phone Manager initalized.");
@@ -178,55 +176,8 @@ namespace RoleplayServer.phone_manager
             }
         }
 
-        public void OnChatMessage(Client player, string msg, CancelEventArgs e)
-        {
-            Account account = API.getEntityData(player.handle, "Account");
-            Character character = API.getEntityData(player.handle, "Character");
-            if (account.AdminDuty == false && character.InCallWith != Character.None)
-            {
-                Character talkingTo = character.InCallWith;
-                string phonemsg;
-                var charitems = InventoryManager.DoesInventoryHaveItem(character, typeof(Phone));
-                var targetitems = InventoryManager.DoesInventoryHaveItem(character, typeof(Phone));
-                var charphone = (Phone)charitems[0];
-                var targetphone = (Phone)targetitems[0];
-                var newmsg = "[Phone]" + character.rp_name() + " says: " + msg;
-                ChatManager.NearbyMessage(player, 15, newmsg, Color.Grey);
-                if (targetphone.HasContactWithNumber(charphone.Number))
-                {
-                    phonemsg = "[" + targetphone.Contacts.Find(pc => pc.Number == charphone.Number).Name + "]" +
-                         character.rp_name() + " says: " + msg;
-                }
-                else
-                {
-                    phonemsg = "[" + charphone.Number + "]" + character.rp_name() + " says: " + msg;
-                }
-                API.sendChatMessageToPlayer(talkingTo.Client, Color.Grey, phonemsg);
-                e.Cancel = true;
-                e.Reason = "Phone";
-            }
-            else if (account.AdminDuty == false && character.Calling911 == true)
-            {
-                //API.getZoneName(player.position);
 
-                var charitems = InventoryManager.DoesInventoryHaveItem(character, typeof(Phone));
-                var charphone = (Phone)charitems[0];
-
-                Mdc.Add911Call(charphone.Number, msg, "Los Santos");
-
-                var newmsg = "[Phone]" + character.rp_name() + " says: " + msg;
-                ChatManager.NearbyMessage(player, 15, newmsg, Color.Grey);
-
-                API.sendChatMessageToPlayer(player, Color.Grey, "911 Operator says: Thank you for reporting your emergency, a unit will be dispatched shortly.");
-                h_cmd(player);
-
-                e.Cancel = true;
-                e.Reason = "Phone";
-            }
-        }
-
-
-        [Command("setphonename", GreedyArg = true)]
+        [Command("setphonename")]
         public void setphonename_cmd(Client player, string name)
         {
             Character character = API.shared.getEntityData(player.handle, "Character");
@@ -274,14 +225,14 @@ namespace RoleplayServer.phone_manager
         }
 
         [Command("h")]
-        public void h_cmd(Client player)
+        public static void h_cmd(Client player)
         {
             Character character = player.GetCharacter();
             Character talkingTo;
 
             if (character.InCallWith == Character.None && character.CallingPlayer == Character.None && character.Calling911 == false)
             {
-                API.sendChatMessageToPlayer(player, "You are not on a phone call.");
+                API.shared.sendChatMessageToPlayer(player, "You are not on a phone call.");
                 return;
             }
 
@@ -290,26 +241,26 @@ namespace RoleplayServer.phone_manager
                 talkingTo = character.CallingPlayer;
                 talkingTo.BeingCalledBy = Character.None;
                 character.CallingPlayer = Character.None;
-                API.sendChatMessageToPlayer(player, "You have terminated the call.");
-                API.sendChatMessageToPlayer(talkingTo.Client, "The other party has ended the call.");
-                API.triggerClientEvent(player, "phone_call-closed");
-                API.triggerClientEvent(talkingTo.Client, "phone_call-closed");
+                API.shared.sendChatMessageToPlayer(player, "You have terminated the call.");
+                API.shared.sendChatMessageToPlayer(talkingTo.Client, "The other party has ended the call.");
+                API.shared.triggerClientEvent(player, "phone_call-closed");
+                API.shared.triggerClientEvent(talkingTo.Client, "phone_call-closed");
             }
             else if(character.InCallWith != Character.None)
             {
                 talkingTo = character.InCallWith;
                 talkingTo.InCallWith = Character.None;
                 character.InCallWith = Character.None;
-                API.sendChatMessageToPlayer(player, "You have terminated the call.");
-                API.sendChatMessageToPlayer(talkingTo.Client, "The other party has ended the call.");
-                API.triggerClientEvent(player, "phone_call-closed");
-                API.triggerClientEvent(talkingTo.Client, "phone_call-closed");
+                API.shared.sendChatMessageToPlayer(player, "You have terminated the call.");
+                API.shared.sendChatMessageToPlayer(talkingTo.Client, "The other party has ended the call.");
+                API.shared.triggerClientEvent(player, "phone_call-closed");
+                API.shared.triggerClientEvent(talkingTo.Client, "phone_call-closed");
             }
             else if (character.Calling911 == true)
             {
                 character.Calling911 = false;
-                API.sendChatMessageToPlayer(player, "You have terminated the call.");
-                API.triggerClientEvent(player, "phone_call-closed");
+                API.shared.sendChatMessageToPlayer(player, "You have terminated the call.");
+                API.shared.triggerClientEvent(player, "phone_call-closed");
             }
         }
 
@@ -725,13 +676,13 @@ namespace RoleplayServer.phone_manager
             return number;
         }
     }
-}
 
 /* To store numbers for phone. */
-public class PhoneNumber
-{
-    [BsonId]
-    public ObjectId Id { get; set; }
-    public ObjectId PhoneId { get; set; }
-    public string Number { get; set; }
+    public class PhoneNumber
+    {
+        [BsonId]
+        public ObjectId Id { get; set; }
+        public ObjectId PhoneId { get; set; }
+        public string Number { get; set; }
+    }
 }

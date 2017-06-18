@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using GTANetworkServer;
 using GTANetworkShared;
-using RoleplayServer.core;
-using RoleplayServer.database_manager;
-using RoleplayServer.inventory;
-using RoleplayServer.player_manager;
-using RoleplayServer.vehicle_manager;
+using mtgvrp.core;
+using mtgvrp.inventory;
+using mtgvrp.player_manager;
+using mtgvrp.vehicle_manager;
 
-namespace RoleplayServer.vehicle_dealership
+namespace mtgvrp.vehicle_dealership
 {
     class VehicleDealership : Script
     {

@@ -1,13 +1,12 @@
 using System.Collections.Generic;
 using GTANetworkServer;
-using GTANetworkShared;
+using mtgvrp.core;
+using mtgvrp.database_manager;
+using mtgvrp.player_manager;
+using mtgvrp.vehicle_manager;
 using MongoDB.Driver;
-using RoleplayServer.core;
-using RoleplayServer.database_manager;
-using RoleplayServer.player_manager;
-using RoleplayServer.vehicle_manager;
 
-namespace RoleplayServer.group_manager
+namespace mtgvrp.group_manager
 {
     public class GroupManager : Script
     {
@@ -546,6 +545,18 @@ namespace RoleplayServer.group_manager
 
             API.sendChatMessageToPlayer(player, Color.Grey, "You have created group " + group.Id + " ( " + group.Name + ", Type: " + group.Type + " ). Use /editgroup to edit it.");
             Groups = DatabaseManager.GroupTable.Find(Builders<Group>.Filter.Empty).ToList();
+        }
+
+        [Command("setpaycheckbonus", GreedyArg = true)]
+        public void setpaycheckbonus_cmd(Client player, string amount)
+        {
+            Character character = API.getEntityData(player.handle, "Character");
+
+            if(character.Group.CommandType == 0) { return; }
+
+            GroupCommandPermCheck(character, 5);
+            character.Group.FactionPaycheckBonus = int.Parse(amount);
+            API.sendChatMessageToPlayer(player, "You have set your faction's paycheck bonus to $" + amount + ".");
         }
 
         public static Group GetGroupById(int id)

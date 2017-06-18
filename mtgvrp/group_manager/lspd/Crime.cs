@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MongoDB.Bson;
+using mtgvrp.database_manager;
 using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Driver;
-using RoleplayServer.database_manager;
 
-namespace RoleplayServer.group_manager.lspd
+namespace mtgvrp.group_manager.lspd
 {
     public class Crime
     {

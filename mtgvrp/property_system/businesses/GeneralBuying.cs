@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO.Ports;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using GTANetworkServer;
-using RoleplayServer.core;
-using RoleplayServer.core.Items;
-using RoleplayServer.inventory;
-using RoleplayServer.phone_manager;
+using GTANetworkShared;
+using mtgvrp.core;
+using mtgvrp.core.Items;
+using mtgvrp.inventory;
+using mtgvrp.phone_manager;
+using mtgvrp.weapon_manager;
 
-namespace RoleplayServer.property_system.businesses
+namespace mtgvrp.property_system.businesses
 {
     class GeneralBuying : Script
     {
@@ -131,6 +129,36 @@ namespace RoleplayServer.property_system.businesses
                             return;
                     }
                 }
+                else if (prop.Type == PropertyManager.PropertyTypes.Ammunation)
+                {
+                    switch (itemName)
+                    {
+                        case "bat":
+                            WeaponManager.CreateWeapon(sender, WeaponHash.Bat, WeaponTint.Normal, true);
+                            InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
+                            break;
+                        case "pistol":
+                            WeaponManager.CreateWeapon(sender, WeaponHash.Pistol, WeaponTint.Normal, true);
+                            InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
+                            break;
+                        case "combat_pistol":
+                            WeaponManager.CreateWeapon(sender, WeaponHash.CombatPistol, WeaponTint.Normal, true);
+                            InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
+                            break;
+                        case "heavy_pistol":
+                            WeaponManager.CreateWeapon(sender, WeaponHash.HeavyPistol, WeaponTint.Normal, true);
+                            InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
+                            break;
+                        case "revolver":
+                            WeaponManager.CreateWeapon(sender, WeaponHash.Revolver, WeaponTint.Normal, true);
+                            InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
+                            break;
+                    }
+                    name = ItemManager.AmmunationItems.Single(x => x[0] == itemName)[1];
+
+                    API.sendChatMessageToPlayer(sender, "[BUSINESSES] You have successfully bought a ~g~" + name + "~w~ for ~g~" + price + "~w~.");
+                    return;
+                }
                 
 
                 if (item == null)
@@ -174,61 +202,80 @@ namespace RoleplayServer.property_system.businesses
                 return;
             }
 
-            if (prop.Type == PropertyManager.PropertyTypes.Hardware)
+            switch (prop.Type)
             {
-                API.freezePlayer(player, true);
-                List<string[]> itemsWithPrices = new List<string[]>();
-                foreach (var itm in ItemManager.HardwareItems)
+                case PropertyManager.PropertyTypes.Hardware:
                 {
-                    itemsWithPrices.Add(new[]
-                    {
-                        itm[0], itm[1], itm[2], prop.ItemPrices.SingleOrDefault(x => x.Key == itm[0]).Value.ToString()
-                    });
-                }
-                API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()), "Hardware",
-                    prop.PropertyName);
-            }
-            else if (prop.Type == PropertyManager.PropertyTypes.TwentyFourSeven)
-            {
-                API.freezePlayer(player, true);
-                List<string[]> itemsWithPrices = new List<string[]>();
-                foreach (var itm in ItemManager.TwentyFourSevenItems)
-                {
-                    itemsWithPrices.Add(new[]
-                    {
-                        itm[0], itm[1], itm[2], prop.ItemPrices.SingleOrDefault(x => x.Key == itm[0]).Value.ToString()
-                    });
-                }
-                API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()), "24/7",
-                    prop.PropertyName);
-            }
-            else if (prop.Type == PropertyManager.PropertyTypes.Restaurant)
-            {
-                API.freezePlayer(player, true);
-                List<string[]> itemsWithPrices = new List<string[]>();
-                for(int i = 0; i < 5; i++)
-                {
-                    if (i == 0)
+                    API.freezePlayer(player, true);
+                    List<string[]> itemsWithPrices = new List<string[]>();
+                    foreach (var itm in ItemManager.HardwareItems)
                     {
                         itemsWithPrices.Add(new[]
                         {
-                            "sprunk", "Sprunk", "", prop.ItemPrices["sprunk"].ToString()
+                            itm[0], itm[1], itm[2], prop.ItemPrices.SingleOrDefault(x => x.Key == itm[0]).Value.ToString()
                         });
-                        continue;
                     }
-
-                    itemsWithPrices.Add(new[]
-                    {
-                        "custom" + i, prop.RestaurantItems[i - 1], "", prop.ItemPrices["custom" + i].ToString()
-                    });
+                    API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()), "Hardware",
+                        prop.PropertyName);
                 }
-                API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()), "Restaurant",
-                    prop.PropertyName);
-            }
-            else
+                    break;
+                case PropertyManager.PropertyTypes.TwentyFourSeven:
+                {
+                    API.freezePlayer(player, true);
+                    List<string[]> itemsWithPrices = new List<string[]>();
+                    foreach (var itm in ItemManager.TwentyFourSevenItems)
+                    {
+                        itemsWithPrices.Add(new[]
+                        {
+                            itm[0], itm[1], itm[2], prop.ItemPrices.SingleOrDefault(x => x.Key == itm[0]).Value.ToString()
+                        });
+                    }
+                    API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()), "24/7",
+                        prop.PropertyName);
+                }
+                    break;
+                case PropertyManager.PropertyTypes.Restaurant:
+                {
+                    API.freezePlayer(player, true);
+                    List<string[]> itemsWithPrices = new List<string[]>();
+                    for(int i = 0; i < 5; i++)
+                    {
+                        if (i == 0)
+                        {
+                            itemsWithPrices.Add(new[]
+                            {
+                                "sprunk", "Sprunk", "", prop.ItemPrices["sprunk"].ToString()
+                            });
+                            continue;
+                        }
 
-            {
-                API.sendChatMessageToPlayer(player, "This property doesn't sell anything.");
+                        itemsWithPrices.Add(new[]
+                        {
+                            "custom" + i, prop.RestaurantItems[i - 1], "", prop.ItemPrices["custom" + i].ToString()
+                        });
+                    }
+                    API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()), "Restaurant",
+                        prop.PropertyName);
+                }
+                    break;
+                case PropertyManager.PropertyTypes.Ammunation:
+                {
+                    API.freezePlayer(player, true);
+                    List<string[]> itemsWithPrices = new List<string[]>();
+                    foreach (var itm in ItemManager.AmmunationItems)
+                    {
+                        itemsWithPrices.Add(new[]
+                        {
+                            itm[0], itm[1], itm[2], prop.ItemPrices.SingleOrDefault(x => x.Key == itm[0]).Value.ToString()
+                        });
+                    }
+                    API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()), "Ammunation",
+                        prop.PropertyName);
+                }
+                    break;
+                default:
+                    API.sendChatMessageToPlayer(player, "This property doesn't sell anything.");
+                    break;
             }
         }
     }
