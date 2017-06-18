@@ -63,6 +63,7 @@ namespace mtgvrp.core
              "Nowin.V1",
              "Connor123k",
              "Juuuusoo",
+             "XeroTheGreat",
         };
 
         public Whitelist()
