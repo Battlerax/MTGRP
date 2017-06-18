@@ -34,7 +34,7 @@ namespace mtgvrp.AdminSystem
                     AdminReports.InsertReport(3, player.nametag, (string)arguments[0]);
                     SendtoAllAdmins("~g~[REPORT]~w~ " + PlayerManager.GetName(player) + " (ID:" + playerid + "): " + (string)arguments[0]);
                     API.sendChatMessageToPlayer(player, "Report submitted.");
-                    StartReportTimer(player);
+                    startReportTimer(player);
                     character.HasActiveReport = true;
                     break;
 
@@ -51,7 +51,7 @@ namespace mtgvrp.AdminSystem
                     AdminReports.InsertReport(2, player.nametag, (string)arguments[0], PlayerManager.GetName(receiver) + " (ID:" + id + ")");
                     SendtoAllAdmins("~g~[REPORT]~w~ " + PlayerManager.GetName(player) + " (ID:" + senderid + ")" + " reported " + PlayerManager.GetName(receiver) + " (ID:" + id + ") for " + (string)arguments[0]);
                     API.sendChatMessageToPlayer(player, "Report submitted.");
-                    StartReportTimer(player);
+                    startReportTimer(player);
                     senderchar.HasActiveReport = true;
                     break;
 
@@ -290,7 +290,7 @@ namespace mtgvrp.AdminSystem
         }
 
         [Command("agiveweapon")]
-        public void agiveweapon_cmd(Client player, string id, WeaponHash weaponHash, int ammo)
+        public void agiveweapon_cmd(Client player, string id, WeaponHash weaponHash)
         {
             var receiver = PlayerManager.ParseClient(id);
             Account account = API.getEntityData(player.handle, "Account");
@@ -303,8 +303,9 @@ namespace mtgvrp.AdminSystem
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
-            API.givePlayerWeapon(receiver, weaponHash, ammo, true, true);
-            API.sendChatMessageToPlayer(player, "You have given Player ID: " + id + " a weapon.");
+
+            WeaponManager.CreateWeapon(receiver, weaponHash, WeaponTint.Normal, false, true);
+            API.sendChatMessageToPlayer(player, "You have given Player ID: " + id + " a " + weaponHash);
         }
 
         [Command("sethealth")]
@@ -779,7 +780,7 @@ namespace mtgvrp.AdminSystem
             AdminReports.InsertReport(1, player.nametag, message);
             SendtoAllAdmins("~g~[ASK]~w~ " + PlayerManager.GetName(player) + ": " + message);
             API.sendChatMessageToPlayer(player, "~b~Ask request submitted. ~w~Moderators have been informed and will be with you soon.");
-            StartReportTimer(player);
+            startReportTimer(player);
         }
 
         [Command("nmute", GreedyArg = true)]
@@ -1319,7 +1320,75 @@ namespace mtgvrp.AdminSystem
             API.sendChatMessageToPlayer(player, "You are now a king.");
         }
 
-        public void StartReportTimer(Client player)
+        [Command("changeviplevel", GreedyArg = true)]
+        public void changeviplevel_cmd(Client player, string id, int level, int days)
+        {
+            var receiver = PlayerManager.ParseClient(id);
+            if (receiver == null)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
+            }
+
+            Account account = API.getEntityData(player.handle, "Account");
+            Account receiverAccount = API.getEntityData(receiver.handle, "Account");
+
+            if (account.AdminLevel < 3)
+            {
+                return;
+            }
+
+            if (receiverAccount.AdminLevel > 0)
+            {
+                account.VipLevel = 3;
+                account.VipExpirationDate = default(DateTime);
+                return;
+            }
+
+            if (receiverAccount.VipLevel == level)
+            {
+                player.sendChatMessage("This player is already this VIP level.");
+                return;
+            }
+
+            account.VipLevel = level;
+            account.VipExpirationDate = DateTime.Now.AddDays(days);
+            account.Save();
+
+            receiver.sendChatMessage("Your ~y~VIP~y~ level was set to " + level + " by " + account.AdminName + ". Welcome!");
+            foreach (var p in API.getAllPlayers())
+            {
+                Account paccount = API.getEntityData(p.handle, "Account");
+                
+                if (paccount.VipLevel > 0) { p.sendChatMessage(receiver.GetCharacter().CharacterName + " has become a level " + level + " ~y~VIP~y~!"); }
+            }
+        }
+
+        [Command("addviptime", GreedyArg = true)]
+        public void addviptime_cmd(Client player, string id, string days)
+        {
+            var receiver = PlayerManager.ParseClient(id);
+            if (receiver == null)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
+            }
+
+            Account account = API.getEntityData(player.handle, "Account");
+            Account receiverAccount = API.getEntityData(receiver.handle, "Account");
+
+            if (account.AdminLevel < 3)
+            {
+                return;
+            }
+
+            account.VipExpirationDate = account.VipExpirationDate.AddDays(int.Parse(days));
+            account.Save();
+
+            receiver.sendChatMessage("Your ~y~VIP~y~ days were increased by " + int.Parse(days) + " days by " + account.AdminName + "!");
+        }
+
+        public void startReportTimer(Client player)
         {
             Character senderchar = API.getEntityData(player.handle, "Character");
             senderchar.ReportCreated = true;

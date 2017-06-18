@@ -17,11 +17,26 @@ namespace mtgvrp.player_manager
 
             API.onPlayerConnected += OnPlayerConnected;
             API.onPlayerDisconnected += OnPlayerDisconnected;
-
+            API.onPlayerDeath += API_onPlayerDeath;
             API.onClientEventTrigger += API_onClientEventTrigger;
 
             DebugManager.DebugMessage("[PlayerM] Player Manager initalized.");
         }
+
+        private void API_onPlayerDeath(Client player, NetHandle entityKiller, int weapon)
+        {
+            WeaponManager.RemoveAllPlayerWeapons(player);
+            API.sendNotificationToPlayer(player, "You were revived by the ~b~Los Santos Medical Department ~w~ and were charged 500$ for hospital fees.");
+            InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(Money), 500);
+
+        }
+
+        //TODO: CHANGED ONCE THE LS GOV IS ADDED
+        public static int basepaycheck = 500;
+        public static int taxationAmount = 4;
+        public static int VIPBonusLevelOne = 10;
+        public static int VIPBonusLevelTwo = 20;
+        public static int VIPBonusLevelThree = 30;
 
         private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
         {
@@ -139,6 +154,94 @@ namespace mtgvrp.player_manager
             return account.AdminName;
         }
 
+        public static int getVIPPaycheckBonus(Client player)
+        {
+            Account account = API.shared.getEntityData(player.handle, "Account");
+
+            if (account.VipLevel == 1) { return VIPBonusLevelOne; }
+            if (account.VipLevel == 2) { return VIPBonusLevelTwo; }
+            if (account.VipLevel == 3) { return VIPBonusLevelThree; }
+            else { return 0; }
+        }
+
+        public static int getFactionBonus(Client player)
+        {
+            Character character = API.shared.getEntityData(player.handle, "Character");
+
+            return character.Group.FactionPaycheckBonus;
+
+        }
+
+        public static int CalculatePaycheck(Client player)
+        {
+            Character character = API.shared.getEntityData(player.handle, "Character");
+            return basepaycheck - (basepaycheck * taxationAmount/100) + (basepaycheck * getVIPPaycheckBonus(player)/100) + getFactionBonus(player) + character.BankBalance/1000;
+        }
+
+        public static void SendPaycheckToPlayer(Client player)
+        {
+            Character character = API.shared.getEntityData(player.handle, "Character");
+            if(character != null)
+            if ( character.GetTimePlayed() % 3600 == 0)
+            {
+                int paycheckAmount = CalculatePaycheck(player);
+                character.BankBalance += paycheckAmount;
+                player.sendChatMessage("--------------PAYCHECK RECEIVED!--------------");
+                player.sendChatMessage("Base paycheck: $" + basepaycheck + ".");
+                player.sendChatMessage("Interest: $" + character.BankBalance / 1000 + ".");
+                player.sendChatMessage("You were taxed at " + taxationAmount + "%.");
+                player.sendChatMessage("VIP bonus: " + getVIPPaycheckBonus(player)+ "%.");
+                player.sendChatMessage("Faction bonus: $" + getFactionBonus(player) + ".");
+                player.sendChatMessage("----------------------------------------------");
+                player.sendChatMessage("Total: ~g~$" + paycheckAmount + "~w~.");
+
+                player.sendPictureNotificationToPlayer("Your paycheck for ~g~$" + paycheckAmount + " ~w~has been added to your balance.", "CHAR_BANK_MAZE", 0, 0, "Maze Bank", "Paycheck Received!");
+            }
+        }
+
+        [Command("setvipbonus")]
+        public void setvipbonus_cmd(Client player, string viplevel, string percentage)
+        {
+            Account account = API.shared.getEntityData(player.handle, "Account");
+
+            if (account.AdminLevel < 6) { return; }
+
+            switch (viplevel)
+            {
+                case "1":
+                    VIPBonusLevelOne = int.Parse(percentage);
+                    break;
+
+                case "2":
+                    VIPBonusLevelTwo = int.Parse(percentage);
+                    break;
+
+                case "3":
+                    VIPBonusLevelThree = int.Parse(percentage);
+                    break;
+            }
+            player.sendChatMessage("You have set VIP level " + viplevel + "'s paycheck bonus to " + percentage + "%.");
+        }
+
+        [Command("settax")]
+        public void settax_cmd(Client player, string percentage)
+        {
+            Account account = API.shared.getEntityData(player.handle, "Account");
+
+            if (account.AdminLevel < 6) { return; }
+            taxationAmount = int.Parse(percentage);
+        }
+
+        [Command("setbasepaycheck", GreedyArg = true)]
+        public void setbasepaycheck_cmd(Client player, string amount)
+        {
+            Account account = API.shared.getEntityData(player.handle, "Account");
+
+            if (account.AdminLevel < 6) { return; }
+            basepaycheck = int.Parse(amount);
+            API.sendChatMessageToPlayer(player, "Base paycheck set to $" + amount + ".");
+        }
+
         [Command("getid", GreedyArg = true, Alias = "id")]
         public void getid_cmd(Client sender, string playerName)
         {
@@ -160,11 +263,11 @@ namespace mtgvrp.player_manager
             Character character = API.getEntityData(sender.handle, "Character");
             Account account = API.shared.getEntityData(sender.handle, "Account");
 
-            if (account.AdminLevel == 0)
+            if (account.AdminLevel < 2 && receiver != sender)
             {
                 if (receiver != sender)
                 {
-                    API.sendNotificationToPlayer(sender, "You can't see other player's stats.");
+                    return;
                 }
                 ShowStats(sender);
             }
@@ -176,9 +279,13 @@ namespace mtgvrp.player_manager
         public void CheckTime(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
-            var secondsLeft = 3600 - character.GetTimePlayed();
-            API.sendChatMessageToPlayer(player, "The current server time is: " + TimeWeatherManager.CurrentTime.ToString("h:mm:ss tt"));
-            API.sendChatMessageToPlayer(player, string.Format("Time until next paycheck: {0}" + " minutes.", secondsLeft / 60));
+
+            TimeSpan t = TimeSpan.FromMilliseconds(character.GetTimePlayed());
+
+            var minutesLeft = 60 - t.TotalMinutes;
+            API.sendChatMessageToPlayer(player, "The current server time is: " + DateTime.Now.ToString("h:mm:ss tt"));
+            API.sendChatMessageToPlayer(player, "The current in-game time is: " + TimeWeatherManager.CurrentTime.ToString("h:mm:ss tt"));
+            API.sendChatMessageToPlayer(player, string.Format("Time until next paycheck: {0}" + " minutes.", minutesLeft));
         }
 
 
@@ -196,11 +303,11 @@ namespace mtgvrp.player_manager
 
             API.sendChatMessageToPlayer(sender, "________________PLAYER STATS________________");
             API.sendChatMessageToPlayer(sender, "~g~General:~g~");
-            API.sendChatMessageToPlayer(sender,
-                $"~h~Character name:~h~ {sender.name} ~h~Account name:~h~ {account.AccountName} ~h~ID:~h~ {character.Id} ~h~Money:~h~ {Money.GetCharacterMoney(character)} ~h~Bank balance:~h~ {character.BankBalance} ~h~Playing hours:~h~ {character.TimePlayed}");
-            API.sendChatMessageToPlayer(sender, "~b~Faction:~b~");
-            API.sendChatMessageToPlayer(sender,
-                $"~h~Faction ID:~h~ {character.GroupId} ~h~Rank:~h~ {character.GroupRank}");
+
+            API.sendChatMessageToPlayer(sender, string.Format("~h~Character name:~h~ {0} ~h~Account name:~h~ {1} ~h~ID:~h~ {2} ~h~Money:~h~ {3} ~h~Bank balance:~h~ {4} ~h~Playing hours:~h~ {5}", sender.name, account.AccountName, character.Id, Money.GetCharacterMoney(character), character.BankBalance, character.TimePlayed));
+            API.sendChatMessageToPlayer(sender, string.Format("~h~Age:~h~ {0} ~h~Birthplace:~h~ {1} ~h~Birthday:~h~ {2} ~h~VIP level:~h~ {3} ~h~VIP expires:~h~ {4}", character.Age, character.Birthplace, character.Birthday, account.VipLevel, account.VipExpirationDate));
+            API.sendChatMessageToPlayer(sender, "~b~Faction/Jobs:~b~");
+            //API.sendChatMessageToPlayer(sender, string.Format("~h~Faction ID:~h~ {0} ~h~Rank:~h~ {1} ~h~Group name:~h~ {2} ~h~Job 1:~h~ {3} ~h~Job 2: {4}", character.GroupId, character.GroupRank, character.Group.Name, character.JobOne));
             API.sendChatMessageToPlayer(sender, "~r~Property:~r~");
             //Show property info..
 

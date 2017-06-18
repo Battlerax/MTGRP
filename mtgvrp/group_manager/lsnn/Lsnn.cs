@@ -85,7 +85,7 @@ namespace mtgvrp.group_manager.lsnn
 
         }
 
-        [Command("editheadline", GreedyArg = false)]
+        [Command("editheadline", GreedyArg = true)]
         public void editbanner_cmd(Client player, string text)
         {
             Character character = API.getEntityData(player.handle, "Character");

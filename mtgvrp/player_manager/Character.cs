@@ -45,6 +45,7 @@ namespace mtgvrp.player_manager
 
         public List<int> Outfit = new List<int>();
         public List<int> OutfitVariation = new List<int>();
+        public List<Weapon> Weapons = new List<Weapon>();
 
         public int Age { get; set; }
         public int AdminActions { get; set; }
@@ -77,6 +78,7 @@ namespace mtgvrp.player_manager
         private long TimeLoggedIn { get; set; }
 
         public long TimePlayed { get; set; }
+        public Timer PaycheckTimer { get; set; }
 
         //AME 
         [BsonIgnore]
@@ -145,6 +147,14 @@ namespace mtgvrp.player_manager
         public Character CallingPlayer { get; set; }
         [BsonIgnore]
         public System.Threading.Timer CallingTimer;
+
+        //Dropcar
+        public bool IsOnDropcar { get; set; }
+        public bool DropcarPrevention { get; set; }
+        public Timer DropcarTimer { get; set; }
+        public Timer DropcarTimeLeftTimer { get; set; }
+        public int DropcarTimeLeft { get; set; }
+
         [BsonIgnore]
         public bool Calling911 { get; set; }
 

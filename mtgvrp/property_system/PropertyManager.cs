@@ -41,7 +41,8 @@ namespace mtgvrp.property_system
             Hardware,
             Bank,
             Restaurant,
-            GasStation
+            Advertising,
+            GasStation,
         }
 
         #region ColShapeKnowing
@@ -457,6 +458,8 @@ namespace mtgvrp.property_system
                     return "/balance /deposit /withdraw\n/wiretransfer /redeemcheck";
                 case PropertyTypes.Restaurant:
                     return "/buy";
+                case PropertyTypes.Advertising:
+                    return "/advertise";
                 case PropertyTypes.GasStation:
                     return "/refuel /refillgascan";
             }
@@ -600,6 +603,22 @@ namespace mtgvrp.property_system
 
                         prop.ItemPrices[item] = price;
                         API.sendChatMessageToPlayer(player, $"Changed ~g~{item}~w~ price to {price}");
+                        break;
+
+                    case PropertyTypes.Advertising:
+                        if (item == "")
+                        {
+                            API.sendChatMessageToPlayer(player, "[ERROR] Choose a type: [advertprice]");
+                            return;
+                        }
+
+                        switch (item.ToLower())
+                        {
+                            case "advertprice":
+                                prop.ItemPrices["advertprice"] = price;
+                                API.sendChatMessageToPlayer(player, $"Changed ~g~advert price~w~ price to {price}");
+                                break;
+                        }
                         break;
                 }
                 prop.Save();

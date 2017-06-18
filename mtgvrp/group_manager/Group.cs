@@ -43,6 +43,7 @@ namespace mtgvrp.group_manager
         //Group misc
         public int LottoSafe { get; set; }
         public int LottoPrice { get; set; }
+        public int FactionPaycheckBonus { get; set; }
         public bool LockerSet { get; set; }
         public MarkerZone FrontDesk { get; set; }
         public MarkerZone Locker { get; set; }
@@ -70,6 +71,7 @@ namespace mtgvrp.group_manager
             MapIconId = 0;
             MapIconPos = new Vector3();
             MapIconText = string.Empty;
+            FactionPaycheckBonus = 0;
         }
 
         public void Insert()

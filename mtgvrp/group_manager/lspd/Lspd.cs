@@ -380,6 +380,45 @@ namespace mtgvrp.group_manager.lspd
 
         }
 
+        [Command("cuff", GreedyArg = true)]
+        public void cuff_cmd(Client player, string id)
+        {
+            var receiver = PlayerManager.ParseClient(id);
+
+            Character character = API.getEntityData(player.handle, "Character");
+            Character receivercharacter = API.getEntityData(receiver, "Character");
+
+            if (receiver == null)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
+            }
+
+            if (receiver == player)
+            {
+                API.sendNotificationToPlayer(player, "~r~You can't cuff yourself!");
+            }
+
+            if (API.getEntityPosition(player).DistanceToSquared(API.getEntityPosition(receiver)) > 16f)
+            {
+                API.sendNotificationToPlayer(player, "~r~You're too far away!");
+                return;
+            }
+
+            var isStunned = API.fetchNativeFromPlayer<bool>(player, Hash.IS_PED_BEING_STUNNED, receiver, 0);
+
+            if (receivercharacter.AreHandsUp == false && isStunned == false)
+            {
+                player.sendChatMessage("Players must have their hands up or must be tazed before they can be cuffed.");
+            }
+
+            API.sendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, receivercharacter, true);
+            receivercharacter.IsCuffed = true;
+            API.playPlayerAnimation(receiver, (1 << 0 | 1 << 4 | 1 << 5), "mp_arresting", "idle");
+
+            ChatManager.RoleplayMessage(player, "places handcuffs onto " + receivercharacter.rp_name(), ChatManager.RoleplayMe);
+        }
+
         [Command("frisk", GreedyArg = true)]
         public void frisk_cmd(Client player, string id)
         {
@@ -850,26 +889,21 @@ namespace mtgvrp.group_manager.lspd
 
         public void GiveLspdEquipment(Client player, int type = 0)
         {
-            API.removeAllPlayerWeapons(player);
-
+            WeaponManager.RemoveAllPlayerWeapons(player);
+            Character character = API.getEntityData(player.handle, "Character");
             switch (type)
             {
                 case 0:
-                    API.givePlayerWeapon(player, WeaponHash.StunGun, 1, false, true);
-                    API.givePlayerWeapon(player, WeaponHash.Nightstick, 1, false, true);
-                    API.givePlayerWeapon(player, WeaponHash.Pistol, 250, false, true);
-                    API.givePlayerWeapon(player, WeaponHash.Flashlight, 1, false, true);
-
-                    API.setPlayerWeaponTint(player, WeaponHash.Pistol, WeaponTint.LSPD);
+                    WeaponManager.CreateWeapon(player, WeaponHash.StunGun, WeaponTint.Normal, false, false, true);
+                    WeaponManager.CreateWeapon(player, WeaponHash.Nightstick, WeaponTint.Normal, false, false, true);
+                    WeaponManager.CreateWeapon(player, WeaponHash.Pistol, WeaponTint.LSPD, false, false, true);
+                    WeaponManager.CreateWeapon(player, WeaponHash.Flashlight, WeaponTint.Normal, false, false, true);
                     break;
                 case 1:
-                    API.givePlayerWeapon(player, WeaponHash.CombatPistol, 250, false, true);
-                    API.givePlayerWeapon(player, WeaponHash.CombatPDW, 300, false, true);
-                    API.givePlayerWeapon(player, WeaponHash.SmokeGrenade, 3, false, true);
-                    API.givePlayerWeapon(player, WeaponHash.BZGas, 3, false, true);
-
-                    API.setPlayerWeaponTint(player, WeaponHash.CombatPistol, WeaponTint.LSPD);
-                    API.setPlayerWeaponTint(player, WeaponHash.CombatPDW, WeaponTint.LSPD);
+                    WeaponManager.CreateWeapon(player, WeaponHash.CombatPistol, WeaponTint.LSPD, false, false, true);
+                    WeaponManager.CreateWeapon(player, WeaponHash.CombatPDW, WeaponTint.LSPD, false, false, true);
+                    WeaponManager.CreateWeapon(player, WeaponHash.SmokeGrenade, WeaponTint.Normal, false, false, true);
+                    WeaponManager.CreateWeapon(player, WeaponHash.BZGas, WeaponTint.Normal, false, false, true);
                     break;
             }
             API.setPlayerHealth(player, 100);
@@ -920,7 +954,7 @@ namespace mtgvrp.group_manager.lspd
             else
                 API.shared.setEntityPosition(player, JailThree);
 
-            API.shared.removeAllPlayerWeapons(player);
+            WeaponManager.RemoveAllPlayerWeapons(player);
             character.IsJailed = true;
 
             API.shared.sendChatMessageToPlayer(player, "You have been placed in jail for " + character.JailTimeLeft/60/1000 + " minutes.");

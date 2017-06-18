@@ -9,7 +9,8 @@
  * 
  * */
 
-
+using System;
+using System.Timers;
 using System.Collections.Generic;
 using System.Linq;
 using GTANetworkServer;
@@ -27,12 +28,14 @@ namespace mtgvrp.vehicle_manager
     public class VehicleManager : Script
     {
         public static List<Vehicle> Vehicles = new List<Vehicle>();
-       
+
         /*
         * 
         * ========== CONSTRUCTOR =========
         * 
         */
+        public ColShape dropcarShape;
+        public Vector3 dropcarPosition = new Vector3(487.0575, -1334.377, 29.30219);
 
         public VehicleManager()
         {
@@ -49,6 +52,30 @@ namespace mtgvrp.vehicle_manager
 
             // Create vehicle table + 
             //load_all_unowned_vehicles();
+            dropcarShape = API.createCylinderColShape(dropcarPosition, 2f, 3f);
+
+            dropcarShape.onEntityEnterColShape += (shape, entity) =>
+            {
+                Client player;
+                if ((player = API.getPlayerFromHandle(entity)) != null)
+                {
+                    Character character = API.getEntityData(player.handle, "Character");
+
+                    if (!character.IsOnDropcar)
+                    {
+                        return;
+                    }
+
+                    var veh = GetVehFromNetHandle(API.getPlayerVehicle(player));
+                    float payment = API.getVehicleHealth(API.getPlayerVehicle(player)) / 2;
+                    veh.Respawn();
+                    inventory.InventoryManager.GiveInventoryItem(character, new Money(), (int) payment);
+                    character.IsOnDropcar = false;
+                    API.triggerClientEvent(player, "dropcar_removewaypoint");
+                    player.sendChatMessage("Vehicle delivered. You earned $" + (int)payment);
+                }
+            };
+
 
             DebugManager.DebugMessage("[VehicleM] Vehicle Manager initalized!");
         }
@@ -142,6 +169,96 @@ namespace mtgvrp.vehicle_manager
             InventoryManager.ShowInventoryManager(player, player.GetCharacter(), lastVeh, "Inventory: ", "Vehicle: ");
         }
 
+        /*
+        [Command("hotwire")]
+        public void hotwire_cmd(Client player)
+        {
+            if (player.isInVehicle == false)
+            {
+                API.sendChatMessageToPlayer(player, "You are not in a vehicle.");
+                return;
+            }
+
+            var veh = API.getPlayerVehicle(player);
+
+            if (API.getVehicleEngineStatus(veh) == true)
+            {
+                API.sendChatMessageToPlayer(player, "This vehicle is already started.");
+                return;
+            }
+
+            ChatManager.NearbyMessage(player, 6f, "~p~" + player.name + " attempts to hotwire the vehicle.");
+
+            Random rand = new Random();
+
+            if (rand.Next(0, 2) == 0)
+            {
+                API.setVehicleEngineStatus(veh, true);
+                ChatManager.NearbyMessage(player, 6f, "~p~" + player.name + " succeeded in hotwiring the vehicle.");
+            }
+            else
+            {
+                API.setPlayerHealth(player, player.health - 10);
+                player.sendChatMessage("You attempted to hotwire the vehicle and got shocked!");
+                ChatManager.NearbyMessage(player, 6f, "~p~" + player.name + " failed to hotwire the vehicle.");
+            }
+
+        }
+        */
+        [Command("dropcar")]
+        public void dropcar_cmd(Client player)
+        {
+            Character character = API.getEntityData(player.handle, "Character");
+
+            if (player.isInVehicle == false)
+            {
+                API.sendChatMessageToPlayer(player, "You are not in a vehicle.");
+                return;
+            }
+
+            if (character.DropcarPrevention)
+            {
+                player.sendChatMessage("You can only do this every 15 minutes.");
+                return;
+            }
+
+            var veh = GetVehFromNetHandle(API.getPlayerVehicle(player));
+
+            if (veh.Group != Group.None | veh.OwnerId != 0)
+            {
+                API.sendChatMessageToPlayer(player, "This is an owned vehicle.");
+                return;
+            }
+            
+
+            character.DropcarTimeLeft = 900000;
+            character.IsOnDropcar = true;
+            character.DropcarPrevention = true;
+            character.DropcarTimeLeftTimer = new Timer { Interval = 1000 };
+            character.DropcarTimeLeftTimer.Elapsed += delegate { updateTimer(player); };
+            character.DropcarTimeLeftTimer.Start();
+            character.DropcarTimer = new Timer { Interval = 900000 };
+            character.DropcarTimer.Elapsed += delegate { resetDropcarTimer(player); };
+            character.DropcarTimer.Start();
+            API.triggerClientEvent(player, "dropcar_setwaypoint", new Vector3(487.0575, -1334.377, 29.30219) - new Vector3(0, 0, 1));
+            player.sendChatMessage("A waypoint has been set. Take this vehicle to the waypoint to earn money.");
+
+        }
+
+        public static void updateTimer(Client player)
+        {
+            Character character = API.shared.getEntityData(player.handle, "Character");
+            character.DropcarTimeLeft -= 1000;
+        }
+
+        public static void resetDropcarTimer(Client player)
+        {
+            Character character = API.shared.getEntityData(player.handle, "Character");
+            player.sendChatMessage("You can now drop another vehicle.");
+            character.DropcarPrevention = false;
+            character.DropcarTimer.Stop();
+            character.JailTimeLeftTimer.Stop();
+        }
         [Command("lock")]
         public void Lockvehicle_cmd(Client player)
         {
@@ -255,23 +372,40 @@ namespace mtgvrp.vehicle_manager
             API.setBlipTransparency(veh.Blip, 0);
 
             Character character = API.getEntityData(player.handle, "Character");
+            Account account = API.getEntityData(player.handle, "Account");
 
+            //IS A GROUP VEHICLE
             if (veh.Group != null && character.Group != veh.Group && veh.Group != Group.None)
             {
                 {
                     API.sendChatMessageToPlayer(player, "You must be a member of " + veh.Group.Name + " to use this vehicle.");
-                    API.setEntityPosition(player, API.getEntityPosition(vehicleHandle) + new Vector3(-1, 0, 0));
+                    API.warpPlayerOutOfVehicle(player);
                     return;
                 }
             }
+
+            //IS A VIP VEHICLE
+            if (veh.IsVip == true && account.VipLevel <= 1 && API.getPlayerVehicleSeat(player) == -1)
+            {
+                player.sendChatMessage("This is a ~y~VIP~y~ vehicle. You must be a VIP to drive it.");
+                API.warpPlayerOutOfVehicle(player);
+                return;
+            }
+
+            if (account.AdminLevel > 1)
+            {
+                API.sendChatMessageToPlayer(player, "~w~[VehicleM] You have entered vehicle ~r~" + Vehicles.IndexOf(veh) + "(Owned by: " + PlayerManager.Players.SingleOrDefault(x => x.Id == veh.OwnerId)?.CharacterName + ")");
+            }
+            
             if (API.getVehicleLocked(vehicleHandle))
             {
                 API.warpPlayerOutOfVehicle(player);
                 API.sendChatMessageToPlayer(player, "~r~The vehicle is locked.");
                 return;
             }
-            API.sendChatMessageToPlayer(player, "~w~[VehicleM] You have entered vehicle ~r~" + Vehicles.IndexOf(veh) + "(Owned by: " + PlayerManager.Players.SingleOrDefault(x => x.Id == veh.OwnerId)?.CharacterName + ")");
+            
             API.sendChatMessageToPlayer(player, "~y~ Press \"N\" on your keyboard to access the vehicle menu.");
+
 
             //Vehicle Interaction Menu Setup
             var vehInfo = API.getVehicleDisplayName(veh.VehModel) + " - " + veh.LicensePlate;
@@ -281,6 +415,7 @@ namespace mtgvrp.vehicle_manager
             if (API.getPlayerVehicleSeat(player) == -1)
             {
                 veh.Driver = character;
+                API.sendChatMessageToPlayer(player, "~y~Press 'N' to access the vehicle menu.");
             }
         }
 
@@ -309,6 +444,13 @@ namespace mtgvrp.vehicle_manager
 
             Character character = API.getEntityData(player.handle, "Character");
             character.LastVehicle = veh;
+
+            if (character.IsOnDropcar)
+            {
+                character.IsOnDropcar = false;
+                API.triggerClientEvent(player, "dropcar_removewaypoint");
+                player.sendChatMessage("You exited the vehicle. The dropcar has ended.");
+            }
         }
 
         public void OnVehicleDeath(NetHandle vehicleHandle)

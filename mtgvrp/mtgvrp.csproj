@@ -78,6 +78,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="gun_dealership\GunDealership.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AdminSystem\AdminCommands.cs" />
     <Compile Include="AdminSystem\AdminReports.cs" />
@@ -137,6 +138,7 @@
     <Compile Include="property_system\ItemManager.cs" />
     <Compile Include="property_system\Property.cs" />
     <Compile Include="property_system\PropertyManager.cs" />
+    <Compile Include="property_system\businesses\Advertising.cs" />
     <Compile Include="rp_scripts\BankMenu.cs" />
     <Compile Include="speed_fuel_system\FuelManager.cs" />
     <Compile Include="vehicle_dealership\VehicleDealership.cs" />
@@ -145,6 +147,8 @@
     <Compile Include="vehicle_manager\VehicleMenu.cs" />
     <Compile Include="vehicle_manager\VehicleOwnership.cs" />
     <Compile Include="vehicle_manager\vehicle_editor\VehicleEditor.cs" />
+    <Compile Include="weapon_manager\Weapon.cs" />
+    <Compile Include="weapon_manager\WeaponManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -174,6 +178,7 @@
     <Content Include="group_manager\lspd\MDC\MDC.html" />
     <Content Include="group_manager\lspd\MDC\MDC.js" />
     <Content Include="group_manager\lspd\MDC\MDC.ts" />
+    <Content Include="gun_dealership\gun_dealership.js" />
     <Content Include="inventory\ManageInv.html" />
     <Content Include="group_manager\lspd\Lspd.js" />
     <Content Include="job_manager\fisher\Fisher.js" />

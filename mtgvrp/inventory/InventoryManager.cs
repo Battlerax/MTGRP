@@ -33,6 +33,7 @@ namespace mtgvrp.inventory
             BsonClassMap.RegisterClassMap<SprunkItem>();
             BsonClassMap.RegisterClassMap<CheckItem>();
 
+            BsonClassMap.RegisterClassMap<Weapon>();
             #endregion
 
             API.onClientEventTrigger += API_onClientEventTrigger;

@@ -129,6 +129,9 @@ namespace mtgvrp.player_manager
                         character.update_ped();
                         character.update_nametag();
                         character.StartTrackingTimePlayed();
+                        character.PaycheckTimer = new Timer { Interval = 1000 };
+                        character.PaycheckTimer.Elapsed += delegate { PlayerManager.SendPaycheckToPlayer(player); };
+                        character.PaycheckTimer.Start();
                         API.shared.triggerClientEvent(player, "update_money_display", Money.GetCharacterMoney(character));
 
                         character.JobOne = JobManager.GetJobById(character.JobOneId);
@@ -159,6 +162,13 @@ namespace mtgvrp.player_manager
                         if (character.IsJailed)
                         {
                             Lspd.JailControl(player, character.JailTimeLeft);
+                        }
+
+                        if (character.DropcarPrevention)
+                        {
+                            character.DropcarTimer = new Timer { Interval = character.DropcarTimeLeft };
+                            character.DropcarTimer.Elapsed += delegate { vehicle_manager.VehicleManager.resetDropcarTimer(player); };
+                            character.DropcarTimer.Start();
                         }
 
                         API.sendChatMessageToPlayer(player, "You have successfully loaded your character: " + charName);
@@ -340,6 +350,9 @@ namespace mtgvrp.player_manager
 
                     character.IsCreated = true;
                     character.StartTrackingTimePlayed();
+                    character.PaycheckTimer = new Timer { Interval = 1000 };
+                    character.PaycheckTimer.Elapsed += delegate { PlayerManager.SendPaycheckToPlayer(player); };
+                    character.PaycheckTimer.Start();
                     character.Save();
 
                     API.triggerClientEvent(player, "login_finished");
