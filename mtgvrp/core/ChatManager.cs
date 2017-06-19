@@ -147,7 +147,7 @@ namespace mtgvrp.core
                 return;
             }
 
-            if (character.VMutedExpiration > DateTime.Now)
+            if (character.NMutedExpiration > DateTime.Now)
             {
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~You are muted from newbie chat.");
                 return;
