@@ -520,7 +520,7 @@ namespace mtgvrp.group_manager.lspd
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
-                API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                //API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
                 return;
             }
             if (API.getEntityData(player, "MegaphoneStatus") != true)
