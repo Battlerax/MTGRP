@@ -582,48 +582,23 @@ namespace mtgvrp.property_system
                     return;
                 }
 
-                switch (prop.Type)
+                if (item == "")
                 {
-                    case PropertyTypes.Hardware:
-                    case PropertyTypes.TwentyFourSeven:
-                    case PropertyTypes.GasStation:
-                    case PropertyTypes.Restaurant:
-                    case PropertyTypes.Clothing:
-                        if (item == "")
-                        {
-                            API.sendChatMessageToPlayer(player, "Choose a type: ");
-                            string msg = prop.ItemPrices.Keys.Aggregate("", (current, key) => current + (key + ","));
-                            msg = msg.Remove(msg.Length - 1, 1);
-                            API.sendChatMessageToPlayer(player, msg);
-                            return;
-                        }
-
-                        if (!prop.ItemPrices.ContainsKey(item))
-                        {
-                            API.sendChatMessageToPlayer(player, "[ERROR] That type doesn't exist.");
-                            return;
-                        }
-
-                        prop.ItemPrices[item] = price;
-                        API.sendChatMessageToPlayer(player, $"Changed ~g~{item}~w~ price to {price}");
-                        break;
-
-                    case PropertyTypes.Advertising:
-                        if (item == "")
-                        {
-                            API.sendChatMessageToPlayer(player, "[ERROR] Choose a type: [advertprice]");
-                            return;
-                        }
-
-                        switch (item.ToLower())
-                        {
-                            case "advertprice":
-                                prop.ItemPrices["advertprice"] = price;
-                                API.sendChatMessageToPlayer(player, $"Changed ~g~advert price~w~ price to {price}");
-                                break;
-                        }
-                        break;
+                    API.sendChatMessageToPlayer(player, "Choose a type: ");
+                    string msg = prop.ItemPrices.Keys.Aggregate("", (current, key) => current + (key + ","));
+                    msg = msg.Remove(msg.Length - 1, 1);
+                    API.sendChatMessageToPlayer(player, msg);
+                    return;
                 }
+
+                if (!prop.ItemPrices.ContainsKey(item))
+                {
+                    API.sendChatMessageToPlayer(player, "[ERROR] That type doesn't exist.");
+                    return;
+                }
+
+                prop.ItemPrices[item] = price;
+                API.sendChatMessageToPlayer(player, $"Changed ~g~{item}~w~ price to {price}");
                 prop.Save();
             }
             else
