@@ -68,7 +68,7 @@ namespace mtgvrp.vehicle_manager
 
                     var veh = GetVehFromNetHandle(API.getPlayerVehicle(player));
                     float payment = API.getVehicleHealth(API.getPlayerVehicle(player)) / 2;
-                    veh.Respawn();
+                    VehicleManager.respawn_vehicle(veh);
                     API.shared.setVehicleEngineStatus(veh.NetHandle, false);
                     inventory.InventoryManager.GiveInventoryItem(character, new Money(), (int) payment);
                     character.IsOnDropcar = false;
@@ -259,7 +259,7 @@ namespace mtgvrp.vehicle_manager
         }
 
         [Command("respawnveh")]
-        public void respawnveh_cmd(Client player, string nethandle, bool originalPos = true)
+        public void respawnveh_cmd(Client player, int id, bool originalPos = true)
         {
             var account = player.GetAccount();
             if (account.AdminLevel < 4)
@@ -267,7 +267,13 @@ namespace mtgvrp.vehicle_manager
                 return;
             }
 
-            var vehicle = Vehicles.Find(v => v.NetHandle.ToString() == nethandle);
+            if (id > Vehicles.Count)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "Invalid vehicle ID.");
+                return; 
+            }
+
+            var vehicle = Vehicles[id];
             if (vehicle == null)
             {
                 API.sendChatMessageToPlayer(player, Color.White,
@@ -277,14 +283,61 @@ namespace mtgvrp.vehicle_manager
 
             if (originalPos == true)
             {
-                vehicle.Respawn();
+                VehicleManager.respawn_vehicle(vehicle);
             }
             else
             {
-                vehicle.Respawn(API.getEntityPosition(vehicle.NetHandle));
+                VehicleManager.respawn_vehicle(vehicle, API.getEntityPosition(vehicle.NetHandle));
             }
-            API.sendChatMessageToPlayer(player, Color.White, "You have respawned the vehicle with net handle " + nethandle);
+            API.sendChatMessageToPlayer(player, Color.White, "You have respawned the vehicle with id " + id);
             return;
+        }
+
+        [Command("respawnunownedcars")]
+        public void respawnallcars_cmd(Client player)
+        {
+            var account = player.GetAccount();
+            if (account.AdminLevel < 4)
+            {
+                return;
+            }
+
+            foreach (var v in Vehicles)
+            {
+                if (v.Driver == null && v.OwnerId == 0 && v.GroupId == 0)
+                {
+                    VehicleManager.respawn_vehicle(v);
+                }
+            }
+            API.sendChatMessageToPlayer(player, Color.White, "All unowned and unoccupied vehicles have been respawned.");
+            return;
+        }
+
+        [Command("respawnnearbycars")]
+        public void respawnnearbycars_cmd(Client player, int radius = 15)
+        {
+            var account = player.GetAccount();
+            if (account.AdminLevel < 4)
+            {
+                return;
+            }
+
+            if (radius <= 0)
+            {
+                return;
+            }
+
+            foreach (var v in Vehicles)
+            {
+                if (v.Driver == null && v.OwnerId == 0 && v.GroupId == 0)
+                {
+                    if (player.position.DistanceTo(API.getEntityPosition(v.NetHandle)) <= radius)
+                    {
+                        VehicleManager.respawn_vehicle(v);
+                    }
+                }
+            }
+            API.sendChatMessageToPlayer(player, Color.White, "Respawned all unowned and unoccupied cars in a radius of " + radius);
         }
 
         /*

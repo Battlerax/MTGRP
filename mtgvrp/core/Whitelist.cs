@@ -32,6 +32,7 @@ namespace mtgvrp.core
              "Risenful",
              "ClarkAU",
              "Altezza.",
+             "1Bxnnj",
 
              //Closed Beta
              "MTGFord",
