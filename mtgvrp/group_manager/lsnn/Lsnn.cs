@@ -146,9 +146,16 @@ namespace mtgvrp.group_manager.lsnn
 
             var vehicleHandle = API.getPlayerVehicle(player);
             var veh = VehicleManager.GetVehFromNetHandle(vehicleHandle);
+
             if (character.Group.Id != veh.GroupId && veh.VehModel != VehicleHash.Maverick)
             {
                 API.sendChatMessageToPlayer(player, "You must be in an LSNN chopper to use the chopper camera.");
+                return;
+            }
+
+            if (CameraSet == true && ChopperCamToggle == false)
+            {
+                API.sendChatMessageToPlayer(player, "A camera has already been set. /pickupcamera before using the chopper cam.");
                 return;
             }
 
@@ -167,19 +174,13 @@ namespace mtgvrp.group_manager.lsnn
                             API.sendChatMessageToPlayer(c, "~p~The LSNN camera has been turned off.");
                         }
                     }
-
-                    API.sendNotificationToPlayer(player, "The chopper camera has been turned ~r~off~w~.");
-                    ChatManager.NearbyMessage(player, 10, "~p~" + character.CharacterName + " has turned off the chopper cam.");
-                    CameraSet = false;
-                    ChopperCamToggle = false;
-                    ChopperRotation.Stop();
-                    return;
                 }
-            }
 
-            if (CameraSet == true)
-            {
-                API.sendChatMessageToPlayer(player, "A camera has already been set.");
+                API.sendNotificationToPlayer(player, "The chopper camera has been turned ~r~off~w~.");
+                ChatManager.NearbyMessage(player, 10, "~p~" + character.CharacterName + " has turned off the chopper cam.");
+                CameraSet = false;
+                ChopperCamToggle = false;
+                ChopperRotation.Stop();
                 return;
             }
 
@@ -269,49 +270,6 @@ namespace mtgvrp.group_manager.lsnn
             }
             API.sendChatMessageToPlayer(player, count + " people are watching the broadcast.");
         }
-
-        [Command("setlottoprice")]
-        public void Setlottoprice(Client player, string amount)
-        {
-            Character character = API.getEntityData(player.handle, "Character");
-
-            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLsnn)
-            {
-                API.sendChatMessageToPlayer(player, Color.White, "You must be a member of the LSNN to use that command.");
-                return;
-            }
-
-            character.Group.LottoPrice = int.Parse(amount);
-            API.sendChatMessageToPlayer(player, "You changed the lotto price to " + int.Parse(amount));
-        }
-
-        [Command("buylottoticket")]
-        public void Buylottoticket(Client player)
-        {
-            Character character = API.getEntityData(player.handle, "Character");
-
-            //Check distance from LSNN building main office (need mapping, for now just door)
-
-            if (!IsAtLsnnDoor(player))
-            {
-                player.sendChatMessage("You must be at the LSNN building to purchase a lotto ticket.");
-                return;
-            }
-
-            if (Money.GetCharacterMoney(character) < character.Group.LottoPrice)
-            {
-                API.sendChatMessageToPlayer(player, "You cannot afford a lottery ticket!");
-                return;
-            }
-
-            foreach (var i in GroupManager.Groups)
-            {
-                if (i.CommandType == Group.CommandTypeLsnn) { i.LottoSafe += i.LottoPrice; }
-            }
-            InventoryManager.DeleteInventoryItem(character, typeof(Money), character.Group.LottoPrice);
-            character.HasLottoTicket = true;
-            API.sendChatMessageToPlayer(player, "You purchased a lottery ticket. Good luck!");
-        }
         
         [Command("lotto")]
         public void lotto_cmd(Client player)
@@ -348,7 +306,7 @@ namespace mtgvrp.group_manager.lsnn
 
         }
 
-        [Command("watchbroadcast")]//HEADLINE FIX
+        [Command("watchbroadcast")]
         public void watchbroadcast_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -523,11 +481,6 @@ namespace mtgvrp.group_manager.lsnn
                     API.triggerClientEvent(p, "update_chopper_cam", CameraPosition, CameraRotation, Headline, Chopper, OffSet, focusX, focusY, focusZ);
                 }
             }
-        }
-
-        public bool IsAtLsnnDoor(NetHandle entity)
-        {
-            return LsnnFrontDoorShape.containsEntity(entity);
         }
     }
 }
