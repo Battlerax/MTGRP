@@ -116,6 +116,8 @@ namespace mtgvrp.property_system
                     return 361;
                 case PropertyManager.PropertyTypes.Ammunation:
                     return 110;
+                case PropertyManager.PropertyTypes.LSNN:
+                    return 184;
                 default:
                     return -1;
             }
