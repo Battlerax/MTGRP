@@ -21,8 +21,10 @@ namespace mtgvrp.player_manager
             for (var i = 0; i < API.shared.getMaxPlayers(); i++)
             {
                 if (_players.ContainsKey(i) == false)
+                {
                     id = i;
                     break;
+                }
             }
 
             if(id == -1) return;
