@@ -69,6 +69,7 @@ namespace mtgvrp.vehicle_manager
                     var veh = GetVehFromNetHandle(API.getPlayerVehicle(player));
                     float payment = API.getVehicleHealth(API.getPlayerVehicle(player)) / 2;
                     veh.Respawn();
+                    API.shared.setVehicleEngineStatus(veh.NetHandle, false);
                     inventory.InventoryManager.GiveInventoryItem(character, new Money(), (int) payment);
                     character.IsOnDropcar = false;
                     API.triggerClientEvent(player, "dropcar_removewaypoint");
@@ -230,10 +231,10 @@ namespace mtgvrp.vehicle_manager
                 return;
             }
 
-            character.DropcarReset.AddMinutes(15);
+            character.DropcarReset = DateTime.Now.AddMinutes(15);
+            character.IsOnDropcar = true;
             API.triggerClientEvent(player, "dropcar_setwaypoint", new Vector3(487.0575, -1334.377, 29.30219) - new Vector3(0, 0, 1));
             player.sendChatMessage("A waypoint has been set. Take this vehicle to the waypoint to earn money.");
-
         }
 
         [Command("lock")]
