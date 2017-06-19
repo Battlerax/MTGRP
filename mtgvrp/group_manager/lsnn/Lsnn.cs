@@ -270,21 +270,6 @@ namespace mtgvrp.group_manager.lsnn
             }
             API.sendChatMessageToPlayer(player, count + " people are watching the broadcast.");
         }
-
-        [Command("setlottoprice")]
-        public void Setlottoprice(Client player, string amount)
-        {
-            Character character = API.getEntityData(player.handle, "Character");
-
-            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLsnn)
-            {
-                API.sendChatMessageToPlayer(player, Color.White, "You must be a member of the LSNN to use that command.");
-                return;
-            }
-
-            character.Group.LottoPrice = int.Parse(amount);
-            API.sendChatMessageToPlayer(player, "You changed the lotto price to " + int.Parse(amount));
-        }
         
         [Command("lotto")]
         public void lotto_cmd(Client player)

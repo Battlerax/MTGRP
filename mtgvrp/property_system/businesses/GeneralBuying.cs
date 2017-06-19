@@ -171,7 +171,7 @@ namespace mtgvrp.property_system.businesses
                         case "lotto_ticket":
                             foreach (var i in GroupManager.Groups)
                             {
-                                if (i.CommandType == Group.CommandTypeLsnn) { i.LottoSafe += i.LottoPrice; }
+                                if (i.CommandType == Group.CommandTypeLsnn) { i.LottoSafe += price; }
                             }
                             InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
                             character.HasLottoTicket = true;
