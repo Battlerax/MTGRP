@@ -19,7 +19,7 @@ namespace mtgvrp.core
              "Ahmad45123",
              "Colm692",
              "XeroTheGreat",
-             "ImToro",
+             "Im_Toro",
 
              //Kevin & Friends
              "maniac1994",
@@ -29,6 +29,7 @@ namespace mtgvrp.core
 
              //Admins
              "Eagle2404",
+             "Risenful",
 
              //Closed Beta
              "MTGFord",
@@ -64,6 +65,15 @@ namespace mtgvrp.core
              "Connor123k",
              "Juuuusoo",
              "XeroTheGreat",
+             "SlavishClown0",
+             "BasedSosaa",
+             "YoMomK",
+             "justcallmeGorm",
+             "Weavetron",
+             "Guvnors",
+             "MTGMoleman",
+             "Dylan_Parker",
+             "iEinarS",
         };
 
         public Whitelist()
