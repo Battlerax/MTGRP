@@ -47,17 +47,11 @@ namespace mtgvrp.core
             {
                 if (API.getEntityData(player, "MegaphoneStatus") == true)
                 {
-                    msg = "[MEGAPHONE] " + character.rp_name() + " says: " + msg;
+                    msg = "~y~[MEGAPHONE] " + character.rp_name() + " says: " + msg;
                     NearbyMessage(player, 30, msg);
                     e.Cancel = true;
                     return;
                 }
-            }
-            if (API.getEntityData(player, "MegaphoneStatus") == true)
-            {
-                msg = "~y~" + character.rp_name() + " [MEGAPHONE]: " + msg;
-                NearbyMessage(player, 30, msg);
-                return;
             }
 
             if (API.hasEntityData(player, "MicStatus"))
