@@ -47,7 +47,7 @@ namespace mtgvrp.core
             {
                 if (API.getEntityData(player, "MegaphoneStatus") == true)
                 {
-                    msg = "[MEGAPHONE] " + character.rp_name() + " says: " + msg;
+                    msg = "~y~[MEGAPHONE] " + character.rp_name() + " says: " + msg;
                     NearbyMessage(player, 30, msg);
                     e.Cancel = true;
                     return;
