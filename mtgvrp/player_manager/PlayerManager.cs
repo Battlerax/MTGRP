@@ -313,7 +313,7 @@ namespace mtgvrp.player_manager
             API.sendChatMessageToPlayer(player, Color.Grey, "The current server time is: " + DateTime.Now.ToString("h:mm:ss tt"));
             API.sendChatMessageToPlayer(player, Color.Grey, "The current in-game time is: " + TimeWeatherManager.CurrentTime.ToString("h:mm:ss tt"));
             API.sendChatMessageToPlayer(player, Color.Grey,
-                $"Time until next paycheck: {Math.Round((double) character.GetTimePlayed() % 3600) / 60}" + " minutes.");
+                $"Time until next paycheck: { (int)(3600 - (character.GetTimePlayed() % 3600)) / 60}" + " minutes.");
             API.sendChatMessageToPlayer(player, Color.White, "__________________ TIME __________________");
         }
 
