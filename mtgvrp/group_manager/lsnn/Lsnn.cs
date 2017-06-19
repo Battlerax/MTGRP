@@ -146,9 +146,16 @@ namespace mtgvrp.group_manager.lsnn
 
             var vehicleHandle = API.getPlayerVehicle(player);
             var veh = VehicleManager.GetVehFromNetHandle(vehicleHandle);
+
             if (character.Group.Id != veh.GroupId && veh.VehModel != VehicleHash.Maverick)
             {
                 API.sendChatMessageToPlayer(player, "You must be in an LSNN chopper to use the chopper camera.");
+                return;
+            }
+
+            if (CameraSet == true && ChopperCamToggle == false)
+            {
+                API.sendChatMessageToPlayer(player, "A camera has already been set. /pickupcamera before using the chopper cam.");
                 return;
             }
 
@@ -167,19 +174,13 @@ namespace mtgvrp.group_manager.lsnn
                             API.sendChatMessageToPlayer(c, "~p~The LSNN camera has been turned off.");
                         }
                     }
-
-                    API.sendNotificationToPlayer(player, "The chopper camera has been turned ~r~off~w~.");
-                    ChatManager.NearbyMessage(player, 10, "~p~" + character.CharacterName + " has turned off the chopper cam.");
-                    CameraSet = false;
-                    ChopperCamToggle = false;
-                    ChopperRotation.Stop();
-                    return;
                 }
-            }
 
-            if (CameraSet == true)
-            {
-                API.sendChatMessageToPlayer(player, "A camera has already been set.");
+                API.sendNotificationToPlayer(player, "The chopper camera has been turned ~r~off~w~.");
+                ChatManager.NearbyMessage(player, 10, "~p~" + character.CharacterName + " has turned off the chopper cam.");
+                CameraSet = false;
+                ChopperCamToggle = false;
+                ChopperRotation.Stop();
                 return;
             }
 
@@ -348,7 +349,7 @@ namespace mtgvrp.group_manager.lsnn
 
         }
 
-        [Command("watchbroadcast")]//HEADLINE FIX
+        [Command("watchbroadcast")]
         public void watchbroadcast_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
