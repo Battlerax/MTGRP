@@ -44,18 +44,17 @@ namespace mtgvrp.player_manager
 
             API.onPlayerConnected += OnPlayerConnected;
             API.onPlayerDisconnected += OnPlayerDisconnected;
-            API.onPlayerDeath += API_onPlayerDeath;
             API.onClientEventTrigger += API_onClientEventTrigger;
+            API.onPlayerRespawn += API_onPlayerRespawn;
 
             DebugManager.DebugMessage("[PlayerM] Player Manager initalized.");
         }
 
-        private void API_onPlayerDeath(Client player, NetHandle entityKiller, int weapon)
+        private void API_onPlayerRespawn(Client player)
         {
+            player.sendChatMessage("You were revived by the ~b~Los Santos Medical Department ~w~ and were charged 500$ for hospital fees.");
             WeaponManager.RemoveAllPlayerWeapons(player);
-            API.sendNotificationToPlayer(player, "You were revived by the ~b~Los Santos Medical Department ~w~ and were charged 500$ for hospital fees.");
             InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(Money), 500);
-
         }
 
         //TODO: CHANGED ONCE THE LS GOV IS ADDED
