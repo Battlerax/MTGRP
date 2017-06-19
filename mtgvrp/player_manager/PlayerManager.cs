@@ -309,12 +309,12 @@ namespace mtgvrp.player_manager
         {
             Character character = API.getEntityData(player.handle, "Character");
 
-            TimeSpan t = TimeSpan.FromMilliseconds(character.GetTimePlayed());
-
-            var minutesLeft = 60 - t.TotalMinutes;
-            API.sendChatMessageToPlayer(player, "The current server time is: " + DateTime.Now.ToString("h:mm:ss tt"));
-            API.sendChatMessageToPlayer(player, "The current in-game time is: " + TimeWeatherManager.CurrentTime.ToString("h:mm:ss tt"));
-            API.sendChatMessageToPlayer(player, string.Format("Time until next paycheck: {0}" + " minutes.", minutesLeft));
+            API.sendChatMessageToPlayer(player, Color.White, "__________________ TIME __________________");
+            API.sendChatMessageToPlayer(player, Color.Grey, "The current server time is: " + DateTime.Now.ToString("h:mm:ss tt"));
+            API.sendChatMessageToPlayer(player, Color.Grey, "The current in-game time is: " + TimeWeatherManager.CurrentTime.ToString("h:mm:ss tt"));
+            API.sendChatMessageToPlayer(player, Color.Grey,
+                $"Time until next paycheck: { (int)(3600 - (character.GetTimePlayed() % 3600)) / 60}" + " minutes.");
+            API.sendChatMessageToPlayer(player, Color.White, "__________________ TIME __________________");
         }
 
 

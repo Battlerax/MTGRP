@@ -316,7 +316,7 @@ namespace mtgvrp.player_manager
                     character.Birthday = (string) arguments[1];
                     character.Birthplace = (string) arguments[2];
 
-                    if ((int) arguments[3] == 0) //Airport spawn
+                    /*if ((int) arguments[3] == 0) //Airport spawn
                     {
                         character.LastPos = new Vector3(-1037.253, -2736.865, 13.76621);
                         character.LastRot = new Vector3(0, 0, -37);
@@ -325,8 +325,10 @@ namespace mtgvrp.player_manager
                     {
                         character.LastPos = new Vector3(433.2354, -645.8408, 28.72639);
                         character.LastRot = new Vector3(0, 0, 90);
-                    }
-
+                    }*/
+                    
+                    character.LastPos = new Vector3(433.2354, -645.8408, 28.72639);
+                    character.LastRot = new Vector3(0, 0, 90);
                     character.update_ped();
                     character.update_nametag();
 

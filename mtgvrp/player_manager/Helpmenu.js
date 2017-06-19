@@ -24,7 +24,7 @@ function showCmds(group) {
         API.sendChatMessage('/SetPhoneName, /PickUp, /H, /Phone, /Detain, /Eject, /GetID, /Stats, /Time, /Atm,');
         API.sendChatMessage('/ConfirmSellVehicle, /ConfirmBuyVehicle, /BuyProperty, /atm, /enter, /exit, /phone,');
         API.sendChatMessage('/Lotto, /WatchBroadcast, /StopWatching, /UseSprunk, /Admins.');
-        API.sendChatMessage('~R~These are all general cmds for hte beta, some are missing and not organised fully.');
+        API.sendChatMessage('~R~These are all cmds for the beta, please test them to make sure theyre not broken.');
     }
     else if (group == "showAnimCmds") {
         API.sendChatMessage('~h~Here is the list of Animations:');
@@ -33,6 +33,7 @@ function showCmds(group) {
         API.sendChatMessage('/Cheer, /Drugdeal, /Gardening, /Guard, /Jog, /Getjiggy, /Sit, /Mech, /Yoga, /Bonghit,');
         API.sendChatMessage('/Restrained, /MiddleFinger, /Salute, /Slowclap, /Facepalm, /Handsup, /Clipboard, /Hammer,');
         API.sendChatMessage('/Guitar.  ');
+        API.sendChatMessage('~R~These are all cmds for the beta, please test them to make sure theyre not broken.');
     }
     else if (group == "showPolCmds") {
         API.sendChatMessage("~h~Here is the list of commands availible to you:");
@@ -40,11 +41,13 @@ function showCmds(group) {
         API.sendChatMessage("/ListCrimes, /CreateCrime, /EditCrime, /DeleteCrime, /Wanted, /Release, /BackupBeacon, ");
         API.sendChatMessage("/AcceptBeacon, /Ticket, /UnpaidTickets, /AcceptCopTicket, /PayCopTickets, /Deploy, ");
         API.sendChatMessage("/RemoveAllObjects, /SetLockerPos, /SetArrestPos, /SetDivisionRank,  ");
+        API.sendChatMessage('~R~These are all cmds for the beta, please test them to make sure theyre not broken.');
     }
     else if (group == "ShowGroupCmds") {
         API.sendChatMessage("~h~Here is the list of commands availible to you:");
         API.sendChatMessage("/RemoteUninvite, /SetRank, /SetDivision, /Group, /(r)adio, /ToggleRadio /Accept, ");
         API.sendChatMessage("/QuitGroup, /Invite, /SetRankName, /SetDivisionName, /SetDivisionRankName, ");
+        API.sendChatMessage('~R~These are all cmds for the beta, please test them to make sure theyre not broken.');
     }
     else if (group == "showAdCmds") {
         API.sendChatMessage('~h~Here is the list of Admin Commands:');
@@ -64,6 +67,7 @@ function showCmds(group) {
         API.sendChatMessage('Level 7:');
         API.sendChatMessage('~r~TesterCMDs to be removed. If not removed upon release please report it privatly to the Devs.');
         API.sendChatMessage('~r~/makemeadmin, /givemeitem, /setmymoney, /givemebag, /SetMyClothes, /setphonenumber, /tele');
+        API.sendChatMessage('~R~These are all cmds for the beta, please test them to make sure theyre not broken.');
     }
     else if (group == "sRules") {
         API.sendChatMessage("To view all the rules head to ~h~MT-Gaming.com~h~ Here some basic server rules:");
