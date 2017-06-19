@@ -90,10 +90,11 @@ namespace mtgvrp.group_manager
             var vehiclesToRespawn = VehicleManager.Vehicles.FindAll(v => v.Group == group);
             foreach(var v in vehiclesToRespawn)
             {
-                v.Respawn();
+                VehicleManager.respawn_vehicle(v);
+                API.setVehicleEngineStatus(v.NetHandle, false);
             }
             API.sendChatMessageToPlayer(player,
-                vehiclesToRespawn + " vehicles have been respawned for group: " + group.Name);
+                vehiclesToRespawn.Count + " vehicles have been respawned for group: " + group.Name);
         }
 
  
@@ -522,14 +523,14 @@ namespace mtgvrp.group_manager
         }
 
         [Command("creategroup", GreedyArg = true)]
-        public void creategroup_cmd(Client player, int type, string name, string commandtype = "0")
+        public void creategroup_cmd(Client player, int type, int commandtype, string name)
         {
 
             Account account = player.GetAccount();
             if (account.AdminLevel < 4)
                 return;
 
-            if (type == 1 && int.Parse(commandtype) == 0)
+            if (type == 1 && commandtype == 0)
             {
                 player.sendChatMessage("Factions of type 1 must have a command type greater than 0");
                 return;
@@ -540,7 +541,7 @@ namespace mtgvrp.group_manager
             group.Name = name;
             group.Type = type;
             if (type != 1) { group.CommandType = 0; }
-            else { group.CommandType = int.Parse(commandtype); }
+            else { group.CommandType = commandtype; }
             group.Insert();
 
             API.sendChatMessageToPlayer(player, Color.Grey, "You have created group " + group.Id + " ( " + group.Name + ", Type: " + group.Type + " ). Use /editgroup to edit it.");

@@ -31,7 +31,7 @@ namespace mtgvrp.core
              "Eagle2404",
              "Risenful",
              "ClarkAU",
-             "Altezza",
+             "Altezza.",
 
              //Closed Beta
              "MTGFord",
@@ -77,6 +77,8 @@ namespace mtgvrp.core
              "Dylan_Parker",
              "iEinarS",
              "stevanowskis007",
+             "GreenIsGo",
+             "BCBud420",
         };
 
         public Whitelist()
