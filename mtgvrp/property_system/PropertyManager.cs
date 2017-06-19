@@ -693,7 +693,7 @@ namespace mtgvrp.property_system
                 return;
             }
 
-            if (prop.OwnerId != player.GetCharacter().Id || player.GetAccount().AdminLevel >= 5)
+            if (prop.OwnerId != player.GetCharacter().Id || player.GetAccount().AdminLevel < 5)
             {
                 API.sendChatMessageToPlayer(player, "You don't own this property.");
                 return;
