@@ -339,6 +339,10 @@ namespace mtgvrp.group_manager.lspd
                 }
             }
 
+            API.sendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, receiverCharacter.Client.handle, false);
+            receiverCharacter.IsCuffed = false;
+            API.stopPlayerAnimation(receiverCharacter.Client);
+
             API.sendNotificationToPlayer(player, "You have arrested ~b~" + receiverCharacter.CharacterName + "~w~.");
             API.sendNotificationToPlayer(receiver, "You have been arrested by ~b~" + character.CharacterName + "~w~.");
             InventoryManager.DeleteInventoryItem(receiverCharacter, typeof(Money), fine);
