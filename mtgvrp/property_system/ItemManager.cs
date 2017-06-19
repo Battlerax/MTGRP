@@ -63,6 +63,10 @@ namespace mtgvrp.property_system
                     prop.ItemPrices.Add("heavy_pistol", 6500);
                     prop.ItemPrices.Add("revolver", 8000);
                     break;
+
+                case PropertyManager.PropertyTypes.LSNN:
+                    prop.ItemPrices.Add("lotto_ticket", 200);
+                    break;
             }
         }
 
@@ -90,6 +94,13 @@ namespace mtgvrp.property_system
             new[] {"combat_pistol", "Combat Pistol", "A combat pistol specialized for tight spaces and accuracy."},
             new[] {"heavy_pistol", "Heavy Pistol", "A pistol specialized to leave a mark."},
             new[] { "revolver", "Revolver", "For when you want to feel like a cowboy"},
+        };
+
+        public static string[][] LSNNItems =
+        {
+            //ID, NAME, PRICE, DESCRIPTION
+            new[] {"lotto_ticket", "Lotto Ticket", "Purchase a lotto ticket and enter the lotto!"},
+
         };
     }
 }

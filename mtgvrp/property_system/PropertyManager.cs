@@ -44,6 +44,7 @@ namespace mtgvrp.property_system
             Advertising,
             GasStation,
             Ammunation,
+            LSNN,
         }
 
         #region ColShapeKnowing
@@ -465,6 +466,8 @@ namespace mtgvrp.property_system
                     return "/refuel /refillgascan";
                 case PropertyTypes.Ammunation:
                     return "/buy";
+                case PropertyTypes.LSNN:
+                    return "/buylottoticket";
             }
             return "";
         }
