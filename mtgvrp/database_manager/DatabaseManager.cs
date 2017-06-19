@@ -36,7 +36,7 @@ namespace mtgvrp.database_manager
         {
             DebugManager.DebugMessage("[DatabaseM] Initalizing database manager...");
 
-            _database = MongoClient.GetDatabase("mtg_test");
+            _database = MongoClient.GetDatabase("mtg_closed_beta");
 
             _countersTable = _database.GetCollection<BsonDocument>("counters");
             VehicleTable = _database.GetCollection<Vehicle>("vehicles");

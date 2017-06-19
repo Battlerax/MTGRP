@@ -30,6 +30,8 @@ namespace mtgvrp.core
              //Admins
              "Eagle2404",
              "Risenful",
+             "ClarkAU",
+             "Altezza",
 
              //Closed Beta
              "MTGFord",
@@ -74,6 +76,7 @@ namespace mtgvrp.core
              "MTGMoleman",
              "Dylan_Parker",
              "iEinarS",
+             "stevanowskis007",
         };
 
         public Whitelist()

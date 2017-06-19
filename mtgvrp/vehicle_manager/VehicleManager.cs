@@ -93,7 +93,7 @@ namespace mtgvrp.vehicle_manager
             var pos = player.position;
             var rot = player.rotation;
 
-            var veh = CreateVehicle(model, pos, rot, "ABC123", 0, color1, color2, dimension);
+            var veh = CreateVehicle(model, pos, rot, "ABC123", 0, Vehicle.VehTypeTemp, color1, color2, dimension);
             spawn_vehicle(veh);
             
             API.setPlayerIntoVehicle(player, veh.NetHandle, -1);
@@ -520,6 +520,7 @@ namespace mtgvrp.vehicle_manager
             {
                 API.shared.setEntityData(veh.NetHandle, "Vehicle", veh);
             }
+            else API.shared.consoleOutput("spawn_veh returned coded " + returnCode);
             
             API.shared.setVehicleEngineStatus(veh.NetHandle, false);
             return returnCode;
@@ -602,7 +603,9 @@ namespace mtgvrp.vehicle_manager
 
                 v.Job = JobManager.GetJobById(v.JobId);
                 v.Group = GroupManager.GetGroupById(v.GroupId);
-                
+
+                API.shared.setBlipTransparency(v.Blip, 100);
+
                 Vehicles.Add(v);
             }
 

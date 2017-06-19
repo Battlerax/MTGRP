@@ -21,7 +21,7 @@ namespace mtgvrp
 {
     public class Init : Script
     {
-        public static string SERVER_NAME = "[EN] MT-Gaming V-RP Test Server";
+        public static string SERVER_NAME = "[EN] MT-Gaming V-RP Closed Beta";
         public static string SERVER_VERSION = "v0.0.620";
         public static string SERVER_WEBSITE = "www.mt-gaming.com";
 
