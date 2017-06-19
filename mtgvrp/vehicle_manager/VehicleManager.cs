@@ -382,9 +382,6 @@ namespace mtgvrp.vehicle_manager
                 return;
             }
             
-            API.sendChatMessageToPlayer(player, "~y~ Press \"N\" on your keyboard to access the vehicle menu.");
-
-
             //Vehicle Interaction Menu Setup
             var vehInfo = API.getVehicleDisplayName(veh.VehModel) + " - " + veh.LicensePlate;
             API.setEntitySyncedData(player.handle, "CurrentVehicleInfo", vehInfo);
