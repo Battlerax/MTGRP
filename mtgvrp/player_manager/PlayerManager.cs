@@ -12,16 +12,27 @@ namespace mtgvrp.player_manager
 {
     class PlayerManager : Script
     {
-        public static Dictionary<int, Character> Players = new Dictionary<int, Character>();
+        private static Dictionary<int, Character> _players = new Dictionary<int, Character>();
+        public static List<Character> Players => _players.Values.ToList();
 
-        public static int GetNextAvailableId()
+        public static void AddPlayer(Character c)
         {
+            int id = -1;
             for (var i = 0; i < API.shared.getMaxPlayers(); i++)
             {
-                if (Players.ContainsKey(i) == false)
-                    return i;
+                if (_players.ContainsKey(i) == false)
+                    id = i;
+                    break;
             }
-            return -1;
+
+            if(id == -1) return;
+
+            _players.Add(id, c);
+        }
+
+        public static void RemovePlayer(Character c)
+        {
+            _players.Remove(GetPlayerId(c));
         }
 
 
@@ -91,7 +102,7 @@ namespace mtgvrp.player_manager
                 character.Save();
 
                 API.resetEntityData(player.handle, "Character");
-                Players.Remove(GetPlayerId(character));
+                RemovePlayer(character);
 
                 UpdatePlayerNametags(); //IDs change when a player logs off
             }
@@ -99,7 +110,7 @@ namespace mtgvrp.player_manager
 
         public static void UpdatePlayerNametags()
         {
-            foreach(var c in Players.Values)
+            foreach(var c in Players)
             {
                 c.update_nametag();
             }
@@ -107,7 +118,7 @@ namespace mtgvrp.player_manager
 
         public static Client GetPlayerByName(string name)
         {
-            foreach(var c in Players.Values)
+            foreach(var c in Players)
             {
                 if(string.Equals(c.CharacterName, name, StringComparison.OrdinalIgnoreCase))
                 {
@@ -135,8 +146,8 @@ namespace mtgvrp.player_manager
 
         public static int GetPlayerId(Character c)
         {
-            if (Players.ContainsValue(c))
-                return Players.Single(x => x.Value == c).Key;
+            if (_players.ContainsValue(c))
+                return _players.Single(x => x.Value == c).Key;
             else
                 return -1;
         }
@@ -260,7 +271,7 @@ namespace mtgvrp.player_manager
         public void getid_cmd(Client sender, string playerName)
         {
             API.sendChatMessageToPlayer(sender, Color.White, "----------- Searching for: " + playerName + " -----------");
-            foreach(var c in Players.Values)
+            foreach(var c in Players)
             {
                 if(c.CharacterName.StartsWith(playerName, StringComparison.OrdinalIgnoreCase))
                 {

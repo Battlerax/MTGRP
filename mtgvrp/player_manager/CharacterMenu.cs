@@ -70,7 +70,7 @@ namespace mtgvrp.player_manager
                         character.Insert();
 
                         API.setEntityData(player.handle, "Character", character);
-                        PlayerManager.Players.Add(PlayerManager.GetNextAvailableId(), character);
+                        PlayerManager.AddPlayer(character);
 
                         API.sendChatMessageToPlayer(player, "Welcome to Los Santos, " + charName + "! Let's get started with what you look like!");
                         API.freezePlayer(player, true);
@@ -98,7 +98,7 @@ namespace mtgvrp.player_manager
                         foreach(var c in foundCharacters)
                         {
                             API.setEntityData(player.handle, "Character", c);
-                            PlayerManager.Players.Add(PlayerManager.GetNextAvailableId(), c);
+                            PlayerManager.AddPlayer(c);
                             break;
                         }
 
