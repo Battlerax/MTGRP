@@ -311,6 +311,7 @@ namespace mtgvrp.player_manager
                 case "finish_character_creation":
                 {
                     Character character = API.getEntityData(player.handle, "Character");
+                    Account acc = player.GetAccount();
                     character.Age = (int) arguments[0];
                     character.Birthday = (string) arguments[1];
                     character.Birthplace = (string) arguments[2];
@@ -342,6 +343,7 @@ namespace mtgvrp.player_manager
                     character.BankBalance = 20000;
                     InventoryManager.GiveInventoryItem(character, new Money(), 5000);
 
+                    acc.IsLoggedIn = true;
                     character.IsCreated = true;
                     character.StartTrackingTimePlayed();
                     character.PaycheckTimer = new Timer { Interval = 1000 };
