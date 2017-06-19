@@ -467,7 +467,7 @@ namespace mtgvrp.property_system
                 case PropertyTypes.Ammunation:
                     return "/buy";
                 case PropertyTypes.LSNN:
-                    return "/buylottoticket";
+                    return "/buy";
             }
             return "";
         }
