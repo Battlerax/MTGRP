@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using GTANetworkServer;
 using GTANetworkShared;
 using mtgvrp.weapon_manager;
@@ -11,7 +12,31 @@ namespace mtgvrp.player_manager
 {
     class PlayerManager : Script
     {
-        public static List<Character> Players = new List<Character>();
+        private static Dictionary<int, Character> _players = new Dictionary<int, Character>();
+        public static List<Character> Players => _players.Values.ToList();
+
+        public static void AddPlayer(Character c)
+        {
+            int id = -1;
+            for (var i = 0; i < API.shared.getMaxPlayers(); i++)
+            {
+                if (_players.ContainsKey(i) == false)
+                {
+                    id = i;
+                    break;
+                }
+            }
+
+            if(id == -1) return;
+
+            _players.Add(id, c);
+        }
+
+        public static void RemovePlayer(Character c)
+        {
+            _players.Remove(GetPlayerId(c));
+        }
+
 
         public PlayerManager()
         {
@@ -79,7 +104,7 @@ namespace mtgvrp.player_manager
                 character.Save();
 
                 API.resetEntityData(player.handle, "Character");
-                Players.Remove(character);
+                RemovePlayer(character);
 
                 UpdatePlayerNametags(); //IDs change when a player logs off
             }
@@ -108,23 +133,20 @@ namespace mtgvrp.player_manager
 
         public static Client GetPlayerById(int id)
         {
-            if (id < 0 || id > Players.Count - 1)
+            if (!_players.ContainsKey(id))
             {
                 return null;
             }
 
-            var c = (Character) Players.ToArray().GetValue(id);
+            var c = _players[id];
 
-            if (c.Client != null)
-                return c.Client;
-
-            return null;
+            return c.Client ?? null;
         }
 
         public static int GetPlayerId(Character c)
         {
-            if (Players.Contains(c))
-                return Players.IndexOf(c);
+            if (_players.ContainsValue(c))
+                return _players.Single(x => x.Value == c).Key;
             else
                 return -1;
         }
@@ -287,12 +309,12 @@ namespace mtgvrp.player_manager
         {
             Character character = API.getEntityData(player.handle, "Character");
 
-            TimeSpan t = TimeSpan.FromMilliseconds(character.GetTimePlayed());
-
-            var minutesLeft = 60 - t.TotalMinutes;
-            API.sendChatMessageToPlayer(player, "The current server time is: " + DateTime.Now.ToString("h:mm:ss tt"));
-            API.sendChatMessageToPlayer(player, "The current in-game time is: " + TimeWeatherManager.CurrentTime.ToString("h:mm:ss tt"));
-            API.sendChatMessageToPlayer(player, string.Format("Time until next paycheck: {0}" + " minutes.", minutesLeft));
+            API.sendChatMessageToPlayer(player, Color.White, "__________________ TIME __________________");
+            API.sendChatMessageToPlayer(player, Color.Grey, "The current server time is: " + DateTime.Now.ToString("h:mm:ss tt"));
+            API.sendChatMessageToPlayer(player, Color.Grey, "The current in-game time is: " + TimeWeatherManager.CurrentTime.ToString("h:mm:ss tt"));
+            API.sendChatMessageToPlayer(player, Color.Grey,
+                $"Time until next paycheck: { (int)(3600 - (character.GetTimePlayed() % 3600)) / 60}" + " minutes.");
+            API.sendChatMessageToPlayer(player, Color.White, "__________________ TIME __________________");
         }
 
 

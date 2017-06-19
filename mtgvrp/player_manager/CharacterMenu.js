@@ -795,7 +795,7 @@ function next_character_creation_step(player, step) {
             }
 
             var spawn_list = new List(String);
-            spawn_list.Add("Los Santos Airport");
+            //spawn_list.Add("Los Santos Airport");
             spawn_list.Add("Dashound Bus Station");
 
             var age_menu = API.createListItem("Age", "Select a reasonable age for your character. This should match their appreance.", age_list, 0);

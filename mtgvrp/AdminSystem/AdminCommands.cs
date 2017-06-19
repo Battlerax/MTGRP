@@ -345,6 +345,32 @@ namespace mtgvrp.AdminSystem
             API.sendChatMessageToPlayer(player, "You have set Player ID: " + id + "'s armour to " + armour + ".");
         }
 
+        [Command("setvehiclehp")]
+        public void SetVehHP_cmd(Client player, int vehid, int health)
+        {
+            Account account = player.GetAccount();
+
+            if (account.AdminLevel < 3)
+                return;
+
+            var receiver = VehicleManager.Vehicles.SingleOrDefault(x => x.Id == vehid);
+
+            if (receiver == null)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid vehicleid entered.");
+                return;
+            }
+
+            if (receiver.IsSpawned == false)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Vehicle not spawned.");
+                return;
+            }
+
+            API.setVehicleHealth(receiver.NetHandle, health);
+            API.sendChatMessageToPlayer(player, "You have set Vehicle ID: " + receiver.Id + "'s health to " + health + ".");
+        }
+
         [Command("spec")]
         public static void spec_cmd(Client player, string id)
         {

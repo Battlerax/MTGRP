@@ -70,7 +70,7 @@ namespace mtgvrp.player_manager
                         character.Insert();
 
                         API.setEntityData(player.handle, "Character", character);
-                        PlayerManager.Players.Add(character);
+                        PlayerManager.AddPlayer(character);
 
                         API.sendChatMessageToPlayer(player, "Welcome to Los Santos, " + charName + "! Let's get started with what you look like!");
                         API.freezePlayer(player, true);
@@ -98,7 +98,7 @@ namespace mtgvrp.player_manager
                         foreach(var c in foundCharacters)
                         {
                             API.setEntityData(player.handle, "Character", c);
-                            PlayerManager.Players.Add(c);
+                            PlayerManager.AddPlayer(c);
                             break;
                         }
 
@@ -311,11 +311,12 @@ namespace mtgvrp.player_manager
                 case "finish_character_creation":
                 {
                     Character character = API.getEntityData(player.handle, "Character");
+                    Account acc = player.GetAccount();
                     character.Age = (int) arguments[0];
                     character.Birthday = (string) arguments[1];
                     character.Birthplace = (string) arguments[2];
 
-                    if ((int) arguments[3] == 0) //Airport spawn
+                    /*if ((int) arguments[3] == 0) //Airport spawn
                     {
                         character.LastPos = new Vector3(-1037.253, -2736.865, 13.76621);
                         character.LastRot = new Vector3(0, 0, -37);
@@ -324,8 +325,10 @@ namespace mtgvrp.player_manager
                     {
                         character.LastPos = new Vector3(433.2354, -645.8408, 28.72639);
                         character.LastRot = new Vector3(0, 0, 90);
-                    }
-
+                    }*/
+                    
+                    character.LastPos = new Vector3(433.2354, -645.8408, 28.72639);
+                    character.LastRot = new Vector3(0, 0, 90);
                     character.update_ped();
                     character.update_nametag();
 
@@ -342,6 +345,7 @@ namespace mtgvrp.player_manager
                     character.BankBalance = 20000;
                     InventoryManager.GiveInventoryItem(character, new Money(), 5000);
 
+                    acc.IsLoggedIn = true;
                     character.IsCreated = true;
                     character.StartTrackingTimePlayed();
                     character.PaycheckTimer = new Timer { Interval = 1000 };

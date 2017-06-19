@@ -109,6 +109,7 @@ namespace mtgvrp.vehicle_manager
 
             JobId = 0;
             GroupId = 0;
+            Group = Group.None;
         }
 
 
