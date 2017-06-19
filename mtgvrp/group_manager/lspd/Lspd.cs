@@ -339,6 +339,10 @@ namespace mtgvrp.group_manager.lspd
                 }
             }
 
+            API.sendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, receiverCharacter.Client.handle, false);
+            receiverCharacter.IsCuffed = false;
+            API.stopPlayerAnimation(receiverCharacter.Client);
+
             API.sendNotificationToPlayer(player, "You have arrested ~b~" + receiverCharacter.CharacterName + "~w~.");
             API.sendNotificationToPlayer(receiver, "You have been arrested by ~b~" + character.CharacterName + "~w~.");
             InventoryManager.DeleteInventoryItem(receiverCharacter, typeof(Money), fine);
@@ -516,7 +520,7 @@ namespace mtgvrp.group_manager.lspd
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
-                API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                //API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
                 return;
             }
             if (API.getEntityData(player, "MegaphoneStatus") != true)
