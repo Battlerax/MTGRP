@@ -133,17 +133,14 @@ namespace mtgvrp.player_manager
 
         public static Client GetPlayerById(int id)
         {
-            if (id < 0 || id > Players.Count - 1)
+            if (!_players.ContainsKey(id))
             {
                 return null;
             }
 
-            var c = (Character) Players.ToArray().GetValue(id);
+            var c = _players[id];
 
-            if (c.Client != null)
-                return c.Client;
-
-            return null;
+            return c.Client ?? null;
         }
 
         public static int GetPlayerId(Character c)
