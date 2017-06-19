@@ -8,6 +8,7 @@ using mtgvrp.inventory;
 using mtgvrp.phone_manager;
 using mtgvrp.weapon_manager;
 using mtgvrp.player_manager;
+using mtgvrp.group_manager;
 
 namespace mtgvrp.property_system.businesses
 {
@@ -161,18 +162,24 @@ namespace mtgvrp.property_system.businesses
 
                     API.sendChatMessageToPlayer(sender, "[BUSINESSES] You have successfully bought a ~g~" + name + "~w~ for ~g~" + price + "~w~.");
                     return;
+
                 }
                 else if (prop.Type == PropertyManager.PropertyTypes.LSNN)
                 {
                     switch (itemName)
                     {
                         case "lotto_ticket":
+                            foreach (var i in GroupManager.Groups)
+                            {
+                                if (i.CommandType == Group.CommandTypeLsnn) { i.LottoSafe += i.LottoPrice; }
+                            }
                             InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
                             character.HasLottoTicket = true;
                             API.sendChatMessageToPlayer(sender, "You purchased a lottery ticket. Good luck!");
                             break;
                     }
                     return;
+                }
 
 
                     if (item == null)
