@@ -696,6 +696,12 @@ namespace mtgvrp.property_system
                 return;
             }
 
+            if (prop.OwnerId != player.GetCharacter().Id || player.GetAccount().AdminLevel < 5)
+            {
+                API.sendChatMessageToPlayer(player, "You don't own this property.");
+                return;
+            }
+
             if (prop.Inventory == null) prop.Inventory = new List<IInventoryItem>();
             InventoryManager.ShowInventoryManager(player, player.GetCharacter(), prop, "Inventory: ", "Property: ");
         }
