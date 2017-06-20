@@ -135,7 +135,7 @@ namespace mtgvrp.inventory
             }
 
             //Check if player has simliar item.
-            var oldItem = storage.Inventory.FirstOrDefault(x => x.GetType() == item.GetType());
+            var oldItem = storage.Inventory.FirstOrDefault(x => x.CommandFriendlyName == item.CommandFriendlyName);
             if (oldItem == null || oldItem.CanBeStacked == false)
             {
                 if (maxAmount != -1 && oldItem?.Amount >= maxAmount)
