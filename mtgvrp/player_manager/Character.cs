@@ -41,13 +41,14 @@ namespace mtgvrp.player_manager
         public int BankBalance { get; set; }
 
         public PedHash Skin { get; set; }
+        public int Health { get; set; }
 
         public List<int> OwnedVehicles = new List<int>();
 
         public List<int> Outfit = new List<int>();
         public List<int> OutfitVariation = new List<int>();
         public List<Weapon> Weapons = new List<Weapon>();
-
+        
         public int Age { get; set; }
         public int AdminActions { get; set; }
         public string Birthday { get; set; }
@@ -282,6 +283,7 @@ namespace mtgvrp.player_manager
             BeingCalledBy = Character.None;
             CallingPlayer = Character.None;
 
+            Health = 100;
             RadioToggle = true;
             CanDoAnim = true;
         }

@@ -441,6 +441,13 @@ namespace mtgvrp.group_manager
         [Command("invite")]
         public void invite_cmd(Client player, string id)
         {
+            Character sender = player.GetCharacter();
+
+            if (sender.Group == Group.None)
+            {
+                return;
+            }
+
             var invited = PlayerManager.ParseClient(id);
 
             if (invited == null)
@@ -449,7 +456,6 @@ namespace mtgvrp.group_manager
                 return;
             }
 
-            Character sender = player.GetCharacter();
             GroupCommandPermCheck(sender, 6);
 
             Character invitedchar = API.getEntityData(invited.handle, "Character");
@@ -464,6 +470,13 @@ namespace mtgvrp.group_manager
         public void setrankname_cmd(Client player, int rankId, string rankname)
         {
             Character character = player.GetCharacter();
+
+            if (character.Group == Group.None)
+            {
+                return;
+            }
+
+
             GroupCommandPermCheck(character, 5);
                
             
@@ -483,6 +496,12 @@ namespace mtgvrp.group_manager
         public void setdivisionname_cmd(Client player, int divId, string divname)
         {
             Character character = player.GetCharacter();
+
+            if (character.Group == Group.None)
+            {
+                return;
+            }
+
             GroupCommandPermCheck(character, 5, true, 4);
 
           
@@ -502,7 +521,14 @@ namespace mtgvrp.group_manager
         public void setdivisonrankname_cmd(Client player, int divId, int rankId, string rankName)
         {
             Character character = player.GetCharacter();
+
+            if (character.Group == Group.None)
+            {
+                return;
+            }
+
             GroupCommandPermCheck(character, 5, true, 4);
+
 
             if (divId < 1 || divId > 5)
             {

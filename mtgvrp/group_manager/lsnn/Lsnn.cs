@@ -188,6 +188,8 @@ namespace mtgvrp.group_manager.lsnn
 
                 API.sendNotificationToPlayer(player, "The chopper camera has been turned ~r~off~w~.");
                 ChatManager.NearbyMessage(player, 10, "~p~" + character.CharacterName + " has turned off the chopper cam.");
+                CameraPosition = null;
+                CameraRotation = null;
                 CameraSet = false;
                 ChopperCamToggle = false;
                 ChopperRotation.Stop();
@@ -260,9 +262,11 @@ namespace mtgvrp.group_manager.lsnn
 
             var playerPos = API.getEntityPosition(player);
             API.sendNotificationToPlayer(player, "You are carrying a camera.", true);
-            ChatManager.NearbyMessage(player, 10, character.CharacterName + "~p~ picks up the news camera.");
+            ChatManager.NearbyMessage(player, 10, "~p~" + character.CharacterName + " picks up the news camera.");
             API.deleteObject(player, playerPos, API.getHashKey("p_tv_cam_02_s"));
             character.HasCamera = true;
+            CameraPosition = null;
+            CameraRotation = null;
             CameraSet = false;
             }
 
@@ -319,6 +323,12 @@ namespace mtgvrp.group_manager.lsnn
         [Command("watchbroadcast")]
         public void watchbroadcast_cmd(Client player)
         {
+            if (CameraPosition == null || CameraRotation == null || IsBroadcasting == false)
+            {
+                API.sendChatMessageToPlayer(player, "There is currently no live broadcast.");
+                return;
+            }
+
             Character character = API.getEntityData(player.handle, "Character");
 
             var camPos = CameraPosition + new Vector3(0, 0, 0.94);
@@ -344,12 +354,6 @@ namespace mtgvrp.group_manager.lsnn
             {
                 API.triggerClientEvent(player, "watch_broadcast", camPos, camRot, Headline);
                 character.IsWatchingBroadcast = true;
-                return;
-            }
-       
-            if (IsBroadcasting == false)
-            {
-                API.sendChatMessageToPlayer(player, "There is currently no live broadcast.");
                 return;
             }
 

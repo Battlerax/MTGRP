@@ -148,7 +148,8 @@ namespace mtgvrp.player_manager
                         API.setEntityPosition(player.handle, character.LastPos);
                         API.setEntityRotation(player.handle, character.LastRot);
                         API.setEntityDimension(player.handle, character.LastDimension);
-                        
+                        API.setPlayerHealth(player, character.Health);
+
                         if (character.Group != Group.None)
                         {
                             GroupManager.SendGroupMessage(player,
