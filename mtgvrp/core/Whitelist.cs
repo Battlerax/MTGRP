@@ -48,7 +48,7 @@ namespace mtgvrp.core
              "Charpur",
              "YepityS",
              "Boca11",
-             "ItzJordan",
+             "ltzJordan",
              "ToastyTheZombie",
              "unlivedpoem",
              "Shaneboy7780",
