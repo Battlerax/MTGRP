@@ -121,7 +121,7 @@ namespace mtgvrp.rp_scripts
                 case "OnBankMenuTrigger":
                     {
                         // check to see if player has moved away from ATM
-                        if (Atms.Any(x => x.DistanceTo(player.position) <= 5.0))
+                        if (Atms.Any(x => x.DistanceTo(player.position) <= 5.0) == false)
                         {
                             API.sendChatMessageToPlayer(player, "You have moved too far away from the ATM.");
                             return;

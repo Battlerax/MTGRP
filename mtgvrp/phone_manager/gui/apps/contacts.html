@@ -67,6 +67,7 @@
 
         function contactAdded(name, number) {
             showContacts(`[["${name}","${number}"]]`);
+	        metroDialog.close('#addContactDialog');
         }
         function contactEdited(oldname, newname, number) {
             var item = $(`span.list-title:contains(${oldname})`);
