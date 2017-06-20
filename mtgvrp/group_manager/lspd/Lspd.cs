@@ -508,13 +508,15 @@ namespace mtgvrp.group_manager.lspd
 
             foreach (var c in PlayerManager.Players)
             {
+                int i = 0;
                 if (c.BeaconSet == false)
                 {
-                    API.sendChatMessageToPlayer(player, "There are no active beacons.");
+                    i++;
+                    if (i == PlayerManager.Players.Count()) { API.sendChatMessageToPlayer(player, "There are no active beacons."); }
                     return;
                 }
 
-                beaconCreator = c.BeaconCreator;
+                beaconCreator = c.Client;
 
             }
 
