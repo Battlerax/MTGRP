@@ -393,7 +393,7 @@ namespace mtgvrp.AdminSystem
             account.IsSpectating = true;
             API.shared.setPlayerToSpectatePlayer(player, target);
             API.shared.setPlayerNametagVisible(player, false);
-            API.shared.setEntityTransparency(player, 100);
+            API.shared.setEntityTransparency(player, 0);
             API.shared.sendChatMessageToPlayer(player, "You are now spectating " + PlayerManager.GetName(target) + " (ID:" + id + "). Use /specoff to stop spectating this player.");
 
         }
@@ -414,7 +414,7 @@ namespace mtgvrp.AdminSystem
             account.IsSpectating = false;
             API.unspectatePlayer(player);
             API.shared.setPlayerNametagVisible(player, true);
-            API.shared.setEntityTransparency(player, 0);
+            API.shared.setEntityTransparency(player, 255);
             API.sendChatMessageToPlayer(player, "You are no longer spectating anyone.");
         }
 
