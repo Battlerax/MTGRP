@@ -15,6 +15,16 @@ namespace mtgvrp.group_manager.lsnn
         public Lsnn()
         {
             API.onResourceStart += StartLsnn;
+            API.onPlayerDisconnected += API_onPlayerDisconnected;
+        }
+
+        private void API_onPlayerDisconnected(Client player, string reason)
+        {
+            var character = player.GetCharacter();
+            if (character == null) return;
+
+            if (character.MicObject != null && API.doesEntityExist(character.MicObject))
+                API.deleteEntity(character.MicObject);
         }
 
         public readonly Vector3 LsnnFrontDoor = new Vector3(-319.0662f, -609.8559f, 33.55819f);
@@ -120,15 +130,16 @@ namespace mtgvrp.group_manager.lsnn
             if (CameraSet == true)
             {
                 API.sendChatMessageToPlayer(player, "A camera has already been set.");
+                return;
             }
 
             var pos = API.getEntityPosition(player.handle);
             var angle = API.getEntityRotation(player.handle).Z;
             CameraPosition = XyInFrontOfPoint(pos, angle, 1) - new Vector3(0, 0, 0.5);
-            var camRot = API.getEntityRotation(player.handle) + new Vector3(0, 0, 180);
+            CameraRotation = API.getEntityRotation(player.handle) + new Vector3(0, 0, 180);
             API.sendNotificationToPlayer(player, "A camera has been placed on your position.");
             ChatManager.NearbyMessage(player, 10, "~p~" + character.CharacterName + " sets down a news camera");
-            var camera = API.createObject(API.getHashKey("p_tv_cam_02_s"), CameraPosition, CameraRotation);
+            API.createObject(API.getHashKey("p_tv_cam_02_s"), CameraPosition, CameraRotation);
             character.HasCamera = false;
             CameraSet = true;
         }
@@ -178,6 +189,8 @@ namespace mtgvrp.group_manager.lsnn
 
                 API.sendNotificationToPlayer(player, "The chopper camera has been turned ~r~off~w~.");
                 ChatManager.NearbyMessage(player, 10, "~p~" + character.CharacterName + " has turned off the chopper cam.");
+                CameraPosition = null;
+                CameraRotation = null;
                 CameraSet = false;
                 ChopperCamToggle = false;
                 ChopperRotation.Stop();
@@ -250,9 +263,11 @@ namespace mtgvrp.group_manager.lsnn
 
             var playerPos = API.getEntityPosition(player);
             API.sendNotificationToPlayer(player, "You are carrying a camera.", true);
-            ChatManager.NearbyMessage(player, 10, character.CharacterName + "~p~ picks up the news camera.");
+            ChatManager.NearbyMessage(player, 10, "~p~" + character.CharacterName + " picks up the news camera.");
             API.deleteObject(player, playerPos, API.getHashKey("p_tv_cam_02_s"));
             character.HasCamera = true;
+            CameraPosition = null;
+            CameraRotation = null;
             CameraSet = false;
             }
 
@@ -311,6 +326,13 @@ namespace mtgvrp.group_manager.lsnn
         {
             Character character = API.getEntityData(player.handle, "Character");
 
+            if (CameraPosition == null || CameraRotation == null || IsBroadcasting == false && character.Group.CommandType != Group.CommandTypeLsnn)
+            {
+                API.sendChatMessageToPlayer(player, "There is currently no live broadcast.");
+                return;
+            }
+
+
             var camPos = CameraPosition + new Vector3(0, 0, 0.94);
             var camRot = CameraRotation + new Vector3(-1, 0, 180);
             var focusX = CameraPosition.X;
@@ -334,12 +356,6 @@ namespace mtgvrp.group_manager.lsnn
             {
                 API.triggerClientEvent(player, "watch_broadcast", camPos, camRot, Headline);
                 character.IsWatchingBroadcast = true;
-                return;
-            }
-       
-            if (IsBroadcasting == false)
-            {
-                API.sendChatMessageToPlayer(player, "There is currently no live broadcast.");
                 return;
             }
 
@@ -388,14 +404,15 @@ namespace mtgvrp.group_manager.lsnn
             {
                 API.sendNotificationToPlayer(player, "You are speaking through a microphone.", true);
                 API.setEntityData(player, "MicStatus", true);
-                var microphone = API.createObject(API.getHashKey("p_ing_microphonel_01"), playerPos, new Vector3());
-                API.attachEntityToEntity(microphone, player, "IK_R_Hand", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                character.MicObject = API.createObject(API.getHashKey("p_ing_microphonel_01"), playerPos, new Vector3());
+                API.attachEntityToEntity(character.MicObject, player, "IK_R_Hand", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
                 return;
             }
             API.sendNotificationToPlayer(player, "You are no longer speaking through a microphone.");
             API.setEntityData(player, "MicStatus", false);
-            API.deleteObject(player, playerPos, API.getHashKey("p_ing_microphonel_01"));
-
+            if (character.MicObject != null && API.doesEntityExist(character.MicObject))
+                API.deleteEntity(character.MicObject);
+            character.MicObject = null;
         }
 
         [Command("givemic")]

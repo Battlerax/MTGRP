@@ -72,6 +72,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
     }
     else if (eventName == "login_finished") {
         character_menu.Visible = false;
+		menu_pool = null;
     }
     else if (eventName == "initialize_hair") {
         MAX_HAIR_STYLE = args[0];
@@ -97,6 +98,13 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 API.onUpdate.connect(function () {
     if (menu_pool != null) {
         menu_pool.ProcessMenus();
+		API.disableControlThisFrame(24);
+		API.disableControlThisFrame(30);
+		API.disableControlThisFrame(31);
+		API.disableControlThisFrame(32);
+		API.disableControlThisFrame(33);
+		API.disableControlThisFrame(34);
+		API.disableControlThisFrame(35);
     }
 });
 
@@ -115,7 +123,7 @@ function next_character_creation_step(player, step) {
         case 0: {
             menu_pool = API.getMenuPool();
 
-            API.sendChatMessage("~g~Welcome to character creation! Let's begin by choosing your gender and your parents!")
+	        API.sendChatMessage("~g~Welcome to character creation! Let's begin by choosing your gender and your parents!");
 
             API.triggerServerEvent("initialize_hair", gender);
 
@@ -282,6 +290,10 @@ function next_character_creation_step(player, step) {
                     next_character_creation_step(player, 1);
                 }
             });
+
+	        character_creation_menu.OnMenuClose.connect((menu) => {
+		        character_creation_menu.Visible = true;
+	        });
             break;
         }
         case 1: {
@@ -516,6 +528,9 @@ function next_character_creation_step(player, step) {
                 }
             });
 
+	        character_creation_menu.OnMenuClose.connect((menu) => {
+		        next_character_creation_step(player, 0);
+	        });
             break;
         }
         case 2: {
@@ -651,6 +666,10 @@ function next_character_creation_step(player, step) {
                 API.triggerServerEvent("change_clothes", 4, pants_index, pants_variation);
             });
 
+	        pant_menu.OnMenuClose.connect((menu) => {
+		        character_creation_menu.Visible = true;
+	        });
+
             shoe_menu.OnIndexChange.connect(function (sender, index) {
                 shoe_index = index;
                 shoe_variation = 0;
@@ -661,6 +680,10 @@ function next_character_creation_step(player, step) {
                 shoe_variation = index;
                 API.triggerServerEvent("change_clothes", 6, shoe_index, shoe_variation);
             });
+
+	        shoe_menu.OnMenuClose.connect((menu) => {
+		        character_creation_menu.Visible = true;
+	        });
 
             accessory_menu.OnIndexChange.connect(function (sender, index) {
                 accessory_index = index;
@@ -673,6 +696,10 @@ function next_character_creation_step(player, step) {
                 API.triggerServerEvent("change_clothes", 7, accessory_index, accessory_variation);
             });
 
+	        accessory_menu.OnMenuClose.connect((menu) => {
+		        character_creation_menu.Visible = true;
+	        });
+
             undershirt_menu.OnIndexChange.connect(function (sender, index) {
                 undershirt_index = index;
                 undershirt_variation = 0;
@@ -683,6 +710,10 @@ function next_character_creation_step(player, step) {
                 undershirt_variation = index;
                 API.triggerServerEvent("change_clothes", 8, undershirt_index, undershirt_variation);
             });
+
+	        undershirt_menu.OnMenuClose.connect((menu) => {
+		        character_creation_menu.Visible = true;
+	        });
 
             top_menu.OnIndexChange.connect(function (sender, index) {
                 top_index = index;
@@ -695,6 +726,10 @@ function next_character_creation_step(player, step) {
                 API.triggerServerEvent("change_clothes", 11, top_index, top_variation);
             });
 
+	        top_menu.OnMenuClose.connect((menu) => {
+		        character_creation_menu.Visible = true;
+	        });
+
             hat_menu.OnIndexChange.connect(function (sender, index) {
                 hat_index = index;
                 hat_variation = 0;
@@ -705,6 +740,10 @@ function next_character_creation_step(player, step) {
                 hat_variation = index;
                 API.triggerServerEvent("change_clothes", 20, hat_index, hat_variation);
             });
+
+	        hat_menu.OnMenuClose.connect((menu) => {
+		        character_creation_menu.Visible = true;
+	        });
 
             glasses_menu.OnIndexChange.connect(function (sender, index) {
                 glasses_index = index;
@@ -717,6 +756,10 @@ function next_character_creation_step(player, step) {
                 API.triggerServerEvent("change_clothes", 21, glasses_index, glasses_variation);
             });
 
+	        glasses_menu.OnMenuClose.connect((menu) => {
+		        character_creation_menu.Visible = true;
+	        });
+
             ear_menu.OnIndexChange.connect(function (sender, index) {
                 ear_index = index;
                 ear_variation = 0;
@@ -727,6 +770,10 @@ function next_character_creation_step(player, step) {
                 ear_variation = index;
                 API.triggerServerEvent("change_clothes", 22, ear_index, ear_variation);
             });
+
+	        ear_menu.OnMenuClose.connect((menu) => {
+		        character_creation_menu.Visible = true;
+	        });
 
             character_creation_menu.OnItemSelect.connect(function (sender, item, index) {
                 character_creation_menu.Visible = false;
@@ -779,6 +826,10 @@ function next_character_creation_step(player, step) {
                         break;
                 }
             });
+
+	        character_creation_menu.OnMenuClose.connect((menu) => {
+		        next_character_creation_step(player, 1);
+	        });
             break;
         }
         case 3: {
@@ -834,6 +885,7 @@ function next_character_creation_step(player, step) {
                     case "Finish Character Creation":
                         character_creation_menu.Visible = false;
                         API.triggerServerEvent("finish_character_creation", age, birthday, birthplace, spawn_point);
+						menu_pool = null;
                         break;
                 }
             });
@@ -845,6 +897,10 @@ function next_character_creation_step(player, step) {
             spawn_menu.OnListChanged.connect(function (sender, new_index) {
                 spawn_point = new_index;
             });
+
+	        character_creation_menu.OnMenuClose.connect((menu) => {
+		        next_character_creation_step(player, 2);
+	        });
         }
     }
 }

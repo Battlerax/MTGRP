@@ -20,6 +20,8 @@ namespace mtgvrp.core
              "Colm692",
              "XeroTheGreat",
              "Im_Toro",
+             "Nickson1993",
+             "Sandman4321",
 
              //Kevin & Friends
              "maniac1994",
@@ -86,6 +88,8 @@ namespace mtgvrp.core
              "Craignum",
              "cartoonmagic",
              "laitilee",
+             "NewTheSunglass",
+             "shaneboy7780",
         };
 
         public Whitelist()
