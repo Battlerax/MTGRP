@@ -132,6 +132,9 @@ namespace mtgvrp.player_manager
         public bool IsInFishingZone { get; set; }
 
         [BsonIgnore]
+        public DateTime NextFishTime { get; set; }
+
+        [BsonIgnore]
         public Timer CatchTimer { get; set; }
 
         [BsonIgnore]
