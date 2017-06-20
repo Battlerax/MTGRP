@@ -125,12 +125,11 @@ namespace mtgvrp.core
 
         public void BroadcastMessage(string msg)
         {
-            foreach (var i in API.getAllPlayers())
+            foreach (var i in PlayerManager.Players)
             {
-                Character character = API.getEntityData(i.handle, "Character");
-                if(character.IsWatchingBroadcast == true)
+                if(i.IsWatchingBroadcast == true)
                 {
-                    API.sendChatMessageToPlayer(i, msg);
+                    API.sendChatMessageToPlayer(i.Client, msg);
                 }
             }
         }
