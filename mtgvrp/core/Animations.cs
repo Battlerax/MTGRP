@@ -121,33 +121,7 @@ namespace mtgvrp.core
                 API.sendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
-        [Command("crowdcontrol", "~y~Syntax /crowdcontrol 1 - 3")]
-        public void crowdcontrol(Client player, int number)
-        {
-            Character character = API.getEntityData(player.handle, "Character");
-            if (character.CanDoAnim == true)
-            {
-                switch (number)
-                {
-                    case 1:
-                        API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@code_human_police_investigate@base", "base");
-                        break;
-                    case 2:
-                        API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@code_human_police_investigate@idle_a", "idle_a");
-                        break;
-                    case 3:
-                        API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@code_human_police_investigate@idle_b", "idle_f");
-                        break;
-                    default:
-                        API.sendChatMessageToPlayer(player, "~y~Syntax /crowdcontrol 1 - 3");
-                        break;
-                }
-            }
-            else
-            {
-                API.sendChatMessageToPlayer(player, "You're unable to do an animation right now.");
-            }
-        }
+        
         [Command("investigate", "~y~Syntax /investigate 1 - 9")]
         public void investigate(Client player, int number)
         {
