@@ -382,7 +382,6 @@ namespace mtgvrp.group_manager
                 var radioMsg = "~b~[RADIO][" + character.GroupRank + "] " + GetRankName(character) + " " +
                                character.CharacterName + " : " + "~w~" + message;
 
-                ChatManager.NearbyMessage(player, 15, radioMsg, Color.Grey);
                 SendRadioMessage(player, radioMsg);
             }
         }

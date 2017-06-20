@@ -347,7 +347,7 @@ namespace mtgvrp.phone_manager
                 if (!DoesNumberExist(input))
                 {
                     API.sendChatMessageToPlayer(player, Color.White,
-                        "The call failed to connect. (Phone number is not registered.");
+                        "The call failed to connect. (Phone number is not registered.)");
                     return;
                 }
 
@@ -565,7 +565,7 @@ namespace mtgvrp.phone_manager
                 if (!DoesNumberExist(input))
                 {
                     API.sendChatMessageToPlayer(player, Color.White,
-                        "The text message failed to send. (Phone number is not registered.");
+                        "The text message failed to send. (Phone number is not registered.)");
                     return;
                 }
 
