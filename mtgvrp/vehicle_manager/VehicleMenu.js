@@ -43,7 +43,7 @@ API.onKeyDown.connect(function(Player, args){
                     park_car_item = API.createMenuItem("Park Car", "Save the vehicles spawn point to its current location");
                 }
                 else {
-                    if (API.getEngineStatus(player_veh) == true) {
+                    if (API.getVehicleEngineStatus(player_veh) == false) {
                         engine_state_item = API.createMenuItem("Attempt Hotwire", "Attempt to hotwire the vehicle.");
                     }
                     else {
