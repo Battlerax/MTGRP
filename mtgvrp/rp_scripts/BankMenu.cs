@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using GTANetworkServer;
 using GTANetworkShared;
 using mtgvrp.core;
@@ -14,9 +15,6 @@ namespace mtgvrp.rp_scripts
         public Test()
         {
             API.onClientEventTrigger += OnClientEventTrigger;
-            API.onEntityEnterColShape += OnEntityEnterColShapeHandler;
-            API.onEntityExitColShape += OnEntityExitColShapeHandler;
-            API.onEntityDataChange += OnEntityDataChange;
 
             Atms = new List<Vector3>
             {
@@ -65,7 +63,6 @@ namespace mtgvrp.rp_scripts
             foreach (var t in Atms)
             {
                 API.createTextLabel("~g~ATM\n~w~(/atm)", t, 25.0f, 0.5f);
-                API.createSphereColShape(t, 2);
             }
 
             // Withdraw/deposit amounts for bank menu
@@ -108,38 +105,15 @@ namespace mtgvrp.rp_scripts
         [Command("atm")]
         public void atm_cmd(Client player)
         {
-            if (API.getEntitySyncedData(player, "IsNearATM") > 0)
+            if (Atms.Any(x=> x.DistanceTo(player.position) <= 5.0))
             {
                 Character character = API.shared.getEntityData(player.handle, "Character");
                 ChatManager.RoleplayMessage(character, "slides in their card and inputs their PIN number.", ChatManager.RoleplayMe);
                 API.sendChatMessageToPlayer(player, "~y~[Bank of Los Santos]~w~ Account balance: ~g~$" + character.BankBalance + "~w~.");
+                API.triggerClientEvent(player, "openATM");
             }
         }
 
-        private void OnEntityEnterColShapeHandler(ColShape shape, NetHandle entity)
-        {
-            API.setEntitySyncedData(entity, "IsNearATM", 1);
-            API.setEntityData(entity, "IsNearATM_server", 1);
-        }
-        private void OnEntityExitColShapeHandler(ColShape shape, NetHandle entity)
-        {
-            API.setEntitySyncedData(entity, "IsNearATM", 0);
-            API.setEntityData(entity, "IsNearATM_server", 0);
-        }
-        private void OnEntityDataChange(NetHandle entity, string key, object oldValue)
-        {
-            // incase player modifies the synced data
-            if (key == "IsNearATM")
-            {
-                int value = API.getEntitySyncedData(entity, key);
-                int realIsNearAtm = API.getEntityData(entity, "IsNearATM_server");
-
-                if (value != realIsNearAtm)
-                {
-                    API.setEntitySyncedData(entity, "IsNearATM", realIsNearAtm);
-                }
-            }
-        }
         public void OnClientEventTrigger(Client player, string eventName, params object[] arguments)
         {
             switch (eventName)
@@ -147,7 +121,7 @@ namespace mtgvrp.rp_scripts
                 case "OnBankMenuTrigger":
                     {
                         // check to see if player has moved away from ATM
-                        if(API.getEntityData(player, "IsNearATM_server") < 1)
+                        if (Atms.Any(x => x.DistanceTo(player.position) <= 5.0))
                         {
                             API.sendChatMessageToPlayer(player, "You have moved too far away from the ATM.");
                             return;

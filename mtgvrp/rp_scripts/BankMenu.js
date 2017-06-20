@@ -4,13 +4,10 @@ var bank_menu = null;
 var withdraw_index = 0;
 var deposit_index = 0;
 
-API.onChatCommand.connect(function(msg){
-    if(msg == "/atm") {
+API.onServerEventTrigger.connect(function(eventName, args){
+    if(eventName === "openATM") {
         if (bank_menu == null || bank_menu.Visible == false) {
             var player = API.getLocalPlayer();
-
-            if (API.getEntitySyncedData(player, "IsNearATM") < 1)
-                return;
 
             if (API.isPlayerInAnyVehicle(player) == true)
                 return;
