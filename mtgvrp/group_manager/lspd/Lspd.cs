@@ -393,6 +393,12 @@ namespace mtgvrp.group_manager.lspd
             Character character = API.getEntityData(player.handle, "Character");
             Character receivercharacter = API.getEntityData(receiver, "Character");
 
+            if (character.Group.CommandType != Group.CommandTypeLspd)
+            {
+                API.sendChatMessageToPlayer(player, "You are not in the LSPD.");
+                return;
+            }
+
             if (receiver == null)
             {
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
