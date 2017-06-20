@@ -72,6 +72,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
     }
     else if (eventName == "login_finished") {
         character_menu.Visible = false;
+		menu_pool = null;
     }
     else if (eventName == "initialize_hair") {
         MAX_HAIR_STYLE = args[0];
@@ -884,6 +885,7 @@ function next_character_creation_step(player, step) {
                     case "Finish Character Creation":
                         character_creation_menu.Visible = false;
                         API.triggerServerEvent("finish_character_creation", age, birthday, birthplace, spawn_point);
+						menu_pool = null;
                         break;
                 }
             });
