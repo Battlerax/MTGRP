@@ -527,13 +527,13 @@ namespace mtgvrp.group_manager.lspd
             {
                 API.sendNotificationToPlayer(player, "You are speaking through a megaphone", true);
                 API.setEntityData(player, "MegaphoneStatus", true);
-                //var megaphone = API.createObject(API.getHashKey("prop_megaphone_01"), playerPos, new Vector3());
-                //API.attachEntityToEntity(megaphone, player, "IK_R_Hand", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                var megaphone = API.createObject(API.getHashKey("prop_megaphone_01"), playerPos, new Vector3());
+                API.attachEntityToEntity(megaphone, player, "IK_R_Hand", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
                 return;
             }
             API.sendNotificationToPlayer(player, "You are no longer speaking through a megaphone.");
-            //API.setEntityData(player, "MegaphoneStatus", false);
-            //API.deleteObject(player, playerPos, API.getHashKey("prop_megaphone_01"));
+            API.setEntityData(player, "MegaphoneStatus", false);
+            API.deleteObject(player, playerPos, API.getHashKey("prop_megaphone_01"));
         }
 
 

@@ -392,13 +392,13 @@ namespace mtgvrp.group_manager.lsnn
             {
                 API.sendNotificationToPlayer(player, "You are speaking through a microphone.", true);
                 API.setEntityData(player, "MicStatus", true);
-                //var microphone = API.createObject(API.getHashKey("p_ing_microphonel_01"), playerPos, new Vector3());
-                //API.attachEntityToEntity(microphone, player, "IK_R_Hand", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                var microphone = API.createObject(API.getHashKey("p_ing_microphonel_01"), playerPos, new Vector3());
+                API.attachEntityToEntity(microphone, player, "IK_R_Hand", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
                 return;
             }
             API.sendNotificationToPlayer(player, "You are no longer speaking through a microphone.");
             API.setEntityData(player, "MicStatus", false);
-            //API.deleteObject(player, playerPos, API.getHashKey("p_ing_microphonel_01"));
+            API.deleteObject(player, playerPos, API.getHashKey("p_ing_microphonel_01"));
 
         }
 
