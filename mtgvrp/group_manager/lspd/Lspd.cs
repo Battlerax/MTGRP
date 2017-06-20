@@ -467,6 +467,7 @@ namespace mtgvrp.group_manager.lspd
                     API.sendChatMessageToPlayer(player, $"* ~r~{item.LongName}~w~[{item.CommandFriendlyName}] ({item.Amount})");
                 }
                 API.sendChatMessageToPlayer(player, "-------------PLAYER INVENTORY-------------");
+                return;
             }
             API.sendChatMessageToPlayer(player, "Players must be cuffed or have their hands up before you can frisk them.");
 
