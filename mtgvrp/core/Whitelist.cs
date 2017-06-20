@@ -21,6 +21,7 @@ namespace mtgvrp.core
              "XeroTheGreat",
              "Im_Toro",
              "Nickson1993",
+             "Sandman4321",
 
              //Kevin & Friends
              "maniac1994",
