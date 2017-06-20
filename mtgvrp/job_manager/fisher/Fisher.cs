@@ -20,7 +20,7 @@ namespace mtgvrp.job_manager.fisher
                 new Fish("Large Mouth Bass", 50, 1, 15, false, 100),
                 new Fish("Pacific Cod", 100, 10, 25, false, 80),
                 new Fish("Chinook Salmon", 200, 25, 50, false, 70),
-                new Fish("Atlantic Mackerel", 250, 25, 25, false, 60),
+                new Fish("Atlantic Mackerel", 250, 25, 26, false, 60),
                 new Fish("Bluefin Tuna", 300, 35, 70, true, 50),
                 new Fish("Common Carp", 350, 15, 30, false, 40),
                 new Fish("Pacific Herring", 400, 10, 15, false, 30),
