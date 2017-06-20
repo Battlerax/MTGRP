@@ -58,6 +58,11 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 
                 });
     }
+	break;
+
+	case "getwaypoint":
+		API.triggerServerEvent("teleport", API.getWaypointPosition());
+		break;
   }
 });
 
