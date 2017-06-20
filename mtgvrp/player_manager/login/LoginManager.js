@@ -5,7 +5,7 @@ var login_browser = null;
 
 API.onResourceStart.connect(function () {
 
-    var res = API.getScreenResolution();
+    var res = API.getScreenResolutionMantainRatio();
     login_browser = API.createCefBrowser(res.Width, res.Height);
     API.waitUntilCefBrowserInit(login_browser);
     API.setCefBrowserPosition(login_browser, 0, 0);

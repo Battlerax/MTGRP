@@ -46,13 +46,25 @@ namespace mtgvrp.player_manager
             API.onPlayerDisconnected += OnPlayerDisconnected;
             API.onClientEventTrigger += API_onClientEventTrigger;
             API.onPlayerRespawn += API_onPlayerRespawn;
+            API.onPlayerHealthChange += API_onPlayerHealthChange;
 
             DebugManager.DebugMessage("[PlayerM] Player Manager initalized.");
         }
 
+        private void API_onPlayerHealthChange(Client player, int oldValue)
+        {
+
+            Account account = API.getEntityData(player, "Account");
+
+            if (API.getPlayerHealth(player) < oldValue)
+            {
+                if (account.AdminDuty) { API.setPlayerHealth(player, 100); }
+            }
+        }
+
         private void API_onPlayerRespawn(Client player)
         {
-            player.sendChatMessage("You were revived by the ~b~Los Santos Medical Department ~w~ and were charged 500$ for hospital fees.");
+            player.sendChatMessage("You were revived by the ~b~Los Santos Medical Department ~w~ and were charged $500 for hospital fees.");
             WeaponManager.RemoveAllPlayerWeapons(player);
             InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(Money), 500);
         }
@@ -97,6 +109,7 @@ namespace mtgvrp.player_manager
 
                 var account = player.GetAccount();
                 account.Save();
+                character.Health = API.getPlayerHealth(player);
                 character.LastPos = player.position;
                 character.LastRot = player.rotation;
                 character.GetTimePlayed(); //Update time played before save.
@@ -104,8 +117,6 @@ namespace mtgvrp.player_manager
 
                 API.resetEntityData(player.handle, "Character");
                 RemovePlayer(character);
-
-                UpdatePlayerNametags(); //IDs change when a player logs off
             }
         }
 
@@ -147,7 +158,10 @@ namespace mtgvrp.player_manager
             if (_players.ContainsValue(c))
                 return _players.Single(x => x.Value == c).Key;
             else
+            {
+                Console.WriteLine("NEGATIVE ONE ID RETURNED");
                 return -1;
+            }
         }
 
         public static Client ParseClient(string input)
@@ -329,21 +343,21 @@ namespace mtgvrp.player_manager
             Account account = API.shared.getEntityData(receiver.handle, "Account");
             Account senderAccount = API.shared.getEntityData(receiver.handle, "Account");
 
-            API.sendChatMessageToPlayer(sender, "________________PLAYER STATS________________");
+            API.sendChatMessageToPlayer(sender, "==============================================");
+            API.sendChatMessageToPlayer(sender, "Player statistics for " + character.CharacterName);
+            API.sendChatMessageToPlayer(sender, "==============================================");
             API.sendChatMessageToPlayer(sender, "~g~General:~g~");
-
-            API.sendChatMessageToPlayer(sender, string.Format("~h~Character name:~h~ {0} ~h~Account name:~h~ {1} ~h~ID:~h~ {2} ~h~Money:~h~ {3} ~h~Bank balance:~h~ {4} ~h~Playing hours:~h~ {5}", character.CharacterName, account.AccountName, character.Id, Money.GetCharacterMoney(character), character.BankBalance, character.GetPlayingHours()));
+            API.sendChatMessageToPlayer(sender, string.Format("~h~Character name:~h~ {0} | ~h~ID:~h~ {1} | ~h~Money:~h~ {2} | ~h~Bank balance:~h~ {3} | ~h~Playing hours:~h~ {4}", character.CharacterName, character.Id, Money.GetCharacterMoney(character), character.BankBalance, character.GetPlayingHours()));
             API.sendChatMessageToPlayer(sender, string.Format("~h~Age:~h~ {0} ~h~Birthplace:~h~ {1} ~h~Birthday:~h~ {2} ~h~VIP level:~h~ {3} ~h~VIP expires:~h~ {4}", character.Age, character.Birthplace, character.Birthday, account.VipLevel, account.VipExpirationDate));
             API.sendChatMessageToPlayer(sender, "~b~Faction/Jobs:~b~");
-            //API.sendChatMessageToPlayer(sender, string.Format("~h~Faction ID:~h~ {0} ~h~Rank:~h~ {1} ~h~Group name:~h~ {2} ~h~Job 1:~h~ {3} ~h~Job 2: {4}", character.GroupId, character.GroupRank, character.Group.Name, character.JobOne));
+            API.sendChatMessageToPlayer(sender, string.Format("~h~Faction ID:~h~ {0} ~h~Rank:~h~ {1} ~h~Group name:~h~ {2} ~h~Job 1:~h~ {3}", character.GroupId, character.GroupRank, character.Group.Name, character.JobOne));
             API.sendChatMessageToPlayer(sender, "~r~Property:~r~");
-            //Show property info..
+            API.sendChatMessageToPlayer(sender, string.Format("~h~Owned vehicles:~h~ {0}", character.OwnedVehicles.Count()));
 
             if (senderAccount.AdminLevel > 0)
             {
                 API.sendChatMessageToPlayer(sender, "~y~Admin:~y~");
-                API.sendChatMessageToPlayer(sender,
-                    $"~h~Admin level:~h~ {account.AdminLevel} ~h~ Admin name:~h~ {account.AdminName} ~h~Last vehicle:~h~ {character.LastVehicle} ~h~Dimension:~h~ {character.LastDimension} ~h~Last IP:~h~ {account.LastIp}");
+                API.sendChatMessageToPlayer(sender, string.Format("~h~Admin level:~h~ {0} ~h~Admin name:~h~ {1} ~h~Last vehicle:~h~ {2} ~h~Dimension:~h~ {3} ~h~Last IP:~h~ {4}", account.AdminLevel, account.AdminName, character.LastVehicle, character.LastDimension, account.LastIp));
             }
         }
     }

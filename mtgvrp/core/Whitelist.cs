@@ -20,6 +20,8 @@ namespace mtgvrp.core
              "Colm692",
              "XeroTheGreat",
              "Im_Toro",
+             "Nickson1993",
+             "Sandman4321",
 
              //Kevin & Friends
              "maniac1994",
@@ -50,7 +52,7 @@ namespace mtgvrp.core
              "Charpur",
              "YepityS",
              "Boca11",
-             "ItzJordan",
+             "ltzJordan",
              "ToastyTheZombie",
              "unlivedpoem",
              "Shaneboy7780",
@@ -72,12 +74,13 @@ namespace mtgvrp.core
              "SlavishClown0",
              "BasedSosaa",
              "YoMomK",
-             "justcallmeGorm",
+             "justcallmeGorM",
              "Weavetron",
              "Guvnors",
              "MTGMoleman",
              "Dylan_Parker",
              "iEinarS",
+             "TheSunglass",
              "stevanowskis007",
              "GreenIsGo",
              "BCBud420",
@@ -86,6 +89,8 @@ namespace mtgvrp.core
              "Craignum",
              "cartoonmagic",
              "laitilee",
+             "shaneboy7780",
+             "ChipotleAwayJay"
         };
 
         public Whitelist()

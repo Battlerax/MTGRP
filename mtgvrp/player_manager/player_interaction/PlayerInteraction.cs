@@ -150,7 +150,7 @@ namespace mtgvrp.player_manager.player_interaction
         {
 
             var receiver = PlayerManager.ParseClient(id);
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = API.getEntityData(receiver.handle, "Character");
     
             if (receiver == null)
             {
@@ -158,11 +158,12 @@ namespace mtgvrp.player_manager.player_interaction
                 return;
             }
 
-            if (character.IsCuffed == false)
+            if (character.IsCuffed == false && character.IsTied == false)
             {
                 API.sendChatMessageToPlayer(player, "Players must be tied/cuffed before you can detain them.");
                 return;
             }
+
             if (seatNumber > 2)
             {
                 API.sendChatMessageToPlayer(player, "Seat number ranges from 0-2 (0 is the passenger seat).");
@@ -180,7 +181,7 @@ namespace mtgvrp.player_manager.player_interaction
                 return;
             }
 
-            API.setPlayerIntoVehicle(receiver, player.vehicle.handle, seatNumber);
+            API.setPlayerIntoVehicle(receiver, API.getPlayerVehicle(player), seatNumber);
             API.sendChatMessageToPlayer(player, "~g~You have detained " + receiver.name + " into a vehicle.");
             API.sendChatMessageToPlayer(receiver, "~g~You were detained by " + player.name + " into a vehicle.");
 

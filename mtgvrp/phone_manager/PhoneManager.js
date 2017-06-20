@@ -2,7 +2,7 @@
 
 function showPhoneIfNotShown() {
     if (myBrowser == null) {
-        var res = API.getScreenResolution();
+        var res = API.getScreenResolutionMantainRatio();
         var width = 405;
         var height = 590;
         myBrowser = API.createCefBrowser(width, height);
@@ -136,3 +136,9 @@ function callServerEvent(eventName /* Args */) {
     var args = Array.prototype.slice.call(arguments, 1);
     API.triggerServerEvent(eventName, ...args);
 }
+
+API.onUpdate.connect(() => {
+	if (myBrowser !== null) {
+		API.disableAllControlsThisFrame();
+	}
+});

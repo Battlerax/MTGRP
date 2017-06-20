@@ -121,33 +121,7 @@ namespace mtgvrp.core
                 API.sendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
-        [Command("crowdcontrol", "~y~Syntax /crowdcontrol 1 - 3")]
-        public void crowdcontrol(Client player, int number)
-        {
-            Character character = API.getEntityData(player.handle, "Character");
-            if (character.CanDoAnim == true)
-            {
-                switch (number)
-                {
-                    case 1:
-                        API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@code_human_police_investigate@base", "base");
-                        break;
-                    case 2:
-                        API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@code_human_police_investigate@idle_a", "idle_a");
-                        break;
-                    case 3:
-                        API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@code_human_police_investigate@idle_b", "idle_f");
-                        break;
-                    default:
-                        API.sendChatMessageToPlayer(player, "~y~Syntax /crowdcontrol 1 - 3");
-                        break;
-                }
-            }
-            else
-            {
-                API.sendChatMessageToPlayer(player, "You're unable to do an animation right now.");
-            }
-        }
+        
         [Command("investigate", "~y~Syntax /investigate 1 - 9")]
         public void investigate(Client player, int number)
         {
@@ -262,46 +236,40 @@ namespace mtgvrp.core
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@code_human_wander_idles_cop@male@static", "static");
                         break;
                     case 3:
-                        API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_cop_idles@female@base", "base");
-                        break;
-                    case 4:
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_cop_idles@female@idle_a", "idle_b");
                         break;
-                    case 5:
+                    case 4:
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_cop_idles@female@idle_b", "idle_e");
                         break;
-                    case 6:
-                        API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_cop_idles@male@base", "base");
-                        break;
-                    case 7:
+                    case 5:
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_cop_idles@male@idle_a", "idle_b");
                         break;
-                    case 8:
+                    case 6:
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_cop_idles@male@idle_b", "idle_e");
                         break;
-                    case 9:
+                    case 7:
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_hang_out_street@female_arms_crossed@base", "base");
                         break;
-                    case 10:
+                    case 8:
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_hang_out_street@female_arms_crossed@idle_a", "idle_a");
                         break;
-                    case 11:
+                    case 9:
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_cop_idles@male@idle_b", "idle_e");
                         break;
-                    case 12:
+                    case 10:
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_hang_out_street@male_c@base", "base");
                         break;
-                    case 13:
+                    case 11:
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_hang_out_street@male_c@idle_a", "idle_a");
                         break;
-                    case 14:
+                    case 12:
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_hang_out_street@male_c@idle_b", "idle_d");
                         break;
-                    case 15:
+                    case 13:
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "anim@heists@heist_corona@single_team", "single_team_loop_boss");
                         break;
                     default:
-                        API.sendChatMessageToPlayer(player, "~y~Syntax /crossarms 1 - 15");
+                        API.sendChatMessageToPlayer(player, "~y~Syntax /crossarms 1 - 13");
                         break;
                 }
             }

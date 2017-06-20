@@ -89,7 +89,7 @@ namespace mtgvrp.property_system
         public static string[][] AmmunationItems =
         {
             //ID, NAME, PRICE, DESCRIPTION
-            new[] {"bat", "Bat", "Used to tie people."},
+            new[] {"bat", "Bat", "A bat, used to play baseball probably."},
             new[] {"pistol", "Pistol", "A standard issue 9mm pistol. Great for self defense."},
             new[] {"combat_pistol", "Combat Pistol", "A combat pistol specialized for tight spaces and accuracy."},
             new[] {"heavy_pistol", "Heavy Pistol", "A pistol specialized to leave a mark."},

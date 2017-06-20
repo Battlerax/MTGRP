@@ -82,7 +82,7 @@ namespace mtgvrp.weapon_manager
 
             WeaponHash currentPlayerWeapon = API.getPlayerCurrentWeapon(player);
 
-
+            /* Causing issues with objects and /fish. Remove for now.
             if (!DoesPlayerHaveWeapon(player, currentPlayerWeapon) && currentPlayerWeapon != WeaponHash.Unarmed)
             {
                 foreach (var p in API.getAllPlayers())
@@ -94,6 +94,7 @@ namespace mtgvrp.weapon_manager
                 }
                 return;
             }
+            */
 
             Weapon currentWeapon = GetCurrentWeapon(player);
 

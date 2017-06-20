@@ -135,7 +135,7 @@ namespace mtgvrp.inventory
             }
 
             //Check if player has simliar item.
-            var oldItem = storage.Inventory.FirstOrDefault(x => x.GetType() == item.GetType());
+            var oldItem = storage.Inventory.FirstOrDefault(x => x.CommandFriendlyName == item.CommandFriendlyName);
             if (oldItem == null || oldItem.CanBeStacked == false)
             {
                 if (maxAmount != -1 && oldItem?.Amount >= maxAmount)
@@ -208,7 +208,7 @@ namespace mtgvrp.inventory
         public static IInventoryItem[] DoesInventoryHaveItem(IStorage storage, string item)
         {
             if (storage.Inventory == null) storage.Inventory = new List<IInventoryItem>();
-            return storage.Inventory.Where(x => x.CommandFriendlyName == item).ToArray();
+            return storage.Inventory.Where(x => x.CommandFriendlyName.ToLower() == item.ToLower()).ToArray();
         }
 
         public static T[] DoesInventoryHaveItem<T>(IStorage storage)
@@ -359,7 +359,7 @@ namespace mtgvrp.inventory
             {
                 case "invmanagement_cancelled":
                     _activeInvsBeingManaged.Remove(sender);
-                    API.sendNotificationToPlayer(sender, "Cancelled Inventory Management.");
+                    API.sendNotificationToPlayer(sender, "Closed Inventory Management.");
                     break;
                    
                 case "invmanagement_moveFromLeftToRight":

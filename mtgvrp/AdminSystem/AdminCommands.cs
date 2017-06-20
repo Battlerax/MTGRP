@@ -392,6 +392,8 @@ namespace mtgvrp.AdminSystem
             }
             account.IsSpectating = true;
             API.shared.setPlayerToSpectatePlayer(player, target);
+            API.shared.setPlayerNametagVisible(player, false);
+            API.shared.setEntityTransparency(player, 0);
             API.shared.sendChatMessageToPlayer(player, "You are now spectating " + PlayerManager.GetName(target) + " (ID:" + id + "). Use /specoff to stop spectating this player.");
 
         }
@@ -411,6 +413,8 @@ namespace mtgvrp.AdminSystem
             }
             account.IsSpectating = false;
             API.unspectatePlayer(player);
+            API.shared.setPlayerNametagVisible(player, true);
+            API.shared.setEntityTransparency(player, 255);
             API.sendChatMessageToPlayer(player, "You are no longer spectating anyone.");
         }
 
@@ -486,7 +490,7 @@ namespace mtgvrp.AdminSystem
             Account account = API.getEntityData(player.handle, "Account");
             Character character = API.getEntityData(player.handle, "Character");
 
-            if (account.AdminLevel < 7)
+            if (account.AdminLevel <= 6)
                 return;
 
             InventoryManager.SetInventoryAmmount(character, typeof(Money), money);
@@ -1353,15 +1357,6 @@ namespace mtgvrp.AdminSystem
 
             account.IsBanned = false;
         }
-
-        //TODO: REMOVE THIS: 
-        /*[Command("makemeadmin")]
-        public void makemeadmin_cmd(Client player)
-        {
-            Account account = API.getEntityData(player.handle, "Account");
-            account.AdminLevel = 7;
-            API.sendChatMessageToPlayer(player, "You are now a king.");
-        }*/
 
         [Command("changeviplevel", GreedyArg = true)]
         public void changeviplevel_cmd(Client player, string id, int level, int days)

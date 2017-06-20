@@ -21,7 +21,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
             //Create main list.
             //TODO: proabably change this descriptions xD
             vehDealerList = API.createMenu("Vehicle Dealership", "Welcome to the vehicle dealership.", 0, 0, 6);
-            var motorsycles = API.createMenuItem("Motorsycles", "All 2 wheel vehicles.");
+            var motorsycles = API.createMenuItem("Motorcycles", "All 2 wheel vehicles.");
             var coupes = API.createMenuItem("Coupes", "Normal Class Vehicles.");
             var trucksnvans = API.createMenuItem("Trucks and Vans", "Big vehicles.");
             var offroad = API.createMenuItem("Offroad", "Vehicles that can go offroard.");

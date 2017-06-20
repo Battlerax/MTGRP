@@ -347,7 +347,7 @@ namespace mtgvrp.phone_manager
                 if (!DoesNumberExist(input))
                 {
                     API.sendChatMessageToPlayer(player, Color.White,
-                        "The call failed to connect. (Phone number is not registered.");
+                        "The call failed to connect. (Phone number is not registered.)");
                     return;
                 }
 
@@ -433,33 +433,6 @@ namespace mtgvrp.phone_manager
                 //Function to hangup after 30 seconds with no answer.
                 sender.CallingTimer = new System.Threading.Timer(OnCallSemiEnd, new[] { character, sender }, 30000, -1);
             }
-        }
-
-
-        //TODO: Test Command.
-        [Command("setphonenumber")]
-        public void setphone_cmd(Client player, string id, string number)
-        {
-            var receiver = PlayerManager.ParseClient(id);
-            Character rec = API.getEntityData(receiver.handle, "Character");
-            if (DoesNumberExist(number))
-            {
-                API.sendChatMessageToPlayer(player, "That number is taken.");
-                return;
-            }
-
-            var phone = new Phone
-            {
-                Number = number,
-                PhoneName = "default",
-                IsOn = true
-            };
-
-            var status = InventoryManager.GiveInventoryItem(rec, phone);
-            API.sendChatMessageToPlayer(player, status.ToString());
-            if(status == InventoryManager.GiveItemErrors.Success) Phone.InsertNumber(phone.Id, number);
-
-            API.sendChatMessageToPlayer(player, "You have given " + rec.CharacterName + " a phone. Number is " + number + ".");
         }
 
         public void editcontact_cmd(Client player, string oldname, string newname, string number)
@@ -565,7 +538,7 @@ namespace mtgvrp.phone_manager
                 if (!DoesNumberExist(input))
                 {
                     API.sendChatMessageToPlayer(player, Color.White,
-                        "The text message failed to send. (Phone number is not registered.");
+                        "The text message failed to send. (Phone number is not registered.)");
                     return;
                 }
 
