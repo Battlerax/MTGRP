@@ -170,7 +170,44 @@ namespace mtgvrp.vehicle_manager
             InventoryManager.ShowInventoryManager(player, player.GetCharacter(), lastVeh, "Inventory: ", "Vehicle: ");
         }
 
-        /*
+        [Command ("engine", Alias = "e")]
+        public void engine_cmd(Client player)
+        {
+            Character character = API.getEntityData(player, "Character");
+            var vehicleHandle = API.getPlayerVehicle(player);
+            Vehicle vehicle = API.shared.getEntityData(vehicleHandle, "Vehicle");
+
+            var engineState = API.shared.getVehicleEngineStatus(vehicleHandle);
+            var vehAccess = DoesPlayerHaveVehicleAccess(player, vehicle);
+            if (!engineState)
+            {
+                if (vehicle.Fuel <= 0)
+                {
+                    API.sendChatMessageToPlayer(player, "The vehicle has no fuel.");
+                    return;
+                }
+            }
+
+            if (vehAccess)
+            {
+                if (engineState)
+                {
+                    API.shared.setVehicleEngineStatus(vehicleHandle, false);
+                    ChatManager.RoleplayMessage(character, "turns off the vehicle engine.", ChatManager.RoleplayMe);
+                }
+                else
+                {
+                    API.shared.setVehicleEngineStatus(vehicleHandle, true);
+                    ChatManager.RoleplayMessage(character, "turns on the vehicle engine.", ChatManager.RoleplayMe);
+                }
+            }
+            else
+            {
+                API.sendChatMessageToPlayer(player, "You don't have access to this vehicle.");
+            }
+
+        }
+
         [Command("hotwire")]
         public void hotwire_cmd(Client player)
         {
@@ -205,7 +242,7 @@ namespace mtgvrp.vehicle_manager
             }
 
         }
-        */
+
         [Command("dropcar")]
         public void dropcar_cmd(Client player)
         {

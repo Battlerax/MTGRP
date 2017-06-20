@@ -4,7 +4,7 @@ var myBrowser = null;
 API.onServerEventTrigger.connect((eventName, args) => {
     switch (eventName) {
         case 'invmanagement_showmanager':
-            var res = API.getScreenResolution();
+            var res = API.getScreenResolutionMantainRatio();
             myBrowser = API.createCefBrowser(720, 660);
             API.waitUntilCefBrowserInit(myBrowser);
             API.setCefBrowserPosition(myBrowser, (res.Width / 2) - (720 / 2),

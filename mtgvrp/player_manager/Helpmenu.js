@@ -87,7 +87,7 @@ function showCmds(group) {
             .addMenuItem("How to join LSPD?", "", true, true, "ShowFAQ","JoinLSPD")
             .addMenuItem("Where is the bank?", "", true, true, "ShowFAQ", "FBank")
             .addMenuItem("Where do I find X job?", "", true, true, "ShowFAQ", "FJob")
-            .addMenuItem("Where do I find X busienss?", "", true, true, "ShowFAQ", "FBusienss")
+            .addMenuItem("Where do I find X business?", "", true, true, "ShowFAQ", "FBusienss")
             .addMenuItem("How do I change my clothes?", "", true, true, "ShowFAQ", "ChangeClothes")
             .addMenuItem("Where do I buy a car?", "", true, true, "ShowFAQ", "BuyCar")
             .addMenuItem("Whats the best job?", "", true, true, "ShowFAQ", "BestJob")

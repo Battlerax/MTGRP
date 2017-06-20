@@ -60,7 +60,7 @@ API.onUpdate.connect(function () {
     }
 });
 API.onKeyDown.connect(function (sender, e) {
-    if (e.KeyCode == Keys.UpArrow && isFishing) {
+    if (e.KeyCode == Keys.Up && isFishing) {
         currentCatchStrength += 5;
         if (currentCatchStrength >= 125) {
             API.triggerServerEvent("snapped_rod");

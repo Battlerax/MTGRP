@@ -52,7 +52,7 @@ namespace mtgvrp.core
              "Charpur",
              "YepityS",
              "Boca11",
-             "ItzJordan",
+             "ltzJordan",
              "ToastyTheZombie",
              "unlivedpoem",
              "Shaneboy7780",
@@ -80,6 +80,7 @@ namespace mtgvrp.core
              "MTGMoleman",
              "Dylan_Parker",
              "iEinarS",
+             "TheSunglass",
              "stevanowskis007",
              "GreenIsGo",
              "BCBud420",
@@ -88,7 +89,6 @@ namespace mtgvrp.core
              "Craignum",
              "cartoonmagic",
              "laitilee",
-             "NewTheSunglass",
              "shaneboy7780",
         };
 

@@ -57,7 +57,8 @@
             });
 
             $("#call").click(function () {
-                resourceCall("callServerEvent", "phone_callphone", $('#enteredNumber').val());
+                if($('#enteredNumber').val() !== "")
+                    resourceCall("callServerEvent", "phone_callphone", $('#enteredNumber').val());
             });
         });
     </script>

@@ -4,7 +4,7 @@ var playerSelected = null;
 var interactBrowser = null;
 var res = null;
 API.onResourceStart.connect(function () {
-    res = API.getScreenResolution();
+    res = API.getScreenResolutionMantainRatio();
 });
 API.onServerEventTrigger.connect(function (eventname, args) {
     switch (eventname) {
