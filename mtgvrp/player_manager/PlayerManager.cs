@@ -46,8 +46,20 @@ namespace mtgvrp.player_manager
             API.onPlayerDisconnected += OnPlayerDisconnected;
             API.onClientEventTrigger += API_onClientEventTrigger;
             API.onPlayerRespawn += API_onPlayerRespawn;
+            API.onPlayerHealthChange += API_onPlayerHealthChange;
 
             DebugManager.DebugMessage("[PlayerM] Player Manager initalized.");
+        }
+
+        private void API_onPlayerHealthChange(Client player, int oldValue)
+        {
+
+            Account account = API.getEntityData(player, "Account");
+
+            if (API.getPlayerHealth(player) < oldValue)
+            {
+                if (account.AdminDuty) { API.setPlayerHealth(player, 100); }
+            }
         }
 
         private void API_onPlayerRespawn(Client player)
