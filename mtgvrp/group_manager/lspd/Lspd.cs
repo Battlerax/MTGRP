@@ -17,6 +17,16 @@ namespace mtgvrp.group_manager.lspd
         {
             API.onResourceStart += StartLspd;
             API.onClientEventTrigger += API_onClientEventTrigger;
+            API.onPlayerDisconnected += API_onPlayerDisconnected;
+        }
+
+        private void API_onPlayerDisconnected(Client player, string reason)
+        {
+            var character = player.GetCharacter();
+            if (character == null) return;
+
+            if (character.MegaPhoneObject != null && API.doesEntityExist(character.MegaPhoneObject))
+                API.deleteEntity(character.MegaPhoneObject);
         }
 
         //LSPD Locations. TODO: MAKE IT WORK WITH MARKERZONE!!!!
@@ -527,13 +537,15 @@ namespace mtgvrp.group_manager.lspd
             {
                 API.sendNotificationToPlayer(player, "You are speaking through a megaphone", true);
                 API.setEntityData(player, "MegaphoneStatus", true);
-                var megaphone = API.createObject(API.getHashKey("prop_megaphone_01"), playerPos, new Vector3());
-                API.attachEntityToEntity(megaphone, player, "IK_R_Hand", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                character.MegaPhoneObject = API.createObject(API.getHashKey("prop_megaphone_01"), playerPos, new Vector3());
+                API.attachEntityToEntity(character.MegaPhoneObject, player, "IK_R_Hand", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
                 return;
             }
             API.sendNotificationToPlayer(player, "You are no longer speaking through a megaphone.");
             API.setEntityData(player, "MegaphoneStatus", false);
-            API.deleteObject(player, playerPos, API.getHashKey("prop_megaphone_01"));
+            if(character.MegaPhoneObject != null && API.doesEntityExist(character.MegaPhoneObject))
+                API.deleteEntity(character.MegaPhoneObject);
+            character.MegaPhoneObject = null;
         }
 
 

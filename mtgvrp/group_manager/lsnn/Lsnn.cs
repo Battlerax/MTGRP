@@ -15,6 +15,16 @@ namespace mtgvrp.group_manager.lsnn
         public Lsnn()
         {
             API.onResourceStart += StartLsnn;
+            API.onPlayerDisconnected += API_onPlayerDisconnected;
+        }
+
+        private void API_onPlayerDisconnected(Client player, string reason)
+        {
+            var character = player.GetCharacter();
+            if (character == null) return;
+
+            if (character.MicObject != null && API.doesEntityExist(character.MicObject))
+                API.deleteEntity(character.MicObject);
         }
 
         public readonly Vector3 LsnnFrontDoor = new Vector3(-319.0662f, -609.8559f, 33.55819f);
@@ -392,14 +402,15 @@ namespace mtgvrp.group_manager.lsnn
             {
                 API.sendNotificationToPlayer(player, "You are speaking through a microphone.", true);
                 API.setEntityData(player, "MicStatus", true);
-                var microphone = API.createObject(API.getHashKey("p_ing_microphonel_01"), playerPos, new Vector3());
-                API.attachEntityToEntity(microphone, player, "IK_R_Hand", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                character.MicObject = API.createObject(API.getHashKey("p_ing_microphonel_01"), playerPos, new Vector3());
+                API.attachEntityToEntity(character.MicObject, player, "IK_R_Hand", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
                 return;
             }
             API.sendNotificationToPlayer(player, "You are no longer speaking through a microphone.");
             API.setEntityData(player, "MicStatus", false);
-            API.deleteObject(player, playerPos, API.getHashKey("p_ing_microphonel_01"));
-
+            if (character.MicObject != null && API.doesEntityExist(character.MicObject))
+                API.deleteEntity(character.MicObject);
+            character.MicObject = null;
         }
 
         [Command("givemic")]

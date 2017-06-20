@@ -244,6 +244,11 @@ namespace mtgvrp.player_manager
         [BsonIgnore]
         public bool IsRagged;
 
+        [BsonIgnore]
+        public GTANetworkServer.Object MegaPhoneObject = null;
+
+        [BsonIgnore]
+        public GTANetworkServer.Object MicObject = null;
 
         public Character()
         {
