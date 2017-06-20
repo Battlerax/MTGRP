@@ -130,15 +130,16 @@ namespace mtgvrp.group_manager.lsnn
             if (CameraSet == true)
             {
                 API.sendChatMessageToPlayer(player, "A camera has already been set.");
+                return;
             }
 
             var pos = API.getEntityPosition(player.handle);
             var angle = API.getEntityRotation(player.handle).Z;
             CameraPosition = XyInFrontOfPoint(pos, angle, 1) - new Vector3(0, 0, 0.5);
-            var camRot = API.getEntityRotation(player.handle) + new Vector3(0, 0, 180);
+            CameraRotation = API.getEntityRotation(player.handle) + new Vector3(0, 0, 180);
             API.sendNotificationToPlayer(player, "A camera has been placed on your position.");
             ChatManager.NearbyMessage(player, 10, "~p~" + character.CharacterName + " sets down a news camera");
-            var camera = API.createObject(API.getHashKey("p_tv_cam_02_s"), CameraPosition, CameraRotation);
+            API.createObject(API.getHashKey("p_tv_cam_02_s"), CameraPosition, CameraRotation);
             character.HasCamera = false;
             CameraSet = true;
         }
@@ -323,13 +324,14 @@ namespace mtgvrp.group_manager.lsnn
         [Command("watchbroadcast")]
         public void watchbroadcast_cmd(Client player)
         {
-            if (CameraPosition == null || CameraRotation == null || IsBroadcasting == false)
+            Character character = API.getEntityData(player.handle, "Character");
+
+            if (CameraPosition == null || CameraRotation == null || IsBroadcasting == false && character.Group.CommandType != Group.CommandTypeLsnn)
             {
                 API.sendChatMessageToPlayer(player, "There is currently no live broadcast.");
                 return;
             }
 
-            Character character = API.getEntityData(player.handle, "Character");
 
             var camPos = CameraPosition + new Vector3(0, 0, 0.94);
             var camRot = CameraRotation + new Vector3(-1, 0, 180);

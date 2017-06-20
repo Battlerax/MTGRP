@@ -75,6 +75,7 @@ namespace mtgvrp.core
              "Dylan_Parker",
              "iEinarS",
              "NewTheSunglass"
+             "shaneboy7780",
         };
 
         public Whitelist()

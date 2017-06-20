@@ -467,6 +467,7 @@ namespace mtgvrp.group_manager.lspd
                     API.sendChatMessageToPlayer(player, $"* ~r~{item.LongName}~w~[{item.CommandFriendlyName}] ({item.Amount})");
                 }
                 API.sendChatMessageToPlayer(player, "-------------PLAYER INVENTORY-------------");
+                return;
             }
             API.sendChatMessageToPlayer(player, "Players must be cuffed or have their hands up before you can frisk them.");
 
@@ -508,13 +509,15 @@ namespace mtgvrp.group_manager.lspd
 
             foreach (var c in PlayerManager.Players)
             {
+                int i = 0;
                 if (c.BeaconSet == false)
                 {
-                    API.sendChatMessageToPlayer(player, "There are no active beacons.");
+                    i++;
+                    if (i == PlayerManager.Players.Count()) { API.sendChatMessageToPlayer(player, "There are no active beacons."); }
                     return;
                 }
 
-                beaconCreator = c.BeaconCreator;
+                beaconCreator = c.Client;
 
             }
 
@@ -792,11 +795,13 @@ namespace mtgvrp.group_manager.lspd
 
             var node = Objects.First;
 
-            while (node.Next != null)
+            int j = 0;
+            while (j <= len)
             {
-                var next = node.Next;
-                Objects.Remove(node);
+                Objects.RemoveLast();
+                j++;
             }
+
             API.sendNotificationToPlayer(player, "~r~" + len + " objects removed.");
         }
 

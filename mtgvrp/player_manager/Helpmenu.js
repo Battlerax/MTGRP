@@ -28,16 +28,15 @@ function showCmds(group) {
     }
     else if (group == "showAnimCmds") {
         API.sendChatMessage('~h~Here is the list of Animations:');
-        API.sendChatMessage('~h~/Stopanim~h~, /Hide, /Lookout, /Crowdcontrol, /Investigate, /Drink, /Crossarms, /Idle, /Lean,');
+        API.sendChatMessage('~h~/Stopanim~h~, /Hide, /Lookout, /Investigate, /Drink, /Crossarms, /Idle, /Lean, /Guitar,');
         API.sendChatMessage('/Reach, /Workout, /Smoke, /Binoculars, /Hobo, /Fallover, /Laydown, /Drunk, /Twitchy, /Signal,');
         API.sendChatMessage('/Cheer, /Drugdeal, /Gardening, /Guard, /Jog, /Getjiggy, /Sit, /Mech, /Yoga, /Bonghit,');
         API.sendChatMessage('/Restrained, /MiddleFinger, /Salute, /Slowclap, /Facepalm, /Handsup, /Clipboard, /Hammer,');
-        API.sendChatMessage('/Guitar.  ');
         API.sendChatMessage('~R~These are all cmds for the beta, please test them to make sure theyre not broken.');
     }
     else if (group == "showPolCmds") {
         API.sendChatMessage("~h~Here is the list of commands availible to you:");
-        API.sendChatMessage("/Arrest, /Cuff, /Uncuff, /Detain, /(M)egaphone, /RecordCrime, /ShowCriminalRecord, ");
+        API.sendChatMessage("/Arrest, /Cuff, /Detain, /megaphonetoggle, /RecordCrime, /ShowCriminalRecord, ");
         API.sendChatMessage("/ListCrimes, /CreateCrime, /EditCrime, /DeleteCrime, /Wanted, /Release, /BackupBeacon, ");
         API.sendChatMessage("/AcceptBeacon, /Ticket, /UnpaidTickets, /AcceptCopTicket, /PayCopTickets, /Deploy, ");
         API.sendChatMessage("/RemoveAllObjects, /SetLockerPos, /SetArrestPos, /SetDivisionRank,  ");
@@ -45,7 +44,7 @@ function showCmds(group) {
     }
     else if (group == "ShowGroupCmds") {
         API.sendChatMessage("~h~Here is the list of commands availible to you:");
-        API.sendChatMessage("/RemoteUninvite, /SetRank, /SetDivision, /Group, /(r)adio, /ToggleRadio /Accept, ");
+        API.sendChatMessage("/SetRank, /SetDivision, /Group, /(r)adio, /ToggleRadio /Accept, ");
         API.sendChatMessage("/QuitGroup, /Invite, /SetRankName, /SetDivisionName, /SetDivisionRankName, ");
         API.sendChatMessage('~R~These are all cmds for the beta, please test them to make sure theyre not broken.');
     }
