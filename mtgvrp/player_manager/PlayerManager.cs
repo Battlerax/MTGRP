@@ -97,6 +97,7 @@ namespace mtgvrp.player_manager
 
                 var account = player.GetAccount();
                 account.Save();
+                character.Health = API.getPlayerHealth(player);
                 character.LastPos = player.position;
                 character.LastRot = player.rotation;
                 character.GetTimePlayed(); //Update time played before save.
