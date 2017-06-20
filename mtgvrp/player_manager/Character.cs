@@ -246,6 +246,9 @@ namespace mtgvrp.player_manager
         [BsonIgnore]
         public GTANetworkServer.Object MegaPhoneObject = null;
 
+        [BsonIgnore]
+        public GTANetworkServer.Object MicObject = null;
+
         public Character()
         {
             Id = 0;

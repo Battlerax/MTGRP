@@ -22,8 +22,11 @@ namespace mtgvrp.group_manager.lspd
 
         private void API_onPlayerDisconnected(Client player, string reason)
         {
-            if (player.GetCharacter()?.MegaPhoneObject != null && API.doesEntityExist(player.GetCharacter()?.MegaPhoneObject))
-                API.deleteEntity(player.GetCharacter()?.MegaPhoneObject);
+            var character = player.GetCharacter();
+            if (character == null) return;
+
+            if (character.MegaPhoneObject != null && API.doesEntityExist(character.MegaPhoneObject))
+                API.deleteEntity(character.MegaPhoneObject);
         }
 
         //LSPD Locations. TODO: MAKE IT WORK WITH MARKERZONE!!!!
