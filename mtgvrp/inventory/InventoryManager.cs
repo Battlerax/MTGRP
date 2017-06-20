@@ -359,7 +359,7 @@ namespace mtgvrp.inventory
             {
                 case "invmanagement_cancelled":
                     _activeInvsBeingManaged.Remove(sender);
-                    API.sendNotificationToPlayer(sender, "Cancelled Inventory Management.");
+                    API.sendNotificationToPlayer(sender, "Closed Inventory Management.");
                     break;
                    
                 case "invmanagement_moveFromLeftToRight":
