@@ -20,6 +20,7 @@ namespace mtgvrp.core
              "Colm692",
              "XeroTheGreat",
              "Im_Toro",
+             "Nickson1993",
 
              //Kevin & Friends
              "maniac1994",
