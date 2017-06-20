@@ -12,7 +12,7 @@ var myBrowser = null;
 API.onPlayerEnterVehicle.connect((vehicle) => {
 	if (API.getPlayerVehicleSeat(API.getLocalPlayer()) !== -1) return;
 
-	var res = API.getScreenResolution();
+	var res = API.getScreenResolutionMantainRatio();
 	var width = 470;
 	var height = 225;
 	myBrowser = API.createCefBrowser(width, height);
@@ -104,7 +104,7 @@ API.onUpdate.connect(() => {
 
 	} else {
 		if (screenRes === null)
-			screenRes = API.getScreenResolution();
+			screenRes = API.getScreenResolutionMantainRatio();
 
 		if (lastDirection !== "")
 			API.drawText(lastDirection, 310, screenRes.Height - 155, 1, 225, 225, 225, 255, 4, 0, false, true, 0);
