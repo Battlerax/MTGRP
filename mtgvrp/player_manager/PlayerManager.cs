@@ -64,7 +64,7 @@ namespace mtgvrp.player_manager
 
         private void API_onPlayerRespawn(Client player)
         {
-            player.sendChatMessage("You were revived by the ~b~Los Santos Medical Department ~w~ and were charged 500$ for hospital fees.");
+            player.sendChatMessage("You were revived by the ~b~Los Santos Medical Department ~w~ and were charged $500 for hospital fees.");
             WeaponManager.RemoveAllPlayerWeapons(player);
             InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(Money), 500);
         }

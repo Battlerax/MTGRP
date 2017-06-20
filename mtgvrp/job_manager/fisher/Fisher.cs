@@ -109,6 +109,12 @@ namespace mtgvrp.job_manager.fisher
             var isOnLastBoat = false;
             var isLastVehicleBoat = false;
 
+            if (DateTime.Now < character.NextFishTime)
+            {
+                API.sendChatMessageToPlayer(player, "Wait 5 seconds before doing this again.");
+                return;
+            }
+
             if (character.LastVehicle != null)
             {
                 isOnLastBoat = API.fetchNativeFromPlayer<bool>(player, Hash.IS_PED_ON_SPECIFIC_VEHICLE, player,
@@ -124,6 +130,7 @@ namespace mtgvrp.job_manager.fisher
                 return;
             }
 
+            character.NextFishTime = DateTime.Now.AddSeconds(5);
             API.playPlayerScenario(player, "WORLD_HUMAN_STAND_FISHING");
             ChatManager.RoleplayMessage(character, "casts out their fishing rod and begins to fish.",
                 ChatManager.RoleplayMe);
