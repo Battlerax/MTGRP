@@ -213,6 +213,12 @@ namespace mtgvrp.group_manager
                 return;
             }
 
+            if (rank < 1 || rank > 10)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "Valid ranks are between 1 and 10.");
+                return;
+            }
+
             Character sender = player.GetCharacter();
             GroupCommandPermCheck(sender, 5);
 
@@ -223,16 +229,16 @@ namespace mtgvrp.group_manager
                 if (oldRank > rank)
                 {
                     API.sendChatMessageToPlayer(receiver,
-                        "You have been demoted to " + member.Group.RankNames[rank] + " by " + sender.CharacterName + ".");
+                        "You have been demoted to " + member.Group.RankNames[rank - 1] + " by " + sender.CharacterName + ".");
                 }
                 else
                 {
                     API.sendChatMessageToPlayer(receiver,
-                        "You have been promoted to " + member.Group.RankNames[rank] + " by " + sender.CharacterName +
+                        "You have been promoted to " + member.Group.RankNames[rank - 1] + " by " + sender.CharacterName +
                         ".");
                 }
                 API.sendChatMessageToPlayer(player,
-                    "You have changed " + member.CharacterName + "'s rank to " + rank + " (was " + oldRank + ").");
+                    "You have changed " + member.CharacterName + "'s rank to " + (rank - 1) + " (was " + (oldRank - 1) + ").");
                 member.GroupRank = rank;
                 member.Save();
             }
