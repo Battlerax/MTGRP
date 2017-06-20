@@ -117,8 +117,6 @@ namespace mtgvrp.player_manager
 
                 API.resetEntityData(player.handle, "Character");
                 RemovePlayer(character);
-
-                UpdatePlayerNametags(); //IDs change when a player logs off
             }
         }
 
