@@ -130,6 +130,7 @@ namespace mtgvrp.group_manager.lsnn
             if (CameraSet == true)
             {
                 API.sendChatMessageToPlayer(player, "A camera has already been set.");
+                return;
             }
 
             var pos = API.getEntityPosition(player.handle);
