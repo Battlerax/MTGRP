@@ -754,5 +754,20 @@ namespace mtgvrp.property_system
                 API.triggerClientEvent(player, "editproperty_showmenu", prop.Id);
             }
         }
+
+        [Command("listproperties")]
+        public void listprops_cmd(Client player, PropertyTypes type)
+        {
+            var account = player.GetAccount();
+            if (account.AdminLevel >= 5)
+            {
+                API.sendChatMessageToPlayer(player, "______ Listing Property Types ______");
+                foreach (var prop in Properties.Where(x => x.Type == type))
+                {
+                    API.sendChatMessageToPlayer(player, $"* Property Id: ~g~{prop.Id}~w~ | Name: ~g~{prop.PropertyName}");
+                }
+                API.sendChatMessageToPlayer(player, "____________________________________");
+            }
+        }
     }
 }
