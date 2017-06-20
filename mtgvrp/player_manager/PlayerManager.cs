@@ -160,7 +160,10 @@ namespace mtgvrp.player_manager
             if (_players.ContainsValue(c))
                 return _players.Single(x => x.Value == c).Key;
             else
+            {
+                Console.WriteLine("NEGATIVE ONE ID RETURNED");
                 return -1;
+            }
         }
 
         public static Client ParseClient(string input)
