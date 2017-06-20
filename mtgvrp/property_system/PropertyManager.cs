@@ -655,6 +655,7 @@ namespace mtgvrp.property_system
             {
                 prop.IsLocked = !prop.IsLocked;
                 prop.UpdateLockStatus();
+                prop.Save();
                 API.sendNotificationToPlayer(player,
                     prop.IsLocked ? "Property has been ~g~locked." : "Property has been ~r~unlocked.");
             }
@@ -678,6 +679,7 @@ namespace mtgvrp.property_system
             {
                 prop.PropertyName = name;
                 prop.UpdateMarkers();
+                prop.Save();
                 API.sendNotificationToPlayer(player, "Property name has been changed.");
             }
             else
