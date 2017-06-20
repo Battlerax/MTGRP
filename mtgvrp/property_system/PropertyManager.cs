@@ -655,6 +655,7 @@ namespace mtgvrp.property_system
             {
                 prop.IsLocked = !prop.IsLocked;
                 prop.UpdateLockStatus();
+                prop.Save();
                 API.sendNotificationToPlayer(player,
                     prop.IsLocked ? "Property has been ~g~locked." : "Property has been ~r~unlocked.");
             }
@@ -678,6 +679,7 @@ namespace mtgvrp.property_system
             {
                 prop.PropertyName = name;
                 prop.UpdateMarkers();
+                prop.Save();
                 API.sendNotificationToPlayer(player, "Property name has been changed.");
             }
             else
@@ -693,6 +695,12 @@ namespace mtgvrp.property_system
             if (prop == null)
             {
                 API.sendChatMessageToPlayer(player, "You aren't at an interaction point or entrance.");
+                return;
+            }
+
+            if (prop.OwnerId != player.GetCharacter().Id || player.GetAccount().AdminLevel < 5)
+            {
+                API.sendChatMessageToPlayer(player, "You don't own this property.");
                 return;
             }
 
@@ -744,6 +752,21 @@ namespace mtgvrp.property_system
                     return;
                 }
                 API.triggerClientEvent(player, "editproperty_showmenu", prop.Id);
+            }
+        }
+
+        [Command("listproperties")]
+        public void listprops_cmd(Client player, PropertyTypes type)
+        {
+            var account = player.GetAccount();
+            if (account.AdminLevel >= 5)
+            {
+                API.sendChatMessageToPlayer(player, "______ Listing Property Types ______");
+                foreach (var prop in Properties.Where(x => x.Type == type))
+                {
+                    API.sendChatMessageToPlayer(player, $"* Property Id: ~g~{prop.Id}~w~ | Name: ~g~{prop.PropertyName}");
+                }
+                API.sendChatMessageToPlayer(player, "____________________________________");
             }
         }
     }

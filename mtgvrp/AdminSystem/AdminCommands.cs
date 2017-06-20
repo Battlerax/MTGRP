@@ -56,6 +56,11 @@ namespace mtgvrp.AdminSystem
                     senderchar.HasActiveReport = true;
                     break;
 
+                case "teleport":
+                    Vector3 pos = (Vector3) arguments[0];
+                    player.position = pos;
+                    break;
+
             }
         }
 
@@ -444,6 +449,17 @@ namespace mtgvrp.AdminSystem
             }
             API.freezePlayer(receiver, true);
             API.sendChatMessageToPlayer(receiver, "You have been frozen by an admin");
+        }
+
+        [Command("gotowaypoint")]
+        public void gotowaypoint_cmd(Client player)
+        {
+            Account account = API.getEntityData(player.handle, "Account");
+
+            if (account.AdminLevel < 2)
+                return;
+
+            API.triggerClientEvent(player, "getwaypoint");
         }
 
         [Command("unfreeze")]
