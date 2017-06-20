@@ -241,7 +241,6 @@ namespace mtgvrp.core
                     case 4:
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_cop_idles@female@idle_b", "idle_e");
                         break;
-                        break;
                     case 5:
                         API.playPlayerAnimation(player, (int)(AnimationFlags.Loop), "amb@world_human_cop_idles@male@idle_a", "idle_b");
                         break;
