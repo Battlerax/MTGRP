@@ -97,6 +97,13 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 API.onUpdate.connect(function () {
     if (menu_pool != null) {
         menu_pool.ProcessMenus();
+		API.disableControlThisFrame(24);
+		API.disableControlThisFrame(30);
+		API.disableControlThisFrame(31);
+		API.disableControlThisFrame(32);
+		API.disableControlThisFrame(33);
+		API.disableControlThisFrame(34);
+		API.disableControlThisFrame(35);
     }
 });
 
