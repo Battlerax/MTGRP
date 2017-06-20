@@ -794,11 +794,13 @@ namespace mtgvrp.group_manager.lspd
 
             var node = Objects.First;
 
-            while (node.Next != null)
+            int j = 0;
+            while (j <= len)
             {
-                var next = node.Next;
-                Objects.Remove(node);
+                Objects.RemoveLast();
+                j++;
             }
+
             API.sendNotificationToPlayer(player, "~r~" + len + " objects removed.");
         }
 
