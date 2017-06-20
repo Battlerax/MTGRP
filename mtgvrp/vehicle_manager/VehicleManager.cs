@@ -329,7 +329,7 @@ namespace mtgvrp.vehicle_manager
 
             foreach (var v in Vehicles)
             {
-                if (v.Driver == null && v.OwnerId == 0 && v.GroupId == 0)
+                if (v.Driver == null)
                 {
                     if (player.position.DistanceTo(API.getEntityPosition(v.NetHandle)) <= radius)
                     {

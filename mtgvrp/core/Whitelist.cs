@@ -33,6 +33,7 @@ namespace mtgvrp.core
              "ClarkAU",
              "Altezza.",
              "1Bxnnj",
+             "Clarke446",
 
              //Closed Beta
              "MTGFord",
@@ -80,6 +81,11 @@ namespace mtgvrp.core
              "stevanowskis007",
              "GreenIsGo",
              "BCBud420",
+             "IntergratedGamer",
+             "Jaguarr234",
+             "Craignum",
+             "cartoonmagic",
+             "laitilee",
         };
 
         public Whitelist()
