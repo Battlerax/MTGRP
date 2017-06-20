@@ -208,7 +208,7 @@ namespace mtgvrp.inventory
         public static IInventoryItem[] DoesInventoryHaveItem(IStorage storage, string item)
         {
             if (storage.Inventory == null) storage.Inventory = new List<IInventoryItem>();
-            return storage.Inventory.Where(x => x.CommandFriendlyName == item).ToArray();
+            return storage.Inventory.Where(x => x.CommandFriendlyName.ToLower() == item.ToLower()).ToArray();
         }
 
         public static T[] DoesInventoryHaveItem<T>(IStorage storage)
