@@ -265,6 +265,10 @@ namespace mtgvrp.player_manager
                                 character.Model.EarStyle = ComponentManager.ValidMaleEars[(int)arguments[1]].ComponentId;
                                 character.Model.EarVar = (int)ComponentManager.ValidMaleEars[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
                                 break;
+                            case Component.ComponentTypeTorso:
+                                character.Model.TorsoStyle = (int) arguments[1];
+                                character.Model.TorsoVar = (int)arguments[2];
+                                break;
                         }
                     }
                     else
@@ -303,7 +307,11 @@ namespace mtgvrp.player_manager
                                 character.Model.EarStyle = ComponentManager.ValidFemaleEars[(int)arguments[1]].ComponentId;
                                 character.Model.EarVar = (int)ComponentManager.ValidFemaleEars[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
                                 break;
-                        }
+                            case Component.ComponentTypeTorso:
+                                character.Model.TorsoStyle = (int)arguments[1];
+                                character.Model.TorsoVar = (int)arguments[2];
+                                break;
+                            }
                     }
 
                     character.update_ped();

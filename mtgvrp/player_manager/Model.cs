@@ -41,6 +41,9 @@
         public int EarStyle { get; set; }
         public int EarVar { get; set; }
 
+        public int TorsoStyle { get; set; }
+        public int TorsoVar { get; set; }
+
         public void SetDefault()
         {
             HairStyle = 0;
@@ -83,7 +86,7 @@
                 GlassesVar = 1;
 
                 EarStyle = 255;
-                EarVar = -1;
+                EarVar = 0;
             }
             else
             {
@@ -108,8 +111,8 @@
                 GlassesStyle = 5;
                 GlassesVar = 1;
 
-                EarStyle = 0;
-                EarVar = -1;
+                EarStyle = 225;
+                EarVar = 0;
             }
         }
     }

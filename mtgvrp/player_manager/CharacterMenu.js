@@ -116,6 +116,7 @@ var top_menu = null;
 var hat_menu = null;
 var glasses_menu = null;
 var ear_menu = null;
+var torso_menu = null;
 
 function next_character_creation_step(player, step) {
 
@@ -179,9 +180,9 @@ function next_character_creation_step(player, step) {
             API.triggerServerEvent("change_parent_info", father_ped, mother_ped, father_int_id, mother_int_id, parent_lean, gender);
 
 			//Set default clothes.
-	        API.triggerServerEvent("change_clothes", 4, 0, 0);
+	        /*API.triggerServerEvent("change_clothes", 4, 0, 0);
 	        API.triggerServerEvent("change_clothes", 6, 0, 0);
-	        API.triggerServerEvent("change_clothes", 11, 0, 0);
+	        API.triggerServerEvent("change_clothes", 11, 0, 0);*/
 
             //Handle the lists
             gender_menu_item.OnListChanged.connect(function (sender, new_index) {
@@ -553,6 +554,7 @@ function next_character_creation_step(player, step) {
             hat_menu = API.createMenu("Character Creation", "Hat Selection", 0, 0, 6);
             glasses_menu = API.createMenu("Character Creation", "Glasses Selection", 0, 0, 6);
             ear_menu = API.createMenu("Character Creation", "Ear Accessory Selection", 0, 0, 6);
+			torso_menu = API.createMenu("Character Creation", "Torso Selection", 0, 0, 6);
 
             menu_pool.Add(pant_menu);
             menu_pool.Add(shoe_menu);
@@ -562,6 +564,7 @@ function next_character_creation_step(player, step) {
             menu_pool.Add(hat_menu);
             menu_pool.Add(glasses_menu);
             menu_pool.Add(ear_menu);
+            menu_pool.Add(torso_menu);
 
             for (var i = 0; i < component_list.length; i++) {
 
@@ -620,10 +623,17 @@ function next_character_creation_step(player, step) {
                         list.Add((j + 1).toString());
                     }
                     ear_menu.AddItem(API.createListItem(component_list[i].name, "Press enter to select and go back.", list, 0));
-                }
-
-                
+                } 
             }
+	        var variations = API.returnNative("2834476523764480066", 0, player, 3);
+	        for (var i = 0; i < variations; i++) {
+		        var list = new List(String);
+		        var types = API.returnNative("10336137878209981357", 0, player, 3, i);
+		        for (var j = 0; j < types; j++) {
+			        list.Add((j + 1).toString());
+		        }
+		        torso_menu.AddItem(API.createListItem("Style " + i, "Press enter to select and go back.", list, 0));
+	        }
 
             var pants_index = 0;
             var pants_variation = 0;
@@ -642,6 +652,9 @@ function next_character_creation_step(player, step) {
             var ear_style = -1;
             var ear_variation = 0;
 
+			var torso_index = 0;
+			var torso_variation = 0;
+
             character_creation_menu = API.createMenu("Character Creation", "Outfit Selection", 0, 0, 6);
             character_creation_menu.AddItem(API.createMenuItem("Pants", "View the available pants"));
             character_creation_menu.AddItem(API.createMenuItem("Shoes", "View the available shoes"));
@@ -651,6 +664,7 @@ function next_character_creation_step(player, step) {
             character_creation_menu.AddItem(API.createMenuItem("Hats", "View the available hats"));
             character_creation_menu.AddItem(API.createMenuItem("Glasses", "View the available glasses"));
             character_creation_menu.AddItem(API.createMenuItem("Ear Accessories", "View the available ear accessories"));
+	        character_creation_menu.AddItem(API.createMenuItem("Torsos", "View the available torsos."));
             character_creation_menu.AddItem(API.createMenuItem("Next", "Continue to the final step of character creation."));
             menu_pool.Add(character_creation_menu);
             character_creation_menu.Visible = true;
@@ -775,6 +789,21 @@ function next_character_creation_step(player, step) {
 		        character_creation_menu.Visible = true;
 	        });
 
+	        torso_menu.OnIndexChange.connect(function (sender, index) {
+		        torso_index = index;
+		        torso_variation = 0;
+		        API.triggerServerEvent("change_clothes", 3, torso_index, torso_variation);
+	        });
+
+	        torso_menu.OnListChange.connect(function (sender, list, index) {
+		        torso_variation = index;
+		        API.triggerServerEvent("change_clothes", 3, torso_index, torso_variation);
+	        });
+
+	        torso_menu.OnMenuClose.connect((menu) => {
+		        character_creation_menu.Visible = true;
+	        });
+
             character_creation_menu.OnItemSelect.connect(function (sender, item, index) {
                 character_creation_menu.Visible = false;
                 switch (item.Text) {
@@ -821,6 +850,11 @@ function next_character_creation_step(player, step) {
                         ear_menu.Visible = true;
                         ear_menu.CurrentSelection = 0;
                         break;
+					case "Torsos":
+						API.setActiveCamera(creation_view);
+						torso_menu.Visible = true;
+						torso_menu.CurrentSelection = 0;
+						break;
                     case "Next":
                         next_character_creation_step(player, 3);
                         break;
@@ -942,6 +976,10 @@ API.onKeyDown.connect(function(sender, e) {
                 ear_menu.Visible = false;
                 character_creation_menu.Visible = true;
             }
+	        if (torso_menu.Visible == true) {
+		        torso_menu.Visible = false;
+		        character_creation_menu.Visible = true;
+	        }
         }
     } else if (e.KeyCode == Keys.Oemplus) {
         rotating = 4;
