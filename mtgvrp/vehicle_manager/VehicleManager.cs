@@ -433,6 +433,7 @@ namespace mtgvrp.vehicle_manager
             var vehInfo = API.getVehicleDisplayName(veh.VehModel) + " - " + veh.LicensePlate;
             API.setEntitySyncedData(player.handle, "CurrentVehicleInfo", vehInfo);
             API.setEntitySyncedData(player.handle, "OwnsVehicle", DoesPlayerHaveVehicleAccess(player, veh));
+            API.setEntitySyncedData(player.handle, "CanParkCar", DoesPlayerHaveVehicleParkAccess(player, veh));
 
             if (API.getPlayerVehicleSeat(player) == -1)
             {
@@ -609,8 +610,17 @@ namespace mtgvrp.vehicle_manager
             if (character.Id == vehicle.OwnerId) { return true; }
             if (vehicle.GroupId == character.GroupId && character.GroupId != 0) return true;
             if (character.JobOne == vehicle.Job) { return true; }
-            //gang check
+            return false;
+        }
 
+        public static bool DoesPlayerHaveVehicleParkAccess(Client player, Vehicle vehicle)
+        {
+            Account account = API.shared.getEntityData(player.handle, "Account");
+            Character character = API.shared.getEntityData(player.handle, "Character");
+
+            if (account.AdminLevel >= 3) { return true; }
+            if (character.Id == vehicle.OwnerId) { return true; }
+            if (vehicle.GroupId == character.GroupId && character.GroupId != 0) return true;
             return false;
         }
 
