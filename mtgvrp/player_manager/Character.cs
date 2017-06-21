@@ -374,7 +374,11 @@ namespace mtgvrp.player_manager
                     Model.HatVar - 1, true);
                 API.shared.sendNativeToAllPlayers(Hash.SET_PED_PROP_INDEX, Client.handle, 1, Model.GlassesStyle,
                     Model.GlassesVar - 1, true);
-                API.shared.sendNativeToAllPlayers(Hash.SET_PED_PROP_INDEX, Client.handle, 2, Model.EarStyle,
+
+                if(Model.EarStyle == 255)
+                    API.shared.sendNativeToAllPlayers(Hash.CLEAR_PED_PROP, Client.handle, 2);
+                else
+                    API.shared.sendNativeToAllPlayers(Hash.SET_PED_PROP_INDEX, Client.handle, 2, Model.EarStyle,
                     Model.EarVar - 1, true);
             }
             else
