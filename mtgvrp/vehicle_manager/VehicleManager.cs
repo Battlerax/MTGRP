@@ -217,6 +217,7 @@ namespace mtgvrp.vehicle_manager
                 return;
             }
 
+            Character character = API.getEntityData(player, "Character");
             var veh = API.getPlayerVehicle(player);
             Vehicle vehicle = API.getEntityData(veh, "Vehicle");
 
@@ -232,20 +233,22 @@ namespace mtgvrp.vehicle_manager
                 return;
             }
 
-            ChatManager.NearbyMessage(player, 6f, "~p~" + player.name + " attempts to hotwire the vehicle.");
+            ChatManager.NearbyMessage(player, 6f, "~p~" + player.GetCharacter().CharacterName + " attempts to hotwire the vehicle.");
 
-            Random rand = new Random();
+            Random ran = new Random();
 
-            if (rand.Next(0, 2) == 0)
+            var hotwireChance = ran.Next(100);
+
+            if (hotwireChance < 40)
             {
                 API.setVehicleEngineStatus(veh, true);
-                ChatManager.NearbyMessage(player, 6f, "~p~" + player.name + " succeeded in hotwiring the vehicle.");
+                ChatManager.RoleplayMessage(character, player.GetCharacter().CharacterName + " succeeded in hotwiring the vehicle.", ChatManager.RoleplayMe);
             }
             else
             {
                 API.setPlayerHealth(player, player.health - 10);
                 player.sendChatMessage("You attempted to hotwire the vehicle and got shocked!");
-                ChatManager.NearbyMessage(player, 6f, "~p~" + player.name + " failed to hotwire the vehicle.");
+                ChatManager.RoleplayMessage(character, player.GetCharacter().CharacterName + " failed to hotwire the vehicle.", ChatManager.RoleplayMe);
             }
 
         }

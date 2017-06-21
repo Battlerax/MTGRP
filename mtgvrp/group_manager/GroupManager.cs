@@ -292,7 +292,7 @@ namespace mtgvrp.group_manager
             }
             else
             {
-                receiverChar.Division = 1;
+                receiverChar.DivisionRank = 0;
                 receiverChar.Save();
                 API.sendChatMessageToPlayer(receiver, Color.White,
                     character.CharacterName + " has removed your position in a division.");

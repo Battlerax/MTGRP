@@ -412,6 +412,7 @@ namespace mtgvrp.group_manager.lspd
             if (receiver == player)
             {
                 API.sendNotificationToPlayer(player, "~r~You can't cuff yourself!");
+                return;
             }
 
             if (API.getEntityPosition(player).DistanceToSquared(API.getEntityPosition(receiver)) > 16f)
@@ -425,6 +426,7 @@ namespace mtgvrp.group_manager.lspd
             if (receivercharacter.AreHandsUp == false && isStunned == false)
             {
                 player.sendChatMessage("Players must have their hands up or must be tazed before they can be cuffed.");
+                return;
             }
 
             API.sendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, receivercharacter, true);
