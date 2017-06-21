@@ -357,8 +357,8 @@ namespace mtgvrp.core
                 return;
             }
 
-            API.sendChatMessageToPlayer(player, Color.LongDistanceRoleplay, "RP to " + PlayerManager.GetName(receiver) + ": " + text);
-            API.sendChatMessageToPlayer(receiver, Color.LongDistanceRoleplay, "RP from " + PlayerManager.GetName(player) + ": " + text);
+            API.sendChatMessageToPlayer(player, Color.LongDistanceRoleplay, "RP to " + PlayerManager.GetName(receiver) + "(" + PlayerManager.GetPlayerId(receiver.GetCharacter()) + "): " + text);
+            API.sendChatMessageToPlayer(receiver, Color.LongDistanceRoleplay, "RP from " + PlayerManager.GetName(player) + "(" + PlayerManager.GetPlayerId(player.GetCharacter()) + "): " + text);
         }
 
         [Command("whisper", Alias = "w", GreedyArg = true)]
@@ -401,8 +401,8 @@ namespace mtgvrp.core
                 return;
             }
 
-            API.shared.sendChatMessageToPlayer(player, Color.Pm, "PM to " + PlayerManager.GetName(receiver) + ": " + text);
-            API.shared.sendChatMessageToPlayer(receiver, Color.Pm, "PM from " + PlayerManager.GetName(player) + ": " + text);
+            API.shared.sendChatMessageToPlayer(player, Color.Pm, "PM to " + PlayerManager.GetName(receiver) + "(" + PlayerManager.GetPlayerId(receiver.GetCharacter()) + "): " + text);
+            API.shared.sendChatMessageToPlayer(receiver, Color.Pm, "PM from " + PlayerManager.GetName(player) + "(" + PlayerManager.GetPlayerId(player.GetCharacter()) + "): " + text);
         }
 
         public const int RoleplayMe = 0;

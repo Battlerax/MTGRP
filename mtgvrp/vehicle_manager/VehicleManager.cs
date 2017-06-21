@@ -218,10 +218,17 @@ namespace mtgvrp.vehicle_manager
             }
 
             var veh = API.getPlayerVehicle(player);
+            Vehicle vehicle = API.getEntityData(veh, "Vehicle");
 
             if (API.getVehicleEngineStatus(veh) == true)
             {
                 API.sendChatMessageToPlayer(player, "This vehicle is already started.");
+                return;
+            }
+
+            if (vehicle.Fuel < 1)
+            {
+                API.sendChatMessageToPlayer(player, "This vehicle has no fuel.");
                 return;
             }
 
