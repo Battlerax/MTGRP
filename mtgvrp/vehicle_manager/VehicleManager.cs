@@ -229,6 +229,7 @@ namespace mtgvrp.vehicle_manager
             if (vehicle.Fuel < 1)
             {
                 API.sendChatMessageToPlayer(player, "This vehicle has no fuel.");
+                return;
             }
 
             ChatManager.NearbyMessage(player, 6f, "~p~" + player.name + " attempts to hotwire the vehicle.");
