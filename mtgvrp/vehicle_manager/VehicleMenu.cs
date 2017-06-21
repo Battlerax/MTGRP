@@ -35,8 +35,9 @@ namespace mtgvrp.vehicle_manager
                     }
 
                     var vehAccess = VehicleManager.DoesPlayerHaveVehicleAccess(player, vehicle);
+                    var parkAccess = VehicleManager.DoesPlayerHaveVehicleParkAccess(player, vehicle);
 
-                    if (option.Equals("park") && !vehAccess)
+                    if (option.Equals("park") && !parkAccess)
                     {
                         API.shared.sendChatMessageToPlayer(player, "~r~ You do not have access to this vehicle.");
                         return;

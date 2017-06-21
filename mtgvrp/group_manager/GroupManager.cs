@@ -470,7 +470,7 @@ namespace mtgvrp.group_manager
             sender.Group = null;
             sender.GroupRank = 0;
             sender.Save();
-            API.sendChatMessageToPlayer(player, "You have left " + sender.Group.Name + ".");
+            API.sendChatMessageToPlayer(player, "You have left " + sender.Group?.Name + ".");
         }
         
         [Command("invite")]

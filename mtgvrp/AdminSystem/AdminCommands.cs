@@ -484,6 +484,19 @@ namespace mtgvrp.AdminSystem
             API.sendChatMessageToPlayer(receiver, "You have been unfrozen by an admin");
         }
 
+        [Command("quitadmin")]
+        public void QuitAdmin_cmd(Client player, int money)
+        {
+            Account account = API.getEntityData(player.handle, "Account");
+
+            if (account.AdminLevel < 0)
+                return;
+
+            account.AdminLevel = 0;
+            account.Save();
+            API.sendChatMessageToPlayer(player, "You have quit admin.");
+        }
+
         [Command("setmymoney")]
         public void setmymoney_cmd(Client player, int money)
         {
