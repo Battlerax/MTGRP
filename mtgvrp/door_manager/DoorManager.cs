@@ -302,7 +302,7 @@ namespace mtgvrp.door_manager
                 door.Locked = false;
                 door.RefreshDoor();
                 door.Save();
-                API.sendChatMessageToPlayer(player, "Door ~g~Unocked!");
+                API.sendChatMessageToPlayer(player, "Door ~g~Unlocked!");
             }
             else
                 API.sendChatMessageToPlayer(player, "Insufficient permissions.");

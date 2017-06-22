@@ -438,7 +438,7 @@ namespace mtgvrp.group_manager
         {
             Character sender = player.GetCharacter();
 
-            if (sender.Group == Group.None) { player.sendChatMessage("You are not in a group."); }
+            if (sender.Group == Group.None) { player.sendChatMessage("You are not in a group."); return; }
             player.sendChatMessage("===================================");
             player.sendChatMessage("Online Group Members:");
             player.sendChatMessage("===================================");

@@ -98,6 +98,12 @@ namespace mtgvrp.weapon_manager
 
             Weapon currentWeapon = GetCurrentWeapon(player);
 
+            if (character.IsTied || character.IsCuffed)
+            {
+                API.givePlayerWeapon(player, WeaponHash.Unarmed, 1, true, true);
+                return;
+            }
+
             if (currentWeapon.Group != character.Group && currentWeapon.Group != Group.None && currentWeapon.IsGroupWeapon == true)
             {
                 RemoveAllPlayerWeapons(player);

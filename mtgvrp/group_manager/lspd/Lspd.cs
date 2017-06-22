@@ -420,7 +420,7 @@ namespace mtgvrp.group_manager.lspd
                 API.sendNotificationToPlayer(player, "~r~You can't cuff yourself!");
                 return;
             }
-
+           
             if (API.getEntityPosition(player).DistanceToSquared(API.getEntityPosition(receiver)) > 16f)
             {
                 API.sendNotificationToPlayer(player, "~r~You're too far away!");
@@ -435,10 +435,11 @@ namespace mtgvrp.group_manager.lspd
                 return;
             }
 
+            API.givePlayerWeapon(player, WeaponHash.Unarmed, 1, true, true);
             API.sendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, receivercharacter, true);
             receivercharacter.IsCuffed = true;
             API.playPlayerAnimation(receiver, (1 << 0 | 1 << 4 | 1 << 5), "mp_arresting", "idle");
-
+            API.freezePlayer(receiver, true);
             ChatManager.RoleplayMessage(player, "places handcuffs onto " + receivercharacter.rp_name(), ChatManager.RoleplayMe);
         }
 

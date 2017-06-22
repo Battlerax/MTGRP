@@ -118,6 +118,8 @@ namespace mtgvrp.property_system
                     return 110;
                 case PropertyManager.PropertyTypes.LSNN:
                     return 184;
+                case PropertyManager.PropertyTypes.Advertising:
+                    return 133;
                 default:
                     return -1;
             }
