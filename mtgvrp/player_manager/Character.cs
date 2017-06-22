@@ -146,8 +146,7 @@ namespace mtgvrp.player_manager
         public Dictionary<Fish, int> FishOnHand = new Dictionary<Fish, int>();
 
         //Mechanic related
-        public Timer FixcarTimer { get; set; }
-        public bool FixcarPrevention { get; set; }
+        public DateTime FixcarPrevention { get; set; }
 
         //Phone
         [BsonIgnore]

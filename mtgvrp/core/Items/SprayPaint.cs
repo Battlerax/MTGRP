@@ -16,12 +16,12 @@ namespace mtgvrp.core.Items
         public int Amount { get; set; }
 
 
-        public int AmountOfSlots => 2;
+        public int AmountOfSlots => 25;
 
 
         public bool CanBeDropped => true;
         public bool CanBeGiven => true;
-        public bool CanBeStacked => false;
+        public bool CanBeStacked => true;
         public bool CanBeStashed => true;
         public bool IsBlocking => false;
         public Dictionary<Type, int> MaxAmount

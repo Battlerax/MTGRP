@@ -625,7 +625,7 @@ namespace mtgvrp.vehicle_manager
 
         public static Vehicle GetVehFromNetHandle(NetHandle handle)
         {
-            return API.shared.getEntityData(handle, "Vehicle");
+            return API.shared.getEntityData(handle, "Vehicle") ?? null;
         }
 
         public static int spawn_vehicle(Vehicle veh, Vector3 pos)
