@@ -65,6 +65,7 @@ namespace mtgvrp.property_system.businesses
                         case "rags":
                             item = new RagsItem();
                             break;
+
                     }
                 }
                 else if (prop.Type == PropertyManager.PropertyTypes.Hardware)
@@ -88,6 +89,14 @@ namespace mtgvrp.property_system.businesses
 
                         case "rags":
                             item = new RagsItem();
+                            break;
+
+                        case "engineparts":
+                            item = new EngineParts();
+                            break;
+
+                        case "spraypaint":
+                            item = new SprayPaint();
                             break;
                     }
                 }

@@ -28,6 +28,8 @@ namespace mtgvrp.inventory
             BsonClassMap.RegisterClassMap<BagItem>();
             BsonClassMap.RegisterClassMap<Phone>();
             BsonClassMap.RegisterClassMap<Money>();
+            BsonClassMap.RegisterClassMap<EngineParts>();
+            BsonClassMap.RegisterClassMap<SprayPaint>();
             BsonClassMap.RegisterClassMap<Fish>();
             BsonClassMap.RegisterClassMap<RopeItem>();
             BsonClassMap.RegisterClassMap<RagsItem>();

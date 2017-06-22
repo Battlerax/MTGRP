@@ -562,6 +562,23 @@ namespace mtgvrp.vehicle_manager
             return lastVeh;
         }
 
+        public static NetHandle GetClosestVehicle(Client sender, float distance = 1000.0f)
+        {
+            NetHandle handleReturned = new NetHandle();
+            foreach (var veh in API.shared.getAllVehicles())
+            {
+                Vector3 vehPos = API.shared.getEntityPosition(veh);
+                float distanceVehicleToPlayer = sender.position.DistanceTo(vehPos);
+                if (distanceVehicleToPlayer < distance)
+                {
+                    distance = distanceVehicleToPlayer;
+                    handleReturned = veh;
+
+                }
+            }
+            return handleReturned;
+        }
+
         public static int GetMaxOwnedVehicles(Client chr)
         {
             Account acc = API.shared.getEntityData(chr, "Account");

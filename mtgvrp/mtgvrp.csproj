@@ -78,6 +78,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="core\Items\EngineParts.cs" />
+    <Compile Include="core\Items\SprayPaint.cs" />
+    <Compile Include="job_manager\mechanic\MechanicJob.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AdminSystem\AdminCommands.cs" />
     <Compile Include="AdminSystem\AdminReports.cs" />
