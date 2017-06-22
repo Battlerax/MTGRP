@@ -74,7 +74,8 @@ namespace mtgvrp.player_manager
 
                         API.sendChatMessageToPlayer(player, "Welcome to Los Santos, " + charName + "! Let's get started with what you look like!");
                         API.freezePlayer(player, true);
-                        API.setEntityDimension(player, player.GetCharacter().Id + 1);
+                        API.setEntityDimension(player, player.GetCharacter().Id + 1000);
+                        API.setEntitySyncedData(player, "REG_DIMENSION", player.GetCharacter().Id + 1000);
                         character.Model.SetDefault();
                         API.triggerClientEvent(player, "show_character_creation_menu");
                     }
@@ -124,7 +125,8 @@ namespace mtgvrp.player_manager
                             API.sendChatMessageToPlayer(player, "Welcome back, " + character.CharacterName + "! Let's finish figuring out what you look like!");
                             character.update_ped();
                             API.freezePlayer(player, true);
-                            API.setEntityDimension(player, player.GetCharacter().Id + 1);
+                            API.setEntityDimension(player, player.GetCharacter().Id + 1000);
+                            API.setEntitySyncedData(player, "REG_DIMENSION", player.GetCharacter().Id + 1000);
                             character.Model.SetDefault();
                             API.triggerClientEvent(player, "show_character_creation_menu");
                             return;

@@ -152,6 +152,7 @@ function next_character_creation_step(player, step) {
             API.setActiveCamera(creation_view);
             API.setEntityPosition(player, new Vector3(403, -997, -100));
             API.setEntityRotation(player, new Vector3(0, 0, 177.2663));
+			API.setEntityDimension(player, API.getEntitySyncedData(player, "REG_DIMENSION"));
 	        API.setPlayerSkin(1885233650);
 
             //Initiate the lists
