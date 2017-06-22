@@ -29,6 +29,7 @@ API.onKeyDown.connect(function(Player, args){
 
             var veh_info = API.getEntitySyncedData(player, "CurrentVehicleInfo");
             var player_owns_veh = API.getEntitySyncedData(player, "OwnsVehicle");
+            var canparkcar = API.getEntitySyncedData(player, "CanParkCar");
 
             vehicle_menu = API.createMenu("Vehicle Interaction", veh_info, 0, 0, 3);
 
@@ -40,7 +41,9 @@ API.onKeyDown.connect(function(Player, args){
             if (player_seat == -1) { //Only show engine & parking option for driver
                 if (player_owns_veh == true) {
                     engine_state_item = API.createMenuItem("Toggle Engine", "Turn the engine on or off.");
-                    park_car_item = API.createMenuItem("Park Car", "Save the vehicles spawn point to its current location");
+                    
+					if(canparkcar)
+						park_car_item = API.createMenuItem("Park Car", "Save the vehicles spawn point to its current location");
                 }
                 else {
                     if (API.getVehicleEngineStatus(player_veh) == false) {

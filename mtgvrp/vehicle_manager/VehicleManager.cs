@@ -217,7 +217,9 @@ namespace mtgvrp.vehicle_manager
                 return;
             }
 
+            Character character = API.getEntityData(player, "Character");
             var veh = API.getPlayerVehicle(player);
+            Vehicle vehicle = API.getEntityData(veh, "Vehicle");
 
             if (API.getVehicleEngineStatus(veh) == true)
             {
@@ -225,20 +227,28 @@ namespace mtgvrp.vehicle_manager
                 return;
             }
 
-            ChatManager.NearbyMessage(player, 6f, "~p~" + player.name + " attempts to hotwire the vehicle.");
+            if (vehicle.Fuel < 1)
+            {
+                API.sendChatMessageToPlayer(player, "This vehicle has no fuel.");
+                return;
+            }
 
-            Random rand = new Random();
+            ChatManager.NearbyMessage(player, 6f, "~p~" + player.GetCharacter().CharacterName + " attempts to hotwire the vehicle.");
 
-            if (rand.Next(0, 2) == 0)
+            Random ran = new Random();
+
+            var hotwireChance = ran.Next(100);
+
+            if (hotwireChance < 40)
             {
                 API.setVehicleEngineStatus(veh, true);
-                ChatManager.NearbyMessage(player, 6f, "~p~" + player.name + " succeeded in hotwiring the vehicle.");
+                ChatManager.RoleplayMessage(character, player.GetCharacter().CharacterName + " succeeded in hotwiring the vehicle.", ChatManager.RoleplayMe);
             }
             else
             {
                 API.setPlayerHealth(player, player.health - 10);
                 player.sendChatMessage("You attempted to hotwire the vehicle and got shocked!");
-                ChatManager.NearbyMessage(player, 6f, "~p~" + player.name + " failed to hotwire the vehicle.");
+                ChatManager.RoleplayMessage(character, player.GetCharacter().CharacterName + " failed to hotwire the vehicle.", ChatManager.RoleplayMe);
             }
 
         }
@@ -476,6 +486,7 @@ namespace mtgvrp.vehicle_manager
             var vehInfo = API.getVehicleDisplayName(veh.VehModel) + " - " + veh.LicensePlate;
             API.setEntitySyncedData(player.handle, "CurrentVehicleInfo", vehInfo);
             API.setEntitySyncedData(player.handle, "OwnsVehicle", DoesPlayerHaveVehicleAccess(player, veh));
+            API.setEntitySyncedData(player.handle, "CanParkCar", DoesPlayerHaveVehicleParkAccess(player, veh));
 
             if (API.getPlayerVehicleSeat(player) == -1)
             {
@@ -651,10 +662,19 @@ namespace mtgvrp.vehicle_manager
 
             if (account.AdminLevel >= 3) { return true; }
             if (character.Id == vehicle.OwnerId) { return true; }
-            //faction check
-            if(character.JobOne == vehicle.Job) { return true; }
-            //gang check
+            if (vehicle.GroupId == character.GroupId && character.GroupId != 0) return true;
+            if (character.JobOne == vehicle.Job) { return true; }
+            return false;
+        }
 
+        public static bool DoesPlayerHaveVehicleParkAccess(Client player, Vehicle vehicle)
+        {
+            Account account = API.shared.getEntityData(player.handle, "Account");
+            Character character = API.shared.getEntityData(player.handle, "Character");
+
+            if (account.AdminLevel >= 3) { return true; }
+            if (character.Id == vehicle.OwnerId) { return true; }
+            if (vehicle.GroupId == character.GroupId && character.GroupId != 0) return true;
             return false;
         }
 

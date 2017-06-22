@@ -602,7 +602,7 @@ namespace mtgvrp.component_manager
 
             /* ================ MALE EARS ================ */
 
-            ValidMaleEars.Add(new Component(Component.ComponentTypeEars, Character.GenderMale, 33, new List<int> { 1 }, "None"));
+            ValidMaleEars.Add(new Component(Component.ComponentTypeEars, Character.GenderMale, 225, new List<int> { 1 }, "None"));
             ValidMaleEars.Add(new Component(Component.ComponentTypeEars, Character.GenderMale, 3, new List<int>() { 1, 2, 3 }, "Style 1"));
             ValidMaleEars.Add(new Component(Component.ComponentTypeEars, Character.GenderMale, 4, new List<int>() { 1, 2, 3 }, "Style 2"));
             ValidMaleEars.Add(new Component(Component.ComponentTypeEars, Character.GenderMale, 5, new List<int>() { 1, 2 }, "Style 3"));

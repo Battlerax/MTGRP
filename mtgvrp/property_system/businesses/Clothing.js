@@ -8,7 +8,7 @@ var top_menu;
 var hat_menu;
 var glasses_menu;
 var ear_menu;
-
+var torso_menu;
 
 var pantsIndex = 0;
 var pantsVariation = 0;
@@ -27,6 +27,8 @@ var glassesVariation = 0;
 var earIndex = 0;
 var earVariation = 0;
 
+var torsoIndex = 0;
+var torsoVariation = 0;
 
 var oldpantsIndex = 0;
 var oldpantsVariation = 0;
@@ -44,6 +46,9 @@ var oldglassesIndex = 0;
 var oldglassesVariation = 0;
 var oldearIndex = 0;
 var oldearVariation = 0;
+
+var oldtorsoIndex = 0;
+var oldtorsoVariation = 0;
 
 var pant_price;
 var shoe_price;
@@ -144,6 +149,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
 		hat_menu = API.createMenu("Clothes Shop", "Hat Selection" + "           ~g~($" + hat_price + ")", 0, 0, 6);
 		glasses_menu = API.createMenu("Clothes Shop", "Glasses Selection" + "       ~g~($" + glasses_price + ")", 0, 0, 6);
 		ear_menu = API.createMenu("Clothes Shop", "Ear Accessory Selection" + " ~g~($" + ear_price + ")", 0, 0, 6);
+		torso_menu = API.createMenu("Clothes Shop", "Torso Selection ~g~(Free)", 0, 0, 6);
 
 		menu_pool.Add(pant_menu);
 		menu_pool.Add(shoe_menu);
@@ -153,6 +159,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
 		menu_pool.Add(hat_menu);
 		menu_pool.Add(glasses_menu);
 		menu_pool.Add(ear_menu);
+		menu_pool.Add(torso_menu);
 
 		for (var i = 0; i < component_list.length; i++) {
 
@@ -216,6 +223,15 @@ API.onServerEventTrigger.connect((eventName, args) => {
 					API.createListItem(component_list[i].name, "Press enter to select and go back.", list, 0));
 			}
 		}
+		var variations = API.returnNative("2834476523764480066", 0, player, 3);
+		for (var i = 0; i < variations; i++) {
+			var list = new List(String);
+			var types = API.returnNative("10336137878209981357", 0, player, 3, i);
+			for (var j = 0; j < types; j++) {
+				list.Add((j + 1).toString());
+			}
+			torso_menu.AddItem(API.createListItem("Style " + i, "Press enter to select and go back.", list, 0));
+		}
 
 		var characterCreationMenu = API.createMenu("Clothes Shop", "Outfit Selection", 0, 0, 6);
 		characterCreationMenu.AddItem(API.createMenuItem("Pants" + "          ~g~($" + pant_price + ")",
@@ -234,6 +250,8 @@ API.onServerEventTrigger.connect((eventName, args) => {
 			"View the available glasses"));
 		characterCreationMenu.AddItem(API.createMenuItem("Ear Accessories" + " ~g~($" + ear_price + ")",
 			"View the available ear accessories"));
+		characterCreationMenu.AddItem(API.createMenuItem("Torsos ~g~(Free)",
+			"View the available torsos."));
 		menu_pool.Add(characterCreationMenu);
 		characterCreationMenu.Visible = true;
 
@@ -282,6 +300,12 @@ API.onServerEventTrigger.connect((eventName, args) => {
 				API.pointCameraAtEntityBone(facial_view, player, 65068, new Vector3(0, 0, 0));
 				ear_menu.Visible = true;
 				ear_menu.CurrentSelection = 0;
+				break;
+			case 8:
+			API.sendChatMessage("OYTY");
+				API.setActiveCamera(creation_view);
+				torso_menu.Visible = true;
+				torso_menu.CurrentSelection = 0;
 				break;
 			}
 		});
@@ -479,6 +503,26 @@ API.onServerEventTrigger.connect((eventName, args) => {
 				API.triggerServerEvent("clothing_buyclothe", 22, earIndex, earVariation);
 			}
 		});
+
+		torso_menu.OnIndexChange.connect(function(sender, index) {
+			torsoIndex = index;
+			torsoVariation = 0;
+			API.triggerServerEvent("clothing_preview", 3, torsoIndex, torsoVariation);
+		});
+
+		torso_menu.OnListChange.connect(function(sender, list, index) {
+			earVariation = index;
+			API.triggerServerEvent("clothing_preview", 3, torsoIndex, torsoVariation);
+		});
+
+		torso_menu.OnMenuClose.connect(function(menu) {
+			characterCreationMenu.Visible = true;
+			API.triggerServerEvent("clothing_preview", 3, oldtorsoIndex, oldtorsoVariation);
+		});
+
+		torso_menu.OnItemSelect.connect(function(sender, item, index) {
+			API.triggerServerEvent("clothing_buyclothe", 3, torsoIndex, torsoVariation);
+		});
 		break;
 
 		case "clothing_boughtsucess":
@@ -515,7 +559,10 @@ API.onServerEventTrigger.connect((eventName, args) => {
 					oldearIndex = args[1];
 					oldearVariation = args[2];
 					break;
-
+				case 3:
+					oldtorsoIndex = args[1];
+					oldtorsoVariation = args[2];
+					break;
 			}
 		break;
 
