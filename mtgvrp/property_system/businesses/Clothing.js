@@ -379,6 +379,11 @@ API.onServerEventTrigger.connect((eventName, args) => {
 		});
 
 		accessory_menu.OnItemSelect.connect(function(sender, item, index) {
+			if (accessoryIndex === 0) {
+				API.triggerServerEvent("clothing_buyclothe", 7, accessoryIndex, accessoryVariation);
+				return;
+			}
+			
 			API.sendChatMessage(
 				`Would you like to buy this ~r~Accessory~w~ for ~g~\$${accessory_price}~w~ ? Enter 'yes' to confirm.`);
 			if (API.getUserInput("no", 4) === "yes") {
@@ -403,6 +408,11 @@ API.onServerEventTrigger.connect((eventName, args) => {
 		});
 
 		undershirt_menu.OnItemSelect.connect(function(sender, item, index) {
+			if (undershirtIndex === 0) {
+				API.triggerServerEvent("clothing_buyclothe", 8, undershirtIndex, undershirtVariation);
+				return;
+			}
+
 			API.sendChatMessage(
 				`Would you like to buy this ~r~Undershirt~w~ for ~g~\$${undershirt_price}~w~ ? Enter 'yes' to confirm.`);
 			if (API.getUserInput("no", 4) === "yes") {
@@ -451,6 +461,11 @@ API.onServerEventTrigger.connect((eventName, args) => {
 		});
 
 		hat_menu.OnItemSelect.connect(function(sender, item, index) {
+			if (hatIndex === 0) {
+				API.triggerServerEvent("clothing_buyclothe", 20, hatIndex, hatVariation);
+				return;
+			}
+
 			API.sendChatMessage(`Would you like to buy this ~r~Hat~w~ for ~g~\$${hat_price}~w~ ? Enter 'yes' to confirm.`);
 			if (API.getUserInput("no", 4) === "yes") {
 				API.triggerServerEvent("clothing_buyclothe", 20, hatIndex, hatVariation);
@@ -474,6 +489,11 @@ API.onServerEventTrigger.connect((eventName, args) => {
 		});
 
 		glasses_menu.OnItemSelect.connect(function(sender, item, index) {
+			if (glassesIndex === 0) {
+				API.triggerServerEvent("clothing_buyclothe", 21, glassesIndex, glassesVariation);
+				return;
+			}
+
 			API.sendChatMessage(
 				`Would you like to buy this ~r~Glasses~w~ for ~g~\$${glasses_price}~w~ ? Enter 'yes' to confirm.`);
 			if (API.getUserInput("no", 4) === "yes") {
@@ -498,6 +518,11 @@ API.onServerEventTrigger.connect((eventName, args) => {
 		});
 
 		ear_menu.OnItemSelect.connect(function(sender, item, index) {
+			if (earIndex === 0) {
+				API.triggerServerEvent("clothing_buyclothe", 22, earIndex, earVariation);
+				return;
+			}
+
 			API.sendChatMessage(`Would you like to buy this ~r~Earrings~w~ for ~g~\$${ear_price}~w~ ? Enter 'yes' to confirm.`);
 			if (API.getUserInput("no", 4) === "yes") {
 				API.triggerServerEvent("clothing_buyclothe", 22, earIndex, earVariation);
