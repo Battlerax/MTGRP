@@ -79,6 +79,7 @@
   <script src="speed_fuel_system/SpeedoFuel.js" type="client" lang="javascript"/>
 
   <!-- CORE -->
+  <script src="core/JsFunctions.js" type="client" lang="javascript"/>
 	<file src="cef_resources/MTGVRP_LOGO_BIG.png"/>
 	<file src="cef_resources/MTGVRP_LOGO_SMALL.png"/>
 
@@ -86,6 +87,7 @@
 
   <script src="core/Items/RagManager.js" type="client" lang="javascript"/>
   
+  <!-- Property Manager-->
   <script src="property_system/PropertyManager.js" type="client" lang="javascript"/>
   <script src="property_system/businesses/Clothing.js" type="client" lang="javascript"/>
   <script src="property_system/businesses/GeneralBuying.js" type="client" lang="javascript"/>

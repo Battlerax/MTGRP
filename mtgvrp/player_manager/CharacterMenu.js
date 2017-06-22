@@ -98,13 +98,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 API.onUpdate.connect(function () {
     if (menu_pool != null) {
         menu_pool.ProcessMenus();
-		API.disableControlThisFrame(24);
-		API.disableControlThisFrame(30);
-		API.disableControlThisFrame(31);
-		API.disableControlThisFrame(32);
-		API.disableControlThisFrame(33);
-		API.disableControlThisFrame(34);
-		API.disableControlThisFrame(35);
+		API.disableAllControlsThisFrame();
     }
 });
 
@@ -117,6 +111,9 @@ var hat_menu = null;
 var glasses_menu = null;
 var ear_menu = null;
 var torso_menu = null;
+
+var father_ped = null;
+var mother_ped = null;
 
 function next_character_creation_step(player, step) {
 
@@ -145,13 +142,11 @@ function next_character_creation_step(player, step) {
             var mother_int_id = 21;
             var parent_lean = 0.5;
 
-            var father_ped = null;
-            var mother_ped = null;
-
             //Set Camera to CharacterCreation
             API.setActiveCamera(creation_view);
             API.setEntityPosition(player, new Vector3(403, -997, -100));
             API.setEntityRotation(player, new Vector3(0, 0, 177.2663));
+			API.setEntityDimension(player, API.getEntitySyncedData(player, "REG_DIMENSION"));
 	        API.setPlayerSkin(1885233650);
 
             //Initiate the lists
@@ -175,6 +170,11 @@ function next_character_creation_step(player, step) {
             next_menu_item = API.createMenuItem("Next", "Continue onto the next portion of character creation.");
 
             //Create the display peds and set their info
+			if(father_ped !== null)
+				API.deleteEntity(father_ped);
+	        if(mother_ped !== null)
+		        API.deleteEntity(mother_ped);
+
             father_ped = API.createPed(1885233650, new Vector3(402.5, -996.5, -99), new Vector3(0, 0, 172));
             mother_ped = API.createPed(-1667301416, new Vector3(403.38, -996.5, -99), new Vector3(0, 0, 172));
             API.triggerServerEvent("change_parent_info", father_ped, mother_ped, father_int_id, mother_int_id, parent_lean, gender);

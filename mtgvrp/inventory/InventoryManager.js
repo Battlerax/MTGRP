@@ -7,8 +7,8 @@ API.onServerEventTrigger.connect((eventName, args) => {
             var res = API.getScreenResolutionMantainRatio();
             myBrowser = API.createCefBrowser(720, 660);
             API.waitUntilCefBrowserInit(myBrowser);
-            API.setCefBrowserPosition(myBrowser, (res.Width / 2) - (720 / 2),
-                (res.Height / 2) - (660 / 2));
+	        var pos = resource.JsFunctions.scaleCoordsToReal({X: (res.Width / 2) - (720 / 2), Y: (res.Height / 2) - (660 / 2)});
+            API.setCefBrowserPosition(myBrowser, pos.X, pos.Y);
             API.loadPageCefBrowser(myBrowser, "inventory/ManageInv.html");
             //API.setCefDrawState(true);
             API.showCursor(true);

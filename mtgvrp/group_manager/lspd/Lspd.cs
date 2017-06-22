@@ -539,7 +539,7 @@ namespace mtgvrp.group_manager.lspd
             var playerPos = API.getEntityPosition(player);
             Character character = API.getEntityData(player.handle, "Character");
 
-            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
+            if (character?.Group == Group.None || character?.Group.CommandType != Group.CommandTypeLspd)
             {
                 //API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
                 return;

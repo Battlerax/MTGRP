@@ -166,6 +166,7 @@
     <Content Include="cef_resources\MTGVRP_LOGO_BIG.png" />
     <Content Include="cef_resources\MTGVRP_LOGO_SMALL.png" />
     <Content Include="core\Items\RagManager.js" />
+    <Content Include="core\JsFunctions.js" />
     <Content Include="door_manager\DoorManager.js" />
     <Content Include="group_manager\GroupEditor.html" />
     <Content Include="group_manager\lsnn\LowerThird.html" />

@@ -209,31 +209,37 @@ namespace mtgvrp.vehicle_manager
         }
 
         [Command("hotwire")]
-        public void hotwire_cmd(Client player)
+        public static void hotwire_cmd(Client player)
         {
             if (player.isInVehicle == false)
             {
-                API.sendChatMessageToPlayer(player, "You are not in a vehicle.");
+                API.shared.sendChatMessageToPlayer(player, "You are not in a vehicle.");
                 return;
             }
 
-            Character character = API.getEntityData(player, "Character");
-            var veh = API.getPlayerVehicle(player);
-            Vehicle vehicle = API.getEntityData(veh, "Vehicle");
+            Character character = API.shared.getEntityData(player, "Character");
+            var veh = API.shared.getPlayerVehicle(player);
+            Vehicle vehicle = API.shared.getEntityData(veh, "Vehicle");
 
-            if (API.getVehicleEngineStatus(veh) == true)
+            if (API.shared.getVehicleEngineStatus(veh) == true)
             {
-                API.sendChatMessageToPlayer(player, "This vehicle is already started.");
+                API.shared.sendChatMessageToPlayer(player, "This vehicle is already started.");
                 return;
             }
 
             if (vehicle.Fuel < 1)
             {
-                API.sendChatMessageToPlayer(player, "This vehicle has no fuel.");
+                API.shared.sendChatMessageToPlayer(player, "This vehicle has no fuel.");
                 return;
             }
 
-            ChatManager.NearbyMessage(player, 6f, "~p~" + player.GetCharacter().CharacterName + " attempts to hotwire the vehicle.");
+            if (character.NextHotWire > DateTime.Now)
+            {
+                API.shared.sendChatMessageToPlayer(player, $"You have to wait {character.NextHotWire.Subtract(DateTime.Now).Seconds} more second(s) before attempting to hotwire.");
+                return;
+            }
+
+            ChatManager.RoleplayMessage(character, "attempts to hotwire the vehicle.", ChatManager.RoleplayMe);
 
             Random ran = new Random();
 
@@ -241,14 +247,15 @@ namespace mtgvrp.vehicle_manager
 
             if (hotwireChance < 40)
             {
-                API.setVehicleEngineStatus(veh, true);
-                ChatManager.RoleplayMessage(character, player.GetCharacter().CharacterName + " succeeded in hotwiring the vehicle.", ChatManager.RoleplayMe);
+                API.shared.setVehicleEngineStatus(veh, true);
+                ChatManager.RoleplayMessage(character, "succeeded in hotwiring the vehicle.", ChatManager.RoleplayMe);
             }
             else
             {
-                API.setPlayerHealth(player, player.health - 10);
+                API.shared.setPlayerHealth(player, player.health - 10);
                 player.sendChatMessage("You attempted to hotwire the vehicle and got shocked!");
-                ChatManager.RoleplayMessage(character, player.GetCharacter().CharacterName + " failed to hotwire the vehicle.", ChatManager.RoleplayMe);
+                ChatManager.RoleplayMessage(character, "failed to hotwire the vehicle.", ChatManager.RoleplayMe);
+                character.NextHotWire = DateTime.Now.Add(TimeSpan.FromSeconds(10));
             }
 
         }
@@ -264,9 +271,9 @@ namespace mtgvrp.vehicle_manager
                 return;
             }
 
-            if (DateTime.Now < character.DropcarReset)
+            if (character.DropcarReset > DateTime.Now)
             {
-                player.sendChatMessage("You can only do this every 15 minutes.");
+                player.sendChatMessage($"Please wait {character.DropcarReset.Subtract(character.DropcarReset).Minutes} more minutes before dropping another car.");
                 return;
             }
 
@@ -487,12 +494,6 @@ namespace mtgvrp.vehicle_manager
             API.setEntitySyncedData(player.handle, "CurrentVehicleInfo", vehInfo);
             API.setEntitySyncedData(player.handle, "OwnsVehicle", DoesPlayerHaveVehicleAccess(player, veh));
             API.setEntitySyncedData(player.handle, "CanParkCar", DoesPlayerHaveVehicleParkAccess(player, veh));
-
-            if (API.getPlayerVehicleSeat(player) == -1)
-            {
-                veh.Driver = character;
-                API.sendChatMessageToPlayer(player, "~y~Press 'N' to access the vehicle menu.");
-            }
         }
 
         public void OnPlayerExitVehicle(Client player, NetHandle vehicleHandle)

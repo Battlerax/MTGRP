@@ -66,16 +66,20 @@
 
 <script>
 
+	$(document).ready(function () {
+		resourceCall("ready");
+	});
+
     $('#all_players').click(function () {
         resourceCall("fetch_player_list", 0);
     });
 
     $('#admins').click(function () {
-        resourceCall("fetch_player_list", 1)
+	    resourceCall("fetch_player_list", 1);
     });
 
     $('#group').click(function () {
-        resourceCall("fetch_player_list', 2")
+	    resourceCall("fetch_player_list", 2);
     });
 
     function pm_dialog(name, id) {
@@ -121,7 +125,14 @@
         $('#player_list').css("display", "none");
     }
 
-    function show_list() {
+    function show_list(playerListJSON, isAdmin) {
+	    empty_player_list();
+
+	    var playerList = JSON.parse(playerListJSON);
+	    $.each(playerList , function(i, val) { 
+		    add_player(val[1], val[0], isAdmin);
+	    });
+
         $('#loading_icon').css("display", "none");
         $('#player_list').css("display", "block");
     }

@@ -91,6 +91,9 @@ namespace mtgvrp.core
              "laitilee",
              "shaneboy7780",
              "ChipotleAwayJay"
+             "Lambeeee",
+             "Battlerax",
+             "RedDeadVet360",
         };
 
         public Whitelist()

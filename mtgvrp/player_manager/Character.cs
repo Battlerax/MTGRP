@@ -248,6 +248,9 @@ namespace mtgvrp.player_manager
         public bool IsRagged;
 
         [BsonIgnore]
+        public DateTime NextHotWire;
+
+        [BsonIgnore]
         public GTANetworkServer.Object MegaPhoneObject = null;
 
         [BsonIgnore]
