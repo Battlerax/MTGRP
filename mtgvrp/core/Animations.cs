@@ -28,9 +28,10 @@ namespace mtgvrp.core
         [Command("stopanim")]
         public void stopanim(Client player)
         {
+            Character character = API.getEntityData(player.handle, "Character");
+            if (character.IsCuffed || character.IsTied) { return; }
             API.stopPlayerAnimation(player);
             API.stopPedAnimation(player);
-            Character character = API.getEntityData(player.handle, "Character");
             character.AreHandsUp = false;
         }
 
