@@ -14,7 +14,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 });
 
 
-API.onKeyDown.connect(function(Player, args){
+API.onKeyUp.connect(function(Player, args){
     if (args.KeyCode == Keys.F1){
         if(player_list_browser == null){
 	        var pos = resource.JsFunctions.scaleCoordsToReal({ X: res.Width, Y:  res.Height});
