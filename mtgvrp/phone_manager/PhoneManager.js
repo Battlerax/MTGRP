@@ -135,9 +135,3 @@ function callServerEvent(eventName /* Args */) {
     var args = Array.prototype.slice.call(arguments, 1);
     API.triggerServerEvent(eventName, ...args);
 }
-
-API.onUpdate.connect(() => {
-	if (myBrowser !== null) {
-		API.disableAllControlsThisFrame();
-	}
-});
