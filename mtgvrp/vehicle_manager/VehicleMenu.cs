@@ -35,8 +35,9 @@ namespace mtgvrp.vehicle_manager
                     }
 
                     var vehAccess = VehicleManager.DoesPlayerHaveVehicleAccess(player, vehicle);
+                    var parkAccess = VehicleManager.DoesPlayerHaveVehicleParkAccess(player, vehicle);
 
-                    if (option.Equals("park") && !vehAccess)
+                    if (option.Equals("park") && !parkAccess)
                     {
                         API.shared.sendChatMessageToPlayer(player, "~r~ You do not have access to this vehicle.");
                         return;
@@ -89,6 +90,8 @@ namespace mtgvrp.vehicle_manager
 
                                     var hotwireChance = ran.Next(100);
 
+                                    ChatManager.RoleplayMessage(character, player.GetCharacter().CharacterName + " attempts to hotwire the vehicle.", ChatManager.RoleplayMe);
+
                                     if (hotwireChance < 40)
                                     {
                                         API.shared.setVehicleEngineStatus(vehicleHandle, true);
@@ -96,7 +99,9 @@ namespace mtgvrp.vehicle_manager
                                     }
                                     else
                                     {
-                                        API.shared.sendChatMessageToPlayer(player, "You failed to hotwire the vehicle.");
+                                        API.setPlayerHealth(player, player.health - 10);
+                                        player.sendChatMessage("You attempted to hotwire the vehicle and got shocked!");
+                                        ChatManager.RoleplayMessage(character, player.GetCharacter().CharacterName + " failed to hotwire the vehicle.", ChatManager.RoleplayMe);
                                     }
                                 }
                             }

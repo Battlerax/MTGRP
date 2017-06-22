@@ -74,7 +74,7 @@ namespace mtgvrp.core
              "SlavishClown0",
              "BasedSosaa",
              "YoMomK",
-             "justcallmeGorm",
+             "justcallmeGorM",
              "Weavetron",
              "Guvnors",
              "MTGMoleman",
@@ -90,6 +90,7 @@ namespace mtgvrp.core
              "cartoonmagic",
              "laitilee",
              "shaneboy7780",
+             "ChipotleAwayJay"
         };
 
         public Whitelist()
