@@ -275,7 +275,7 @@ namespace mtgvrp.vehicle_manager
 
             if (result == 1)
             {
-                player.sendChatMessage($"Please wait {character.DropcarReset.Subtract(character.DropcarReset).Minutes} more minutes before dropping another car.");
+                player.sendChatMessage($"Please wait {character.DropcarReset.Subtract(DateTime.Now).Minutes} more minutes before dropping another car.");
                 return;
             }
 
