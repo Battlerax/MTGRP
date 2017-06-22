@@ -54,7 +54,7 @@ namespace mtgvrp.job_manager.taxi
         }
 
         [Command("paintcar")]
-        public void paintcar_cmd(Client player, string col1, string col2)
+        public void paintcar_cmd(Client player, int col1, int col2)
         {
             Character character = player.GetCharacter();
             var veh = VehicleManager.GetVehFromNetHandle(API.getPlayerVehicle(player));
@@ -68,12 +68,13 @@ namespace mtgvrp.job_manager.taxi
             if (InventoryManager.DoesInventoryHaveItem(character, typeof(SprayPaint)).Length == 0)
             {
                 player.sendChatMessage("You don't have spray paint.");
+                return;
             }
 
-            API.setVehiclePrimaryColor(API.getPlayerVehicle(player), int.Parse(col1));
-            API.setVehicleSecondaryColor(API.getPlayerVehicle(player), int.Parse(col2));
-            veh.SpawnColors[0] = int.Parse(col1);
-            veh.SpawnColors[1] = int.Parse(col2);
+            API.setVehiclePrimaryColor(API.getPlayerVehicle(player), col1);
+            API.setVehicleSecondaryColor(API.getPlayerVehicle(player), col2);
+            veh.SpawnColors[0] = col1;
+            veh.SpawnColors[1] = col2;
             veh.Save();
             InventoryManager.DeleteInventoryItem(character, typeof(SprayPaint), 1);
             player.sendChatMessage("Vehicle painted.");
