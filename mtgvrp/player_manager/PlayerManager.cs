@@ -62,11 +62,23 @@ namespace mtgvrp.player_manager
             }
         }
 
+
         private void API_onPlayerRespawn(Client player)
         {
+            var character = player.GetCharacter();
+
             player.sendChatMessage("You were revived by the ~b~Los Santos Medical Department ~w~ and were charged $500 for hospital fees.");
             WeaponManager.RemoveAllPlayerWeapons(player);
-            InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(Money), 500);
+            int amount = -500;
+
+            if (Money.GetCharacterMoney(character) < 500)
+            {
+                character.BankBalance += amount;
+            }
+            else
+            {
+                InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(Money), 500);
+            }
         }
 
         //TODO: CHANGED ONCE THE LS GOV IS ADDED
