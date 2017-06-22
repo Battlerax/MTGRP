@@ -27,7 +27,8 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 API.onKeyDown.connect(function(Player, args){
     if (args.KeyCode == Keys.F1){
         if(player_list_browser == null){
-            player_list_browser = API.createCefBrowser(res.Width, res.Height);
+	        var pos = resource.JsFunctions.scaleCoordsToReal({ X: res.Width, Y:  res.Height});
+            player_list_browser = API.createCefBrowser(pos.X, pos.Y);
             API.waitUntilCefBrowserInit(player_list_browser);
             API.setCefBrowserPosition(player_list_browser, 0, 0);
             API.loadPageCefBrowser(player_list_browser, "player_manager/player_list/PlayerList.html");

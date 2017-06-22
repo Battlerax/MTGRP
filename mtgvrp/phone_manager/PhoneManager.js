@@ -7,9 +7,8 @@ function showPhoneIfNotShown() {
         var height = 590;
         myBrowser = API.createCefBrowser(width, height);
         API.waitUntilCefBrowserInit(myBrowser);
-        API.setCefBrowserPosition(myBrowser,
-            res.Width - width,
-            res.Height - height);
+	    var pos = resource.JsFunctions.scaleCoordsToReal({ X: res.Width - width, Y:  res.Height - height});
+        API.setCefBrowserPosition(myBrowser, pos.X, pos.Y);
         API.loadPageCefBrowser(myBrowser, "phone_manager/gui/main.html");
         //API.setCefDrawState(true);
         API.waitUntilCefBrowserLoaded(myBrowser);

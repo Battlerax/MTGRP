@@ -9,7 +9,8 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 
     switch (eventName) {
         case "show_vehicle_edit_menu":
-            vehicle_edit_browser = API.createCefBrowser(res.Width, res.Height);
+	        var pos = resource.JsFunctions.scaleCoordsToReal({ X: res.Width, Y:  res.Height});
+            vehicle_edit_browser = API.createCefBrowser(pos.X, pos.Y);
             API.waitUntilCefBrowserInit(vehicle_edit_browser);
             API.setCefBrowserPosition(vehicle_edit_browser, 0, 0);
             API.loadPageCefBrowser(vehicle_edit_browser, "vehicle_manager/vehicle_editor/VehicleEdit.html");
