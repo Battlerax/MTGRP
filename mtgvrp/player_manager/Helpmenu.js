@@ -23,7 +23,7 @@ function showCmds(group) {
         API.sendChatMessage('/Time, /Stats, /rp, /b, /me, /ame, /(V)ip, /(N)ewbie, /o, /(S)hout, /pm, /Low, /(W)hisper');
         API.sendChatMessage('/Inv, /Give, /Drop, /Stash, /Managebag, /Myvehicles, /Buyvehicle, /UseSprunk, /Admins,');
         API.sendChatMessage('/Frisk, /Tie /Blindfold, /Unblindfold, /Rag, /Unrag, /PickUpStash, /JoinJob, /QuitJob,');
-        API.sendChatMessage('/SetPhoneName, /PickUp, /H, /Phone, /Detain, /Eject, /GetID, /Stats, /Time, /Atm,');
+        API.sendChatMessage('/SetPhoneName, /PickUp, /H, /Phone, /Detain, /Eject, /GetID');
         API.sendChatMessage('/ConfirmSellVehicle, /ConfirmBuyVehicle, /BuyProperty, /atm, /enter, /exit,');
         API.sendChatMessage('/WatchBroadcast, /StopWatching.');
         API.sendChatMessage('~r~These are all cmds for the beta, please test them to make sure theyre not broken.');

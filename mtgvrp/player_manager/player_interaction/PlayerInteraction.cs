@@ -146,7 +146,7 @@ namespace mtgvrp.player_manager.player_interaction
         }
 
         [Command("detain", GreedyArg = true)]
-        public void DetainPlayer(Client player, string id, int seatNumber)
+        public void DetainPlayer(Client player, string id, string seatNumber)
         {
 
             var receiver = PlayerManager.ParseClient(id);
@@ -164,7 +164,7 @@ namespace mtgvrp.player_manager.player_interaction
                 return;
             }
 
-            if (seatNumber > 2)
+            if (int.Parse(seatNumber) > 2)
             {
                 API.sendChatMessageToPlayer(player, "Seat number ranges from 0-2 (0 is the passenger seat).");
                 return;
@@ -181,7 +181,7 @@ namespace mtgvrp.player_manager.player_interaction
                 return;
             }
 
-            API.setPlayerIntoVehicle(receiver, API.getPlayerVehicle(player), seatNumber);
+            API.setPlayerIntoVehicle(receiver, API.getPlayerVehicle(player), int.Parse(seatNumber));
             API.sendChatMessageToPlayer(player, "~g~You have detained " + receiver.name + " into a vehicle.");
             API.sendChatMessageToPlayer(receiver, "~g~You were detained by " + player.name + " into a vehicle.");
 
