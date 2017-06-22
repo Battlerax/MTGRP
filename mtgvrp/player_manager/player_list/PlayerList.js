@@ -8,17 +8,7 @@ API.onResourceStart.connect(function () {
 API.onServerEventTrigger.connect(function (eventName, args) {
     switch (eventName) {
         case "send_player_list":
-
-            player_list_browser.call("empty_player_list");
-
-            var player_list = args[0];
-            for (var i = 0; i < player_list.Count; i++) {
-
-                var obj = JSON.parse(player_list[i]);
-                player_list_browser.call("add_player", obj.id, obj.name, args[1]);
-
-            }
-            player_list_browser.call("show_list");
+            player_list_browser.call("show_list", args[0], args[1]);
             break;
     }
 });
@@ -34,10 +24,6 @@ API.onKeyDown.connect(function(Player, args){
             API.loadPageCefBrowser(player_list_browser, "player_manager/player_list/PlayerList.html");
             API.showCursor(true);
             API.setCanOpenChat(false);
-            //API.setCefDrawState(true);
-
-            API.sleep(500);
-            API.triggerServerEvent("fetch_player_list", 0)
         }
         else {
             API.destroyCefBrowser(player_list_browser);
@@ -49,8 +35,12 @@ API.onKeyDown.connect(function(Player, args){
     }
 });
 
+function ready() {
+	API.triggerServerEvent("fetch_player_list", 0);
+}
+
 function fetch_player_list(type) {
-    API.triggerServerEvent("fetch_player_list", type)
+	API.triggerServerEvent("fetch_player_list", type);
 }
 
 function player_list_pm(name, msg) {

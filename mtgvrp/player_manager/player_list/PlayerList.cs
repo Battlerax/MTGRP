@@ -20,9 +20,16 @@ namespace mtgvrp.player_manager.player_list
                 case "fetch_player_list":
 
                     Account account = API.getEntityData(player.handle, "Account");
+                    Character character = player.GetCharacter();
 
-                    var playerList = new List<string>();
+                    var playerList = new List<string[]>();
                     var type = Convert.ToInt32(arguments[0]);
+
+                    if (character.GroupId == 0 && type == 2)
+                    {
+                        API.sendNotificationToPlayer(player, "You aren't in any group");
+                        return;
+                    }
 
                     foreach(var c in PlayerManager.Players)
                     {
@@ -33,15 +40,17 @@ namespace mtgvrp.player_manager.player_list
                                 continue;
                         }
 
-                        var dic = new Dictionary<string, object>
+                        if (type == 2)
                         {
-                            ["name"] = c.CharacterName,
-                            ["id"] = PlayerManager.GetPlayerId(c)
-                        };
-                        playerList.Add(API.toJson(dic));
+                            Character a = c.Client.GetCharacter();
+                            if (a.GroupId == character.GroupId && character.GroupId != 0)
+                                continue;
+                        }
+
+                        playerList.Add(new [] { c.CharacterName , PlayerManager.GetPlayerId(c).ToString() });
                     }
 
-                    API.triggerClientEvent(player, "send_player_list", playerList, account.AdminLevel != 0);
+                    API.triggerClientEvent(player, "send_player_list", API.toJson(playerList.ToArray()), account.AdminLevel != 0);
                     break;
                 case "player_list_pm":
                     ChatManager.pm_cmd(player, Convert.ToString(arguments[0]), Convert.ToString(arguments[1]));
@@ -55,7 +64,7 @@ namespace mtgvrp.player_manager.player_list
                     break;
 
                 case "player_list_kick":
-
+                    AdminCommands.kick_cmd(player, Convert.ToString(arguments[0]), "PlayerList");
                     break;
             }
         }
