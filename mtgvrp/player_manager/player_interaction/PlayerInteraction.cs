@@ -62,6 +62,7 @@ namespace mtgvrp.player_manager.player_interaction
                                         return;
                                     }
 
+                                    API.givePlayerWeapon(player, WeaponHash.Unarmed, 1, true, true);
                                     API.sendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, interactHandle, true);
                                     interactCharacter.IsCuffed = true;
                                     API.freezePlayer(interactCharacter.Client, true);
