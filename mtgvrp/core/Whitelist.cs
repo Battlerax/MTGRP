@@ -90,7 +90,7 @@ namespace mtgvrp.core
              "cartoonmagic",
              "laitilee",
              "shaneboy7780",
-             "ChipotleAwayJay"
+             "ChipotleAwayJay",
              "Lambeeee",
              "Battlerax",
              "RedDeadVet360",
