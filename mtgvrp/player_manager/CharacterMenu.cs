@@ -80,6 +80,13 @@ namespace mtgvrp.player_manager
                     }
                     else
                     {
+                        if (API.hasEntityData(player.handle, "Character") == true)
+                        {
+                            API.sendChatMessageToPlayer(player, Color.Yellow,
+                                "Your character is already loaded, please be patient.");
+                            return;
+                        }
+
                         var filter = Builders<Character>.Filter.Eq("CharacterName", charName);
                         var foundCharacters = DatabaseManager.CharacterTable.Find(filter).ToList();
 
