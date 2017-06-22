@@ -21,9 +21,10 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 			var wbcamView = API.createCamera(args[0], args[1]);
 			API.setActiveCamera(wbcamView);
 			var wbres = API.getScreenResolutionMantainRatio();
-			lowerthird = API.createCefBrowser(wbres.Width, wbres.Height);
+			lowerthird = API.createCefBrowser(800, 700);
 			API.waitUntilCefBrowserInit(lowerthird);
-			API.setCefBrowserPosition(lowerthird, wbres.Width - 1200, wbres.Height - 300);
+			var pos = resource.JsFunctions.scaleCoordsToReal({X: wbres.Width - 1200,Y: wbres.Height - 300 });
+			API.setCefBrowserPosition(lowerthird, pos.X, pos.Y);
 			API.loadPageCefBrowser(lowerthird, "group_manager/lsnn/LowerThird.html");
 			////API.setCefDrawState(true);
 	        setToBeCalled("settitle", args[2]);
@@ -35,9 +36,10 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 			API.setActiveCamera(wcCamView);
 		    API.callNative("0xBB7454BAFF08FE25", args[5], args[6], args[7], 0.0, 0.0, 0.0); 
 			var resolution = API.getScreenResolutionMantainRatio();
-			lowerthird = API.createCefBrowser(resolution.Width, resolution.Height);
+			lowerthird = API.createCefBrowser(800, 700);
 			API.waitUntilCefBrowserInit(lowerthird);
-			API.setCefBrowserPosition(lowerthird, 800, 700);
+			var apos = resource.JsFunctions.scaleCoordsToReal({X: resolution.Width - 1200,Y: resolution.Height - 300 });
+			API.setCefBrowserPosition(lowerthird, apos.X, apos.Y);
 			API.loadPageCefBrowser(lowerthird, "group_manager/lsnn/LowerThirdChopper.html");
 			////API.setCefDrawState(true);
 			setToBeCalled("settitle", args[2]);

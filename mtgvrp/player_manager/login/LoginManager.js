@@ -6,7 +6,8 @@ var login_browser = null;
 API.onResourceStart.connect(function () {
 
     var res = API.getScreenResolutionMantainRatio();
-    login_browser = API.createCefBrowser(res.Width, res.Height);
+	var pos = resource.JsFunctions.scaleCoordsToReal({ X: res.Width, Y:  res.Height});
+    login_browser = API.createCefBrowser(pos.X, pos.Y);
     API.waitUntilCefBrowserInit(login_browser);
     API.setCefBrowserPosition(login_browser, 0, 0);
     API.loadPageCefBrowser(login_browser, "player_manager/login/Login.html");

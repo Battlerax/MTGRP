@@ -78,6 +78,9 @@ namespace mtgvrp.core
              "iEinarS",
              "TheSunglass",
              "shaneboy7780",
+             "Lambeeee",
+             "Battlerax",
+             "RedDeadVet360",
         };
 
         public Whitelist()
