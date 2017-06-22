@@ -64,6 +64,7 @@ namespace mtgvrp.player_manager.player_interaction
 
                                     API.sendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, interactHandle, true);
                                     interactCharacter.IsCuffed = true;
+                                    API.freezePlayer(interactCharacter.Client, true);
                                     API.playPlayerAnimation(interactCharacter.Client, (int)(1 << 0 | 1 << 4 | 1 << 5),
                                         "mp_arresting", "idle");
 
@@ -80,6 +81,7 @@ namespace mtgvrp.player_manager.player_interaction
                                         return;
                                     }
 
+                                    API.freezePlayer(interactCharacter.Client, false);
                                     API.sendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, interactHandle, false);
                                     interactCharacter.IsCuffed = false;
                                     API.stopPlayerAnimation(interactCharacter.Client);

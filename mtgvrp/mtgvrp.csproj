@@ -172,7 +172,6 @@
     <Content Include="group_manager\lsnn\LowerThird.html" />
     <Content Include="group_manager\lsnn\LowerThirdChopper.html" />
     <Content Include="group_manager\lsnn\Lsnn.js" />
-    <Content Include="group_manager\lspd\Lspd.ts" />
     <Content Include="group_manager\lspd\LspdLocker.js" />
     <Content Include="group_manager\lspd\MDC\LSPDMDC.png" />
     <Content Include="group_manager\lspd\MDC\MDC.html" />

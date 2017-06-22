@@ -432,7 +432,7 @@ namespace mtgvrp.group_manager.lspd
             API.sendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, receivercharacter, true);
             receivercharacter.IsCuffed = true;
             API.playPlayerAnimation(receiver, (1 << 0 | 1 << 4 | 1 << 5), "mp_arresting", "idle");
-
+            API.freezePlayer(receiver, true);
             ChatManager.RoleplayMessage(player, "places handcuffs onto " + receivercharacter.rp_name(), ChatManager.RoleplayMe);
         }
 
