@@ -176,7 +176,7 @@ namespace mtgvrp.property_system.businesses
                             InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
                             character.HasLottoTicket = true;
                             API.sendChatMessageToPlayer(sender, "You purchased a lottery ticket. Good luck!");
-                            break;
+                            return;
                     }
                     return;
                 }
