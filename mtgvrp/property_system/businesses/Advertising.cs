@@ -71,7 +71,7 @@ namespace mtgvrp.property_system.businesses
 
                 if (receiverPhone.IsOn)
                 {
-                    receiver.sendChatMessage("~g~[AD] (#" + senderPhone.Number + "): " + text);
+                    receiver.sendChatMessage("~g~[AD] (#" + senderPhone.PhoneNumber + "): " + text);
                 }
 
                 player.sendChatMessage("Advertisement subimtted.");
