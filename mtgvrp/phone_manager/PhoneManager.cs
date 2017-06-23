@@ -639,7 +639,7 @@ namespace mtgvrp.phone_manager
         }
 
         [Command("phone")]
-        public void ShowPhone(Client player, int width, int height)
+        public void ShowPhone(Client player)
         {
             Character character = API.shared.getEntityData(player.handle, "Character");
             var targetitems = InventoryManager.DoesInventoryHaveItem(character, typeof(Phone));
@@ -649,8 +649,9 @@ namespace mtgvrp.phone_manager
                 return;
             }
 
+            API.sendChatMessageToPlayer(player, "~y~* Press ~h~F2~y~ to show the cursor.");
             var curTime = TimeWeatherManager.CurrentTime;
-            API.triggerClientEvent(player, "phone_showphone", curTime.Hour, curTime.Minute, width, height);
+            API.triggerClientEvent(player, "phone_showphone", curTime.Hour, curTime.Minute);
         }
 
         public static bool DoesNumberExist(string num)
