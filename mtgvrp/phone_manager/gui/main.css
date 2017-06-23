@@ -1,23 +1,14 @@
-#phonebase-image {
-    width: 400px;
-    height: 580px;
-    z-index:1;
-    position:absolute;
-    pointer-events: none;
-}
-
 #main {
-    margin-top: 55px;
-    margin-left: 23px;
     background-color: black;
-    width: 350px;
-    height: 450px;
-    position: absolute;
+    width: 100%;
+    height: 100%;
+	border-radius: 10px;
+	border: white solid 5px;
 }
 
 #notif-bar {
     width: 100%;
-    height: 30px;
+    height: 2em;
 }
 
 .notif-item {
@@ -25,40 +16,42 @@
     vertical-align: middle;
     float: right;
     color: white;
-    margin: 5px;
+    margin: 0.1em;
 }
 
 #content {
     width: 100%;
-    height: 400px;
+    height: 90%;
     overflow:hidden;
-    margin-top: 20px;
-    margin-left: 15px;
 }
 
 #child-content {
-	width: 376px;
-    height: 400px;
+	width: 108.6%;
+    height: 90%;
 	overflow:auto;
+	padding: 1em;
+}
+
+#navigation {
+	width: 100%;
+	height: 10%;
+	background-color: red;
+	display:flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .tile {
     color: white;
-    background-color: #ce352c !important;  
+    background-color: #ce352c !important;
+	width: 95% !important;
+	height: 10em !important;
 }
 
 #app-browser {
-    width: 330px;
+    width: 100%;
     height: 100%;
     border: none;
-}
-
-#navigation {
-    width: 100%;
-    height: 50px;
-    display:flex;
-    justify-content: center;
-    align-items: center;
 }
 
 #call-interface {
@@ -70,18 +63,18 @@
 }
 
 #calling-actionbuttons {
-    margin-top: 170px;
+    margin-top: 46.5%;
 }
 
-#calling_answer,#calling_header,#caller_number,#caller_name { margin-left: 10px; }
+#calling_answer,#calling_header,#caller_number,#caller_name { margin-left: 2.73%; }
 
 #calling_answer, #calling_ignore {
-    height: 50px;
-    width: 150px;
+    height: 12.5%;
+    width: 45.45%;
 }
 
 #calling_end-call {
-    height: 50px;
-    width: 303px;
-    margin-left: 10px;
+    height: 12.5%;
+    width: 91.81%;
+    margin-left: 2.73%;
 }

@@ -1,13 +1,13 @@
 ﻿var myBrowser = null;
 
-function showPhoneIfNotShown() {
+function showPhoneIfNotShown(width = 400, height = 580) {
     if (myBrowser == null) {
         var res = API.getScreenResolutionMantainRatio();
-	    var width = 400;
-        var height = 580;
-        myBrowser = API.createCefBrowser(width, height);
-        API.waitUntilCefBrowserInit(myBrowser);
 	    var pos = resource.JsFunctions.scaleCoordsToReal({ X: res.Width - width, Y:  res.Height - height});
+		var size = resource.JsFunctions.scaleCoordsToReal({ X: width, Y:  height});
+		API.sendChatMessage("Size.X: " + size.X + "| Size.Y: " + size.Y + "| Pos.X: " + pos.X + "| Pos.Y: " + pos.Y);
+        myBrowser = API.createCefBrowser(size.X, size.Y);
+        API.waitUntilCefBrowserInit(myBrowser);
         API.setCefBrowserPosition(myBrowser, pos.X, pos.Y);
         API.loadPageCefBrowser(myBrowser, "phone_manager/gui/main.html");
         //API.setCefDrawState(true);
@@ -39,7 +39,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
                 break;
             }
 
-            showPhoneIfNotShown();
+            showPhoneIfNotShown(args[2], args[3]);
             setToBeCalled("setTime", args[0], args[1]);
             break;
 
