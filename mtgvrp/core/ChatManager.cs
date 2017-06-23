@@ -191,7 +191,7 @@ namespace mtgvrp.core
             API.sendChatMessageToAll(Color.GlobalOoc, "[OOC] " + c.CharacterName + ": " + message);
             if (account.AdminLevel == 0)
             {
-                c.OocCooldown = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds() + 60;
+                c.OocCooldown = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds() + 10;
             }
         }
 
