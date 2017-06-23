@@ -3,8 +3,8 @@
 function showPhoneIfNotShown() {
     if (myBrowser == null) {
         var res = API.getScreenResolutionMantainRatio();
-        var width = 405;
-        var height = 590;
+	    var width = 400;
+        var height = 580;
         myBrowser = API.createCefBrowser(width, height);
         API.waitUntilCefBrowserInit(myBrowser);
 	    var pos = resource.JsFunctions.scaleCoordsToReal({ X: res.Width - width, Y:  res.Height - height});
