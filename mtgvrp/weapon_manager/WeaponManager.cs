@@ -104,10 +104,10 @@ namespace mtgvrp.weapon_manager
                 return;
             }
 
-            if (currentWeapon.Group != character.Group && currentWeapon.Group != Group.None && currentWeapon.IsGroupWeapon == true)
+            if (currentWeapon.GroupId != character.Group.Id && currentWeapon.GroupId != Group.None.Id && currentWeapon.IsGroupWeapon == true)
             {
                 RemoveAllPlayerWeapons(player);
-                player.sendChatMessage("You must be a member of " + currentWeapon.Group.Name + " to use this weapon. Your weapons were removed.");
+                player.sendChatMessage("You must be a member of " + GroupManager.GetGroupById(currentWeapon.GroupId).Name + " to use this weapon. Your weapons were removed.");
             }
 
         }
