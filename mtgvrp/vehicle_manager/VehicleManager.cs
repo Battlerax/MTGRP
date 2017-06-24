@@ -457,7 +457,7 @@ namespace mtgvrp.vehicle_manager
             var vehInfo = API.getVehicleDisplayName(veh.VehModel) + " - " + veh.LicensePlate;
             API.setEntitySyncedData(player.handle, "CurrentVehicleInfo", vehInfo);
             API.setEntitySyncedData(player.handle, "OwnsVehicle", DoesPlayerHaveVehicleAccess(player, veh));
-            API.setEntitySyncedData(player.handle, "CanParkCar", DoesPlayerHaveVehicleParkAccess(player, veh));
+            API.setEntitySyncedData(player.handle, "CanParkCar", DoesPlayerHaveVehicleParkLockAccess(player, veh));
         }
 
         public void OnPlayerExitVehicle(Client player, NetHandle vehicleHandle)
@@ -631,7 +631,7 @@ namespace mtgvrp.vehicle_manager
             return false;
         }
 
-        public static bool DoesPlayerHaveVehicleParkAccess(Client player, Vehicle vehicle)
+        public static bool DoesPlayerHaveVehicleParkLockAccess(Client player, Vehicle vehicle)
         {
             Account account = API.shared.getEntityData(player.handle, "Account");
             Character character = API.shared.getEntityData(player.handle, "Character");

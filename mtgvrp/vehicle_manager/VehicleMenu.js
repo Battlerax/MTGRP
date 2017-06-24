@@ -49,13 +49,11 @@ API.onKeyDown.connect(function(Player, args){
                     if (API.getVehicleEngineStatus(player_veh) == false) {
                         engine_state_item = API.createMenuItem("Attempt Hotwire", "Attempt to hotwire the vehicle.");
                     }
-                    else {
-                        engine_state_item = API.createMenuItem("Toggle Engine", "Turn the engine on or off");
-                    }
                 }
             }
 
-            lock_state_item = API.createMenuItem("Toggle Locks", "Lock or unlock the vehicle.");
+	        if(canparkcar)
+				lock_state_item = API.createMenuItem("Toggle Locks", "Lock or unlock the vehicle.");
 
             var door_list = new List(String);
             door_list.Add("Front Left");
