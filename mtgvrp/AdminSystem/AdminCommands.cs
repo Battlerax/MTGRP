@@ -605,7 +605,7 @@ namespace mtgvrp.AdminSystem
 
             Character character = API.getEntityData(player, "Character");
 
-            if (account.AdminDuty == false)
+            if (account.AdminLevel < 1)
             {
                 account.AdminDuty = true;
                 API.setPlayerNametagColor(player, 51, 102, 255);
@@ -620,6 +620,28 @@ namespace mtgvrp.AdminSystem
             API.sendChatMessageToPlayer(player, "You are no longer on admin duty.");
 
         }
+
+        [Command("whereami")]
+        public void GetPlayerLocation(Client player)
+        {
+            Account account = API.getEntityData(player.handle, "Account");
+            if (account.AdminLevel == 0)
+            {
+                return;
+            }
+            else
+            {
+                Vector3 CurrentPlayerPos = API.getEntityPosition(player);
+                int playerDimension = API.getEntityDimension(player);
+                API.sendChatMessageToPlayer(player, "-----Current Position-----");
+                API.sendChatMessageToPlayer(player, "X: " + CurrentPlayerPos.X + " Y: " + CurrentPlayerPos.Y + " Z: " + CurrentPlayerPos.Z + " Dimension: " + playerDimension);
+            }
+
+        }
+
+
+
+
 
 
         //============REPORT SYSTEM=============
