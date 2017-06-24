@@ -170,11 +170,11 @@ namespace mtgvrp.vehicle_manager
             InventoryManager.ShowInventoryManager(player, player.GetCharacter(), lastVeh, "Inventory: ", "Vehicle: ");
         }
 
-        [Command ("engine", Alias = "e")]
-        public void engine_cmd(Client player)
+        [Command("engine", Alias = "e")]
+        public static void engine_cmd(Client player)
         {
-            Character character = API.getEntityData(player, "Character");
-            var vehicleHandle = API.getPlayerVehicle(player);
+            Character character = API.shared.getEntityData(player, "Character");
+            var vehicleHandle = API.shared.getPlayerVehicle(player);
             Vehicle vehicle = API.shared.getEntityData(vehicleHandle, "Vehicle");
 
             var engineState = API.shared.getVehicleEngineStatus(vehicleHandle);
@@ -183,9 +183,15 @@ namespace mtgvrp.vehicle_manager
             {
                 if (vehicle.Fuel <= 0)
                 {
-                    API.sendChatMessageToPlayer(player, "The vehicle has no fuel.");
+                    API.shared.sendChatMessageToPlayer(player, "The vehicle has no fuel.");
                     return;
                 }
+            }
+
+            if (API.shared.getVehicleLocked(vehicleHandle))
+            {
+                API.shared.sendChatMessageToPlayer(player, "The vehicle is locked.");
+                return;
             }
 
             if (vehAccess)
@@ -203,7 +209,7 @@ namespace mtgvrp.vehicle_manager
             }
             else
             {
-                API.sendChatMessageToPlayer(player, "You don't have access to this vehicle.");
+                API.shared.sendChatMessageToPlayer(player, "You don't have access to this vehicle.");
             }
 
         }
@@ -230,6 +236,12 @@ namespace mtgvrp.vehicle_manager
             if (vehicle.Fuel < 1)
             {
                 API.shared.sendChatMessageToPlayer(player, "This vehicle has no fuel.");
+                return;
+            }
+
+            if (API.shared.getVehicleLocked(veh))
+            {
+                API.shared.sendChatMessageToPlayer(player, "The vehicle is locked.");
                 return;
             }
 

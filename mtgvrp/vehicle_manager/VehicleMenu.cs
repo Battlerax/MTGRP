@@ -52,42 +52,13 @@ namespace mtgvrp.vehicle_manager
                     switch (option)
                     {
                         case "engine":
-
-                            var engineState = API.shared.getVehicleEngineStatus(vehicleHandle);
-
-                            if (!engineState)
-                            {
-                                if (vehicle.Fuel <= 0)
-                                {
-                                    API.sendChatMessageToPlayer(player, "The vehicle has no fuel.");
-                                    return;
-                                }
-                            }
-
                             if (vehAccess)
                             {
-                                if (engineState)
-                                {
-                                    API.shared.setVehicleEngineStatus(vehicleHandle, false);
-                                    ChatManager.RoleplayMessage(character, "turns off the vehicle engine.", ChatManager.RoleplayMe);
-                                }
-                                else
-                                {
-                                    API.shared.setVehicleEngineStatus(vehicleHandle, true);
-                                    ChatManager.RoleplayMessage(character, "turns on the vehicle engine.", ChatManager.RoleplayMe);
-                                }
+                                VehicleManager.engine_cmd(player);
                             }
                             else
                             {
-                                if (engineState)
-                                {
-                                    API.shared.setVehicleEngineStatus(vehicleHandle, false);
-                                    ChatManager.RoleplayMessage(character, "turns off the vehicle engine.", ChatManager.RoleplayMe);
-                                }
-                                else
-                                {
-                                    VehicleManager.hotwire_cmd(player);
-                                }
+                                VehicleManager.hotwire_cmd(player);
                             }
                             break;
                         case "lock":
