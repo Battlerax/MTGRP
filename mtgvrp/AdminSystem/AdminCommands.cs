@@ -621,6 +621,28 @@ namespace mtgvrp.AdminSystem
 
         }
 
+        [Command("whereami")]
+        public void GetPlayerLocation(Client player)
+        {
+            Account account = API.getEntityData(player.handle, "Account");
+            if (account.AdminLevel == 0)
+            {
+                return;
+            }
+            else
+            {
+                Vector3 CurrentPlayerPos = API.getEntityPosition(player);
+                int playerDimension = API.getEntityDimension(player);
+                API.sendChatMessageToPlayer(player, "-----Current Position-----");
+                API.sendChatMessageToPlayer(player, "X: " + CurrentPlayerPos.X + " Y: " + CurrentPlayerPos.Y + " Z: " + CurrentPlayerPos.Z + " Dimension: " + playerDimension);
+            }
+
+        }
+
+
+
+
+
 
         //============REPORT SYSTEM=============
 
