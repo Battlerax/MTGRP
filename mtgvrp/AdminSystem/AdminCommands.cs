@@ -605,7 +605,7 @@ namespace mtgvrp.AdminSystem
 
             Character character = API.getEntityData(player, "Character");
 
-            if (account.AdminLevel < 1)
+            if (account.AdminDuty == false)
             {
                 account.AdminDuty = true;
                 API.setPlayerNametagColor(player, 51, 102, 255);
