@@ -649,7 +649,7 @@ namespace mtgvrp.phone_manager
                 return;
             }
 
-            API.sendChatMessageToPlayer(player, "~y~* Press ~h~F2~y~ to show the cursor.");
+            API.sendChatMessageToPlayer(player, "~y~* Press ~h~F2~h~ to show the cursor.");
             var curTime = TimeWeatherManager.CurrentTime;
             API.triggerClientEvent(player, "phone_showphone", curTime.Hour, curTime.Minute);
         }
