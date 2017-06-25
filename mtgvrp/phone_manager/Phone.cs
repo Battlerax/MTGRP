@@ -42,7 +42,7 @@ namespace mtgvrp.phone_manager
 
         #endregion
 
-        public string Number { get; set; }
+        public string PhoneNumber { get; set; }
         public bool IsOn { get; set; }
         public string PhoneName { get; set; }
 
@@ -51,29 +51,29 @@ namespace mtgvrp.phone_manager
 
         public Phone()
         {
-            Number = "0";
+            PhoneNumber = "0";
             IsOn = true;
             PhoneName = "Phone";
         }
 
-        public static void InsertNumber(ObjectId phoneid, string num)
+        public void InsertNumber()
         {
             PhoneNumber number = new PhoneNumber()
             {
-                Number = num,
-                PhoneId = phoneid
+                Number = PhoneNumber,
+                PhoneId = Id
             };
             DatabaseManager.PhoneNumbersTable.InsertOne(number);
         }
 
-        public static void ChangeNumber(ObjectId phoneid, string newNumber)
+        public void SaveNumber()
         {
             PhoneNumber number = new PhoneNumber()
             {
-                Number = newNumber,
-                PhoneId = phoneid
+                Number = PhoneNumber,
+                PhoneId = Id
             };
-            DatabaseManager.PhoneNumbersTable.ReplaceOneAsync(y => y.PhoneId == phoneid, number);
+            DatabaseManager.PhoneNumbersTable.ReplaceOneAsync(y => y.PhoneId == Id, number);
         }
 
         /* ============== CONTACTS ================ */

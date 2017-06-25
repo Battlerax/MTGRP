@@ -170,11 +170,11 @@ namespace mtgvrp.vehicle_manager
             InventoryManager.ShowInventoryManager(player, player.GetCharacter(), lastVeh, "Inventory: ", "Vehicle: ");
         }
 
-        [Command ("engine", Alias = "e")]
-        public void engine_cmd(Client player)
+        [Command("engine", Alias = "e")]
+        public static void engine_cmd(Client player)
         {
-            Character character = API.getEntityData(player, "Character");
-            var vehicleHandle = API.getPlayerVehicle(player);
+            Character character = API.shared.getEntityData(player, "Character");
+            var vehicleHandle = API.shared.getPlayerVehicle(player);
             Vehicle vehicle = API.shared.getEntityData(vehicleHandle, "Vehicle");
 
             var engineState = API.shared.getVehicleEngineStatus(vehicleHandle);
@@ -183,9 +183,15 @@ namespace mtgvrp.vehicle_manager
             {
                 if (vehicle.Fuel <= 0)
                 {
-                    API.sendChatMessageToPlayer(player, "The vehicle has no fuel.");
+                    API.shared.sendChatMessageToPlayer(player, "The vehicle has no fuel.");
                     return;
                 }
+            }
+
+            if (API.shared.getVehicleLocked(vehicleHandle))
+            {
+                API.shared.sendChatMessageToPlayer(player, "The vehicle is locked.");
+                return;
             }
 
             if (vehAccess)
@@ -203,7 +209,7 @@ namespace mtgvrp.vehicle_manager
             }
             else
             {
-                API.sendChatMessageToPlayer(player, "You don't have access to this vehicle.");
+                API.shared.sendChatMessageToPlayer(player, "You don't have access to this vehicle.");
             }
 
         }
@@ -230,6 +236,12 @@ namespace mtgvrp.vehicle_manager
             if (vehicle.Fuel < 1)
             {
                 API.shared.sendChatMessageToPlayer(player, "This vehicle has no fuel.");
+                return;
+            }
+
+            if (API.shared.getVehicleLocked(veh))
+            {
+                API.shared.sendChatMessageToPlayer(player, "The vehicle is locked.");
                 return;
             }
 
@@ -271,9 +283,11 @@ namespace mtgvrp.vehicle_manager
                 return;
             }
 
-            if (character.DropcarReset > DateTime.Now)
+            int result = DateTime.Compare(character.DropcarReset, DateTime.Now);
+
+            if (result == 1)
             {
-                player.sendChatMessage($"Please wait {character.DropcarReset.Subtract(character.DropcarReset).Minutes} more minutes before dropping another car.");
+                player.sendChatMessage($"Please wait {character.DropcarReset.Subtract(DateTime.Now).Minutes} more minutes before dropping another car.");
                 return;
             }
 
@@ -418,6 +432,8 @@ namespace mtgvrp.vehicle_manager
 
                 if (spawn_vehicle(car) != 1)
                     API.consoleOutput($"There was an error spawning vehicle #{car.Id} of {e.Character.CharacterName}.");
+                else
+                    API.setVehicleLocked(car.NetHandle, true);
             }
         }
 
@@ -493,7 +509,7 @@ namespace mtgvrp.vehicle_manager
             var vehInfo = API.getVehicleDisplayName(veh.VehModel) + " - " + veh.LicensePlate;
             API.setEntitySyncedData(player.handle, "CurrentVehicleInfo", vehInfo);
             API.setEntitySyncedData(player.handle, "OwnsVehicle", DoesPlayerHaveVehicleAccess(player, veh));
-            API.setEntitySyncedData(player.handle, "CanParkCar", DoesPlayerHaveVehicleParkAccess(player, veh));
+            API.setEntitySyncedData(player.handle, "CanParkCar", DoesPlayerHaveVehicleParkLockAccess(player, veh));
         }
 
         public void OnPlayerExitVehicle(Client player, NetHandle vehicleHandle)
@@ -685,7 +701,7 @@ namespace mtgvrp.vehicle_manager
             return false;
         }
 
-        public static bool DoesPlayerHaveVehicleParkAccess(Client player, Vehicle vehicle)
+        public static bool DoesPlayerHaveVehicleParkLockAccess(Client player, Vehicle vehicle)
         {
             Account account = API.shared.getEntityData(player.handle, "Account");
             Character character = API.shared.getEntityData(player.handle, "Character");

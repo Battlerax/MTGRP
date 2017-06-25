@@ -334,17 +334,17 @@ namespace mtgvrp.inventory
             if (activeRight.GetType() == typeof(BagItem))
             {
                 leftItems = activeLeft.Inventory.Where(x => x.GetType() != typeof(BagItem))
-                    .Select(x => new[] {x.Id.ToString(), x.LongName, x.CommandFriendlyName, x.Amount.ToString()})
+                    .Select(x => new[] { x.LongName, x.CommandFriendlyName, x.Amount.ToString() })
                     .ToArray();
             }
             else
             {
-                leftItems = activeLeft.Inventory.Select(x => new[] { x.Id.ToString(), x.LongName, x.CommandFriendlyName, x.Amount.ToString() })
+                leftItems = activeLeft.Inventory.Select(x => new[] { x.LongName, x.CommandFriendlyName, x.Amount.ToString() })
                     .ToArray();
             }
 
             string[][] rightItems =
-                activeRight.Inventory.Select(x => new[] {x.Id.ToString(), x.LongName, x.CommandFriendlyName, x.Amount.ToString()})
+                activeRight.Inventory.Select(x => new[] { x.LongName, x.CommandFriendlyName, x.Amount.ToString() })
                     .ToArray();
 
             var leftJson = API.shared.toJson(leftItems);
@@ -365,10 +365,9 @@ namespace mtgvrp.inventory
                     break;
                    
                 case "invmanagement_moveFromLeftToRight":
-                    string id = (string)arguments[0];
-                    string shortname = (string)arguments[1];
+                    string shortname = (string)arguments[0];
                     int amount;
-                    if (!int.TryParse((string)arguments[2], out amount))
+                    if (!int.TryParse((string)arguments[1], out amount))
                     {
                         API.sendNotificationToPlayer(sender, "Invalid amount entered.");
                         return;
@@ -396,7 +395,7 @@ namespace mtgvrp.inventory
                         API.sendNotificationToPlayer(sender, "That item type doesn't exist.");
                         return;
                     }
-                    var playerItem = item.SingleOrDefault(x => x.Id.ToString() == id);
+                    var playerItem = item.SingleOrDefault(x => x.CommandFriendlyName == shortname);
                     if (playerItem == null || playerItem.Amount < amount)
                     {
                         API.sendNotificationToPlayer(sender, "The source storage doesn't have that item or doesn't have that amount.");
@@ -418,12 +417,12 @@ namespace mtgvrp.inventory
                         case InventoryManager.GiveItemErrors.Success:
                             //Remove from player.
                             InventoryManager.DeleteInventoryItem(storages.Key, playerItem.GetType(), amount,
-                                x => x.Id.ToString() == id && x.CommandFriendlyName == shortname);
+                                x => x.CommandFriendlyName == shortname);
 
                             //Send event done.
                             var usedLeft = GetInventoryFilledSlots(storages.Key) + "/" + storages.Key.MaxInvStorage;
                             var usedRight = GetInventoryFilledSlots(storages.Value) + "/" + storages.Value.MaxInvStorage;
-                            API.triggerClientEvent(sender, "moveItemFromLeftToRightSuccess", id, shortname, amount, usedLeft, usedRight); //Id should be same cause it was already set since it was in player inv.
+                            API.triggerClientEvent(sender, "moveItemFromLeftToRightSuccess", shortname, amount, usedLeft, usedRight); //Id should be same cause it was already set since it was in player inv.
                             API.sendNotificationToPlayer(sender, $"The item ~g~{shortname}~w~ was moved sucessfully.");
                             break;
                     }
@@ -431,10 +430,9 @@ namespace mtgvrp.inventory
 
                 case "invmanagement_moveFromRightToLeft":
 
-                    string rlid = (string)arguments[0];
-                    string rlshortname = (string)arguments[1];
+                    string rlshortname = (string)arguments[0];
                     int rlamount;
-                    if (!int.TryParse((string)arguments[2], out rlamount))
+                    if (!int.TryParse((string)arguments[1], out rlamount))
                     {
                         API.sendNotificationToPlayer(sender, "Invalid amount entered.");
                         return;
@@ -462,7 +460,7 @@ namespace mtgvrp.inventory
                         API.sendNotificationToPlayer(sender, "That item type doesn't exist.");
                         return;
                     }
-                    var rlplayerItem = rlitem.SingleOrDefault(x => x.Id.ToString() == rlid);
+                    var rlplayerItem = rlitem.SingleOrDefault(x => x.CommandFriendlyName == rlshortname);
                     if (rlplayerItem == null || rlplayerItem.Amount < rlamount)
                     {
                         API.sendNotificationToPlayer(sender, "The source storage doesn't have that item or doesn't have that amount.");
@@ -484,12 +482,12 @@ namespace mtgvrp.inventory
                         case InventoryManager.GiveItemErrors.Success:
                             //Remove from player.
                             InventoryManager.DeleteInventoryItem(rlstorages.Value, rlplayerItem.GetType(), rlamount,
-                                x => x.Id.ToString() == rlid && x.CommandFriendlyName == rlshortname);
+                                x => x.CommandFriendlyName == rlshortname);
 
                             //Send event done.
                             var usedLeft = GetInventoryFilledSlots(rlstorages.Key) + "/" + rlstorages.Key.MaxInvStorage;
                             var usedRight = GetInventoryFilledSlots(rlstorages.Value) + "/" + rlstorages.Value.MaxInvStorage;
-                            API.triggerClientEvent(sender, "moveItemFromRightToLeftSuccess", rlid, rlshortname, rlamount, usedLeft, usedRight); //Id should be same cause it was already set since it was in player inv.
+                            API.triggerClientEvent(sender, "moveItemFromRightToLeftSuccess", rlshortname, rlamount, usedLeft, usedRight); //Id should be same cause it was already set since it was in player inv.
                             API.sendNotificationToPlayer(sender, $"The item ~g~{rlshortname}~w~ was moved sucessfully.");
                             break;
                     }

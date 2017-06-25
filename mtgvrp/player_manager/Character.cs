@@ -365,8 +365,6 @@ namespace mtgvrp.player_manager
 
             API.shared.sendNativeToAllPlayers(Hash.SET_PED_HEAD_OVERLAY, Client.handle, 9, Model.MolesFreckles, 1.0f);
 
-            API.shared.setPlayerClothes(Client, 3, Model.TorsoStyle, Model.TorsoVar); //Torso
-
             if (IsInPoliceUniform == false)
             {
                 API.shared.setPlayerClothes(Client, 4, Model.PantsStyle, Model.PantsVar - 1); // Pants
@@ -374,7 +372,7 @@ namespace mtgvrp.player_manager
                 API.shared.setPlayerClothes(Client, 7, Model.AccessoryStyle, Model.AccessoryVar - 1); // Accessories
                 API.shared.setPlayerClothes(Client, 8, Model.UndershirtStyle, Model.UndershirtVar - 1); //undershirt
                 API.shared.setPlayerClothes(Client, 11, Model.TopStyle, Model.TopVar - 1); //top
-
+                API.shared.setPlayerClothes(Client, 3, Model.TorsoStyle, Model.TorsoVar); //Torso
 
                 //API.shared.setPlayerAccessory(client, 0, this.model.hat_style, this.model.hat_var - 1); // hats
                 //API.shared.setPlayerAccessory(client, 1, this.model.glasses_style, this.model.glasses_var - 1); // glasses
@@ -399,6 +397,7 @@ namespace mtgvrp.player_manager
                 API.shared.setPlayerClothes(Client, 7, 0, 0); // Accessories
                 API.shared.setPlayerClothes(Client, 8, Model.Gender == GenderMale ? 58 : 35, 0); //undershirt
                 API.shared.setPlayerClothes(Client, 11, Model.Gender == GenderMale ? 55 : 48, 0); //top
+                API.shared.setPlayerClothes(Client, 3, 0, 0); //Torso
 
                 //API.shared.setPlayerAccessory(client, 0, this.model.hat_style, this.model.hat_var - 1); // hats
                 //API.shared.setPlayerAccessory(client, 1, this.model.glasses_style, this.model.glasses_var - 1); // glasses

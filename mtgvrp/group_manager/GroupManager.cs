@@ -244,13 +244,57 @@ namespace mtgvrp.group_manager
                         ".");
                 }
                 API.sendChatMessageToPlayer(player,
-                    "You have changed " + member.CharacterName + "'s rank to " + (rank - 1) + " (was " + (oldRank - 1) + ").");
+                    "You have changed " + member.CharacterName + "'s rank to " + (rank) + " (was " + (oldRank) + ").");
                 member.GroupRank = rank;
                 member.Save();
             }
             else
             {
                 API.sendChatMessageToPlayer(player, Color.White, "You cannot set the rank of a higher ranking member or set someone to a rank above yours.");
+            }
+        }
+
+        [Command("listranks")]
+        public void listranks_cmd(Client player)
+        {
+            Character sender = player.GetCharacter();
+
+            if (sender.Group == Group.None || sender.GroupRank < 6)
+            {
+                return;
+            }
+
+            player.sendChatMessage("=======================================");
+            player.sendChatMessage($"Rank list for {sender.Group.Name}");
+            player.sendChatMessage("=======================================");
+
+            int i = 1;
+            foreach (var rankName in sender.Group.RankNames)
+            {
+                player.sendChatMessage($"Rank: {i} | Name: {rankName}");
+                i++;
+            }
+        }
+
+        [Command("listdivisions")]
+        public void listdivisions_cmd(Client player)
+        {
+            Character sender = player.GetCharacter();
+
+            if (sender.Group == Group.None || sender.GroupRank < 6)
+            {
+                return;
+            }
+
+            player.sendChatMessage("=======================================");
+            player.sendChatMessage($"Division list for {sender.Group.Name}");
+            player.sendChatMessage("=======================================");
+
+            int i = 1;
+            foreach (var divisionName in sender.Group.Divisions)
+            {
+                player.sendChatMessage($"Division: {i} | Name: {divisionName}");
+                i++;
             }
         }
 

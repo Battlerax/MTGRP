@@ -3,11 +3,12 @@
 function showPhoneIfNotShown() {
     if (myBrowser == null) {
         var res = API.getScreenResolutionMantainRatio();
-        var width = 405;
-        var height = 590;
-        myBrowser = API.createCefBrowser(width, height);
+	    var width = 400;
+	    var height = 580;
+	    var pos = resource.JsFunctions.scaleCoordsToReal({ X: res.Width - width - 5, Y:  res.Height - height - 5});
+		var size = resource.JsFunctions.scaleCoordsToReal({ X: width, Y:  height});
+        myBrowser = API.createCefBrowser(size.X, size.Y);
         API.waitUntilCefBrowserInit(myBrowser);
-	    var pos = resource.JsFunctions.scaleCoordsToReal({ X: res.Width - width, Y:  res.Height - height});
         API.setCefBrowserPosition(myBrowser, pos.X, pos.Y);
         API.loadPageCefBrowser(myBrowser, "phone_manager/gui/main.html");
         //API.setCefDrawState(true);

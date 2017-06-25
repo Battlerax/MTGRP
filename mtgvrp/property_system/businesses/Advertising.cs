@@ -61,16 +61,17 @@ namespace mtgvrp.property_system.businesses
                 return;
             }
 
-            foreach (var receiver in PlayerManager.Players)
+            foreach (var receiver in API.getAllPlayers())
             {
+                Character receiverchar = API.getEntityData(receiver, "Character");
                 var senderPhone = InventoryManager.DoesInventoryHaveItem<Phone>(character)[0];
-                var receiverPhone = InventoryManager.DoesInventoryHaveItem<Phone>(receiver)[0];
+                var receiverPhone = InventoryManager.DoesInventoryHaveItem<Phone>(receiverchar)[0];
 
                 InventoryManager.DeleteInventoryItem(character, typeof(Money), price);
 
                 if (receiverPhone.IsOn)
                 {
-                    receiver.Client.sendChatMessage("~g~[AD] (#" + senderPhone.Number + "): " + text);
+                    receiver.sendChatMessage("~g~[AD] (#" + senderPhone.PhoneNumber + "): " + text);
                 }
 
                 player.sendChatMessage("Advertisement subimtted.");

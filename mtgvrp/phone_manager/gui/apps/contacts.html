@@ -16,7 +16,7 @@
         }
 
         #contactsListDiv {
-            margin-top: 5px;
+            margin-top: 1.36%;
         }
     </style>
 
@@ -94,7 +94,7 @@
     <button class="button danger" id="DeleteButton">Delete</button>
 </div>
     <!-- Add Contact Dialog -->
-<div data-role="dialog" id="addContactDialog" class="padding20 dialog" data-close-button="true" data-overlay="true" data-overlay-color="op-dark" style="width: auto; height: auto;">
+<div data-role="dialog" id="addContactDialog" class="padding5 dialog" data-close-button="true" data-overlay="true" data-overlay-color="op-dark" style="width: auto; height: auto;">
     <h3>Add Contact</h3>
     <div class="input-control text">
         <input type="text" placeholder="Name" id="saveNameInput">
@@ -106,7 +106,7 @@
 </div>
     
     <!-- Edit Contact Dialog -->
-<div data-role="dialog" id="editContactDialog" class="padding20 dialog" data-close-button="true" data-overlay="true" data-overlay-color="op-dark" style="width: auto; height: auto;">
+<div data-role="dialog" id="editContactDialog" class="padding5 dialog" data-close-button="true" data-overlay="true" data-overlay-color="op-dark" style="width: auto; height: auto;">
     <h3>Edit Contact</h3>
     <span id="oldName" style="display: none;"></span>
     <div class="input-control text">
@@ -118,7 +118,7 @@
     <button class="button success right-side" onclick='resourceCall("callServerEvent", "phone_editContact", $("#oldName").text(), $("#editNameInput").val(), $("#editPhoneInput").val());'>Save</button>
 </div>
     
-    <div data-role="dialog" id="sendMessageDialog" class="padding20 dialog" data-close-button="true" data-overlay="true" data-overlay-color="op-dark" style="width: auto; height: auto;">
+    <div data-role="dialog" id="sendMessageDialog" class="padding5 dialog" data-close-button="true" data-overlay="true" data-overlay-color="op-dark" style="width: auto; height: auto;">
         <h3>Compose Message</h3>
         <div class="input-control number">
             <input type="text" placeholder="Message" id="messageInput">

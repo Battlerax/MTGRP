@@ -12,15 +12,15 @@
 		screenX = idealBox;
 	}
 
-	return { offsetX, screenX, screenY }
+	return { Offset: offsetX, X: screenX, Y: screenY }
 }
 
 function scaleCoordsToReal (point) {
-	var ratioScreen = API.getScreenResolutionMantainRatio();
+	var ratioScreen = getSafeResolution();
 	var realScreen = API.getScreenResolution();
 
-	var widthDivisor = realScreen.Width / ratioScreen.Width;
-	var heightDivisor = realScreen.Height / ratioScreen.Height;
+	var widthDivisor = realScreen.Width / ratioScreen.X;
+	var heightDivisor = realScreen.Height / ratioScreen.Y;
 
-	return { X: point.X * widthDivisor, Y: point.Y * heightDivisor }
+	return { X: (point.X * widthDivisor) + ratioScreen.Offset, Y: point.Y * heightDivisor }
 }

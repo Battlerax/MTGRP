@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using mtgvrp.database_manager;
 using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Driver;
 
 namespace mtgvrp.group_manager.lspd
 {
@@ -39,7 +40,6 @@ namespace mtgvrp.group_manager.lspd
 
         public static void Delete(Crime name)
         {
-
             Crimes.Remove(name);
             var filter = MongoDB.Driver.Builders<Crime>.Filter.Eq("Id", name.Id);
             DatabaseManager.CrimeTable.DeleteOne(filter);
@@ -55,6 +55,17 @@ namespace mtgvrp.group_manager.lspd
         public static bool CrimeExists(string crimeName)
         {
             return Crimes.Count(i => string.Equals(i.Name, crimeName, StringComparison.OrdinalIgnoreCase)) > 0;
+        }
+
+        public static void LoadCrimes()
+        {
+            Crimes = new List<Crime>();
+
+            foreach (var crime in DatabaseManager.CrimeTable.Find(FilterDefinition<Crime>.Empty).ToList())
+            {
+                Crimes.Add(crime);
+            }
+            
         }
     }
 }

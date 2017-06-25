@@ -76,14 +76,14 @@ namespace mtgvrp.core
                 var targetphone = (Phone)targetitems[0];
                 var newmsg = "[Phone]" + character.rp_name() + " says: " + msg;
                 ChatManager.NearbyMessage(player, 15, newmsg, Color.Grey);
-                if (targetphone.HasContactWithNumber(charphone.Number))
+                if (targetphone.HasContactWithNumber(charphone.PhoneNumber))
                 {
-                    phonemsg = "[" + targetphone.Contacts.Find(pc => pc.Number == charphone.Number).Name + "]" +
+                    phonemsg = "[" + targetphone.Contacts.Find(pc => pc.Number == charphone.PhoneNumber).Name + "]" +
                                character.rp_name() + " says: " + msg;
                 }
                 else
                 {
-                    phonemsg = "[" + charphone.Number + "]" + character.rp_name() + " says: " + msg;
+                    phonemsg = "[" + charphone.PhoneNumber + "]" + character.rp_name() + " says: " + msg;
                 }
                 API.sendChatMessageToPlayer(talkingTo.Client, Color.Grey, phonemsg);
                 e.Cancel = true;
@@ -97,7 +97,7 @@ namespace mtgvrp.core
                 var charitems = InventoryManager.DoesInventoryHaveItem(character, typeof(Phone));
                 var charphone = (Phone)charitems[0];
 
-                Mdc.Add911Call(charphone.Number, msg, "Los Santos");
+                Mdc.Add911Call(charphone.PhoneNumber, msg, "Los Santos");
 
                 var newmsg = "[Phone]" + character.rp_name() + " says: " + msg;
                 ChatManager.NearbyMessage(player, 15, newmsg, Color.Grey);
@@ -191,7 +191,7 @@ namespace mtgvrp.core
             API.sendChatMessageToAll(Color.GlobalOoc, "[OOC] " + c.CharacterName + ": " + message);
             if (account.AdminLevel == 0)
             {
-                c.OocCooldown = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds() + 60;
+                c.OocCooldown = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds() + 10;
             }
         }
 

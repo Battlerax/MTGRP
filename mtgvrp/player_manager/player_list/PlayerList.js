@@ -16,11 +16,14 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 
 API.onKeyUp.connect(function(Player, args){
     if (args.KeyCode == Keys.F1){
-        if(player_list_browser == null){
-	        var pos = resource.JsFunctions.scaleCoordsToReal({ X: res.Width, Y:  res.Height});
-            player_list_browser = API.createCefBrowser(pos.X, pos.Y);
+		if (player_list_browser == null) {
+			let width = 500;
+			let height = 600;
+			var pos = resource.JsFunctions.scaleCoordsToReal({ X: (res.Width / 2) - (width / 2), Y: (height * 20/100) });
+			var size = resource.JsFunctions.scaleCoordsToReal({ X: width, Y: height });
+			player_list_browser = API.createCefBrowser(size.X, size.Y);
             API.waitUntilCefBrowserInit(player_list_browser);
-            API.setCefBrowserPosition(player_list_browser, 0, 0);
+			API.setCefBrowserPosition(player_list_browser, pos.X, pos.Y);
             API.loadPageCefBrowser(player_list_browser, "player_manager/player_list/PlayerList.html");
             API.showCursor(true);
             API.setCanOpenChat(false);
