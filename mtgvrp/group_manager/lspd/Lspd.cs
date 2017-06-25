@@ -42,9 +42,9 @@ namespace mtgvrp.group_manager.lspd
         public LinkedList<GTANetworkServer.Object> Objects = new LinkedList<GTANetworkServer.Object>();
 
 
-        public void StartLspd()
+        private void StartLspd()
         {
-
+            Crime.LoadCrimes();
         }
 
 

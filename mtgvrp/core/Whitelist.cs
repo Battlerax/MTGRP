@@ -82,6 +82,7 @@ namespace mtgvrp.core
              "Battlerax",
              "RedDeadVet360",
              "ChipotleAwayJay",
+             "wimbacah",
         };
 
         public Whitelist()

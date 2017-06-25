@@ -44,18 +44,17 @@ API.onKeyDown.connect(function(Player, args){
                     
 					if(canparkcar)
 						park_car_item = API.createMenuItem("Park Car", "Save the vehicles spawn point to its current location");
+						
                 }
                 else {
                     if (API.getVehicleEngineStatus(player_veh) == false) {
                         engine_state_item = API.createMenuItem("Attempt Hotwire", "Attempt to hotwire the vehicle.");
                     }
-                    else {
-                        engine_state_item = API.createMenuItem("Toggle Engine", "Turn the engine on or off");
-                    }
                 }
             }
 
-            lock_state_item = API.createMenuItem("Toggle Locks", "Lock or unlock the vehicle.");
+	        if(canparkcar)
+				lock_state_item = API.createMenuItem("Toggle Locks", "Lock or unlock the vehicle.");
 
             var door_list = new List(String);
             door_list.Add("Front Left");
@@ -67,13 +66,14 @@ API.onKeyDown.connect(function(Player, args){
 
             door_item = API.createListItem("Door Options", "Open and close the vehicle doors.", door_list, 0);
 
-            if (player_seat == -1) {
+            if (player_seat == -1 && engine_state_item !== null) {
                 vehicle_menu.AddItem(engine_state_item);
             }
 
-            vehicle_menu.AddItem(lock_state_item);
+			if(lock_state_item !== null)
+				vehicle_menu.AddItem(lock_state_item);
 
-            if (player_seat == -1 && player_owns_veh == true) {
+            if (player_seat == -1 && player_owns_veh == true && park_car_item !== null) {
                 vehicle_menu.AddItem(park_car_item);
             }
 

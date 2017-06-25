@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting;
 using GTANetworkServer;
 using GTANetworkShared;
 using mtgvrp.core;
@@ -76,7 +77,7 @@ namespace mtgvrp.property_system.businesses
                             var number = PhoneManager.GetNewNumber();
                             var phone = new Phone()
                             {
-                                Number = number,
+                                PhoneNumber = number,
                                 PhoneName = "default"
                             };
                             item = phone;
@@ -176,7 +177,7 @@ namespace mtgvrp.property_system.businesses
                             InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
                             character.HasLottoTicket = true;
                             API.sendChatMessageToPlayer(sender, "You purchased a lottery ticket. Good luck!");
-                            break;
+                            return;
                     }
                     return;
                 }
@@ -195,6 +196,12 @@ namespace mtgvrp.property_system.businesses
                     case InventoryManager.GiveItemErrors.Success:
                         InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
                         InventoryManager.GiveInventoryItem(prop, new Money(), price);
+
+                        if (item.GetType() == typeof(Phone))
+                        {
+                            ((Phone)item).SaveNumber();
+                            API.sendChatMessageToPlayer(sender, "Your phone number is: ~g~" + ((Phone)item).PhoneNumber);
+                        }
 
                         API.sendChatMessageToPlayer(sender,
                             $"[BUSINESS] You have sucessfully bought a ~g~{name}~w~ for ~g~${price}.");

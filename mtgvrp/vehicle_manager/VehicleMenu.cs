@@ -35,9 +35,9 @@ namespace mtgvrp.vehicle_manager
                     }
 
                     var vehAccess = VehicleManager.DoesPlayerHaveVehicleAccess(player, vehicle);
-                    var parkAccess = VehicleManager.DoesPlayerHaveVehicleParkAccess(player, vehicle);
+                    var parkAccess = VehicleManager.DoesPlayerHaveVehicleParkLockAccess(player, vehicle);
 
-                    if (option.Equals("park") && !parkAccess)
+                    if ((option.Equals("park") || option.Equals("lock")) && !parkAccess)
                     {
                         API.shared.sendChatMessageToPlayer(player, "~r~ You do not have access to this vehicle.");
                         return;
@@ -52,42 +52,13 @@ namespace mtgvrp.vehicle_manager
                     switch (option)
                     {
                         case "engine":
-
-                            var engineState = API.shared.getVehicleEngineStatus(vehicleHandle);
-
-                            if (!engineState)
-                            {
-                                if (vehicle.Fuel <= 0)
-                                {
-                                    API.sendChatMessageToPlayer(player, "The vehicle has no fuel.");
-                                    return;
-                                }
-                            }
-
                             if (vehAccess)
                             {
-                                if (engineState)
-                                {
-                                    API.shared.setVehicleEngineStatus(vehicleHandle, false);
-                                    ChatManager.RoleplayMessage(character, "turns off the vehicle engine.", ChatManager.RoleplayMe);
-                                }
-                                else
-                                {
-                                    API.shared.setVehicleEngineStatus(vehicleHandle, true);
-                                    ChatManager.RoleplayMessage(character, "turns on the vehicle engine.", ChatManager.RoleplayMe);
-                                }
+                                VehicleManager.engine_cmd(player);
                             }
                             else
                             {
-                                if (engineState)
-                                {
-                                    API.shared.setVehicleEngineStatus(vehicleHandle, false);
-                                    ChatManager.RoleplayMessage(character, "turns off the vehicle engine.", ChatManager.RoleplayMe);
-                                }
-                                else
-                                {
-                                    VehicleManager.hotwire_cmd(player);
-                                }
+                                VehicleManager.hotwire_cmd(player);
                             }
                             break;
                         case "lock":

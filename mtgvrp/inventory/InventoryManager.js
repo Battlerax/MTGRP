@@ -19,20 +19,20 @@ API.onServerEventTrigger.connect((eventName, args) => {
             break;
 
         case 'moveItemFromLeftToRightSuccess': 
-            myBrowser.call("moveItemFromLeftToRightSuccess", args[0], args[1], args[2], args[3], args[4]);
+            myBrowser.call("moveItemFromLeftToRightSuccess", args[0], args[1], args[2], args[3]);
             break;
         case 'moveItemFromRightToLeftSuccess':
-            myBrowser.call("moveItemFromRightToLeftSuccess", args[0], args[1], args[2], args[3], args[4]);
+            myBrowser.call("moveItemFromRightToLeftSuccess", args[0], args[1], args[2], args[3]);
             break;
     }
 });
 
-function moveFromLeftToRight(id, shortname, amount) {
-    API.triggerServerEvent("invmanagement_moveFromLeftToRight", id, shortname, amount);
+function moveFromLeftToRight(shortname, amount) {
+    API.triggerServerEvent("invmanagement_moveFromLeftToRight", shortname, amount);
 }
 
-function moveFromRightToLeft(id, shortname, amount) {
-    API.triggerServerEvent("invmanagement_moveFromRightToLeft", id, shortname, amount);
+function moveFromRightToLeft(shortname, amount) {
+    API.triggerServerEvent("invmanagement_moveFromRightToLeft", shortname, amount);
 }
 
 function ExitWindow() {

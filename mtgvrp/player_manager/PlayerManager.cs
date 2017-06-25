@@ -356,17 +356,26 @@ namespace mtgvrp.player_manager
             API.sendChatMessageToPlayer(sender, "Player statistics for " + character.CharacterName);
             API.sendChatMessageToPlayer(sender, "==============================================");
             API.sendChatMessageToPlayer(sender, "~g~General:~g~");
-            API.sendChatMessageToPlayer(sender, string.Format("~h~Character name:~h~ {0} | ~h~ID:~h~ {1} | ~h~Money:~h~ {2} | ~h~Bank balance:~h~ {3} | ~h~Playing hours:~h~ {4}", character.CharacterName, character.Id, Money.GetCharacterMoney(character), character.BankBalance, character.GetPlayingHours()));
-            API.sendChatMessageToPlayer(sender, string.Format("~h~Age:~h~ {0} ~h~Birthplace:~h~ {1} ~h~Birthday:~h~ {2} ~h~VIP level:~h~ {3} ~h~VIP expires:~h~ {4}", character.Age, character.Birthplace, character.Birthday, account.VipLevel, account.VipExpirationDate));
+            API.sendChatMessageToPlayer(sender,
+                $"~h~Character name:~h~ {character.CharacterName} | ~h~ID:~h~ {character.Id} | ~h~Money:~h~ {Money.GetCharacterMoney(character)} | ~h~Bank balance:~h~ {character.BankBalance} | ~h~Playing hours:~h~ {character.GetPlayingHours()}");
+
+            API.sendChatMessageToPlayer(sender,
+                $"~h~Age:~h~ {character.Age} ~h~Birthplace:~h~ {character.Birthplace} ~h~Birthday:~h~ {character.Birthday} ~h~VIP level:~h~ {account.VipLevel} ~h~VIP expires:~h~ {account.VipExpirationDate}");
+
             API.sendChatMessageToPlayer(sender, "~b~Faction/Jobs:~b~");
-            API.sendChatMessageToPlayer(sender, string.Format("~h~Faction ID:~h~ {0} ~h~Rank:~h~ {1} ~h~Group name:~h~ {2} ~h~Job 1:~h~ {3}", character.GroupId, character.GroupRank, character.Group.Name, character.JobOne));
+            API.sendChatMessageToPlayer(sender,
+                $"~h~Faction ID:~h~ {character.GroupId} ~h~Rank:~h~ {character.GroupRank} ~h~Group name:~h~ {character.Group.Name} ~h~Job 1:~h~ {character.JobOne.Name}");
+
             API.sendChatMessageToPlayer(sender, "~r~Property:~r~");
-            API.sendChatMessageToPlayer(sender, string.Format("~h~Owned vehicles:~h~ {0}", character.OwnedVehicles.Count()));
+            API.sendChatMessageToPlayer(sender, $"~h~Owned vehicles:~h~ {character.OwnedVehicles.Count()}");
 
             if (senderAccount.AdminLevel > 0)
             {
                 API.sendChatMessageToPlayer(sender, "~y~Admin:~y~");
-                API.sendChatMessageToPlayer(sender, string.Format("~h~Admin level:~h~ {0} ~h~Admin name:~h~ {1} ~h~Last vehicle:~h~ {2} ~h~Dimension:~h~ {3} ~h~Last IP:~h~ {4}", account.AdminLevel, account.AdminName, character.LastVehicle, character.LastDimension, account.LastIp));
+                API.sendChatMessageToPlayer(sender,
+                    $"~h~Admin level:~h~ {account.AdminLevel} ~h~Admin name:~h~ {account.AdminName} ~h~Last vehicle:~h~ {character?.LastVehicle?.Id} ~h~Dimension:~h~ {character?.LastDimension} ~h~Last IP:~h~ {account.LastIp}");
+                API.sendChatMessageToPlayer(sender,
+                    $"~h~Social Club Name:~h~ {account.AccountName}");
             }
         }
     }
