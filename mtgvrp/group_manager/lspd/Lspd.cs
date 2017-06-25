@@ -112,11 +112,6 @@ namespace mtgvrp.group_manager.lspd
                         API.sendChatMessageToPlayer(player, Color.White, "You have been given the standard SWAT equipment.");
                         break;
                     }
-                case "toggle_megaphone_key":
-                    {
-                        megaphonetog_cmd(player);
-                        break;
-                    }
             }
         }
         [Command("recordcrime", GreedyArg = true)]

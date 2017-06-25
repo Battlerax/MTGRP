@@ -10,11 +10,4 @@ API.onServerEventTrigger.connect(function (eventName, args) {
     }
 });
 
-API.onKeyDown.connect(function (player, args) {
-    if (args.KeyCode == Keys.M && !API.isChatOpen()) {
-        API.triggerServerEvent("toggle_megaphone_key", player);
-    }
-
-});
-
 
