@@ -6,6 +6,7 @@ using GTANetworkShared;
 using mtgvrp.weapon_manager;
 using mtgvrp.inventory;
 using mtgvrp.core;
+using mtgvrp.core.Help;
 using mtgvrp.group_manager;
 
 namespace mtgvrp.player_manager
@@ -302,7 +303,7 @@ namespace mtgvrp.player_manager
             API.sendChatMessageToPlayer(sender, Color.White, "------------------------------------------------------------");
         }
 
-        [Command("stats")]          //Stats command
+        [Command("stats"), Help(HelpManager.CommandGroups.General, "Used to find your character statistics", new []{"ID of target character. <strong>[ADMIN ONLY]</strong>"})]          //Stats command
         public void GetStatistics(Client sender, string id = null)
         {
             var receiver = PlayerManager.ParseClient(id);
