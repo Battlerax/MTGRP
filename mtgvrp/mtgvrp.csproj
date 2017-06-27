@@ -165,6 +165,7 @@
     <Content Include="AdminSystem\Reports.js" />
     <Content Include="cef_resources\MTGVRP_LOGO_BIG.png" />
     <Content Include="cef_resources\MTGVRP_LOGO_SMALL.png" />
+    <Content Include="core\Help\HelpManager.js" />
     <Content Include="core\Help\HelpMenu.html" />
     <Content Include="core\Items\RagManager.js" />
     <Content Include="core\JsFunctions.js" />

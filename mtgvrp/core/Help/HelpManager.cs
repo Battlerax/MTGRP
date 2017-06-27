@@ -31,7 +31,7 @@ namespace mtgvrp.core.Help
             AdminLevel8,
         }
 
-        public Dictionary<CommandGroups, string> CommandStuff = new Dictionary<CommandGroups, string>();
+        public string CommandStuff;
 
         public HelpManager()
         {
@@ -54,15 +54,23 @@ namespace mtgvrp.core.Help
                 cmds[commandHelp.Group].Add(API.toJson(new[] { commandInfo.CommandString, API.toJson(cmd.GetParameters().Select(x => x.Name).ToArray()), commandHelp.Description, API.toJson(commandHelp.Parameters) }));
             }
 
+            string[] cmdsArr = new string[Enum.GetNames(typeof(CommandGroups)).Length];
             foreach (var group in cmds.Keys)
             {
                 string[] cmdsArray = cmds[group].ToArray();
-                CommandStuff.Add(group, API.toJson(cmdsArray));
+                cmdsArr[(int)group] = API.toJson(cmdsArray);
             }
 
             API.consoleOutput($"*** Help Done");
         }
+
+        [Command("help")]
+        public void Help_cmd(Client player)
+        {
+            if (!player.GetAccount().IsLoggedIn)
+                return;
+
+            API.triggerClientEvent(player, "help_showMenu", CommandStuff);
+        }
     }
-
-
 }
