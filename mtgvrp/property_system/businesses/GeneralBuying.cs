@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting;
 using GTANetworkServer;
 using GTANetworkShared;
 using mtgvrp.core;
@@ -7,6 +8,8 @@ using mtgvrp.core.Items;
 using mtgvrp.inventory;
 using mtgvrp.phone_manager;
 using mtgvrp.weapon_manager;
+using mtgvrp.player_manager;
+using mtgvrp.group_manager;
 
 namespace mtgvrp.property_system.businesses
 {
@@ -19,6 +22,8 @@ namespace mtgvrp.property_system.businesses
 
         private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
         {
+
+            Character character = API.getEntityData(sender, "Character");
             if (eventName == "property_exitbuy")
             {
                 API.freezePlayer(sender, false);
@@ -72,7 +77,7 @@ namespace mtgvrp.property_system.businesses
                             var number = PhoneManager.GetNewNumber();
                             var phone = new Phone()
                             {
-                                Number = number,
+                                PhoneNumber = number,
                                 PhoneName = "default"
                             };
                             item = phone;
@@ -158,10 +163,27 @@ namespace mtgvrp.property_system.businesses
 
                     API.sendChatMessageToPlayer(sender, "[BUSINESSES] You have successfully bought a ~g~" + name + "~w~ for ~g~" + price + "~w~.");
                     return;
-                }
-                
 
-                if (item == null)
+                }
+                else if (prop.Type == PropertyManager.PropertyTypes.LSNN)
+                {
+                    switch (itemName)
+                    {
+                        case "lotto_ticket":
+                            foreach (var i in GroupManager.Groups)
+                            {
+                                if (i.CommandType == Group.CommandTypeLsnn) { i.LottoSafe += price; }
+                            }
+                            InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
+                            character.HasLottoTicket = true;
+                            API.sendChatMessageToPlayer(sender, "You purchased a lottery ticket. Good luck!");
+                            return;
+                    }
+                    return;
+                }
+
+
+                    if (item == null)
                 {
                     API.sendChatMessageToPlayer(sender,
                         "Error finding the item you bought, report this as a bug report.");
@@ -174,6 +196,12 @@ namespace mtgvrp.property_system.businesses
                     case InventoryManager.GiveItemErrors.Success:
                         InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
                         InventoryManager.GiveInventoryItem(prop, new Money(), price);
+
+                        if (item.GetType() == typeof(Phone))
+                        {
+                            ((Phone)item).SaveNumber();
+                            API.sendChatMessageToPlayer(sender, "Your phone number is: ~g~" + ((Phone)item).PhoneNumber);
+                        }
 
                         API.sendChatMessageToPlayer(sender,
                             $"[BUSINESS] You have sucessfully bought a ~g~{name}~w~ for ~g~${price}.");
@@ -272,6 +300,22 @@ namespace mtgvrp.property_system.businesses
                     API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()), "Ammunation",
                         prop.PropertyName);
                 }
+                    break;
+
+                case PropertyManager.PropertyTypes.LSNN:
+                    {
+                        API.freezePlayer(player, true);
+                        List<string[]> itemsWithPrices = new List<string[]>();
+                        foreach (var itm in ItemManager.LSNNItems)
+                        {
+                            itemsWithPrices.Add(new[]
+                            {
+                            itm[0], itm[1], itm[2], prop.ItemPrices.SingleOrDefault(x => x.Key == itm[0]).Value.ToString()
+                        });
+                        }
+                        API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()), "Los Santos News Network",
+                            prop.PropertyName);
+                    }
                     break;
                 default:
                     API.sendChatMessageToPlayer(player, "This property doesn't sell anything.");

@@ -56,7 +56,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 				while (res === false) {
 					API.sendChatMessage("Character name must be similar to: ~g~John_Doe~w~.");
 					var desiredName = API.getUserInput("", 64);
-					var patt = new RegExp("^[A-Z][a-z]+_[A-Z][a-z]+$");
+					var patt = new RegExp("^[A-Z][a-zA-Z]+_[A-Z][a-zA-Z]+$");
 					res = patt.test(desiredName);
 				}
 				API.triggerServerEvent("OnCharacterMenuSelect", item.Text, desiredName);
@@ -72,6 +72,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
     }
     else if (eventName == "login_finished") {
         character_menu.Visible = false;
+		menu_pool = null;
     }
     else if (eventName == "initialize_hair") {
         MAX_HAIR_STYLE = args[0];
@@ -97,6 +98,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 API.onUpdate.connect(function () {
     if (menu_pool != null) {
         menu_pool.ProcessMenus();
+		API.disableAllControlsThisFrame();
     }
 });
 
@@ -108,6 +110,10 @@ var top_menu = null;
 var hat_menu = null;
 var glasses_menu = null;
 var ear_menu = null;
+var torso_menu = null;
+
+var father_ped = null;
+var mother_ped = null;
 
 function next_character_creation_step(player, step) {
 
@@ -115,7 +121,7 @@ function next_character_creation_step(player, step) {
         case 0: {
             menu_pool = API.getMenuPool();
 
-            API.sendChatMessage("~g~Welcome to character creation! Let's begin by choosing your gender and your parents!")
+	        API.sendChatMessage("~g~Welcome to character creation! Let's begin by choosing your gender and your parents!");
 
             API.triggerServerEvent("initialize_hair", gender);
 
@@ -136,13 +142,11 @@ function next_character_creation_step(player, step) {
             var mother_int_id = 21;
             var parent_lean = 0.5;
 
-            var father_ped = null;
-            var mother_ped = null;
-
             //Set Camera to CharacterCreation
             API.setActiveCamera(creation_view);
             API.setEntityPosition(player, new Vector3(403, -997, -100));
             API.setEntityRotation(player, new Vector3(0, 0, 177.2663));
+			API.setEntityDimension(player, API.getEntitySyncedData(player, "REG_DIMENSION"));
 	        API.setPlayerSkin(1885233650);
 
             //Initiate the lists
@@ -166,14 +170,19 @@ function next_character_creation_step(player, step) {
             next_menu_item = API.createMenuItem("Next", "Continue onto the next portion of character creation.");
 
             //Create the display peds and set their info
+			if(father_ped !== null)
+				API.deleteEntity(father_ped);
+	        if(mother_ped !== null)
+		        API.deleteEntity(mother_ped);
+
             father_ped = API.createPed(1885233650, new Vector3(402.5, -996.5, -99), new Vector3(0, 0, 172));
             mother_ped = API.createPed(-1667301416, new Vector3(403.38, -996.5, -99), new Vector3(0, 0, 172));
             API.triggerServerEvent("change_parent_info", father_ped, mother_ped, father_int_id, mother_int_id, parent_lean, gender);
 
 			//Set default clothes.
-	        API.triggerServerEvent("change_clothes", 4, 0, 0);
+	        /*API.triggerServerEvent("change_clothes", 4, 0, 0);
 	        API.triggerServerEvent("change_clothes", 6, 0, 0);
-	        API.triggerServerEvent("change_clothes", 11, 0, 0);
+	        API.triggerServerEvent("change_clothes", 11, 0, 0);*/
 
             //Handle the lists
             gender_menu_item.OnListChanged.connect(function (sender, new_index) {
@@ -282,6 +291,10 @@ function next_character_creation_step(player, step) {
                     next_character_creation_step(player, 1);
                 }
             });
+
+	        character_creation_menu.OnMenuClose.connect((menu) => {
+		        character_creation_menu.Visible = true;
+	        });
             break;
         }
         case 1: {
@@ -516,6 +529,9 @@ function next_character_creation_step(player, step) {
                 }
             });
 
+	        character_creation_menu.OnMenuClose.connect((menu) => {
+		        next_character_creation_step(player, 0);
+	        });
             break;
         }
         case 2: {
@@ -538,6 +554,7 @@ function next_character_creation_step(player, step) {
             hat_menu = API.createMenu("Character Creation", "Hat Selection", 0, 0, 6);
             glasses_menu = API.createMenu("Character Creation", "Glasses Selection", 0, 0, 6);
             ear_menu = API.createMenu("Character Creation", "Ear Accessory Selection", 0, 0, 6);
+			torso_menu = API.createMenu("Character Creation", "Torso Selection", 0, 0, 6);
 
             menu_pool.Add(pant_menu);
             menu_pool.Add(shoe_menu);
@@ -547,6 +564,7 @@ function next_character_creation_step(player, step) {
             menu_pool.Add(hat_menu);
             menu_pool.Add(glasses_menu);
             menu_pool.Add(ear_menu);
+            menu_pool.Add(torso_menu);
 
             for (var i = 0; i < component_list.length; i++) {
 
@@ -605,10 +623,17 @@ function next_character_creation_step(player, step) {
                         list.Add((j + 1).toString());
                     }
                     ear_menu.AddItem(API.createListItem(component_list[i].name, "Press enter to select and go back.", list, 0));
-                }
-
-                
+                } 
             }
+	        var variations = API.returnNative("2834476523764480066", 0, player, 3);
+	        for (var i = 0; i < variations; i++) {
+		        var list = new List(String);
+		        var types = API.returnNative("10336137878209981357", 0, player, 3, i);
+		        for (var j = 0; j < types; j++) {
+			        list.Add((j + 1).toString());
+		        }
+		        torso_menu.AddItem(API.createListItem("Style " + i, "Press enter to select and go back.", list, 0));
+	        }
 
             var pants_index = 0;
             var pants_variation = 0;
@@ -616,16 +641,19 @@ function next_character_creation_step(player, step) {
             var shoe_variation = 0;
             var accessory_index = 0;
             var accessory_variation = 0;
-            var undershirt_style = 15;
+            var undershirt_index = 0;
             var undershirt_variation = 0;
-            var top_style = 0;
+            var top_index = 0;
             var top_variation = 0;
-            var hat_index = -1;
+            var hat_index = 0;
             var hat_variation = 0;
-            var glasses_style = -1;
+            var glasses_index = 0;
             var glasses_variation = 0;
-            var ear_style = -1;
+            var ear_index = 0;
             var ear_variation = 0;
+
+			var torso_index = 0;
+			var torso_variation = 0;
 
             character_creation_menu = API.createMenu("Character Creation", "Outfit Selection", 0, 0, 6);
             character_creation_menu.AddItem(API.createMenuItem("Pants", "View the available pants"));
@@ -636,6 +664,7 @@ function next_character_creation_step(player, step) {
             character_creation_menu.AddItem(API.createMenuItem("Hats", "View the available hats"));
             character_creation_menu.AddItem(API.createMenuItem("Glasses", "View the available glasses"));
             character_creation_menu.AddItem(API.createMenuItem("Ear Accessories", "View the available ear accessories"));
+	        character_creation_menu.AddItem(API.createMenuItem("Torsos", "View the available torsos."));
             character_creation_menu.AddItem(API.createMenuItem("Next", "Continue to the final step of character creation."));
             menu_pool.Add(character_creation_menu);
             character_creation_menu.Visible = true;
@@ -651,6 +680,10 @@ function next_character_creation_step(player, step) {
                 API.triggerServerEvent("change_clothes", 4, pants_index, pants_variation);
             });
 
+	        pant_menu.OnMenuClose.connect((menu) => {
+		        character_creation_menu.Visible = true;
+	        });
+
             shoe_menu.OnIndexChange.connect(function (sender, index) {
                 shoe_index = index;
                 shoe_variation = 0;
@@ -661,6 +694,10 @@ function next_character_creation_step(player, step) {
                 shoe_variation = index;
                 API.triggerServerEvent("change_clothes", 6, shoe_index, shoe_variation);
             });
+
+	        shoe_menu.OnMenuClose.connect((menu) => {
+		        character_creation_menu.Visible = true;
+	        });
 
             accessory_menu.OnIndexChange.connect(function (sender, index) {
                 accessory_index = index;
@@ -673,6 +710,10 @@ function next_character_creation_step(player, step) {
                 API.triggerServerEvent("change_clothes", 7, accessory_index, accessory_variation);
             });
 
+	        accessory_menu.OnMenuClose.connect((menu) => {
+		        character_creation_menu.Visible = true;
+	        });
+
             undershirt_menu.OnIndexChange.connect(function (sender, index) {
                 undershirt_index = index;
                 undershirt_variation = 0;
@@ -683,6 +724,10 @@ function next_character_creation_step(player, step) {
                 undershirt_variation = index;
                 API.triggerServerEvent("change_clothes", 8, undershirt_index, undershirt_variation);
             });
+
+	        undershirt_menu.OnMenuClose.connect((menu) => {
+		        character_creation_menu.Visible = true;
+	        });
 
             top_menu.OnIndexChange.connect(function (sender, index) {
                 top_index = index;
@@ -695,6 +740,10 @@ function next_character_creation_step(player, step) {
                 API.triggerServerEvent("change_clothes", 11, top_index, top_variation);
             });
 
+	        top_menu.OnMenuClose.connect((menu) => {
+		        character_creation_menu.Visible = true;
+	        });
+
             hat_menu.OnIndexChange.connect(function (sender, index) {
                 hat_index = index;
                 hat_variation = 0;
@@ -705,6 +754,10 @@ function next_character_creation_step(player, step) {
                 hat_variation = index;
                 API.triggerServerEvent("change_clothes", 20, hat_index, hat_variation);
             });
+
+	        hat_menu.OnMenuClose.connect((menu) => {
+		        character_creation_menu.Visible = true;
+	        });
 
             glasses_menu.OnIndexChange.connect(function (sender, index) {
                 glasses_index = index;
@@ -717,6 +770,10 @@ function next_character_creation_step(player, step) {
                 API.triggerServerEvent("change_clothes", 21, glasses_index, glasses_variation);
             });
 
+	        glasses_menu.OnMenuClose.connect((menu) => {
+		        character_creation_menu.Visible = true;
+	        });
+
             ear_menu.OnIndexChange.connect(function (sender, index) {
                 ear_index = index;
                 ear_variation = 0;
@@ -727,6 +784,25 @@ function next_character_creation_step(player, step) {
                 ear_variation = index;
                 API.triggerServerEvent("change_clothes", 22, ear_index, ear_variation);
             });
+
+	        ear_menu.OnMenuClose.connect((menu) => {
+		        character_creation_menu.Visible = true;
+	        });
+
+	        torso_menu.OnIndexChange.connect(function (sender, index) {
+		        torso_index = index;
+		        torso_variation = 0;
+		        API.triggerServerEvent("change_clothes", 3, torso_index, torso_variation);
+	        });
+
+	        torso_menu.OnListChange.connect(function (sender, list, index) {
+		        torso_variation = index;
+		        API.triggerServerEvent("change_clothes", 3, torso_index, torso_variation);
+	        });
+
+	        torso_menu.OnMenuClose.connect((menu) => {
+		        character_creation_menu.Visible = true;
+	        });
 
             character_creation_menu.OnItemSelect.connect(function (sender, item, index) {
                 character_creation_menu.Visible = false;
@@ -774,11 +850,20 @@ function next_character_creation_step(player, step) {
                         ear_menu.Visible = true;
                         ear_menu.CurrentSelection = 0;
                         break;
+					case "Torsos":
+						API.setActiveCamera(creation_view);
+						torso_menu.Visible = true;
+						torso_menu.CurrentSelection = 0;
+						break;
                     case "Next":
                         next_character_creation_step(player, 3);
                         break;
                 }
             });
+
+	        character_creation_menu.OnMenuClose.connect((menu) => {
+		        next_character_creation_step(player, 1);
+	        });
             break;
         }
         case 3: {
@@ -834,6 +919,7 @@ function next_character_creation_step(player, step) {
                     case "Finish Character Creation":
                         character_creation_menu.Visible = false;
                         API.triggerServerEvent("finish_character_creation", age, birthday, birthplace, spawn_point);
+						menu_pool = null;
                         break;
                 }
             });
@@ -845,6 +931,10 @@ function next_character_creation_step(player, step) {
             spawn_menu.OnListChanged.connect(function (sender, new_index) {
                 spawn_point = new_index;
             });
+
+	        character_creation_menu.OnMenuClose.connect((menu) => {
+		        next_character_creation_step(player, 2);
+	        });
         }
     }
 }
@@ -886,6 +976,10 @@ API.onKeyDown.connect(function(sender, e) {
                 ear_menu.Visible = false;
                 character_creation_menu.Visible = true;
             }
+	        if (torso_menu.Visible == true) {
+		        torso_menu.Visible = false;
+		        character_creation_menu.Visible = true;
+	        }
         }
     } else if (e.KeyCode == Keys.Oemplus) {
         rotating = 4;

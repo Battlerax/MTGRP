@@ -16,22 +16,22 @@
             //Loop in each.
             $.each(leftList,
                     function (i, val) {
-                        $("#LeftItems").append(`<div class="list" itemid="${val[0]}">
+                        $("#LeftItems").append(`<div class="list" shortname="${val[1]}">
                     <div class="list-content">
-                        <span class="list-title">${val[1]}</span>
-                        <span class="list-subtitle" shortname="${val[2]}">Short Name: ${val[2]}</span>
-                        <span class="list-remark" amount="${val[3]}">Amount: ${val[3]}</span>
+                        <span class="list-title">${val[0]}</span>
+                        <span class="list-subtitle">Short Name: ${val[1]}</span>
+                        <span class="list-remark" amount="${val[2]}">Amount: ${val[2]}</span>
                     </div>
                 </div>`);
                     });
 
             $.each(rightList,
                     function (i, val) {
-                        $("#RightItems").append(`<div class="list" itemid="${val[0]}">
+                        $("#RightItems").append(`<div class="list" shortname="${val[1]}">
                     <div class="list-content">
-                        <span class="list-title">${val[1]}</span>
-                        <span class ="list-subtitle" shortname="${val[2]}">Short Name: ${val[2]}</span>
-                        <span class ="list-remark" amount="${val[3]}">Amount: ${val[3]}</span>
+                        <span class="list-title">${val[0]}</span>
+                        <span class ="list-subtitle">Short Name: ${val[1]}</span>
+                        <span class ="list-remark" amount="${val[2]}">Amount: ${val[2]}</span>
                     </div>
                 </div>`);
                     });
@@ -48,12 +48,12 @@
        
         }
 
-        function moveItemFromLeftToRightSuccess(id, itemname, amount, usedLeft, usedRight) {
+        function moveItemFromLeftToRightSuccess(itemname, amount, usedLeft, usedRight) {
             //Get old item from inv.
-            var item = $("#LeftItems").find(`.list[itemid='${id}']`);
+            var item = $("#LeftItems").find(`.list[shortname='${itemname}']`);
 
             //Add item.
-            var titem = $("#RightItems").find(`.list[itemid='${id}']`);
+            var titem = $("#RightItems").find(`.list[shortname='${itemname}']`);
             if (!!titem.length) { //If was found.
                 //Change amount of target.
                 var oldValue = parseInt(titem.find('span.list-remark').attr("amount"));
@@ -62,8 +62,8 @@
             } else {
                 //If not, add it with new value.
                 $("#RightItems").append(item.clone());
-                $("#RightItems").find(`.list[itemid='${id}']`).find('span.list-remark').attr("amount", amount);
-                $("#RightItems").find(`.list[itemid='${id}']`).find('span.list-remark').text("Amount: " + amount);
+                $("#RightItems").find(`.list[shortname='${itemname}']`).find('span.list-remark').attr("amount", amount);
+                $("#RightItems").find(`.list[shortname='${itemname}']`).find('span.list-remark').text("Amount: " + amount);
             }
 
             //If amount there is equal to what to be removed, we remove whole thing and then add to list.
@@ -80,12 +80,12 @@
             $('#RightItemsUsed').text(usedRight);
         }
 
-        function moveItemFromRightToLeftSuccess(id, itemname, amount, usedLeft, usedRight) {
+        function moveItemFromRightToLeftSuccess(itemname, amount, usedLeft, usedRight) {
             //Get old item from inv.
-            var item = $("#RightItems").find(`.list[itemid='${id}']`);
+            var item = $("#RightItems").find(`.list[shortname='${itemname}']`);
 
             //Add item.
-            var titem = $("#LeftItems").find(`.list[itemid='${id}']`);
+            var titem = $("#LeftItems").find(`.list[shortname='${itemname}']`);
             if (!!titem.length) { //If was found.
                 //Change amount of target.
                 var oldValue = parseInt(titem.find('span.list-remark').attr("amount"));
@@ -94,8 +94,8 @@
             } else {
                 //If not, add it with new value.
                 $("#LeftItems").append(item.clone());
-                $("#LeftItems").find(`.list[itemid='${id}']`).find('span.list-remark').attr("amount", amount);
-                $("#LeftItems").find(`.list[itemid='${id}']`).find('span.list-remark').text("Amount: " + amount);
+                $("#LeftItems").find(`.list[shortname='${itemname}']`).find('span.list-remark').attr("amount", amount);
+                $("#LeftItems").find(`.list[shortname='${itemname}']`).find('span.list-remark').text("Amount: " + amount);
             }
 
             //If amount there is equal to what to be removed, we remove whole thing and then add to list.
@@ -140,13 +140,13 @@
                     //Get clicked one: 
                     var item = $("#LeftItems").find('div.active');
                     //Send event.
-                    resourceCall("moveFromLeftToRight", item.attr("itemid"), item.find("span.list-subtitle").attr("shortname"), $('#amounttext').val());
+                    resourceCall("moveFromLeftToRight", item.attr("shortname"), $('#amounttext').val());
                 }
                 else if (currentStatus === 2) {
                     //Get clicked one: 
                     var eitem = $("#RightItems").find('div.active');
                     //Send event.
-                    resourceCall("moveFromRightToLeft", eitem.attr("itemid"), eitem.find("span.list-subtitle").attr("shortname"), $('#amounttext').val());
+                    resourceCall("moveFromRightToLeft", eitem.attr("shortname"), $('#amounttext').val());
                 }
 
                 metroDialog.close('#amountDialog');

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using mtgvrp.database_manager;
 using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Driver;
 
 namespace mtgvrp.group_manager.lspd
 {
@@ -37,11 +38,10 @@ namespace mtgvrp.group_manager.lspd
             DatabaseManager.CrimeTable.InsertOne(this);
         }
 
-        public static void Delete(Crime name)
+        public void Delete()
         {
-
-            Crimes.Remove(name);
-            var filter = MongoDB.Driver.Builders<Crime>.Filter.Eq("Id", name.Id);
+            Crimes.Remove(this);
+            var filter = Builders<Crime>.Filter.Eq("Id", Id);
             DatabaseManager.CrimeTable.DeleteOne(filter);
         }
 
@@ -55,6 +55,32 @@ namespace mtgvrp.group_manager.lspd
         public static bool CrimeExists(string crimeName)
         {
             return Crimes.Count(i => string.Equals(i.Name, crimeName, StringComparison.OrdinalIgnoreCase)) > 0;
+        }
+
+        public static void LoadCrimes()
+        {
+            Crimes = new List<Crime>();
+
+            foreach (var crime in DatabaseManager.CrimeTable.Find(FilterDefinition<Crime>.Empty).ToList())
+            {
+                Crimes.Add(crime);
+            }
+            
+        }
+
+        public static void UpdateCrimes()
+        {
+            foreach(var crime in DatabaseManager.CrimeTable.Find(FilterDefinition<Crime>.Empty).ToList())
+            {
+                var filter = Builders<Crime>.Filter.Eq("Id", crime.Id);
+                DatabaseManager.CrimeTable.DeleteOne(filter);
+            }
+
+            foreach(var setCrime in Crimes)
+            {
+                var InsertCrime = new Crime(setCrime.Type, setCrime.Name, setCrime.JailTime, setCrime.Fine) { Id = DatabaseManager.GetNextId("crimes") };
+                InsertCrime.Insert();
+            }
         }
     }
 }

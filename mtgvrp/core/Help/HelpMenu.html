@@ -1,0 +1,94 @@
+﻿<html>
+<head>
+    <link href="../../stylesheet/css/metro.css" rel="stylesheet">
+    <script src="../../jquery.js"></script>
+    <script src="../../stylesheet/js/metro.js"></script>
+    <link href="../../stylesheet/css/metro-icons.css" rel="stylesheet">
+</head>
+
+<body>
+<div class="panel" data-role="panel">
+    <div class="heading">
+        <span class="icon mif-help"></span>
+        <span class="title">Command Help</span>
+    </div>
+    <div class="content">
+        <div class="grid padding5">
+            <div class="row cells4">
+                <div class="cell">
+                    <ul class="sidebar2">
+                        <li class="title">Help List</li>
+                        <li class="active">
+                            <a href="#">General Commands</a>
+                        </li>
+                        <li class="">
+                            <a href="#">Roleplay Commands</a>
+                        </li>
+                        <li class="">
+                            <a href="#">Animation Commands</a>
+                        </li>
+                        <li class="">
+                            <a href="#">Inventory Commands</a>
+                        </li>
+                        <li class="">
+                            <a href="#">Property Commands</a>
+                        </li>
+                        <li class="">
+                            <a class="dropdown-toggle" href="#">Group Commands</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                <li><a href="">LSPD</a></li>
+                                <li><a href="">LSNN</a></li>
+                            </ul>
+                        </li>
+                        <li class="">
+                            <a class="dropdown-toggle" href="#">Admin Commands</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                <li style="display: none;"><a href="">Level 1</a></li>
+                                <li style="display: none;"><a href="">Level 2</a></li>
+                                <li style="display: none;"><a href="">Level 3</a></li>
+                                <li style="display: none;"><a href="">Level 4</a></li>
+                                <li style="display: none;"><a href="">Level 5</a></li>
+                                <li style="display: none;"><a href="">Level 6</a></li>
+                                <li style="display: none;"><a href="">Level 7</a></li>
+                                <li style="display: none;"><a href="">Level 8</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="cell colspan3">
+                    <table class="table striped border bordered" style="text-align: center;">
+                        <tr>
+                            <th>Command</th>
+                            <th>Syntax</th>
+                            <th>Information</th>
+                        </tr>
+                        <tr>
+                            <td>/me</td>
+                            <td>/me [message] 
+                                <p>
+                                    <strong>message: </strong>Your roleplay message.
+                                </p>
+                            </td>
+                            <td>Used for desciribing actions of your character.</td>
+                        </tr>
+                        <tr>
+                            <td>/give</td>
+                            <td>
+                                /give [id] [item] [amount]
+                                <p>
+                                    <strong>id: </strong>Name or Id of target player.<br/>
+                                    <strong>item: </strong>Short name of the item, found in between [ ] in /inv.<br />
+                                    <strong>amount: </strong>The amount of that item you'd like to give.<br/>
+                                </p>
+                            </td>
+                            <td>Give an item to a nearby player from your inventory.</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

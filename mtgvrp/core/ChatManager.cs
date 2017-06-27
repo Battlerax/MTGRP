@@ -60,6 +60,7 @@ namespace mtgvrp.core
                 {
                     msg = "~p~ [BROADCAST] " + character.CharacterName + " : " + msg;
                     BroadcastMessage(msg);
+                    NearbyMessage(player, 30, msg);
                     e.Cancel = true;
                     return;
                 }
@@ -76,14 +77,14 @@ namespace mtgvrp.core
                 var targetphone = (Phone)targetitems[0];
                 var newmsg = "[Phone]" + character.rp_name() + " says: " + msg;
                 ChatManager.NearbyMessage(player, 15, newmsg, Color.Grey);
-                if (targetphone.HasContactWithNumber(charphone.Number))
+                if (targetphone.HasContactWithNumber(charphone.PhoneNumber))
                 {
-                    phonemsg = "[" + targetphone.Contacts.Find(pc => pc.Number == charphone.Number).Name + "]" +
+                    phonemsg = "[" + targetphone.Contacts.Find(pc => pc.Number == charphone.PhoneNumber).Name + "]" +
                                character.rp_name() + " says: " + msg;
                 }
                 else
                 {
-                    phonemsg = "[" + charphone.Number + "]" + character.rp_name() + " says: " + msg;
+                    phonemsg = "[" + charphone.PhoneNumber + "]" + character.rp_name() + " says: " + msg;
                 }
                 API.sendChatMessageToPlayer(talkingTo.Client, Color.Grey, phonemsg);
                 e.Cancel = true;
@@ -97,7 +98,7 @@ namespace mtgvrp.core
                 var charitems = InventoryManager.DoesInventoryHaveItem(character, typeof(Phone));
                 var charphone = (Phone)charitems[0];
 
-                Mdc.Add911Call(charphone.Number, msg, "Los Santos");
+                Mdc.Add911Call(charphone.PhoneNumber, msg, "Los Santos");
 
                 var newmsg = "[Phone]" + character.rp_name() + " says: " + msg;
                 ChatManager.NearbyMessage(player, 15, newmsg, Color.Grey);
@@ -125,12 +126,11 @@ namespace mtgvrp.core
 
         public void BroadcastMessage(string msg)
         {
-            foreach (var i in API.getAllPlayers())
+            foreach (var i in PlayerManager.Players)
             {
-                Character character = API.getEntityData(i.handle, "Character");
-                if(character.IsWatchingBroadcast == true)
+                if(i.IsWatchingBroadcast == true)
                 {
-                    API.sendChatMessageToPlayer(i, msg);
+                    API.sendChatMessageToPlayer(i.Client, msg);
                 }
             }
         }
@@ -192,7 +192,7 @@ namespace mtgvrp.core
             API.sendChatMessageToAll(Color.GlobalOoc, "[OOC] " + c.CharacterName + ": " + message);
             if (account.AdminLevel == 0)
             {
-                c.OocCooldown = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds() + 60;
+                c.OocCooldown = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds() + 10;
             }
         }
 
@@ -358,8 +358,8 @@ namespace mtgvrp.core
                 return;
             }
 
-            API.sendChatMessageToPlayer(player, Color.LongDistanceRoleplay, "RP to " + PlayerManager.GetName(receiver) + ": " + text);
-            API.sendChatMessageToPlayer(receiver, Color.LongDistanceRoleplay, "RP from " + PlayerManager.GetName(player) + ": " + text);
+            API.sendChatMessageToPlayer(player, Color.LongDistanceRoleplay, "RP to " + PlayerManager.GetName(receiver) + "(" + PlayerManager.GetPlayerId(receiver.GetCharacter()) + "): " + text);
+            API.sendChatMessageToPlayer(receiver, Color.LongDistanceRoleplay, "RP from " + PlayerManager.GetName(player) + "(" + PlayerManager.GetPlayerId(player.GetCharacter()) + "): " + text);
         }
 
         [Command("whisper", Alias = "w", GreedyArg = true)]
@@ -402,8 +402,8 @@ namespace mtgvrp.core
                 return;
             }
 
-            API.shared.sendChatMessageToPlayer(player, Color.Pm, "PM to " + PlayerManager.GetName(receiver) + ": " + text);
-            API.shared.sendChatMessageToPlayer(receiver, Color.Pm, "PM from " + PlayerManager.GetName(player) + ": " + text);
+            API.shared.sendChatMessageToPlayer(player, Color.Pm, "PM to " + PlayerManager.GetName(receiver) + "(" + PlayerManager.GetPlayerId(receiver.GetCharacter()) + "): " + text);
+            API.shared.sendChatMessageToPlayer(receiver, Color.Pm, "PM from " + PlayerManager.GetName(player) + "(" + PlayerManager.GetPlayerId(player.GetCharacter()) + "): " + text);
         }
 
         public const int RoleplayMe = 0;

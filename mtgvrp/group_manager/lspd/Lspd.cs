@@ -17,6 +17,16 @@ namespace mtgvrp.group_manager.lspd
         {
             API.onResourceStart += StartLspd;
             API.onClientEventTrigger += API_onClientEventTrigger;
+            API.onPlayerDisconnected += API_onPlayerDisconnected;
+        }
+
+        private void API_onPlayerDisconnected(Client player, string reason)
+        {
+            var character = player.GetCharacter();
+            if (character == null) return;
+
+            if (character.MegaPhoneObject != null && API.doesEntityExist(character.MegaPhoneObject))
+                API.deleteEntity(character.MegaPhoneObject);
         }
 
         //LSPD Locations. TODO: MAKE IT WORK WITH MARKERZONE!!!!
@@ -32,9 +42,9 @@ namespace mtgvrp.group_manager.lspd
         public LinkedList<GTANetworkServer.Object> Objects = new LinkedList<GTANetworkServer.Object>();
 
 
-        public void StartLspd()
+        private void StartLspd()
         {
-
+            Crime.LoadCrimes();
         }
 
 
@@ -100,11 +110,6 @@ namespace mtgvrp.group_manager.lspd
 
                         GiveLspdEquipment(player, 1);
                         API.sendChatMessageToPlayer(player, Color.White, "You have been given the standard SWAT equipment.");
-                        break;
-                    }
-                case "toggle_megaphone_key":
-                    {
-                        megaphonetog_cmd(player);
                         break;
                     }
             }
@@ -187,9 +192,14 @@ namespace mtgvrp.group_manager.lspd
                 return;
             }
 
+            player.sendChatMessage("======================");
+            player.sendChatMessage("CRIME LIST");
+            player.sendChatMessage("======================");
+            int f = 0;
             foreach (var i in Crime.Crimes)
             {
-                API.sendChatMessageToPlayer(player, i.Id + " | " + i.Type + " | " + i.Name + " | " + i.JailTime + " | " + i.Fine); //TODO: REPLACE WITH A MENU
+                API.sendChatMessageToPlayer(player, f + " | " + i.Type + " | " + i.Name + " | " + i.JailTime + " | " + i.Fine); //TODO: REPLACE WITH A MENU
+                f++;
             }
         }
 
@@ -204,19 +214,19 @@ namespace mtgvrp.group_manager.lspd
                 return;
             }
 
-            GroupManager.GroupCommandPermCheck(character, 7);
 
             if (Crime.CrimeExists(crimeName))
             {
                 API.sendChatMessageToPlayer(player, "This crime already exists!");
                 return;
             }
+
             Crime.InsertCrime(type, crimeName, jailTime, fine);
             API.sendChatMessageToPlayer(player, "Crime created and added to crime list.");
         }
 
         [Command("editcrime")]
-        public void deletecrime_cmd(Client player, int id, string type, string crimeName, int jailTime, int fine)
+        public void editcrime_cmd(Client player, int id, string type, string crimeName, int jailTime, int fine)
         {
             Character character = API.getEntityData(player.handle, "Character");
 
@@ -226,14 +236,15 @@ namespace mtgvrp.group_manager.lspd
                 return;
             }
 
-            GroupManager.GroupCommandPermCheck(character, 7);
+            if (Crime.CrimeExists(crimeName))
+            {
+                API.sendChatMessageToPlayer(player, "This crime already exists!");
+                return;
+            }
 
             Crime crime = Crime.Crimes[id];
-            crime.Type = type;
-            crime.Name = crimeName;
-            crime.JailTime = jailTime;
-            crime.Fine = fine;
-            crime.Update();
+            Crime.Crimes[id] = new Crime(type, crimeName, jailTime, fine);
+            Crime.UpdateCrimes();
             API.sendChatMessageToPlayer(player, "Crime edited.");
         }
 
@@ -248,10 +259,16 @@ namespace mtgvrp.group_manager.lspd
                 return;
             }
 
-            GroupManager.GroupCommandPermCheck(character, 7);
+            if (!(id < Crime.Crimes.Count))
+            {
+                player.sendChatMessage("That crime does not exist.");
+                return;
+            }
 
             Crime crimeDelete = Crime.Crimes[id];
-            Crime.Crimes.Remove(crimeDelete);
+
+
+            crimeDelete.Delete();
             API.sendChatMessageToPlayer(player, "Crime deleted from crime list.");
         }
 
@@ -402,8 +419,9 @@ namespace mtgvrp.group_manager.lspd
             if (receiver == player)
             {
                 API.sendNotificationToPlayer(player, "~r~You can't cuff yourself!");
+                return;
             }
-
+           
             if (API.getEntityPosition(player).DistanceToSquared(API.getEntityPosition(receiver)) > 16f)
             {
                 API.sendNotificationToPlayer(player, "~r~You're too far away!");
@@ -415,12 +433,14 @@ namespace mtgvrp.group_manager.lspd
             if (receivercharacter.AreHandsUp == false && isStunned == false)
             {
                 player.sendChatMessage("Players must have their hands up or must be tazed before they can be cuffed.");
+                return;
             }
 
+            API.givePlayerWeapon(player, WeaponHash.Unarmed, 1, true, true);
             API.sendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, receivercharacter, true);
             receivercharacter.IsCuffed = true;
             API.playPlayerAnimation(receiver, (1 << 0 | 1 << 4 | 1 << 5), "mp_arresting", "idle");
-
+            API.freezePlayer(receiver, true);
             ChatManager.RoleplayMessage(player, "places handcuffs onto " + receivercharacter.rp_name(), ChatManager.RoleplayMe);
         }
 
@@ -457,6 +477,7 @@ namespace mtgvrp.group_manager.lspd
                     API.sendChatMessageToPlayer(player, $"* ~r~{item.LongName}~w~[{item.CommandFriendlyName}] ({item.Amount})");
                 }
                 API.sendChatMessageToPlayer(player, "-------------PLAYER INVENTORY-------------");
+                return;
             }
             API.sendChatMessageToPlayer(player, "Players must be cuffed or have their hands up before you can frisk them.");
 
@@ -498,13 +519,15 @@ namespace mtgvrp.group_manager.lspd
 
             foreach (var c in PlayerManager.Players)
             {
+                int i = 0;
                 if (c.BeaconSet == false)
                 {
-                    API.sendChatMessageToPlayer(player, "There are no active beacons.");
+                    i++;
+                    if (i == PlayerManager.Players.Count()) { API.sendChatMessageToPlayer(player, "There are no active beacons."); }
                     return;
                 }
 
-                beaconCreator = c.BeaconCreator;
+                beaconCreator = c.Client;
 
             }
 
@@ -518,7 +541,7 @@ namespace mtgvrp.group_manager.lspd
             var playerPos = API.getEntityPosition(player);
             Character character = API.getEntityData(player.handle, "Character");
 
-            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
+            if (character?.Group == Group.None || character?.Group.CommandType != Group.CommandTypeLspd)
             {
                 //API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
                 return;
@@ -527,13 +550,15 @@ namespace mtgvrp.group_manager.lspd
             {
                 API.sendNotificationToPlayer(player, "You are speaking through a megaphone", true);
                 API.setEntityData(player, "MegaphoneStatus", true);
-                var megaphone = API.createObject(API.getHashKey("prop_megaphone_01"), playerPos, new Vector3());
-                API.attachEntityToEntity(megaphone, player, "IK_R_Hand", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                character.MegaPhoneObject = API.createObject(API.getHashKey("prop_megaphone_01"), playerPos, new Vector3());
+                API.attachEntityToEntity(character.MegaPhoneObject, player, "IK_R_Hand", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
                 return;
             }
             API.sendNotificationToPlayer(player, "You are no longer speaking through a megaphone.");
             API.setEntityData(player, "MegaphoneStatus", false);
-            API.deleteObject(player, playerPos, API.getHashKey("prop_megaphone_01"));
+            if(character.MegaPhoneObject != null && API.doesEntityExist(character.MegaPhoneObject))
+                API.deleteEntity(character.MegaPhoneObject);
+            character.MegaPhoneObject = null;
         }
 
 
@@ -780,11 +805,13 @@ namespace mtgvrp.group_manager.lspd
 
             var node = Objects.First;
 
-            while (node.Next != null)
+            int j = 0;
+            while (j <= len)
             {
-                var next = node.Next;
-                Objects.Remove(node);
+                Objects.RemoveLast();
+                j++;
             }
+
             API.sendNotificationToPlayer(player, "~r~" + len + " objects removed.");
         }
 

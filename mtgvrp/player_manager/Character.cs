@@ -41,13 +41,14 @@ namespace mtgvrp.player_manager
         public int BankBalance { get; set; }
 
         public PedHash Skin { get; set; }
+        public int Health { get; set; }
 
         public List<int> OwnedVehicles = new List<int>();
 
         public List<int> Outfit = new List<int>();
         public List<int> OutfitVariation = new List<int>();
         public List<Weapon> Weapons = new List<Weapon>();
-
+        
         public int Age { get; set; }
         public int AdminActions { get; set; }
         public string Birthday { get; set; }
@@ -129,6 +130,9 @@ namespace mtgvrp.player_manager
         //Fisherman Related
         [BsonIgnore]
         public bool IsInFishingZone { get; set; }
+
+        [BsonIgnore]
+        public DateTime NextFishTime { get; set; }
 
         [BsonIgnore]
         public Timer CatchTimer { get; set; }
@@ -243,6 +247,14 @@ namespace mtgvrp.player_manager
         [BsonIgnore]
         public bool IsRagged;
 
+        [BsonIgnore]
+        public DateTime NextHotWire;
+
+        [BsonIgnore]
+        public GTANetworkServer.Object MegaPhoneObject = null;
+
+        [BsonIgnore]
+        public GTANetworkServer.Object MicObject = null;
 
         public Character()
         {
@@ -277,6 +289,7 @@ namespace mtgvrp.player_manager
             BeingCalledBy = Character.None;
             CallingPlayer = Character.None;
 
+            Health = 100;
             RadioToggle = true;
             CanDoAnim = true;
         }
@@ -354,6 +367,7 @@ namespace mtgvrp.player_manager
                 API.shared.setPlayerClothes(Client, 7, Model.AccessoryStyle, Model.AccessoryVar - 1); // Accessories
                 API.shared.setPlayerClothes(Client, 8, Model.UndershirtStyle, Model.UndershirtVar - 1); //undershirt
                 API.shared.setPlayerClothes(Client, 11, Model.TopStyle, Model.TopVar - 1); //top
+                API.shared.setPlayerClothes(Client, 3, Model.TorsoStyle, Model.TorsoVar); //Torso
 
                 //API.shared.setPlayerAccessory(client, 0, this.model.hat_style, this.model.hat_var - 1); // hats
                 //API.shared.setPlayerAccessory(client, 1, this.model.glasses_style, this.model.glasses_var - 1); // glasses
@@ -364,7 +378,11 @@ namespace mtgvrp.player_manager
                     Model.HatVar - 1, true);
                 API.shared.sendNativeToAllPlayers(Hash.SET_PED_PROP_INDEX, Client.handle, 1, Model.GlassesStyle,
                     Model.GlassesVar - 1, true);
-                API.shared.sendNativeToAllPlayers(Hash.SET_PED_PROP_INDEX, Client.handle, 2, Model.EarStyle,
+
+                if(Model.EarStyle == 255)
+                    API.shared.sendNativeToAllPlayers(Hash.CLEAR_PED_PROP, Client.handle, 2);
+                else
+                    API.shared.sendNativeToAllPlayers(Hash.SET_PED_PROP_INDEX, Client.handle, 2, Model.EarStyle,
                     Model.EarVar - 1, true);
             }
             else
@@ -374,6 +392,7 @@ namespace mtgvrp.player_manager
                 API.shared.setPlayerClothes(Client, 7, 0, 0); // Accessories
                 API.shared.setPlayerClothes(Client, 8, Model.Gender == GenderMale ? 58 : 35, 0); //undershirt
                 API.shared.setPlayerClothes(Client, 11, Model.Gender == GenderMale ? 55 : 48, 0); //top
+                API.shared.setPlayerClothes(Client, 3, 0, 0); //Torso
 
                 //API.shared.setPlayerAccessory(client, 0, this.model.hat_style, this.model.hat_var - 1); // hats
                 //API.shared.setPlayerAccessory(client, 1, this.model.glasses_style, this.model.glasses_var - 1); // glasses

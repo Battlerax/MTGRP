@@ -7,7 +7,7 @@ var interactBrowser = null;
 var res = null;
 
 API.onResourceStart.connect(() => {
-    res = API.getScreenResolution();
+    res = API.getScreenResolutionMantainRatio();
 });
 
 API.onServerEventTrigger.connect((eventname, args) => {

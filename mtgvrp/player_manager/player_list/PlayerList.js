@@ -2,41 +2,31 @@
 var res = null;
 
 API.onResourceStart.connect(function () {
-    res = API.getScreenResolution();
+    res = API.getScreenResolutionMantainRatio();
 });
 
 API.onServerEventTrigger.connect(function (eventName, args) {
     switch (eventName) {
         case "send_player_list":
-
-            player_list_browser.call("empty_player_list");
-
-            var player_list = args[0];
-            for (var i = 0; i < player_list.Count; i++) {
-
-                var obj = JSON.parse(player_list[i]);
-                player_list_browser.call("add_player", obj.id, obj.name, args[1]);
-
-            }
-            player_list_browser.call("show_list");
+            player_list_browser.call("show_list", args[0], args[1]);
             break;
     }
 });
 
 
-API.onKeyDown.connect(function(Player, args){
+API.onKeyUp.connect(function(Player, args){
     if (args.KeyCode == Keys.F1){
-        if(player_list_browser == null){
-            player_list_browser = API.createCefBrowser(res.Width, res.Height);
+		if (player_list_browser == null) {
+			let width = 500;
+			let height = 600;
+			var pos = resource.JsFunctions.scaleCoordsToReal({ X: (res.Width / 2) - (width / 2), Y: (height * 20/100) });
+			var size = resource.JsFunctions.scaleCoordsToReal({ X: width, Y: height });
+			player_list_browser = API.createCefBrowser(size.X, size.Y);
             API.waitUntilCefBrowserInit(player_list_browser);
-            API.setCefBrowserPosition(player_list_browser, 0, 0);
+			API.setCefBrowserPosition(player_list_browser, pos.X, pos.Y);
             API.loadPageCefBrowser(player_list_browser, "player_manager/player_list/PlayerList.html");
             API.showCursor(true);
             API.setCanOpenChat(false);
-            //API.setCefDrawState(true);
-
-            API.sleep(500);
-            API.triggerServerEvent("fetch_player_list", 0)
         }
         else {
             API.destroyCefBrowser(player_list_browser);
@@ -48,8 +38,12 @@ API.onKeyDown.connect(function(Player, args){
     }
 });
 
+function ready() {
+	API.triggerServerEvent("fetch_player_list", 0);
+}
+
 function fetch_player_list(type) {
-    API.triggerServerEvent("fetch_player_list", type)
+	API.triggerServerEvent("fetch_player_list", type);
 }
 
 function player_list_pm(name, msg) {

@@ -20,7 +20,7 @@ namespace mtgvrp.job_manager.fisher
                 new Fish("Large Mouth Bass", 50, 1, 15, false, 100),
                 new Fish("Pacific Cod", 100, 10, 25, false, 80),
                 new Fish("Chinook Salmon", 200, 25, 50, false, 70),
-                new Fish("Atlantic Mackerel", 250, 25, 25, false, 60),
+                new Fish("Atlantic Mackerel", 250, 25, 26, false, 60),
                 new Fish("Bluefin Tuna", 300, 35, 70, true, 50),
                 new Fish("Common Carp", 350, 15, 30, false, 40),
                 new Fish("Pacific Herring", 400, 10, 15, false, 30),
@@ -109,6 +109,12 @@ namespace mtgvrp.job_manager.fisher
             var isOnLastBoat = false;
             var isLastVehicleBoat = false;
 
+            if (DateTime.Now < character.NextFishTime)
+            {
+                API.sendChatMessageToPlayer(player, "Wait 5 seconds before doing this again.");
+                return;
+            }
+
             if (character.LastVehicle != null)
             {
                 isOnLastBoat = API.fetchNativeFromPlayer<bool>(player, Hash.IS_PED_ON_SPECIFIC_VEHICLE, player,
@@ -124,6 +130,7 @@ namespace mtgvrp.job_manager.fisher
                 return;
             }
 
+            character.NextFishTime = DateTime.Now.AddSeconds(5);
             API.playPlayerScenario(player, "WORLD_HUMAN_STAND_FISHING");
             ChatManager.RoleplayMessage(character, "casts out their fishing rod and begins to fish.",
                 ChatManager.RoleplayMe);
@@ -201,7 +208,7 @@ namespace mtgvrp.job_manager.fisher
             c.PerfectCatchStrength = _random.Next(25, 95);
 
             API.sendChatMessageToPlayer(c.Client, Color.AdminOrange,
-                "* You begin to feel a fish tugging at your line! Control your reeling strength by tapping space.");
+                "* You begin to feel a fish tugging at your line! Control your reeling strength by tapping up arrow.");
             API.triggerClientEvent(c.Client, "start_fishing", c.PerfectCatchStrength);
         }
 

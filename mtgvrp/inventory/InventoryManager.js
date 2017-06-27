@@ -4,11 +4,11 @@ var myBrowser = null;
 API.onServerEventTrigger.connect((eventName, args) => {
     switch (eventName) {
         case 'invmanagement_showmanager':
-            var res = API.getScreenResolution();
+            var res = API.getScreenResolutionMantainRatio();
             myBrowser = API.createCefBrowser(720, 660);
             API.waitUntilCefBrowserInit(myBrowser);
-            API.setCefBrowserPosition(myBrowser, (res.Width / 2) - (720 / 2),
-                (res.Height / 2) - (660 / 2));
+	        var pos = resource.JsFunctions.scaleCoordsToReal({X: (res.Width / 2) - (720 / 2), Y: (res.Height / 2) - (660 / 2)});
+            API.setCefBrowserPosition(myBrowser, pos.X, pos.Y);
             API.loadPageCefBrowser(myBrowser, "inventory/ManageInv.html");
             //API.setCefDrawState(true);
             API.showCursor(true);
@@ -19,20 +19,20 @@ API.onServerEventTrigger.connect((eventName, args) => {
             break;
 
         case 'moveItemFromLeftToRightSuccess': 
-            myBrowser.call("moveItemFromLeftToRightSuccess", args[0], args[1], args[2], args[3], args[4]);
+            myBrowser.call("moveItemFromLeftToRightSuccess", args[0], args[1], args[2], args[3]);
             break;
         case 'moveItemFromRightToLeftSuccess':
-            myBrowser.call("moveItemFromRightToLeftSuccess", args[0], args[1], args[2], args[3], args[4]);
+            myBrowser.call("moveItemFromRightToLeftSuccess", args[0], args[1], args[2], args[3]);
             break;
     }
 });
 
-function moveFromLeftToRight(id, shortname, amount) {
-    API.triggerServerEvent("invmanagement_moveFromLeftToRight", id, shortname, amount);
+function moveFromLeftToRight(shortname, amount) {
+    API.triggerServerEvent("invmanagement_moveFromLeftToRight", shortname, amount);
 }
 
-function moveFromRightToLeft(id, shortname, amount) {
-    API.triggerServerEvent("invmanagement_moveFromRightToLeft", id, shortname, amount);
+function moveFromRightToLeft(shortname, amount) {
+    API.triggerServerEvent("invmanagement_moveFromRightToLeft", shortname, amount);
 }
 
 function ExitWindow() {

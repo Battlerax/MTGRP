@@ -70,6 +70,10 @@ namespace mtgvrp.property_system.businesses
                             character.Model.EarStyle = ComponentManager.ValidMaleEars[(int)arguments[1]].ComponentId;
                             character.Model.EarVar = (int)ComponentManager.ValidMaleEars[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
                             break;
+                        case Component.ComponentTypeTorso:
+                            character.Model.TorsoStyle = (int)arguments[1];
+                            character.Model.TorsoVar = (int)arguments[2];
+                            break;
                     }
                 }
                 else
@@ -107,6 +111,10 @@ namespace mtgvrp.property_system.businesses
                         case Component.ComponentTypeEars:
                             character.Model.EarStyle = ComponentManager.ValidFemaleEars[(int)arguments[1]].ComponentId;
                             character.Model.EarVar = (int)ComponentManager.ValidFemaleEars[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
+                            break;
+                        case Component.ComponentTypeTorso:
+                            character.Model.TorsoStyle = (int)arguments[1];
+                            character.Model.TorsoVar = (int)arguments[2];
                             break;
                     }
                 }
@@ -150,6 +158,9 @@ namespace mtgvrp.property_system.businesses
                         price = PropertyManager.Properties.Single(x => x.Id == sender.getData("clothing_id"))
                             .ItemPrices["earrings"];
                         break;
+                    case Component.ComponentTypeTorso:
+                        price = 0;
+                        break;
                 }
 
                 if (Money.GetCharacterMoney(character) < price)
@@ -157,10 +168,6 @@ namespace mtgvrp.property_system.businesses
                     API.sendChatMessageToPlayer(sender, "You don't have enough money.");
                     return;
                 }
-
-                InventoryManager.DeleteInventoryItem(character, typeof(Money), price);
-                var prop = PropertyManager.Properties.Single(x => x.Id == sender.getData("clothing_id"));
-                InventoryManager.GiveInventoryItem(prop, new Money(), price);
 
                 if (character.Model.Gender == Character.GenderMale)
                 {
@@ -177,10 +184,16 @@ namespace mtgvrp.property_system.businesses
                         case Component.ComponentTypeAccessories:
                             character.Model.AccessoryStyle = ComponentManager.ValidMaleAccessories[(int)arguments[1]].ComponentId;
                             character.Model.AccessoryVar = (int)ComponentManager.ValidMaleAccessories[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
+
+                            if ((int)arguments[1] == 0)
+                                price = 0;
                             break;
                         case Component.ComponentTypeUndershirt:
                             character.Model.UndershirtStyle = ComponentManager.ValidMaleUndershirt[(int)arguments[1]].ComponentId;
                             character.Model.UndershirtVar = (int)ComponentManager.ValidMaleUndershirt[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
+
+                            if ((int)arguments[1] == 0)
+                                price = 0;
                             break;
                         case Component.ComponentTypeTops:
                             character.Model.TopStyle = ComponentManager.ValidMaleTops[(int)arguments[1]].ComponentId;
@@ -189,14 +202,27 @@ namespace mtgvrp.property_system.businesses
                         case Component.ComponentTypeHats:
                             character.Model.HatStyle = ComponentManager.ValidMaleHats[(int)arguments[1]].ComponentId;
                             character.Model.HatVar = (int)ComponentManager.ValidMaleHats[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
+
+                            if ((int)arguments[1] == 0)
+                                price = 0;
                             break;
                         case Component.ComponentTypeGlasses:
                             character.Model.GlassesStyle = ComponentManager.ValidMaleGlasses[(int)arguments[1]].ComponentId;
                             character.Model.GlassesVar = (int)ComponentManager.ValidMaleGlasses[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
+
+                            if ((int)arguments[1] == 0)
+                                price = 0;
                             break;
                         case Component.ComponentTypeEars:
                             character.Model.EarStyle = ComponentManager.ValidMaleEars[(int)arguments[1]].ComponentId;
                             character.Model.EarVar = (int)ComponentManager.ValidMaleEars[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
+
+                            if ((int) arguments[1] == 0)
+                                price = 0;
+                            break;
+                        case Component.ComponentTypeTorso:
+                            character.Model.TorsoStyle = (int)arguments[1];
+                            character.Model.TorsoVar = (int)arguments[2];
                             break;
                     }
                 }
@@ -215,10 +241,16 @@ namespace mtgvrp.property_system.businesses
                         case Component.ComponentTypeAccessories:
                             character.Model.AccessoryStyle = ComponentManager.ValidFemaleAccessories[(int)arguments[1]].ComponentId;
                             character.Model.AccessoryVar = (int)ComponentManager.ValidFemaleAccessories[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
+
+                            if ((int)arguments[1] == 0)
+                                price = 0;
                             break;
                         case Component.ComponentTypeUndershirt:
                             character.Model.UndershirtStyle = ComponentManager.ValidFemaleUndershirt[(int)arguments[1]].ComponentId;
                             character.Model.UndershirtVar = (int)ComponentManager.ValidFemaleUndershirt[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
+
+                            if ((int)arguments[1] == 0)
+                                price = 0;
                             break;
                         case Component.ComponentTypeTops:
                             character.Model.TopStyle = ComponentManager.ValidFemaleTops[(int)arguments[1]].ComponentId;
@@ -227,17 +259,34 @@ namespace mtgvrp.property_system.businesses
                         case Component.ComponentTypeHats:
                             character.Model.HatStyle = ComponentManager.ValidFemaleHats[(int)arguments[1]].ComponentId;
                             character.Model.HatVar = (int)ComponentManager.ValidFemaleHats[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
+
+                            if ((int)arguments[1] == 0)
+                                price = 0;
                             break;
                         case Component.ComponentTypeGlasses:
                             character.Model.GlassesStyle = ComponentManager.ValidFemaleGlasses[(int)arguments[1]].ComponentId;
                             character.Model.GlassesVar = (int)ComponentManager.ValidFemaleGlasses[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
+
+                            if ((int)arguments[1] == 0)
+                                price = 0;
                             break;
                         case Component.ComponentTypeEars:
                             character.Model.EarStyle = ComponentManager.ValidFemaleEars[(int)arguments[1]].ComponentId;
                             character.Model.EarVar = (int)ComponentManager.ValidFemaleEars[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
+
+                            if ((int)arguments[1] == 0)
+                                price = 0;
+                            break;
+                        case Component.ComponentTypeTorso:
+                            character.Model.TorsoStyle = (int)arguments[1];
+                            character.Model.TorsoVar = (int)arguments[2];
                             break;
                     }
                 }
+
+                InventoryManager.DeleteInventoryItem(character, typeof(Money), price);
+                var prop = PropertyManager.Properties.Single(x => x.Id == sender.getData("clothing_id"));
+                InventoryManager.GiveInventoryItem(prop, new Money(), price);
 
                 character.update_ped();
                 character.Save();

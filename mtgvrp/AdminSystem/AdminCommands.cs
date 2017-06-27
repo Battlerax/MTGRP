@@ -56,6 +56,11 @@ namespace mtgvrp.AdminSystem
                     senderchar.HasActiveReport = true;
                     break;
 
+                case "teleport":
+                    Vector3 pos = (Vector3) arguments[0];
+                    player.position = pos;
+                    break;
+
             }
         }
 
@@ -387,6 +392,8 @@ namespace mtgvrp.AdminSystem
             }
             account.IsSpectating = true;
             API.shared.setPlayerToSpectatePlayer(player, target);
+            API.shared.setPlayerNametagVisible(player, false);
+            API.shared.setEntityTransparency(player, 0);
             API.shared.sendChatMessageToPlayer(player, "You are now spectating " + PlayerManager.GetName(target) + " (ID:" + id + "). Use /specoff to stop spectating this player.");
 
         }
@@ -406,6 +413,8 @@ namespace mtgvrp.AdminSystem
             }
             account.IsSpectating = false;
             API.unspectatePlayer(player);
+            API.shared.setPlayerNametagVisible(player, true);
+            API.shared.setEntityTransparency(player, 255);
             API.sendChatMessageToPlayer(player, "You are no longer spectating anyone.");
         }
 
@@ -446,6 +455,17 @@ namespace mtgvrp.AdminSystem
             API.sendChatMessageToPlayer(receiver, "You have been frozen by an admin");
         }
 
+        [Command("gotowaypoint")]
+        public void gotowaypoint_cmd(Client player)
+        {
+            Account account = API.getEntityData(player.handle, "Account");
+
+            if (account.AdminLevel < 2)
+                return;
+
+            API.triggerClientEvent(player, "getwaypoint");
+        }
+
         [Command("unfreeze")]
         public void unfreeze_cmd(Client player, string id)
         {
@@ -462,6 +482,19 @@ namespace mtgvrp.AdminSystem
             }
             API.freezePlayer(receiver, false);
             API.sendChatMessageToPlayer(receiver, "You have been unfrozen by an admin");
+        }
+
+        [Command("quitadmin")]
+        public void QuitAdmin_cmd(Client player, int money)
+        {
+            Account account = API.getEntityData(player.handle, "Account");
+
+            if (account.AdminLevel < 0)
+                return;
+
+            account.AdminLevel = 0;
+            account.Save();
+            API.sendChatMessageToPlayer(player, "You have quit admin.");
         }
 
         [Command("setmymoney")]
@@ -587,6 +620,28 @@ namespace mtgvrp.AdminSystem
             API.sendChatMessageToPlayer(player, "You are no longer on admin duty.");
 
         }
+
+        [Command("whereami")]
+        public void GetPlayerLocation(Client player)
+        {
+            Account account = API.getEntityData(player.handle, "Account");
+            if (account.AdminLevel == 0)
+            {
+                return;
+            }
+            else
+            {
+                Vector3 CurrentPlayerPos = API.getEntityPosition(player);
+                int playerDimension = API.getEntityDimension(player);
+                API.sendChatMessageToPlayer(player, "-----Current Position-----");
+                API.sendChatMessageToPlayer(player, "X: " + CurrentPlayerPos.X + " Y: " + CurrentPlayerPos.Y + " Z: " + CurrentPlayerPos.Z + " Dimension: " + playerDimension);
+            }
+
+        }
+
+
+
+
 
 
         //============REPORT SYSTEM=============

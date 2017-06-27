@@ -7,10 +7,12 @@ API.onServerEventTrigger.connect(function (openHelpMenu, args) {
                 .addMenuItem("Commands", "", true, true, "showCmds", "showHelpCmds")
                 .addMenuItem("Animations", "", true, true, "showCmds", "showAnimCmds")
                 .addMenuItem("Police", "", true, true, "showCmds", "showPolCmds")
+                .addMenuItem("LSNN", "", true, true, "showCmds", "showlsnnCmds")
                 .addMenuItem("Groups", "", true, true, "showCmds", "ShowGroupCmds")
                 .addMenuItem("Admin", "", true, true, "showCmds", "showAdCmds")
                 .addMenuItem("Rules", "", true, true, "showCmds", "sRules")
                 .addMenuItem("FAQ", "", true, true, "showCmds", "sFAQ")
+
                 
             break;
     }
@@ -19,32 +21,40 @@ function showCmds(group) {
     if (group == "showHelpCmds") {
         API.sendChatMessage('~h~Here is the list of commands availible to you:');
         API.sendChatMessage('/Time, /Stats, /rp, /b, /me, /ame, /(V)ip, /(N)ewbie, /o, /(S)hout, /pm, /Low, /(W)hisper');
-        API.sendChatMessage('/Inv, /Give, /Drop, /Stash, /Managebag, /Myvehicles, /Buyvehicle, /LockDoor, /UnlockDoor');
+        API.sendChatMessage('/Inv, /Give, /Drop, /Stash, /Managebag, /Myvehicles, /Buyvehicle, /UseSprunk, /Admins,');
         API.sendChatMessage('/Frisk, /Tie /Blindfold, /Unblindfold, /Rag, /Unrag, /PickUpStash, /JoinJob, /QuitJob,');
-        API.sendChatMessage('/SetPhoneName, /PickUp, /H, /Phone, /Detain, /Eject, /GetID, /Stats, /Time, /Atm,');
-        API.sendChatMessage('/ConfirmSellVehicle, /ConfirmBuyVehicle, /BuyProperty, /atm, /enter, /exit, /phone,');
-        API.sendChatMessage('/Lotto, /WatchBroadcast, /StopWatching, /UseSprunk, /Admins.');
-        API.sendChatMessage('~R~These are all general cmds for hte beta, some are missing and not organised fully.');
+        API.sendChatMessage('/SetPhoneName, /PickUp, /H, /Phone, /Detain, /Eject, /GetID');
+        API.sendChatMessage('/ConfirmSellVehicle, /ConfirmBuyVehicle, /BuyProperty, /atm, /enter, /exit,');
+        API.sendChatMessage('/WatchBroadcast, /StopWatching.');
+        API.sendChatMessage('~r~These are all cmds for the beta, please test them to make sure theyre not broken.');
     }
     else if (group == "showAnimCmds") {
         API.sendChatMessage('~h~Here is the list of Animations:');
-        API.sendChatMessage('~h~/Stopanim~h~, /Hide, /Lookout, /Crowdcontrol, /Investigate, /Drink, /Crossarms, /Idle, /Lean,');
+        API.sendChatMessage('~h~/Stopanim~h~, /Hide, /Lookout, /Investigate, /Drink, /Crossarms, /Idle, /Lean, /Guitar,');
         API.sendChatMessage('/Reach, /Workout, /Smoke, /Binoculars, /Hobo, /Fallover, /Laydown, /Drunk, /Twitchy, /Signal,');
         API.sendChatMessage('/Cheer, /Drugdeal, /Gardening, /Guard, /Jog, /Getjiggy, /Sit, /Mech, /Yoga, /Bonghit,');
         API.sendChatMessage('/Restrained, /MiddleFinger, /Salute, /Slowclap, /Facepalm, /Handsup, /Clipboard, /Hammer,');
-        API.sendChatMessage('/Guitar.  ');
+        API.sendChatMessage('~r~These are all cmds for the beta, please test them to make sure theyre not broken.');
     }
     else if (group == "showPolCmds") {
         API.sendChatMessage("~h~Here is the list of commands availible to you:");
-        API.sendChatMessage("/Arrest, /Cuff, /Uncuff, /Detain, /(M)egaphone, /RecordCrime, /ShowCriminalRecord, ");
+        API.sendChatMessage("/Arrest, /Cuff, /Detain, /megaphonetoggle, /RecordCrime, /ShowCriminalRecord, ");
         API.sendChatMessage("/ListCrimes, /CreateCrime, /EditCrime, /DeleteCrime, /Wanted, /Release, /BackupBeacon, ");
         API.sendChatMessage("/AcceptBeacon, /Ticket, /UnpaidTickets, /AcceptCopTicket, /PayCopTickets, /Deploy, ");
-        API.sendChatMessage("/RemoveAllObjects, /SetLockerPos, /SetArrestPos, /SetDivisionRank,  ");
+        API.sendChatMessage("/RemoveAllObjects, /SetLockerPos, /SetArrestPos, /SetDivisionRank.  ");
+        API.sendChatMessage('~r~These are all cmds for the beta, please test them to make sure theyre not broken.');
+    }
+    if (group == "showlsnnCmds") {
+        API.sendChatMessage('~h~Here is the list of commands availible to you:');
+        API.sendChatMessage('/PickUpCamera, /Broadcast, /ChopperCam, /Mic, /GiveMic, /EditHeadline, /SetCamera, ');
+        API.sendChatMessage('/ViewerCounter, /Lotto, /CreateArticle, ');
+        API.sendChatMessage('~r~These are all cmds for the beta, please test them to make sure theyre not broken.');
     }
     else if (group == "ShowGroupCmds") {
         API.sendChatMessage("~h~Here is the list of commands availible to you:");
-        API.sendChatMessage("/RemoteUninvite, /SetRank, /SetDivision, /Group, /(r)adio, /ToggleRadio /Accept, ");
+        API.sendChatMessage("/SetRank, /SetDivision, /Group, /(r)adio, /ToggleRadio /Accept, ");
         API.sendChatMessage("/QuitGroup, /Invite, /SetRankName, /SetDivisionName, /SetDivisionRankName, ");
+        API.sendChatMessage('~r~These are all cmds for the beta, please test them to make sure theyre not broken.');
     }
     else if (group == "showAdCmds") {
         API.sendChatMessage('~h~Here is the list of Admin Commands:');
@@ -62,8 +72,6 @@ function showCmds(group) {
         API.sendChatMessage('/ManageDoors, /EditDoor, /CreateDoor');
         API.sendChatMessage('Level 6:');
         API.sendChatMessage('Level 7:');
-        API.sendChatMessage('~r~TesterCMDs to be removed. If not removed upon release please report it privatly to the Devs.');
-        API.sendChatMessage('~r~/makemeadmin, /givemeitem, /setmymoney, /givemebag, /SetMyClothes, /setphonenumber, /tele');
     }
     else if (group == "sRules") {
         API.sendChatMessage("To view all the rules head to ~h~MT-Gaming.com~h~ Here some basic server rules:");
@@ -79,7 +87,7 @@ function showCmds(group) {
             .addMenuItem("How to join LSPD?", "", true, true, "ShowFAQ","JoinLSPD")
             .addMenuItem("Where is the bank?", "", true, true, "ShowFAQ", "FBank")
             .addMenuItem("Where do I find X job?", "", true, true, "ShowFAQ", "FJob")
-            .addMenuItem("Where do I find X busienss?", "", true, true, "ShowFAQ", "FBusienss")
+            .addMenuItem("Where do I find X business?", "", true, true, "ShowFAQ", "FBusienss")
             .addMenuItem("How do I change my clothes?", "", true, true, "ShowFAQ", "ChangeClothes")
             .addMenuItem("Where do I buy a car?", "", true, true, "ShowFAQ", "BuyCar")
             .addMenuItem("Whats the best job?", "", true, true, "ShowFAQ", "BestJob")
@@ -94,13 +102,13 @@ function ShowFAQ(group) {
         API.sendChatMessage('~h~General IC requirements:~h~ Must be 21 years if age, Valid Drivers licence, No criminal record.');
     }
     else if (group == "FBank") {
-        API.sendChatMessage('Use the Map application on your phone, or ask through /n, or use /ask.');
+        API.sendChatMessage('Use the in game map inside ESC, or ask through /n, or use /ask.');
     }
     else if (group == "FJob") {
         API.sendChatMessage('The icons on the map indicate the location of each job.');
     }
     else if (group == "FBusiness") {
-        API.sendChatMessage('Use the Map application on your phone, or ask through /n, or use /ask.');
+        API.sendChatMessage('Use the in game map inside ESC, or ask through /n, or use /ask.');
     }
     else if (group == "ChangeClothes") {
         API.sendChatMessage('Head to a clothes store to purchause new clothes.');

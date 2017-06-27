@@ -82,7 +82,7 @@ namespace mtgvrp.weapon_manager
 
             WeaponHash currentPlayerWeapon = API.getPlayerCurrentWeapon(player);
 
-
+            /* Causing issues with objects and /fish. Remove for now.
             if (!DoesPlayerHaveWeapon(player, currentPlayerWeapon) && currentPlayerWeapon != WeaponHash.Unarmed)
             {
                 foreach (var p in API.getAllPlayers())
@@ -94,13 +94,20 @@ namespace mtgvrp.weapon_manager
                 }
                 return;
             }
+            */
 
             Weapon currentWeapon = GetCurrentWeapon(player);
 
-            if (currentWeapon.Group != character.Group && currentWeapon.Group != Group.None && currentWeapon.IsGroupWeapon == true)
+            if (character.IsTied || character.IsCuffed)
+            {
+                API.givePlayerWeapon(player, WeaponHash.Unarmed, 1, true, true);
+                return;
+            }
+
+            if (currentWeapon.GroupId != character.GroupId && character.GroupId != 0 && currentWeapon.IsGroupWeapon == true)
             {
                 RemoveAllPlayerWeapons(player);
-                player.sendChatMessage("You must be a member of " + currentWeapon.Group.Name + " to use this weapon. Your weapons were removed.");
+                player.sendChatMessage("You must be a member of " + GroupManager.GetGroupById(currentWeapon.GroupId).Name + " to use this weapon. Your weapons were removed.");
             }
 
         }

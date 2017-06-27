@@ -17,7 +17,7 @@ public class Weapon : IInventoryItem
 
         public int Ammo { get; set; }
 
-        public Group Group { get; set; }
+        public int GroupId { get; set; }
 
         public bool IsPlayerWeapon { get; set; }
         public bool IsGroupWeapon { get; set; }
@@ -55,7 +55,7 @@ public class Weapon : IInventoryItem
             IsPlayerWeapon = isplayerweapon;
             IsAdminWeapon = isadminweapon;
             IsGroupWeapon = isgroupweapon;
-            Group = group;
+            GroupId = group.Id;
         }
 
     }

@@ -41,46 +41,8 @@
         public int EarStyle { get; set; }
         public int EarVar { get; set; }
 
-        public Model()
-        {
-            FatherId = 0;
-            MotherId = 21;
-            ParentLean = 10;
-            Gender = 0;
-
-            HairStyle = 0;
-            HairColor = 0;
-            Blemishes = 255;
-            FacialHair = 255;
-            Eyebrows = 0;
-            Ageing = 255;
-            Makeup = 255;
-            MakeupColor = 0;
-            Blush = 255;
-            BlushColor = 0;
-            Lipstick = 255;
-            LipstickColor = 0;
-            Complexion = 255;
-            SunDamage = 255;
-            MolesFreckles = 255;
-
-            PantsStyle = 0;
-            PantsVar = 0;
-            ShoeStyle = 0;
-            ShoeVar = 0;
-            AccessoryStyle = 0;
-            AccessoryVar = 0;
-            UndershirtStyle = 0;
-            UndershirtVar = 0;
-            TopStyle = 0;
-            TopVar = 0;
-            HatStyle = -1;
-            HatVar = 0;
-            GlassesStyle = -1;
-            GlassesVar = 0;
-            EarStyle = -1;
-            EarVar = 0;
-        }
+        public int TorsoStyle { get; set; }
+        public int TorsoVar { get; set; }
 
         public void SetDefault()
         {
@@ -124,7 +86,7 @@
                 GlassesVar = 1;
 
                 EarStyle = 255;
-                EarVar = -1;
+                EarVar = 0;
             }
             else
             {
@@ -149,8 +111,8 @@
                 GlassesStyle = 5;
                 GlassesVar = 1;
 
-                EarStyle = 0;
-                EarVar = -1;
+                EarStyle = 225;
+                EarVar = 0;
             }
         }
     }
