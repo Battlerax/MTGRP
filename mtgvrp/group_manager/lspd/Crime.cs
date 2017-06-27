@@ -38,10 +38,10 @@ namespace mtgvrp.group_manager.lspd
             DatabaseManager.CrimeTable.InsertOne(this);
         }
 
-        public static void Delete(Crime name)
+        public void Delete()
         {
-            Crimes.Remove(name);
-            var filter = Builders<Crime>.Filter.Eq("Id", name.Id);
+            Crimes.Remove(this);
+            var filter = Builders<Crime>.Filter.Eq("Id", Id);
             DatabaseManager.CrimeTable.DeleteOne(filter);
         }
 
@@ -66,6 +66,21 @@ namespace mtgvrp.group_manager.lspd
                 Crimes.Add(crime);
             }
             
+        }
+
+        public static void UpdateCrimes()
+        {
+            foreach(var crime in DatabaseManager.CrimeTable.Find(FilterDefinition<Crime>.Empty).ToList())
+            {
+                var filter = Builders<Crime>.Filter.Eq("Id", crime.Id);
+                DatabaseManager.CrimeTable.DeleteOne(filter);
+            }
+
+            foreach(var setCrime in Crimes)
+            {
+                var InsertCrime = new Crime(setCrime.Type, setCrime.Name, setCrime.JailTime, setCrime.Fine) { Id = DatabaseManager.GetNextId("crimes") };
+                InsertCrime.Insert();
+            }
         }
     }
 }
