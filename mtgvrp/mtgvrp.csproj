@@ -125,7 +125,6 @@
     <Compile Include="player_manager\CharacterMenu.cs" />
     <Compile Include="component_manager\Component.cs" />
     <Compile Include="player_manager\Character.cs" />
-    <Compile Include="player_manager\Helpmenu.cs" />
     <Compile Include="player_manager\login\LoginManager.cs" />
     <Compile Include="player_manager\Model.cs" />
     <Compile Include="player_manager\PlayerManager.cs" />
@@ -193,10 +192,8 @@
     <Content Include="phone_manager\gui\main.css" />
     <Content Include="phone_manager\gui\main.html" />
     <Content Include="phone_manager\gui\main.js" />
-    <Content Include="phone_manager\gui\phone-base.png" />
     <Content Include="phone_manager\PhoneManager.js" />
     <Content Include="player_manager\CharacterMenu.js" />
-    <Content Include="player_manager\Helpmenu.js" />
     <Content Include="player_manager\login\Login.html" />
     <Content Include="player_manager\login\LoginManager.js" />
     <Content Include="player_manager\PlayerManager.js" />

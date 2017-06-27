@@ -16,7 +16,6 @@
 	<script src="player_manager/login/LoginManager.js" type="client" lang="javascript"/>
 	<file src="player_manager/login/Login.html"/>
 	<script src="player_manager/CharacterMenu.js" type="client" lang="javascript"/>
-  <script src="player_manager/Helpmenu.js" type="client" lang="javascript"/>
 
 	<!-- JOBS -->
 	<script src="job_manager/JobManager.js" type="client" lang="javascript"/>
@@ -90,6 +89,10 @@
   <script src="property_system/PropertyManager.js" type="client" lang="javascript"/>
   <script src="property_system/businesses/Clothing.js" type="client" lang="javascript"/>
   <script src="property_system/businesses/GeneralBuying.js" type="client" lang="javascript"/>
+
+  <!-- Help Manager-->
+  <script src="core/Help/HelpManager.js" type="client" lang="javascript"/>
+  <file src="core/Help/HelpMenu.html" />
   
   <!-- ADMIN -->
   <script src="AdminSystem/Reports.js" type="client" lang="javascript"/>
