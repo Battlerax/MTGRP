@@ -192,9 +192,14 @@ namespace mtgvrp.group_manager.lspd
                 return;
             }
 
+            player.sendChatMessage("======================");
+            player.sendChatMessage("CRIME LIST");
+            player.sendChatMessage("======================");
+            int f = 0;
             foreach (var i in Crime.Crimes)
             {
-                API.sendChatMessageToPlayer(player, i.Id + " | " + i.Type + " | " + i.Name + " | " + i.JailTime + " | " + i.Fine); //TODO: REPLACE WITH A MENU
+                API.sendChatMessageToPlayer(player, f + " | " + i.Type + " | " + i.Name + " | " + i.JailTime + " | " + i.Fine); //TODO: REPLACE WITH A MENU
+                f++;
             }
         }
 
@@ -209,19 +214,19 @@ namespace mtgvrp.group_manager.lspd
                 return;
             }
 
-            GroupManager.GroupCommandPermCheck(character, 7);
 
             if (Crime.CrimeExists(crimeName))
             {
                 API.sendChatMessageToPlayer(player, "This crime already exists!");
                 return;
             }
+
             Crime.InsertCrime(type, crimeName, jailTime, fine);
             API.sendChatMessageToPlayer(player, "Crime created and added to crime list.");
         }
 
         [Command("editcrime")]
-        public void deletecrime_cmd(Client player, int id, string type, string crimeName, int jailTime, int fine)
+        public void editcrime_cmd(Client player, int id, string type, string crimeName, int jailTime, int fine)
         {
             Character character = API.getEntityData(player.handle, "Character");
 
@@ -231,14 +236,15 @@ namespace mtgvrp.group_manager.lspd
                 return;
             }
 
-            GroupManager.GroupCommandPermCheck(character, 7);
+            if (Crime.CrimeExists(crimeName))
+            {
+                API.sendChatMessageToPlayer(player, "This crime already exists!");
+                return;
+            }
 
             Crime crime = Crime.Crimes[id];
-            crime.Type = type;
-            crime.Name = crimeName;
-            crime.JailTime = jailTime;
-            crime.Fine = fine;
-            crime.Update();
+            Crime.Crimes[id] = new Crime(type, crimeName, jailTime, fine);
+            Crime.UpdateCrimes();
             API.sendChatMessageToPlayer(player, "Crime edited.");
         }
 
@@ -253,10 +259,16 @@ namespace mtgvrp.group_manager.lspd
                 return;
             }
 
-            GroupManager.GroupCommandPermCheck(character, 7);
+            if (!(id < Crime.Crimes.Count))
+            {
+                player.sendChatMessage("That crime does not exist.");
+                return;
+            }
 
             Crime crimeDelete = Crime.Crimes[id];
-            Crime.Crimes.Remove(crimeDelete);
+
+
+            crimeDelete.Delete();
             API.sendChatMessageToPlayer(player, "Crime deleted from crime list.");
         }
 
