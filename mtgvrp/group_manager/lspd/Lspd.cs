@@ -234,10 +234,7 @@ namespace mtgvrp.group_manager.lspd
             GroupManager.GroupCommandPermCheck(character, 7);
 
             Crime crime = Crime.Crimes[id];
-            crime.Type = type;
-            crime.Name = crimeName;
-            crime.JailTime = jailTime;
-            crime.Fine = fine;
+            crime = new Crime(type, crimeName, jailTime, fine);
             crime.Update();
             API.sendChatMessageToPlayer(player, "Crime edited.");
         }
