@@ -82,12 +82,8 @@ namespace mtgvrp.player_manager
             }
         }
 
-        //TODO: CHANGED ONCE THE LS GOV IS ADDED
-        public static int basepaycheck = 500;
-        public static int taxationAmount = 4;
-        public static int VIPBonusLevelOne = 10;
-        public static int VIPBonusLevelTwo = 20;
-        public static int VIPBonusLevelThree = 30;
+        public static int basepaycheck = Properties.Settings.Default.basepaycheck;
+        public static int taxationAmount = Properties.Settings.Default.taxationamount;
 
         private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
         {
@@ -205,9 +201,9 @@ namespace mtgvrp.player_manager
         {
             Account account = API.shared.getEntityData(player.handle, "Account");
 
-            if (account.VipLevel == 1) { return VIPBonusLevelOne; }
-            if (account.VipLevel == 2) { return VIPBonusLevelTwo; }
-            if (account.VipLevel == 3) { return VIPBonusLevelThree; }
+            if (account.VipLevel == 1) { return Properties.Settings.Default.vipbonuslevelone; }
+            if (account.VipLevel == 2) { return Properties.Settings.Default.vipbonusleveltwo; }
+            if (account.VipLevel == 3) { return Properties.Settings.Default.vipbonuslevelthree; }
             else { return 0; }
         }
 

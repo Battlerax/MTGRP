@@ -1,6 +1,7 @@
 ﻿using GTANetworkServer;
-using GTANetworkShared;
-using RoleplayServer.player_manager;
+using mtgvrp.player_manager;
+using mtgvrp.group_manager;
+using mtgvrp.Properties;
 
 
 namespace RoleplayServer.group_manager.lsgov
@@ -24,15 +25,15 @@ namespace RoleplayServer.group_manager.lsgov
             switch (viplevel)
             {
                 case "1":
-                    character.Group.VIPBonusLevelOne = int.Parse(percentage);
+                    Settings.Default.vipbonuslevelone = int.Parse(percentage);
                     break;
 
                 case "2":
-                    character.Group.VIPBonusLevelTwo = int.Parse(percentage);
+                    Settings.Default.vipbonusleveltwo = int.Parse(percentage);
                     break;
 
                 case "3":
-                    character.Group.VIPBonusLevelThree = int.Parse(percentage);
+                    Settings.Default.vipbonuslevelthree = int.Parse(percentage);
                     break;
             }
             player.sendChatMessage("You have set VIP level " + viplevel + "'s paycheck bonus to " + percentage + "%.");
@@ -46,7 +47,7 @@ namespace RoleplayServer.group_manager.lsgov
             Character character = API.shared.getEntityData(player, "Character");
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov && character.GroupRank < 7) { return; }
-            character.Group.taxationAmount = int.Parse(percentage);
+            Settings.Default.taxationamount = int.Parse(percentage);
         }
 
         //SET BASE PAYCHECK AS MAYOR/OFFICIAL
@@ -56,7 +57,7 @@ namespace RoleplayServer.group_manager.lsgov
             Character character = API.shared.getEntityData(player, "Character");
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov && character.GroupRank < 7) { return; }
-            character.Group.basepaycheck = int.Parse(amount);
+            Settings.Default.basepaycheck = int.Parse(amount);
             API.sendChatMessageToPlayer(player, "Base paycheck set to $" + amount + ".");
         }
 
@@ -74,19 +75,58 @@ namespace RoleplayServer.group_manager.lsgov
             }
         }
 
+        [Command("managebudget")]
+        public void budget_cmd(Client player)
+        {
+            Character character = API.getEntityData(player, "Character");
+
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov || character.GroupRank < 7) { return; }
+
+            player.sendChatMessage("======================================");
+            player.sendChatMessage("Los Santos Government - Budget Manager");
+            player.sendChatMessage("======================================");
+            player.sendChatMessage($"~r~Government Balance: ~w~${character.Group.GroupBalance}");
+            player.sendChatMessage($"~y~Organization Funding:");
+            //All faction budget information
+            int i = 0;
+            foreach (var group in GroupManager.Groups)
+            {
+                if (group == character.Group) { continue; }
+                player.sendChatMessage($"~p~Group ID: ~w~{i} | ~b~{group.Name}~w~ | ~r~Funding:~w~ {group.FundingPercentage}% | ~g~Balance: ${group.GroupBalance}");
+                i++;
+            }
+        }
+
+        [Command("setfunding")]
+        public void setfunding_cmd(Client player, string groupid, string percentage)
+        {
+            Character character = API.getEntityData(player, "Character");
+
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov || character.GroupRank < 7) { return; }
+
+            if(int.Parse(groupid) > GroupManager.Groups.Count) { player.sendChatMessage("Invalid group ID."); return; }
+            Group group = GroupManager.Groups[int.Parse(groupid)];
+            //finish
+        }
         //DEPLOY A PODIUM AS MAYOR OR HIGH RANKING LSPD
         [Command("deploypodium")]
         public void deploypodium_cmd(Client player)
         {
             Character character = API.shared.getEntityData(player, "Character");
 
-            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov || character.Group.CommandType != Group.CommandTypeLSGov || character.GroupRank < 7) { return; }
-
-            var playerpos = API.getEntityPosition(player);
-            var playerrot = API.getEntityRotation(player);
-            var playerDimension = API.getEntityDimension(player);
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov || character.GroupRank < 7) { return; }
 
             //DEPLOY A PODIUM WHEN MAPPING IS READY
+        }
+
+        [Command("pickuppodium")]
+        public void pickuppodium_cmd(Client player)
+        {
+            Character character = API.shared.getEntityData(player, "Character");
+
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov || character.GroupRank < 7) { return; }
+
+            //PICKUP PODIUM WHEN MAPPING IS READY
         }
 
     }

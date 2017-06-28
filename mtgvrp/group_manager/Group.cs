@@ -41,13 +41,8 @@ namespace mtgvrp.group_manager
 
         public DateTime DisbandDate { get; set; }
 
-        //Group misc
-        public int basepaycheck { get; set; }
-        public int taxationAmount { get; set; }
-        public int VIPBonusLevelOne { get; set; }
-        public int VIPBonusLevelTwo { get; set; }
-        public int VIPBonusLevelThree { get; set; }
-
+        public int GroupBalance { get; set; }
+        public int FundingPercentage { get; set; }
         public int LottoSafe { get; set; }
         public int LottoPrice { get; set; }
         public int FactionPaycheckBonus { get; set; }

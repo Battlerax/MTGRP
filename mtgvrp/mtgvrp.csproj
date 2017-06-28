@@ -132,6 +132,11 @@
     <Compile Include="player_manager\PlayerManager.cs" />
     <Compile Include="player_manager\player_interaction\PlayerInteraction.cs" />
     <Compile Include="player_manager\player_list\PlayerList.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="property_system\businesses\Bank.cs" />
     <Compile Include="property_system\businesses\Clothing.cs" />
     <Compile Include="property_system\businesses\GeneralBuying.cs" />
@@ -153,6 +158,10 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Include="stylesheet\fonts\BebasKai-Regular.woff" />
     <None Include="stylesheet\fonts\housescript.woff" />
     <None Include="stylesheet\fonts\housescript.woff2" />
