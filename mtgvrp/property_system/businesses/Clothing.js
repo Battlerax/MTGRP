@@ -1,4 +1,4 @@
-﻿var menu_pool;
+﻿var menu_pool = null;
 
 var pant_menu;
 var shoe_menu;
@@ -302,7 +302,6 @@ API.onServerEventTrigger.connect((eventName, args) => {
 				ear_menu.CurrentSelection = 0;
 				break;
 			case 8:
-			API.sendChatMessage("OYTY");
 				API.setActiveCamera(creation_view);
 				torso_menu.Visible = true;
 				torso_menu.CurrentSelection = 0;
@@ -311,7 +310,8 @@ API.onServerEventTrigger.connect((eventName, args) => {
 		});
 
 		characterCreationMenu.OnMenuClose.connect(function(menu) {
-			API.setActiveCamera(null);
+            API.setActiveCamera(null);
+		    menu_pool = null;
 			API.triggerServerEvent("closeclothingmenu");
 		});
 
@@ -632,7 +632,8 @@ API.onServerEventTrigger.connect((eventName, args) => {
 			});
 
 			bags_menu.OnMenuClose.connect(function(menu) {
-				API.setActiveCamera(null);
+                API.setActiveCamera(null);
+			    bags_menu = null;
 				API.triggerServerEvent("clothing_bag_closed");
 			});
 
@@ -655,4 +656,28 @@ API.onUpdate.connect(function () {
 
 	if (bags_menu !== null)
 		API.drawMenu(bags_menu);
+});
+
+var rotating = 0;
+API.onKeyDown.connect(function (sender, e) {
+    if (e.KeyCode == Keys.Oemplus) {
+        rotating = 4;
+
+    } else if (e.KeyCode == Keys.OemMinus) {
+        rotating = -4;
+    }
+});
+
+API.onKeyUp.connect(function (sender, e) {
+    if (e.KeyCode == Keys.Oemplus || e.KeyCode == Keys.OemMinus) {
+        rotating = 0;
+    }
+});
+
+API.onUpdate.connect(function () {
+    if (rotating != 0 && (menu_pool !== null || bags_menu !== null)) {
+        var player = API.getLocalPlayer();
+        var new_rot = API.getEntityRotation(player).Add(new Vector3(0, 0, rotating));
+        API.setEntityRotation(player, new_rot);
+    }
 });
