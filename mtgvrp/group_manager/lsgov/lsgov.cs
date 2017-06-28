@@ -67,7 +67,7 @@ namespace RoleplayServer.group_manager.lsgov
         {
             Character character = API.shared.getEntityData(player, "Character");
 
-            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov || character.Group.CommandType != Group.CommandTypeLSGov || character.GroupRank < 7) { return; }
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov && character.Group.CommandType != Group.CommandTypeLspd || character.GroupRank < 7) { return; }
 
             foreach (var receiver in PlayerManager.Players)
             {
@@ -132,7 +132,7 @@ namespace RoleplayServer.group_manager.lsgov
         {
             Character character = API.shared.getEntityData(player, "Character");
 
-            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov || character.GroupRank < 7) { return; }
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov && character.Group.CommandType != Group.CommandTypeLspd || character.GroupRank < 7) { return; }
 
             //DEPLOY A PODIUM WHEN MAPPING IS READY
         }
@@ -142,7 +142,7 @@ namespace RoleplayServer.group_manager.lsgov
         {
             Character character = API.shared.getEntityData(player, "Character");
 
-            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov || character.GroupRank < 7) { return; }
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov && character.Group.CommandType != Group.CommandTypeLspd || character.GroupRank < 7) { return; }
 
             //PICKUP PODIUM WHEN MAPPING IS READY
         }
