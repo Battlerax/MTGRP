@@ -78,6 +78,8 @@
   <ItemGroup>
     <Compile Include="core\Help\Help.cs" />
     <Compile Include="core\Help\HelpManager.cs" />
+    <Compile Include="job_manager\lumberjack\LumberjackManager.cs" />
+    <Compile Include="job_manager\lumberjack\TreeItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AdminSystem\AdminCommands.cs" />
     <Compile Include="AdminSystem\AdminReports.cs" />

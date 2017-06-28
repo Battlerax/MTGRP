@@ -3,6 +3,7 @@ using mtgvrp.door_manager;
 using mtgvrp.group_manager;
 using mtgvrp.group_manager.lspd;
 using mtgvrp.job_manager;
+using mtgvrp.job_manager.lumberjack;
 using mtgvrp.phone_manager;
 using mtgvrp.player_manager;
 using mtgvrp.property_system;
@@ -30,6 +31,7 @@ namespace mtgvrp.database_manager
         public static IMongoCollection<Door> DoorsTable;
         public static IMongoCollection<Crime> CrimeTable;
         public static IMongoCollection<CriminalRecord> CriminalRecordTable;
+        public static IMongoCollection<TreeItem> TreesTable;
 
 
         public static void DatabaseManagerInit()
@@ -51,6 +53,7 @@ namespace mtgvrp.database_manager
             DoorsTable = _database.GetCollection<Door>("doors");
             CrimeTable = _database.GetCollection<Crime>("crimes");
             CriminalRecordTable = _database.GetCollection<CriminalRecord>("criminalrecords");
+            TreesTable = _database.GetCollection<TreeItem>("lumberjack-trees");
 
             DebugManager.DebugMessage("[DatabaseM] Database Manager initalized!");
         }
