@@ -47,7 +47,7 @@ namespace mtgvrp.job_manager.taxi
 
             if(veh != null)
             {
-                if (OnDutyDrivers.Contains(character) && veh.Job.Type == JobManager.TaxiJob)
+                if (OnDutyDrivers.Contains(character) && veh.Job.Type == JobManager.JobTypes.Taxi)
                 {
                     API.sendChatMessageToPlayer(player, Color.Yellow, "[TAXI] You have left your taxi. Please return to it within 60 seconds or you will be taken off-duty and it will respawn.");
 
@@ -87,7 +87,7 @@ namespace mtgvrp.job_manager.taxi
             var veh = VehicleManager.GetVehFromNetHandle(vehicle);
 
             //Cancel taxi car respawn 
-            if (OnDutyDrivers.Contains(character) && veh.Job.Type == JobManager.TaxiJob)
+            if (OnDutyDrivers.Contains(character) && veh.Job.Type == JobManager.JobTypes.Taxi)
             {
                 if (veh.RespawnTimer.Enabled && API.getPlayerVehicleSeat(player) == -1)
                 {
@@ -99,7 +99,7 @@ namespace mtgvrp.job_manager.taxi
             //Check for passengers entering available cabs
             if (API.getPlayerVehicleSeat(player) != -1)
             {
-                if (veh.Job?.Type == JobManager.TaxiJob)
+                if (veh.Job?.Type == JobManager.JobTypes.Taxi)
                 {
                     if (veh.Driver == null)
                     {
@@ -169,7 +169,7 @@ namespace mtgvrp.job_manager.taxi
         {
             Character character = API.getEntityData(player.handle, "Character");
 
-            if (character.JobOne.Type != JobManager.TaxiJob)
+            if (character.JobOne.Type != JobManager.JobTypes.Taxi)
             {
                 API.sendPictureNotificationToPlayer(player, "You must be a taxi driver to use this command.", "CHAR_BLOCKED", 0, 0, "Server", "~r~Command Error");
                 return;
@@ -195,7 +195,7 @@ namespace mtgvrp.job_manager.taxi
                 return;
             }
 
-            if (veh.Job.Type != JobManager.TaxiJob)
+            if (veh.Job.Type != JobManager.JobTypes.Taxi)
             {
                 API.sendPictureNotificationToPlayer(player, "You must be driving a taxi car to go on taxi duty.", "CHAR_BLOCKED", 0, 0, "Server", "~r~Command Error");
                 return;
@@ -220,7 +220,7 @@ namespace mtgvrp.job_manager.taxi
         {
             Character character = API.getEntityData(player.handle, "Character");
 
-            if(character.JobOne.Type != JobManager.TaxiJob)
+            if(character.JobOne.Type != JobManager.JobTypes.Taxi)
             {
                 API.sendPictureNotificationToPlayer(player, "You must be a taxi driver to use this command.", "CHAR_BLOCKED", 0, 1, "Server", "~r~Command Error");
                 return;
@@ -321,7 +321,7 @@ namespace mtgvrp.job_manager.taxi
         public void acceptfare_cmd(Client player, string id)
         {
             Character character = API.getEntityData(player.handle, "Character");
-            if(character.JobOne.Type != JobManager.TaxiJob)
+            if(character.JobOne.Type != JobManager.JobTypes.Taxi)
             {
                 API.sendPictureNotificationToPlayer(player, "You must be a taxi driver to use this command.", "CHAR_BLOCKED", 0, 1, "Server", "~r~Command Error");
                 return;

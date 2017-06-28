@@ -15,7 +15,7 @@ namespace mtgvrp.job_manager
         public int Id { get; set; }
 
         public string Name { get; set; }
-        public int Type { get; set; }
+        public JobManager.JobTypes Type { get; set; }
 
         public MarkerZone JoinPos { get; set; }
         public MarkerZone MiscOne { get; set; }
@@ -53,7 +53,7 @@ namespace mtgvrp.job_manager
                 {
                     if (c.Client.handle != entity) continue;
 
-                    if (Type == JobManager.FisherJob)
+                    if (Type == JobManager.JobTypes.Fisher)
                     {
                         c.IsInFishingZone = true;
                     }
@@ -66,7 +66,7 @@ namespace mtgvrp.job_manager
                 {
                     if (c.Client.handle != entity) continue;
 
-                    if (Type == JobManager.FisherJob)
+                    if (Type == JobManager.JobTypes.Fisher)
                     {
                         c.IsInFishingZone = false;
                     }
@@ -176,9 +176,9 @@ namespace mtgvrp.job_manager
         {
             switch (Type)
             {
-                case JobManager.TaxiJob: return 198;
-                case JobManager.FisherJob: return 410;
-                case JobManager.Garbageman: return 318;
+                case JobManager.JobTypes.Taxi: return 198;
+                case JobManager.JobTypes.Fisher: return 410;
+                case job_manager.JobTypes.Garbageman: return 318;
                 default: return 1;
             }
         }
