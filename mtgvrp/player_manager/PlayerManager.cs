@@ -213,7 +213,7 @@ namespace mtgvrp.player_manager
 
             if (character.Group == Group.None) { return 0; }
 
-            if (Properties.Settings.Default.governmentbalance * character.Group.FundingPercentage / 100 - character.Group.FactionPaycheckBonus < 0)
+            if (Properties.Settings.Default.governmentbalance * character.Group.FundingPercentage / 100 - character.Group.FactionPaycheckBonus < 0 && character.Group.FundingPercentage != -1)
             {
                 return 0;
             }

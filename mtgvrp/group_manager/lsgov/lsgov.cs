@@ -101,6 +101,7 @@ namespace RoleplayServer.group_manager.lsgov
         public void setfunding_cmd(Client player, string groupid, string percentage)
         {
             Character character = API.getEntityData(player, "Character");
+            Account account = API.getEntityData(player, "Account");
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov || character.GroupRank < 7) { return; }
 
@@ -111,6 +112,15 @@ namespace RoleplayServer.group_manager.lsgov
             }
 
             Group group = GroupManager.Groups[int.Parse(groupid)];
+
+            if (int.Parse(percentage) == -1)
+            {
+                if (account.AdminLevel < 6) { player.sendChatMessage("You don't have permission to do that."); return; }
+
+                player.sendChatMessage($"You have set ~b~{group.Name}~w~'s funding to ~r~infinite~w~.");
+                group.FundingPercentage = int.Parse(percentage);
+            }
+
             group.FundingPercentage = int.Parse(percentage);
             player.sendChatMessage($"You have set ~b~{group.Name}~w~'s funding to ~r~{percentage}%~w~.");
         }
