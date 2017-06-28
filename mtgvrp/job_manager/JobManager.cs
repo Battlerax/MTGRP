@@ -5,6 +5,7 @@ using GTANetworkShared;
 using mtgvrp.core;
 using mtgvrp.database_manager;
 using mtgvrp.player_manager;
+using mtgvrp.rp_scripts;
 using mtgvrp.vehicle_manager;
 using MongoDB.Driver;
 
@@ -12,8 +13,12 @@ namespace mtgvrp.job_manager
 {
     public class JobManager : Script
     {
-        public const int TaxiJob = 1;
-        public const int FisherJob = 2;
+        public enum JobTypes
+        {
+            None,
+            Taxi,
+            Fisher
+        }
 
         public static List<Job> Jobs = new List<Job>();
 
@@ -131,7 +136,7 @@ namespace mtgvrp.job_manager
         }
 
         [Command("createjob", GreedyArg = true)]
-        public void createjob_cmd(Client player, int type, string name)
+        public void createjob_cmd(Client player, JobTypes type, string name)
         {
             Account account = API.getEntityData(player.handle, "Account");
             if (account.AdminLevel < 4)
@@ -180,7 +185,9 @@ namespace mtgvrp.job_manager
                     API.sendChatMessageToPlayer(player, Color.White, "You have changed Job " + job.Id + "'s name to " + job.Name);
                     break;
                 case "type":
-                    job.Type = int.Parse(value);
+                    JobTypes test;
+                    Enum.TryParse(value, out test);
+                    job.Type = test;
                     job.Save();
                     API.sendChatMessageToPlayer(player, Color.White, "You have changed Job " + job.Id + "'s type to " + job.Type);
                     break;
