@@ -996,7 +996,7 @@ API.onKeyUp.connect(function (sender, e) {
 });
 
 API.onUpdate.connect(function () {
-    if (rotating != 0) {
+    if (rotating != 0 && menu_pool !== null) {
         var player = API.getLocalPlayer();
         var new_rot = API.getEntityRotation(player).Add(new Vector3(0, 0, rotating));
         API.setEntityRotation(player, new_rot);
