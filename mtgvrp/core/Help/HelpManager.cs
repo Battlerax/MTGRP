@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using GTANetworkServer;
+using mtgvrp.group_manager;
 
 namespace mtgvrp.core.Help
 {
@@ -42,24 +45,26 @@ namespace mtgvrp.core.Help
 
             API.consoleOutput($"*** Intializing Help. [ {methods.Length} Commands ]");
 
-            Dictionary<CommandGroups, List<string>> cmds = new Dictionary<CommandGroups, List<string>>();
+            Dictionary<CommandGroups, List<string[]>> cmds = new Dictionary<CommandGroups, List<string[]>>();
             foreach (var cmd in methods)
             {
                 Help commandHelp = (Help)cmd.GetCustomAttributes(typeof(Help), false)[0];
                 CommandAttribute commandInfo = (CommandAttribute)cmd.GetCustomAttributes(typeof(CommandAttribute), false)[0];
 
+                if (cmd.GetParameters().Skip(1).Select(x => x.Name).Count() != commandHelp.Parameters.Length)
+                {
+                    API.consoleOutput($"*** [ERROR] COMMAND `/{commandInfo.CommandString}` HAS AMOUNT OF PARAMETER DESCRIPTIONS NOT EQUAL TO ACTUAL PARAMETERS.");
+                    continue;
+                }
+
                 if(!cmds.ContainsKey(commandHelp.Group))
-                    cmds[commandHelp.Group] = new List<string>();
+                    cmds[commandHelp.Group] = new List<string[]>();
 
-                cmds[commandHelp.Group].Add(API.toJson(new[] { commandInfo.CommandString, API.toJson(cmd.GetParameters().Select(x => x.Name).ToArray()), commandHelp.Description, API.toJson(commandHelp.Parameters) }));
+                cmds[commandHelp.Group].Add(new[] { commandInfo.CommandString, string.Join("|", cmd.GetParameters().Skip(1).Select(x => x.Name)) /* Skip sender */ , commandHelp.Description, string.Join("|", commandHelp.Parameters) });
+                
             }
 
-            string[] cmdsArr = new string[Enum.GetNames(typeof(CommandGroups)).Length];
-            foreach (var group in cmds.Keys)
-            {
-                string[] cmdsArray = cmds[group].ToArray();
-                cmdsArr[(int)group] = API.toJson(cmdsArray);
-            }
+            CommandStuff = API.toJson(cmds);
 
             API.consoleOutput($"*** Help Done");
         }
@@ -70,7 +75,20 @@ namespace mtgvrp.core.Help
             if (!player.GetAccount().IsLoggedIn)
                 return;
 
-            API.triggerClientEvent(player, "help_showMenu", CommandStuff);
+            var character = player.GetCharacter();
+
+            bool isPD = false;
+            bool isLSNN = false;
+            if (character.Group != Group.None)
+            {
+                if (character.Group.CommandType == Group.CommandTypeLspd)
+                    isPD = true;
+
+                if (character.Group.CommandType == Group.CommandTypeLsnn)
+                    isLSNN = true;
+            }
+
+            API.triggerClientEvent(player, "help_showMenu", CommandStuff, player.GetAccount().AdminLevel, isPD, isLSNN);
         }
     }
 }

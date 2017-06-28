@@ -12,18 +12,16 @@
 
         var cmdsList = [];
 
-        function fillUpCommands(cmds) {
+        function fillUpCommands(cmds, adminRank, isPD, isLSNN) {
             var cmdsGroups = JSON.parse(cmds);
 
-            $.each(cmdsGroups, function (index, value) {
+            $.each(cmdsGroups, function (index, commands) {
                 cmdsList.push("");
-
-                var commands = JSON.parse(value);
                 $.each(commands, function(cmdIndex, cmdValue) {
                     //Command, Parameters, Description, Parameters Desc
 
-                    var parametersList = JSON.parse(cmdValue[1]);
-                    var parInfoList = JSON.parse(cmdValue[3]);
+                    var parametersList = cmdValue[1].split("|");
+                    var parInfoList = cmdValue[3].split("|");
                     var pars = "/" + cmdValue[0];
                     var parsInfo = "";
                     $.each(parametersList, function(parIndex, parValue) {
@@ -33,7 +31,7 @@
 
                     var cmdString = `
                     <tr>
-                        <td>${cmdValue[0]}</td>
+                        <td>/${cmdValue[0]}</td>
                         <td>
                             ${pars}
                             <p>
@@ -46,6 +44,16 @@
                     cmdsList[index] += cmdString;
                 });
             });
+
+            for (var i = 1; i <= adminRank; i++) {
+                $("#AdminLevel" + i).show();
+            }
+
+            if (isPD || adminRank > 0)
+                $("#LSPD").show();
+
+            if (isLSNN || adminRank > 0)
+                $("#LSNN").show();
         }
 
         function showCmds(index) {
@@ -54,18 +62,21 @@
                             <th>Command</th>
                             <th>Syntax</th>
                             <th>Information</th>
-                        </tr>
-                        <tr>
-                            <td>/me</td>
-                            <td>/me [message] 
-                                <p>
-                                    <strong>message: </strong>Your roleplay message.
-                                </p>
-                            </td>
-                            <td>Used for desciribing actions of your character.</td>
                         </tr>`);
+
+            if (!(index in cmdsList)) {
+                return;
+            }
+
             $("#CmdList").append(cmdsList[index]);
         }
+
+        $(document).ready(function() {
+            $(".item").click(function() {
+                $(".item").parent().removeClass("active");
+                $(this).parent().addClass("active");
+            });
+        });
     </script>
 </head>
 
@@ -81,39 +92,42 @@
                 <div class="cell">
                     <ul class="sidebar2">
                         <li class="title">Help List</li>
-                        <li class="active">
-                            <a href="#" onclick="showCmds(0);">General Commands</a>
+                        <li class="active item">
+                            <a href="#" class="item" onclick="showCmds('General');">General Commands</a>
                         </li>
                         <li class="">
-                            <a href="#" onclick="showCmds(0);">Roleplay Commands</a>
+                            <a href="#" class="item" onclick="showCmds('Roleplay');">Roleplay Commands</a>
                         </li>
                         <li class="">
-                            <a href="#" onclick="showCmds(2);">Animation Commands</a>
+                            <a href="#" class="item" onclick="showCmds('Animation');">Animation Commands</a>
                         </li>
                         <li class="">
-                            <a href="#" onclick="showCmds(3);">Inventory Commands</a>
+                            <a href="#" class="item" onclick="showCmds('Inventory');">Inventory Commands</a>
                         </li>
                         <li class="">
-                            <a href="#"onclick="showCmds(4);">Property Commands</a>
+                            <a href="#" class="item" onclick="showCmds('Vehicles');">Vehicle Commands</a>
                         </li>
                         <li class="">
-                            <a class="dropdown-toggle" href="#">Group Commands</a>
+                            <a href="#" class="item" onclick="showCmds('Property');">Property Commands</a>
+                        </li>
+                        <li class="">
+                            <a class="dropdown-toggle" href="#" onclick="showCmds('GroupGeneral');">Group Commands</a>
                             <ul class="d-menu" data-role="dropdown">
-                                <li><a href="" onclick="showCmds(5);">LSPD</a></li>
-                                <li><a href="" onclick="showCmds(6);">LSNN</a></li>
+                                <li style="display: none;" class="item" id="LSPD"><a href="#" onclick="showCmds('LSPD');">LSPD</a></li>
+                                <li style="display: none;" class="item" id="LSNN"><a href="#" onclick="showCmds('LSNN');">LSNN</a></li>
                             </ul>
                         </li>
                         <li class="">
                             <a class="dropdown-toggle" href="#">Admin Commands</a>
                             <ul class="d-menu" data-role="dropdown">
-                                <li style="display: none;"><a href="" onclick="showCmds(7);">Level 1</a></li>
-                                <li style="display: none;"><a href="" onclick="showCmds(8);">Level 2</a></li>
-                                <li style="display: none;"><a href="" onclick="showCmds(9);">Level 3</a></li>
-                                <li style="display: none;"><a href="" onclick="showCmds(10);">Level 4</a></li>
-                                <li style="display: none;"><a href="" onclick="showCmds(11);">Level 5</a></li>
-                                <li style="display: none;"><a href="" onclick="showCmds(12);">Level 6</a></li>
-                                <li style="display: none;"><a href="" onclick="showCmds(13);">Level 7</a></li>
-                                <li style="display: none;"><a href="" onclick="showCmds(14);">Level 8</a></li>
+                                <li style="display: none;" class="item" id="AdminLevel1"><a href="#" onclick="showCmds('AdminLevel1');">Level 1</a></li>
+                                <li style="display: none;" class="item" id="AdminLevel2"><a href="#" onclick="showCmds('AdminLevel2');">Level 2</a></li>
+                                <li style="display: none;" class="item" id="AdminLevel3"><a href="#" onclick="showCmds('AdminLevel3');">Level 3</a></li>
+                                <li style="display: none;" class="item" id="AdminLevel4"><a href="#" onclick="showCmds('AdminLevel4');">Level 4</a></li>
+                                <li style="display: none;" class="item" id="AdminLevel5"><a href="#" onclick="showCmds('AdminLevel5');">Level 5</a></li>
+                                <li style="display: none;" class="item" id="AdminLevel6"><a href="#" onclick="showCmds('AdminLevel6');">Level 6</a></li>
+                                <li style="display: none;" class="item" id="AdminLevel7"><a href="#" onclick="showCmds('AdminLevel7');">Level 7</a></li>
+                                <li style="display: none;" class="item" id="AdminLevel8"><a href="#" onclick="showCmds('AdminLevel8');">Level 8</a></li>
                             </ul>
                         </li>
                     </ul>
