@@ -14,6 +14,7 @@ namespace mtgvrp.job_manager
     {
         public const int TaxiJob = 1;
         public const int FisherJob = 2;
+        public const int Garbageman = 5;
 
         public static List<Job> Jobs = new List<Job>();
 
@@ -126,7 +127,10 @@ namespace mtgvrp.job_manager
                 return;
 
             API.sendChatMessageToPlayer(player, Color.White, "-----------------------------------------");
-            API.sendChatMessageToPlayer(player, Color.Grey, "Type 1 - Taxi Driver");
+            foreach (var job in JobManager.Jobs)
+            {
+                player.sendChatMessage($"Type {job.Type} - {job.Name}");
+            }
             API.sendChatMessageToPlayer(player, Color.White, "-----------------------------------------");
         }
 

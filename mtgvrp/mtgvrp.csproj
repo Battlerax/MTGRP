@@ -78,6 +78,7 @@
   <ItemGroup>
     <Compile Include="core\Help\Help.cs" />
     <Compile Include="core\Help\HelpManager.cs" />
+    <Compile Include="job_manager\garbageman\Garbageman.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AdminSystem\AdminCommands.cs" />
     <Compile Include="AdminSystem\AdminReports.cs" />
@@ -181,6 +182,7 @@
     <Content Include="inventory\ManageInv.html" />
     <Content Include="group_manager\lspd\Lspd.js" />
     <Content Include="job_manager\fisher\Fisher.js" />
+    <Content Include="job_manager\garbageman\Garbageman.js" />
     <Content Include="job_manager\taxi\TaxiJob.js" />
     <Content Include="jquery.js" />
     <Content Include="meta.xml">
