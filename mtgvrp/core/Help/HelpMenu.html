@@ -92,7 +92,7 @@
                 <div class="cell">
                     <ul class="sidebar2">
                         <li class="title">Help List</li>
-                        <li class="active item">
+                        <li class="active">
                             <a href="#" class="item" onclick="showCmds('General');">General Commands</a>
                         </li>
                         <li class="">
@@ -108,7 +108,19 @@
                             <a href="#" class="item" onclick="showCmds('Vehicles');">Vehicle Commands</a>
                         </li>
                         <li class="">
-                            <a href="#" class="item" onclick="showCmds('Property');">Property Commands</a>
+                            <a href="#" class="dropdown-toggle">Property Commands</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                <li class="item"><a href="#" onclick="showCmds('Bussiness');">Businesses</a></li>
+                                <li class="item"><a href="#" onclick="showCmds('Houses');">Houses</a></li>
+                            </ul>
+                        </li>
+                        <li class="">
+                            <a class="dropdown-toggle" href="#" onclick="showCmds('JobsGeneral');">Jobs Commands</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                <li class="item"><a href="#" onclick="showCmds('TaxiJob');">Taxi</a></li>
+                                <li class="item"><a href="#" onclick="showCmds('FisherJob');">Fisherman</a></li>
+                                <li class="item"><a href="#" onclick="showCmds('MechanicJob');">Mechanic</a></li>
+                            </ul>
                         </li>
                         <li class="">
                             <a class="dropdown-toggle" href="#" onclick="showCmds('GroupGeneral');">Group Commands</a>
