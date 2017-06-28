@@ -665,6 +665,20 @@ namespace mtgvrp.group_manager
             API.sendChatMessageToPlayer(player, "You have set your faction's paycheck bonus to $" + amount + ".");
         }
 
+        [Command("groupbalance")]
+        public void groupbalance_cmd(Client player)
+        {
+            Character character = API.getEntityData(player.handle, "Character");
+
+            if (character.Group == Group.None || character.GroupRank < 8)
+            {
+                return;
+            }
+
+            player.sendChatMessage($"Your group is receiving {character.Group.FundingPercentage}% of government funds " +
+                $"(${Properties.Settings.Default.governmentbalance * character.Group.FundingPercentage / 100}).");
+        }
+
         public static Group GetGroupById(int id)
         {
             if (id == 0 || id > Groups.Count)

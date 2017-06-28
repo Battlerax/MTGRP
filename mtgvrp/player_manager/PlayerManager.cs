@@ -211,6 +211,13 @@ namespace mtgvrp.player_manager
         {
             Character character = API.shared.getEntityData(player.handle, "Character");
 
+            if (character.Group == Group.None) { return 0; }
+
+            if (Properties.Settings.Default.governmentbalance * character.Group.FundingPercentage / 100 - character.Group.FactionPaycheckBonus < 0)
+            {
+                return 0;
+            }
+
             return character.Group.FactionPaycheckBonus;
 
         }
@@ -229,6 +236,7 @@ namespace mtgvrp.player_manager
             {
                 int paycheckAmount = CalculatePaycheck(player);
                 character.BankBalance += paycheckAmount;
+                Properties.Settings.Default.governmentbalance += paycheckAmount * taxationAmount / 100;
                 player.sendChatMessage("--------------PAYCHECK RECEIVED!--------------");
                 player.sendChatMessage("Base paycheck: $" + basepaycheck + ".");
                 player.sendChatMessage("Interest: $" + character.BankBalance / 1000 + ".");
@@ -240,49 +248,6 @@ namespace mtgvrp.player_manager
 
                 player.sendPictureNotificationToPlayer("Your paycheck for ~g~$" + paycheckAmount + " ~w~has been added to your balance.", "CHAR_BANK_MAZE", 0, 0, "Maze Bank", "Paycheck Received!");
             }
-        }
-
-        [Command("setvipbonus")]
-        public void setvipbonus_cmd(Client player, string viplevel, string percentage)
-        {
-            Account account = API.shared.getEntityData(player.handle, "Account");
-
-            if (account.AdminLevel < 6) { return; }
-
-            switch (viplevel)
-            {
-                case "1":
-                    VIPBonusLevelOne = int.Parse(percentage);
-                    break;
-
-                case "2":
-                    VIPBonusLevelTwo = int.Parse(percentage);
-                    break;
-
-                case "3":
-                    VIPBonusLevelThree = int.Parse(percentage);
-                    break;
-            }
-            player.sendChatMessage("You have set VIP level " + viplevel + "'s paycheck bonus to " + percentage + "%.");
-        }
-
-        [Command("settax")]
-        public void settax_cmd(Client player, string percentage)
-        {
-            Account account = API.shared.getEntityData(player.handle, "Account");
-
-            if (account.AdminLevel < 6) { return; }
-            taxationAmount = int.Parse(percentage);
-        }
-
-        [Command("setbasepaycheck", GreedyArg = true)]
-        public void setbasepaycheck_cmd(Client player, string amount)
-        {
-            Account account = API.shared.getEntityData(player.handle, "Account");
-
-            if (account.AdminLevel < 6) { return; }
-            basepaycheck = int.Parse(amount);
-            API.sendChatMessageToPlayer(player, "Base paycheck set to $" + amount + ".");
         }
 
         [Command("getid", GreedyArg = true, Alias = "id")]

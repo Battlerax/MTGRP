@@ -76,7 +76,7 @@ namespace RoleplayServer.group_manager.lsgov
         }
 
         [Command("managebudget")]
-        public void budget_cmd(Client player)
+        public void managebudget_cmd(Client player)
         {
             Character character = API.getEntityData(player, "Character");
 
@@ -85,14 +85,14 @@ namespace RoleplayServer.group_manager.lsgov
             player.sendChatMessage("======================================");
             player.sendChatMessage("Los Santos Government - Budget Manager");
             player.sendChatMessage("======================================");
-            player.sendChatMessage($"~r~Government Balance: ~w~${character.Group.GroupBalance}");
+            player.sendChatMessage($"~r~Government Balance: ~w~${Settings.Default.governmentbalance}");
             player.sendChatMessage($"~y~Organization Funding:");
             //All faction budget information
             int i = 0;
             foreach (var group in GroupManager.Groups)
             {
-                if (group == character.Group) { continue; }
-                player.sendChatMessage($"~p~Group ID: ~w~{i} | ~b~{group.Name}~w~ | ~r~Funding:~w~ {group.FundingPercentage}% | ~g~Balance: ${group.GroupBalance}");
+                player.sendChatMessage($"~p~Group ID: ~w~{i} | ~b~{group.Name}~w~ | ~r~Funding:~w~ {group.FundingPercentage}% | " +
+                    $"~g~Balance: ${Settings.Default.governmentbalance * group.FundingPercentage/100}");
                 i++;
             }
         }
@@ -104,10 +104,28 @@ namespace RoleplayServer.group_manager.lsgov
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov || character.GroupRank < 7) { return; }
 
-            if(int.Parse(groupid) > GroupManager.Groups.Count) { player.sendChatMessage("Invalid group ID."); return; }
+            if (!(int.Parse(groupid) < GroupManager.Groups.Count))
+            {
+                player.sendChatMessage("Invalid group ID.");
+                return;
+            }
+
             Group group = GroupManager.Groups[int.Parse(groupid)];
-            //finish
+            group.FundingPercentage = int.Parse(percentage);
+            player.sendChatMessage($"You have set ~b~{group.Name}~w~'s funding to ~r~{percentage}%~w~.");
         }
+
+        [Command("setgovbalance")]
+        public void setgovbalance_cmd(Client player, string amount)
+        {
+            Account account = API.getEntityData(player, "Account");
+
+            if (account.AdminLevel < 6) { return; }
+
+            Settings.Default.governmentbalance = int.Parse(amount);
+            player.sendChatMessage($"You have set the government balance to ${amount}.");
+        }
+
         //DEPLOY A PODIUM AS MAYOR OR HIGH RANKING LSPD
         [Command("deploypodium")]
         public void deploypodium_cmd(Client player)

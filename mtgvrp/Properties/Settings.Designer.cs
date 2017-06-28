@@ -85,13 +85,13 @@ namespace mtgvrp.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("helloo")]
-        public string Setting {
+        [global::System.Configuration.DefaultSettingValueAttribute("2000000000")]
+        public int governmentbalance {
             get {
-                return ((string)(this["Setting"]));
+                return ((int)(this["governmentbalance"]));
             }
             set {
-                this["Setting"] = value;
+                this["governmentbalance"] = value;
             }
         }
     }

@@ -40,8 +40,6 @@ namespace mtgvrp.group_manager
         };
 
         public DateTime DisbandDate { get; set; }
-
-        public int GroupBalance { get; set; }
         public int FundingPercentage { get; set; }
         public int LottoSafe { get; set; }
         public int LottoPrice { get; set; }
