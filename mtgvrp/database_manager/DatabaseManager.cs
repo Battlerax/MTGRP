@@ -53,7 +53,7 @@ namespace mtgvrp.database_manager
             DoorsTable = _database.GetCollection<Door>("doors");
             CrimeTable = _database.GetCollection<Crime>("crimes");
             CriminalRecordTable = _database.GetCollection<CriminalRecord>("criminalrecords");
-            TreesTable = _database.GetCollection<TreeItem>("lumberjack-trees");
+            TreesTable = _database.GetCollection<TreeItem>("lumberjacktrees");
 
             DebugManager.DebugMessage("[DatabaseM] Database Manager initalized!");
         }

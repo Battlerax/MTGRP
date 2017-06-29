@@ -24,3 +24,42 @@ function scaleCoordsToReal (point) {
 
 	return { X: (point.X * widthDivisor) + ratioScreen.Offset, Y: point.Y * heightDivisor }
 }
+
+var lastObj;
+var lastEvent;
+API.onServerEventTrigger.connect((event, args) => {
+    if (event === "PLACE_OBJECT_ON_GROUND_PROPERLY") {
+        //0: Object, 1: Eventname
+
+        lastObj = args[0];
+        lastEvent = args[1];
+
+        var obj = null;
+        //Find object.
+        var objs = API.getStreamedObjects();
+        for (var i = 0; i < objs.Count(); i++) {
+            if (API.getEntitySyncedData(objs[i], "TargetObj") === args[0]) {
+                obj = objs[i];
+                break;
+            }
+        }
+
+        if (obj === null) {
+            return;
+        }
+
+        API.callNative("0x58A850EAEE20FAA3", obj);
+        var pos = API.getEntityPosition(obj);
+        var rot = API.getEntityRotation(obj);
+        API.triggerServerEvent(args[1], args[0], pos, rot);
+    }
+});
+
+API.onEntityStreamIn.connect((entity, entityType) => {
+    if (API.getEntitySyncedData(entity, "TargetObj") === lastObj) {
+        API.callNative("0x58A850EAEE20FAA3", entity);
+        var pos = API.getEntityPosition(entity);
+        var rot = API.getEntityRotation(entity);
+        API.triggerServerEvent(lastEvent, lastObj, pos, rot);
+    }
+})
