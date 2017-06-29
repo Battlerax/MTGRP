@@ -25,6 +25,10 @@ API.onServerEventTrigger.connect((eventName, args) => {
             editMenu.AddItem(API.createMenuItem("Set Price", "Set property's price."));
             editMenu.AddItem(API.createMenuItem("Set Owner", "Set property's owner."));
             editMenu.AddItem(API.createMenuItem("~r~Delete Property", "Delete the property."));
+            editMenu.AddItem(API.createMenuItem("~r~Set Garbage Point", "Set property garbage point."));
+            editMenu.AddItem(API.createMenuItem("~r~Toggle Has Garbage Point", "Toggle whether the property has a garbage point or not."));
+
+
 
             editMenu.Visible = true;
 
@@ -134,6 +138,16 @@ API.onServerEventTrigger.connect((eventName, args) => {
                         editMenu.Visible = false;
                         API.triggerServerEvent("editproperty_deleteproperty", selID);
                         break;
+
+                    case 14:
+                        editMenu.Visible = false;
+                        changingGarbagePointPos = true;
+                        sendMessage("Goto the position you would like and hit LMB to save there.");
+                        break;
+
+					case 15:
+                        API.triggerServerEvent("editproperty_togglehasgarbage", selID);
+                        break;
                 }
             });
             break;
@@ -143,6 +157,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
 var changingPropertyPos = false;
 var changingTeleportPos = false;
 var changingInteractionPos = false;
+var changingGarbagePointPos = false;
 
 API.onUpdate.connect(function() {
     if (editMenu != null)
@@ -160,6 +175,10 @@ API.onUpdate.connect(function() {
         else if (changingInteractionPos === true) {
             changingInteractionPos = false;
             API.triggerServerEvent("editproperty_setinteractpos", selID);
+        }
+		else if (changingGarbagePointPos === true) {
+            changingGarbagePointPos = false;
+            API.triggerServerEvent("editproperty_setgarbagepos", selID);
         }
     }
 });
