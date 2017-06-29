@@ -238,6 +238,20 @@ namespace mtgvrp.job_manager
                     job.Save();
                     API.sendChatMessageToPlayer(player, Color.White, "You have changed Job " + job.Id + "'s misc one text to " + job.MiscOne.LabelText);
                     break;
+                case "misc_one_blip":
+                    if (job.MiscOne == MarkerZone.None)
+                    {
+                        API.sendChatMessageToPlayer(player, "The markerzone is not even there.");
+                        return;
+                    }
+                    else
+                    {
+                        job.MiscOne.BlipSprite = Convert.ToInt32(value);
+                        job.MiscOne.Refresh();
+                    }
+                    job.Save();
+                    API.sendChatMessageToPlayer(player, Color.White, "You have changed Job " + job.Id + "'s misc one blip to " + value);
+                    break;
                 case "misc_two_loc":
 
                     if (job.MiscTwo == MarkerZone.None)
@@ -275,9 +289,23 @@ namespace mtgvrp.job_manager
                     job.Save();
                     API.sendChatMessageToPlayer(player, Color.White, "You have changed Job " + job.Id + "'s misc two text to " + job.MiscOne.LabelText);
                     break;
+                case "misc_two_blip":
+                    if (job.MiscTwo == MarkerZone.None)
+                    {
+                        API.sendChatMessageToPlayer(player, "The markerzone is not even there.");
+                        return;
+                    }
+                    else
+                    {
+                        job.MiscTwo.BlipSprite = Convert.ToInt32(value);
+                        job.MiscTwo.Refresh();
+                    }
+                    job.Save();
+                    API.sendChatMessageToPlayer(player, Color.White, "You have changed Job " + job.Id + "'s misc two blip to " + value);
+                    break;
                 default:
                     API.sendChatMessageToPlayer(player, Color.White, "Invalid option chosen. Valid options are:");
-                    API.sendChatMessageToPlayer(player, Color.White, "jobname, type, joinpos_loc, misc_one_loc, misc_one_name, misc_two_loc, misc_two_name");
+                    API.sendChatMessageToPlayer(player, Color.White, "jobname, type, joinpos_loc, misc_one_loc, misc_one_name, misc_one_blip, misc_two_loc, misc_two_name, misc_two_name");
                     break;
             }
         }

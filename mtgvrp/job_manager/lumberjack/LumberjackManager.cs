@@ -108,7 +108,7 @@ namespace mtgvrp.job_manager.lumberjack
             if (player.GetAccount().AdminLevel < 4)
                 return;
 
-            var tree = TreeItem.Trees.SingleOrDefault(x => x.TreeText.position?.DistanceTo(player.position) <= 1.5);
+            var tree = TreeItem.Trees.SingleOrDefault(x => x.TreeText?.position.DistanceTo(player.position) <= 1.5);
             if (tree == null)
             {
                 API.sendChatMessageToPlayer(player, "You aren't near a tree.");
@@ -137,7 +137,7 @@ namespace mtgvrp.job_manager.lumberjack
                     return;
                 }
 
-                var tree = TreeItem.Trees.SingleOrDefault(x => x.TreeText.position?.DistanceTo(player.position) <= 2);
+                var tree = TreeItem.Trees.SingleOrDefault(x => x.TreeText?.position.DistanceTo(player.position) <= 2);
                 if (tree == null || tree?.Stage != TreeItem.Stages.Waiting)
                 {
                     API.sendChatMessageToPlayer(player, "You aren't near a tree.");
@@ -149,6 +149,11 @@ namespace mtgvrp.job_manager.lumberjack
                 API.attachEntityToEntity(tree.TreeObj, API.getPlayerVehicle(player), "forks_attach", new Vector3(), new Vector3(0, 0, 90));
 
                 ChatManager.RoleplayMessage(player, "picks up the woods using the forklift.", ChatManager.RoleplayMe);
+
+                API.setBlipRouteVisible(character.JobOne.MiscOne.Blip, true);
+                API.setBlipRouteColor(character.JobOne.MiscOne.Blip, 59);
+
+                API.sendChatMessageToPlayer(player, "Goto the HQ to sell your wood.");
             }
             else
                 API.sendChatMessageToPlayer(player, "You have to be in a forklift to pickup the wood.");

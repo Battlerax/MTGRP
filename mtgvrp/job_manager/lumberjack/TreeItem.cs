@@ -71,7 +71,7 @@ namespace mtgvrp.job_manager.lumberjack
         }
 
         [BsonIgnore]
-        public Stages Stage = Stages.Cutting;
+        public Stages Stage = Stages.Waiting;
 
         public void Insert()
         {
