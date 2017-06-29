@@ -53,6 +53,7 @@ namespace mtgvrp.property_system.businesses
                 if (prop.HasGarbagePoint)
                 {
                     prop.GarbageBags += 1;
+                    prop.UpdateMarkers();
                     if (prop.GarbageBags >= 10)
                     {
                         job_manager.garbageman.Garbageman.SendNotificationToGarbagemen("A business is overflowing with garbage. We need garbagemen on the streets right now!");

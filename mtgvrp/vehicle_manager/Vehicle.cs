@@ -20,6 +20,7 @@ using mtgvrp.inventory;
 using mtgvrp.job_manager;
 using mtgvrp.player_manager;
 using mtgvrp.property_system;
+using mtgvrp.core;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 
@@ -58,6 +59,8 @@ namespace mtgvrp.vehicle_manager
         [BsonIgnore]
         public Job Job { get; set; }
         public int JobId { get; set; }
+        public int GarbageBags { get; set; }
+        public MarkerZone GarbageMarker { get; set; }
 
         [BsonIgnore]
         public Group Group { get; set; }
@@ -214,6 +217,17 @@ namespace mtgvrp.vehicle_manager
             {
                 return false;
             }
+        }
+
+        public void DestroyMarkers()
+        {
+            GarbageMarker?.Destroy();
+        }
+
+        public void UpdateMarkers()
+        {
+            DestroyMarkers();
+            VehicleManager.respawn_vehicle(this);
         }
     }
 }

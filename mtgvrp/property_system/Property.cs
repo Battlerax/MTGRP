@@ -106,6 +106,7 @@ namespace mtgvrp.property_system
         {
             EntranceMarker?.Destroy();
             InteractionMarker?.Destroy();
+            GarbageMarker?.Destroy();
             ExitMarker?.Destroy();
         }
 
