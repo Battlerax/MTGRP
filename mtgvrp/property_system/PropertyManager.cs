@@ -439,6 +439,49 @@ namespace mtgvrp.property_system
                     }
                     break;
 
+                case "editproperty_togglehasgarbage":
+                    if (sender.GetAccount().AdminLevel >= 5)
+                    {
+                        var id = Convert.ToInt32(arguments[0]);
+                        var prop = Properties.SingleOrDefault(x => x.Id == id);
+                        if (prop == null)
+                        {
+                            API.sendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                            return;
+                        }
+                        prop.HasGarbagePoint = !prop.HasGarbagePoint;
+                        prop.Save();
+                        API.sendChatMessageToPlayer(sender,
+                            $"[Property Manager] Property #{id} was made to '" +
+                            (prop.HasGarbagePoint ? "have garbage" : "have no garbage") + "'");
+                    }
+                    break;
+
+                case "editproperty_setgarbagepoint":
+                    if (sender.GetAccount().AdminLevel >= 5)
+                    {
+                        var id = Convert.ToInt32(arguments[0]);
+                        var prop = Properties.SingleOrDefault(x => x.Id == id);
+                        if (prop == null)
+                        {
+                            API.sendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                            return;
+                        }
+                        if (!prop.HasGarbagePoint)
+                        {
+                            API.sendChatMessageToPlayer(sender, "[Property Manager] Property cannot have a garbage point.");
+                            return;
+                        }
+                        prop.GarbagePoint = sender.position;
+                        prop.GarbageRotation = sender.rotation;
+                        prop.GarbageDimension = sender.dimension;
+                        prop.UpdateMarkers();
+                        prop.Save();
+                        API.sendChatMessageToPlayer(sender,
+                            $"[Property Manager] Garbage point of property #{id} was changed.");
+                    }
+                    break;
+
 
                 case "attempt_enter_prop":
                     Enterproperty(sender);
