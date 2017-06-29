@@ -8,6 +8,6 @@ API.onUpdate.connect(() => {
         }
 
         API.triggerServerEvent("lumberjack_hittree");
-        lastChop = Date.now() + 3000;
+        lastChop = Date.now() + 1000;
     }
 });
