@@ -76,39 +76,36 @@ namespace mtgvrp.job_manager.garbageman
         private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle)
         {
             Character character = API.getEntityData(player, "Character");
-            vehicle_manager.Vehicle playerveh = API.getEntityData(vehicle, "Vehicle");
+            var veh = VehicleManager.GetVehFromNetHandle(vehicle);
 
-            if (playerveh.Job.Type != JobManager.JobTypes.Garbageman)
+            if (veh.Job?.Type == JobManager.JobTypes.Garbageman)
             {
-                player.sendChatMessage("You must be a garbageman to use this vehicle.");
-                API.warpPlayerOutOfVehicle(player);
-                return;
-            }
 
-            Property TargetProperty = null;
-            int maxGarbage = 0;
-            foreach (var prop in PropertyManager.Properties)
-            {
-                if (prop.HasGarbagePoint)
+                Property TargetProperty = null;
+                int maxGarbage = 0;
+                foreach (var prop in PropertyManager.Properties)
                 {
-                    if (prop.GarbageBags > maxGarbage)
+                    if (prop.HasGarbagePoint)
                     {
-                        maxGarbage = prop.GarbageBags;
-                        TargetProperty = prop;
+                        if (prop.GarbageBags > maxGarbage)
+                        {
+                            maxGarbage = prop.GarbageBags;
+                            TargetProperty = prop;
+                        }
                     }
                 }
+
+                if (maxGarbage == 0)
+                {
+                    player.sendChatMessage("There is no garbage to pick up! Try again soon.");
+                    API.warpPlayerOutOfVehicle(player);
+                    return;
+                }
+
+                API.triggerClientEvent(player, "garbage_setwaypoint", TargetProperty.GarbagePoint);
+                player.sendChatMessage("A garbage waypoint has been set on your map.");
+
             }
-
-            if (maxGarbage == 0)
-            {
-                player.sendChatMessage("There is no garbage to pick up! Try again soon.");
-                API.warpPlayerOutOfVehicle(player);
-                return;
-            }
-
-            API.triggerClientEvent(player, "garbage_setwaypoint", TargetProperty.GarbagePoint);
-            player.sendChatMessage("A garbage waypoint has been set on your map.");
-
         }
 
         public static void SendNotificationToGarbagemen(string message)

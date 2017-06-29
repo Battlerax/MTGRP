@@ -185,7 +185,6 @@ namespace mtgvrp.property_system
 
             if (HasGarbagePoint)
             {
-                API.shared.deleteEntity(BinObject);
                 BinObject = null;
                 GarbageMarker = new MarkerZone(GarbagePoint, new Vector3(0, 0, 0), GarbageDimension, 10);
                 GarbageMarker.Create();
