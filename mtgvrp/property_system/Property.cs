@@ -189,7 +189,7 @@ namespace mtgvrp.property_system
                 GarbageMarker = new MarkerZone(GarbagePoint, new Vector3(0, 0, 0), GarbageDimension, 10);
                 GarbageMarker.Create();
                 GarbageMarker.ColZone.setData("property_garbage", Id);
-                GarbageMarker.LabelText = $"Property Garbage\nBags: {GarbageBags}/40\n/pickupgarbage";
+                GarbageMarker.LabelText = $"Property Garbage\nBags: {GarbageBags}/40\n/pickuptrash";
                 BinObject = API.shared.createObject(998415499, GarbagePoint, GarbageRotation, GarbageDimension);
             }
         }

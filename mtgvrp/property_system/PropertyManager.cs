@@ -67,6 +67,14 @@ namespace mtgvrp.property_system
                 }
             }
 
+            if (API.getEntityType(entity) == EntityType.Player && colshape.hasData("property_garbage"))
+            {
+                if (API.getEntityData(entity, "at_garbage_property_id") == colshape.getData("property_garbage"))
+                {
+                    API.resetEntityData(entity, "at_garbage_property_id");
+                }
+            }
+
             if (API.getEntityType(entity) == EntityType.Player && colshape.hasData("property_exit"))
             {
                 if (API.getEntityData(entity, "at_exit_property_id") == colshape.getData("property_exit"))
@@ -121,6 +129,17 @@ namespace mtgvrp.property_system
             if (API.shared.hasEntityData(player, "at_interaction_property_id"))
             {
                 int id = API.shared.getEntityData(player, "at_interaction_property_id");
+                var property = Properties.SingleOrDefault(x => x.Id == id);
+                return property;
+            }
+            return null;
+        }
+
+        public static Property IsAtPropertyGarbagePoint(Client player)
+        {
+            if (API.shared.hasEntityData(player, ""))
+            {
+                int id = API.shared.getEntityData(player, "");
                 var property = Properties.SingleOrDefault(x => x.Id == id);
                 return property;
             }
