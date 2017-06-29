@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
 using GTANetworkServer;
 using GTANetworkShared;
 using mtgvrp.core;
 using mtgvrp.core.Help;
 using mtgvrp.inventory;
 using MongoDB.Bson;
+using Timer = System.Timers.Timer;
 using Vehicle = mtgvrp.vehicle_manager.Vehicle;
 
 namespace mtgvrp.job_manager.lumberjack
@@ -22,6 +24,83 @@ namespace mtgvrp.job_manager.lumberjack
             Tree.LoadTrees();
 
             API.onClientEventTrigger += API_onClientEventTrigger;
+            API.onPlayerExitVehicle += API_onPlayerExitVehicle;
+            API.onPlayerEnterVehicle += API_onPlayerEnterVehicle;
+        }
+
+        private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle)
+        {
+            if (API.getEntityModel(vehicle) == (int)VehicleHash.Forklift && player.GetCharacter().JobOne.Type == JobManager.JobTypes.Lumberjack)
+            {
+                Vehicle veh = API.getEntityData(vehicle, "Vehicle");
+                if (veh.Job.Type != JobManager.JobTypes.Lumberjack)
+                {
+                    return;
+                }
+
+                Tree tree = API.getEntityData(vehicle, "TREE_OBJ");
+                if (tree == null)
+                {
+                    return;
+                }
+
+                if(API.hasEntityData(vehicle, "TREE_DRIVER"))
+                {
+                    int id = API.getEntityData(vehicle, "TREE_DRIVER");
+                    if (id != player.GetCharacter().Id)
+                    {
+                        API.warpPlayerOutOfVehicle(player);
+                        API.sendChatMessageToPlayer(player, "This is not yours.");
+                        return;
+                    }
+                }
+
+                if (API.hasEntityData(vehicle, "Tree_Cancel_Timer"))
+                {
+                    System.Threading.Timer timer = API.getEntityData(vehicle, "Tree_Cancel_Timer");
+                    timer.Dispose();
+                    API.resetEntityData(vehicle, "Tree_Cancel_Timer");
+                    API.sendChatMessageToPlayer(player, "You've got back into your forklift.");
+                }
+            }
+        }
+
+        private void API_onPlayerExitVehicle(Client player, NetHandle vehicle)
+        {
+            if (API.getEntityModel(vehicle) == (int) VehicleHash.Forklift && player.GetCharacter().JobOne.Type == JobManager.JobTypes.Lumberjack)
+            {
+                Vehicle veh = API.getEntityData(vehicle, "Vehicle");
+                if (veh.Job.Type != JobManager.JobTypes.Lumberjack)
+                {
+                    return;
+                }
+
+                Tree tree = API.getEntityData(vehicle, "TREE_OBJ");
+                if (tree == null)
+                {
+                    return;
+                }
+
+                API.setEntityData(vehicle, "Tree_Cancel_Timer", new System.Threading.Timer(state =>
+                {
+                    var tveh = (NetHandle) state;
+                    Vehicle vehN = API.getEntityData(tveh, "Vehicle");
+                    Tree ttree = API.getEntityData(tveh, "TREE_OBJ");
+                    if (ttree == null)
+                    {
+                        return;
+                    }
+                    ttree.Stage = Tree.Stages.Cutting;
+                    ttree.UpdateAllTree();
+
+                    API.resetEntityData(tveh, "TREE_OBJ");
+                    vehN.Respawn();
+                    API.resetEntityData(tveh, "Tree_Cancel_Timer");
+                    API.resetEntityData(tveh, "TREE_DRIVER");
+
+                }, vehicle, 60000, Timeout.Infinite));
+                API.sendChatMessageToPlayer(player, "You've got 1 minute to get back to your vehicle or the wood will be reset.");
+            }
         }
 
         private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
@@ -139,6 +218,12 @@ namespace mtgvrp.job_manager.lumberjack
                     return;
                 }
 
+                if (API.hasEntityData(vehicle.NetHandle, "TREE_OBJ"))
+                {
+                    API.sendChatMessageToPlayer(player, "This forklift is already holding some logs.");
+                    return;
+                }
+
                 var tree = Tree.Trees.SingleOrDefault(x => x.TreeText?.position.DistanceTo(player.position) <= 2);
                 if (tree == null || tree?.Stage != Tree.Stages.Waiting)
                 {
@@ -156,6 +241,7 @@ namespace mtgvrp.job_manager.lumberjack
                 API.setBlipRouteColor(character.JobOne.MiscOne.Blip, 59);
 
                 API.setEntityData(vehicle.NetHandle, "TREE_OBJ", tree);
+                API.setEntityData(vehicle.NetHandle, "TREE_DRIVER", character.Id);
                 API.sendChatMessageToPlayer(player, "Goto the HQ to sell your wood.");
             }
             else
@@ -212,9 +298,10 @@ namespace mtgvrp.job_manager.lumberjack
                 API.resetEntityData(API.getPlayerVehicle(player), "TREE_OBJ");
                 API.warpPlayerOutOfVehicle(player);
                 vehicle.Respawn();
+                API.resetEntityData(API.getPlayerVehicle(player), "TREE_DRIVER");
 
                 InventoryManager.GiveInventoryItem(player.GetCharacter(), new Money(), 500);
-                API.sendChatMessageToPlayer(player, "* You have sucessfully sold your woof for ~g~$500");
+                API.sendChatMessageToPlayer(player, "* You have sucessfully sold your wood for ~g~$500");
             }
         }
     }
