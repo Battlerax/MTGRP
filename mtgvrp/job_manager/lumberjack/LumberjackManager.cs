@@ -83,9 +83,8 @@ namespace mtgvrp.job_manager.lumberjack
 
                 API.setEntityData(vehicle, "Tree_Cancel_Timer", new System.Threading.Timer(state =>
                 {
-                    var tveh = (NetHandle) state;
-                    Vehicle vehN = API.getEntityData(tveh, "Vehicle");
-                    Tree ttree = API.getEntityData(tveh, "TREE_OBJ");
+                    Vehicle vehN = API.getEntityData(vehicle, "Vehicle");
+                    Tree ttree = API.getEntityData(vehicle, "TREE_OBJ");
                     if (ttree == null)
                     {
                         return;
@@ -93,12 +92,14 @@ namespace mtgvrp.job_manager.lumberjack
                     ttree.Stage = Tree.Stages.Cutting;
                     ttree.UpdateAllTree();
 
-                    API.resetEntityData(tveh, "TREE_OBJ");
+                    API.resetEntityData(vehicle, "TREE_OBJ");
                     vehN.Respawn();
-                    API.resetEntityData(tveh, "Tree_Cancel_Timer");
-                    API.resetEntityData(tveh, "TREE_DRIVER");
+                    API.resetEntityData(vehicle, "Tree_Cancel_Timer");
+                    API.resetEntityData(vehicle, "TREE_DRIVER");
+                    API.sendChatMessageToPlayer(player, "Wood run cancelled.");
+                    API.setBlipRouteVisible(player.GetCharacter().JobOne.MiscOne.Blip, false);
 
-                }, vehicle, 60000, Timeout.Infinite));
+                }, null, 60000, Timeout.Infinite));
                 API.sendChatMessageToPlayer(player, "You've got 1 minute to get back to your vehicle or the wood will be reset.");
             }
         }
@@ -299,6 +300,7 @@ namespace mtgvrp.job_manager.lumberjack
                 API.warpPlayerOutOfVehicle(player);
                 vehicle.Respawn();
                 API.resetEntityData(API.getPlayerVehicle(player), "TREE_DRIVER");
+                API.setBlipRouteVisible(character.JobOne.MiscOne.Blip, false);
 
                 InventoryManager.GiveInventoryItem(player.GetCharacter(), new Money(), 500);
                 API.sendChatMessageToPlayer(player, "* You have sucessfully sold your wood for ~g~$500");
