@@ -4,10 +4,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using GTANetworkServer;
 using GTANetworkShared;
 using mtgvrp.core;
 using mtgvrp.core.Help;
+using mtgvrp.inventory;
 using MongoDB.Bson;
 using Vehicle = mtgvrp.vehicle_manager.Vehicle;
 
@@ -153,10 +155,67 @@ namespace mtgvrp.job_manager.lumberjack
                 API.setBlipRouteVisible(character.JobOne.MiscOne.Blip, true);
                 API.setBlipRouteColor(character.JobOne.MiscOne.Blip, 59);
 
+                API.setEntityData(vehicle.NetHandle, "TREE_OBJ", tree);
                 API.sendChatMessageToPlayer(player, "Goto the HQ to sell your wood.");
             }
             else
                 API.sendChatMessageToPlayer(player, "You have to be in a forklift to pickup the wood.");
+        }
+
+        [Command("sellwood")]
+        public void SellWoodCmd(Client player)
+        {
+            var character = player.GetCharacter();
+            if (character.JobOne.Type != JobManager.JobTypes.Lumberjack)
+            {
+                API.sendNotificationToPlayer(player, "You must be a lumberjack.");
+                return;
+            }
+
+            if (character.JobZoneType != 2)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "You are not near the sell wood point!");
+                return;
+            }
+
+            var job = JobManager.GetJobById(character.JobZone);
+
+            if (job == null)
+            {
+                API.sendChatMessageToPlayer(player, "null job");
+                return;
+            }
+
+            if (job.Type != JobManager.JobTypes.Lumberjack)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "You are not near the sell wood point!");
+                return;
+            }
+
+            if (API.isPlayerInAnyVehicle(player) && API.getEntityModel(API.getPlayerVehicle(player)) ==
+                (int) VehicleHash.Forklift)
+            {
+                TreeItem tree = API.getEntityData(API.getPlayerVehicle(player), "TREE_OBJ");
+                if (tree == null)
+                {
+                    API.sendChatMessageToPlayer(player, "You dont have any wood on your forklift.");
+                    return;
+                }
+
+                tree.Stage = TreeItem.Stages.Hidden;
+                tree.UpdateAllTree();
+                tree.RespawnTimer = new Timer(1.8e+6);
+                tree.RespawnTimer.Elapsed += tree.RespawnTimer_Elapsed;
+                tree.RespawnTimer.Start();
+
+                Vehicle vehicle = API.getEntityData(API.getPlayerVehicle(player), "Vehicle");
+                API.resetEntityData(API.getPlayerVehicle(player), "TREE_OBJ");
+                API.warpPlayerOutOfVehicle(player);
+                vehicle.Respawn();
+
+                InventoryManager.GiveInventoryItem(player.GetCharacter(), new Money(), 500);
+                API.sendChatMessageToPlayer(player, "* You have sucessfully sold your woof for ~g~$500");
+            }
         }
     }
 }

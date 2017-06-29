@@ -462,21 +462,11 @@ namespace mtgvrp.job_manager
 
                 if (j.MiscOne != MarkerZone.None)
                 {
-                    j.MiscOne = new MarkerZone(j.MiscOne.Location, j.MiscOne.Rotation, j.MiscOne.Dimension,
-                        j.MiscOne.ColZoneSize)
-                    {
-                        LabelText = j.MiscOne.LabelText,
-                    };
                     j.MiscOne.Create();
                 }
 
                 if (j.MiscTwo != MarkerZone.None)
                 {
-                    j.MiscTwo = new MarkerZone(j.MiscTwo.Location, j.MiscTwo.Rotation, j.MiscTwo.Dimension,
-                        j.MiscTwo.ColZoneSize)
-                    {
-                        LabelText = j.MiscTwo.LabelText,
-                    };
                     j.MiscTwo.Create();
                 }
 

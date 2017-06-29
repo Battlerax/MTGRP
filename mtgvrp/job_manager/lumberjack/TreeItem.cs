@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using GTANetworkServer;
 using mtgvrp.inventory;
 using mtgvrp.inventory.bags;
@@ -61,6 +62,9 @@ namespace mtgvrp.job_manager.lumberjack
         [BsonIgnore]
         public int ProcessPercentage { get; set; }
 
+        [BsonIgnore]
+        public Timer RespawnTimer { get; set; }
+
         public enum Stages
         {
             Cutting,
@@ -71,7 +75,7 @@ namespace mtgvrp.job_manager.lumberjack
         }
 
         [BsonIgnore]
-        public Stages Stage = Stages.Waiting;
+        public Stages Stage = Stages.Cutting;
 
         public void Insert()
         {
@@ -136,6 +140,9 @@ namespace mtgvrp.job_manager.lumberjack
                 case Stages.Waiting:
                     TreeObj = API.shared.createObject(-1186441238, TreePos, TreeRot);
                     break;
+                case Stages.Hidden:
+                    TreeObj = null;
+                    break;
                 default:
                     TreeObj = API.shared.createObject(-1279773008, TreePos, TreeRot);
                     break;
@@ -156,6 +163,13 @@ namespace mtgvrp.job_manager.lumberjack
                 tree.CreateTree();
                 Trees.Add(tree);
             }
+        }
+
+        public void RespawnTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            RespawnTimer.Stop();
+            Stage = Stages.Cutting;
+            UpdateAllTree();
         }
     }
 }
