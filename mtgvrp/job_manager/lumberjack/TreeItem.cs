@@ -20,32 +20,12 @@ using MongoDB.Driver;
 
 namespace mtgvrp.job_manager.lumberjack
 {
-    public class TreeItem : IInventoryItem
+    public class Tree
     {
-        public static List<TreeItem> Trees = new List<TreeItem>();
+        public static List<Tree> Trees = new List<Tree>();
 
         [BsonId]
         public ObjectId Id { get; set; }
-
-        public bool CanBeGiven => true;
-        public bool CanBeDropped => true;
-        public bool CanBeStashed => false;
-        public bool CanBeStacked => true;
-
-        public bool IsBlocking => true;
-
-        public Dictionary<Type, int> MaxAmount => new Dictionary<Type, int>();
-
-        public int AmountOfSlots => 100;
-
-        public string CommandFriendlyName => "treelog";
-
-        public string LongName => "Tree Log";
-
-        public int Object => -1279773008;
-
-        public int Amount { get; set; }
-
 
         public Vector3 TreePos { get; set; }
         public Vector3 TreeRot { get; set; }
@@ -85,7 +65,7 @@ namespace mtgvrp.job_manager.lumberjack
 
         public void Save()
         {
-            var filter = MongoDB.Driver.Builders<TreeItem>.Filter.Eq("_id", Id);
+            var filter = MongoDB.Driver.Builders<Tree>.Filter.Eq("_id", Id);
             DatabaseManager.TreesTable.ReplaceOne(filter, this);
         }
 
@@ -97,7 +77,7 @@ namespace mtgvrp.job_manager.lumberjack
             if (API.shared.doesEntityExist(TreeText))
                 API.shared.deleteEntity(TreeText);
 
-            var filter = MongoDB.Driver.Builders<TreeItem>.Filter.Eq("_id", Id);
+            var filter = MongoDB.Driver.Builders<Tree>.Filter.Eq("_id", Id);
             DatabaseManager.TreesTable.DeleteOne(filter);
             Trees.Remove(this);
         }
@@ -157,8 +137,8 @@ namespace mtgvrp.job_manager.lumberjack
 
         public static void LoadTrees()
         {
-            Trees = new List<TreeItem>();
-            foreach (var tree in DatabaseManager.TreesTable.Find(FilterDefinition<TreeItem>.Empty).ToList())
+            Trees = new List<Tree>();
+            foreach (var tree in DatabaseManager.TreesTable.Find(FilterDefinition<Tree>.Empty).ToList())
             {
                 tree.CreateTree();
                 Trees.Add(tree);

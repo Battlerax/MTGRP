@@ -19,7 +19,7 @@ namespace mtgvrp.job_manager.lumberjack
     {
         public LumberjackManager()
         {
-            TreeItem.LoadTrees();
+            Tree.LoadTrees();
 
             API.onClientEventTrigger += API_onClientEventTrigger;
         }
@@ -29,10 +29,10 @@ namespace mtgvrp.job_manager.lumberjack
             var character = sender.GetCharacter();
             if (eventName == "lumberjack_hittree" && character.JobOne.Type == JobManager.JobTypes.Lumberjack)
             {
-                var tree = TreeItem.Trees.SingleOrDefault(x => x.TreeText?.position.DistanceTo(sender.position) <= 1.5);
+                var tree = Tree.Trees.SingleOrDefault(x => x.TreeText?.position.DistanceTo(sender.position) <= 1.5);
                 if (tree == null)
                     return;
-                if (tree.Stage == TreeItem.Stages.Cutting)
+                if (tree.Stage == Tree.Stages.Cutting)
                 {
                     if (tree.CutPercentage >= 100)
                     {
@@ -47,12 +47,12 @@ namespace mtgvrp.job_manager.lumberjack
                         API.setEntityRotation(tree.TreeObj, new Vector3(90, 0, 0));
                         ChatManager.RoleplayMessage(sender, "A tree would fall over on the ground.",
                             ChatManager.RoleplayDo);
-                        tree.Stage = TreeItem.Stages.Processing;
+                        tree.Stage = Tree.Stages.Processing;
                     }
 
                     tree.UpdateTreeText();
                 }
-                else if (tree.Stage == TreeItem.Stages.Processing)
+                else if (tree.Stage == Tree.Stages.Processing)
                 {
                     if (tree.ProcessPercentage >= 100)
                     {
@@ -64,7 +64,7 @@ namespace mtgvrp.job_manager.lumberjack
 
                     if (tree.ProcessPercentage >= 100)
                     {
-                        tree.Stage = TreeItem.Stages.Waiting;
+                        tree.Stage = Tree.Stages.Waiting;
                         tree.UpdateAllTree();
                     }
 
@@ -78,7 +78,7 @@ namespace mtgvrp.job_manager.lumberjack
                 Vector3 pos = (Vector3) arguments[1];
                 Vector3 rot = (Vector3) arguments[2];
 
-                var tree = TreeItem.Trees.SingleOrDefault(x => x.Id.ToString() == id);
+                var tree = Tree.Trees.SingleOrDefault(x => x.Id.ToString() == id);
                 if (tree == null)
                     return;
 
@@ -97,7 +97,7 @@ namespace mtgvrp.job_manager.lumberjack
             if (player.GetAccount().AdminLevel < 4)
                 return;
 
-            var tree = new TreeItem {Id = ObjectId.GenerateNewId(DateTime.Now), TreePos = player.position, TreeRot = new Vector3()};
+            var tree = new Tree {Id = ObjectId.GenerateNewId(DateTime.Now), TreePos = player.position, TreeRot = new Vector3()};
             tree.CreateTree();
             tree.Insert();
             API.setEntitySyncedData(tree.TreeObj, "TargetObj", tree.Id.ToString());
@@ -110,7 +110,7 @@ namespace mtgvrp.job_manager.lumberjack
             if (player.GetAccount().AdminLevel < 4)
                 return;
 
-            var tree = TreeItem.Trees.SingleOrDefault(x => x.TreeText?.position.DistanceTo(player.position) <= 1.5);
+            var tree = Tree.Trees.SingleOrDefault(x => x.TreeText?.position.DistanceTo(player.position) <= 1.5);
             if (tree == null)
             {
                 API.sendChatMessageToPlayer(player, "You aren't near a tree.");
@@ -139,14 +139,14 @@ namespace mtgvrp.job_manager.lumberjack
                     return;
                 }
 
-                var tree = TreeItem.Trees.SingleOrDefault(x => x.TreeText?.position.DistanceTo(player.position) <= 2);
-                if (tree == null || tree?.Stage != TreeItem.Stages.Waiting)
+                var tree = Tree.Trees.SingleOrDefault(x => x.TreeText?.position.DistanceTo(player.position) <= 2);
+                if (tree == null || tree?.Stage != Tree.Stages.Waiting)
                 {
                     API.sendChatMessageToPlayer(player, "You aren't near a tree.");
                     return;
                 }
 
-                tree.Stage = TreeItem.Stages.Moving;
+                tree.Stage = Tree.Stages.Moving;
                 tree.UpdateTreeText();
                 API.attachEntityToEntity(tree.TreeObj, API.getPlayerVehicle(player), "forks_attach", new Vector3(), new Vector3(0, 0, 90));
 
@@ -195,14 +195,14 @@ namespace mtgvrp.job_manager.lumberjack
             if (API.isPlayerInAnyVehicle(player) && API.getEntityModel(API.getPlayerVehicle(player)) ==
                 (int) VehicleHash.Forklift)
             {
-                TreeItem tree = API.getEntityData(API.getPlayerVehicle(player), "TREE_OBJ");
+                Tree tree = API.getEntityData(API.getPlayerVehicle(player), "TREE_OBJ");
                 if (tree == null)
                 {
                     API.sendChatMessageToPlayer(player, "You dont have any wood on your forklift.");
                     return;
                 }
 
-                tree.Stage = TreeItem.Stages.Hidden;
+                tree.Stage = Tree.Stages.Hidden;
                 tree.UpdateAllTree();
                 tree.RespawnTimer = new Timer(1.8e+6);
                 tree.RespawnTimer.Elapsed += tree.RespawnTimer_Elapsed;
