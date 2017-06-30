@@ -21,6 +21,7 @@
 	<script src="job_manager/JobManager.js" type="client" lang="javascript"/>
 	<script src="job_manager/taxi/TaxiJob.js" type="client" lang="javascript"/>
 	<script src="job_manager/fisher/Fisher.js" type="client" lang="javascript"/>
+  <script src="job_manager/hunting/HuntingManager.js" type="client" lang="javascript"/>
 
 	<!-- VEHICLE -->
 	<script src="vehicle_manager/VehicleMenu.js" type="client" lang="javascript"/>

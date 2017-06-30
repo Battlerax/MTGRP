@@ -45,6 +45,7 @@ namespace mtgvrp.property_system
             GasStation,
             Ammunation,
             LSNN,
+            HuntingStation,
         }
 
         #region ColShapeKnowing
@@ -468,6 +469,8 @@ namespace mtgvrp.property_system
                     return "/buy";
                 case PropertyTypes.LSNN:
                     return "/buy";
+                case PropertyTypes.HuntingStation:
+                    return "/buy\n/redeemdeertag\n/redeemboartag";
             }
             return "";
         }
