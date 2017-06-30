@@ -121,7 +121,7 @@ namespace mtgvrp.property_system
                 case PropertyManager.PropertyTypes.Advertising:
                     return 133;
                 case PropertyManager.PropertyTypes.HuntingStation:
-                    return 433;
+                    return 463;
                 default:
                     return -1;
             }
