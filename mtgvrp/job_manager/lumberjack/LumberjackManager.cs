@@ -131,6 +131,14 @@ namespace mtgvrp.job_manager.lumberjack
                     }
 
                     tree.UpdateTreeText();
+
+                    var rnd = new Random();
+                    if (rnd.Next(0, 1000) <= 0)
+                    {
+                        API.sendChatMessageToPlayer(sender, "~r~* Your axe would break.");
+                        InventoryManager.DeleteInventoryItem<Weapon>(character, 1,
+                            x => x.CommandFriendlyName == "Hatchet");
+                    }
                 }
                 else if (tree.Stage == Tree.Stages.Processing)
                 {
@@ -149,6 +157,14 @@ namespace mtgvrp.job_manager.lumberjack
                     }
 
                     tree.UpdateTreeText();
+
+                    var rnd = new Random();
+                    if (rnd.Next(0, 1000) <= 0)
+                    {
+                        API.sendChatMessageToPlayer(sender, "~r~* Your axe would break.");
+                        InventoryManager.DeleteInventoryItem<Weapon>(character, 1,
+                            x => x.CommandFriendlyName == "Hatchet");
+                    }
                 }
 
             }
