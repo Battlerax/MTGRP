@@ -17,7 +17,6 @@ namespace mtgvrp.job_manager.garbageman
         public Garbageman()
         {
             API.onPlayerEnterVehicle += API_onPlayerEnterVehicle;
-            API.onPlayerExitVehicle += API_onPlayerExitVehicle;
             API.onClientEventTrigger += API_onClientEventTrigger;
         }
 
@@ -33,7 +32,7 @@ namespace mtgvrp.job_manager.garbageman
                         API.deleteEntity(character.GarbageBag);
                         character.GarbageBag = null;
 
-                        vehicle_manager.Vehicle closestVeh = API.getEntityData(VehicleManager.GetNearestVehicle(player, 5f).NetHandle, "Vehicle");
+                        vehicle_manager.Vehicle closestVeh = VehicleManager.GetNearestVehicle(player, 5f);
 
                         if (closestVeh == null || closestVeh.Job.Type != JobManager.JobTypes.Garbageman)
                         {
@@ -68,11 +67,6 @@ namespace mtgvrp.job_manager.garbageman
             }
         }
 
-        private void API_onPlayerExitVehicle(Client player, NetHandle vehicle)
-        {
-
-        }
-
         private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle)
         {
             Character character = API.getEntityData(player, "Character");
@@ -80,6 +74,14 @@ namespace mtgvrp.job_manager.garbageman
 
             if (veh.Job?.Type == JobManager.JobTypes.Garbageman)
             {
+
+                int result = DateTime.Compare(character.CanPickupTrash, DateTime.Now);
+
+                if (result == 1 && !character.IsOnGarbageRun)
+                {
+                    player.sendChatMessage($"Please wait {character.CanPickupTrash.Subtract(DateTime.Now).Minutes} more minutes before picking up more trash.");
+                    return;
+                }
 
                 Property TargetProperty = null;
                 int maxGarbage = 0;
@@ -103,9 +105,31 @@ namespace mtgvrp.job_manager.garbageman
                 }
 
                 API.triggerClientEvent(player, "garbage_setwaypoint", TargetProperty.GarbagePoint);
-                player.sendChatMessage("A garbage waypoint has been set on your map.");
+                character.IsOnGarbageRun = true;
+                character.CanPickupTrash = DateTime.Now.AddMinutes(30);
+                player.sendChatMessage("A garbage waypoint has been set on your map. You have 5 minutes to pick up the trash!");
+                character.GarbageTimeLeftTimer = new Timer { Interval = 1000 };
+                character.GarbageTimeLeftTimer.Elapsed += delegate { UpdateTimer(player); };
+                character.GarbageTimeLeftTimer.Start();
+                veh.RespawnTimer = new Timer { Interval = 1000 * 300 };
+                veh.RespawnTimer.Elapsed += delegate { RespawnGarbageTruck(player, veh); };
+                veh.RespawnTimer.Start();
 
             }
+        }
+
+        public static void UpdateTimer(Client player)
+        {
+            Character character = API.shared.getEntityData(player.handle, "Character");
+            character.GarbageTimeLeft -= 1000;
+        }
+
+        public void RespawnGarbageTruck(Client player, vehicle_manager.Vehicle vehicle)
+        {
+            vehicle.RespawnTimer.Stop();
+            VehicleManager.respawn_vehicle(vehicle);
+            player.GetCharacter().IsOnGarbageRun = false;
+            player.sendChatMessage("~r~Your time to collect garbage is up. Your garbage truck was removed.");
         }
 
         public static void SendNotificationToGarbagemen(string message)
@@ -153,7 +177,7 @@ namespace mtgvrp.job_manager.garbageman
             prop.GarbageBags -= 1;
             prop.UpdateMarkers();
             character.GarbageBag = API.createObject(API.getHashKey("hei_prop_heist_binbag"), player.position, new Vector3());
-            API.attachEntityToEntity(character.GarbageBag, player, "IK_R_Hand", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+            API.attachEntityToEntity(character.GarbageBag, player, "IK_R_Hand", new Vector3(0, 0, 0), new Vector3(180, 0, 0));
             API.triggerClientEvent(player, "garbage_holdbag");
             player.sendChatMessage("You are holding a garbage bag. Press LMB to throw it into the back of the garbage truck");
         }

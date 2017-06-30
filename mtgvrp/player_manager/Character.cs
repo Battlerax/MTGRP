@@ -109,6 +109,25 @@ namespace mtgvrp.player_manager
         [BsonIgnore]
         public int JobZoneType { get; set; }
 
+        //Garbage Related
+
+        [BsonIgnore]
+        public DateTime CanPickupTrash { get; set; }
+        public bool IsOnGarbageRun { get; set; }
+        public Timer GarbageTimeLeftTimer { get; set; }
+
+        public int GarbageTimeLeft
+        {
+            get { return _time; }
+            set
+            {
+                if (Client != null)
+                    API.shared.triggerClientEvent(Client, "update_garbage_time", value / 1000);
+
+                _time = value;
+            }
+        }
+
         //Taxi Related
         [BsonIgnore]
         public Character TaxiPassenger { get; set; }

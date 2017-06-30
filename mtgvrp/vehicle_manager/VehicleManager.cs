@@ -591,7 +591,7 @@ namespace mtgvrp.vehicle_manager
                 if (veh.Job?.Type == JobManager.JobTypes.Garbageman)
                 {
                     veh.Label = API.shared.createTextLabel("~g~" + $"Garbage Bags\n{veh.GarbageBags}/10", API.shared.getEntityPosition(veh.NetHandle), 25f, 0.5f, true, API.shared.getEntityDimension(veh.NetHandle));
-                    API.shared.attachEntityToEntity(veh.Label, veh.NetHandle, "afterburner", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                    API.shared.attachEntityToEntity(veh.Label, veh.NetHandle, "tipper", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
 
                 }
             }
