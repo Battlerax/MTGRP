@@ -279,6 +279,10 @@ namespace mtgvrp.player_manager
         [BsonIgnore]
         public GTANetworkServer.Object GarbageBag = null;
 
+        //Hunting Related
+        public DateTime LastRedeemedDeerTag;
+        public DateTime LastRedeemedBoarTag;
+
         public Character()
         {
             Id = 0;

@@ -79,6 +79,13 @@
     <Compile Include="core\Help\Help.cs" />
     <Compile Include="core\Help\HelpManager.cs" />
     <Compile Include="job_manager\garbageman\Garbageman.cs" />
+    <Compile Include="job_manager\lumberjack\LumberjackManager.cs" />
+    <Compile Include="job_manager\lumberjack\TreeItem.cs" />
+    <Compile Include="group_manager\lsgov\lsgov.cs" />
+    <Compile Include="job_manager\hunting\AmmoItem.cs" />
+    <Compile Include="job_manager\hunting\AnimalItem.cs" />
+    <Compile Include="job_manager\hunting\HuntingManager.cs" />
+    <Compile Include="job_manager\hunting\HuntingTag.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AdminSystem\AdminCommands.cs" />
     <Compile Include="AdminSystem\AdminReports.cs" />
@@ -131,6 +138,11 @@
     <Compile Include="player_manager\PlayerManager.cs" />
     <Compile Include="player_manager\player_interaction\PlayerInteraction.cs" />
     <Compile Include="player_manager\player_list\PlayerList.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="property_system\businesses\Bank.cs" />
     <Compile Include="property_system\businesses\Clothing.cs" />
     <Compile Include="property_system\businesses\GeneralBuying.cs" />
@@ -152,6 +164,10 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Include="stylesheet\fonts\BebasKai-Regular.woff" />
     <None Include="stylesheet\fonts\housescript.woff" />
     <None Include="stylesheet\fonts\housescript.woff2" />
@@ -183,6 +199,8 @@
     <Content Include="group_manager\lspd\Lspd.js" />
     <Content Include="job_manager\fisher\Fisher.js" />
     <Content Include="job_manager\garbageman\Garbageman.js" />
+    <Content Include="job_manager\hunting\HuntingManager.js" />
+    <Content Include="job_manager\lumberjack\Lumberjack.js" />
     <Content Include="job_manager\taxi\TaxiJob.js" />
     <Content Include="jquery.js" />
     <Content Include="meta.xml">

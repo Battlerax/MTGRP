@@ -8,6 +8,7 @@ using mtgvrp.core;
 using mtgvrp.core.Items;
 using mtgvrp.inventory.bags;
 using mtgvrp.job_manager.fisher;
+using mtgvrp.job_manager.hunting;
 using mtgvrp.phone_manager;
 using mtgvrp.player_manager;
 using mtgvrp.property_system.businesses;
@@ -33,6 +34,9 @@ namespace mtgvrp.inventory
             BsonClassMap.RegisterClassMap<RagsItem>();
             BsonClassMap.RegisterClassMap<SprunkItem>();
             BsonClassMap.RegisterClassMap<CheckItem>();
+            BsonClassMap.RegisterClassMap<HuntingTag>();
+            BsonClassMap.RegisterClassMap<AnimalItem>();
+            BsonClassMap.RegisterClassMap<AmmoItem>();
 
             BsonClassMap.RegisterClassMap<Weapon>();
             #endregion
@@ -211,9 +215,13 @@ namespace mtgvrp.inventory
             return storage.Inventory.Where(x => x.CommandFriendlyName.ToLower() == item.ToLower()).ToArray();
         }
 
-        public static T[] DoesInventoryHaveItem<T>(IStorage storage)
+        public static T[] DoesInventoryHaveItem<T>(IStorage storage, Func<T, bool> predicate = null)
         {
             if (storage.Inventory == null) storage.Inventory = new List<IInventoryItem>();
+            if (predicate != null)
+            {
+                return storage.Inventory.Where(x => x.GetType() == typeof(T)).Cast<T>().Where(predicate).ToArray();
+            }
             return storage.Inventory.Where(x => x.GetType() == typeof(T)).Cast<T>().ToArray();
         }
 
@@ -262,31 +270,27 @@ namespace mtgvrp.inventory
             if (storage.Inventory == null) storage.Inventory = new List<IInventoryItem>();
             if (amount == -1)
             {
-                IInventoryItem[] items = storage.Inventory.FindAll(x => x.GetType() == item).ToArray();
-                if (storage.Inventory.RemoveAll(x => x.GetType() == item) > 0)
+                IInventoryItem[] items = predicate != null ? storage.Inventory.FindAll(x => x.GetType() == item).Where(predicate).ToArray() : storage.Inventory.FindAll(x => x.GetType() == item).ToArray();
+
+                foreach (var i in items)
                 {
-                    foreach (var i in items)
-                    {
-                        OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(i, amount));
-                    }
-                    OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item, 0));
-                    return true;
+                    storage.Inventory.Remove(i);
+                    OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(i, amount));
                 }
-                return false;
+                OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item, 0));
+                return true;
             }
 
             IInventoryItem itm = predicate != null ? storage.Inventory.Where(x => x.GetType() == item).SingleOrDefault(predicate) : storage.Inventory.SingleOrDefault(x => x.GetType() == item);
-            if (itm != null)
-            {
-                itm.Amount -= amount;
-                if (itm.Amount <= 0)
-                    storage.Inventory.Remove(itm);
+            if (itm == null) return false;
 
-                OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(itm, amount));
-                OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item, itm.Amount));
-                return true;
-            }
-            return false;
+            itm.Amount -= amount;
+            if (itm.Amount <= 0)
+                storage.Inventory.Remove(itm);
+
+            OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(itm, amount));
+            OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item, itm.Amount));
+            return true;
         }
 
         /// <summary>
@@ -296,9 +300,34 @@ namespace mtgvrp.inventory
         /// <param name="amount">Amount to be removed, -1 for all.</param>
         /// <param name="predicate">The predicate to be used, can be null for none</param>
         /// <returns>true if something was removed and false if nothing was removed.</returns>
-        public static bool DeleteInventoryItem<T>(IStorage storage, int amount = -1, Func<IInventoryItem, bool> predicate = null)
+        public static bool DeleteInventoryItem<T>(IStorage storage, int amount = -1, Func<T, bool> predicate = null)
         {
-            return DeleteInventoryItem(storage, typeof(T), amount, predicate);
+            var item = typeof(T);
+
+            if (storage.Inventory == null) storage.Inventory = new List<IInventoryItem>();
+            if (amount == -1)
+            {
+                IInventoryItem[] items = predicate != null ? storage.Inventory.FindAll(x => x.GetType() == item).Cast<T>().Where(predicate).Cast<IInventoryItem>().ToArray() : storage.Inventory.FindAll(x => x.GetType() == item).ToArray();
+
+                foreach (var i in items)
+                {
+                    storage.Inventory.Remove(i);
+                    OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(i, amount));
+                }
+                OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item, 0));
+                return true;
+            }
+
+            IInventoryItem itm = predicate != null ? (IInventoryItem)storage.Inventory.Where(x => x.GetType() == item).Cast<T>().SingleOrDefault(predicate) : storage.Inventory.SingleOrDefault(x => x.GetType() == item);
+            if (itm == null) return false;
+
+            itm.Amount -= amount;
+            if (itm.Amount <= 0)
+                storage.Inventory.Remove(itm);
+
+            OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(itm, amount));
+            OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item, itm.Amount));
+            return true;
         }
 
         public static void SetInventoryAmmount(IStorage storage, Type item, int amount)
