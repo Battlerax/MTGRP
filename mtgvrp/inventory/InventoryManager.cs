@@ -8,6 +8,7 @@ using mtgvrp.core;
 using mtgvrp.core.Items;
 using mtgvrp.inventory.bags;
 using mtgvrp.job_manager.fisher;
+using mtgvrp.job_manager.hunting;
 using mtgvrp.phone_manager;
 using mtgvrp.player_manager;
 using mtgvrp.property_system.businesses;
@@ -33,6 +34,9 @@ namespace mtgvrp.inventory
             BsonClassMap.RegisterClassMap<RagsItem>();
             BsonClassMap.RegisterClassMap<SprunkItem>();
             BsonClassMap.RegisterClassMap<CheckItem>();
+            BsonClassMap.RegisterClassMap<HuntingTag>();
+            BsonClassMap.RegisterClassMap<AnimalItem>();
+            BsonClassMap.RegisterClassMap<AmmoItem>();
 
             BsonClassMap.RegisterClassMap<Weapon>();
             #endregion

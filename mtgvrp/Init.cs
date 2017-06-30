@@ -10,10 +10,13 @@
  * */
 
 
+using System;
 using GTANetworkServer;
+using GTANetworkShared;
 using mtgvrp.core;
 using mtgvrp.database_manager;
 using mtgvrp.inventory;
+using mtgvrp.job_manager.hunting;
 using mtgvrp.player_manager;
 using mtgvrp.vehicle_manager;
 
@@ -24,6 +27,7 @@ namespace mtgvrp
         public static string SERVER_NAME = "[EN] MT-Gaming V-RP Test Server";
         public static string SERVER_VERSION = "v0.0.779";
         public static string SERVER_WEBSITE = "www.mt-gaming.com";
+        public static Random Random = new Random();
 
         public Init()
         {
@@ -58,6 +62,15 @@ namespace mtgvrp
 
             VehicleManager.load_all_unowned_vehicles();
             API.consoleOutput("[INIT] Script initalized!");
+        }
+
+        [Command("unfreezeanimals")]
+        public void unfreezeanimals(Client player)
+        {
+            foreach (var a in HuntingManager.SpawnedAnimals)
+            {
+                API.setEntityPositionFrozen(a.handle, false);
+            }
         }
     }
 }
