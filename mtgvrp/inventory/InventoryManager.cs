@@ -215,9 +215,13 @@ namespace mtgvrp.inventory
             return storage.Inventory.Where(x => x.CommandFriendlyName.ToLower() == item.ToLower()).ToArray();
         }
 
-        public static T[] DoesInventoryHaveItem<T>(IStorage storage)
+        public static T[] DoesInventoryHaveItem<T>(IStorage storage, Func<T, bool> predicate = null)
         {
             if (storage.Inventory == null) storage.Inventory = new List<IInventoryItem>();
+            if (predicate != null)
+            {
+                return storage.Inventory.Where(x => x.GetType() == typeof(T)).Cast<T>().Where(predicate).ToArray();
+            }
             return storage.Inventory.Where(x => x.GetType() == typeof(T)).Cast<T>().ToArray();
         }
 
