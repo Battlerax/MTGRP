@@ -145,6 +145,24 @@ namespace mtgvrp.job_manager.garbageman
 
 
         //Commands
+        [Command("unloadtrash")]
+        public void unloadtrash_cmd(Clinet player)
+        {
+            Character character = API.getEntityData(player, "Character");
+
+            if (character.JobOne.Type != JobManager.JobTypes.Garbageman)
+            {
+                player.sendChatMessage("You must be a garbageman to use this command!");
+                return;
+            }
+
+            if (!character.IsOnGarbageRun)
+            {
+                player.sendChatMessage("You must be on a garbage run to pick up trash.");
+                return;
+            }
+
+        }
 
         [Command("pickuptrash")]
         public void pickuptrash_cmd(Client player)
@@ -157,7 +175,7 @@ namespace mtgvrp.job_manager.garbageman
                 return;
             }
 
-            if (character.IsOnGarbageRun)
+            if (!character.IsOnGarbageRun)
             {
                 player.sendChatMessage("You must be on a garbage run to pick up trash.");
                 return;

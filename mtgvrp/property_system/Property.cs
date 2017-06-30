@@ -71,6 +71,8 @@ namespace mtgvrp.property_system
 
         //Other Info
         public int GarbageBags { get; set; }
+
+        [BsonIgnore]
         public Object BinObject { get; set; }
 
         public Property(PropertyManager.PropertyTypes type, Vector3 entrancePos, Vector3 entranceRot,
