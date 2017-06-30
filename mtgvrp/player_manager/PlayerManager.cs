@@ -250,7 +250,7 @@ namespace mtgvrp.player_manager
             }
         }
 
-        [Command("getid", GreedyArg = true, Alias = "id")]
+        [Command("getid", GreedyArg = true, Alias = "id"), Help(HelpManager.CommandGroups.General, "Used to find the ID of specific player name.", new [] {"Name of the target character. (Partial name accepted)"})]
         public void getid_cmd(Client sender, string playerName)
         {
             API.sendChatMessageToPlayer(sender, Color.White, "----------- Searching for: " + playerName + " -----------");
@@ -288,7 +288,7 @@ namespace mtgvrp.player_manager
         }
 
         //Show time and time until paycheck.
-        [Command("time")]
+        [Command("time"), Help(HelpManager.CommandGroups.General, "Used to find the server time, in-game time, various cooldowns, etc.", null)]
         public void CheckTime(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
