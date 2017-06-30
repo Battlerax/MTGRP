@@ -12,6 +12,7 @@ using mtgvrp.inventory;
 using mtgvrp.player_manager;
 using mtgvrp.vehicle_manager;
 using MongoDB.Driver;
+using mtgvrp.core.Help;
 
 namespace mtgvrp.AdminSystem
 {
@@ -57,14 +58,14 @@ namespace mtgvrp.AdminSystem
                     break;
 
                 case "teleport":
-                    Vector3 pos = (Vector3) arguments[0];
+                    Vector3 pos = (Vector3)arguments[0];
                     player.position = pos;
                     break;
 
             }
         }
 
-        [Command("set", GreedyArg = true)]
+        [Command("set", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel5, "Used to set items/settings of a player.", new[] { "Id: The id of target player.", "Item: Name of the variable.", "Amount: New value of the variable." })]
         public void SetCharacterData(Client player, string target, string var, string value)
         {
             var acc = player.GetAccount();
@@ -124,7 +125,7 @@ namespace mtgvrp.AdminSystem
             }
         }
 
-        [Command("setadminlevel")]
+        [Command("setadminlevel")Help(HelpManager.CommandGroups.AdminLevel7, "Setting the admin level of admins, don't know how you made it to level 7 without knowing this honestly.", new[] { "Id: The id of target player.", "Rank set to" })]
         public void setrank_cmd(Client player, string id, int level)
         {
             var receiver = PlayerManager.ParseClient(id);
@@ -163,7 +164,7 @@ namespace mtgvrp.AdminSystem
             }
         }
 
-        [Command("makemeleader")]
+        [Command("makemeleader")Help(HelpManager.CommandGroups.AdminLevel5, "Making yourself and others the leader of a group.", new[] { "Id: The id of target player.", "Group ID of the group." })]
         public void makemeleader(Client player, string playerid, int groupId)
         {
             var account = player.GetAccount();
@@ -200,15 +201,19 @@ namespace mtgvrp.AdminSystem
                 leaderChar.CharacterName + " has joined the group. (Made leader by " + player.GetCharacter().CharacterName + ")");
         }
 
-        [Command("gotopos")]
+        [Command("gotopos")Help(HelpManager.CommandGroups.AdminLevel2, "Makes you able to teleport to a position", new[] { "Id: The id of target player.", "Cords X, Y, Z." })]
         public void gotopos_cmd(Client player, double x, double y, double z)
         {
+            Account account = API.shared.getEntityData(player.handle, "Account");
+            if (account.AdminLevel < 2)
+                return;
+
             var pos = new Vector3(x, y, z);
             API.setEntityPosition(player, pos);
             API.sendChatMessageToPlayer(player, "Teleported");
         }
 
-        [Command("sendback")]
+        [Command("sendback")Help(HelpManager.CommandGroups.AdminLevel2, "Can send a player back to their last point after a teleport.", new[] { "Id: The id of target player." })]
         public static void sendback_cmd(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
@@ -231,7 +236,7 @@ namespace mtgvrp.AdminSystem
 
         }
 
-        [Command("get")]
+        [Command("get")Help(HelpManager.CommandGroups.AdminLevel2, "Used to TP a player to you.", new[] { "Id: The id of target player." })]
         public static void get_cmd(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
@@ -255,8 +260,8 @@ namespace mtgvrp.AdminSystem
 
         }
 
-        [Command("adminwarp", Alias = "aw", GreedyArg = true)]
-        public void adminwarp_cmd (Client player, string id)
+        [Command("adminwarp", Alias = "aw", GreedyArg = true)Help(HelpManager.CommandGroups.AdminLevel2, "Used to TP a player to the player spawn.", new[] { "Id: The id of target player." })]
+        public void adminwarp_cmd(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
             Account account = API.shared.getEntityData(player.handle, "Account");
@@ -275,7 +280,7 @@ namespace mtgvrp.AdminSystem
             API.sendChatMessageToPlayer(player, "You have admin warped " + receiver.nametag + " to the spawn.");
         }
 
-        [Command("goto")]
+        [Command("goto")Help(HelpManager.CommandGroups.AdminLevel2, "Makes you able to teleport to a player.", new[] { "Id: The id of target player." })]
         public static void goto_cmd(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
@@ -295,7 +300,7 @@ namespace mtgvrp.AdminSystem
 
         }
 
-        [Command("agiveweapon")]
+        [Command("agiveweapon")Help(HelpManager.CommandGroups.AdminLevel3, "Give a weapon to a player.", new[] { "Id: The id of target player.", "Weapon Hash (Can use name or number)" })]
         public void agiveweapon_cmd(Client player, string id, WeaponHash weaponHash)
         {
             var receiver = PlayerManager.ParseClient(id);
@@ -314,7 +319,7 @@ namespace mtgvrp.AdminSystem
             API.sendChatMessageToPlayer(player, "You have given Player ID: " + id + " a " + weaponHash);
         }
 
-        [Command("sethealth")]
+        [Command("sethealth")Help(HelpManager.CommandGroups.AdminLevel3, "Sets a players health.", new[] { "Id: The id of target player.", "Health amount" })]
         public void sethealth_cmd(Client player, string id, int health)
         {
             var receiver = PlayerManager.ParseClient(id);
@@ -332,7 +337,7 @@ namespace mtgvrp.AdminSystem
             API.sendChatMessageToPlayer(player, "You have set Player ID: " + id + "'s health to " + health + ".");
         }
 
-        [Command("setarmour")]
+        [Command("setarmour")Help(HelpManager.CommandGroups.AdminLevel3, "Sets a players armour.", new[] { "Id: The id of target player.", "Armour amount" })]
         public void setarmour_cmd(Client player, string id, int armour)
         {
             var receiver = PlayerManager.ParseClient(id);
@@ -350,7 +355,7 @@ namespace mtgvrp.AdminSystem
             API.sendChatMessageToPlayer(player, "You have set Player ID: " + id + "'s armour to " + armour + ".");
         }
 
-        [Command("setvehiclehp")]
+        [Command("setvehiclehp")Help(HelpManager.CommandGroups.AdminLevel3, "Sets a vehicles health.", new[] { "Id: The id of Vehicle.", "Health amount" })]
         public void SetVehHP_cmd(Client player, int vehid, int health)
         {
             Account account = player.GetAccount();
@@ -376,7 +381,7 @@ namespace mtgvrp.AdminSystem
             API.sendChatMessageToPlayer(player, "You have set Vehicle ID: " + receiver.Id + "'s health to " + health + ".");
         }
 
-        [Command("spec")]
+        [Command("spec")Help(HelpManager.CommandGroups.AdminLevel2, "View a player without them seeing you. Sneaky stuff.", new[] { "Id: The id of player." })]
         public static void spec_cmd(Client player, string id)
         {
             var target = PlayerManager.ParseClient(id);
@@ -398,7 +403,7 @@ namespace mtgvrp.AdminSystem
 
         }
 
-        [Command("specoff")]
+        [Command("specoff")Help(HelpManager.CommandGroups.AdminLevel2, "Stops being sneaky.", null)]
         public void specoff_cmd(Client player)
         {
             Account account = API.getEntityData(player.handle, "Account");
@@ -418,7 +423,7 @@ namespace mtgvrp.AdminSystem
             API.sendChatMessageToPlayer(player, "You are no longer spectating anyone.");
         }
 
-        [Command("slap")]
+        [Command("slap")Help(HelpManager.CommandGroups.AdminLevel2, "Slaps the player into doing what they're told.", new[] { "Id: The id of player." })]
         public void slap_cmd(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
@@ -437,7 +442,7 @@ namespace mtgvrp.AdminSystem
             API.sendChatMessageToPlayer(receiver, "You have been slapped by an admin");
         }
 
-        [Command("freeze")]
+        [Command("freeze")Help(HelpManager.CommandGroups.AdminLevel2, "Stops the player from being able to move.", new[] { "Id: The id of player." })]
         public void freeze_cmd(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
@@ -455,7 +460,7 @@ namespace mtgvrp.AdminSystem
             API.sendChatMessageToPlayer(receiver, "You have been frozen by an admin");
         }
 
-        [Command("gotowaypoint")]
+        [Command("gotowaypoint")Help(HelpManager.CommandGroups.AdminLevel2, "Teleports you to your waypoint.", null)]
         public void gotowaypoint_cmd(Client player)
         {
             Account account = API.getEntityData(player.handle, "Account");
@@ -466,7 +471,7 @@ namespace mtgvrp.AdminSystem
             API.triggerClientEvent(player, "getwaypoint");
         }
 
-        [Command("unfreeze")]
+        [Command("unfreeze")Help(HelpManager.CommandGroups.AdminLevel2, "Gives the player a hot chocolate to stop them being frozen.", new[] { "Id: The id of player." })]
         public void unfreeze_cmd(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
@@ -484,8 +489,8 @@ namespace mtgvrp.AdminSystem
             API.sendChatMessageToPlayer(receiver, "You have been unfrozen by an admin");
         }
 
-        [Command("quitadmin")]
-        public void QuitAdmin_cmd(Client player, int money)
+        [Command("quitadmin")Help(HelpManager.CommandGroups.AdminLevel1, "This will remove you from the team, thank you for helping out the team. o7", null)]
+        public void QuitAdmin_cmd(Client player)
         {
             Account account = API.getEntityData(player.handle, "Account");
 
@@ -497,7 +502,7 @@ namespace mtgvrp.AdminSystem
             API.sendChatMessageToPlayer(player, "You have quit admin.");
         }
 
-        [Command("setmymoney")]
+        [Command("setmymoney")Help(HelpManager.CommandGroups.AdminLevel7, "Allows you to give yourself a bunch of dollerydoos.", new[] { "The amount of money you want." })]
         public void setmymoney_cmd(Client player, int money)
         {
             Account account = API.getEntityData(player.handle, "Account");
@@ -510,7 +515,7 @@ namespace mtgvrp.AdminSystem
             API.sendChatMessageToPlayer(player, $"You have sucessfully changed your money to ${money}.");
         }
 
-        [Command("showplayercars")]
+        [Command("showplayercars")Help(HelpManager.CommandGroups.AdminLevel2, "Give you a list of the vehicles a player owns.", new[] { "Id: The id of player." })]
         public void showplayercars_cmd(Client player, string id)
         {
             Account account = API.getEntityData(player.handle, "Account");
@@ -540,7 +545,7 @@ namespace mtgvrp.AdminSystem
             API.sendChatMessageToPlayer(player, "----------------------------------------------");
         }
 
-        [Command("getplayercar")]
+        [Command("getplayercar")Help(HelpManager.CommandGroups.AdminLevel2, "Teleports the vehcle to you.", new[] { "Id: The id of player.", "Vehicle id" })]
         public void getplayercar_cmd(Client player, string id, int nethandle)
         {
             Account account = API.getEntityData(player.handle, "Account");
@@ -560,7 +565,7 @@ namespace mtgvrp.AdminSystem
             API.sendChatMessageToPlayer(player, "Sucessfully teleported the car to you.");
         }
 
-        [Command("setadminname")]
+        [Command("setadminname")Help(HelpManager.CommandGroups.AdminLevel6, "Can set the admin name for admins.", new[] { "Id: The id of player.", "Desired name they want." })]
         public void setadminname_cmd(Client player, string id, string name)
         {
             var receiver = PlayerManager.ParseClient(id);
@@ -580,7 +585,7 @@ namespace mtgvrp.AdminSystem
             API.sendChatMessageToPlayer(receiver, receiver.nametag + " has set your admin name to '" + name + "'.");
         }
 
-        [Command("admins")]
+        [Command("admins")Help(HelpManager.CommandGroups.General, "A list of all admins online at the moment.", null)]
         public void admins_cmd(Client player)
         {
             API.sendChatMessageToPlayer(player, "=====ADMINS ONLINE NOW=====");
@@ -595,7 +600,7 @@ namespace mtgvrp.AdminSystem
             }
         }
 
-        [Command("adminduty")]
+        [Command("adminduty")Help(HelpManager.CommandGroups.AdminLevel1, "Can go on and off of admin duty with this.", null)]
         public void adminduty_cmd(Client player)
         {
             Account account = API.getEntityData(player.handle, "Account");
@@ -621,7 +626,7 @@ namespace mtgvrp.AdminSystem
 
         }
 
-        [Command("whereami")]
+        [Command("whereami")Help(HelpManager.CommandGroups.General, "Give you your current location in X,Y,Z format.", null)]
         public void GetPlayerLocation(Client player)
         {
             Account account = API.getEntityData(player.handle, "Account");
@@ -646,7 +651,7 @@ namespace mtgvrp.AdminSystem
 
         //============REPORT SYSTEM=============
 
-        [Command("report", Alias = "re", GreedyArg = true)]
+        [Command("report", Alias = "re", GreedyArg = true)Help(HelpManager.CommandGroups.General, "Use this to make an ingame report for an admin to sort or to speak to an admin about an issue.", null)]
         public void report_cmd(Client player)
         {
             Character character = API.getEntityData(player, "Character");
@@ -671,7 +676,7 @@ namespace mtgvrp.AdminSystem
 
         }
 
-        [Command("reports", GreedyArg = true)]
+        [Command("reports", GreedyArg = true)Help(HelpManager.CommandGroups.AdminLevel2, "View all current ingame reports made.", null)]
         public void reports_cmd(Client player)
         {
             Account account = API.getEntityData(player.handle, "Account");
@@ -697,7 +702,7 @@ namespace mtgvrp.AdminSystem
             }
         }
 
-        [Command("acceptreport", GreedyArg = true)]
+        [Command("acceptreport", GreedyArg = true)Help(HelpManager.CommandGroups.AdminLevel2, "For you to take on a report.", new[] { "Id: The id of target player." })]
         public void acceptreport_cmd(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
@@ -736,7 +741,7 @@ namespace mtgvrp.AdminSystem
             character.AdminActions++;
         }
 
-        [Command("trashreport", GreedyArg = true)]
+        [Command("trashreport", GreedyArg = true)Help(HelpManager.CommandGroups.AdminLevel1, "For you to get rid of a report.", new[] { "Id: The id of target player." })]
         public void trashreport_cmd(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
@@ -772,7 +777,7 @@ namespace mtgvrp.AdminSystem
             SendtoAllAdmins("[TRASHED] " + player.nametag + " trashed " + receiver.nametag + "'s report.");
         }
 
-        [Command("maccept", GreedyArg = true)]
+        [Command("maccept", GreedyArg = true)Help(HelpManager.CommandGroups.AdminLevel2, "For you to take on an ask.", new[] { "Id: The id of target player." })]
         public void maccept_cmd(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
@@ -820,7 +825,7 @@ namespace mtgvrp.AdminSystem
             character.AdminActions++;
         }
 
-        [Command("mfinish", GreedyArg = true)]
+        [Command("mfinish", GreedyArg = true)Help(HelpManager.CommandGroups.AdminLevel1, "When you're done with the player hit em with this.", new[] { "Id: The id of target player." })]
         public void mfinish_cmd(Client player)
         {
             Account account = API.getEntityData(player.handle, "Account");
@@ -841,7 +846,7 @@ namespace mtgvrp.AdminSystem
             API.resetPlayerNametagColor(player);
         }
 
-        [Command("ask", GreedyArg = true)]
+        [Command("ask", GreedyArg = true)Help(HelpManager.CommandGroups.General, "To ask a mod/admin a question. Also usful for a checkpoint.", new[] { "Message put in after /ask" })]
         public void ask_cmd(Client player, string message)
         {
             Character character = API.getEntityData(player, "Character");
@@ -865,7 +870,7 @@ namespace mtgvrp.AdminSystem
             startReportTimer(player);
         }
 
-        [Command("nmute", GreedyArg = true)]
+        [Command("nmute", GreedyArg = true)Help(HelpManager.CommandGroups.AdminLevel1, "Used to mute players in /n.", new[] { "Id: The id of target player." })]
         public void nmute_cmd(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
@@ -899,7 +904,7 @@ namespace mtgvrp.AdminSystem
 
         }
 
-        [Command("vmute", GreedyArg = true)]
+        [Command("vmute", GreedyArg = true)Help(HelpManager.CommandGroups.AdminLevel1, "Used to mute people in /v.", new[] { "Id: The id of target player." })]
         public void vmute_cmd(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
@@ -933,7 +938,7 @@ namespace mtgvrp.AdminSystem
 
         }
 
-        [Command("reportmute", GreedyArg = true)]
+        [Command("reportmute", GreedyArg = true)Help(HelpManager.CommandGroups.AdminLevel1, "Used to stop people from making reports.", new[] { "Id: The id of target player." })]
         public void reportmute_cmd(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
@@ -966,7 +971,7 @@ namespace mtgvrp.AdminSystem
             }
 
         }
-
+        //here toro
         [Command("mlist", GreedyArg = true)]
         public void asklist_cmd(Client player)
         {
