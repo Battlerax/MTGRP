@@ -66,6 +66,7 @@ namespace mtgvrp.core
             {
                 Blip = API.shared.createBlip(Marker);
                 API.shared.setBlipSprite(Blip, BlipSprite);
+                API.shared.setBlipShortRange(Blip, true);
             }
         }
 

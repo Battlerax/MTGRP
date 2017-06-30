@@ -20,7 +20,9 @@
 	<!-- JOBS -->
 	<script src="job_manager/JobManager.js" type="client" lang="javascript"/>
 	<script src="job_manager/taxi/TaxiJob.js" type="client" lang="javascript"/>
-	<script src="job_manager/fisher/Fisher.js" type="client" lang="javascript"/>
+  <script src="job_manager/fisher/Fisher.js" type="client" lang="javascript"/>
+  <script src="job_manager/garbageman/Garbageman.js" type="client" lang="javascript"/>
+  <script src="job_manager/hunting/HuntingManager.js" type="client" lang="javascript"/>
 
 	<!-- VEHICLE -->
 	<script src="vehicle_manager/VehicleMenu.js" type="client" lang="javascript"/>
@@ -93,6 +95,9 @@
   <!-- Help Manager-->
   <script src="core/Help/HelpManager.js" type="client" lang="javascript"/>
   <file src="core/Help/HelpMenu.html" />
+  
+  <!-- Lumberjack Job -->
+  <script src="job_manager/lumberjack/Lumberjack.js" type="client" lang="javascript"/>
   
   <!-- ADMIN -->
   <script src="AdminSystem/Reports.js" type="client" lang="javascript"/>

@@ -16,6 +16,10 @@ namespace mtgvrp.core.Help
         {
             Group = group;
             Description = description;
+
+            if (parameterinfo == null)
+                parameterinfo = new string[] {};
+
             Parameters = parameterinfo;
         }
     }

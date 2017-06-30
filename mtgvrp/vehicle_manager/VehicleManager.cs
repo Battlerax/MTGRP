@@ -142,7 +142,7 @@ namespace mtgvrp.vehicle_manager
             var pos = player.position;
             var rot = player.rotation;
 
-            API.consoleOutput(i + " " + pos + " " + rot);
+            API.consoleOutput("new Vector3(" + pos.X + ", " + pos.Y + ", " + pos.Z + "),");
             API.sendNotificationToPlayer(player, "Saved");
             API.sendChatMessageToPlayer(player,"Position: " + pos + "Rotation: " + rot);
 
@@ -585,7 +585,7 @@ namespace mtgvrp.vehicle_manager
             {
                 API.shared.setEntityData(veh.NetHandle, "Vehicle", veh);
             }
-            
+
             API.shared.setVehicleEngineStatus(veh.NetHandle, false);
             return returnCode;
         }
