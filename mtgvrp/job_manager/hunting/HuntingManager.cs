@@ -108,7 +108,6 @@ namespace mtgvrp.job_manager.hunting
                 if (ammo.Length > 0)
                 {
                     InventoryManager.DeleteInventoryItem(c, typeof(AmmoItem), 1);
-                    API.sendChatMessageToPlayer(player, "Lost ammo");
 
                     if (ammo[0].Amount == 0)
                     {
