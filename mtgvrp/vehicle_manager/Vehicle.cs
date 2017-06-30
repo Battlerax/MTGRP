@@ -227,7 +227,15 @@ namespace mtgvrp.vehicle_manager
         public void UpdateMarkers()
         {
             DestroyMarkers();
-            VehicleManager.respawn_vehicle(this);
+            if (this.Job != null)
+            {
+                if (this.Job?.Type == JobManager.JobTypes.Garbageman)
+                {
+                    this.Label = API.shared.createTextLabel("~g~" + $"Garbage Bags\n{this.GarbageBags}/10", API.shared.getEntityPosition(this.NetHandle), 25f, 0.5f, true, API.shared.getEntityDimension(this.NetHandle));
+                    API.shared.attachEntityToEntity(this.Label, this.NetHandle, "tipper", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+
+                }
+            }
         }
     }
 }

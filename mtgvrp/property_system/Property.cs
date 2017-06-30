@@ -190,11 +190,11 @@ namespace mtgvrp.property_system
                     API.shared.deleteEntity(BinObject);
                 }
                 BinObject = null;
-                GarbageMarker = new MarkerZone(GarbagePoint + new Vector3(0, 0, 1.5), new Vector3(0, 0, 0), GarbageDimension, 10);
+                GarbageMarker = new MarkerZone(GarbagePoint + new Vector3(0, 0, 1.2), new Vector3(0, 0, 0), GarbageDimension, 10);
                 GarbageMarker.LabelText = $"Property Garbage\nBags: {GarbageBags}/40\n/pickuptrash";
                 GarbageMarker.Create();
                 GarbageMarker.ColZone.setData("property_garbage", Id);
-                BinObject = API.shared.createObject(998415499, GarbagePoint - new Vector3(0, 0, 2), GarbageRotation, GarbageDimension);
+                BinObject = API.shared.createObject(998415499, GarbagePoint - new Vector3(0, 0, 1.1), GarbageRotation, GarbageDimension);
             }
         }
 

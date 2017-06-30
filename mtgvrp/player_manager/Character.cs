@@ -115,16 +115,17 @@ namespace mtgvrp.player_manager
         public DateTime CanPickupTrash { get; set; }
         public bool IsOnGarbageRun { get; set; }
         public Timer GarbageTimeLeftTimer { get; set; }
+        private int _garbagetime;
 
         public int GarbageTimeLeft
         {
-            get { return _time; }
+            get { return _garbagetime; }
             set
             {
                 if (Client != null)
                     API.shared.triggerClientEvent(Client, "update_garbage_time", value / 1000);
 
-                _time = value;
+                _garbagetime = value;
             }
         }
 
