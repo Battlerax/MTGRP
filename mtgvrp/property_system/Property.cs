@@ -185,11 +185,15 @@ namespace mtgvrp.property_system
 
             if (HasGarbagePoint)
             {
+                if (BinObject != null)
+                {
+                    API.shared.deleteEntity(BinObject);
+                }
                 BinObject = null;
-                GarbageMarker = new MarkerZone(GarbagePoint, new Vector3(0, 0, 0), GarbageDimension, 10);
+                GarbageMarker = new MarkerZone(GarbagePoint + new Vector3(0, 0, 0), new Vector3(0, 0, 0), GarbageDimension, 10);
+                GarbageMarker.LabelText = $"Property Garbage\nBags: {GarbageBags}/40\n/pickuptrash";
                 GarbageMarker.Create();
                 GarbageMarker.ColZone.setData("property_garbage", Id);
-                GarbageMarker.LabelText = $"Property Garbage\nBags: {GarbageBags}/40\n/pickuptrash";
                 BinObject = API.shared.createObject(998415499, GarbagePoint, GarbageRotation, GarbageDimension);
             }
         }

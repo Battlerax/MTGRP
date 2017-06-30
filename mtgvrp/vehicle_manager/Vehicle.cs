@@ -60,7 +60,7 @@ namespace mtgvrp.vehicle_manager
         public Job Job { get; set; }
         public int JobId { get; set; }
         public int GarbageBags { get; set; }
-        public MarkerZone GarbageMarker { get; set; }
+        public TextLabel Label { get; set; }
 
         [BsonIgnore]
         public Group Group { get; set; }
@@ -221,7 +221,7 @@ namespace mtgvrp.vehicle_manager
 
         public void DestroyMarkers()
         {
-            GarbageMarker?.Destroy();
+            Label?.delete();
         }
 
         public void UpdateMarkers()
