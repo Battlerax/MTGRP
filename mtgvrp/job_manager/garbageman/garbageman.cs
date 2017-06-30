@@ -28,11 +28,11 @@ namespace mtgvrp.job_manager.garbageman
                     {
                         Character character = API.getEntityData(player.handle, "Character");
 
-                        API.playPlayerAnimation(player, (int)(Animations.AnimationFlags.StopOnLastFrame), "anim@heists@narcotics@trash", "throw_ranged_b_bin_bag");
+                        API.playPlayerAnimation(player, (int)(Animations.AnimationFlags.AllowPlayerControl), "anim@heists@narcotics@trash", "throw_ranged_b_bin_bag");
                         API.deleteEntity(character.GarbageBag);
                         character.GarbageBag = null;
 
-                        vehicle_manager.Vehicle closestVeh = VehicleManager.GetNearestVehicle(player, 5f);
+                        vehicle_manager.Vehicle closestVeh = VehicleManager.GetNearestVehicle(player, 10f);
 
                         if (closestVeh == null || closestVeh.Job.Type != JobManager.JobTypes.Garbageman)
                         {
@@ -41,7 +41,7 @@ namespace mtgvrp.job_manager.garbageman
                             return;
                         }
 
-                        if (player.rotation.Y > API.getEntityRotation(closestVeh.NetHandle).Y + 20 || player.rotation.Y < API.getEntityRotation(closestVeh.NetHandle).Y - 20)
+                        if (player.rotation.Y > API.getEntityRotation(closestVeh.NetHandle).Y + 5 || player.rotation.Y < API.getEntityRotation(closestVeh.NetHandle).Y - 5)
                         {
                             ChatManager.RoleplayMessage(character, "throws the garbage bag at the garbage truck and misses.", ChatManager.RoleplayMe);
                             player.sendChatMessage("~r~You failed to throw the garbage bag into the truck!");
@@ -55,13 +55,10 @@ namespace mtgvrp.job_manager.garbageman
                             return;
                         }
 
-                        ChatManager.RoleplayMessage(character, "successfully throws the garbage into the garbage truck.", ChatManager.RoleplayMe);
+                        ChatManager.RoleplayMessage(character, "successfully throws the garbage bag into the garbage truck.", ChatManager.RoleplayMe);
                         player.sendChatMessage("~b~Pick up another garbage bag or deliver the garbage bags to the depot!");
                         closestVeh.GarbageBags += 1;
                         closestVeh.UpdateMarkers();
-
-                        
-
                         break;
                     }
             }
@@ -97,6 +94,7 @@ namespace mtgvrp.job_manager.garbageman
                     }
                 }
 
+                if (character.IsOnGarbageRun) { return; }
                 if (maxGarbage == 0)
                 {
                     player.sendChatMessage("There is no garbage to pick up! Try again soon.");
