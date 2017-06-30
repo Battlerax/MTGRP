@@ -25,8 +25,10 @@
                     var pars = "/" + cmdValue[0];
                     var parsInfo = "";
                     $.each(parametersList, function(parIndex, parValue) {
-                        pars += " [" + parValue + "]";
-                        parsInfo += `<strong>${parValue}: </strong>${parInfoList[parIndex]}<br/>`;
+                        if (parValue !== "") {
+                            pars += " [" + parValue + "]";
+                            parsInfo += `<strong>${parValue}: </strong>${parInfoList[parIndex]}<br/>`;   
+                        }
                     });
 
                     var cmdString = `
@@ -93,53 +95,53 @@
                     <ul class="sidebar2">
                         <li class="title">Help List</li>
                         <li class="active">
-                            <a href="#" class="item" onclick="showCmds('General');">General Commands</a>
+                            <a href="javascript:void(0)" class="item" onclick="showCmds('General');">General Commands</a>
                         </li>
                         <li class="">
-                            <a href="#" class="item" onclick="showCmds('Roleplay');">Roleplay Commands</a>
+                            <a href="javascript:void(0)" class="item" onclick="showCmds('Roleplay');">Roleplay Commands</a>
                         </li>
                         <li class="">
-                            <a href="#" class="item" onclick="showCmds('Animation');">Animation Commands</a>
+                            <a href="javascript:void(0)" class="item" onclick="showCmds('Animation');">Animation Commands</a>
                         </li>
                         <li class="">
-                            <a href="#" class="item" onclick="showCmds('Inventory');">Inventory Commands</a>
+                            <a href="javascript:void(0)" class="item" onclick="showCmds('Inventory');">Inventory Commands</a>
                         </li>
                         <li class="">
-                            <a href="#" class="item" onclick="showCmds('Vehicles');">Vehicle Commands</a>
+                            <a href="javascript:void(0)" class="item" onclick="showCmds('Vehicles');">Vehicle Commands</a>
                         </li>
                         <li class="">
-                            <a href="#" class="dropdown-toggle">Property Commands</a>
+                            <a href="javascript:void(0)" class="dropdown-toggle">Property Commands</a>
                             <ul class="d-menu" data-role="dropdown">
-                                <li class="item"><a href="#" onclick="showCmds('Bussiness');">Businesses</a></li>
-                                <li class="item"><a href="#" onclick="showCmds('Houses');">Houses</a></li>
+                                <li class="item"><a href="javascript:void(0)" onclick="showCmds('Bussiness');">Businesses</a></li>
+                                <li class="item"><a href="javascript:void(0)" onclick="showCmds('Houses');">Houses</a></li>
                             </ul>
                         </li>
                         <li class="">
-                            <a class="dropdown-toggle" href="#" onclick="showCmds('JobsGeneral');">Jobs Commands</a>
+                            <a class="dropdown-toggle" href="javascript:void(0)" onclick="showCmds('JobsGeneral');">Jobs Commands</a>
                             <ul class="d-menu" data-role="dropdown">
-                                <li class="item"><a href="#" onclick="showCmds('TaxiJob');">Taxi</a></li>
-                                <li class="item"><a href="#" onclick="showCmds('FisherJob');">Fisherman</a></li>
-                                <li class="item"><a href="#" onclick="showCmds('MechanicJob');">Mechanic</a></li>
+                                <li class="item"><a href="javascript:void(0)" onclick="showCmds('TaxiJob');">Taxi</a></li>
+                                <li class="item"><a href="javascript:void(0)" onclick="showCmds('FisherJob');">Fisherman</a></li>
+                                <li class="item"><a href="javascript:void(0)" onclick="showCmds('MechanicJob');">Mechanic</a></li>
                             </ul>
                         </li>
                         <li class="">
-                            <a class="dropdown-toggle" href="#" onclick="showCmds('GroupGeneral');">Group Commands</a>
+                            <a class="dropdown-toggle" href="javascript:void(0)" onclick="showCmds('GroupGeneral');">Group Commands</a>
                             <ul class="d-menu" data-role="dropdown">
-                                <li style="display: none;" class="item" id="LSPD"><a href="#" onclick="showCmds('LSPD');">LSPD</a></li>
-                                <li style="display: none;" class="item" id="LSNN"><a href="#" onclick="showCmds('LSNN');">LSNN</a></li>
+                                <li style="display: none;" class="item" id="LSPD"><a href="javascript:void(0)" onclick="showCmds('LSPD');">LSPD</a></li>
+                                <li style="display: none;" class="item" id="LSNN"><a href="javascript:void(0)" onclick="showCmds('LSNN');">LSNN</a></li>
                             </ul>
                         </li>
                         <li class="">
-                            <a class="dropdown-toggle" href="#">Admin Commands</a>
+                            <a class="dropdown-toggle" href="javascript:void(0)">Admin Commands</a>
                             <ul class="d-menu" data-role="dropdown">
-                                <li style="display: none;" class="item" id="AdminLevel1"><a href="#" onclick="showCmds('AdminLevel1');">Level 1</a></li>
-                                <li style="display: none;" class="item" id="AdminLevel2"><a href="#" onclick="showCmds('AdminLevel2');">Level 2</a></li>
-                                <li style="display: none;" class="item" id="AdminLevel3"><a href="#" onclick="showCmds('AdminLevel3');">Level 3</a></li>
-                                <li style="display: none;" class="item" id="AdminLevel4"><a href="#" onclick="showCmds('AdminLevel4');">Level 4</a></li>
-                                <li style="display: none;" class="item" id="AdminLevel5"><a href="#" onclick="showCmds('AdminLevel5');">Level 5</a></li>
-                                <li style="display: none;" class="item" id="AdminLevel6"><a href="#" onclick="showCmds('AdminLevel6');">Level 6</a></li>
-                                <li style="display: none;" class="item" id="AdminLevel7"><a href="#" onclick="showCmds('AdminLevel7');">Level 7</a></li>
-                                <li style="display: none;" class="item" id="AdminLevel8"><a href="#" onclick="showCmds('AdminLevel8');">Level 8</a></li>
+                                <li style="display: none;" class="item" id="AdminLevel1"><a href="javascript:void(0)" onclick="showCmds('AdminLevel1');">Level 1</a></li>
+                                <li style="display: none;" class="item" id="AdminLevel2"><a href="javascript:void(0)" onclick="showCmds('AdminLevel2');">Level 2</a></li>
+                                <li style="display: none;" class="item" id="AdminLevel3"><a href="javascript:void(0)" onclick="showCmds('AdminLevel3');">Level 3</a></li>
+                                <li style="display: none;" class="item" id="AdminLevel4"><a href="javascript:void(0)" onclick="showCmds('AdminLevel4');">Level 4</a></li>
+                                <li style="display: none;" class="item" id="AdminLevel5"><a href="javascript:void(0)" onclick="showCmds('AdminLevel5');">Level 5</a></li>
+                                <li style="display: none;" class="item" id="AdminLevel6"><a href="javascript:void(0)" onclick="showCmds('AdminLevel6');">Level 6</a></li>
+                                <li style="display: none;" class="item" id="AdminLevel7"><a href="javascript:void(0)" onclick="showCmds('AdminLevel7');">Level 7</a></li>
+                                <li style="display: none;" class="item" id="AdminLevel8"><a href="javascript:void(0)" onclick="showCmds('AdminLevel8');">Level 8</a></li>
                             </ul>
                         </li>
                     </ul>
