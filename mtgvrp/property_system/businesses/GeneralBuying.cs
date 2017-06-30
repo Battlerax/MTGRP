@@ -90,6 +90,12 @@ namespace mtgvrp.property_system.businesses
                         case "rags":
                             item = new RagsItem();
                             break;
+                        case "axe":
+                            WeaponManager.CreateWeapon(sender, WeaponHash.Hatchet, WeaponTint.Normal, true);
+                            InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
+                            API.sendChatMessageToPlayer(sender,
+                                $"[BUSINESS] You have sucessfully bought an ~g~Axe~w~ for ~g~${price}.");
+                            return;
                     }
                 }
                 else if (prop.Type == PropertyManager.PropertyTypes.Restaurant)
