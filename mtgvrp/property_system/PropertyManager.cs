@@ -45,6 +45,7 @@ namespace mtgvrp.property_system
             GasStation,
             Ammunation,
             LSNN,
+            Housing,
         }
 
         #region ColShapeKnowing
