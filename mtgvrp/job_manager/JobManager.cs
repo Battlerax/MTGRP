@@ -18,6 +18,7 @@ namespace mtgvrp.job_manager
             None,
             Taxi,
             Fisher,
+            Garbageman,
             Lumberjack
         }
 
@@ -132,7 +133,10 @@ namespace mtgvrp.job_manager
                 return;
 
             API.sendChatMessageToPlayer(player, Color.White, "-----------------------------------------");
-            API.sendChatMessageToPlayer(player, Color.Grey, "Type 1 - Taxi Driver");
+            foreach (var job in JobManager.Jobs)
+            {
+                player.sendChatMessage($"Type {job.Type} - {job.Name}");
+            }
             API.sendChatMessageToPlayer(player, Color.White, "-----------------------------------------");
         }
 

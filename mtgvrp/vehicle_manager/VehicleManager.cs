@@ -585,7 +585,7 @@ namespace mtgvrp.vehicle_manager
             {
                 API.shared.setEntityData(veh.NetHandle, "Vehicle", veh);
             }
-            
+
             API.shared.setVehicleEngineStatus(veh.NetHandle, false);
             return returnCode;
         }

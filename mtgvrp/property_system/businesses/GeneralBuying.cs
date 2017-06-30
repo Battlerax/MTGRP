@@ -11,6 +11,7 @@ using mtgvrp.phone_manager;
 using mtgvrp.weapon_manager;
 using mtgvrp.player_manager;
 using mtgvrp.group_manager;
+using mtgvrp.job_manager;
 using mtgvrp.job_manager.hunting;
 
 namespace mtgvrp.property_system.businesses
@@ -49,6 +50,16 @@ namespace mtgvrp.property_system.businesses
                 {
                     API.sendChatMessageToPlayer(sender, "Not Enough Money");
                     return;
+                }
+
+                if (prop.HasGarbagePoint)
+                {
+                    prop.GarbageBags += 1;
+                    prop.UpdateMarkers();
+                    if (prop.GarbageBags >= 10)
+                    {
+                        job_manager.garbageman.Garbageman.SendNotificationToGarbagemen("A business is overflowing with garbage. We need garbagemen on the streets right now!");
+                    }
                 }
 
                 IInventoryItem item = null;

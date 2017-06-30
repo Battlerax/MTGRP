@@ -178,6 +178,7 @@ namespace mtgvrp.job_manager
             {
                 case JobManager.JobTypes.Taxi: return 198;
                 case JobManager.JobTypes.Fisher: return 410;
+                case JobManager.JobTypes.Garbageman: return 318;
                 case JobManager.JobTypes.Lumberjack: return 496;
                 default: return 1;
             }

@@ -68,6 +68,14 @@ namespace mtgvrp.property_system
                 }
             }
 
+            if (API.getEntityType(entity) == EntityType.Player && colshape.hasData("property_garbage"))
+            {
+                if (API.getEntityData(entity, "at_garbage_property_id") == colshape.getData("property_garbage"))
+                {
+                    API.resetEntityData(entity, "at_garbage_property_id");
+                }
+            }
+
             if (API.getEntityType(entity) == EntityType.Player && colshape.hasData("property_exit"))
             {
                 if (API.getEntityData(entity, "at_exit_property_id") == colshape.getData("property_exit"))
@@ -87,6 +95,11 @@ namespace mtgvrp.property_system
             if (API.getEntityType(entity) == EntityType.Player && colshape.hasData("property_interaction"))
             {
                 API.setEntityData(entity, "at_interaction_property_id", colshape.getData("property_interaction"));
+            }
+
+            if (API.getEntityType(entity) == EntityType.Player && colshape.hasData("property_garbage"))
+            {
+                API.setEntityData(entity, "at_garbage_property_id", colshape.getData("property_garbage"));
             }
 
             if (API.getEntityType(entity) == EntityType.Player && colshape.hasData("property_exit"))
@@ -122,6 +135,17 @@ namespace mtgvrp.property_system
             if (API.shared.hasEntityData(player, "at_interaction_property_id"))
             {
                 int id = API.shared.getEntityData(player, "at_interaction_property_id");
+                var property = Properties.SingleOrDefault(x => x.Id == id);
+                return property;
+            }
+            return null;
+        }
+
+        public static Property IsAtPropertyGarbagePoint(Client player)
+        {
+            if (API.shared.hasEntityData(player, "at_garbage_property_id"))
+            {
+                int id = API.shared.getEntityData(player, "at_garbage_property_id");
                 var property = Properties.SingleOrDefault(x => x.Id == id);
                 return property;
             }
@@ -437,6 +461,49 @@ namespace mtgvrp.property_system
                         prop.UpdateMarkers();
                         API.sendChatMessageToPlayer(sender,
                             $"[Property Manager] Owner of Property #{id} was changed to: '{player.GetCharacter().CharacterName}'");
+                    }
+                    break;
+
+                case "editproperty_togglehasgarbage":
+                    if (sender.GetAccount().AdminLevel >= 5)
+                    {
+                        var id = Convert.ToInt32(arguments[0]);
+                        var prop = Properties.SingleOrDefault(x => x.Id == id);
+                        if (prop == null)
+                        {
+                            API.sendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                            return;
+                        }
+                        prop.HasGarbagePoint = !prop.HasGarbagePoint;
+                        prop.Save();
+                        API.sendChatMessageToPlayer(sender,
+                            $"[Property Manager] Property #{id} was made to '" +
+                            (prop.HasGarbagePoint ? "have garbage" : "have no garbage") + "'");
+                    }
+                    break;
+
+                case "editproperty_setgarbagepoint":
+                    if (sender.GetAccount().AdminLevel >= 5)
+                    {
+                        var id = Convert.ToInt32(arguments[0]);
+                        var prop = Properties.SingleOrDefault(x => x.Id == id);
+                        if (prop == null)
+                        {
+                            API.sendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                            return;
+                        }
+                        if (!prop.HasGarbagePoint)
+                        {
+                            API.sendChatMessageToPlayer(sender, "[Property Manager] Property cannot have a garbage point.");
+                            return;
+                        }
+                        prop.GarbagePoint = sender.position;
+                        prop.GarbageRotation = sender.rotation;
+                        prop.GarbageDimension = sender.dimension;
+                        prop.UpdateMarkers();
+                        prop.Save();
+                        API.sendChatMessageToPlayer(sender,
+                            $"[Property Manager] Garbage point of property #{id} was changed.");
                     }
                     break;
 
