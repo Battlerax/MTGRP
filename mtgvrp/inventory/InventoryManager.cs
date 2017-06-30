@@ -292,9 +292,34 @@ namespace mtgvrp.inventory
         /// <param name="amount">Amount to be removed, -1 for all.</param>
         /// <param name="predicate">The predicate to be used, can be null for none</param>
         /// <returns>true if something was removed and false if nothing was removed.</returns>
-        public static bool DeleteInventoryItem<T>(IStorage storage, int amount = -1, Func<IInventoryItem, bool> predicate = null)
+        public static bool DeleteInventoryItem<T>(IStorage storage, int amount = -1, Func<T, bool> predicate = null)
         {
-            return DeleteInventoryItem(storage, typeof(T), amount, predicate);
+            var item = typeof(T);
+
+            if (storage.Inventory == null) storage.Inventory = new List<IInventoryItem>();
+            if (amount == -1)
+            {
+                IInventoryItem[] items = predicate != null ? storage.Inventory.FindAll(x => x.GetType() == item).Cast<T>().Where(predicate).Cast<IInventoryItem>().ToArray() : storage.Inventory.FindAll(x => x.GetType() == item).ToArray();
+
+                foreach (var i in items)
+                {
+                    storage.Inventory.Remove(i);
+                    OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(i, amount));
+                }
+                OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item, 0));
+                return true;
+            }
+
+            IInventoryItem itm = predicate != null ? (IInventoryItem)storage.Inventory.Where(x => x.GetType() == item).Cast<T>().SingleOrDefault(predicate) : storage.Inventory.SingleOrDefault(x => x.GetType() == item);
+            if (itm == null) return false;
+
+            itm.Amount -= amount;
+            if (itm.Amount <= 0)
+                storage.Inventory.Remove(itm);
+
+            OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(itm, amount));
+            OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item, itm.Amount));
+            return true;
         }
 
         public static void SetInventoryAmmount(IStorage storage, Type item, int amount)
