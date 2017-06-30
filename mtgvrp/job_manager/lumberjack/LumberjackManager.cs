@@ -11,6 +11,7 @@ using GTANetworkShared;
 using mtgvrp.core;
 using mtgvrp.core.Help;
 using mtgvrp.inventory;
+using mtgvrp.vehicle_manager;
 using MongoDB.Bson;
 using Timer = System.Timers.Timer;
 using Vehicle = mtgvrp.vehicle_manager.Vehicle;
@@ -314,7 +315,7 @@ namespace mtgvrp.job_manager.lumberjack
                 Vehicle vehicle = API.getEntityData(API.getPlayerVehicle(player), "Vehicle");
                 API.resetEntityData(API.getPlayerVehicle(player), "TREE_OBJ");
                 API.warpPlayerOutOfVehicle(player);
-                vehicle.Respawn();
+                VehicleManager.respawn_vehicle(vehicle);
                 API.resetEntityData(API.getPlayerVehicle(player), "TREE_DRIVER");
                 API.setBlipRouteVisible(character.JobOne.MiscOne.Blip, false);
 
