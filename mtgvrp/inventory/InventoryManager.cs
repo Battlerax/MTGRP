@@ -262,31 +262,27 @@ namespace mtgvrp.inventory
             if (storage.Inventory == null) storage.Inventory = new List<IInventoryItem>();
             if (amount == -1)
             {
-                IInventoryItem[] items = storage.Inventory.FindAll(x => x.GetType() == item).ToArray();
-                if (storage.Inventory.RemoveAll(x => x.GetType() == item) > 0)
+                IInventoryItem[] items = predicate != null ? storage.Inventory.FindAll(x => x.GetType() == item).Where(predicate).ToArray() : storage.Inventory.FindAll(x => x.GetType() == item).ToArray();
+
+                foreach (var i in items)
                 {
-                    foreach (var i in items)
-                    {
-                        OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(i, amount));
-                    }
-                    OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item, 0));
-                    return true;
+                    storage.Inventory.Remove(i);
+                    OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(i, amount));
                 }
-                return false;
+                OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item, 0));
+                return true;
             }
 
             IInventoryItem itm = predicate != null ? storage.Inventory.Where(x => x.GetType() == item).SingleOrDefault(predicate) : storage.Inventory.SingleOrDefault(x => x.GetType() == item);
-            if (itm != null)
-            {
-                itm.Amount -= amount;
-                if (itm.Amount <= 0)
-                    storage.Inventory.Remove(itm);
+            if (itm == null) return false;
 
-                OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(itm, amount));
-                OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item, itm.Amount));
-                return true;
-            }
-            return false;
+            itm.Amount -= amount;
+            if (itm.Amount <= 0)
+                storage.Inventory.Remove(itm);
+
+            OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(itm, amount));
+            OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item, itm.Amount));
+            return true;
         }
 
         /// <summary>
