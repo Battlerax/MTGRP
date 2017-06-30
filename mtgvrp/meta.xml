@@ -94,6 +94,9 @@
   <script src="core/Help/HelpManager.js" type="client" lang="javascript"/>
   <file src="core/Help/HelpMenu.html" />
   
+  <!-- Lumberjack Job -->
+  <script src="job_manager/lumberjack/Lumberjack.js" type="client" lang="javascript"/>
+  
   <!-- ADMIN -->
   <script src="AdminSystem/Reports.js" type="client" lang="javascript"/>
           
