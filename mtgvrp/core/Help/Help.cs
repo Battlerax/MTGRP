@@ -18,7 +18,8 @@ namespace mtgvrp.core.Help
             Description = description;
 
             if (parameterinfo == null)
-                parameterinfo = new[] {"None"};
+                parameterinfo = new string[] {};
+
             Parameters = parameterinfo;
         }
     }

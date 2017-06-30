@@ -20,6 +20,7 @@ using mtgvrp.inventory;
 using mtgvrp.job_manager;
 using mtgvrp.player_manager;
 using mtgvrp.property_system;
+using mtgvrp.core;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 
@@ -58,6 +59,8 @@ namespace mtgvrp.vehicle_manager
         [BsonIgnore]
         public Job Job { get; set; }
         public int JobId { get; set; }
+        public int GarbageBags { get; set; }
+        public TextLabel Label { get; set; }
 
         [BsonIgnore]
         public Group Group { get; set; }
@@ -213,6 +216,25 @@ namespace mtgvrp.vehicle_manager
             else
             {
                 return false;
+            }
+        }
+
+        public void DestroyMarkers()
+        {
+            Label?.delete();
+        }
+
+        public void UpdateMarkers()
+        {
+            DestroyMarkers();
+            if (this.Job != null)
+            {
+                if (this.Job?.Type == JobManager.JobTypes.Garbageman)
+                {
+                    this.Label = API.shared.createTextLabel("~g~" + $"Garbage Bags\n{this.GarbageBags}/10", API.shared.getEntityPosition(this.NetHandle), 25f, 0.5f, true, API.shared.getEntityDimension(this.NetHandle));
+                    API.shared.attachEntityToEntity(this.Label, this.NetHandle, "tipper", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+
+                }
             }
         }
     }

@@ -6,6 +6,7 @@
 
 var player_money = null;
 var jail_time = 0;
+var garbage_timer = 0;
 var mark = null;
 
 API.onServerEventTrigger.connect(function (eventName, args) {
@@ -17,6 +18,11 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 
 		case "update_jail_time": {
 			jail_time = args[0];
+			break;
+		}
+
+		case "update_garbage_time": {
+			garbage_timer = args[0];
 			break;
 		}
 
@@ -40,6 +46,10 @@ API.onUpdate.connect(function () {
 
 	if(jail_time != 0){
 		API.drawText("~r~JAIL TIME LEFT: ~w~" + jail_time, API.getScreenResolutionMantainRatio().Width - 15, 160, 1, 115, 186, 131, 255, 4, 2, false, true, 0);
+	}
+
+	if(garbage_timer != 0){
+		API.drawText("~r~GARBAGE TIME LEFT: ~w~" + garbage_timer, API.getScreenResolutionMantainRatio().Width - 15, 160, 1, 115, 186, 131, 255, 4, 2, false, true, 0);
 	}
     //API.dxDrawTexture("/cef_resources/MTGVRP_LOGO_SMALL.png", new Point(API.getScreenResolutionMantainRatio().Width - 100, 0), new Size(100, 100), 0);
 });

@@ -78,6 +78,7 @@
   <ItemGroup>
     <Compile Include="core\Help\Help.cs" />
     <Compile Include="core\Help\HelpManager.cs" />
+    <Compile Include="job_manager\garbageman\Garbageman.cs" />
     <Compile Include="job_manager\lumberjack\LumberjackManager.cs" />
     <Compile Include="job_manager\lumberjack\TreeItem.cs" />
     <Compile Include="group_manager\lsgov\lsgov.cs" />
@@ -197,6 +198,7 @@
     <Content Include="inventory\ManageInv.html" />
     <Content Include="group_manager\lspd\Lspd.js" />
     <Content Include="job_manager\fisher\Fisher.js" />
+    <Content Include="job_manager\garbageman\Garbageman.js" />
     <Content Include="job_manager\hunting\HuntingManager.js" />
     <Content Include="job_manager\lumberjack\Lumberjack.js" />
     <Content Include="job_manager\taxi\TaxiJob.js" />
