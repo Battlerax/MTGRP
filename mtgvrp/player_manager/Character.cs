@@ -256,6 +256,10 @@ namespace mtgvrp.player_manager
         [BsonIgnore]
         public GTANetworkServer.Object MicObject = null;
 
+        //Hunting Related
+        public DateTime LastRedeemedDeerTag;
+        public DateTime LastRedeemedBoarTag;
+
         public Character()
         {
             Id = 0;

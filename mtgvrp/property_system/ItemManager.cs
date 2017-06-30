@@ -67,6 +67,12 @@ namespace mtgvrp.property_system
                 case PropertyManager.PropertyTypes.LSNN:
                     prop.ItemPrices.Add("lotto_ticket", 200);
                     break;
+
+                case PropertyManager.PropertyTypes.HuntingStation:
+                    prop.ItemPrices.Add("deer_tag", 250);
+                    prop.ItemPrices.Add("boar_tag", 500);
+                    prop.ItemPrices.Add("ammo", 150);
+                    break;
             }
         }
 
@@ -101,6 +107,13 @@ namespace mtgvrp.property_system
             //ID, NAME, PRICE, DESCRIPTION
             new[] {"lotto_ticket", "Lotto Ticket", "Purchase a lotto ticket and enter the lotto!"},
 
+        };
+
+        public static string[][] HuntingItems =
+        {
+            new [] {"deer_tag", "Deer Tag", "Used to turn in a killed deer for cash. Can only purchase one per day."},
+            new [] {"boar_tag", "Boar Tag", "Used to turn in a kiled boar for cash. Can only be purchase one per day."},
+            new [] {"ammo", "5.56 Ammo", "Extra ammo in case you miss. Each tag comes with one free bullet."},
         };
     }
 }
