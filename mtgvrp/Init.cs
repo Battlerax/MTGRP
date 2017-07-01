@@ -12,11 +12,9 @@
 
 using System;
 using GTANetworkServer;
-using GTANetworkShared;
 using mtgvrp.core;
 using mtgvrp.database_manager;
 using mtgvrp.inventory;
-using mtgvrp.job_manager.hunting;
 using mtgvrp.player_manager;
 using mtgvrp.vehicle_manager;
 

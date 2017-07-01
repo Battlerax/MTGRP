@@ -6,9 +6,7 @@ using GTANetworkShared;
 using System.Timers;
 using mtgvrp.core;
 using mtgvrp.inventory;
-using mtgvrp.player_manager;
 using mtgvrp.property_system;
-using mtgvrp.weapon_manager;
 
 namespace mtgvrp.job_manager.hunting
 {

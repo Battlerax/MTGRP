@@ -1,21 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mime;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Timers;
 using GTANetworkServer;
-using mtgvrp.inventory;
-using mtgvrp.inventory.bags;
-using mtgvrp.property_system;
-using mtgvrp.vehicle_manager;
 using MongoDB.Bson;
 using GTANetworkShared;
 using mtgvrp.core;
 using mtgvrp.database_manager;
-using mtgvrp.door_manager;
-using mtgvrp.player_manager;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 
