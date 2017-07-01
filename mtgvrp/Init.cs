@@ -37,7 +37,10 @@ namespace mtgvrp
             API.setServerName(SERVER_NAME + " ~r~[" + SERVER_VERSION + "] ~b~| ~g~" + SERVER_WEBSITE);
 
             API.onResourceStart += OnResourceStartHandler;
+            API.onResourceStop += API_onResourceStop;
             InventoryManager.OnStorageItemUpdateAmount += InventoryManager_OnStorageItemUpdateAmount;
+
+            SettingsManager.Load();
 
             DebugManager.DebugManagerInit();
             DatabaseManager.DatabaseManagerInit();
@@ -62,6 +65,11 @@ namespace mtgvrp
 
             VehicleManager.load_all_unowned_vehicles();
             API.consoleOutput("[INIT] Script initalized!");
+        }
+
+        private void API_onResourceStop()
+        {
+            SettingsManager.Save();
         }
     }
 }
