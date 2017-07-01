@@ -99,7 +99,7 @@ namespace mtgvrp.job_manager.fisher
         {
             Character character = API.getEntityData(player.handle, "Character");
 
-            if (character.JobOne.Type != JobManager.FisherJob)
+            if (character.JobOne.Type != JobManager.JobTypes.Fisher)
             {
                 API.sendPictureNotificationToPlayer(player, "You must be a fisher man to use this command.",
                     "CHAR_BLOCKED", 0, 0, "Server", "~r~Command Error");
@@ -179,7 +179,7 @@ namespace mtgvrp.job_manager.fisher
                 return;
             }
 
-            if (job.Type != JobManager.FisherJob)
+            if (job.Type != JobManager.JobTypes.Fisher)
             {
                 API.sendChatMessageToPlayer(player, Color.White, "You are not near the sell fish point!");
                 return;

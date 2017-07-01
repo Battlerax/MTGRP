@@ -4,11 +4,88 @@
     <script src="../../jquery.js"></script>
     <script src="../../stylesheet/js/metro.js"></script>
     <link href="../../stylesheet/css/metro-icons.css" rel="stylesheet">
+    
+    <script>
+        $(document).ready(function () {
+            resourceCall("loaded");
+        });
+
+        var cmdsList = [];
+
+        function fillUpCommands(cmds, adminRank, isPD, isLSNN) {
+            var cmdsGroups = JSON.parse(cmds);
+
+            $.each(cmdsGroups, function (index, commands) {
+                cmdsList.push("");
+                $.each(commands, function(cmdIndex, cmdValue) {
+                    //Command, Parameters, Description, Parameters Desc
+
+                    var parametersList = cmdValue[1].split("|");
+                    var parInfoList = cmdValue[3].split("|");
+                    var pars = "/" + cmdValue[0];
+                    var parsInfo = "";
+                    $.each(parametersList, function(parIndex, parValue) {
+                        if (parValue !== "") {
+                            pars += " [" + parValue + "]";
+                            parsInfo += `<strong>${parValue}: </strong>${parInfoList[parIndex]}<br/>`;   
+                        }
+                    });
+
+                    var cmdString = `
+                    <tr>
+                        <td>/${cmdValue[0]}</td>
+                        <td>
+                            ${pars}
+                            <p>
+                                ${parsInfo}
+                            </p>
+                        </td>
+                        <td>${cmdValue[2]}</td>
+                    </tr>`;
+
+                    cmdsList[index] += cmdString;
+                });
+            });
+
+            for (var i = 1; i <= adminRank; i++) {
+                $("#AdminLevel" + i).show();
+            }
+
+            if (isPD || adminRank > 0)
+                $("#LSPD").show();
+
+            if (isLSNN || adminRank > 0)
+                $("#LSNN").show();
+        }
+
+        function showCmds(index) {
+            $("#CmdList").empty();
+            $("#CmdList").append(`<tr>
+                            <th>Command</th>
+                            <th>Syntax</th>
+                            <th>Information</th>
+                        </tr>`);
+
+            if (!(index in cmdsList)) {
+                return;
+            }
+
+            $("#CmdList").append(cmdsList[index]);
+        }
+
+        $(document).ready(function() {
+            $(".item").click(function() {
+                $(".item").parent().removeClass("active");
+                $(this).parent().addClass("active");
+            });
+        });
+    </script>
 </head>
 
 <body>
-<div class="panel alert">
+<div class="panel" data-role="panel">
     <div class="heading">
+        <span class="icon mif-help"></span>
         <span class="title">Command Help</span>
     </div>
     <div class="content">
@@ -16,44 +93,64 @@
             <div class="row cells4">
                 <div class="cell">
                     <ul class="sidebar2">
-                        <li class="title">General</li>
+                        <li class="title">Help List</li>
                         <li class="active">
-                            <a href="#"><span class="mif-home icon"></span>Roleplay Commands</a>
+                            <a href="javascript:void(0)" class="item" onclick="showCmds('General');">General Commands</a>
                         </li>
                         <li class="">
-                            <a href="#"><span class="mif-home icon"></span>Property Commands</a>
+                            <a href="javascript:void(0)" class="item" onclick="showCmds('Roleplay');">Roleplay Commands</a>
+                        </li>
+                        <li class="">
+                            <a href="javascript:void(0)" class="item" onclick="showCmds('Animation');">Animation Commands</a>
+                        </li>
+                        <li class="">
+                            <a href="javascript:void(0)" class="item" onclick="showCmds('Inventory');">Inventory Commands</a>
+                        </li>
+                        <li class="">
+                            <a href="javascript:void(0)" class="item" onclick="showCmds('Vehicles');">Vehicle Commands</a>
+                        </li>
+                        <li class="">
+                            <a href="javascript:void(0)" class="dropdown-toggle">Property Commands</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                <li class="item"><a href="javascript:void(0)" onclick="showCmds('Bussiness');">Businesses</a></li>
+                                <li class="item"><a href="javascript:void(0)" onclick="showCmds('Houses');">Houses</a></li>
+                            </ul>
+                        </li>
+                        <li class="">
+                            <a class="dropdown-toggle" href="javascript:void(0)" onclick="showCmds('JobsGeneral');">Jobs Commands</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                <li class="item"><a href="javascript:void(0)" onclick="showCmds('TaxiJob');">Taxi</a></li>
+                                <li class="item"><a href="javascript:void(0)" onclick="showCmds('FisherJob');">Fisherman</a></li>
+                                <li class="item"><a href="javascript:void(0)" onclick="showCmds('MechanicJob');">Mechanic</a></li>
+                            </ul>
+                        </li>
+                        <li class="">
+                            <a class="dropdown-toggle" href="javascript:void(0)" onclick="showCmds('GroupGeneral');">Group Commands</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                <li style="display: none;" class="item" id="LSPD"><a href="javascript:void(0)" onclick="showCmds('LSPD');">LSPD</a></li>
+                                <li style="display: none;" class="item" id="LSNN"><a href="javascript:void(0)" onclick="showCmds('LSNN');">LSNN</a></li>
+                            </ul>
+                        </li>
+                        <li class="">
+                            <a class="dropdown-toggle" href="javascript:void(0)">Admin Commands</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                <li style="display: none;" class="item" id="AdminLevel1"><a href="javascript:void(0)" onclick="showCmds('AdminLevel1');">Level 1</a></li>
+                                <li style="display: none;" class="item" id="AdminLevel2"><a href="javascript:void(0)" onclick="showCmds('AdminLevel2');">Level 2</a></li>
+                                <li style="display: none;" class="item" id="AdminLevel3"><a href="javascript:void(0)" onclick="showCmds('AdminLevel3');">Level 3</a></li>
+                                <li style="display: none;" class="item" id="AdminLevel4"><a href="javascript:void(0)" onclick="showCmds('AdminLevel4');">Level 4</a></li>
+                                <li style="display: none;" class="item" id="AdminLevel5"><a href="javascript:void(0)" onclick="showCmds('AdminLevel5');">Level 5</a></li>
+                                <li style="display: none;" class="item" id="AdminLevel6"><a href="javascript:void(0)" onclick="showCmds('AdminLevel6');">Level 6</a></li>
+                                <li style="display: none;" class="item" id="AdminLevel7"><a href="javascript:void(0)" onclick="showCmds('AdminLevel7');">Level 7</a></li>
+                                <li style="display: none;" class="item" id="AdminLevel8"><a href="javascript:void(0)" onclick="showCmds('AdminLevel8');">Level 8</a></li>
+                            </ul>
                         </li>
                     </ul>
                 </div>
 
                 <div class="cell colspan3">
-                    <table class="table striped border bordered" style="text-align: center;">
-                        <tr>
-                            <th>Command</th>
-                            <th>Syntax</th>
-                            <th>Information</th>
-                        </tr>
-                        <tr>
-                            <td>/me</td>
-                            <td>/me [message] 
-                                <p>
-                                    <strong>message: </strong>Your roleplay message.
-                                </p>
-                            </td>
-                            <td>Used for desciribing actions of your character.</td>
-                        </tr>
-                        <tr>
-                            <td>/give</td>
-                            <td>
-                                /give [id] [item] [amount]
-                                <p>
-                                    <strong>id: </strong>Name or Id of target player.<br/>
-                                    <strong>item: </strong>Short name of the item, found in between [ ] in /inv.<br />
-                                    <strong>amount: </strong>The amount of that item you'd like to give.<br/>
-                                </p>
-                            </td>
-                            <td>Give an item to a nearby player from your inventory.</td>
-                        </tr>
+                    <table class="table striped border bordered" style="text-align: center;" id="CmdList">
+                        
+                        
                     </table>
                 </div>
             </div>

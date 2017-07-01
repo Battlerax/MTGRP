@@ -14,6 +14,7 @@ namespace mtgvrp.group_manager
     {
         public static readonly int CommandTypeLspd = 1;
         public static readonly int CommandTypeLsnn = 2;
+        public static readonly int CommandTypeLSGov = 3;
 
         public static readonly Group None = new Group();
 
@@ -39,8 +40,7 @@ namespace mtgvrp.group_manager
         };
 
         public DateTime DisbandDate { get; set; }
-
-        //Group misc
+        public int FundingPercentage { get; set; }
         public int LottoSafe { get; set; }
         public int LottoPrice { get; set; }
         public int FactionPaycheckBonus { get; set; }
@@ -62,7 +62,6 @@ namespace mtgvrp.group_manager
             Type = 0;
             CommandType = 0;
             Motd = "Welcome To Group";
-
 
             Locker = MarkerZone.None;
             ArrestLocation = MarkerZone.None;

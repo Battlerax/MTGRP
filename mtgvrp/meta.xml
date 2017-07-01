@@ -16,12 +16,13 @@
 	<script src="player_manager/login/LoginManager.js" type="client" lang="javascript"/>
 	<file src="player_manager/login/Login.html"/>
 	<script src="player_manager/CharacterMenu.js" type="client" lang="javascript"/>
-  <script src="player_manager/Helpmenu.js" type="client" lang="javascript"/>
 
 	<!-- JOBS -->
 	<script src="job_manager/JobManager.js" type="client" lang="javascript"/>
 	<script src="job_manager/taxi/TaxiJob.js" type="client" lang="javascript"/>
-	<script src="job_manager/fisher/Fisher.js" type="client" lang="javascript"/>
+  <script src="job_manager/fisher/Fisher.js" type="client" lang="javascript"/>
+  <script src="job_manager/garbageman/Garbageman.js" type="client" lang="javascript"/>
+  <script src="job_manager/hunting/HuntingManager.js" type="client" lang="javascript"/>
 
 	<!-- VEHICLE -->
 	<script src="vehicle_manager/VehicleMenu.js" type="client" lang="javascript"/>
@@ -90,6 +91,16 @@
   <script src="property_system/PropertyManager.js" type="client" lang="javascript"/>
   <script src="property_system/businesses/Clothing.js" type="client" lang="javascript"/>
   <script src="property_system/businesses/GeneralBuying.js" type="client" lang="javascript"/>
+
+  <!-- Help Manager-->
+  <script src="core/Help/HelpManager.js" type="client" lang="javascript"/>
+  <file src="core/Help/HelpMenu.html" />
+  
+  <!-- Lumberjack Job -->
+  <script src="job_manager/lumberjack/Lumberjack.js" type="client" lang="javascript"/>
+  
+  <!-- Scubadiving -->
+  <script src="job_manager/scuba/ScubaManager.js" type="client" lang="javascript"/>
   
   <!-- ADMIN -->
   <script src="AdminSystem/Reports.js" type="client" lang="javascript"/>

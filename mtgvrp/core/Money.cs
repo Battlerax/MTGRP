@@ -24,7 +24,7 @@ namespace mtgvrp.core
 
         public string CommandFriendlyName => "money";
         public string LongName => "Money";
-        public int Object => 289396019;
+        public int Object => -994740387;
 
 
         public int Amount { get; set; }

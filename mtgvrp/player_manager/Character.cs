@@ -109,6 +109,26 @@ namespace mtgvrp.player_manager
         [BsonIgnore]
         public int JobZoneType { get; set; }
 
+        //Garbage Related
+
+        [BsonIgnore]
+        public DateTime CanPickupTrash { get; set; }
+        public bool IsOnGarbageRun { get; set; }
+        public Timer GarbageTimeLeftTimer { get; set; }
+        private int _garbagetime;
+
+        public int GarbageTimeLeft
+        {
+            get { return _garbagetime; }
+            set
+            {
+                if (Client != null)
+                    API.shared.triggerClientEvent(Client, "update_garbage_time", value / 1000);
+
+                _garbagetime = value;
+            }
+        }
+
         //Taxi Related
         [BsonIgnore]
         public Character TaxiPassenger { get; set; }
@@ -261,6 +281,16 @@ namespace mtgvrp.player_manager
         [BsonIgnore]
         public GTANetworkServer.Object MicObject = null;
 
+        [BsonIgnore]
+        public bool IsScubaDiving = false;
+
+        [BsonIgnore]
+        public GTANetworkServer.Object GarbageBag = null;
+
+        //Hunting Related
+        public DateTime LastRedeemedDeerTag;
+        public DateTime LastRedeemedBoarTag;
+
         public Character()
         {
             Id = 0;
@@ -297,6 +327,8 @@ namespace mtgvrp.player_manager
             Health = 100;
             RadioToggle = true;
             CanDoAnim = true;
+
+            IsOnGarbageRun = false;
         }
 
         public void Insert()

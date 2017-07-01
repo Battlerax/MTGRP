@@ -60,6 +60,7 @@ namespace mtgvrp.core
                 {
                     msg = "~p~ [BROADCAST] " + character.CharacterName + " : " + msg;
                     BroadcastMessage(msg);
+                    NearbyMessage(player, 30, msg);
                     e.Cancel = true;
                     return;
                 }

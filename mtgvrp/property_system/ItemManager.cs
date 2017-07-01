@@ -34,6 +34,8 @@ namespace mtgvrp.property_system
                     prop.ItemPrices.Add("rope", 20);
                     prop.ItemPrices.Add("rags", 10);
                     prop.ItemPrices.Add("phone", 500);
+                    prop.ItemPrices.Add("axe", 100);
+                    prop.ItemPrices.Add("scuba", 2000);
                     prop.ItemPrices.Add("engineparts", 200);
                     prop.ItemPrices.Add("spraypaint", 250);
                     break;
@@ -69,6 +71,12 @@ namespace mtgvrp.property_system
                 case PropertyManager.PropertyTypes.LSNN:
                     prop.ItemPrices.Add("lotto_ticket", 200);
                     break;
+
+                case PropertyManager.PropertyTypes.HuntingStation:
+                    prop.ItemPrices.Add("deer_tag", 250);
+                    prop.ItemPrices.Add("boar_tag", 500);
+                    prop.ItemPrices.Add("ammo", 150);
+                    break;
             }
         }
 
@@ -86,6 +94,8 @@ namespace mtgvrp.property_system
             new [] {"rope", "Rope", "Used to tie people."},
             new [] {"rags", "Rags", "Used to mute or blindfold people."},
             new [] {"phone", "Phone", "Used to contact other people."},
+            new [] {"axe", "Axe", "Used to cut wood."},
+            new [] {"scuba", "Scuba Set", "Used to dive."},
             new [] {"engineparts", "EngineParts", "Used to fix vehicles as a mechanic."},
             new [] {"spraypaint", "SprayPaint", "Used to change vehicle colors as a mechanic."}
         };
@@ -105,6 +115,13 @@ namespace mtgvrp.property_system
             //ID, NAME, PRICE, DESCRIPTION
             new[] {"lotto_ticket", "Lotto Ticket", "Purchase a lotto ticket and enter the lotto!"},
 
+        };
+
+        public static string[][] HuntingItems =
+        {
+            new [] {"deer_tag", "Deer Tag", "Used to turn in a killed deer for cash. Can only purchase one per day."},
+            new [] {"boar_tag", "Boar Tag", "Used to turn in a kiled boar for cash. Can only be purchase one per day."},
+            new [] {"ammo", "5.56 Ammo", "Extra ammo in case you miss. Each tag comes with one free bullet."},
         };
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using GTANetworkServer;
@@ -8,6 +9,8 @@ using mtgvrp.core;
 using mtgvrp.core.Items;
 using mtgvrp.inventory.bags;
 using mtgvrp.job_manager.fisher;
+using mtgvrp.job_manager.hunting;
+using mtgvrp.job_manager.scuba;
 using mtgvrp.phone_manager;
 using mtgvrp.player_manager;
 using mtgvrp.property_system.businesses;
@@ -35,11 +38,16 @@ namespace mtgvrp.inventory
             BsonClassMap.RegisterClassMap<RagsItem>();
             BsonClassMap.RegisterClassMap<SprunkItem>();
             BsonClassMap.RegisterClassMap<CheckItem>();
+            BsonClassMap.RegisterClassMap<HuntingTag>();
+            BsonClassMap.RegisterClassMap<AnimalItem>();
+            BsonClassMap.RegisterClassMap<AmmoItem>();
+            BsonClassMap.RegisterClassMap<ScubaItem>();
 
             BsonClassMap.RegisterClassMap<Weapon>();
             #endregion
 
             API.onClientEventTrigger += API_onClientEventTrigger;
+            API.onClientEventTrigger += API_onClientEventTrigger1;
         }
 
         #region Events
@@ -213,9 +221,13 @@ namespace mtgvrp.inventory
             return storage.Inventory.Where(x => x.CommandFriendlyName.ToLower() == item.ToLower()).ToArray();
         }
 
-        public static T[] DoesInventoryHaveItem<T>(IStorage storage)
+        public static T[] DoesInventoryHaveItem<T>(IStorage storage, Func<T, bool> predicate = null)
         {
             if (storage.Inventory == null) storage.Inventory = new List<IInventoryItem>();
+            if (predicate != null)
+            {
+                return storage.Inventory.Where(x => x.GetType() == typeof(T)).Cast<T>().Where(predicate).ToArray();
+            }
             return storage.Inventory.Where(x => x.GetType() == typeof(T)).Cast<T>().ToArray();
         }
 
@@ -264,31 +276,27 @@ namespace mtgvrp.inventory
             if (storage.Inventory == null) storage.Inventory = new List<IInventoryItem>();
             if (amount == -1)
             {
-                IInventoryItem[] items = storage.Inventory.FindAll(x => x.GetType() == item).ToArray();
-                if (storage.Inventory.RemoveAll(x => x.GetType() == item) > 0)
+                IInventoryItem[] items = predicate != null ? storage.Inventory.FindAll(x => x.GetType() == item).Where(predicate).ToArray() : storage.Inventory.FindAll(x => x.GetType() == item).ToArray();
+
+                foreach (var i in items)
                 {
-                    foreach (var i in items)
-                    {
-                        OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(i, amount));
-                    }
-                    OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item, 0));
-                    return true;
+                    storage.Inventory.Remove(i);
+                    OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(i, amount));
                 }
-                return false;
+                OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item, 0));
+                return true;
             }
 
             IInventoryItem itm = predicate != null ? storage.Inventory.Where(x => x.GetType() == item).SingleOrDefault(predicate) : storage.Inventory.SingleOrDefault(x => x.GetType() == item);
-            if (itm != null)
-            {
-                itm.Amount -= amount;
-                if (itm.Amount <= 0)
-                    storage.Inventory.Remove(itm);
+            if (itm == null) return false;
 
-                OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(itm, amount));
-                OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item, itm.Amount));
-                return true;
-            }
-            return false;
+            itm.Amount -= amount;
+            if (itm.Amount <= 0)
+                storage.Inventory.Remove(itm);
+
+            OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(itm, amount));
+            OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item, itm.Amount));
+            return true;
         }
 
         /// <summary>
@@ -298,9 +306,34 @@ namespace mtgvrp.inventory
         /// <param name="amount">Amount to be removed, -1 for all.</param>
         /// <param name="predicate">The predicate to be used, can be null for none</param>
         /// <returns>true if something was removed and false if nothing was removed.</returns>
-        public static bool DeleteInventoryItem<T>(IStorage storage, int amount = -1, Func<IInventoryItem, bool> predicate = null)
+        public static bool DeleteInventoryItem<T>(IStorage storage, int amount = -1, Func<T, bool> predicate = null)
         {
-            return DeleteInventoryItem(storage, typeof(T), amount, predicate);
+            var item = typeof(T);
+
+            if (storage.Inventory == null) storage.Inventory = new List<IInventoryItem>();
+            if (amount == -1)
+            {
+                IInventoryItem[] items = predicate != null ? storage.Inventory.FindAll(x => x.GetType() == item).Cast<T>().Where(predicate).Cast<IInventoryItem>().ToArray() : storage.Inventory.FindAll(x => x.GetType() == item).ToArray();
+
+                foreach (var i in items)
+                {
+                    storage.Inventory.Remove(i);
+                    OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(i, amount));
+                }
+                OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item, 0));
+                return true;
+            }
+
+            IInventoryItem itm = predicate != null ? (IInventoryItem)storage.Inventory.Where(x => x.GetType() == item).Cast<T>().SingleOrDefault(predicate) : storage.Inventory.SingleOrDefault(x => x.GetType() == item);
+            if (itm == null) return false;
+
+            itm.Amount -= amount;
+            if (itm.Amount <= 0)
+                storage.Inventory.Remove(itm);
+
+            OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(itm, amount));
+            OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item, itm.Amount));
+            return true;
         }
 
         public static void SetInventoryAmmount(IStorage storage, Type item, int amount)
@@ -593,6 +626,22 @@ namespace mtgvrp.inventory
         }
 
         #region Stashing System: 
+        private void API_onClientEventTrigger1(Client sender, string eventName, params object[] arguments)
+        {
+            if (eventName == "stash_setnewpos")
+            {
+                string id = arguments[0].ToString();
+                Vector3 pos = (Vector3)arguments[1];
+                Vector3 rot = (Vector3)arguments[2];
+
+                var itm = _stashedItems.SingleOrDefault(x => API.getEntitySyncedData(x.Key, "TargetObj") == id);
+
+                API.resetEntitySyncedData(itm.Key, "TargetObj");
+                API.setEntityPosition(itm.Key, pos);
+                API.setEntityRotation(itm.Key, rot);
+            }
+        }
+
         private Dictionary<NetHandle, IInventoryItem> _stashedItems = new Dictionary<NetHandle, IInventoryItem>();
 
         [Command("stash")]
@@ -615,8 +664,12 @@ namespace mtgvrp.inventory
             }
 
             //Create object and add to list.
-            var droppedObject = API.createObject(sendersItem[0].Object, player.position.Subtract(new Vector3(0, 0, 1)), new Vector3(0, 0, 0));
+            var droppedObject = API.createObject(sendersItem[0].Object, player.position, new Vector3());
             _stashedItems.Add(droppedObject, CloneItem(sendersItem[0], amount));
+            var rnd = new Random();
+            var number = rnd.Next(0, 10000).ToString();
+            API.setEntitySyncedData(droppedObject, "TargetObj", number);
+            API.triggerClientEvent(player, "PLACE_OBJECT_ON_GROUND_PROPERLY", number, "stash_setnewpos");
 
             //Decrease.
             DeleteInventoryItem(character, sendersItem[0].GetType(), amount, x => x == sendersItem[0]);

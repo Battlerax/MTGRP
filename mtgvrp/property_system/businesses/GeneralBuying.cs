@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Remoting;
 using GTANetworkServer;
@@ -10,6 +11,9 @@ using mtgvrp.phone_manager;
 using mtgvrp.weapon_manager;
 using mtgvrp.player_manager;
 using mtgvrp.group_manager;
+using mtgvrp.job_manager;
+using mtgvrp.job_manager.hunting;
+using mtgvrp.job_manager.scuba;
 
 namespace mtgvrp.property_system.businesses
 {
@@ -47,6 +51,16 @@ namespace mtgvrp.property_system.businesses
                 {
                     API.sendChatMessageToPlayer(sender, "Not Enough Money");
                     return;
+                }
+
+                if (prop.HasGarbagePoint)
+                {
+                    prop.GarbageBags += 1;
+                    prop.UpdateMarkers();
+                    if (prop.GarbageBags >= 10)
+                    {
+                        job_manager.garbageman.Garbageman.SendNotificationToGarbagemen("A business is overflowing with garbage. We need garbagemen on the streets right now!");
+                    }
                 }
 
                 IInventoryItem item = null;
@@ -91,11 +105,17 @@ namespace mtgvrp.property_system.businesses
                         case "rags":
                             item = new RagsItem();
                             break;
-
+                        case "axe":
+                            WeaponManager.CreateWeapon(sender, WeaponHash.Hatchet, WeaponTint.Normal, true);
+                            InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
+                            API.sendChatMessageToPlayer(sender,
+                                $"[BUSINESS] You have sucessfully bought an ~g~Axe~w~ for ~g~${price}.");
+                            return;
+                        case "scuba":
+                            item = new ScubaItem();
                         case "engineparts":
                             item = new EngineParts();
                             break;
-
                         case "spraypaint":
                             item = new SprayPaint();
                             break;
@@ -190,6 +210,114 @@ namespace mtgvrp.property_system.businesses
                     }
                     return;
                 }
+                else if (prop.Type == PropertyManager.PropertyTypes.HuntingStation)
+                {
+                    HuntingTag boughtTag = null;
+
+                    switch (itemName)
+                    {
+                        case "deer_tag":
+                        {
+                            if (sender.GetCharacter().LastRedeemedDeerTag == DateTime.Today.Date)
+                            {
+                                API.sendChatMessageToPlayer(sender, Color.White,
+                                    "~r~[ERROR]~w~ You have already redeemed a deer tag today.");
+                                return;
+                            }
+
+                            var tags = InventoryManager.DoesInventoryHaveItem(character, typeof(HuntingTag));
+                            if (tags.Cast<HuntingTag>().Any(i => i.Type == HuntingManager.AnimalTypes.Deer))
+                            {
+                                API.sendChatMessageToPlayer(sender, Color.White,
+                                    "~r~[ERROR]~w~ You have already purchased a deer tag. Please drop any old ones before buying a new one.");
+                                return;
+                            }
+
+                            boughtTag = new HuntingTag
+                            {
+                                Type = HuntingManager.AnimalTypes.Deer,
+                                ValidDate = DateTime.Today
+                            };
+                            name = "Deer Tag";
+                            WeaponManager.CreateWeapon(sender, WeaponHash.SniperRifle, WeaponTint.Normal, true);
+                            break;
+                        }
+                        case "boar_tag":
+                        {
+                            if (sender.GetCharacter().LastRedeemedBoarTag == DateTime.Today.Date)
+                            {
+                                API.sendChatMessageToPlayer(sender, Color.White,
+                                    "~r~[ERROR]~w~ You have already redeemed a boar tag today.");
+                                return;
+                            }
+
+                            var tags = InventoryManager.DoesInventoryHaveItem(character, typeof(HuntingTag));
+                            if (tags.Cast<HuntingTag>().Any(i => i.Type == HuntingManager.AnimalTypes.Boar))
+                            {
+                                API.sendChatMessageToPlayer(sender, Color.White,
+                                    "~r~[ERROR]~w~ You have already purchased a boar tag. Please drop any old ones before buying a new one.");
+                                return;
+                            }
+
+                            boughtTag = new HuntingTag
+                            {
+                                Type = HuntingManager.AnimalTypes.Boar,
+                                ValidDate = DateTime.Today
+                            };
+                            name = "Boar Tag";
+                            WeaponManager.CreateWeapon(sender, WeaponHash.SniperRifle, WeaponTint.Normal, true);
+                            break;
+                        }
+                        case "ammo":
+                        {
+                            switch (InventoryManager.GiveInventoryItem(sender.GetCharacter(), new AmmoItem()))
+                            {
+                                case InventoryManager.GiveItemErrors.Success:
+                                    InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
+                                    API.sendChatMessageToPlayer(sender,
+                                        $"[BUSINESS] You have sucessfully bought a ~g~ 5.56 Bullet ~w~ for ~g~${price}.");
+                                    break;
+
+                                case InventoryManager.GiveItemErrors.NotEnoughSpace:
+                                    API.sendChatMessageToPlayer(sender,
+                                        $"[BUSINESS] You dont have enough space for that item. Need {new AmmoItem().AmountOfSlots} Slots.");
+                                    break;
+
+                                case InventoryManager.GiveItemErrors.MaxAmountReached:
+                                    API.sendChatMessageToPlayer(sender,
+                                        $"[BUSINESS] You have reached the maximum allowed ammount of that item.");
+                                    break;
+                            }
+                            break;
+                        }
+
+                       
+                    }
+                    if (boughtTag != null)
+                    {
+                        switch (InventoryManager.GiveInventoryItem(sender.GetCharacter(), boughtTag))
+                        {
+                            case InventoryManager.GiveItemErrors.Success:
+                                InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
+                                InventoryManager.GiveInventoryItem(sender.GetCharacter(), new AmmoItem());
+                                API.sendChatMessageToPlayer(sender,
+                                    $"[BUSINESS] You have sucessfully bought a ~g~{name}~w~ for ~g~${price}.");
+                                break;
+
+                            case InventoryManager.GiveItemErrors.NotEnoughSpace:
+                                API.sendChatMessageToPlayer(sender,
+                                    $"[BUSINESS] You dont have enough space for that item. Need {boughtTag.AmountOfSlots} Slots.");
+                                break;
+
+                            case InventoryManager.GiveItemErrors.MaxAmountReached:
+                                API.sendChatMessageToPlayer(sender,
+                                    $"[BUSINESS] You have reached the maximum allowed amount of that item.");
+                                break;
+                        }
+                        return;
+                    }
+                    else return;
+                }
 
 
                     if (item == null)
@@ -223,7 +351,7 @@ namespace mtgvrp.property_system.businesses
 
                     case InventoryManager.GiveItemErrors.MaxAmountReached:
                         API.sendChatMessageToPlayer(sender,
-                            $"[BUSINESS] You have reached the maximum allowed ammount of that item.");
+                            $"[BUSINESS] You have reached the maximum allowed amount of that item.");
                         break;
                 }
             }
@@ -323,6 +451,21 @@ namespace mtgvrp.property_system.businesses
                         });
                         }
                         API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()), "Los Santos News Network",
+                            prop.PropertyName);
+                    }
+                    break;
+                case PropertyManager.PropertyTypes.HuntingStation:
+                    {
+                        API.freezePlayer(player, true);
+                        List<string[]> itemsWithPrices = new List<string[]>();
+                        foreach (var itm in ItemManager.HuntingItems)
+                        {
+                            itemsWithPrices.Add(new[]
+                            {
+                            itm[0], itm[1], itm[2], prop.ItemPrices.SingleOrDefault(x => x.Key == itm[0]).Value.ToString()
+                        });
+                        }
+                        API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()), "Hunting Shop",
                             prop.PropertyName);
                     }
                     break;

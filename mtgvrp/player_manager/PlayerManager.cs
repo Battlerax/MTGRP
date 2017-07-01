@@ -6,6 +6,7 @@ using GTANetworkShared;
 using mtgvrp.weapon_manager;
 using mtgvrp.inventory;
 using mtgvrp.core;
+using mtgvrp.core.Help;
 using mtgvrp.group_manager;
 
 namespace mtgvrp.player_manager
@@ -81,12 +82,8 @@ namespace mtgvrp.player_manager
             }
         }
 
-        //TODO: CHANGED ONCE THE LS GOV IS ADDED
-        public static int basepaycheck = 500;
-        public static int taxationAmount = 4;
-        public static int VIPBonusLevelOne = 10;
-        public static int VIPBonusLevelTwo = 20;
-        public static int VIPBonusLevelThree = 30;
+        public static int basepaycheck = Properties.Settings.Default.basepaycheck;
+        public static int taxationAmount = Properties.Settings.Default.taxationamount;
 
         private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
         {
@@ -126,8 +123,6 @@ namespace mtgvrp.player_manager
                 character.LastRot = player.rotation;
                 character.GetTimePlayed(); //Update time played before save.
                 character.Save();
-
-                API.resetEntityData(player.handle, "Character");
                 RemovePlayer(character);
             }
         }
@@ -207,15 +202,22 @@ namespace mtgvrp.player_manager
         {
             Account account = API.shared.getEntityData(player.handle, "Account");
 
-            if (account.VipLevel == 1) { return VIPBonusLevelOne; }
-            if (account.VipLevel == 2) { return VIPBonusLevelTwo; }
-            if (account.VipLevel == 3) { return VIPBonusLevelThree; }
+            if (account.VipLevel == 1) { return Properties.Settings.Default.vipbonuslevelone; }
+            if (account.VipLevel == 2) { return Properties.Settings.Default.vipbonusleveltwo; }
+            if (account.VipLevel == 3) { return Properties.Settings.Default.vipbonuslevelthree; }
             else { return 0; }
         }
 
         public static int getFactionBonus(Client player)
         {
             Character character = API.shared.getEntityData(player.handle, "Character");
+
+            if (character.Group == Group.None) { return 0; }
+
+            if (Properties.Settings.Default.governmentbalance * character.Group.FundingPercentage / 100 - character.Group.FactionPaycheckBonus < 0 && character.Group.FundingPercentage != -1)
+            {
+                return 0;
+            }
 
             return character.Group.FactionPaycheckBonus;
 
@@ -235,6 +237,7 @@ namespace mtgvrp.player_manager
             {
                 int paycheckAmount = CalculatePaycheck(player);
                 character.BankBalance += paycheckAmount;
+                Properties.Settings.Default.governmentbalance += paycheckAmount * taxationAmount / 100;
                 player.sendChatMessage("--------------PAYCHECK RECEIVED!--------------");
                 player.sendChatMessage("Base paycheck: $" + basepaycheck + ".");
                 player.sendChatMessage("Interest: $" + character.BankBalance / 1000 + ".");
@@ -248,50 +251,7 @@ namespace mtgvrp.player_manager
             }
         }
 
-        [Command("setvipbonus")]
-        public void setvipbonus_cmd(Client player, string viplevel, string percentage)
-        {
-            Account account = API.shared.getEntityData(player.handle, "Account");
-
-            if (account.AdminLevel < 6) { return; }
-
-            switch (viplevel)
-            {
-                case "1":
-                    VIPBonusLevelOne = int.Parse(percentage);
-                    break;
-
-                case "2":
-                    VIPBonusLevelTwo = int.Parse(percentage);
-                    break;
-
-                case "3":
-                    VIPBonusLevelThree = int.Parse(percentage);
-                    break;
-            }
-            player.sendChatMessage("You have set VIP level " + viplevel + "'s paycheck bonus to " + percentage + "%.");
-        }
-
-        [Command("settax")]
-        public void settax_cmd(Client player, string percentage)
-        {
-            Account account = API.shared.getEntityData(player.handle, "Account");
-
-            if (account.AdminLevel < 6) { return; }
-            taxationAmount = int.Parse(percentage);
-        }
-
-        [Command("setbasepaycheck", GreedyArg = true)]
-        public void setbasepaycheck_cmd(Client player, string amount)
-        {
-            Account account = API.shared.getEntityData(player.handle, "Account");
-
-            if (account.AdminLevel < 6) { return; }
-            basepaycheck = int.Parse(amount);
-            API.sendChatMessageToPlayer(player, "Base paycheck set to $" + amount + ".");
-        }
-
-        [Command("getid", GreedyArg = true, Alias = "id")]
+        [Command("getid", GreedyArg = true, Alias = "id"), Help(HelpManager.CommandGroups.General, "Used to find the ID of specific player name.", new [] {"Name of the target character. (Partial name accepted)"})]
         public void getid_cmd(Client sender, string playerName)
         {
             API.sendChatMessageToPlayer(sender, Color.White, "----------- Searching for: " + playerName + " -----------");
@@ -305,7 +265,7 @@ namespace mtgvrp.player_manager
             API.sendChatMessageToPlayer(sender, Color.White, "------------------------------------------------------------");
         }
 
-        [Command("stats")]          //Stats command
+        [Command("stats"), Help(HelpManager.CommandGroups.General, "Used to find your character statistics", new []{"ID of target character. <strong>[ADMIN ONLY]</strong>"})]          //Stats command
         public void GetStatistics(Client sender, string id = null)
         {
             var receiver = PlayerManager.ParseClient(id);
@@ -329,7 +289,7 @@ namespace mtgvrp.player_manager
         }
 
         //Show time and time until paycheck.
-        [Command("time")]
+        [Command("time"), Help(HelpManager.CommandGroups.General, "Used to find the server time, in-game time, various cooldowns, etc.", null)]
         public void CheckTime(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
