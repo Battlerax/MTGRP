@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,9 +18,28 @@ namespace mtgvrp.job_manager.scuba
         public ScubaManager()
         {
             API.onPlayerDisconnected += API_onPlayerDisconnected;
+            API.onResourceStart += API_onResourceStart;
         }
 
-        private Vector3[][] _treasuresLocations = new Vector3[][]
+        private void API_onResourceStart()
+        {
+            //pick random 30 spots and spawn em there.
+            var rnd = new Random();
+            for (int i = 1; i <= 30; i++)
+            {
+                reset:
+                var a = rnd.Next(0, 100);
+
+                if (_treasureObjects.Any(x => x.position == _treasuresLocations[a][0]))
+                {
+                    goto reset;
+                }
+
+                _treasureObjects.Add(API.createObject(-994740387, _treasuresLocations[a][0], _treasuresLocations[a][1]));
+            }
+        }
+
+        private readonly Vector3[][] _treasuresLocations = new Vector3[][]
         {
             new [] {new Vector3(1677.09, -3092.195, -68.47385), new Vector3(2.897643, 6.021974, 0.1524492)},
             new [] {new Vector3(1679.471, -3088.021, -67.738), new Vector3(-12.12189, 14.61349, -1.560027)},
@@ -124,12 +144,51 @@ namespace mtgvrp.job_manager.scuba
             new [] {new Vector3(-159.6433, -2858.358, -13.95227), new Vector3(12.90809, 1.245686, 0.1409214)},
         };
 
+        private readonly List<GTANetworkServer.Object> _treasureObjects = new List<GTANetworkServer.Object>();
+
         private void API_onPlayerDisconnected(Client player, string reason)
         {
             if (player.GetCharacter().IsScubaDiving)
             {
                 CancelScuba(player);
             }
+        }
+
+        [Command("pickuptreasure")]
+        public void Pickuptreasure(Client player)
+        {
+            var character = player.GetCharacter();
+            if (!character.IsScubaDiving)
+            {
+                API.sendChatMessageToPlayer(player, "You already have the kit on.");
+                return;
+            }
+
+            var itm = _treasureObjects.FirstOrDefault(x => x.position.DistanceTo(player.position) <= 5.0f);
+            if (itm == null)
+            {
+                API.sendChatMessageToPlayer(player, "You aren't near any treasure.");
+                return;
+            }
+
+            var rnd = new Random();
+            int amnt = rnd.Next(1000, 5000);
+            InventoryManager.GiveInventoryItem(character, new Money(), amnt, true);
+            API.sendChatMessageToPlayer(player, "You have found a treasure worth ~g~$" + amnt);
+
+            itm.delete();
+            _treasureObjects.Remove(itm);
+
+            //Add new one.
+            reset:
+            var a = rnd.Next(0, 100);
+
+            if (_treasureObjects.Any(x => x.position == _treasuresLocations[a][0]))
+            {
+                goto reset;
+            }
+
+            _treasureObjects.Add(API.createObject(-994740387, _treasuresLocations[a][0], _treasuresLocations[a][1]));
         }
 
         [Command("equipscuba")]
