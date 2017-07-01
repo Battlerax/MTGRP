@@ -277,6 +277,9 @@ namespace mtgvrp.player_manager
         public GTANetworkServer.Object MicObject = null;
 
         [BsonIgnore]
+        public bool IsScubaDiving = false;
+
+        [BsonIgnore]
         public GTANetworkServer.Object GarbageBag = null;
 
         //Hunting Related

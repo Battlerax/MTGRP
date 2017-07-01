@@ -13,6 +13,7 @@ using mtgvrp.player_manager;
 using mtgvrp.group_manager;
 using mtgvrp.job_manager;
 using mtgvrp.job_manager.hunting;
+using mtgvrp.job_manager.scuba;
 
 namespace mtgvrp.property_system.businesses
 {
@@ -109,6 +110,9 @@ namespace mtgvrp.property_system.businesses
                             API.sendChatMessageToPlayer(sender,
                                 $"[BUSINESS] You have sucessfully bought an ~g~Axe~w~ for ~g~${price}.");
                             return;
+                        case "scuba":
+                            item = new ScubaItem();
+                            break;
                     }
                 }
                 else if (prop.Type == PropertyManager.PropertyTypes.Restaurant)

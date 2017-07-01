@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using GTANetworkServer;
@@ -9,6 +10,7 @@ using mtgvrp.core.Items;
 using mtgvrp.inventory.bags;
 using mtgvrp.job_manager.fisher;
 using mtgvrp.job_manager.hunting;
+using mtgvrp.job_manager.scuba;
 using mtgvrp.phone_manager;
 using mtgvrp.player_manager;
 using mtgvrp.property_system.businesses;
@@ -37,6 +39,7 @@ namespace mtgvrp.inventory
             BsonClassMap.RegisterClassMap<HuntingTag>();
             BsonClassMap.RegisterClassMap<AnimalItem>();
             BsonClassMap.RegisterClassMap<AmmoItem>();
+            BsonClassMap.RegisterClassMap<ScubaItem>();
 
             BsonClassMap.RegisterClassMap<Weapon>();
             #endregion
@@ -625,11 +628,11 @@ namespace mtgvrp.inventory
         {
             if (eventName == "stash_setnewpos")
             {
-                string id = (string)arguments[0];
+                string id = arguments[0].ToString();
                 Vector3 pos = (Vector3)arguments[1];
                 Vector3 rot = (Vector3)arguments[2];
 
-                var itm = _stashedItems.SingleOrDefault(x => x.Value.Id.ToString() == id);
+                var itm = _stashedItems.SingleOrDefault(x => API.getEntitySyncedData(x.Key, "TargetObj") == id);
 
                 API.resetEntitySyncedData(itm.Key, "TargetObj");
                 API.setEntityPosition(itm.Key, pos);
@@ -659,10 +662,12 @@ namespace mtgvrp.inventory
             }
 
             //Create object and add to list.
-            var droppedObject = API.createObject(sendersItem[0].Object, player.position.Subtract(new Vector3(0, 0, 1)), new Vector3(0, 0, 0));
+            var droppedObject = API.createObject(sendersItem[0].Object, player.position, new Vector3());
             _stashedItems.Add(droppedObject, CloneItem(sendersItem[0], amount));
-            API.setEntitySyncedData(droppedObject, "TargetObj", sendersItem[0].Id.ToString());
-            API.triggerClientEvent(player, "PLACE_OBJECT_ON_GROUND_PROPERLY", sendersItem[0].Id.ToString(), "stash_setnewpos");
+            var rnd = new Random();
+            var number = rnd.Next(0, 10000).ToString();
+            API.setEntitySyncedData(droppedObject, "TargetObj", number);
+            API.triggerClientEvent(player, "PLACE_OBJECT_ON_GROUND_PROPERLY", number, "stash_setnewpos");
 
             //Decrease.
             DeleteInventoryItem(character, sendersItem[0].GetType(), amount, x => x == sendersItem[0]);
