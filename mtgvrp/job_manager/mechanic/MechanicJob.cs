@@ -21,7 +21,7 @@ namespace mtgvrp.job_manager.taxi
             var veh = VehicleManager.GetVehFromNetHandle(API.getPlayerVehicle(player));
 
 
-            if (character?.JobOne?.Type != JobManager.MechanicJob)
+            if (character?.JobOne?.Type != JobManager.JobTypes.Mechanic)
             {
                 API.sendPictureNotificationToPlayer(player, "You must be a mechanic to use this command.", "CHAR_BLOCKED", 0, 0, "Server", "~r~Command Error");
                 return;
@@ -59,7 +59,7 @@ namespace mtgvrp.job_manager.taxi
             Character character = player.GetCharacter();
             var veh = VehicleManager.GetVehFromNetHandle(API.getPlayerVehicle(player));
 
-            if (character?.JobOne?.Type != JobManager.MechanicJob)
+            if (character?.JobOne?.Type != JobManager.JobTypes.Mechanic)
             {
                 API.sendPictureNotificationToPlayer(player, "You must be a mechanic to use this command.", "CHAR_BLOCKED", 0, 0, "Server", "~r~Command Error");
                 return;

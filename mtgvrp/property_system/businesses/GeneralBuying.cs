@@ -113,6 +113,7 @@ namespace mtgvrp.property_system.businesses
                             return;
                         case "scuba":
                             item = new ScubaItem();
+                            break;
                         case "engineparts":
                             item = new EngineParts();
                             break;

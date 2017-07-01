@@ -18,6 +18,7 @@ namespace mtgvrp.job_manager
             None,
             Taxi,
             Fisher,
+            Mechanic,
             Lumberjack,
             Garbageman,
         }
