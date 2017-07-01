@@ -126,6 +126,7 @@ namespace mtgvrp.job_manager.lumberjack
 
                 default:
                     TreeText = null;
+                    TreeMarker.Destroy();
                     break;
             }
         }
