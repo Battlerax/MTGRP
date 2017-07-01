@@ -20,6 +20,7 @@ namespace mtgvrp.job_manager
             Fisher,
             Lumberjack,
             Garbageman,
+            Mechanic
         }
 
         public static List<Job> Jobs = new List<Job>();
