@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections;
-using System.Timers;
 using GTANetworkServer;
-using GTANetworkShared;
-using mtgvrp.player_manager;
-using mtgvrp.vehicle_manager;
-using mtgvrp.inventory;
 using mtgvrp.core;
 using mtgvrp.core.Items;
+using mtgvrp.inventory;
+using mtgvrp.player_manager;
+using mtgvrp.vehicle_manager;
 
-namespace mtgvrp.job_manager.taxi
+namespace mtgvrp.job_manager.mechanic
 {
     public class MechanicJob : Script
     {
