@@ -19,8 +19,11 @@ namespace mtgvrp.property_system
         public PropertyManager.PropertyTypes Type { get; set; }
         public int Supplies { get; set; }
         public bool IsTeleportable { get; set; }
+        public bool HasGarbagePoint { get; set; }
         public Vector3 TargetPos { get; set; }
         public Vector3 TargetRot { get; set; }
+        public Vector3 GarbagePoint { get; set; }
+        public Vector3 GarbageRotation { get; set; }
 
         [BsonIgnore]
         public int TargetDimension => Id + 1000;
@@ -43,6 +46,7 @@ namespace mtgvrp.property_system
         public Vector3 InteractionPos { get; set; }
         public Vector3 InteractionRot { get; set; }
         public int InteractionDimension { get; set; }
+        public int GarbageDimension { get; set; }
 
         public bool IsLocked { get; set; }
 
@@ -60,7 +64,16 @@ namespace mtgvrp.property_system
         [BsonIgnore]
         public MarkerZone ExitMarker { get; set; }
 
+        [BsonIgnore]
+        public MarkerZone GarbageMarker { get; set; }
+
         public int AdvertisingPrice { get; set; }
+
+        //Other Info
+        public int GarbageBags { get; set; }
+
+        [BsonIgnore]
+        public Object BinObject { get; set; }
 
         public Property(PropertyManager.PropertyTypes type, Vector3 entrancePos, Vector3 entranceRot,
             string entranceString)
@@ -95,6 +108,7 @@ namespace mtgvrp.property_system
         {
             EntranceMarker?.Destroy();
             InteractionMarker?.Destroy();
+            GarbageMarker?.Destroy();
             ExitMarker?.Destroy();
         }
 
@@ -121,7 +135,10 @@ namespace mtgvrp.property_system
                 case PropertyManager.PropertyTypes.Advertising:
                     return 133;
                 case PropertyManager.PropertyTypes.HuntingStation:
-                    return 433;
+                    return 463;
+                case PropertyManager.PropertyTypes.Housing:
+                    int value = (OwnerId == 0) ? 40 : 350;
+                    return value;
                 default:
                     return -1;
             }
@@ -171,6 +188,20 @@ namespace mtgvrp.property_system
                 ExitMarker = new MarkerZone(TargetPos, TargetRot, TargetDimension) {LabelText = "/exit"};
                 ExitMarker.Create();
                 ExitMarker.ColZone.setData("property_exit", Id);
+            }
+
+            if (HasGarbagePoint)
+            {
+                if (BinObject != null)
+                {
+                    API.shared.deleteEntity(BinObject);
+                }
+                BinObject = null;
+                GarbageMarker = new MarkerZone(GarbagePoint + new Vector3(0, 0, 1.2), new Vector3(0, 0, 0), GarbageDimension, 10);
+                GarbageMarker.LabelText = $"Property Garbage\nBags: {GarbageBags}/40\n/pickuptrash";
+                GarbageMarker.Create();
+                GarbageMarker.ColZone.setData("property_garbage", Id);
+                BinObject = API.shared.createObject(998415499, GarbagePoint - new Vector3(0, 0, 1.1), GarbageRotation, GarbageDimension);
             }
         }
 
