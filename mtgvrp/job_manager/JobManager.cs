@@ -18,8 +18,8 @@ namespace mtgvrp.job_manager
             None,
             Taxi,
             Fisher,
+            Lumberjack,
             Garbageman,
-            Lumberjack
         }
 
         public static List<Job> Jobs = new List<Job>();

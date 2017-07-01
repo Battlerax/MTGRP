@@ -322,6 +322,8 @@ namespace mtgvrp.player_manager
             Health = 100;
             RadioToggle = true;
             CanDoAnim = true;
+
+            IsOnGarbageRun = false;
         }
 
         public void Insert()

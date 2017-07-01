@@ -12,6 +12,7 @@ using mtgvrp.property_system;
 using mtgvrp.vehicle_manager;
 using MongoDB.Bson;
 using GTANetworkShared;
+using mtgvrp.core;
 using mtgvrp.database_manager;
 using mtgvrp.door_manager;
 using mtgvrp.player_manager;
@@ -35,6 +36,8 @@ namespace mtgvrp.job_manager.lumberjack
 
         [BsonIgnore]
         public TextLabel TreeText { get; set; }
+        [BsonIgnore]
+        public MarkerZone TreeMarker { get; set; }
 
         [BsonIgnore]
         public int CutPercentage { get; set; }
@@ -77,6 +80,8 @@ namespace mtgvrp.job_manager.lumberjack
             if (API.shared.doesEntityExist(TreeText))
                 API.shared.deleteEntity(TreeText);
 
+            TreeMarker.Destroy();
+
             var filter = MongoDB.Driver.Builders<Tree>.Filter.Eq("_id", Id);
             DatabaseManager.TreesTable.DeleteOne(filter);
             Trees.Remove(this);
@@ -92,16 +97,31 @@ namespace mtgvrp.job_manager.lumberjack
             if (TreeText != null && API.shared.doesEntityExist(TreeText))
                 API.shared.deleteEntity(TreeText);
 
+            if (TreeMarker == null)
+            {
+                TreeMarker = new MarkerZone(TreePos.Add(new Vector3(1, 0, 0)), new Vector3(0, 0, 0), 0, 5);
+                TreeMarker.MarkerType = 1;
+                TreeMarker.Green = 0;
+                TreeMarker.Scale = new Vector3(0.75, 0.75, 0.75);
+                TreeMarker.Create();
+            }
+
             switch (Stage)
             {
                 case Stages.Processing:
-                    TreeText = API.shared.createTextLabel("~g~Hit the tree to process it. ~n~" + ProcessPercentage + "%", TreePos.Add(new Vector3(0.5, -1, 1)), 5f, 1f, true);
+                    TreeText = API.shared.createTextLabel("~g~Hit the tree to process it. ~n~" + ProcessPercentage + "%", TreePos.Add(new Vector3(0.5, -1, 1)), 10f, 1f, true);
+                    TreeMarker.Location = TreePos.Add(new Vector3(1.0, -1, -0.5));
+                    TreeMarker.Refresh();
                     break;
                 case Stages.Cutting:
-                    TreeText = API.shared.createTextLabel("~g~" + CutPercentage + "% Cut.~n~Tree", TreePos.Add(new Vector3(1, 0, 1)), 5f, 1f, true);
+                    TreeText = API.shared.createTextLabel("~g~" + CutPercentage + "% Cut.~n~Tree", TreePos.Add(new Vector3(1, 0, 1)), 10f, 1f, true);
+                    TreeMarker.Location = TreePos.Add(new Vector3(1.5, 0, -0.5));
+                    TreeMarker.Refresh();
                     break;
                 case Stages.Waiting:
-                    TreeText = API.shared.createTextLabel("~g~Waiting to be picked, use /pickupwood with a Forklift.", TreePos.Add(new Vector3(1, 0, 1)), 5f, 1f, true);
+                    TreeText = API.shared.createTextLabel("~g~Waiting to be picked, use /pickupwood with a Forklift.", TreePos.Add(new Vector3(1, 0, 1)), 10f, 1f, true);
+                    TreeMarker.Location = TreePos.Add(new Vector3(1.5, 0, -0.5));
+                    TreeMarker.Refresh();             
                     break;
 
                 default:

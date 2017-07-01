@@ -131,6 +131,7 @@ namespace mtgvrp.job_manager.lumberjack
                         tree.Stage = Tree.Stages.Processing;
                     }
 
+                    API.playPlayerAnimation(sender, (int)(Animations.AnimationFlags.StopOnLastFrame | Animations.AnimationFlags.OnlyAnimateUpperBody), "melee@large_wpn@streamed_core", "ground_attack_0");
                     tree.UpdateTreeText();
 
                     var rnd = new Random();
@@ -157,6 +158,7 @@ namespace mtgvrp.job_manager.lumberjack
                         tree.UpdateAllTree();
                     }
 
+                    API.playPlayerAnimation(sender, (int)(Animations.AnimationFlags.StopOnLastFrame | Animations.AnimationFlags.OnlyAnimateUpperBody), "melee@large_wpn@streamed_core", "ground_attack_0");
                     tree.UpdateTreeText();
 
                     var rnd = new Random();
