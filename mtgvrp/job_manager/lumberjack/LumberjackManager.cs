@@ -34,7 +34,7 @@ namespace mtgvrp.job_manager.lumberjack
             if (API.getEntityModel(vehicle) == (int)VehicleHash.Forklift && player.GetCharacter().JobOne.Type == JobManager.JobTypes.Lumberjack)
             {
                 Vehicle veh = API.getEntityData(vehicle, "Vehicle");
-                if (veh.Job.Type != JobManager.JobTypes.Lumberjack)
+                if (veh.Job?.Type != JobManager.JobTypes.Lumberjack)
                 {
                     return;
                 }
@@ -125,7 +125,7 @@ namespace mtgvrp.job_manager.lumberjack
 
                     if (tree.CutPercentage >= 100)
                     {
-                        API.setEntityRotation(tree.TreeObj, new Vector3(90, 0, 0));
+                        API.setEntityRotation(tree.TreeObj, new Vector3(90 + tree.TreeRot.X, tree.TreeRot.Y, tree.TreeRot.Z));
                         ChatManager.RoleplayMessage(sender, "A tree would fall over on the ground.",
                             ChatManager.RoleplayDo);
                         tree.Stage = Tree.Stages.Processing;
@@ -278,7 +278,7 @@ namespace mtgvrp.job_manager.lumberjack
                 return;
             }
 
-            if (character.JobZoneType != 2)
+            if (character.JobZoneType != 2 && JobManager.GetJobById(character.JobZone).Type == JobManager.JobTypes.Lumberjack)
             {
                 API.sendChatMessageToPlayer(player, Color.White, "You are not near the sell wood point!");
                 return;
@@ -321,8 +321,10 @@ namespace mtgvrp.job_manager.lumberjack
                 API.resetEntityData(API.getPlayerVehicle(player), "TREE_DRIVER");
                 API.setBlipRouteVisible(character.JobOne.MiscOne.Blip, false);
 
-                InventoryManager.GiveInventoryItem(player.GetCharacter(), new Money(), 500);
+                InventoryManager.GiveInventoryItem(player.GetCharacter(), new Money(), 500, true);
                 API.sendChatMessageToPlayer(player, "* You have sucessfully sold your wood for ~g~$500");
+
+                SettingsManager.SetSetting("WoodSupplies", SettingsManager.GetSetting("WoodSupplies") + 100);
             }
         }
     }
