@@ -76,6 +76,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="core\Items\EngineParts.cs" />
+    <Compile Include="core\Items\SprayPaint.cs" />
+    <Compile Include="job_manager\mechanic\MechanicJob.cs" />
     <Compile Include="core\Help\Help.cs" />
     <Compile Include="core\Help\HelpManager.cs" />
     <Compile Include="job_manager\garbageman\Garbageman.cs" />

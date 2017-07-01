@@ -158,6 +158,7 @@ namespace mtgvrp.vehicle_manager
             API.shared.setBlipSprite(Blip, API.shared.getVehicleClass(VehModel) == 14 ? 410 : 225);
             API.shared.setBlipScale(Blip, (float)0.7);
             API.shared.setBlipShortRange(Blip, true);
+            API.shared.setBlipTransparency(Blip, 100);
 
             //Set owner detials.
             OwnerClient = PlayerManager.ParseClient(OwnerId.ToString());

@@ -1,4 +1,4 @@
-﻿/*
+/*
  *  File: VehicleManager.cs
  *  Author: Chenko
  *  Date: 12/24/2016
@@ -68,7 +68,7 @@ namespace mtgvrp.vehicle_manager
 
                     var veh = GetVehFromNetHandle(API.getPlayerVehicle(player));
                     float payment = API.getVehicleHealth(API.getPlayerVehicle(player)) / 2;
-                    veh.Respawn();
+                    VehicleManager.respawn_vehicle(veh);
                     API.shared.setVehicleEngineStatus(veh.NetHandle, false);
                     inventory.InventoryManager.GiveInventoryItem(character, new Money(), (int) payment);
                     character.IsOnDropcar = false;
@@ -93,7 +93,7 @@ namespace mtgvrp.vehicle_manager
             var pos = player.position;
             var rot = player.rotation;
 
-            var veh = CreateVehicle(model, pos, rot, "ABC123", 0, color1, color2, dimension);
+            var veh = CreateVehicle(model, pos, rot, "ABC123", 0, Vehicle.VehTypeTemp, color1, color2, dimension);
             spawn_vehicle(veh);
             
             API.setPlayerIntoVehicle(player, veh.NetHandle, -1);
@@ -327,7 +327,7 @@ namespace mtgvrp.vehicle_manager
         }
 
         [Command("respawnveh")]
-        public void respawnveh_cmd(Client player, string nethandle, bool originalPos = true)
+        public void respawnveh_cmd(Client player, int id, bool originalPos = true)
         {
             var account = player.GetAccount();
             if (account.AdminLevel < 4)
@@ -335,7 +335,13 @@ namespace mtgvrp.vehicle_manager
                 return;
             }
 
-            var vehicle = Vehicles.Find(v => v.NetHandle.ToString() == nethandle);
+            if (id > Vehicles.Count)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "Invalid vehicle ID.");
+                return; 
+            }
+
+            var vehicle = Vehicles[id];
             if (vehicle == null)
             {
                 API.sendChatMessageToPlayer(player, Color.White,
@@ -345,14 +351,61 @@ namespace mtgvrp.vehicle_manager
 
             if (originalPos == true)
             {
-                vehicle.Respawn();
+                VehicleManager.respawn_vehicle(vehicle);
             }
             else
             {
-                vehicle.Respawn(API.getEntityPosition(vehicle.NetHandle));
+                VehicleManager.respawn_vehicle(vehicle, API.getEntityPosition(vehicle.NetHandle));
             }
-            API.sendChatMessageToPlayer(player, Color.White, "You have respawned the vehicle with net handle " + nethandle);
+            API.sendChatMessageToPlayer(player, Color.White, "You have respawned the vehicle with id " + id);
             return;
+        }
+
+        [Command("respawnunownedcars")]
+        public void respawnallcars_cmd(Client player)
+        {
+            var account = player.GetAccount();
+            if (account.AdminLevel < 4)
+            {
+                return;
+            }
+
+            foreach (var v in Vehicles)
+            {
+                if (v.Driver == null && v.OwnerId == 0 && v.GroupId == 0)
+                {
+                    VehicleManager.respawn_vehicle(v);
+                }
+            }
+            API.sendChatMessageToPlayer(player, Color.White, "All unowned and unoccupied vehicles have been respawned.");
+            return;
+        }
+
+        [Command("respawnnearbycars")]
+        public void respawnnearbycars_cmd(Client player, int radius = 15)
+        {
+            var account = player.GetAccount();
+            if (account.AdminLevel < 4)
+            {
+                return;
+            }
+
+            if (radius <= 0)
+            {
+                return;
+            }
+
+            foreach (var v in Vehicles)
+            {
+                if (v.Driver == null)
+                {
+                    if (player.position.DistanceTo(API.getEntityPosition(v.NetHandle)) <= radius)
+                    {
+                        VehicleManager.respawn_vehicle(v);
+                    }
+                }
+            }
+            API.sendChatMessageToPlayer(player, Color.White, "Respawned all unowned and unoccupied cars in a radius of " + radius);
         }
 
         /*
@@ -452,9 +505,6 @@ namespace mtgvrp.vehicle_manager
                 return;
             }
             
-            API.sendChatMessageToPlayer(player, "~y~ Press \"N\" on your keyboard to access the vehicle menu.");
-
-
             //Vehicle Interaction Menu Setup
             var vehInfo = API.getVehicleDisplayName(veh.VehModel) + " - " + veh.LicensePlate;
             API.setEntitySyncedData(player.handle, "CurrentVehicleInfo", vehInfo);
@@ -528,6 +578,23 @@ namespace mtgvrp.vehicle_manager
             return lastVeh;
         }
 
+        public static NetHandle GetClosestVehicle(Client sender, float distance = 1000.0f)
+        {
+            NetHandle handleReturned = new NetHandle();
+            foreach (var veh in API.shared.getAllVehicles())
+            {
+                Vector3 vehPos = API.shared.getEntityPosition(veh);
+                float distanceVehicleToPlayer = sender.position.DistanceTo(vehPos);
+                if (distanceVehicleToPlayer < distance)
+                {
+                    distance = distanceVehicleToPlayer;
+                    handleReturned = veh;
+
+                }
+            }
+            return handleReturned;
+        }
+
         public static int GetMaxOwnedVehicles(Client chr)
         {
             Account acc = API.shared.getEntityData(chr, "Account");
@@ -574,7 +641,7 @@ namespace mtgvrp.vehicle_manager
 
         public static Vehicle GetVehFromNetHandle(NetHandle handle)
         {
-            return API.shared.getEntityData(handle, "Vehicle");
+            return API.shared.getEntityData(handle, "Vehicle") ?? null;
         }
 
         public static int spawn_vehicle(Vehicle veh, Vector3 pos)
@@ -676,7 +743,9 @@ namespace mtgvrp.vehicle_manager
 
                 v.Job = JobManager.GetJobById(v.JobId);
                 v.Group = GroupManager.GetGroupById(v.GroupId);
-                
+
+                API.shared.setBlipTransparency(v.Blip, 100);
+
                 Vehicles.Add(v);
             }
 
