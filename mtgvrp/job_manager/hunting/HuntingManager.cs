@@ -76,6 +76,7 @@ namespace mtgvrp.job_manager.hunting
                 new HuntingAnimal(spawn, AnimalTypes.Deer, AnimalState.Wandering).UpdateState = true;
                 new HuntingAnimal(spawn, AnimalTypes.Boar, AnimalState.Wandering).UpdateState = true;
             }
+            API.consoleOutput("[HuntingManager] Created " + SpawnedAnimals.Count + " animals.");
         }
 
         public void OnPlayerWeaponSwitch(Client player, WeaponHash oldWeapon)
@@ -84,14 +85,16 @@ namespace mtgvrp.job_manager.hunting
             {
                 foreach (var a in SpawnedAnimals)
                 {
-                    API.triggerClientEvent(player, "toggle_animal_invincible", a.handle, true);
+                    if(API.doesEntityExistForPlayer(player, a.handle))
+                        API.triggerClientEvent(player, "toggle_animal_invincible", a.handle, true);
                 }
             }
             else if (API.shared.getPlayerCurrentWeapon(player) == WeaponHash.SniperRifle)
             {
                 foreach (var a in SpawnedAnimals)
                 {
-                    API.triggerClientEvent(player, "toggle_animal_invincible", a.handle, false);
+                    if (API.doesEntityExistForPlayer(player, a.handle))
+                        API.triggerClientEvent(player, "toggle_animal_invincible", a.handle, false);
                 }
             }
         }
@@ -141,6 +144,25 @@ namespace mtgvrp.job_manager.hunting
         {
             var choices = Array.FindAll(AnimalSpawns, spawn => spawn.DistanceTo(currentPos) > 5);
             return choices[Init.Random.Next(choices.Length)];
+        }
+
+        [Command("gotoanimal")]
+        public void gotoanimal_cmd(Client player, int index)
+        {
+            if (player.GetAccount().AdminLevel < 1)
+            {
+                return;
+            }
+
+            if (index > HuntingManager.SpawnedAnimals.Count)
+            {
+                API.sendChatMessageToPlayer(player, "Invalid animal");
+                return;
+            }
+
+            API.setEntityPosition(player, API.getEntityPosition(SpawnedAnimals[index].handle));
+            API.sendChatMessageToPlayer(player, "TPed");
+            return;
         }
 
         [Command("pickupdeer")]
@@ -343,6 +365,7 @@ namespace mtgvrp.job_manager.hunting
         {
             handle = API.shared.createPed((type == HuntingManager.AnimalTypes.Deer) ? (PedHash.Deer) : (PedHash.Boar),
                 spawn, 0, 0);
+
             Spawn = spawn;
             Type = type;
             State = state;
@@ -356,6 +379,8 @@ namespace mtgvrp.job_manager.hunting
             StateTimer.Start();
 
             HuntingManager.SpawnedAnimals.Add(this);
+            API.shared.setEntitySyncedData(handle, "IS_ANIMAL", true);
+            API.shared.setEntitySyncedData(handle, "ANIMAL_ID", HuntingManager.SpawnedAnimals.IndexOf(this));
         }
 
         public void AnimalAI(HuntingAnimal animal)
@@ -438,7 +463,9 @@ namespace mtgvrp.job_manager.hunting
 
         public void Respawn()
         {
-            API.shared.deleteEntity(handle);
+            if(API.shared.doesEntityExist(handle))
+                API.shared.deleteEntity(handle);
+
             handle = API.shared.createPed((Type == HuntingManager.AnimalTypes.Deer) ? (PedHash.Deer) : (PedHash.Boar),
                 Spawn, 0, 0);
         }
