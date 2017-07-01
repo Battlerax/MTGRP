@@ -16,7 +16,15 @@ namespace mtgvrp.job_manager.scuba
     {
         public ScubaManager()
         {
-            
+            API.onPlayerDisconnected += API_onPlayerDisconnected;
+        }
+
+        private void API_onPlayerDisconnected(Client player, string reason)
+        {
+            if (player.GetCharacter().IsScubaDiving)
+            {
+                CancelScuba(player);
+            }
         }
 
         [Command("equipscuba")]
@@ -96,7 +104,8 @@ namespace mtgvrp.job_manager.scuba
             // ReSharper disable once CompareOfFloatsByEqualityOperator
             if (API.fetchNativeFromPlayer<float>(player, Hash.GET_ENTITY_SUBMERGED_LEVEL, player.handle) == 1f)
             {
-                if (--scubaitem[0].OxygenRemaining <= 0)
+                scubaitem[0].OxygenRemaining--;
+                if (scubaitem[0].OxygenRemaining <= 0)
                 {
                     CancelScuba(player);
                     InventoryManager.DeleteInventoryItem<ScubaItem>(character);
