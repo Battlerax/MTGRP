@@ -364,16 +364,8 @@ namespace mtgvrp.job_manager.hunting
         {
             API.shared.setEntityPositionFrozen(handle, false);
 
-            List<Client> playersInRadius = new List<Client>();
-            try
-            {
-                playersInRadius = API.shared.getPlayersInRadiusOfPosition(500f, API.shared.getEntityPosition(handle));
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-            
+            var playersInRadius = API.shared.getPlayersInRadiusOfPosition(500f, API.shared.getEntityPosition(handle));
+
             if (playersInRadius.Count > 0)
             {
                 API.shared.triggerClientEvent(playersInRadius[0], "update_animal_position", handle);
