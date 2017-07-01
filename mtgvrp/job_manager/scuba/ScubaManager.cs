@@ -191,7 +191,7 @@ namespace mtgvrp.job_manager.scuba
             _treasureObjects.Add(API.createObject(-994740387, _treasuresLocations[a][0], _treasuresLocations[a][1]));
         }
 
-        [Command("equipscuba")]
+        [Command("togglescuba")]
         public void EquipScuba(Client player)
         {
             var character = player.GetCharacter();
@@ -204,7 +204,8 @@ namespace mtgvrp.job_manager.scuba
 
             if (character.IsScubaDiving)
             {
-                API.sendChatMessageToPlayer(player, "You already have the kit on.");
+                CancelScuba(player);
+                API.sendChatMessageToPlayer(player, "You have dequiped the scuba set.");
                 return;
             }
 
@@ -229,21 +230,6 @@ namespace mtgvrp.job_manager.scuba
             //Show remaining oxygen.
             API.triggerClientEvent(player, "UPDATE_SCUBA_PERCENTAGE",
                 "Oxygen Remaining: " + Math.Round((item[0].OxygenRemaining / ScubaItem.MaxOxygen) * 100f) + "%");
-        }
-
-        [Command("dequipscuba")]
-        public void DequipScuba(Client player)
-        {
-            var character = player.GetCharacter();
-
-            if (!character.IsScubaDiving)
-            {
-                API.sendChatMessageToPlayer(player, "You aren't scubadiving.");
-                return;
-            }
-
-            CancelScuba(player);
-            API.sendChatMessageToPlayer(player, "You have dequiped the scuba set.");
         }
 
         public void RefreshScuba(Client player)

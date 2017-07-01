@@ -5,8 +5,9 @@ API.onUpdate.connect(() => {
     if (API.getPlayerCurrentWeapon() == -102973651) {
         API.disableControlThisFrame(24);
 
-        if (lastChop < Date.now()) {
+        if (lastChop < Date.now() && lastChop != -1) {
             API.stopPlayerAnimation();
+            lastChop = -1;
         }
     }
 
