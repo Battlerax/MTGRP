@@ -256,6 +256,9 @@ namespace mtgvrp.player_manager
         [BsonIgnore]
         public GTANetworkServer.Object MicObject = null;
 
+        [BsonIgnore]
+        public bool IsScubaDiving = false;
+
         //Hunting Related
         public DateTime LastRedeemedDeerTag;
         public DateTime LastRedeemedBoarTag;

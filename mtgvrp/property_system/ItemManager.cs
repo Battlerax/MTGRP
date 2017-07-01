@@ -35,6 +35,7 @@ namespace mtgvrp.property_system
                     prop.ItemPrices.Add("rags", 10);
                     prop.ItemPrices.Add("phone", 500);
                     prop.ItemPrices.Add("axe", 100);
+                    prop.ItemPrices.Add("scuba", 2000);
                     break;
 
                 //This is kind of a unique business.. item names are the id.. it doesn't have a general sell list like 24/7 and Hardware.
@@ -92,6 +93,7 @@ namespace mtgvrp.property_system
             new [] {"rags", "Rags", "Used to mute or blindfold people."},
             new [] {"phone", "Phone", "Used to contact other people."},
             new [] {"axe", "Axe", "Used to cut wood."},
+            new [] {"scuba", "Scuba Set", "Used to dive."},
         };
 
         public static string[][] AmmunationItems =

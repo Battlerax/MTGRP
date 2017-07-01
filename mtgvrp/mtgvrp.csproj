@@ -85,6 +85,8 @@
     <Compile Include="job_manager\hunting\AnimalItem.cs" />
     <Compile Include="job_manager\hunting\HuntingManager.cs" />
     <Compile Include="job_manager\hunting\HuntingTag.cs" />
+    <Compile Include="job_manager\scuba\ScubaItem.cs" />
+    <Compile Include="job_manager\scuba\ScubaManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AdminSystem\AdminCommands.cs" />
     <Compile Include="AdminSystem\AdminReports.cs" />
@@ -199,6 +201,7 @@
     <Content Include="job_manager\fisher\Fisher.js" />
     <Content Include="job_manager\hunting\HuntingManager.js" />
     <Content Include="job_manager\lumberjack\Lumberjack.js" />
+    <Content Include="job_manager\scuba\ScubaManager.js" />
     <Content Include="job_manager\taxi\TaxiJob.js" />
     <Content Include="jquery.js" />
     <Content Include="meta.xml">

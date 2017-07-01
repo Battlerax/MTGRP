@@ -98,6 +98,9 @@
   <!-- Lumberjack Job -->
   <script src="job_manager/lumberjack/Lumberjack.js" type="client" lang="javascript"/>
   
+  <!-- Scubadiving -->
+  <script src="job_manager/scuba/ScubaManager.js" type="client" lang="javascript"/>
+  
   <!-- ADMIN -->
   <script src="AdminSystem/Reports.js" type="client" lang="javascript"/>
           
