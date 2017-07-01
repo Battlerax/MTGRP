@@ -122,7 +122,7 @@ namespace mtgvrp.player_manager
                 character.LastPos = player.position;
                 character.LastRot = player.rotation;
                 character.GetTimePlayed(); //Update time played before save.
-
+                character.Save();
                 RemovePlayer(character);
             }
         }
