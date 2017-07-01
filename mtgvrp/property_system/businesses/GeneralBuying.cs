@@ -273,6 +273,7 @@ namespace mtgvrp.property_system.businesses
                             {
                                 case InventoryManager.GiveItemErrors.Success:
                                     InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
+                                    WeaponManager.CreateWeapon(sender, WeaponHash.SniperRifle, WeaponTint.Normal, true);
                                     API.sendChatMessageToPlayer(sender,
                                         $"[BUSINESS] You have sucessfully bought a ~g~ 5.56 Bullet ~w~ for ~g~${price}.");
                                     break;
