@@ -42,6 +42,7 @@ namespace mtgvrp.inventory
             #endregion
 
             API.onClientEventTrigger += API_onClientEventTrigger;
+            API.onClientEventTrigger += API_onClientEventTrigger1;
         }
 
         #region Events
@@ -620,6 +621,22 @@ namespace mtgvrp.inventory
         }
 
         #region Stashing System: 
+        private void API_onClientEventTrigger1(Client sender, string eventName, params object[] arguments)
+        {
+            if (eventName == "stash_setnewpos")
+            {
+                string id = (string)arguments[0];
+                Vector3 pos = (Vector3)arguments[1];
+                Vector3 rot = (Vector3)arguments[2];
+
+                var itm = _stashedItems.SingleOrDefault(x => x.Value.Id.ToString() == id);
+
+                API.resetEntitySyncedData(itm.Key, "TargetObj");
+                API.setEntityPosition(itm.Key, pos);
+                API.setEntityRotation(itm.Key, rot);
+            }
+        }
+
         private Dictionary<NetHandle, IInventoryItem> _stashedItems = new Dictionary<NetHandle, IInventoryItem>();
 
         [Command("stash")]
@@ -644,6 +661,8 @@ namespace mtgvrp.inventory
             //Create object and add to list.
             var droppedObject = API.createObject(sendersItem[0].Object, player.position.Subtract(new Vector3(0, 0, 1)), new Vector3(0, 0, 0));
             _stashedItems.Add(droppedObject, CloneItem(sendersItem[0], amount));
+            API.setEntitySyncedData(droppedObject, "TargetObj", sendersItem[0].Id.ToString());
+            API.triggerClientEvent(player, "PLACE_OBJECT_ON_GROUND_PROPERLY", sendersItem[0].Id.ToString(), "stash_setnewpos");
 
             //Decrease.
             DeleteInventoryItem(character, sendersItem[0].GetType(), amount, x => x == sendersItem[0]);
