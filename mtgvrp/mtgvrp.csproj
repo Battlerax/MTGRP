@@ -43,6 +43,9 @@
     <Reference Include="GTANetworkShared">
       <HintPath>..\Latest Server\GTANetworkShared.dll</HintPath>
     </Reference>
+    <Reference Include="INIFileParser, Version=2.4.0.0, Culture=neutral, PublicKeyToken=79af7b307b65cf3c, processorArchitecture=MSIL">
+      <HintPath>..\packages\ini-parser.2.4.0\lib\net20\INIFileParser.dll</HintPath>
+    </Reference>
     <Reference Include="MongoDB.Bson, Version=2.4.3.23, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MongoDB.Bson.2.4.3\lib\net45\MongoDB.Bson.dll</HintPath>
       <Private>True</Private>
@@ -76,6 +79,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="core\Items\EngineParts.cs" />
+    <Compile Include="core\Items\SprayPaint.cs" />
+    <Compile Include="core\SettingsManager.cs" />
+    <Compile Include="job_manager\mechanic\MechanicJob.cs" />
     <Compile Include="core\Help\Help.cs" />
     <Compile Include="core\Help\HelpManager.cs" />
     <Compile Include="job_manager\garbageman\Garbageman.cs" />
@@ -86,6 +93,8 @@
     <Compile Include="job_manager\hunting\AnimalItem.cs" />
     <Compile Include="job_manager\hunting\HuntingManager.cs" />
     <Compile Include="job_manager\hunting\HuntingTag.cs" />
+    <Compile Include="job_manager\scuba\ScubaItem.cs" />
+    <Compile Include="job_manager\scuba\ScubaManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AdminSystem\AdminCommands.cs" />
     <Compile Include="AdminSystem\AdminReports.cs" />
@@ -201,6 +210,7 @@
     <Content Include="job_manager\garbageman\Garbageman.js" />
     <Content Include="job_manager\hunting\HuntingManager.js" />
     <Content Include="job_manager\lumberjack\Lumberjack.js" />
+    <Content Include="job_manager\scuba\ScubaManager.js" />
     <Content Include="job_manager\taxi\TaxiJob.js" />
     <Content Include="jquery.js" />
     <Content Include="meta.xml">

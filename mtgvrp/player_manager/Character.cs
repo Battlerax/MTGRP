@@ -163,6 +163,11 @@ namespace mtgvrp.player_manager
         [BsonIgnore]
         public int PerfectCatchStrength { get; set; }
 
+        public Dictionary<Fish, int> FishOnHand = new Dictionary<Fish, int>();
+
+        //Mechanic related
+        public DateTime FixcarPrevention { get; set; }
+
         //Phone
         [BsonIgnore]
         public Character InCallWith { get; set; }
@@ -277,6 +282,9 @@ namespace mtgvrp.player_manager
         public GTANetworkServer.Object MicObject = null;
 
         [BsonIgnore]
+        public bool IsScubaDiving = false;
+
+        [BsonIgnore]
         public GTANetworkServer.Object GarbageBag = null;
 
         //Hunting Related
@@ -319,6 +327,8 @@ namespace mtgvrp.player_manager
             Health = 100;
             RadioToggle = true;
             CanDoAnim = true;
+
+            IsOnGarbageRun = false;
         }
 
         public void Insert()

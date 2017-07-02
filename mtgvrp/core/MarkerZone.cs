@@ -58,7 +58,7 @@ namespace mtgvrp.core
             if (this == None)
                 return;
 
-            Marker = API.shared.createMarker(2, Location, Location, Rotation, Scale, Alpha, Red, Green, Blue, Dimension);
+            Marker = API.shared.createMarker(MarkerType, Location, Location, Rotation, Scale, Alpha, Red, Green, Blue, Dimension);
             Label = API.shared.createTextLabel("~g~" + LabelText, Location.Add(new Vector3(0.0, 0.0, 0.5)), 25f, 0.5f, true, Dimension);
             ColZone = API.shared.createSphereColShape(Location, ColZoneSize);
 

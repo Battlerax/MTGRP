@@ -508,7 +508,7 @@ namespace mtgvrp.AdminSystem
             Account account = API.getEntityData(player.handle, "Account");
             Character character = API.getEntityData(player.handle, "Character");
 
-            if (account.AdminLevel < 7)
+            if (account.AdminLevel <= 6)
                 return;
 
             InventoryManager.SetInventoryAmmount(character, typeof(Money), money);
@@ -1394,15 +1394,6 @@ namespace mtgvrp.AdminSystem
             Account account = API.shared.getEntityData(player.handle, "Account");
 
             account.IsBanned = false;
-        }
-
-        //TODO: REMOVE THIS: 
-        [Command("makemeadmin")]
-        public void makemeadmin_cmd(Client player)
-        {
-            Account account = API.getEntityData(player.handle, "Account");
-            account.AdminLevel = 7;
-            API.sendChatMessageToPlayer(player, "You are now a king.");
         }
 
         [Command("changeviplevel", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel3, "Change a players VIP level", new[] { "ID of the target player", "The VIP level to change to", "The VIP amount in days" })]

@@ -69,6 +69,8 @@ namespace mtgvrp.property_system
 
         public int AdvertisingPrice { get; set; }
 
+        public List<string> IPLs { get; set; } = new List<string>();
+
         //Other Info
         public int GarbageBags { get; set; }
 

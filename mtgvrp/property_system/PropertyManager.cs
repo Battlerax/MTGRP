@@ -309,6 +309,7 @@ namespace mtgvrp.property_system
                         }
                         prop.IsTeleportable = !prop.IsTeleportable;
                         prop.Save();
+                        prop.UpdateMarkers();
                         API.sendChatMessageToPlayer(sender,
                             $"[Property Manager] Property #{id} was made to be '" +
                             (prop.IsTeleportable ? "Teleportable" : "UnTeleportable") + "'");
@@ -333,6 +334,7 @@ namespace mtgvrp.property_system
                         prop.TargetPos = sender.position;
                         prop.TargetRot = sender.rotation;
                         prop.Save();
+                        prop.UpdateMarkers();
                         API.sendChatMessageToPlayer(sender,
                             $"[Property Manager] Interior TP position of property #{id} was changed.");
                     }
@@ -350,6 +352,7 @@ namespace mtgvrp.property_system
                         }
                         prop.IsInteractable = !prop.IsInteractable;
                         prop.Save();
+                        prop.UpdateMarkers();
                         API.sendChatMessageToPlayer(sender,
                             $"[Property Manager] Property #{id} was made to be '" +
                             (prop.IsInteractable ? "Interactable" : "UnInteractable") + "'");
@@ -512,6 +515,46 @@ namespace mtgvrp.property_system
                 case "attempt_enter_prop":
                     Enterproperty(sender);
                     break;
+
+                case "editproperty_addipl":
+                    if (sender.GetAccount().AdminLevel >= 5)
+                    {
+                        var id = Convert.ToInt32(arguments[0]);
+                        var prop = Properties.SingleOrDefault(x => x.Id == id);
+                        if (prop == null)
+                        {
+                            API.sendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                            return;
+                        }
+                        prop.IPLs.Add(arguments[1].ToString());
+                        prop.Save();
+                        API.sendChatMessageToPlayer(sender,
+                            $"[Property Manager] Added IPL {arguments[1]} to property #{id}.");
+                        API.triggerClientEvent(sender, "editproperty_showmenu", prop.Id, API.toJson(prop.IPLs.ToArray()));
+                    }
+                    break;
+
+                case "editproperty_deleteipl":
+                    if (sender.GetAccount().AdminLevel >= 5)
+                    {
+                        var id = Convert.ToInt32(arguments[0]);
+                        var prop = Properties.SingleOrDefault(x => x.Id == id);
+                        if (prop == null)
+                        {
+                            API.sendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                            return;
+                        }
+
+                        var ipl = arguments[1].ToString();
+                        if (prop.IPLs.RemoveAll(x => x == ipl) > 0)
+                        {
+                            prop.Save();
+                            API.sendChatMessageToPlayer(sender,
+                                $"[Property Manager] Removed IPL {ipl} from property #{id}.");
+                            API.triggerClientEvent(sender, "editproperty_showmenu", prop.Id, API.toJson(prop.IPLs.ToArray()));
+                        }
+                    }
+                    break;
             }
         }
 
@@ -551,6 +594,11 @@ namespace mtgvrp.property_system
             {
                 if (prop.IsTeleportable && (!prop.IsLocked || prop.OwnerId == player.GetCharacter().Id))
                 {
+                    foreach (var ipl in prop.IPLs)
+                    {
+                        //TODO: request ipl for player.
+                    }
+
                     player.position = prop.TargetPos;
                     player.rotation = prop.TargetRot;
                     player.dimension = prop.TargetDimension;
@@ -572,6 +620,11 @@ namespace mtgvrp.property_system
             {
                 if (prop.IsTeleportable && (!prop.IsLocked || prop.OwnerId == player.GetCharacter().Id))
                 {
+                    foreach (var ipl in prop.IPLs)
+                    {
+                       //TODO: remove ipl for player.
+                    }
+
                     player.position = prop.EntrancePos;
                     player.rotation = prop.EntranceRot;
                     player.dimension = prop.EntranceDimension;
@@ -822,7 +875,11 @@ namespace mtgvrp.property_system
                     API.sendChatMessageToPlayer(player, "Invalid Property Id.");
                     return;
                 }
-                API.triggerClientEvent(player, "editproperty_showmenu", prop.Id);
+                
+                if(prop.IPLs == null)
+                    prop.IPLs = new List<string>();
+
+                API.triggerClientEvent(player, "editproperty_showmenu", prop.Id, API.toJson(prop.IPLs.ToArray()));
             }
         }
 

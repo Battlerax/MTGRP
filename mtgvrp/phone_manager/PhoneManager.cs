@@ -435,33 +435,6 @@ namespace mtgvrp.phone_manager
             }
         }
 
-
-        //TODO: Test Command.
-        [Command("setphonenumber")]
-        public void setphone_cmd(Client player, string id, string number)
-        {
-            var receiver = PlayerManager.ParseClient(id);
-            Character rec = API.getEntityData(receiver.handle, "Character");
-            if (DoesNumberExist(number))
-            {
-                API.sendChatMessageToPlayer(player, "That number is taken.");
-                return;
-            }
-
-            var phone = new Phone
-            {
-                PhoneNumber = number,
-                PhoneName = "default",
-                IsOn = true
-            };
-
-            var status = InventoryManager.GiveInventoryItem(rec, phone);
-            API.sendChatMessageToPlayer(player, status.ToString());
-            if(status == InventoryManager.GiveItemErrors.Success) phone.InsertNumber();
-
-            API.sendChatMessageToPlayer(player, "You have given " + rec.CharacterName + " a phone. Number is " + number + ".");
-        }
-
         public void editcontact_cmd(Client player, string oldname, string newname, string number)
         {
             Character c = API.getEntityData(player.handle, "Character");

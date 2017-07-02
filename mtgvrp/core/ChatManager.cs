@@ -337,7 +337,7 @@ namespace mtgvrp.core
             {
                 foreach (var c in API.getAllPlayers())
                 {
-                    Account receiverAccount = API.getEntityData(player.handle, "Account");
+                    Account receiverAccount = API.getEntityData(c, "Account");
 
                     if (receiverAccount.AdminLevel > 0)
                     {

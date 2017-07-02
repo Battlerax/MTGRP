@@ -25,7 +25,7 @@ namespace mtgvrp
     public class Init : Script
     {
         public static string SERVER_NAME = "[EN] MT-Gaming V-RP Test Server";
-        public static string SERVER_VERSION = "v0.0.779";
+        public static string SERVER_VERSION = "v0.0.818";
         public static string SERVER_WEBSITE = "www.mt-gaming.com";
         public static Random Random = new Random();
 
@@ -37,7 +37,10 @@ namespace mtgvrp
             API.setServerName(SERVER_NAME + " ~r~[" + SERVER_VERSION + "] ~b~| ~g~" + SERVER_WEBSITE);
 
             API.onResourceStart += OnResourceStartHandler;
+            API.onResourceStop += API_onResourceStop;
             InventoryManager.OnStorageItemUpdateAmount += InventoryManager_OnStorageItemUpdateAmount;
+
+            SettingsManager.Load();
 
             DebugManager.DebugManagerInit();
             DatabaseManager.DatabaseManagerInit();
@@ -64,13 +67,9 @@ namespace mtgvrp
             API.consoleOutput("[INIT] Script initalized!");
         }
 
-        [Command("unfreezeanimals")]
-        public void unfreezeanimals(Client player)
+        private void API_onResourceStop()
         {
-            foreach (var a in HuntingManager.SpawnedAnimals)
-            {
-                API.setEntityPositionFrozen(a.handle, false);
-            }
+            SettingsManager.Save();
         }
     }
 }

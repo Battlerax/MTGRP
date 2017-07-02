@@ -5,9 +5,15 @@ function sendMessage(msg) {
     API.sendChatMessage("[Property Manager] " + msg);
 }
 
+var IPLlist;
+var selIPL = 0;
 API.onServerEventTrigger.connect((eventName, args) => {
     switch (eventName) {
         case "editproperty_showmenu":
+            if (editMenu !== null) {
+                editMenu.Visible = false;
+            }
+
             selID = args[0];
             editMenu = API.createMenu("Edit Property", "Select an action.", 0, 0, 6);
 	        API.setMenuBannerRectangle(editMenu, 255, 60, 60, 255);
@@ -26,9 +32,26 @@ API.onServerEventTrigger.connect((eventName, args) => {
             editMenu.AddItem(API.createMenuItem("Set Owner", "Set property's owner."));
 			editMenu.AddItem(API.createMenuItem("Set Garbage Point", "Set property garbage point."));
             editMenu.AddItem(API.createMenuItem("Toggle Has Garbage Point", "Toggle whether the property has a garbage point or not."));
+
+            IPLlist = JSON.parse(args[1]);
+            var items = new List(String);
+            for (var i = 0; i < IPLlist.length; i++) {
+                items.Add(IPLlist[i]);
+            }
+            items.Add("Add New");
+
+            var listitem = API.createListItem("Change IPLs",
+                "Toggle whether the property has a garbage point or not.",
+                items,
+                0);
+
+            editMenu.AddItem(listitem);
+
+            listitem.OnListChanged.connect(function (sender, index) {
+                selIPL = index;
+            });
+
             editMenu.AddItem(API.createMenuItem("~r~Delete Property", "Delete the property."));
-
-
 
             editMenu.Visible = true;
 
@@ -145,6 +168,22 @@ API.onServerEventTrigger.connect((eventName, args) => {
                         break;
 
                     case 15:
+                        API.sendChatMessage("Selected ID: " + selIPL + " Length: " + IPLlist.length);
+                        if (selIPL === IPLlist.length) {
+                            var ipl = "";
+                            while (ipl === "") {
+                                ipl = API.getUserInput("", 100);
+                                if (ipl === "") {
+                                    sendMessage("IPL can't be empty.");
+                                }
+                            }
+                            API.triggerServerEvent("editproperty_addipl", selID, ipl);
+                        } else {
+                            API.triggerServerEvent("editproperty_deleteipl", selID, IPLlist[selIPL]);
+                        }
+                        break;
+                    
+                    case 16:
                         editMenu.Visible = false;
                         API.triggerServerEvent("editproperty_deleteproperty", selID);
                         break;

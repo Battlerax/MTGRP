@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using GTANetworkServer;
@@ -9,6 +10,7 @@ using mtgvrp.core.Items;
 using mtgvrp.inventory.bags;
 using mtgvrp.job_manager.fisher;
 using mtgvrp.job_manager.hunting;
+using mtgvrp.job_manager.scuba;
 using mtgvrp.phone_manager;
 using mtgvrp.player_manager;
 using mtgvrp.property_system.businesses;
@@ -29,6 +31,8 @@ namespace mtgvrp.inventory
             BsonClassMap.RegisterClassMap<BagItem>();
             BsonClassMap.RegisterClassMap<Phone>();
             BsonClassMap.RegisterClassMap<Money>();
+            BsonClassMap.RegisterClassMap<EngineParts>();
+            BsonClassMap.RegisterClassMap<SprayPaint>();
             BsonClassMap.RegisterClassMap<Fish>();
             BsonClassMap.RegisterClassMap<RopeItem>();
             BsonClassMap.RegisterClassMap<RagsItem>();
@@ -37,11 +41,13 @@ namespace mtgvrp.inventory
             BsonClassMap.RegisterClassMap<HuntingTag>();
             BsonClassMap.RegisterClassMap<AnimalItem>();
             BsonClassMap.RegisterClassMap<AmmoItem>();
+            BsonClassMap.RegisterClassMap<ScubaItem>();
 
             BsonClassMap.RegisterClassMap<Weapon>();
             #endregion
 
             API.onClientEventTrigger += API_onClientEventTrigger;
+            API.onClientEventTrigger += API_onClientEventTrigger1;
         }
 
         #region Events
@@ -126,7 +132,7 @@ namespace mtgvrp.inventory
 
             if (storage.Inventory == null) storage.Inventory = new List<IInventoryItem>();
             //Make sure he doesn't have blocking item.
-            if(storage.Inventory.FirstOrDefault(x => x.IsBlocking == true) != null && ignoreBlocking == false)
+            if(storage.GetType() == typeof(Character) && storage.Inventory.FirstOrDefault(x => x.IsBlocking == true) != null && ignoreBlocking == false)
                 return GiveItemErrors.HasBlockingItem;
 
             int maxAmount = -1;
@@ -620,6 +626,22 @@ namespace mtgvrp.inventory
         }
 
         #region Stashing System: 
+        private void API_onClientEventTrigger1(Client sender, string eventName, params object[] arguments)
+        {
+            if (eventName == "stash_setnewpos")
+            {
+                string id = arguments[0].ToString();
+                Vector3 pos = (Vector3)arguments[1];
+                Vector3 rot = (Vector3)arguments[2];
+
+                var itm = _stashedItems.SingleOrDefault(x => API.getEntitySyncedData(x.Key, "TargetObj") == id);
+
+                API.resetEntitySyncedData(itm.Key, "TargetObj");
+                API.setEntityPosition(itm.Key, pos);
+                API.setEntityRotation(itm.Key, rot);
+            }
+        }
+
         private Dictionary<NetHandle, IInventoryItem> _stashedItems = new Dictionary<NetHandle, IInventoryItem>();
 
         [Command("stash")]
@@ -642,8 +664,12 @@ namespace mtgvrp.inventory
             }
 
             //Create object and add to list.
-            var droppedObject = API.createObject(sendersItem[0].Object, player.position.Subtract(new Vector3(0, 0, 1)), new Vector3(0, 0, 0));
+            var droppedObject = API.createObject(sendersItem[0].Object, player.position, new Vector3());
             _stashedItems.Add(droppedObject, CloneItem(sendersItem[0], amount));
+            var rnd = new Random();
+            var number = rnd.Next(0, 10000).ToString();
+            API.setEntitySyncedData(droppedObject, "TargetObj", number);
+            API.triggerClientEvent(player, "PLACE_OBJECT_ON_GROUND_PROPERLY", number, "stash_setnewpos");
 
             //Decrease.
             DeleteInventoryItem(character, sendersItem[0].GetType(), amount, x => x == sendersItem[0]);
