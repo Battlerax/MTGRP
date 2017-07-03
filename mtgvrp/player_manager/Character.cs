@@ -46,7 +46,6 @@ namespace mtgvrp.player_manager
 
         public List<int> Outfit = new List<int>();
         public List<int> OutfitVariation = new List<int>();
-        public List<Weapon> Weapons = new List<Weapon>();
         
         public int Age { get; set; }
         public int AdminActions { get; set; }
@@ -421,7 +420,20 @@ namespace mtgvrp.player_manager
                     API.shared.sendNativeToAllPlayers(Hash.SET_PED_PROP_INDEX, Client.handle, 2, Model.EarStyle,
                     Model.EarVar - 1, true);
             }
-            else
+            else if (IsOnGarbageRun == true)
+            {
+                API.shared.setPlayerClothes(Client, 4, Model.Gender == GenderMale ? 36 : 35, 0);
+                API.shared.setPlayerClothes(Client, 8, Model.Gender == GenderMale ? 59 : 36, 0);
+                API.shared.setPlayerClothes(Client, 11, Model.Gender == GenderMale ? 56 : 49, 0);
+                API.shared.setPlayerClothes(Client, 3, 0, 0); //Torso
+
+                API.shared.sendNativeToAllPlayers(Hash.SET_PED_PROP_INDEX, Client.handle, 0,
+                    Model.Gender == GenderMale ? 46 : 45, 0, true);
+                API.shared.sendNativeToAllPlayers(Hash.SET_PED_PROP_INDEX, Client.handle, 1, 0, 0, true);
+                API.shared.sendNativeToAllPlayers(Hash.SET_PED_PROP_INDEX, Client.handle, 2, Model.EarStyle,
+                    Model.Gender == GenderMale ? 33 : 0, 0, true);
+            }
+            else if(IsInPoliceUniform == true)
             {
                 API.shared.setPlayerClothes(Client, 4, Model.Gender == GenderMale ? 35 : 34, 0); // Pants
                 API.shared.setPlayerClothes(Client, 6, 24, 0); // Shoes
