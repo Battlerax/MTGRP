@@ -24,6 +24,16 @@ namespace mtgvrp.job_manager.trucker
             API.onPlayerExitVehicle += API_onPlayerExitVehicle;
             API.onVehicleTrailerChange += API_onVehicleTrailerChange;
             API.onEntityEnterColShape += API_onEntityEnterColShape;
+            API.onPlayerDisconnected += API_onPlayerDisconnected;
+        }
+
+        private void API_onPlayerDisconnected(Client player, string reason)
+        {
+            Character c = player.GetCharacter();
+            if (c.TruckingStage != Character.TruckingStages.None)
+            {
+                CancelRun(player);
+            }
         }
 
         private void API_onPlayerExitVehicle(Client player, NetHandle vehicle)
@@ -440,11 +450,11 @@ namespace mtgvrp.job_manager.trucker
         public void CheckDemand(Client player)
         {
 
-            int fuel = 0;
-            int maxfuel = PropertyManager.Properties.Count(x => x.Type == PropertyManager.PropertyTypes.GasStation) *
+            double fuel = 0;
+            double maxfuel = PropertyManager.Properties.Count(x => x.Type == PropertyManager.PropertyTypes.GasStation) *
                           Property.MaxSupplies;
 
-            PropertyManager.Properties.Where(x => x.Type != PropertyManager.PropertyTypes.GasStation).AsParallel()
+            PropertyManager.Properties.Where(x => x.Type == PropertyManager.PropertyTypes.GasStation).AsParallel()
                 .ForAll(x => fuel += x.Supplies);
 
             API.sendChatMessageToPlayer(player,
@@ -455,7 +465,7 @@ namespace mtgvrp.job_manager.trucker
                 API.sendChatMessageToPlayer(player, "The amount of fuel availale in gas stations: 100%");
             else
                 API.sendChatMessageToPlayer(player,
-                    "The amount of fuel availale in gas stations: " + (fuel / maxfuel) * 100 + "%");
+                    "The amount of fuel availale in gas stations: " + Math.Round((fuel / maxfuel) * 100) + "%");
         }
     }
 }
