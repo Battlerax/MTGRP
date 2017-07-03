@@ -122,6 +122,7 @@ namespace mtgvrp.property_system.businesses
 
                             WeaponManager.CreateWeapon(sender, WeaponHash.Hatchet, WeaponTint.Normal, true);
                             InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
+                            prop.Supplies--;
                             API.sendChatMessageToPlayer(sender,
                                 $"[BUSINESS] You have sucessfully bought an ~g~Axe~w~ for ~g~${price}.");
                             return;
@@ -138,6 +139,7 @@ namespace mtgvrp.property_system.businesses
                 }
                 else if (prop.Type == PropertyManager.PropertyTypes.Restaurant)
                 {
+                    prop.Supplies--;
                     switch (itemName)
                     {
                         case "sprunk":
@@ -180,6 +182,7 @@ namespace mtgvrp.property_system.businesses
                 }
                 else if (prop.Type == PropertyManager.PropertyTypes.Ammunation)
                 {
+                    prop.Supplies--;
                     switch (itemName)
                     {
                         case "bat":
@@ -289,7 +292,8 @@ namespace mtgvrp.property_system.businesses
                             {
                                 case InventoryManager.GiveItemErrors.Success:
                                     InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
-                                    API.sendChatMessageToPlayer(sender,
+                                    prop.Supplies--;
+                                        API.sendChatMessageToPlayer(sender,
                                         $"[BUSINESS] You have sucessfully bought a ~g~ 5.56 Bullet ~w~ for ~g~${price}.");
                                     break;
 
@@ -315,6 +319,7 @@ namespace mtgvrp.property_system.businesses
                             case InventoryManager.GiveItemErrors.Success:
                                 InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
                                 InventoryManager.GiveInventoryItem(sender.GetCharacter(), new AmmoItem());
+                                prop.Supplies--;
                                 API.sendChatMessageToPlayer(sender,
                                     $"[BUSINESS] You have sucessfully bought a ~g~{name}~w~ for ~g~${price}.");
                                 break;
@@ -354,7 +359,7 @@ namespace mtgvrp.property_system.businesses
                             ((Phone)item).SaveNumber();
                             API.sendChatMessageToPlayer(sender, "Your phone number is: ~g~" + ((Phone)item).PhoneNumber);
                         }
-
+                        prop.Supplies--;
                         API.sendChatMessageToPlayer(sender,
                             $"[BUSINESS] You have sucessfully bought a ~g~{name}~w~ for ~g~${price}.");
                         break;
