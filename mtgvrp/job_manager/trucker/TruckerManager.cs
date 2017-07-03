@@ -92,7 +92,7 @@ namespace mtgvrp.job_manager.trucker
                     Property needsGasProp = null;
                     foreach (var prop in PropertyManager.Properties.Where(x => x.Type == PropertyManager.PropertyTypes.GasStation))
                     {
-                        if (needsGasProp == null && prop.Supplies < Property.MaxSupplies)
+                        if (needsGasProp == null && prop.Supplies < Property.MaxGasSupplies)
                             needsGasProp = prop;
 
                         if (needsGasProp != null && prop.Supplies < needsGasProp.Supplies)
@@ -157,7 +157,7 @@ namespace mtgvrp.job_manager.trucker
 
                     API.setBlipRouteVisible(JobManager.GetJobById(character.JobZone).MiscOne.Blip, false);
 
-                    if (Convert.ToInt32(SettingsManager.GetSettingInt("WoodSupplies")) < 20)
+                    if (SettingsManager.GetSettingInt("WoodSupplies") < 50)
                     {
                         API.sendChatMessageToPlayer(player, "There is no any wood to load.");
                         return;
@@ -183,7 +183,7 @@ namespace mtgvrp.job_manager.trucker
                         API.sendChatMessageToPlayer(player,
                             "~r~[Trucking]~w~ Your truck have been loaded, head to the checkpoint to deliver them.");
                         API.resetEntityData(player, "TRUCKING_LOAD_TIMER");
-                        SettingsManager.SetSettingInt("WoodSupplies", SettingsManager.GetSettingInt("WoodSupplies") - 20);
+                        SettingsManager.SetSettingInt("WoodSupplies", SettingsManager.GetSettingInt("WoodSupplies") - 50);
 
                     }, null, 10000, Timeout.Infinite));
                 }
@@ -243,7 +243,7 @@ namespace mtgvrp.job_manager.trucker
                             "~r~[Trucking]~w~ Your truck have been unloaded, head to the checkpoint finish your run.");
                         API.resetEntityData(player, "TRUCKING_UNLOAD_TIMER");
                         SettingsManager.SetSettingInt("TruckerSupplies",
-                            SettingsManager.GetSettingInt("TruckerSupplies") + 20);
+                            SettingsManager.GetSettingInt("TruckerSupplies") + 50);
 
                     }, null, 10000, Timeout.Infinite));
                 }
@@ -357,7 +357,7 @@ namespace mtgvrp.job_manager.trucker
                     Property needsGasProp = null;
                     foreach (var prop in PropertyManager.Properties.Where(x => x.Type == PropertyManager.PropertyTypes.GasStation))
                     {
-                        if (needsGasProp == null && prop.Supplies < Property.MaxSupplies)
+                        if (needsGasProp == null && prop.Supplies < Property.MaxGasSupplies)
                             needsGasProp = prop;
 
                         if (needsGasProp != null && prop.Supplies < needsGasProp.Supplies)
@@ -452,7 +452,7 @@ namespace mtgvrp.job_manager.trucker
 
             double fuel = 0;
             double maxfuel = PropertyManager.Properties.Count(x => x.Type == PropertyManager.PropertyTypes.GasStation) *
-                          Property.MaxSupplies;
+                          Property.MaxGasSupplies;
 
             PropertyManager.Properties.Where(x => x.Type == PropertyManager.PropertyTypes.GasStation).AsParallel()
                 .ForAll(x => fuel += x.Supplies);

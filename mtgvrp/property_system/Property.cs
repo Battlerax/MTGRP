@@ -68,7 +68,7 @@ namespace mtgvrp.property_system
         public MarkerZone GarbageMarker { get; set; }
 
         [BsonIgnore]
-        public static int MaxSupplies => 20;
+        public static int MaxGasSupplies => 300;
 
         public int AdvertisingPrice { get; set; }
 
