@@ -14,7 +14,6 @@ public class Weapon : IInventoryItem
         public WeaponTint WeaponTint { get; set; }
         public WeaponComponent WeaponComponent { get; set; }
 
-
         public int Ammo { get; set; }
 
         public int GroupId { get; set; }

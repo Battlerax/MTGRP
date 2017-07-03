@@ -106,6 +106,14 @@ namespace mtgvrp.property_system.businesses
                             item = new RagsItem();
                             break;
                         case "axe":
+                            if (InventoryManager
+                                    .DoesInventoryHaveItem<Weapon>(character, x => x.WeaponHash == WeaponHash.Hatchet)
+                                    .Length > 0)
+                            {
+                                API.sendChatMessageToPlayer(sender, "You already have that weapon.");
+                                return;
+                            }
+
                             WeaponManager.CreateWeapon(sender, WeaponHash.Hatchet, WeaponTint.Normal, true);
                             InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
                             API.sendChatMessageToPlayer(sender,
