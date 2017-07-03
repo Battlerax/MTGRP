@@ -18,9 +18,9 @@ namespace mtgvrp.job_manager
             None,
             Taxi,
             Fisher,
+            Mechanic,
             Lumberjack,
             Garbageman,
-            Mechanic,
             Trucker
         }
 
@@ -155,14 +155,18 @@ namespace mtgvrp.job_manager
                 Name = name,
                 JoinPos = new MarkerZone(player.position, player.rotation, player.dimension)
                 {
-                    LabelText = name + "~n~/joinjob"
+                    TextLabelText = name + "~n~/joinjob"
                 }
             };
 
 
             job.JoinPos.ColZoneSize = 5;
+            job.JoinPos.UseBlip = true;
+            job.JoinPos.BlipSprite = job.sprite_type();
+
             job.JoinPos.Create();
             job.register_job_marker_events();
+
             job.Insert();
             Jobs.Add(job);
             API.sendChatMessageToPlayer(player, Color.Grey, "You have created job " + job.Id + " ( " + job.Name + ", Type: " + job.Type + " ). Use /editjob to edit it.");
@@ -186,7 +190,7 @@ namespace mtgvrp.job_manager
             {
                 case "jobname":
                     job.Name = value;
-                    job.JoinPos.LabelText = "~g~" + job.Name + "~n~/joinjob";
+                    job.JoinPos.TextLabelText = "~g~" + job.Name + "~n~/joinjob";
                     job.JoinPos.Refresh();
                     job.Save();
                     API.sendChatMessageToPlayer(player, Color.White, "You have changed Job " + job.Id + "'s name to " + job.Name);
@@ -202,6 +206,7 @@ namespace mtgvrp.job_manager
                     job.JoinPos.Location = player.position;
                     job.JoinPos.Rotation = player.rotation;
                     job.JoinPos.Dimension = player.dimension;
+                    job.JoinPos.UseBlip = true;
                     job.JoinPos.Refresh();
                     job.Save();
                     API.sendChatMessageToPlayer(player, Color.White, "You have changed Job " + job.Id + "'s location to your current position");
@@ -212,7 +217,7 @@ namespace mtgvrp.job_manager
                     {
                         job.MiscOne = new MarkerZone(player.position, player.rotation, player.dimension)
                         {
-                            LabelText = job.Name + " Misc One"
+                            TextLabelText = job.Name + " Misc One"
                         };
                         job.MiscOne.Create();
                     }
@@ -232,17 +237,17 @@ namespace mtgvrp.job_manager
                     {
                         job.MiscOne = new MarkerZone(player.position, player.rotation, player.dimension)
                         {
-                            LabelText = job.Name + " Misc One"
+                            TextLabelText = job.Name + " Misc One"
                         };
                         job.MiscOne.Create();
                     }
                     else
                     {
-                        job.MiscOne.LabelText = value;
+                        job.MiscOne.TextLabelText = value;
                         job.MiscOne.Refresh();
                     }
                     job.Save();
-                    API.sendChatMessageToPlayer(player, Color.White, "You have changed Job " + job.Id + "'s misc one text to " + job.MiscOne.LabelText);
+                    API.sendChatMessageToPlayer(player, Color.White, "You have changed Job " + job.Id + "'s misc one text to " + job.MiscOne.TextLabelText);
                     break;
                 case "misc_one_blip":
                     if (job.MiscOne == MarkerZone.None)
@@ -253,6 +258,7 @@ namespace mtgvrp.job_manager
                     else
                     {
                         job.MiscOne.BlipSprite = Convert.ToInt32(value);
+                        job.MiscOne.UseBlip = true;
                         job.MiscOne.Refresh();
                     }
                     job.Save();
@@ -264,7 +270,7 @@ namespace mtgvrp.job_manager
                     {
                         job.MiscTwo = new MarkerZone(player.position, player.rotation, player.dimension)
                         {
-                            LabelText = job.Name + " Misc Two"
+                            TextLabelText = job.Name + " Misc Two"
                         };
                         job.MiscTwo.Create();
                     }
@@ -283,17 +289,17 @@ namespace mtgvrp.job_manager
                     {
                         job.MiscTwo = new MarkerZone(player.position, player.rotation, player.dimension)
                         {
-                            LabelText = job.Name + " Misc Two"
+                            TextLabelText = job.Name + " Misc Two"
                         };
                         job.MiscTwo.Create();
                     }
                     else
                     {
-                        job.MiscTwo.LabelText = value;
+                        job.MiscTwo.TextLabelText = value;
                         job.MiscTwo.Refresh();
                     }
                     job.Save();
-                    API.sendChatMessageToPlayer(player, Color.White, "You have changed Job " + job.Id + "'s misc two text to " + job.MiscOne.LabelText);
+                    API.sendChatMessageToPlayer(player, Color.White, "You have changed Job " + job.Id + "'s misc two text to " + job.MiscOne.TextLabelText);
                     break;
                 case "misc_two_blip":
                     if (job.MiscTwo == MarkerZone.None)
@@ -304,6 +310,7 @@ namespace mtgvrp.job_manager
                     else
                     {
                         job.MiscTwo.BlipSprite = Convert.ToInt32(value);
+                        job.MiscOne.UseBlip = true;
                         job.MiscTwo.Refresh();
                     }
                     job.Save();
@@ -458,13 +465,15 @@ namespace mtgvrp.job_manager
 
             foreach(var j in Jobs)
             {
-                j.JoinPos = new MarkerZone(j.JoinPos.Location, j.JoinPos.Rotation, j.JoinPos.Dimension,
-                    j.JoinPos.ColZoneSize)
+                j.JoinPos = new MarkerZone(j.JoinPos?.Location, j.JoinPos?.Rotation, j.JoinPos.Dimension
+                    )
                 {
-                    LabelText = "~g~" + j.Name + "~n~/joinjob",
+                    ColZoneSize = j.JoinPos.ColZoneSize,
+                    TextLabelText = "~g~" + j.Name + "~n~/joinjob",
                     BlipSprite = j.sprite_type()
                 };
-                j.JoinPos.Create();
+
+                j.JoinPos?.Create();
 
                 if (j.MiscOne != MarkerZone.None)
                 {

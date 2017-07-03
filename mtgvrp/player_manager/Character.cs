@@ -112,6 +112,7 @@ namespace mtgvrp.player_manager
 
         [BsonIgnore]
         public DateTime CanPickupTrash { get; set; }
+        [BsonIgnore]
         public bool IsOnGarbageRun { get; set; }
         public Timer GarbageTimeLeftTimer { get; set; }
         private int _garbagetime;
@@ -409,32 +410,22 @@ namespace mtgvrp.player_manager
 
             API.shared.sendNativeToAllPlayers(Hash.SET_PED_HEAD_OVERLAY, Client.handle, 9, Model.MolesFreckles, 1.0f);
 
-            if (IsInPoliceUniform == false)
+            if (IsOnGarbageRun == true)
             {
-                API.shared.setPlayerClothes(Client, 4, Model.PantsStyle, Model.PantsVar - 1); // Pants
+                API.shared.setPlayerClothes(Client, 4, Model.Gender == GenderMale ? 36 : 35, 0); //Garbage pants
+                API.shared.setPlayerClothes(Client, 8, Model.Gender == GenderMale ? 59 : 36, 0); //Garbage vest
+                API.shared.setPlayerClothes(Client, 11, Model.Gender == GenderMale ? 56 : 49, 0); //Garbage shirt
+
                 API.shared.setPlayerClothes(Client, 6, Model.ShoeStyle, Model.ShoeVar - 1); // Shoes
                 API.shared.setPlayerClothes(Client, 7, Model.AccessoryStyle, Model.AccessoryVar - 1); // Accessories
-                API.shared.setPlayerClothes(Client, 8, Model.UndershirtStyle, Model.UndershirtVar - 1); //undershirt
-                API.shared.setPlayerClothes(Client, 11, Model.TopStyle, Model.TopVar - 1); //top
-                API.shared.setPlayerClothes(Client, 3, Model.TorsoStyle, Model.TorsoVar); //Torso
+                API.shared.setPlayerClothes(Client, 3, 0, 0); //Torso
 
-                //API.shared.setPlayerAccessory(client, 0, this.model.hat_style, this.model.hat_var - 1); // hats
-                //API.shared.setPlayerAccessory(client, 1, this.model.glasses_style, this.model.glasses_var - 1); // glasses
-                //API.shared.setPlayerAccessory(client, 2, this.model.ear_style, this.model.ear_var - 1); // earings
 
-                //Work around until setPlayerAccessory is fixed.
-                API.shared.sendNativeToAllPlayers(Hash.SET_PED_PROP_INDEX, Client.handle, 0, Model.HatStyle,
-                    Model.HatVar - 1, true);
-                API.shared.sendNativeToAllPlayers(Hash.SET_PED_PROP_INDEX, Client.handle, 1, Model.GlassesStyle,
-                    Model.GlassesVar - 1, true);
-
-                if(Model.EarStyle == 255)
-                    API.shared.sendNativeToAllPlayers(Hash.CLEAR_PED_PROP, Client.handle, 2);
-                else
-                    API.shared.sendNativeToAllPlayers(Hash.SET_PED_PROP_INDEX, Client.handle, 2, Model.EarStyle,
-                    Model.EarVar - 1, true);
+                API.shared.sendNativeToAllPlayers(Hash.SET_PED_PROP_INDEX, Client.handle, 1, 0, 0, true);
+                API.shared.sendNativeToAllPlayers(Hash.SET_PED_PROP_INDEX, Client.handle, 2, Model.EarStyle,
+                    Model.Gender == GenderMale ? 33 : 0, 0, true);
             }
-            else
+            else if(IsInPoliceUniform == true)
             {
                 API.shared.setPlayerClothes(Client, 4, Model.Gender == GenderMale ? 35 : 34, 0); // Pants
                 API.shared.setPlayerClothes(Client, 6, 24, 0); // Shoes
@@ -453,6 +444,31 @@ namespace mtgvrp.player_manager
                 API.shared.sendNativeToAllPlayers(Hash.SET_PED_PROP_INDEX, Client.handle, 1, 0, 0, true);
                 API.shared.sendNativeToAllPlayers(Hash.SET_PED_PROP_INDEX, Client.handle, 2, Model.EarStyle,
                     Model.Gender == GenderMale ? 33 : 0, 0, true);
+            }
+            else
+            {
+                API.shared.setPlayerClothes(Client, 4, Model.PantsStyle, Model.PantsVar - 1); // Pants
+                API.shared.setPlayerClothes(Client, 6, Model.ShoeStyle, Model.ShoeVar - 1); // Shoes
+                API.shared.setPlayerClothes(Client, 7, Model.AccessoryStyle, Model.AccessoryVar - 1); // Accessories
+                API.shared.setPlayerClothes(Client, 8, Model.UndershirtStyle, Model.UndershirtVar - 1); //undershirt
+                API.shared.setPlayerClothes(Client, 11, Model.TopStyle, Model.TopVar - 1); //top
+                API.shared.setPlayerClothes(Client, 3, Model.TorsoStyle, Model.TorsoVar); //Torso
+
+                //API.shared.setPlayerAccessory(client, 0, this.model.hat_style, this.model.hat_var - 1); // hats
+                //API.shared.setPlayerAccessory(client, 1, this.model.glasses_style, this.model.glasses_var - 1); // glasses
+                //API.shared.setPlayerAccessory(client, 2, this.model.ear_style, this.model.ear_var - 1); // earings
+
+                //Work around until setPlayerAccessory is fixed.
+                API.shared.sendNativeToAllPlayers(Hash.SET_PED_PROP_INDEX, Client.handle, 0, Model.HatStyle,
+                    Model.HatVar - 1, true);
+                API.shared.sendNativeToAllPlayers(Hash.SET_PED_PROP_INDEX, Client.handle, 1, Model.GlassesStyle,
+                    Model.GlassesVar - 1, true);
+
+                if (Model.EarStyle == 255)
+                    API.shared.sendNativeToAllPlayers(Hash.CLEAR_PED_PROP, Client.handle, 2);
+                else
+                    API.shared.sendNativeToAllPlayers(Hash.SET_PED_PROP_INDEX, Client.handle, 2, Model.EarStyle,
+                    Model.EarVar - 1, true);
             }
         }
 

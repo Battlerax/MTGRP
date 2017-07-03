@@ -95,7 +95,7 @@ namespace mtgvrp.vehicle_dealership
             //Setup the blip.
             foreach (var loc in _dealershipsLocations)
             {
-                var marker = new MarkerZone(loc, new Vector3()) {BlipSprite = 100, LabelText = "/buyvehicle"};
+                var marker = new MarkerZone(loc, new Vector3()) {BlipSprite = 100, TextLabelText = "/buyvehicle"};
                 marker.Create();
                 API.shared.setBlipShortRange(marker.Blip, true);
                 API.shared.setBlipName(marker.Blip, "Vehicle Dealership");
