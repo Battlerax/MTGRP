@@ -63,6 +63,12 @@ namespace mtgvrp.property_system.businesses
                     }
                 }
 
+                if (prop.Supplies <= 0)
+                {
+                    API.sendChatMessageToPlayer(sender, "The business is out of supplies.");
+                    return;
+                }
+
                 IInventoryItem item = null;
                 if (prop.Type == PropertyManager.PropertyTypes.TwentyFourSeven)
                 {

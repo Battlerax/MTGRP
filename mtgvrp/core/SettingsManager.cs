@@ -49,9 +49,19 @@ namespace mtgvrp.core
             _data["general"][var] = value;
         }
 
+        public static void SetSettingInt(string var, int value)
+        {
+            _data["general"][var] = value.ToString();
+        }
+
         public static string GetSetting(string var)
         {
             return _data["general"][var];
+        }
+
+        public static int GetSettingInt(string var)
+        {
+            return Convert.ToInt32(_data["general"][var]);
         }
     }
 }

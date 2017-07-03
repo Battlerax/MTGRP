@@ -549,6 +549,7 @@ namespace mtgvrp.vehicle_manager
         public void OnVehicleDeath(NetHandle vehicleHandle)
         {
             var veh = GetVehFromNetHandle(vehicleHandle);
+            if (veh == null) return;
             API.consoleOutput("Vehicle " + vehicleHandle + " died");
             API.delay(veh.RespawnDelay, true, () =>
             {
@@ -685,6 +686,9 @@ namespace mtgvrp.vehicle_manager
 
         public static int respawn_vehicle(Vehicle veh)
         {
+            if (veh == null)
+                return -1;
+
             return respawn_vehicle(veh, veh.SpawnPos);
         }
 

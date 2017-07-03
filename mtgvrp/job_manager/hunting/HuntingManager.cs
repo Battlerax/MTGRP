@@ -362,7 +362,7 @@ namespace mtgvrp.job_manager.hunting
 
         public void AnimalAI(HuntingAnimal animal)
         {
-            API.shared.setEntityPositionFrozen(handle, false);
+            /*API.shared.setEntityPositionFrozen(handle, false);
 
             List<Client> playersInRadius = new List<Client>();
             try
@@ -443,7 +443,7 @@ namespace mtgvrp.job_manager.hunting
                     break;
 
             }
-            UpdateState = false;
+            UpdateState = false;*/
         }
 
         public void Respawn()

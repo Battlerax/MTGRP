@@ -67,6 +67,9 @@ namespace mtgvrp.property_system
         [BsonIgnore]
         public MarkerZone GarbageMarker { get; set; }
 
+        [BsonIgnore]
+        public static int MaxSupplies => 20;
+
         public int AdvertisingPrice { get; set; }
 
         public List<string> IPLs { get; set; } = new List<string>();
