@@ -287,6 +287,15 @@ namespace mtgvrp.player_manager
         [BsonIgnore]
         public GTANetworkServer.Object GarbageBag = null;
 
+        [BsonIgnore]
+        public int TruckingStage = 0;
+        /*
+         * 0: None
+         * 1: Heading for supplies.
+         * 2: Delivering supplies.
+         * 3: Heading back to HQ.
+         * */
+
         //Hunting Related
         public DateTime LastRedeemedDeerTag;
         public DateTime LastRedeemedBoarTag;

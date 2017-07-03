@@ -324,7 +324,7 @@ namespace mtgvrp.job_manager.lumberjack
                 InventoryManager.GiveInventoryItem(player.GetCharacter(), new Money(), 500, true);
                 API.sendChatMessageToPlayer(player, "* You have sucessfully sold your wood for ~g~$500");
 
-                SettingsManager.SetSetting("WoodSupplies", SettingsManager.GetSetting("WoodSupplies") + 100);
+                SettingsManager.SetSetting("WoodSupplies", SettingsManager.GetSetting("WoodSupplies") + 10);
             }
         }
     }
