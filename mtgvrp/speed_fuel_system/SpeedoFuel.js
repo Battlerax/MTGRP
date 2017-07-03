@@ -105,12 +105,12 @@ API.onUpdate.connect(() => {
 			screenRes = API.getScreenResolutionMantainRatio();
 
 		if (lastDirection !== "")
-			API.drawText(lastDirection, 310, screenRes.Height - 155, 1, 225, 225, 225, 255, 4, 0, false, true, 0);
+			API.drawText(lastDirection, 310, screenRes.Height - 80, 1, 225, 225, 225, 255, 4, 0, false, true, 0); //155
 
 		if(lastStreet !== "")
-			API.drawText(lastStreet, 365, screenRes.Height - 150, 0.5, 225, 225, 225, 255, 4, 0, false, true, 0);
+			API.drawText(lastStreet, 365, screenRes.Height - 75, 0.5, 225, 225, 225, 255, 4, 0, false, true, 0);
 
 		if(lastZone !== "")
-			API.drawText(lastZone, 365, screenRes.Height - 125, 0.5, 225, 225, 225, 255, 4, 0, false, true, 0);
+			API.drawText(lastZone, 365, screenRes.Height - 50, 0.5, 225, 225, 225, 255, 4, 0, false, true, 0);
 	}
 });
