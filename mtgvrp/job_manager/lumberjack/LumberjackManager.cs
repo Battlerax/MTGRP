@@ -262,7 +262,7 @@ namespace mtgvrp.job_manager.lumberjack
 
                 API.setEntityData(vehicle.NetHandle, "TREE_OBJ", tree);
                 API.setEntityData(vehicle.NetHandle, "TREE_DRIVER", character.Id);
-                API.sendChatMessageToPlayer(player, "Goto the HQ to sell your wood.");
+                API.sendChatMessageToPlayer(player, "Go to the HQ to sell your wood.");
             }
             else
                 API.sendChatMessageToPlayer(player, "You have to be in a forklift to pickup the wood.");
@@ -324,7 +324,7 @@ namespace mtgvrp.job_manager.lumberjack
                 InventoryManager.GiveInventoryItem(player.GetCharacter(), new Money(), 500, true);
                 API.sendChatMessageToPlayer(player, "* You have sucessfully sold your wood for ~g~$500");
 
-                SettingsManager.SetSetting("WoodSupplies", SettingsManager.GetSetting("WoodSupplies") + 100);
+                SettingsManager.SetSetting("WoodSupplies", SettingsManager.GetSetting("WoodSupplies") + 10);
             }
         }
     }

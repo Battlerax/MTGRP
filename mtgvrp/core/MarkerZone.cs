@@ -102,7 +102,7 @@ namespace mtgvrp.core
         {
             if (this == None)
                 return;
-
+          
             if (UseMarker)
             {
                 Marker = API.shared.createMarker(MarkerType, Location, MarkerDirection, Rotation, MarkerScale,

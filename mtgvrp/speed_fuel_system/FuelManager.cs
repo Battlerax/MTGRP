@@ -163,7 +163,7 @@ namespace mtgvrp.speed_fuel_system
 
             int pendingFuel = API.getEntityData(vehEntity, "PENDING_FUEL");
 
-            if (pendingFuel <= 0)
+            if (pendingFuel <= 0 || veh.RefuelProp.Supplies <= 0)
             {
                 API.triggerClientEvent(playerEntity, "fuel_updatevalue", veh.Fuel);
                 veh.FuelingTimer?.Dispose();
@@ -180,12 +180,14 @@ namespace mtgvrp.speed_fuel_system
                 veh.Fuel += pendingFuel;
                 pendingFuel -= pendingFuel;
                 InventoryManager.DeleteInventoryItem<Money>(c, pendingFuel * veh.RefuelProp.ItemPrices["gas"]);
+                veh.RefuelProp.Supplies--;
             }
             else
             {
                 veh.Fuel += 10;
                 pendingFuel -= 10;
                 InventoryManager.DeleteInventoryItem<Money>(c, 10 * veh.RefuelProp.ItemPrices["gas"]);
+                veh.RefuelProp.Supplies--;
             }
 
             API.triggerClientEvent(playerEntity, "fuel_updatevalue", veh.Fuel);
