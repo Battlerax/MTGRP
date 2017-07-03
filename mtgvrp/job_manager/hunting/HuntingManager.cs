@@ -160,6 +160,18 @@ namespace mtgvrp.job_manager.hunting
                 return;
             }
 
+            if (!API.doesEntityExist(SpawnedAnimals[index].handle))
+            {
+                API.sendChatMessageToPlayer(player, "That animal doesn't exist for the server.");
+                return;
+            }
+
+            if (!API.doesEntityExistForPlayer(player, SpawnedAnimals[index].handle))
+            {
+                API.sendChatMessageToPlayer(player, "That animal doesn't exist for you.");
+                return;
+            }
+
             API.setEntityPosition(player, API.getEntityPosition(SpawnedAnimals[index].handle));
             API.sendChatMessageToPlayer(player, "TPed");
             return;
