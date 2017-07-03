@@ -47,7 +47,6 @@ namespace mtgvrp.player_manager
 
         public List<int> Outfit = new List<int>();
         public List<int> OutfitVariation = new List<int>();
-        public List<Weapon> Weapons = new List<Weapon>();
         
         public int Age { get; set; }
         public int AdminActions { get; set; }
