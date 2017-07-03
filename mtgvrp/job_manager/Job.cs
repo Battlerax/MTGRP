@@ -26,6 +26,7 @@ namespace mtgvrp.job_manager
 
         public Job()
         {
+            JoinPos = MarkerZone.None;
             MiscOne = MarkerZone.None;
             MiscTwo = MarkerZone.None;
         }

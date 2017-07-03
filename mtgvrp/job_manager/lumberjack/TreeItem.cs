@@ -88,10 +88,10 @@ namespace mtgvrp.job_manager.lumberjack
 
             if (TreeMarker == null)
             {
-                TreeMarker = new MarkerZone(TreePos.Add(new Vector3(1, 0, 0)), TreeRot, 0, 5);
+                TreeMarker = new MarkerZone(TreePos.Add(new Vector3(1, 0, 0)), TreeRot, 0);
                 TreeMarker.MarkerType = 1;
-                TreeMarker.Green = 0;
-                TreeMarker.Scale = new Vector3(0.75, 0.75, 0.75);
+                TreeMarker.MarkerColor[2] = 0;
+                TreeMarker.MarkerScale = new Vector3(0.75, 0.75, 0.75);
                 TreeMarker.Create();
             }
 
