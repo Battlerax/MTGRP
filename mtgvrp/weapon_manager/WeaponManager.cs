@@ -19,7 +19,6 @@ namespace mtgvrp.weapon_manager
             CharacterMenu.OnCharacterLogin += CharacterMenu_OnCharacterLogin;
             InventoryManager.OnStorageGetItem += InventoryManager_OnStorageGetItem;
             InventoryManager.OnStorageLoseItem += InventoryManager_OnStorageLoseItem;
-            CharacterMenu.OnCharacterLogin += CharacterMenu_OnCharacterLogin;
 
             DebugManager.DebugMessage("[WeaponM] Weapon Manager initalized!");
         }
