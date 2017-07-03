@@ -118,7 +118,7 @@ namespace mtgvrp.core
 
             if (UseBlip)
             {
-                Blip = API.shared.createBlip(Location, BlipRange, Dimension);
+                Blip = API.shared.createBlip(Location, Dimension);
                 API.shared.setBlipColor(Blip, BlipColor);
                 API.shared.setBlipName(Blip, BlipName);
                 API.shared.setBlipScale(Blip, BlipScale);

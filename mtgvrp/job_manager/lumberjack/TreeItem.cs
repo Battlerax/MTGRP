@@ -88,7 +88,7 @@ namespace mtgvrp.job_manager.lumberjack
 
             if (TreeMarker == null)
             {
-                TreeMarker = new MarkerZone(TreePos.Add(new Vector3(1, 0, 0)), TreeRot, 0);
+                TreeMarker = new MarkerZone(TreePos.Add(new Vector3(1, 0, -0.5)), TreeRot, 0);
                 TreeMarker.MarkerType = 1;
                 TreeMarker.MarkerColor[2] = 0;
                 TreeMarker.MarkerScale = new Vector3(0.75, 0.75, 0.75);
@@ -100,17 +100,17 @@ namespace mtgvrp.job_manager.lumberjack
             {
                 case Stages.Processing:
                     TreeText = API.shared.createTextLabel("~g~Hit the tree to process it. ~n~" + ProcessPercentage + "%", TreePos.Add(new Vector3(0.5, -1, 1)), 10f, 1f, true);
-                    TreeMarker.Location = TreePos.Add(new Vector3(1, -1, 0));
+                    TreeMarker.Location = TreePos.Add(new Vector3(1, -1, -0.5));
                     TreeMarker.Refresh();
                     break;
                 case Stages.Cutting:
                     TreeText = API.shared.createTextLabel("~g~" + CutPercentage + "% Cut.~n~Tree", TreePos.Add(new Vector3(1, 0, 1)), 10f, 1f, true);
-                    TreeMarker.Location = TreePos.Add(new Vector3(1, 0, 0));
+                    TreeMarker.Location = TreePos.Add(new Vector3(1, 0, -0.5));
                     TreeMarker.Refresh();
                     break;
                 case Stages.Waiting:
                     TreeText = API.shared.createTextLabel("~g~Waiting to be picked, use /pickupwood with a Forklift.", TreePos.Add(new Vector3(1, 0, 1)), 10f, 1f, true);
-                    TreeMarker.Location = TreePos.Add(new Vector3(1, 0, 0));
+                    TreeMarker.Location = TreePos.Add(new Vector3(1, 0, -0.5));
                     TreeMarker.Refresh();             
                     break;
 

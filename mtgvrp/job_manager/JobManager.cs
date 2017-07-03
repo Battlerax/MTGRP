@@ -463,23 +463,93 @@ namespace mtgvrp.job_manager
 
             foreach(var j in Jobs)
             {
-                j.JoinPos = new MarkerZone(j.JoinPos?.Location, j.JoinPos?.Rotation, j.JoinPos.Dimension
-                    )
+                j.JoinPos = new MarkerZone(j.JoinPos?.Location, j.JoinPos?.Rotation, j.JoinPos.Dimension)
                 {
                     ColZoneSize = j.JoinPos.ColZoneSize,
+                    ColZoneHeight = j.JoinPos.ColZoneHeight,
+                    UseColZone = j.JoinPos.UseColZone,
+                    BlipColor = j.JoinPos.BlipColor,
+                    BlipSprite = j.sprite_type(),
+                    BlipName = j.JoinPos.BlipName,
+                    BlipRange = j.JoinPos.BlipRange,
+                    BlipTransparency = j.JoinPos.BlipTransparency,
+                    BlipShortRange = j.JoinPos.BlipShortRange,
+                    BlipScale = j.JoinPos.BlipScale,
+                    UseBlip = j.JoinPos.UseBlip,
+                    MarkerColor = j.JoinPos.MarkerColor,
+                    MarkerDirection = j.JoinPos.MarkerDirection,
+                    MarkerType = j.JoinPos.MarkerType,
+                    MarkerScale = j.JoinPos.MarkerScale,
+                    UseMarker = j.JoinPos.UseMarker,
+                    TextLabelColor = j.JoinPos.TextLabelColor,
                     TextLabelText = "~g~" + j.Name + "~n~/joinjob",
-                    BlipSprite = j.sprite_type()
+                    TextLabelSeeThrough = j.JoinPos.TextLabelSeeThrough,
+                    TextLabelRange = j.JoinPos.TextLabelRange,
+                    TextLabelSize = j.JoinPos.TextLabelSize,
+                    UseText = j.JoinPos.UseText
                 };
 
                 j.JoinPos?.Create();
 
                 if (j.MiscOne != MarkerZone.None)
                 {
+                    j.MiscOne = new MarkerZone(j.MiscOne?.Location, j.MiscOne?.Rotation, j.MiscOne.Dimension)
+                    {
+                        ColZoneSize = j.MiscOne.ColZoneSize,
+                        ColZoneHeight = j.MiscOne.ColZoneHeight,
+                        UseColZone = j.MiscOne.UseColZone,
+                        BlipColor = j.MiscOne.BlipColor,
+                        BlipSprite = j.MiscOne.BlipSprite,
+                        BlipName = j.MiscOne.BlipName,
+                        BlipRange = j.MiscOne.BlipRange,
+                        BlipTransparency = j.MiscOne.BlipTransparency,
+                        BlipShortRange = j.MiscOne.BlipShortRange,
+                        BlipScale = j.MiscOne.BlipScale,
+                        UseBlip = j.MiscOne.UseBlip,
+                        MarkerColor = j.MiscOne.MarkerColor,
+                        MarkerDirection = j.MiscOne.MarkerDirection,
+                        MarkerType = j.MiscOne.MarkerType,
+                        MarkerScale = j.MiscOne.MarkerScale,
+                        UseMarker = j.MiscOne.UseMarker,
+                        TextLabelColor = j.MiscOne.TextLabelColor,
+                        TextLabelText = j.MiscOne.TextLabelText,
+                        TextLabelSeeThrough = j.MiscOne.TextLabelSeeThrough,
+                        TextLabelRange = j.MiscOne.TextLabelRange,
+                        TextLabelSize = j.MiscOne.TextLabelSize,
+                        UseText = j.MiscOne.UseText
+                    };
+
                     j.MiscOne.Create();
                 }
 
                 if (j.MiscTwo != MarkerZone.None)
                 {
+                    j.MiscTwo = new MarkerZone(j.MiscTwo?.Location, j.MiscTwo?.Rotation, j.MiscTwo.Dimension)
+                    {
+                        ColZoneSize = j.MiscTwo.ColZoneSize,
+                        ColZoneHeight = j.MiscTwo.ColZoneHeight,
+                        UseColZone = j.MiscTwo.UseColZone,
+                        BlipColor = j.MiscTwo.BlipColor,
+                        BlipSprite = j.MiscTwo.BlipSprite,
+                        BlipName = j.MiscTwo.BlipName,
+                        BlipRange = j.MiscTwo.BlipRange,
+                        BlipTransparency = j.MiscTwo.BlipTransparency,
+                        BlipShortRange = j.MiscTwo.BlipShortRange,
+                        BlipScale = j.MiscTwo.BlipScale,
+                        UseBlip = j.MiscTwo.UseBlip,
+                        MarkerColor = j.MiscTwo.MarkerColor,
+                        MarkerDirection = j.MiscTwo.MarkerDirection,
+                        MarkerType = j.MiscTwo.MarkerType,
+                        MarkerScale = j.MiscTwo.MarkerScale,
+                        UseMarker = j.MiscTwo.UseMarker,
+                        TextLabelColor = j.MiscTwo.TextLabelColor,
+                        TextLabelText = j.MiscTwo.TextLabelText,
+                        TextLabelSeeThrough = j.MiscTwo.TextLabelSeeThrough,
+                        TextLabelRange = j.MiscTwo.TextLabelRange,
+                        TextLabelSize = j.MiscTwo.TextLabelSize,
+                        UseText = j.MiscTwo.UseText
+                    };
+
                     j.MiscTwo.Create();
                 }
 
