@@ -188,12 +188,6 @@ namespace mtgvrp.vehicle_manager
                 }
             }
 
-            if (API.shared.getVehicleLocked(vehicleHandle))
-            {
-                API.shared.sendChatMessageToPlayer(player, "The vehicle is locked.");
-                return;
-            }
-
             if (vehAccess)
             {
                 if (engineState)
