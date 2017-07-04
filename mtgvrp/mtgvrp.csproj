@@ -223,6 +223,7 @@
     <Content Include="phone_manager\gui\main.html" />
     <Content Include="phone_manager\gui\main.js" />
     <Content Include="phone_manager\PhoneManager.js" />
+    <Content Include="player_manager\Introduction.js" />
     <Content Include="player_manager\CharacterMenu.js" />
     <Content Include="player_manager\login\Login.html" />
     <Content Include="player_manager\login\LoginManager.js" />
