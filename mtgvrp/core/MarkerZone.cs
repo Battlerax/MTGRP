@@ -116,16 +116,14 @@ namespace mtgvrp.core
                 API.shared.setTextLabelColor(Label, TextLabelColor[1], TextLabelColor[2], TextLabelColor[3], TextLabelColor[0]);
             }
 
-            if (UseBlip)
-            {
-                Blip = API.shared.createBlip(Location, BlipRange, Dimension);
-                API.shared.setBlipColor(Blip, BlipColor);
-                API.shared.setBlipName(Blip, BlipName);
-                API.shared.setBlipScale(Blip, BlipScale);
-                API.shared.setBlipShortRange(Blip, BlipShortRange);
-                API.shared.setBlipSprite(Blip, BlipSprite);
-                API.shared.setBlipTransparency(Blip, BlipTransparency);
-            }
+           
+            Blip = API.shared.createBlip(Location, BlipRange, Dimension);
+            API.shared.setBlipColor(Blip, BlipColor);
+            API.shared.setBlipName(Blip, BlipName);
+            API.shared.setBlipScale(Blip, BlipScale);
+            API.shared.setBlipShortRange(Blip, BlipShortRange);
+            API.shared.setBlipSprite(Blip, (UseBlip) ? (BlipSprite) : (2));
+            API.shared.setBlipTransparency(Blip, BlipTransparency);
 
             if (UseColZone)
             {
