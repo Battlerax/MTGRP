@@ -195,5 +195,10 @@ namespace mtgvrp.core
             API.shared.deleteColShape(ColZone);
             ColZone = API.shared.createCylinderColShape(Location, ColZoneSize, ColZoneHeight);
         }
+
+        public void SetMarkerZoneRouteVisible(Client player, bool visible, int color)
+        {
+            API.shared.triggerClientEvent(player, "setMarkerZoneRouteVisible", this, visible, color);
+        }
     }
 }
