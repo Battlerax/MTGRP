@@ -80,7 +80,7 @@ namespace mtgvrp.job_manager.delivery
 
             prop.Supplies += amount;
             InventoryManager.DeleteInventoryItem<SupplyItem>(player.GetCharacter(), amount);
-            InventoryManager.DeleteInventoryItem<Money>(player.GetCharacter(), amount * prop.SupplyPrice);
+            InventoryManager.DeleteInventoryItem<Money>(prop, amount * prop.SupplyPrice);
             InventoryManager.GiveInventoryItem(player.GetCharacter(), new Money(), amount * prop.SupplyPrice, true);
 
             API.sendChatMessageToPlayer(player, $"You've successfully sold {amount} supplies to the property for a total of ${amount * prop.SupplyPrice}");
