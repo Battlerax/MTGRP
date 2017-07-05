@@ -151,7 +151,7 @@ namespace mtgvrp.inventory
             var oldItem = storage.Inventory.FirstOrDefault(x => x.CommandFriendlyName == item.CommandFriendlyName);
             if (oldItem == null || oldItem.CanBeStacked == false)
             {
-                if (maxAmount != -1 && (item.Amount + oldItem?.Amount >= maxAmount))
+                if (maxAmount != -1 && (item.Amount + oldItem?.Amount > maxAmount))
                 {
                     return GiveItemErrors.MaxAmountReached;
                 }
@@ -178,7 +178,7 @@ namespace mtgvrp.inventory
             else
             {
 
-                if (maxAmount != -1 && item.Amount + oldItem.Amount >= maxAmount)
+                if (maxAmount != -1 && item.Amount + oldItem.Amount > maxAmount)
                 {
                     return GiveItemErrors.MaxAmountReached;
                 }
