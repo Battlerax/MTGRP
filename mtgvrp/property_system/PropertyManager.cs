@@ -615,6 +615,7 @@ namespace mtgvrp.property_system
                 prop.DoesAcceptSupplies
                     ? "You are now ~g~accepting~w~ supplies."
                     : "You are now ~r~not accepting~w~ supplies.");
+            prop.Save();
         }
 
         [Command("setsupplyprice", Alias = "setsp")]
@@ -648,6 +649,7 @@ namespace mtgvrp.property_system
 
             API.sendChatMessageToPlayer(player, "You've set the supply price to: $" + amount);
             API.sendChatMessageToPlayer(player, "Make sure you do have enough money in the business storage.");
+            prop.Save();
         }
 
         [Command("enter")]
