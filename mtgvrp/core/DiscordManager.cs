@@ -53,7 +53,7 @@ namespace mtgvrp.core
             var ccfg = new CommandsNextConfiguration
             {
                 // let's use the string prefix defined in config.json
-                StringPrefix = "#",
+                StringPrefix = "!",
 
                 // enable mentioning the bot as a command prefix
                 EnableMentionPrefix = true
@@ -182,7 +182,7 @@ namespace mtgvrp.core
                         API.shared.sendChatMessageToPlayer(c, Color.AdminChat, "[Discord A] " + ctx.Member.DisplayName + ": " + ctx.RawArgumentString);
                     }
                 }
-                await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(DiscordManager.Client, ":ok_hand:"));
+                await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(DiscordManager.Client, ":white_check_mark:"));
             }
         }
     }
