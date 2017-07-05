@@ -21,7 +21,8 @@ namespace mtgvrp.job_manager
             Mechanic,
             Lumberjack,
             Garbageman,
-            Trucker
+            Trucker,
+            DeliveryMan
         }
 
         public static List<Job> Jobs = new List<Job>();

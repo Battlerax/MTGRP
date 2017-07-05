@@ -82,6 +82,8 @@
     <Compile Include="core\Items\EngineParts.cs" />
     <Compile Include="core\Items\SprayPaint.cs" />
     <Compile Include="core\SettingsManager.cs" />
+    <Compile Include="job_manager\delivery\DeliveryManager.cs" />
+    <Compile Include="job_manager\delivery\SupplyItem.cs" />
     <Compile Include="job_manager\mechanic\MechanicJob.cs" />
     <Compile Include="core\Help\Help.cs" />
     <Compile Include="core\Help\HelpManager.cs" />

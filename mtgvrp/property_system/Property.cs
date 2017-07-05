@@ -80,6 +80,9 @@ namespace mtgvrp.property_system
         [BsonIgnore]
         public Object BinObject { get; set; }
 
+        public bool DoesAcceptSupplies { get; set; }
+        public int SupplyPrice { get; set; } = 7;
+
         public Property(PropertyManager.PropertyTypes type, Vector3 entrancePos, Vector3 entranceRot,
             string entranceString)
         {
