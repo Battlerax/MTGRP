@@ -56,17 +56,17 @@ namespace mtgvrp.job_manager.delivery
                 return;
             }
 
-            if (prop.Type != PropertyManager.PropertyTypes.Bank ||
-                prop.Type != PropertyManager.PropertyTypes.Advertising ||
-                prop.Type != PropertyManager.PropertyTypes.Housing ||
-                prop.Type != PropertyManager.PropertyTypes.LSNN || prop.DoesAcceptSupplies == false
+            if (prop.Type == PropertyManager.PropertyTypes.Bank ||
+                prop.Type == PropertyManager.PropertyTypes.Advertising ||
+                prop.Type == PropertyManager.PropertyTypes.Housing ||
+                prop.Type == PropertyManager.PropertyTypes.LSNN || prop.DoesAcceptSupplies == false
             )
             {
                 API.sendChatMessageToPlayer(player, "This business doesnt buy supplies.");
                 return;
             }
 
-            if (InventoryManager.DoesInventoryHaveItem<SupplyItem>(player.GetCharacter()).Length < amount || amount <= 0)
+            if (InventoryManager.GetItemCount<SupplyItem>(player.GetCharacter()) < amount || amount <= 0)
             {
                 API.sendChatMessageToPlayer(player, "You don't have that amount of supplies.");
                 return;

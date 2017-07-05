@@ -594,15 +594,15 @@ namespace mtgvrp.property_system
             var prop = IsAtPropertyInteraction(player);
             if (prop == null)
             {
-                API.sendChatMessageToPlayer(player, "You aren't at an interaction point or entrance.");
+                API.sendChatMessageToPlayer(player, "You aren't at an interaction point.");
                 return;
             }
 
             if (prop.OwnerId != player.GetCharacter().Id || 
-                prop.Type != PropertyTypes.Bank ||
-                prop.Type != PropertyTypes.Advertising ||
-                prop.Type != PropertyTypes.Housing ||
-                prop.Type != PropertyTypes.LSNN
+                prop.Type == PropertyTypes.Bank ||
+                prop.Type == PropertyTypes.Advertising ||
+                prop.Type == PropertyTypes.Housing ||
+                prop.Type == PropertyTypes.LSNN
                 )
             {
                 API.sendChatMessageToPlayer(player, "You aren't the owner or the business doesnt support supplies.");
@@ -623,15 +623,15 @@ namespace mtgvrp.property_system
             var prop = IsAtPropertyInteraction(player);
             if (prop == null)
             {
-                API.sendChatMessageToPlayer(player, "You aren't at an interaction point or entrance.");
+                API.sendChatMessageToPlayer(player, "You aren't at an interaction point.");
                 return;
             }
 
             if (prop.OwnerId != player.GetCharacter().Id ||
-                prop.Type != PropertyTypes.Bank ||
-                prop.Type != PropertyTypes.Advertising ||
-                prop.Type != PropertyTypes.Housing ||
-                prop.Type != PropertyTypes.LSNN
+                prop.Type == PropertyTypes.Bank ||
+                prop.Type == PropertyTypes.Advertising ||
+                prop.Type == PropertyTypes.Housing ||
+                prop.Type == PropertyTypes.LSNN
             )
             {
                 API.sendChatMessageToPlayer(player, "You aren't the owner or the business doesnt support supplies.");
