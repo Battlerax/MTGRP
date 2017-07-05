@@ -197,6 +197,7 @@
     <Content Include="core\Help\HelpMenu.html" />
     <Content Include="core\Items\RagManager.js" />
     <Content Include="core\JsFunctions.js" />
+    <Content Include="core\MarkerZone.js" />
     <Content Include="door_manager\DoorManager.js" />
     <Content Include="group_manager\GroupEditor.html" />
     <Content Include="group_manager\lsnn\LowerThird.html" />

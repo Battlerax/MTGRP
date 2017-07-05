@@ -116,16 +116,14 @@ namespace mtgvrp.core
                 API.shared.setTextLabelColor(Label, TextLabelColor[1], TextLabelColor[2], TextLabelColor[3], TextLabelColor[0]);
             }
 
-            if (UseBlip)
-            {
-                Blip = API.shared.createBlip(Location, BlipRange, Dimension);
-                API.shared.setBlipColor(Blip, BlipColor);
-                API.shared.setBlipName(Blip, BlipName);
-                API.shared.setBlipScale(Blip, BlipScale);
-                API.shared.setBlipShortRange(Blip, BlipShortRange);
-                API.shared.setBlipSprite(Blip, BlipSprite);
-                API.shared.setBlipTransparency(Blip, BlipTransparency);
-            }
+           
+            Blip = API.shared.createBlip(Location, BlipRange, Dimension);
+            API.shared.setBlipColor(Blip, BlipColor);
+            API.shared.setBlipName(Blip, BlipName);
+            API.shared.setBlipScale(Blip, BlipScale);
+            API.shared.setBlipShortRange(Blip, BlipShortRange);
+            API.shared.setBlipSprite(Blip, (UseBlip) ? (BlipSprite) : (2));
+            API.shared.setBlipTransparency(Blip, BlipTransparency);
 
             if (UseColZone)
             {
@@ -194,6 +192,11 @@ namespace mtgvrp.core
         {
             API.shared.deleteColShape(ColZone);
             ColZone = API.shared.createCylinderColShape(Location, ColZoneSize, ColZoneHeight);
+        }
+
+        public void SetMarkerZoneRouteVisible(Client player, bool visible, int color)
+        {
+            API.shared.triggerClientEvent(player, "setMarkerZoneRouteVisible", this, visible, color);
         }
     }
 }
