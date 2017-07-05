@@ -19,6 +19,7 @@ namespace mtgvrp.core
         public static CommandsNextModule Commands { get; set; }
 
         public static readonly string AdminChannel = "vrp-admins";
+        public static readonly string AdminRole = "V-RP Admin";
         public const ulong AdminChannelId = 331924706191998987;
 
         public static void StartBot()
@@ -172,7 +173,7 @@ namespace mtgvrp.core
             if (ctx.Channel.Name != DiscordManager.AdminChannel)
                 return;
 
-            if (ctx.Member.Roles.Any(x => x.Name == "V-RP Admin"))
+            if (ctx.Member.Roles.Any(x => x.Name == DiscordManager.AdminRole))
             {
                 foreach (var c in API.shared.getAllPlayers())
                 {
@@ -194,7 +195,7 @@ namespace mtgvrp.core
             if (ctx.Channel.Name != DiscordManager.AdminChannel)
                 return;
 
-            if (ctx.Member.Roles.Any(x => x.Name == "V-RP Admin"))
+            if (ctx.Member.Roles.Any(x => x.Name == DiscordManager.AdminRole))
             {
                 await ctx.TriggerTypingAsync();
 
@@ -226,7 +227,7 @@ namespace mtgvrp.core
             if (ctx.Channel.Name != DiscordManager.AdminChannel)
                 return;
 
-            if (ctx.Member.Roles.Any(x => x.Name == "V-RP Admin"))
+            if (ctx.Member.Roles.Any(x => x.Name == DiscordManager.AdminRole))
             {
                 await DiscordManager.Client.UpdateStatusAsync(new Game(ctx.RawArgumentString));
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(DiscordManager.Client, ":white_check_mark:"));
