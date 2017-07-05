@@ -588,29 +588,6 @@ namespace mtgvrp.property_system
             return "";
         }
 
-        [Command("sellsupplies")]
-        public void SellSupplies(Client player, int amount)
-        {
-            var prop = IsAtPropertyInteraction(player);
-            if (prop == null)
-            {
-                API.sendChatMessageToPlayer(player, "You aren't at an interaction point or entrance.");
-                return;
-            }
-
-            if (prop.Type != PropertyTypes.Bank ||
-                prop.Type != PropertyTypes.Advertising ||
-                prop.Type != PropertyTypes.Housing ||
-                prop.Type != PropertyTypes.LSNN || prop.DoesAcceptSupplies == false
-            )
-            {
-                API.sendChatMessageToPlayer(player, "This business doesnt buy supplies.");
-                return;
-            }
-
-            if()
-        }
-
         [Command("togacceptsupplies", Alias = "togas")]
         public void TogSupplies(Client player)
         {
@@ -658,6 +635,12 @@ namespace mtgvrp.property_system
             )
             {
                 API.sendChatMessageToPlayer(player, "You aren't the owner or the business doesnt support supplies.");
+                return;
+            }
+
+            if (amount <= 0)
+            {
+                API.sendChatMessageToPlayer(player, "Price can't be below 0");
                 return;
             }
 

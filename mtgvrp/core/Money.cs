@@ -29,7 +29,7 @@ namespace mtgvrp.core
 
         public int Amount { get; set; }
 
-        public static int GetCharacterMoney(Character c)
+        public static int GetCharacterMoney(IStorage c)
         {
             return InventoryManager.DoesInventoryHaveItem<Money>(c)?.FirstOrDefault()?.Amount ?? 0;
         }

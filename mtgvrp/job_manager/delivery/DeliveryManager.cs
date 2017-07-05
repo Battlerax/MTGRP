@@ -7,6 +7,7 @@ using GTANetworkServer;
 using mtgvrp.core;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;
+using mtgvrp.property_system;
 
 namespace mtgvrp.job_manager.delivery
 {
@@ -43,6 +44,46 @@ namespace mtgvrp.job_manager.delivery
                     API.sendChatMessageToPlayer(player, $"You have sucessfully bought {amount} Supplies.");
                     break;
             }
+        }
+
+        [Command("sellsupplies")]
+        public void SellSupplies(Client player, int amount)
+        {
+            var prop = PropertyManager.IsAtPropertyInteraction(player);
+            if (prop == null)
+            {
+                API.sendChatMessageToPlayer(player, "You aren't at an interaction point or entrance.");
+                return;
+            }
+
+            if (prop.Type != PropertyManager.PropertyTypes.Bank ||
+                prop.Type != PropertyManager.PropertyTypes.Advertising ||
+                prop.Type != PropertyManager.PropertyTypes.Housing ||
+                prop.Type != PropertyManager.PropertyTypes.LSNN || prop.DoesAcceptSupplies == false
+            )
+            {
+                API.sendChatMessageToPlayer(player, "This business doesnt buy supplies.");
+                return;
+            }
+
+            if (InventoryManager.DoesInventoryHaveItem<SupplyItem>(player.GetCharacter()).Length < amount || amount <= 0)
+            {
+                API.sendChatMessageToPlayer(player, "You don't have that amount of supplies.");
+                return;
+            }
+
+            if (Money.GetCharacterMoney(prop) < amount * prop.SupplyPrice)
+            {
+                API.sendChatMessageToPlayer(player, "The business doesn't have enough money.");
+                return;
+            }
+
+            prop.Supplies += amount;
+            InventoryManager.DeleteInventoryItem<SupplyItem>(player.GetCharacter(), amount);
+            InventoryManager.DeleteInventoryItem<Money>(player.GetCharacter(), amount * prop.SupplyPrice);
+            InventoryManager.GiveInventoryItem(player.GetCharacter(), new Money(), amount * prop.SupplyPrice, true);
+
+            API.sendChatMessageToPlayer(player, $"You've successfully sold {amount} supplies to the property for a total of ${amount * prop.SupplyPrice}");
         }
     }
 }
