@@ -18,11 +18,11 @@ using Vehicle = mtgvrp.vehicle_manager.Vehicle;
 
 namespace mtgvrp.speed_fuel_system
 {
-    class FuelManager : Script
+    class SpeedoFuelManager : Script
     {
         public Timer FuelTimer;
 
-        public FuelManager()
+        public SpeedoFuelManager()
         {
             FuelTimer = new Timer(53000);
             FuelTimer.Elapsed += FuelTimer_Elapsed;
@@ -66,6 +66,14 @@ namespace mtgvrp.speed_fuel_system
                     API.triggerClientEvent(ocups[0], "fuel_updatevalue", veh.Fuel);
                 }
             }
+        }
+
+        [Command("togspeedo")]
+        public void TogSpeedo(Client player)
+        {
+            Account a = player.GetAccount();
+            a.IsSpeedoOn = !a.IsSpeedoOn;
+            API.sendChatMessageToPlayer(player, a.IsSpeedoOn ? "You've sucessfully turned on the speedometer." : "You've sucessfully turned off the speedometer.");
         }
 
         [Command("refuel")]
