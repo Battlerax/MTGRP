@@ -172,7 +172,7 @@ namespace mtgvrp.core
             if (ctx.Channel.Name != DiscordManager.AdminChannel)
                 return;
 
-            if (ctx.Member.Roles.Any(x => x.Name == "V-RP Developer"))
+            if (ctx.Member.Roles.Any(x => x.Name == "V-RP Admin"))
             {
                 foreach (var c in API.shared.getAllPlayers())
                 {
@@ -194,20 +194,42 @@ namespace mtgvrp.core
             if (ctx.Channel.Name != DiscordManager.AdminChannel)
                 return;
 
-            if (ctx.Member.Roles.Any(x => x.Name == "V-RP Developer"))
+            if (ctx.Member.Roles.Any(x => x.Name == "V-RP Admin"))
             {
                 await ctx.TriggerTypingAsync();
 
-                var msg = "=====ADMINS ONLINE NOW=====\n";
+                //var msg = "=====ADMINS ONLINE NOW=====\n";
+                var msg = "";
                 foreach (var c in API.shared.getAllPlayers())
                 {
                     Account receiverAccount = c.GetAccount();
 
                     if (receiverAccount.AdminLevel <= 1) continue;
 
-                    msg += "* " + receiverAccount.AdminName + " | LEVEL " + receiverAccount.AdminLevel + " | " + (receiverAccount.AdminDuty ? "**On Duty**" : "Off Duty") + "\n";
+                    msg += receiverAccount.AdminName + " | LEVEL " + receiverAccount.AdminLevel + " | " + (receiverAccount.AdminDuty ? "**On Duty**" : "Off Duty") + "\n";
                 }
-                await ctx.RespondAsync(msg + "===========================");
+                var embed = new DiscordEmbed
+                {
+                    Title = "Admins Online",
+                    Description = (msg == "" ? "None" : msg),
+                    Color = 0x00FF00 // red
+                };
+                //await ctx.RespondAsync(msg + "===========================");
+                await ctx.RespondAsync("", embed: embed);
+            }
+        }
+
+        [DSharpPlus.CommandsNext.Attributes.Command("setgame")] // let's define this method as a command
+        [Description("Set the game status..")] // this will be displayed to tell users what this command does when they invoke help
+        public async Task ChangeGame(CommandContext ctx) // this command takes no arguments
+        {
+            if (ctx.Channel.Name != DiscordManager.AdminChannel)
+                return;
+
+            if (ctx.Member.Roles.Any(x => x.Name == "V-RP Admin"))
+            {
+                await DiscordManager.Client.UpdateStatusAsync(new Game(ctx.RawArgumentString));
+                await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(DiscordManager.Client, ":white_check_mark:"));
             }
         }
     }
