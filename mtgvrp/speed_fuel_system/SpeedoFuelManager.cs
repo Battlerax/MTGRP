@@ -74,6 +74,7 @@ namespace mtgvrp.speed_fuel_system
             Account a = player.GetAccount();
             a.IsSpeedoOn = !a.IsSpeedoOn;
             API.sendChatMessageToPlayer(player, a.IsSpeedoOn ? "You've sucessfully turned on the speedometer." : "You've sucessfully turned off the speedometer.");
+            a.Save();
         }
 
         [Command("refuel")]
