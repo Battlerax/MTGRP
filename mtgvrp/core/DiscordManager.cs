@@ -18,7 +18,7 @@ namespace mtgvrp.core
         public static DiscordClient Client { get; set; }
         public static CommandsNextModule Commands { get; set; }
 
-        public static readonly string AdminChannel = "vrp-general";
+        public static readonly string AdminChannel = "v-rp-admins";
 
         public static void StartBot()
         {
@@ -166,7 +166,7 @@ namespace mtgvrp.core
     {
         [DSharpPlus.CommandsNext.Attributes.Command("a")] // let's define this method as a command
         [Description("Sends a message in admin channel.")] // this will be displayed to tell users what this command does when they invoke help
-        public void AdminChat(CommandContext ctx) // this command takes no arguments
+        public async Task AdminChat(CommandContext ctx) // this command takes no arguments
         {
             if (ctx.Channel.Name != DiscordManager.AdminChannel)
                 return;
@@ -182,6 +182,7 @@ namespace mtgvrp.core
                         API.shared.sendChatMessageToPlayer(c, Color.AdminChat, "[Discord A] " + ctx.Member.DisplayName + ": " + ctx.RawArgumentString);
                     }
                 }
+                await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(DiscordManager.Client, ":ok_hand:"));
             }
         }
     }
