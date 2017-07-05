@@ -84,7 +84,7 @@ namespace mtgvrp.core
         public float TextLabelSize { get; set; } = 1f;
 
 
-        public bool UseBlip { get; set; } = false;
+        public bool UseBlip { get; set; } = true;
         public bool UseMarker { get; set; } = true;
         public bool UseText { get; set; } = true;
         public bool UseColZone { get; set; } = true;
