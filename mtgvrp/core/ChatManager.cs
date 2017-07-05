@@ -342,6 +342,7 @@ namespace mtgvrp.core
                     if (receiverAccount.AdminLevel > 0)
                     {
                         API.sendChatMessageToPlayer(c, Color.AdminChat, "[A] " + account.AdminName + ": " + text);
+                        DiscordManager.SendAdminMessage("[A] " + account.AdminName + ": " + text);
                     }
                 }
             }

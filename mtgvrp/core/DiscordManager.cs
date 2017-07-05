@@ -8,6 +8,8 @@ using DSharpPlus.CommandsNext;
 using System.IO;
 using DSharpPlus.CommandsNext.Exceptions;
 using DSharpPlus.CommandsNext.Attributes;
+using GTANetworkServer;
+using mtgvrp.player_manager;
 
 namespace mtgvrp.core
 {
@@ -15,6 +17,8 @@ namespace mtgvrp.core
     {
         public static DiscordClient Client { get; set; }
         public static CommandsNextModule Commands { get; set; }
+
+        public static readonly string AdminChannel = "vrp-general";
 
         public static void StartBot()
         {
@@ -150,28 +154,35 @@ namespace mtgvrp.core
                 await e.Context.RespondAsync("", embed: embed);
             }
         }
+
+        public static void SendAdminMessage(string msg)
+        {
+            Client.SendMessageAsync(Client.GetChannelAsync(331922156126732290).GetAwaiter().GetResult(), msg).GetAwaiter().GetResult();
+        }
     }
 
 
     public class Commands
     {
-        [Command("ping")] // let's define this method as a command
-        [Description("Example ping command")] // this will be displayed to tell users what this command does when they invoke help
-        [Aliases("pong")] // alternative names for the command
-        public async Task Ping(CommandContext ctx) // this command takes no arguments
+        [DSharpPlus.CommandsNext.Attributes.Command("a")] // let's define this method as a command
+        [Description("Sends a message in admin channel.")] // this will be displayed to tell users what this command does when they invoke help
+        public void AdminChat(CommandContext ctx) // this command takes no arguments
         {
-            /*if (ctx.Channel.Name != "vrp-general")
-                return;*/
+            if (ctx.Channel.Name != DiscordManager.AdminChannel)
+                return;
 
-            // let's trigger a typing indicator to let
-            // users know we're working
-            await ctx.TriggerTypingAsync();
+            if (ctx.Member.Roles.Any(x => x.Name == "V-RP Admin"))
+            {
+                foreach (var c in API.shared.getAllPlayers())
+                {
+                    Account receiverAccount = c.GetAccount();
 
-            // let's make the message a bit more colourful
-            var emoji = DiscordEmoji.FromName(ctx.Client, ":ping_pong:");
-
-            // respond with ping
-            await ctx.RespondAsync($"{emoji} Pong! {ctx.Member.Mention} | Ping: {ctx.Client.Ping}ms");
+                    if (receiverAccount.AdminLevel > 0)
+                    {
+                        API.shared.sendChatMessageToPlayer(c, Color.AdminChat, "[Discord A] " + ctx.Member.DisplayName + ": " + ctx.RawArgumentString);
+                    }
+                }
+            }
         }
     }
 }
