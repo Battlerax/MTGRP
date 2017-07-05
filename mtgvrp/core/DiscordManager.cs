@@ -18,7 +18,7 @@ namespace mtgvrp.core
         public static DiscordClient Client { get; set; }
         public static CommandsNextModule Commands { get; set; }
 
-        public static readonly string AdminChannel = "v-rp-admins";
+        public static readonly string AdminChannel = "lobby";
 
         public static void StartBot()
         {
@@ -34,7 +34,7 @@ namespace mtgvrp.core
                 TokenType = TokenType.Bot,
 
                 AutoReconnect = true,
-                LogLevel = LogLevel.Debug,
+                LogLevel = LogLevel.Info,
                 UseInternalLogHandler = true
             };
 
@@ -53,7 +53,7 @@ namespace mtgvrp.core
             var ccfg = new CommandsNextConfiguration
             {
                 // let's use the string prefix defined in config.json
-                StringPrefix = "!",
+                StringPrefix = "/",
 
                 // enable mentioning the bot as a command prefix
                 EnableMentionPrefix = true
@@ -171,7 +171,7 @@ namespace mtgvrp.core
             if (ctx.Channel.Name != DiscordManager.AdminChannel)
                 return;
 
-            if (ctx.Member.Roles.Any(x => x.Name == "V-RP Admin"))
+            if (ctx.Member.Roles.Any(x => x.Name == "V-RP Developer"))
             {
                 foreach (var c in API.shared.getAllPlayers())
                 {
@@ -183,6 +183,30 @@ namespace mtgvrp.core
                     }
                 }
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(DiscordManager.Client, ":white_check_mark:"));
+            }
+        }
+
+        [DSharpPlus.CommandsNext.Attributes.Command("admins")] // let's define this method as a command
+        [Description("Views admins online.")] // this will be displayed to tell users what this command does when they invoke help
+        public async Task AdminsList(CommandContext ctx) // this command takes no arguments
+        {
+            if (ctx.Channel.Name != DiscordManager.AdminChannel)
+                return;
+
+            if (ctx.Member.Roles.Any(x => x.Name == "V-RP Developer"))
+            {
+                await ctx.TriggerTypingAsync();
+
+                var msg = "=====ADMINS ONLINE NOW=====\n";
+                foreach (var c in API.shared.getAllPlayers())
+                {
+                    Account receiverAccount = c.GetAccount();
+
+                    if (receiverAccount.AdminLevel <= 1) continue;
+
+                    msg += "* " + receiverAccount.AdminName + " | LEVEL " + receiverAccount.AdminLevel + " | " + (receiverAccount.AdminDuty ? "**On Duty**" : "Off Duty") + "\n";
+                }
+                await ctx.RespondAsync(msg + "===========================");
             }
         }
     }
