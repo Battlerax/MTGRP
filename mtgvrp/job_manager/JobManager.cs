@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using GTANetworkServer;
 using GTANetworkShared;
 using mtgvrp.core;
@@ -443,10 +444,8 @@ namespace mtgvrp.job_manager
 
         public static Job GetJobById(int id)
         {
-            if (id == 0 || id > Jobs.Count )
-                return Job.None;
-
-            return (Job)Jobs.ToArray().GetValue(id - 1);
+            var job = Jobs.FirstOrDefault(x => x.Id == id);
+            return job ?? Job.None;
         }
 
         public static void SendPictureNotificationToJob(Job job, string body, string pic, int flash, int iconType, string sender, string subject)
