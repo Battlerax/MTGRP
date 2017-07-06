@@ -4,6 +4,7 @@ using GTANetworkServer;
 using mtgvrp.group_manager;
 using mtgvrp.job_manager;
 using mtgvrp.player_manager;
+using mtgvrp.core.Help;
 
 namespace mtgvrp.vehicle_manager.vehicle_editor
 {
@@ -135,7 +136,7 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
             }
         }
 
-        [Command("editvehicle")]
+        [Command("editvehicle"), Help(HelpManager.CommandGroups.AdminLevel4, "Editing different stats of a vehicle", null)]
         public void editvehicle_cmd(Client player)
         {
             Account account = API.getEntityData(player.handle, "Account");

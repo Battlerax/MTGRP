@@ -169,7 +169,7 @@ namespace mtgvrp.vehicle_manager
             InventoryManager.ShowInventoryManager(player, player.GetCharacter(), lastVeh, "Inventory: ", "Vehicle: ");
         }
 
-        [Command("engine", Alias = "e"), Help(HelpManager.CommandGroups.Vehicles, "Turning on your vehicle.", null)]
+        [Command("engine", Alias = "e"), Help(HelpManager.CommandGroups.Vehicles, "Turning on and off your vehicle.", null)]
         public static void engine_cmd(Client player)
         {
             Character character = API.shared.getEntityData(player, "Character");
