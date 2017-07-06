@@ -91,6 +91,11 @@ namespace mtgvrp.vehicle_manager
         [Command("spawnveh"), Help(HelpManager.CommandGroups.AdminLevel4, "To spawn only the sickiest of rides for you to use.", new[] { "Vehiclehash model/name", "Colour 1", "Colour 2", "Dimension" })]
         public void spawnveh_cmd(Client player, VehicleHash model, int color1 = 0, int color2 = 0, int dimension = 0)
         {
+            var account = player.GetAccount();
+            if (account.AdminLevel < 4)
+            {
+                return;
+            }
             var pos = player.position;
             var rot = player.rotation;
 
@@ -107,6 +112,11 @@ namespace mtgvrp.vehicle_manager
         [Command("savevehicle"), Help(HelpManager.CommandGroups.AdminLevel4, "Save a vehicle to the database", null)]
         public void savevehicle_cmd(Client player)
         {
+            var account = player.GetAccount();
+            if (account.AdminLevel < 4)
+            {
+                return;
+            }
             var vehHandle = API.getPlayerVehicle(player);
             var veh = GetVehFromNetHandle(vehHandle);
 
