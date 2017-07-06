@@ -22,6 +22,7 @@ using mtgvrp.inventory;
 using mtgvrp.job_manager;
 using mtgvrp.player_manager;
 using MongoDB.Driver;
+using mtgvrp.core.Help;
 
 namespace mtgvrp.vehicle_manager
 {
@@ -87,7 +88,7 @@ namespace mtgvrp.vehicle_manager
         * 
         */
 
-        [Command("spawnveh")]
+        [Command("spawnveh"), Help(HelpManager.CommandGroups.AdminLevel4, "To spawn only the sickiest of rides for you to use.", new[] { "Vehiclehash model/name", "Colour 1", "Colour 2", "Dimension" })]
         public void spawnveh_cmd(Client player, VehicleHash model, int color1 = 0, int color2 = 0, int dimension = 0)
         {
             var pos = player.position;
@@ -103,7 +104,7 @@ namespace mtgvrp.vehicle_manager
             API.sendChatMessageToPlayer(player, "This vehicle is unsaved and may behave incorrectly.");
         }
 
-        [Command("savevehicle")]
+        [Command("savevehicle"), Help(HelpManager.CommandGroups.AdminLevel4, "Save a vehicle to the database", null)]
         public void savevehicle_cmd(Client player)
         {
             var vehHandle = API.getPlayerVehicle(player);
@@ -136,19 +137,7 @@ namespace mtgvrp.vehicle_manager
             API.sendChatMessageToPlayer(player, "You have saved vehicle " + Vehicles.IndexOf(veh) + ". (SQL: " + veh.Id + ")");
         }
 
-        [Command("savepos")]
-        public void savepos_cmd(Client player, int i)
-        {
-            var pos = player.position;
-            var rot = player.rotation;
-
-            API.consoleOutput("new Vector3(" + pos.X + ", " + pos.Y + ", " + pos.Z + "),");
-            API.sendNotificationToPlayer(player, "Saved");
-            API.sendChatMessageToPlayer(player,"Position: " + pos + "Rotation: " + rot);
-
-        }
-
-        [Command("vstorage")]
+        [Command("vstorage"), Help(HelpManager.CommandGroups.Vehicles, "Used to use your vehicles boot.", null)]
         public void VehicleStorage(Client player)
         {
             var lastVeh = GetNearestVehicle(player);
@@ -170,7 +159,7 @@ namespace mtgvrp.vehicle_manager
             InventoryManager.ShowInventoryManager(player, player.GetCharacter(), lastVeh, "Inventory: ", "Vehicle: ");
         }
 
-        [Command("engine", Alias = "e")]
+        [Command("engine", Alias = "e"), Help(HelpManager.CommandGroups.Vehicles, "Turning on your vehicle.", null)]
         public static void engine_cmd(Client player)
         {
             Character character = API.shared.getEntityData(player, "Character");
@@ -208,7 +197,7 @@ namespace mtgvrp.vehicle_manager
 
         }
 
-        [Command("hotwire")]
+        [Command("hotwire"), Help(HelpManager.CommandGroups.Vehicles, "Used to turn on a vehicle when you don't have keys to it", null)]
         public static void hotwire_cmd(Client player)
         {
             if (player.isInVehicle == false)
@@ -266,7 +255,7 @@ namespace mtgvrp.vehicle_manager
 
         }
 
-        [Command("dropcar")]
+        [Command("dropcar"), Help(HelpManager.CommandGroups.General, "Use this to sell a vehicle that is unowned by a player for some quick cash.", null)]
         public void dropcar_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -299,7 +288,7 @@ namespace mtgvrp.vehicle_manager
             player.sendChatMessage("A waypoint has been set. Take this vehicle to the waypoint to earn money.");
         }
 
-        [Command("lock")]
+        [Command("lock"), Help(HelpManager.CommandGroups.General, "How to lock and unlock your vehicle.", null)]
         public void Lockvehicle_cmd(Client player)
         {
             var lastVeh = GetNearestVehicle(player);
@@ -320,7 +309,8 @@ namespace mtgvrp.vehicle_manager
             }
         }
 
-        [Command("respawnveh")]
+        [Command("respawnveh"), Help(HelpManager.CommandGroups.AdminLevel4, "To respawn the vehicle at it's parked point.", new[] { "ID of the vehicle", "True for spawning at it's parked point." })]
+
         public void respawnveh_cmd(Client player, int id, bool originalPos = true)
         {
             var account = player.GetAccount();
@@ -355,7 +345,7 @@ namespace mtgvrp.vehicle_manager
             return;
         }
 
-        [Command("respawnunownedcars")]
+        [Command("respawnunownedcars"), Help(HelpManager.CommandGroups.AdminLevel4, "Used to find your character statistics", new[] { "ID of target player." })]
         public void respawnallcars_cmd(Client player)
         {
             var account = player.GetAccount();
@@ -375,7 +365,7 @@ namespace mtgvrp.vehicle_manager
             return;
         }
 
-        [Command("respawnnearbycars")]
+        [Command("respawnnearbycars"), Help(HelpManager.CommandGroups.AdminLevel4, "Respawns all the vehicles near you to their original pos.", null)]
         public void respawnnearbycars_cmd(Client player, int radius = 15)
         {
             var account = player.GetAccount();
