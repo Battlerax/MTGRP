@@ -80,6 +80,7 @@ namespace mtgvrp.player_manager
             {
                 InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(Money), 500);
             }
+            LogManager.Log(LogManager.LogTypes.Death, $"{character.CharacterName}[{player.socialClubName}] has died.");
         }
 
         public static int basepaycheck = Properties.Settings.Default.basepaycheck;
