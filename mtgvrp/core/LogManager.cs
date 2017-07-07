@@ -44,10 +44,10 @@ namespace mtgvrp.core
         public enum LogTypes
         {
             AdminActions,
-            Bans,
-            Commands,
-            Connection,
-            Death,
+            Bans,           //Logged
+            Commands,       //Logged
+            Connection,     //Logged
+            Death,          //Logged
             GroupChat,
             GroupInvites,
             ICchat,
@@ -56,8 +56,8 @@ namespace mtgvrp.core
             PMchat,
             Stats,
             Storage,
-            Unbans,
-            Warns,
+            Unbans,         //Logged
+            Warns,          //Logged
         }
 
         public static void Log(LogTypes type, string log)
