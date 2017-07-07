@@ -124,7 +124,9 @@ namespace mtgvrp.player_manager
                 character.GetTimePlayed(); //Update time played before save.
                 character.Save();
                 RemovePlayer(character);
+                LogManager.Log(LogManager.LogTypes.Connection, $"{character.CharacterName}[{player.socialClubName}] has left the server.");
             }
+            LogManager.Log(LogManager.LogTypes.Connection, $"{player.socialClubName} has left the server. (Not logged into a character)");
         }
 
         public static void UpdatePlayerNametags()

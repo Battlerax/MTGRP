@@ -26,10 +26,11 @@ namespace mtgvrp.core
             ArchiveLogs();
         }
 
-        static readonly Int32 unixTimestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+        public static int GetTimeStamp => (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+
         static void ArchiveLogs()
         {
-            var path = "OldLogs/" + DateTime.Now.Year + "-" + DateTime.Now.Month + "/" + unixTimestamp;
+            var path = "OldLogs/" + DateTime.Now.Year + "-" + DateTime.Now.Month + "/" + GetTimeStamp;
             //Make sure folders exist.
             Directory.CreateDirectory(path);
 
@@ -68,7 +69,7 @@ namespace mtgvrp.core
             Directory.CreateDirectory("Logs");
 
             //Append
-            File.AppendAllText("Logs/" + file, log + "\r\n");
+            File.AppendAllText("Logs/" + file, $"[{GetTimeStamp}] " + log + "\r\n");
         }
     }
 }
