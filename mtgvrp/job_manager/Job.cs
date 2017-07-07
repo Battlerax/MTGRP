@@ -82,82 +82,63 @@ namespace mtgvrp.job_manager
 
         public void register_job_marker_events()
         {
-            JoinPos.ColZone.onEntityEnterColShape += (shape, entity) =>
+            void ColShapeEvent(ColShape shape, NetHandle entity)
             {
-                foreach (var c in PlayerManager.Players)
+                if (API.shared.getEntityType(entity) == EntityType.Player)
                 {
-                    if (c.Client != entity) { continue;}
-
+                    var c = API.shared.getEntityData(entity, "Character");
                     c.JobZone = Id;
-                    c.JobZoneType = 1;
-                }
-            };
 
-            if (MiscOne != MarkerZone.None)
-            {
-                MiscOne.ColZone.onEntityEnterColShape += (shape, entity) =>
-                {
-                    foreach (var c in PlayerManager.Players)
-                    {
-                        if (c.Client != entity) { continue; }
-
-                        c.JobZone = Id;
+                    if(shape == JoinPos.ColZone)
+                        c.JobZoneType = 1;
+                    else if(shape == MiscOne.ColZone)
                         c.JobZoneType = 2;
-                    }
-                };
-            }
-
-            if (MiscTwo != MarkerZone.None)
-            {
-                MiscTwo.ColZone.onEntityEnterColShape += (shape, entity) =>
-                {
-                    foreach (var c in PlayerManager.Players)
-                    {
-                        if (c.Client != entity) { continue; }
-
-                        c.JobZone = Id;
+                    else if (shape == MiscTwo.ColZone)
                         c.JobZoneType = 3;
-                    }
-                };
+                    else
+                        c.JobZoneType = 0;
+                }
             }
 
-            JoinPos.ColZone.onEntityExitColShape += (shape, entity) =>
+            void OnExitColShape(ColShape shape, NetHandle entity)
             {
-                foreach (var c in PlayerManager.Players)
+                if (API.shared.getEntityType(entity) == EntityType.Player)
                 {
-                    if (c.Client != entity) { continue; }
-
+                    var c = API.shared.getEntityData(entity, "Character");
                     c.JobZone = 0;
                     c.JobZoneType = 0;
                 }
-            };
+            }
+
+
+            JoinPos.ColZone.onEntityEnterColShape -= ColShapeEvent;
+            JoinPos.ColZone.onEntityEnterColShape += ColShapeEvent;
 
             if (MiscOne != MarkerZone.None)
             {
-                MiscOne.ColZone.onEntityExitColShape += (shape, entity) =>
-                {
-                    foreach (var c in PlayerManager.Players)
-                    {
-                        if (c.Client != entity) { continue; }
-
-                        c.JobZone = 0;
-                        c.JobZoneType = 0;
-                    }
-                };
+                MiscOne.ColZone.onEntityEnterColShape -= ColShapeEvent;
+                MiscOne.ColZone.onEntityEnterColShape += ColShapeEvent;
             }
 
             if (MiscTwo != MarkerZone.None)
             {
-                MiscTwo.ColZone.onEntityExitColShape += (shape, entity) =>
-                {
-                    foreach (var c in PlayerManager.Players)
-                    {
-                        if (c.Client != entity) { continue; }
+                MiscTwo.ColZone.onEntityEnterColShape -= ColShapeEvent;
+                MiscTwo.ColZone.onEntityEnterColShape += ColShapeEvent;
+            }
 
-                        c.JobZone = 0;
-                        c.JobZoneType = 0;
-                    }
-                };
+            JoinPos.ColZone.onEntityExitColShape -= OnExitColShape;
+            JoinPos.ColZone.onEntityExitColShape += OnExitColShape;
+
+            if (MiscOne != MarkerZone.None)
+            {
+                MiscOne.ColZone.onEntityExitColShape -= OnExitColShape;
+                MiscOne.ColZone.onEntityExitColShape += OnExitColShape;
+            }
+
+            if (MiscTwo != MarkerZone.None)
+            {
+                MiscTwo.ColZone.onEntityExitColShape -= OnExitColShape;
+                MiscTwo.ColZone.onEntityExitColShape += OnExitColShape;
             }
         }
 
