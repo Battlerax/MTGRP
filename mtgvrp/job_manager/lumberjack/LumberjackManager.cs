@@ -110,17 +110,12 @@ namespace mtgvrp.job_manager.lumberjack
             var character = sender.GetCharacter();
             if (eventName == "lumberjack_hittree" && character.JobOne.Type == JobManager.JobTypes.Lumberjack)
             {
-                var tree = Tree.Trees.SingleOrDefault(x => x.TreeMarker?.Location.DistanceTo(sender.position) <= 1.5);
+
+                var tree = Tree.Trees.FirstOrDefault(x => x.TreeObj.position.DistanceTo(sender.position) <= 3.0f);
                 if (tree == null)
                     return;
                 if (tree.Stage == Tree.Stages.Cutting)
                 {
-                    if (tree.CutPercentage >= 100)
-                    {
-                        API.sendChatMessageToPlayer(sender, "This tree is already cut, use /pickuptree to pick it up.");
-                        return;
-                    }
-
                     tree.CutPercentage += 10;
 
                     if (tree.CutPercentage >= 100)
@@ -144,12 +139,6 @@ namespace mtgvrp.job_manager.lumberjack
                 }
                 else if (tree.Stage == Tree.Stages.Processing)
                 {
-                    if (tree.ProcessPercentage >= 100)
-                    {
-                        API.sendChatMessageToPlayer(sender, "This tree is already cut, use /pickuptree to pick it up.");
-                        return;
-                    }
-
                     tree.ProcessPercentage += 10;
 
                     if (tree.ProcessPercentage >= 100)
@@ -177,7 +166,7 @@ namespace mtgvrp.job_manager.lumberjack
                 Vector3 pos = (Vector3) arguments[1];
                 Vector3 rot = (Vector3) arguments[2];
 
-                var tree = Tree.Trees.SingleOrDefault(x => x.Id.ToString() == id);
+                var tree = Tree.Trees.FirstOrDefault(x => x.Id.ToString() == id);
                 if (tree == null)
                     return;
 
@@ -209,7 +198,7 @@ namespace mtgvrp.job_manager.lumberjack
             if (player.GetAccount().AdminLevel < 4)
                 return;
 
-            var tree = Tree.Trees.SingleOrDefault(x => x.TreeMarker?.Location.DistanceTo(player.position) <= 1.5);
+            var tree = Tree.Trees.FirstOrDefault(x => x.TreeMarker?.Location.DistanceTo(player.position) <= 1.5);
             if (tree == null)
             {
                 API.sendChatMessageToPlayer(player, "You aren't near a tree.");
@@ -244,7 +233,7 @@ namespace mtgvrp.job_manager.lumberjack
                     return;
                 }
 
-                var tree = Tree.Trees.SingleOrDefault(x => x.TreeMarker?.Location.DistanceTo(player.position) <= 2);
+                var tree = Tree.Trees.FirstOrDefault(x => x.TreeObj.position.DistanceTo(player.position) <= 2);
                 if (tree == null || tree?.Stage != Tree.Stages.Waiting)
                 {
                     API.sendChatMessageToPlayer(player, "You aren't near a tree.");
@@ -278,21 +267,7 @@ namespace mtgvrp.job_manager.lumberjack
                 return;
             }
 
-            if (character.JobZoneType != 2 && JobManager.GetJobById(character.JobZone).Type == JobManager.JobTypes.Lumberjack)
-            {
-                API.sendChatMessageToPlayer(player, Color.White, "You are not near the sell wood point!");
-                return;
-            }
-
-            var job = JobManager.GetJobById(character.JobZone);
-
-            if (job == null)
-            {
-                API.sendChatMessageToPlayer(player, "null job");
-                return;
-            }
-
-            if (job.Type != JobManager.JobTypes.Lumberjack)
+            if (character.JobZoneType != 2 || JobManager.GetJobById(character.JobZone).Type != JobManager.JobTypes.Lumberjack)
             {
                 API.sendChatMessageToPlayer(player, Color.White, "You are not near the sell wood point!");
                 return;
