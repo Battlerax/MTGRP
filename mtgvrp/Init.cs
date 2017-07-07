@@ -76,6 +76,8 @@ namespace mtgvrp
                 API.consoleOutput("[INIT] Starting Discord Bot!");
                 DiscordManager.StartBot();
             }
+
+            LogManager.StartLogArchiveTimer();
         }
 
         private void API_onResourceStop()

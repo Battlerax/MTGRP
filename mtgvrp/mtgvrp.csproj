@@ -102,6 +102,7 @@
     <Compile Include="core\DiscordManager.cs" />
     <Compile Include="core\Items\EngineParts.cs" />
     <Compile Include="core\Items\SprayPaint.cs" />
+    <Compile Include="core\LogManager.cs" />
     <Compile Include="core\SettingsManager.cs" />
     <Compile Include="job_manager\delivery\DeliveryManager.cs" />
     <Compile Include="job_manager\delivery\SupplyItem.cs" />
