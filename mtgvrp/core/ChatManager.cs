@@ -30,7 +30,7 @@ namespace mtgvrp.core
             Account account = API.getEntityData(player.handle, "Account");
             Character character = API.getEntityData(player.handle, "Character");
 
-            if (account.IsLoggedIn == false)
+            if (account == null || character == null || account.IsLoggedIn == false)
             {
                 e.Cancel = true;
                 return;
