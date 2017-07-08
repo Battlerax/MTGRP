@@ -157,7 +157,7 @@ namespace mtgvrp.job_manager.trucker
 
                     API.setBlipRouteVisible(JobManager.GetJobById(character.JobZone).MiscOne.Blip, false);
 
-                    if (SettingsManager.GetSettingInt("WoodSupplies") < 50)
+                    if (SettingsManager.Settings.WoodSupplies < 50)
                     {
                         API.sendChatMessageToPlayer(player, "There is no any wood to load.");
                         return;
@@ -183,7 +183,7 @@ namespace mtgvrp.job_manager.trucker
                         API.sendChatMessageToPlayer(player,
                             "~r~[Trucking]~w~ Your truck have been loaded, head to the checkpoint to deliver them.");
                         API.resetEntityData(player, "TRUCKING_LOAD_TIMER");
-                        SettingsManager.SetSettingInt("WoodSupplies", SettingsManager.GetSettingInt("WoodSupplies") - 50);
+                        SettingsManager.Settings.WoodSupplies -= 50;
 
                     }, null, 10000, Timeout.Infinite));
                 }
@@ -242,8 +242,7 @@ namespace mtgvrp.job_manager.trucker
                         API.sendChatMessageToPlayer(player,
                             "~r~[Trucking]~w~ Your truck have been unloaded, head to the checkpoint finish your run.");
                         API.resetEntityData(player, "TRUCKING_UNLOAD_TIMER");
-                        SettingsManager.SetSettingInt("TruckerSupplies",
-                            SettingsManager.GetSettingInt("TruckerSupplies") + 50);
+                        SettingsManager.Settings.TruckerSupplies += 50;
 
                     }, null, 10000, Timeout.Infinite));
                 }
@@ -459,7 +458,7 @@ namespace mtgvrp.job_manager.trucker
 
             API.sendChatMessageToPlayer(player,
                 "The amount of supplies available at deliverymens: " +
-                SettingsManager.GetSettingInt("TruckerSupplies"));
+                SettingsManager.Settings.TruckerSupplies);
 
             if (maxfuel == 0)
                 API.sendChatMessageToPlayer(player, "The amount of fuel availale in gas stations: 100%");

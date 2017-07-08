@@ -23,57 +23,75 @@ namespace mtgvrp.Properties {
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("500")]
         public int basepaycheck {
             get {
                 return ((int)(this["basepaycheck"]));
             }
+            set {
+                this["basepaycheck"] = value;
+            }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("4")]
         public int taxationamount {
             get {
                 return ((int)(this["taxationamount"]));
             }
+            set {
+                this["taxationamount"] = value;
+            }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("10")]
         public int vipbonuslevelone {
             get {
                 return ((int)(this["vipbonuslevelone"]));
             }
+            set {
+                this["vipbonuslevelone"] = value;
+            }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("20")]
         public int vipbonusleveltwo {
             get {
                 return ((int)(this["vipbonusleveltwo"]));
             }
+            set {
+                this["vipbonusleveltwo"] = value;
+            }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("30")]
         public int vipbonuslevelthree {
             get {
                 return ((int)(this["vipbonuslevelthree"]));
             }
+            set {
+                this["vipbonuslevelthree"] = value;
+            }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("2000000000")]
         public int governmentbalance {
             get {
                 return ((int)(this["governmentbalance"]));
+            }
+            set {
+                this["governmentbalance"] = value;
             }
         }
     }
