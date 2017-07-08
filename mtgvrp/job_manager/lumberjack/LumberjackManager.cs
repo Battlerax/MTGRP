@@ -31,7 +31,7 @@ namespace mtgvrp.job_manager.lumberjack
 
         private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle)
         {
-            if (API.getEntityModel(vehicle) == (int)VehicleHash.Forklift && player.GetCharacter().JobOne.Type == JobManager.JobTypes.Lumberjack)
+            if (API.getEntityModel(vehicle) == (int)VehicleHash.Flatbed && player.GetCharacter().JobOne.Type == JobManager.JobTypes.Lumberjack)
             {
                 Vehicle veh = API.getEntityData(vehicle, "Vehicle");
                 if (veh.Job?.Type != JobManager.JobTypes.Lumberjack)
@@ -68,7 +68,7 @@ namespace mtgvrp.job_manager.lumberjack
 
         private void API_onPlayerExitVehicle(Client player, NetHandle vehicle)
         {
-            if (API.getEntityModel(vehicle) == (int) VehicleHash.Forklift && player.GetCharacter().JobOne.Type == JobManager.JobTypes.Lumberjack)
+            if (API.getEntityModel(vehicle) == (int) VehicleHash.Flatbed && player.GetCharacter().JobOne.Type == JobManager.JobTypes.Lumberjack)
             {
                 Vehicle veh = API.getEntityData(vehicle, "Vehicle");
                 if (veh.Job.Type != JobManager.JobTypes.Lumberjack)
@@ -218,7 +218,7 @@ namespace mtgvrp.job_manager.lumberjack
                 return;
             }
 
-            if (API.isPlayerInAnyVehicle(player) && API.getEntityModel(API.getPlayerVehicle(player)) == (int)VehicleHash.Forklift)
+            if (API.isPlayerInAnyVehicle(player) && API.getEntityModel(API.getPlayerVehicle(player)) == (int)VehicleHash.Flatbed)
             {
                 Vehicle vehicle = API.getEntityData(API.getPlayerVehicle(player), "Vehicle");
                 if (vehicle.Job.Type != JobManager.JobTypes.Lumberjack)
@@ -242,7 +242,7 @@ namespace mtgvrp.job_manager.lumberjack
 
                 tree.Stage = Tree.Stages.Moving;
                 tree.UpdateTreeText();
-                API.attachEntityToEntity(tree.TreeObj, API.getPlayerVehicle(player), "forks_attach", new Vector3(), new Vector3(0, 0, 90));
+                API.attachEntityToEntity(tree.TreeObj, API.getPlayerVehicle(player), "bodyshell", new Vector3(0, -1.5, 0.3), new Vector3(0, 0, 0));
 
                 ChatManager.RoleplayMessage(player, "picks up the woods using the forklift.", ChatManager.RoleplayMe);
 
@@ -274,7 +274,7 @@ namespace mtgvrp.job_manager.lumberjack
             }
 
             if (API.isPlayerInAnyVehicle(player) && API.getEntityModel(API.getPlayerVehicle(player)) ==
-                (int) VehicleHash.Forklift)
+                (int) VehicleHash.Flatbed)
             {
                 Tree tree = API.getEntityData(API.getPlayerVehicle(player), "TREE_OBJ");
                 if (tree == null)
