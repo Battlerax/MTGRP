@@ -43,7 +43,7 @@ namespace mtgvrp.core
             // then we want to instantiate our client
             Client = new DiscordClient(cfg);
 
-            Client.SetWebSocketClient<WebSocket4NetClient>();
+            Client.SetWebSocketClient<WebSocketSharpClient>();
 
             // next, let's hook some events, so we know
             // what's going on
