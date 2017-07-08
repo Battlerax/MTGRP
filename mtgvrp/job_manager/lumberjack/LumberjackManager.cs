@@ -227,7 +227,7 @@ namespace mtgvrp.job_manager.lumberjack
                     return;
                 }
 
-                var tree = Tree.Trees.FirstOrDefault(x => x.TreeObj.position.DistanceTo(player.position) <= 5.0f);
+                var tree = Tree.Trees.FirstOrDefault(x => x.TreeObj.position.DistanceTo(player.position) <= 10.0f && x.Stage == Tree.Stages.Waiting);
                 if (tree == null || tree?.Stage != Tree.Stages.Waiting)
                 {
                     API.sendChatMessageToPlayer(player, "You aren't near a tree.");
