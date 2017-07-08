@@ -10,11 +10,11 @@ using Vehicle = mtgvrp.vehicle_manager.Vehicle;
 
 namespace mtgvrp.speed_fuel_system
 {
-    class FuelManager : Script
+    class SpeedoFuelManager : Script
     {
         public Timer FuelTimer;
 
-        public FuelManager()
+        public SpeedoFuelManager()
         {
             FuelTimer = new Timer(53000);
             FuelTimer.Elapsed += FuelTimer_Elapsed;
@@ -58,6 +58,15 @@ namespace mtgvrp.speed_fuel_system
                     API.triggerClientEvent(ocups[0], "fuel_updatevalue", veh.Fuel);
                 }
             }
+        }
+
+        [Command("togspeedo")]
+        public void TogSpeedo(Client player)
+        {
+            Account a = player.GetAccount();
+            a.IsSpeedoOn = !a.IsSpeedoOn;
+            API.sendChatMessageToPlayer(player, a.IsSpeedoOn ? "You've sucessfully turned on the speedometer." : "You've sucessfully turned off the speedometer.");
+            a.Save();
         }
 
         [Command("refuel")]
@@ -155,7 +164,7 @@ namespace mtgvrp.speed_fuel_system
 
             int pendingFuel = API.getEntityData(vehEntity, "PENDING_FUEL");
 
-            if (pendingFuel <= 0)
+            if (pendingFuel <= 0 || veh.RefuelProp.Supplies <= 0)
             {
                 API.triggerClientEvent(playerEntity, "fuel_updatevalue", veh.Fuel);
                 veh.FuelingTimer?.Dispose();
@@ -172,12 +181,14 @@ namespace mtgvrp.speed_fuel_system
                 veh.Fuel += pendingFuel;
                 pendingFuel -= pendingFuel;
                 InventoryManager.DeleteInventoryItem<Money>(c, pendingFuel * veh.RefuelProp.ItemPrices["gas"]);
+                veh.RefuelProp.Supplies--;
             }
             else
             {
                 veh.Fuel += 10;
                 pendingFuel -= 10;
                 InventoryManager.DeleteInventoryItem<Money>(c, 10 * veh.RefuelProp.ItemPrices["gas"]);
+                veh.RefuelProp.Supplies--;
             }
 
             API.triggerClientEvent(playerEntity, "fuel_updatevalue", veh.Fuel);

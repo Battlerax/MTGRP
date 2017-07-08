@@ -25,10 +25,10 @@ namespace mtgvrp.job_manager.lumberjack
 
         private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle)
         {
-            if (API.getEntityModel(vehicle) == (int)VehicleHash.Forklift && player.GetCharacter().JobOne.Type == JobManager.JobTypes.Lumberjack)
+            if (API.getEntityModel(vehicle) == (int)VehicleHash.Flatbed && player.GetCharacter().JobOne.Type == JobManager.JobTypes.Lumberjack)
             {
                 Vehicle veh = API.getEntityData(vehicle, "Vehicle");
-                if (veh.Job.Type != JobManager.JobTypes.Lumberjack)
+                if (veh.Job?.Type != JobManager.JobTypes.Lumberjack)
                 {
                     return;
                 }
@@ -62,7 +62,7 @@ namespace mtgvrp.job_manager.lumberjack
 
         private void API_onPlayerExitVehicle(Client player, NetHandle vehicle)
         {
-            if (API.getEntityModel(vehicle) == (int) VehicleHash.Forklift && player.GetCharacter().JobOne.Type == JobManager.JobTypes.Lumberjack)
+            if (API.getEntityModel(vehicle) == (int) VehicleHash.Flatbed && player.GetCharacter().JobOne.Type == JobManager.JobTypes.Lumberjack)
             {
                 Vehicle veh = API.getEntityData(vehicle, "Vehicle");
                 if (veh.Job.Type != JobManager.JobTypes.Lumberjack)
@@ -104,22 +104,17 @@ namespace mtgvrp.job_manager.lumberjack
             var character = sender.GetCharacter();
             if (eventName == "lumberjack_hittree" && character.JobOne.Type == JobManager.JobTypes.Lumberjack)
             {
-                var tree = Tree.Trees.SingleOrDefault(x => x.TreeMarker?.Location.DistanceTo(sender.position) <= 1.5);
+
+                var tree = Tree.Trees.FirstOrDefault(x => x.TreeObj.position.DistanceTo(sender.position) <= 3.0f);
                 if (tree == null)
                     return;
                 if (tree.Stage == Tree.Stages.Cutting)
                 {
-                    if (tree.CutPercentage >= 100)
-                    {
-                        API.sendChatMessageToPlayer(sender, "This tree is already cut, use /pickuptree to pick it up.");
-                        return;
-                    }
-
                     tree.CutPercentage += 10;
 
                     if (tree.CutPercentage >= 100)
                     {
-                        API.setEntityRotation(tree.TreeObj, new Vector3(90, 0, 0));
+                        API.setEntityRotation(tree.TreeObj, new Vector3(90 + tree.TreeRot.X, tree.TreeRot.Y, tree.TreeRot.Z));
                         ChatManager.RoleplayMessage(sender, "A tree would fall over on the ground.",
                             ChatManager.RoleplayDo);
                         tree.Stage = Tree.Stages.Processing;
@@ -138,12 +133,6 @@ namespace mtgvrp.job_manager.lumberjack
                 }
                 else if (tree.Stage == Tree.Stages.Processing)
                 {
-                    if (tree.ProcessPercentage >= 100)
-                    {
-                        API.sendChatMessageToPlayer(sender, "This tree is already cut, use /pickuptree to pick it up.");
-                        return;
-                    }
-
                     tree.ProcessPercentage += 10;
 
                     if (tree.ProcessPercentage >= 100)
@@ -171,7 +160,7 @@ namespace mtgvrp.job_manager.lumberjack
                 Vector3 pos = (Vector3) arguments[1];
                 Vector3 rot = (Vector3) arguments[2];
 
-                var tree = Tree.Trees.SingleOrDefault(x => x.Id.ToString() == id);
+                var tree = Tree.Trees.FirstOrDefault(x => x.Id.ToString() == id);
                 if (tree == null)
                     return;
 
@@ -203,7 +192,7 @@ namespace mtgvrp.job_manager.lumberjack
             if (player.GetAccount().AdminLevel < 4)
                 return;
 
-            var tree = Tree.Trees.SingleOrDefault(x => x.TreeMarker?.Location.DistanceTo(player.position) <= 1.5);
+            var tree = Tree.Trees.FirstOrDefault(x => x.TreeMarker?.Location.DistanceTo(player.position) <= 1.5);
             if (tree == null)
             {
                 API.sendChatMessageToPlayer(player, "You aren't near a tree.");
@@ -223,7 +212,7 @@ namespace mtgvrp.job_manager.lumberjack
                 return;
             }
 
-            if (API.isPlayerInAnyVehicle(player) && API.getEntityModel(API.getPlayerVehicle(player)) == (int)VehicleHash.Forklift)
+            if (API.isPlayerInAnyVehicle(player) && API.getEntityModel(API.getPlayerVehicle(player)) == (int)VehicleHash.Flatbed)
             {
                 Vehicle vehicle = API.getEntityData(API.getPlayerVehicle(player), "Vehicle");
                 if (vehicle.Job.Type != JobManager.JobTypes.Lumberjack)
@@ -238,7 +227,7 @@ namespace mtgvrp.job_manager.lumberjack
                     return;
                 }
 
-                var tree = Tree.Trees.SingleOrDefault(x => x.TreeMarker?.Location.DistanceTo(player.position) <= 2);
+                var tree = Tree.Trees.FirstOrDefault(x => x.TreeObj.position.DistanceTo(player.position) <= 5.0f);
                 if (tree == null || tree?.Stage != Tree.Stages.Waiting)
                 {
                     API.sendChatMessageToPlayer(player, "You aren't near a tree.");
@@ -247,7 +236,7 @@ namespace mtgvrp.job_manager.lumberjack
 
                 tree.Stage = Tree.Stages.Moving;
                 tree.UpdateTreeText();
-                API.attachEntityToEntity(tree.TreeObj, API.getPlayerVehicle(player), "forks_attach", new Vector3(), new Vector3(0, 0, 90));
+                API.attachEntityToEntity(tree.TreeObj, API.getPlayerVehicle(player), "bodyshell", new Vector3(0, -1.5, 0.3), new Vector3(0, 0, 0));
 
                 ChatManager.RoleplayMessage(player, "picks up the woods using the forklift.", ChatManager.RoleplayMe);
 
@@ -256,7 +245,7 @@ namespace mtgvrp.job_manager.lumberjack
 
                 API.setEntityData(vehicle.NetHandle, "TREE_OBJ", tree);
                 API.setEntityData(vehicle.NetHandle, "TREE_DRIVER", character.Id);
-                API.sendChatMessageToPlayer(player, "Goto the HQ to sell your wood.");
+                API.sendChatMessageToPlayer(player, "Go to the HQ to sell your wood.");
             }
             else
                 API.sendChatMessageToPlayer(player, "You have to be in a forklift to pickup the wood.");
@@ -272,28 +261,14 @@ namespace mtgvrp.job_manager.lumberjack
                 return;
             }
 
-            if (character.JobZoneType != 2)
-            {
-                API.sendChatMessageToPlayer(player, Color.White, "You are not near the sell wood point!");
-                return;
-            }
-
-            var job = JobManager.GetJobById(character.JobZone);
-
-            if (job == null)
-            {
-                API.sendChatMessageToPlayer(player, "null job");
-                return;
-            }
-
-            if (job.Type != JobManager.JobTypes.Lumberjack)
+            if (character.JobZoneType != 2 || JobManager.GetJobById(character.JobZone).Type != JobManager.JobTypes.Lumberjack)
             {
                 API.sendChatMessageToPlayer(player, Color.White, "You are not near the sell wood point!");
                 return;
             }
 
             if (API.isPlayerInAnyVehicle(player) && API.getEntityModel(API.getPlayerVehicle(player)) ==
-                (int) VehicleHash.Forklift)
+                (int) VehicleHash.Flatbed)
             {
                 Tree tree = API.getEntityData(API.getPlayerVehicle(player), "TREE_OBJ");
                 if (tree == null)
@@ -315,8 +290,10 @@ namespace mtgvrp.job_manager.lumberjack
                 API.resetEntityData(API.getPlayerVehicle(player), "TREE_DRIVER");
                 API.setBlipRouteVisible(character.JobOne.MiscOne.Blip, false);
 
-                InventoryManager.GiveInventoryItem(player.GetCharacter(), new Money(), 500);
+                InventoryManager.GiveInventoryItem(player.GetCharacter(), new Money(), 500, true);
                 API.sendChatMessageToPlayer(player, "* You have sucessfully sold your wood for ~g~$500");
+
+                SettingsManager.Settings.WoodSupplies += 50;
             }
         }
     }

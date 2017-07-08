@@ -34,6 +34,8 @@ namespace mtgvrp.player_manager
         public bool IsBanned { get; set; }
         public string BanReason { get; set; }
 
+        public bool IsSpeedoOn { get; set; } = true;
+
         [BsonIgnore]
         public bool IsLoggedIn { get; set; }
         public bool IsSpectating { get; set; }

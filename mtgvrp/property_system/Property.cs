@@ -67,13 +67,21 @@ namespace mtgvrp.property_system
         [BsonIgnore]
         public MarkerZone GarbageMarker { get; set; }
 
+        [BsonIgnore]
+        public static int MaxGasSupplies => 300;
+
         public int AdvertisingPrice { get; set; }
+
+        public List<string> IPLs { get; set; } = new List<string>();
 
         //Other Info
         public int GarbageBags { get; set; }
 
         [BsonIgnore]
         public Object BinObject { get; set; }
+
+        public bool DoesAcceptSupplies { get; set; }
+        public int SupplyPrice { get; set; } = 7;
 
         public Property(PropertyManager.PropertyTypes type, Vector3 entrancePos, Vector3 entranceRot,
             string entranceString)
@@ -152,8 +160,9 @@ namespace mtgvrp.property_system
 
             EntranceMarker = new MarkerZone(EntrancePos, EntranceRot, EntranceDimension)
             {
-                LabelText = EntranceString + "\n" + Type + "\n" + "ID: " + Id,
-                BlipSprite = GetBlip()
+                TextLabelText = EntranceString + "\n" + Type + "\n" + "ID: " + Id,
+                BlipSprite = GetBlip(),
+                UseBlip = true
             };
             EntranceMarker.Create();
             EntranceMarker.ColZone.setData("property_entrance", Id);
@@ -169,14 +178,15 @@ namespace mtgvrp.property_system
                 {
                     InteractionMarker = new MarkerZone(InteractionPos, InteractionRot, InteractionDimension)
                     {
-                        LabelText = PropertyManager.GetInteractText(Type)
+                        TextLabelText = PropertyManager.GetInteractText(Type)
                     };
                 }
                 else
                 {
-                    InteractionMarker = new MarkerZone(InteractionPos, InteractionRot, InteractionDimension, 10)
+                    InteractionMarker = new MarkerZone(InteractionPos, InteractionRot, InteractionDimension)
                     {
-                        LabelText = PropertyManager.GetInteractText(Type)
+                        ColZoneSize = 10f,
+                        TextLabelText = PropertyManager.GetInteractText(Type)
                     };
                 }
                 InteractionMarker.Create();
@@ -185,7 +195,7 @@ namespace mtgvrp.property_system
 
             if (IsTeleportable)
             {
-                ExitMarker = new MarkerZone(TargetPos, TargetRot, TargetDimension) {LabelText = "/exit"};
+                ExitMarker = new MarkerZone(TargetPos, TargetRot, TargetDimension) {TextLabelText = "/exit"};
                 ExitMarker.Create();
                 ExitMarker.ColZone.setData("property_exit", Id);
             }
@@ -197,8 +207,10 @@ namespace mtgvrp.property_system
                     API.shared.deleteEntity(BinObject);
                 }
                 BinObject = null;
-                GarbageMarker = new MarkerZone(GarbagePoint + new Vector3(0, 0, 1.2), new Vector3(0, 0, 0), GarbageDimension, 10);
-                GarbageMarker.LabelText = $"Property Garbage\nBags: {GarbageBags}/40\n/pickuptrash";
+                GarbageMarker = new MarkerZone(GarbagePoint + new Vector3(0, 0, 1.2), new Vector3(0, 0, 0), GarbageDimension);
+                GarbageMarker.ColZoneSize = 10f;
+                GarbageMarker.UseMarker = false;
+                GarbageMarker.TextLabelText = $"{PropertyName}'s Garbage\nBags: {GarbageBags}/40\n/pickuptrash";
                 GarbageMarker.Create();
                 GarbageMarker.ColZone.setData("property_garbage", Id);
                 BinObject = API.shared.createObject(998415499, GarbagePoint - new Vector3(0, 0, 1.1), GarbageRotation, GarbageDimension);

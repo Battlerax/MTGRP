@@ -5915,7 +5915,7 @@ $(document).on('click', function(e){
     $('[data-role=dropdown]').each(function(i, el){
         if (!$(el).hasClass('keep-open') && $(el).css('display')==='block') {
             var that = $(el).data('dropdown');
-            that._close(el);
+            //that._close(el);
         }
     });
 });

@@ -65,9 +65,8 @@ namespace mtgvrp.job_manager.garbageman
             Character character = API.getEntityData(player, "Character");
             var veh = VehicleManager.GetVehFromNetHandle(vehicle);
 
-            if (veh.Job?.Type == JobManager.JobTypes.Garbageman)
+            if (veh.Job?.Type == JobManager.JobTypes.Garbageman && character.JobOne?.Type == JobManager.JobTypes.Garbageman)
             {
-
                 Property TargetProperty = null;
                 int maxGarbage = 0;
                 foreach (var prop in PropertyManager.Properties)
@@ -106,6 +105,7 @@ namespace mtgvrp.job_manager.garbageman
                     character.GarbageTimeLeftTimer = new Timer { Interval = 1000 };
                     character.GarbageTimeLeftTimer.Elapsed += delegate { UpdateTimer(player); };
                     character.GarbageTimeLeftTimer.Start();
+                    character.update_ped();
                     veh.RespawnTimer = new Timer { Interval = 1000 * 300 };
                     veh.RespawnTimer.Elapsed += delegate { RespawnGarbageTruck(player, veh); };
                     veh.RespawnTimer.Start();

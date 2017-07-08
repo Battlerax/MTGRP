@@ -5,6 +5,8 @@ using mtgvrp.core;
 using mtgvrp.group_manager;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;
+using mtgvrp.weapon_manager;
+using mtgvrp.core.Help;
 
 
 namespace mtgvrp.weapon_manager
@@ -18,14 +20,13 @@ namespace mtgvrp.weapon_manager
             CharacterMenu.OnCharacterLogin += CharacterMenu_OnCharacterLogin;
             InventoryManager.OnStorageGetItem += InventoryManager_OnStorageGetItem;
             InventoryManager.OnStorageLoseItem += InventoryManager_OnStorageLoseItem;
-            CharacterMenu.OnCharacterLogin += CharacterMenu_OnCharacterLogin;
 
             DebugManager.DebugMessage("[WeaponM] Weapon Manager initalized!");
         }
 
         private void CharacterMenu_OnCharacterLogin(object sender, CharacterMenu.CharacterLoginEventArgs e)
         {
-            foreach (Weapon weapon in e.Character.Weapons)
+            foreach (Weapon weapon in InventoryManager.DoesInventoryHaveItem<Weapon>(e.Character))
             {
                 API.givePlayerWeapon(e.Character.Client, weapon.WeaponHash, 9999, true, true);
             }
@@ -39,11 +40,11 @@ namespace mtgvrp.weapon_manager
                 {
                     Character chr = (Character)sender;
                     Weapon item = (Weapon) args.Item;
-                    foreach(Weapon w in chr.Weapons.ToList())
+                    foreach(Weapon w in InventoryManager.DoesInventoryHaveItem<Weapon>(chr))
                     {
                         if (w.WeaponHash == item.WeaponHash)
                         {
-                            chr.Weapons.Remove(w);
+                            InventoryManager.DeleteInventoryItem<Weapon>(chr, 1, x => x == w);
                         }
                     }
                     API.removePlayerWeapon(chr.Client, item.WeaponHash);
@@ -81,19 +82,17 @@ namespace mtgvrp.weapon_manager
 
             WeaponHash currentPlayerWeapon = API.getPlayerCurrentWeapon(player);
 
-            /* Causing issues with objects and /fish. Remove for now.
             if (!DoesPlayerHaveWeapon(player, currentPlayerWeapon) && currentPlayerWeapon != WeaponHash.Unarmed)
             {
+                API.removePlayerWeapon(player, currentPlayerWeapon);
                 foreach (var p in API.getAllPlayers())
                 {
                     Account account = API.shared.getEntityData(p, "Account");
-
-                    API.removePlayerWeapon(player, currentPlayerWeapon);
                     if (account.AdminLevel > 1) { p.sendChatMessage("~r~ [WARNING]: " + player.nametag + " HAS A WEAPON THEY SHOULD NOT HAVE. TAKE ACTION."); }
                 }
                 return;
             }
-            */
+            
 
             Weapon currentWeapon = GetCurrentWeapon(player);
 
@@ -115,7 +114,7 @@ namespace mtgvrp.weapon_manager
         {
             Character character = API.shared.getEntityData(player.handle, "Character");
 
-            if (character.Weapons.Count() > 0) { return true; }
+            if (InventoryManager.DoesInventoryHaveItem<Weapon>(character).Length > 0) { return true; }
             else { return false; }
         }
 
@@ -124,11 +123,11 @@ namespace mtgvrp.weapon_manager
         {
             Character character = API.shared.getEntityData(player.handle, "Character");
 
-            if (character.Weapons.Count() > 0)
+            foreach (Weapon i in InventoryManager.DoesInventoryHaveItem<Weapon>(character))
             {
-                foreach (Weapon i in character.Weapons)
+                if (i.WeaponHash == weapon)
                 {
-                    if (i.WeaponHash == weapon) { return true; }
+                    return true;
                 }
             }
 
@@ -151,7 +150,7 @@ namespace mtgvrp.weapon_manager
         {
             Character character = API.shared.getEntityData(player.handle, "Character");
 
-            foreach(Weapon weapon in character.Weapons.ToList())
+            foreach(Weapon weapon in InventoryManager.DoesInventoryHaveItem<Weapon>(character))
             {
                 if (weapon.WeaponHash == weaponhash)
                 {
@@ -165,7 +164,7 @@ namespace mtgvrp.weapon_manager
         {
             Character character = API.shared.getEntityData(player.handle, "Character");
 
-            foreach (Weapon weapon in character.Weapons.ToList())
+            foreach (Weapon weapon in InventoryManager.DoesInventoryHaveItem<Weapon>(character))
             {
                 if (weapon.WeaponHash == weaponhash)
                 {
@@ -180,10 +179,6 @@ namespace mtgvrp.weapon_manager
             Character character = API.shared.getEntityData(player.handle, "Character");
 
             InventoryManager.DeleteInventoryItem(character, typeof(Weapon), -1);
-            foreach (Weapon weapon in character.Weapons.ToList())
-            {
-                character.Weapons.Remove(weapon);
-            }
             API.shared.removeAllPlayerWeapons(player);
         }
 
@@ -192,8 +187,6 @@ namespace mtgvrp.weapon_manager
             Character character = API.shared.getEntityData(player.handle, "Character");
 
             if (DoesPlayerHaveWeapon(player, weapon.WeaponHash)) { return; }
-
-            character.Weapons.Add(weapon);
 
             API.shared.givePlayerWeapon(player, weapon.WeaponHash, 9999, true, true);
             API.shared.setPlayerWeaponTint(player, weapon.WeaponHash, weapon.WeaponTint);
@@ -208,14 +201,16 @@ namespace mtgvrp.weapon_manager
 
             WeaponHash currentWeapon = API.shared.getPlayerCurrentWeapon(player);
 
-            foreach (Weapon weapon in character.Weapons)
-            {
-                if (weapon.WeaponHash == currentWeapon) { return weapon; }
-            }
+            Weapon[] weapon =
+                InventoryManager.DoesInventoryHaveItem<Weapon>(character, x => x.WeaponHash == currentWeapon);
+
+            if (weapon.Length > 0)
+                return weapon[0];
+
             return new Weapon(WeaponHash.Unarmed, WeaponTint.Normal, true, false, false, Group.None);
         }
 
-        [Command("listweapons")]
+        [Command("listweapons"), Help(HelpManager.CommandGroups.AdminLevel3, "Used to see what weapons a player has on them.", new[] { "ID of target player." })]
         public void listweapons_cmd(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
@@ -228,7 +223,7 @@ namespace mtgvrp.weapon_manager
             }
 
             int i = 0;
-            foreach (Weapon w in receiverid.Weapons)
+            foreach (Weapon w in InventoryManager.DoesInventoryHaveItem<Weapon>(receiverid))
             {
          
                 player.sendChatMessage("Weapon " + i + ": " + w.WeaponHash);
@@ -238,7 +233,7 @@ namespace mtgvrp.weapon_manager
 
         }
 
-        [Command("removeallweapons")]
+        [Command("removeallweapons"), Help(HelpManager.CommandGroups.AdminLevel3, "Used to sremove all weapons from a player", new[] { "ID of target player." })]
         public void removeallweapons_cmd(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);

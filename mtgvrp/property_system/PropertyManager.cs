@@ -7,6 +7,8 @@ using mtgvrp.core;
 using mtgvrp.database_manager;
 using mtgvrp.door_manager;
 using mtgvrp.inventory;
+using mtgvrp.job_manager;
+using mtgvrp.job_manager.delivery;
 using mtgvrp.player_manager;
 using MongoDB.Driver;
 
@@ -309,6 +311,7 @@ namespace mtgvrp.property_system
                         }
                         prop.IsTeleportable = !prop.IsTeleportable;
                         prop.Save();
+                        prop.UpdateMarkers();
                         API.sendChatMessageToPlayer(sender,
                             $"[Property Manager] Property #{id} was made to be '" +
                             (prop.IsTeleportable ? "Teleportable" : "UnTeleportable") + "'");
@@ -333,6 +336,7 @@ namespace mtgvrp.property_system
                         prop.TargetPos = sender.position;
                         prop.TargetRot = sender.rotation;
                         prop.Save();
+                        prop.UpdateMarkers();
                         API.sendChatMessageToPlayer(sender,
                             $"[Property Manager] Interior TP position of property #{id} was changed.");
                     }
@@ -350,6 +354,7 @@ namespace mtgvrp.property_system
                         }
                         prop.IsInteractable = !prop.IsInteractable;
                         prop.Save();
+                        prop.UpdateMarkers();
                         API.sendChatMessageToPlayer(sender,
                             $"[Property Manager] Property #{id} was made to be '" +
                             (prop.IsInteractable ? "Interactable" : "UnInteractable") + "'");
@@ -512,6 +517,46 @@ namespace mtgvrp.property_system
                 case "attempt_enter_prop":
                     Enterproperty(sender);
                     break;
+
+                case "editproperty_addipl":
+                    if (sender.GetAccount().AdminLevel >= 5)
+                    {
+                        var id = Convert.ToInt32(arguments[0]);
+                        var prop = Properties.SingleOrDefault(x => x.Id == id);
+                        if (prop == null)
+                        {
+                            API.sendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                            return;
+                        }
+                        prop.IPLs.Add(arguments[1].ToString());
+                        prop.Save();
+                        API.sendChatMessageToPlayer(sender,
+                            $"[Property Manager] Added IPL {arguments[1]} to property #{id}.");
+                        API.triggerClientEvent(sender, "editproperty_showmenu", prop.Id, API.toJson(prop.IPLs.ToArray()));
+                    }
+                    break;
+
+                case "editproperty_deleteipl":
+                    if (sender.GetAccount().AdminLevel >= 5)
+                    {
+                        var id = Convert.ToInt32(arguments[0]);
+                        var prop = Properties.SingleOrDefault(x => x.Id == id);
+                        if (prop == null)
+                        {
+                            API.sendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                            return;
+                        }
+
+                        var ipl = arguments[1].ToString();
+                        if (prop.IPLs.RemoveAll(x => x == ipl) > 0)
+                        {
+                            prop.Save();
+                            API.sendChatMessageToPlayer(sender,
+                                $"[Property Manager] Removed IPL {ipl} from property #{id}.");
+                            API.triggerClientEvent(sender, "editproperty_showmenu", prop.Id, API.toJson(prop.IPLs.ToArray()));
+                        }
+                    }
+                    break;
             }
         }
 
@@ -543,6 +588,70 @@ namespace mtgvrp.property_system
             return "";
         }
 
+        [Command("togacceptsupplies", Alias = "togas")]
+        public void TogSupplies(Client player)
+        {
+            var prop = IsAtPropertyInteraction(player);
+            if (prop == null)
+            {
+                API.sendChatMessageToPlayer(player, "You aren't at an interaction point.");
+                return;
+            }
+
+            if (prop.OwnerId != player.GetCharacter().Id || 
+                prop.Type == PropertyTypes.Bank ||
+                prop.Type == PropertyTypes.Advertising ||
+                prop.Type == PropertyTypes.Housing ||
+                prop.Type == PropertyTypes.LSNN
+                )
+            {
+                API.sendChatMessageToPlayer(player, "You aren't the owner or the business doesnt support supplies.");
+                return;
+            }
+
+            prop.DoesAcceptSupplies = !prop.DoesAcceptSupplies;
+
+            API.sendChatMessageToPlayer(player,
+                prop.DoesAcceptSupplies
+                    ? "You are now ~g~accepting~w~ supplies."
+                    : "You are now ~r~not accepting~w~ supplies.");
+            prop.Save();
+        }
+
+        [Command("setsupplyprice", Alias = "setsp")]
+        public void SetSupplyPrice(Client player, int amount)
+        {
+            var prop = IsAtPropertyInteraction(player);
+            if (prop == null)
+            {
+                API.sendChatMessageToPlayer(player, "You aren't at an interaction point.");
+                return;
+            }
+
+            if (prop.OwnerId != player.GetCharacter().Id ||
+                prop.Type == PropertyTypes.Bank ||
+                prop.Type == PropertyTypes.Advertising ||
+                prop.Type == PropertyTypes.Housing ||
+                prop.Type == PropertyTypes.LSNN
+            )
+            {
+                API.sendChatMessageToPlayer(player, "You aren't the owner or the business doesnt support supplies.");
+                return;
+            }
+
+            if (amount <= 0)
+            {
+                API.sendChatMessageToPlayer(player, "Price can't be below 0");
+                return;
+            }
+
+            prop.SupplyPrice = amount;
+
+            API.sendChatMessageToPlayer(player, "You've set the supply price to: $" + amount);
+            API.sendChatMessageToPlayer(player, "Make sure you do have enough money in the business storage.");
+            prop.Save();
+        }
+
         [Command("enter")]
         public void Enterproperty(Client player)
         {
@@ -551,10 +660,23 @@ namespace mtgvrp.property_system
             {
                 if (prop.IsTeleportable && (!prop.IsLocked || prop.OwnerId == player.GetCharacter().Id))
                 {
+                    foreach (var ipl in prop.IPLs)
+                    {
+                        //TODO: request ipl for player.
+                    }
+
                     player.position = prop.TargetPos;
                     player.rotation = prop.TargetRot;
                     player.dimension = prop.TargetDimension;
                     ChatManager.RoleplayMessage(player, $"has entered {prop.PropertyName}.", ChatManager.RoleplayMe);
+
+                    //Supplies.
+                    if (prop.DoesAcceptSupplies &&
+                        player.GetCharacter().JobOne?.Type == JobManager.JobTypes.DeliveryMan && InventoryManager
+                            .DoesInventoryHaveItem<SupplyItem>(player.GetCharacter()).Length > 0)
+                    {
+                        API.sendChatMessageToPlayer(player, "This business is selling supplies for $" + prop.SupplyPrice);
+                    }
                 }
                 else
                 {
@@ -572,6 +694,11 @@ namespace mtgvrp.property_system
             {
                 if (prop.IsTeleportable && (!prop.IsLocked || prop.OwnerId == player.GetCharacter().Id))
                 {
+                    foreach (var ipl in prop.IPLs)
+                    {
+                       //TODO: remove ipl for player.
+                    }
+
                     player.position = prop.EntrancePos;
                     player.rotation = prop.EntranceRot;
                     player.dimension = prop.EntranceDimension;
@@ -822,7 +949,11 @@ namespace mtgvrp.property_system
                     API.sendChatMessageToPlayer(player, "Invalid Property Id.");
                     return;
                 }
-                API.triggerClientEvent(player, "editproperty_showmenu", prop.Id);
+                
+                if(prop.IPLs == null)
+                    prop.IPLs = new List<string>();
+
+                API.triggerClientEvent(player, "editproperty_showmenu", prop.Id, API.toJson(prop.IPLs.ToArray()));
             }
         }
 

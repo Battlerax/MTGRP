@@ -133,8 +133,9 @@ namespace mtgvrp.player_manager.login
 
                                
                             API.sendChatMessageToPlayer(player, "~g~ You have successfully logged in!");
+                            LogManager.Log(LogManager.LogTypes.Connection, player.socialClubName + " has logged in to the server. (IP: " + player.address + ")");
 
-                            account.IsLoggedIn = true;
+                                account.IsLoggedIn = true;
 
                             if (account.AdminLevel > 0)
                             {
@@ -199,7 +200,8 @@ namespace mtgvrp.player_manager.login
 
                         API.sendChatMessageToPlayer(player,
                             "You have successfully registered! Please select a character slot below to get started!");
-                        prepare_character_menu(player);
+                        LogManager.Log(LogManager.LogTypes.Connection, player.socialClubName + " has registered in to the server. (IP: " + player.address + ")");
+                            prepare_character_menu(player);
                     }
                         break;
                 }
@@ -208,7 +210,8 @@ namespace mtgvrp.player_manager.login
 
         public void OnPlayerConnected(Client player)
         {
-            DebugManager.DebugMessage("[LoginM] " + player.name + " has connected to the server. (IP: " + player.address + ")");
+            DebugManager.DebugMessage("[LoginM] " + player.socialClubName + " has connected to the server [NOT LOGGED IN]. (IP: " + player.address + ")");
+            LogManager.Log(LogManager.LogTypes.Connection, player.socialClubName + " has connected to the server [NOT LOGGED IN]. (IP: " + player.address + ")");
         }
 
         public void OnPlayerFinishedDownload(Client player)
