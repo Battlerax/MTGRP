@@ -111,7 +111,7 @@ namespace mtgvrp.job_manager.lumberjack
             if (eventName == "lumberjack_hittree" && character.JobOne.Type == JobManager.JobTypes.Lumberjack)
             {
 
-                var tree = Tree.Trees.FirstOrDefault(x => x.TreeObj.position.DistanceTo(sender.position) <= 3.0f);
+                var tree = Tree.Trees.FirstOrDefault(x => x.TreeObj?.position?.DistanceTo(sender.position) <= 3.0f);
                 if (tree == null)
                     return;
                 if (tree.Stage == Tree.Stages.Cutting)
@@ -233,7 +233,7 @@ namespace mtgvrp.job_manager.lumberjack
                     return;
                 }
 
-                var tree = Tree.Trees.FirstOrDefault(x => x.TreeObj.position.DistanceTo(player.position) <= 10.0f && x.Stage == Tree.Stages.Waiting);
+                var tree = Tree.Trees.FirstOrDefault(x => x.TreeObj?.position?.DistanceTo(player.position) <= 10.0f && x.Stage == Tree.Stages.Waiting);
                 if (tree == null || tree?.Stage != Tree.Stages.Waiting)
                 {
                     API.sendChatMessageToPlayer(player, "You aren't near a tree.");
