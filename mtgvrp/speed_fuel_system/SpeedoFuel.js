@@ -3,26 +3,25 @@
 	case "fuel_updatevalue":
 		if(myBrowser !== null)
 			myBrowser.call("setFuel", args[0]);
-		break;
+        break;
+    case "speedo_showcef":
+        if (API.getPlayerVehicleSeat(API.getLocalPlayer()) !== -1) return;
+
+        var res = API.getScreenResolutionMantainRatio();
+        var width = 450;
+        var height = 200;
+        var size = resource.JsFunctions.scaleCoordsToReal({ X: width, Y: height });
+        myBrowser = API.createCefBrowser(size.X, size.Y);
+        API.waitUntilCefBrowserInit(myBrowser);
+        var pos = resource.JsFunctions.scaleCoordsToReal({ X: 310, Y: res.Height - height - 5 });
+        API.setCefBrowserPosition(myBrowser, pos.X, pos.Y);
+        API.loadPageCefBrowser(myBrowser, "speed_fuel_system/SpeedoFuel.html");
+        API.waitUntilCefBrowserLoaded(myBrowser);
+        break;
 	}
 });
 
 var myBrowser = null;
-
-API.onPlayerEnterVehicle.connect((vehicle) => {
-	if (API.getPlayerVehicleSeat(API.getLocalPlayer()) !== -1) return;
-
-	var res = API.getScreenResolutionMantainRatio();
-	var width = 450;
-	var height = 200;
-	var size = resource.JsFunctions.scaleCoordsToReal({X: width,Y: height });
-	myBrowser = API.createCefBrowser(size.X, size.Y);
-	API.waitUntilCefBrowserInit(myBrowser);
-	var pos = resource.JsFunctions.scaleCoordsToReal({X: 310,Y: res.Height - height - 5 });
-	API.setCefBrowserPosition(myBrowser, pos.X, pos.Y);
-	API.loadPageCefBrowser(myBrowser, "speed_fuel_system/SpeedoFuel.html");
-	API.waitUntilCefBrowserLoaded(myBrowser);
-});
 
 function loaded() {
 	var vehicle = API.getPlayerVehicle(API.getLocalPlayer());
@@ -105,12 +104,12 @@ API.onUpdate.connect(() => {
 			screenRes = API.getScreenResolutionMantainRatio();
 
 		if (lastDirection !== "")
-			API.drawText(lastDirection, 310, screenRes.Height - 155, 1, 225, 225, 225, 255, 4, 0, false, true, 0);
+			API.drawText(lastDirection, 310, screenRes.Height - 80, 1, 225, 225, 225, 255, 4, 0, false, true, 0); //155
 
 		if(lastStreet !== "")
-			API.drawText(lastStreet, 365, screenRes.Height - 150, 0.5, 225, 225, 225, 255, 4, 0, false, true, 0);
+			API.drawText(lastStreet, 365, screenRes.Height - 75, 0.5, 225, 225, 225, 255, 4, 0, false, true, 0);
 
 		if(lastZone !== "")
-			API.drawText(lastZone, 365, screenRes.Height - 125, 0.5, 225, 225, 225, 255, 4, 0, false, true, 0);
+			API.drawText(lastZone, 365, screenRes.Height - 50, 0.5, 225, 225, 225, 255, 4, 0, false, true, 0);
 	}
 });

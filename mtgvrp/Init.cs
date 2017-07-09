@@ -56,6 +56,11 @@ namespace mtgvrp
             }
         }
 
+        public static bool IsRunningOnMono()
+        {
+            return Type.GetType("Mono.Runtime") != null;
+        }
+
         public void OnResourceStartHandler()
         {
             //For Dealership.
@@ -65,6 +70,14 @@ namespace mtgvrp
 
             VehicleManager.load_all_unowned_vehicles();
             API.consoleOutput("[INIT] Script initalized!");
+
+            if (IsRunningOnMono())
+            {
+                API.consoleOutput("[INIT] Starting Discord Bot!");
+                DiscordManager.StartBot();
+            }
+
+            LogManager.StartLogArchiveTimer();
         }
 
         private void API_onResourceStop()

@@ -20,17 +20,23 @@ namespace mtgvrp.core
             DebugManager.DebugMessage("[ChatM] Initalizing chat manager...");
 
             API.onChatMessage += OnChatMessage;
+            API.onChatCommand += API_onChatCommand;
             API.onClientEventTrigger += OnClientEventTrigger;
 
             DebugManager.DebugMessage("[ChatM] Chat Manager initalized.");
-        } 
+        }
+
+        private void API_onChatCommand(Client sender, string command, CancelEventArgs cancel)
+        {
+            LogManager.Log(LogManager.LogTypes.Commands, $"{sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has executed: " + command);
+        }
 
         public void OnChatMessage(Client player, string msg, CancelEventArgs e)
         {
             Account account = API.getEntityData(player.handle, "Account");
             Character character = API.getEntityData(player.handle, "Character");
 
-            if (account.IsLoggedIn == false)
+            if (account == null || character == null || account.IsLoggedIn == false)
             {
                 e.Cancel = true;
                 return;
@@ -342,6 +348,7 @@ namespace mtgvrp.core
                     if (receiverAccount.AdminLevel > 0)
                     {
                         API.sendChatMessageToPlayer(c, Color.AdminChat, "[A] " + account.AdminName + ": " + text);
+                        DiscordManager.SendAdminMessage("[A] " + account.AdminName + ": " + text);
                     }
                 }
             }
