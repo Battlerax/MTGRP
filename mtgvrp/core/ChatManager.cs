@@ -28,7 +28,7 @@ namespace mtgvrp.core
 
         private void API_onChatCommand(Client sender, string command, CancelEventArgs cancel)
         {
-            LogManager.Log(LogManager.LogTypes.Commands, $"{sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has executed: " + command);
+            LogManager.Log(LogManager.LogTypes.Commands, $"{sender.GetCharacter()?.CharacterName}[{sender.GetAccount()?.AccountName}] has executed: " + command);
         }
 
         public void OnChatMessage(Client player, string msg, CancelEventArgs e)
@@ -348,9 +348,9 @@ namespace mtgvrp.core
                     if (receiverAccount.AdminLevel > 0)
                     {
                         API.sendChatMessageToPlayer(c, Color.AdminChat, "[A] " + account.AdminName + ": " + text);
-                        DiscordManager.SendAdminMessage("[A] " + account.AdminName + ": " + text);
                     }
                 }
+                DiscordManager.SendAdminMessage("[A] " + account.AdminName + ": " + text);
             }
         }
 
