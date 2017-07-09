@@ -80,6 +80,7 @@
 
   <!-- CORE -->
   <script src="core/JsFunctions.js" type="client" lang="javascript"/>
+  <script src="core/MarkerZone.js" type="client" lang="javascript"/>
 	<file src="cef_resources/MTGVRP_LOGO_BIG.png"/>
 	<file src="cef_resources/MTGVRP_LOGO_SMALL.png"/>
 
