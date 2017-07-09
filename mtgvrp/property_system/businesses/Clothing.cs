@@ -162,6 +162,13 @@ namespace mtgvrp.property_system.businesses
                         price = 0;
                         break;
                 }
+                var prop = PropertyManager.Properties.Single(x => x.Id == sender.getData("clothing_id"));
+
+                if (prop.Supplies <= 0)
+                {
+                    API.sendChatMessageToPlayer(sender, "The business is out of supplies.");
+                    return;
+                }
 
                 if (Money.GetCharacterMoney(character) < price)
                 {
@@ -285,8 +292,8 @@ namespace mtgvrp.property_system.businesses
                 }
 
                 InventoryManager.DeleteInventoryItem(character, typeof(Money), price);
-                var prop = PropertyManager.Properties.Single(x => x.Id == sender.getData("clothing_id"));
                 InventoryManager.GiveInventoryItem(prop, new Money(), price);
+                prop.Supplies -= 1;
 
                 character.update_ped();
                 character.Save();

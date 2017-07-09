@@ -838,7 +838,7 @@ namespace mtgvrp.group_manager.lspd
             {
                 character.Group.Locker = new MarkerZone(character.Client.position, character.Client.rotation,
                     character.Client.dimension)
-                { LabelText = "LSPD Locker Room~n~/locker" };
+                { TextLabelText = "LSPD Locker Room~n~/locker" };
                 character.Group.Save();
                 character.Group.Locker.Create();
             }
@@ -847,7 +847,7 @@ namespace mtgvrp.group_manager.lspd
                 character.Group.Locker.Location = character.Client.position;
                 character.Group.Locker.Rotation = character.Client.rotation;
                 character.Group.Locker.Dimension = character.Client.dimension;
-                character.Group.Locker.LabelText = "LSPD Locker Room~n~/locker";
+                character.Group.Locker.TextLabelText = "LSPD Locker Room~n~/locker";
                 character.Group.Locker.Refresh();
                 character.Group.Save();
             }
@@ -873,7 +873,7 @@ namespace mtgvrp.group_manager.lspd
             {
                 character.Group.FrontDesk = new MarkerZone(character.Client.position, character.Client.rotation,
                     character.Client.dimension)
-                { LabelText = "LSPD Front Desk~n~/paycoptickets" };
+                { TextLabelText = "LSPD Front Desk~n~/paycoptickets" };
                 character.Group.Save();
                 character.Group.FrontDesk.Create();
             }
@@ -882,7 +882,7 @@ namespace mtgvrp.group_manager.lspd
                 character.Group.FrontDesk.Location = character.Client.position;
                 character.Group.FrontDesk.Rotation = character.Client.rotation;
                 character.Group.FrontDesk.Dimension = character.Client.dimension;
-                character.Group.FrontDesk.LabelText = "LSPD Front Desk~n~/paycoptickets";
+                character.Group.FrontDesk.TextLabelText = "LSPD Front Desk~n~/paycoptickets";
                 character.Group.FrontDesk.Refresh();
                 character.Group.Save();
             }
@@ -909,7 +909,7 @@ namespace mtgvrp.group_manager.lspd
             {
                 character.Group.ArrestLocation = new MarkerZone(character.Client.position, character.Client.rotation,
                         character.Client.dimension)
-                { LabelText = "Arrest Location~n~/arrest" };
+                { TextLabelText = "Arrest Location~n~/arrest" };
 
                 character.Group.ArrestLocation.Create();
             }
@@ -918,7 +918,7 @@ namespace mtgvrp.group_manager.lspd
                 character.Group.ArrestLocation.Location = character.Client.position;
                 character.Group.ArrestLocation.Rotation = character.Client.rotation;
                 character.Group.ArrestLocation.Dimension = character.Client.dimension;
-                character.Group.ArrestLocation.LabelText = "Arrest Location~n~/arrest";
+                character.Group.ArrestLocation.TextLabelText = "Arrest Location~n~/arrest";
                 character.Group.ArrestLocation.Refresh();
             }
 

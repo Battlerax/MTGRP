@@ -4,6 +4,7 @@ using GTANetworkServer;
 using GTANetworkShared;
 using mtgvrp.group_manager;
 using mtgvrp.inventory;
+using mtgvrp.player_manager;
 using MongoDB.Bson;
 
 
@@ -13,7 +14,6 @@ public class Weapon : IInventoryItem
         public WeaponHash WeaponHash { get; set; }
         public WeaponTint WeaponTint { get; set; }
         public WeaponComponent WeaponComponent { get; set; }
-
 
         public int Ammo { get; set; }
 
@@ -32,7 +32,10 @@ public class Weapon : IInventoryItem
         public bool CanBeStacked => false;
         public bool IsBlocking => false;
 
-        public Dictionary<Type, int> MaxAmount => new Dictionary<Type, int>();
+        public Dictionary<Type, int> MaxAmount => new Dictionary<Type, int>()
+        {
+            {typeof(Character), 1},
+        };
         public int AmountOfSlots => 0;
 
         public string CommandFriendlyName => WeaponHash.ToString();

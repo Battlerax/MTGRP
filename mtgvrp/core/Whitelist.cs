@@ -96,6 +96,7 @@ namespace mtgvrp.core
              "RedDeadVet360",
              "ChipotleAwayJay",
              "wimbacah",
+             "Venturas50",
         };
 
         public Whitelist()

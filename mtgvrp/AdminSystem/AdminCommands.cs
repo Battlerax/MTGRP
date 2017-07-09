@@ -1029,7 +1029,6 @@ namespace mtgvrp.AdminSystem
 
         //PLAYER-ADMIN STUFF
 
-
         [Command("prison", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel2, "Places a player into prison for the specificed amount of time.", new [] {"ID of the target player", "Time in seconds"})]
         public void prison_cmd(Client player, string id, string time)
         {
@@ -1109,6 +1108,7 @@ namespace mtgvrp.AdminSystem
                     c.Save();
                 }
                 API.shared.sendChatMessageToPlayer(player, "You remotewarned " + c.AccountName + " for '~r~" + reason + "~w~'.");
+                LogManager.Log(LogManager.LogTypes.Warns, $"Admin {account.AdminName}[{player.socialClubName}] has remotewarned the player [{c.AccountName}]. Reason: '{reason}'");
                 break;
             }
         }
@@ -1133,6 +1133,7 @@ namespace mtgvrp.AdminSystem
                     c.Save();
                 }
                 API.shared.sendChatMessageToPlayer(player, "You have remote-banned " + c.AccountName+ " from the server.");
+                LogManager.Log(LogManager.LogTypes.Bans, $"Admin {account.AdminName}[{player.socialClubName}] has remotebanned the player [{c.AccountName}]. Reason: '{reason}'");
                 break;
             }
         }
@@ -1179,6 +1180,7 @@ namespace mtgvrp.AdminSystem
                     c.Save();
                 }
                 API.shared.sendChatMessageToPlayer(player, "You have unbanned " + c.AccountName + " from the server.");
+                LogManager.Log(LogManager.LogTypes.Unbans, $"Admin {account.AdminName}[{player.socialClubName}] has unbanned the player [{c.AccountName}].");
                 break;
             }
         }
@@ -1202,6 +1204,7 @@ namespace mtgvrp.AdminSystem
                     c.Save();
                 }
                 API.shared.sendChatMessageToPlayer(player, "You have un-tempbanned " + c.AccountName + " from the server.");
+                LogManager.Log(LogManager.LogTypes.Unbans, $"Admin {account.AdminName}[{player.socialClubName}] has untempbanned the player [{c.AccountName}].");
                 break;
             }
         }
@@ -1215,8 +1218,8 @@ namespace mtgvrp.AdminSystem
                 return;
 
             var receiver = PlayerManager.ParseClient(id);
-
             BanPlayer(receiver, reason);
+            LogManager.Log(LogManager.LogTypes.Bans, $"Admin {account.AdminName}[{player.socialClubName}] has banned the player {receiver.GetCharacter().CharacterName}[{receiver.socialClubName}]. Reason: '{reason}'");
         }
 
 
@@ -1245,7 +1248,7 @@ namespace mtgvrp.AdminSystem
 
             API.shared.sendChatMessageToPlayer(player, "You warned ~r~" + receiverCharacter.CharacterName + "~w~ for '~r~" + reason + "~w~'.");
             API.shared.sendChatMessageToPlayer(receiver, "You were warned by ~r~" + character.CharacterName + "~w~ for '~r~" + reason + "~w~'.");
-
+            LogManager.Log(LogManager.LogTypes.Warns, $"Admin {account.AdminName}[{player.socialClubName}] has warned the player {receiver.GetCharacter().CharacterName}[{receiver.socialClubName}]. Reason: '{reason}'");
 
             if (receiverAccount.PlayerWarns.Count() >= 3)
             {
@@ -1278,7 +1281,7 @@ namespace mtgvrp.AdminSystem
 
             API.shared.sendChatMessageToPlayer(player, "You removed all warns from ~r~" + receiverCharacter.CharacterName + "~w~.");
             API.shared.sendChatMessageToPlayer(receiver, "Your warns were removed by ~r~" + character.CharacterName + "~w~.");
-
+            LogManager.Log(LogManager.LogTypes.Bans, $"Admin {account.AdminName}[{player.socialClubName}] has removed all the warns of the player {receiver.GetCharacter().CharacterName}[{receiver.socialClubName}]. Reason: '{reason}'");
         }
 
         [Command("remoteplayerwarns"), Help(HelpManager.CommandGroups.AdminLevel2, "View an offline player's warnings", new[] { "Account name of the player" })]
