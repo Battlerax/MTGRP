@@ -115,8 +115,9 @@ namespace mtgvrp.core
                     TextLabelSeeThrough, Dimension);
                 API.shared.setTextLabelColor(Label, TextLabelColor[1], TextLabelColor[2], TextLabelColor[3], TextLabelColor[0]);
             }
-           
-            Blip = API.shared.createBlip(Location, BlipRange, Dimension);
+
+            //Blip = API.shared.createBlip(Location, BlipRange, Dimension);
+            Blip = API.shared.createBlip(Location, Dimension);
             API.shared.setBlipColor(Blip, BlipColor);
             API.shared.setBlipName(Blip, BlipName);
             API.shared.setBlipScale(Blip, BlipScale);
@@ -195,7 +196,7 @@ namespace mtgvrp.core
 
         public void SetMarkerZoneRouteVisible(Client player, bool visible, int color)
         {
-            API.shared.triggerClientEvent(player, "setMarkerZoneRouteVisible", this, visible, color);
+            API.shared.triggerClientEvent(player, "setMarkerZoneRouteVisible", Blip, visible, color);
         }
     }
 }
