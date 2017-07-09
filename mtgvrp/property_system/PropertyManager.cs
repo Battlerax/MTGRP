@@ -7,6 +7,8 @@ using mtgvrp.core;
 using mtgvrp.database_manager;
 using mtgvrp.door_manager;
 using mtgvrp.inventory;
+using mtgvrp.job_manager;
+using mtgvrp.job_manager.delivery;
 using mtgvrp.player_manager;
 using MongoDB.Driver;
 
@@ -586,6 +588,70 @@ namespace mtgvrp.property_system
             return "";
         }
 
+        [Command("togacceptsupplies", Alias = "togas")]
+        public void TogSupplies(Client player)
+        {
+            var prop = IsAtPropertyInteraction(player);
+            if (prop == null)
+            {
+                API.sendChatMessageToPlayer(player, "You aren't at an interaction point.");
+                return;
+            }
+
+            if (prop.OwnerId != player.GetCharacter().Id || 
+                prop.Type == PropertyTypes.Bank ||
+                prop.Type == PropertyTypes.Advertising ||
+                prop.Type == PropertyTypes.Housing ||
+                prop.Type == PropertyTypes.LSNN
+                )
+            {
+                API.sendChatMessageToPlayer(player, "You aren't the owner or the business doesnt support supplies.");
+                return;
+            }
+
+            prop.DoesAcceptSupplies = !prop.DoesAcceptSupplies;
+
+            API.sendChatMessageToPlayer(player,
+                prop.DoesAcceptSupplies
+                    ? "You are now ~g~accepting~w~ supplies."
+                    : "You are now ~r~not accepting~w~ supplies.");
+            prop.Save();
+        }
+
+        [Command("setsupplyprice", Alias = "setsp")]
+        public void SetSupplyPrice(Client player, int amount)
+        {
+            var prop = IsAtPropertyInteraction(player);
+            if (prop == null)
+            {
+                API.sendChatMessageToPlayer(player, "You aren't at an interaction point.");
+                return;
+            }
+
+            if (prop.OwnerId != player.GetCharacter().Id ||
+                prop.Type == PropertyTypes.Bank ||
+                prop.Type == PropertyTypes.Advertising ||
+                prop.Type == PropertyTypes.Housing ||
+                prop.Type == PropertyTypes.LSNN
+            )
+            {
+                API.sendChatMessageToPlayer(player, "You aren't the owner or the business doesnt support supplies.");
+                return;
+            }
+
+            if (amount <= 0)
+            {
+                API.sendChatMessageToPlayer(player, "Price can't be below 0");
+                return;
+            }
+
+            prop.SupplyPrice = amount;
+
+            API.sendChatMessageToPlayer(player, "You've set the supply price to: $" + amount);
+            API.sendChatMessageToPlayer(player, "Make sure you do have enough money in the business storage.");
+            prop.Save();
+        }
+
         [Command("enter")]
         public void Enterproperty(Client player)
         {
@@ -603,6 +669,14 @@ namespace mtgvrp.property_system
                     player.rotation = prop.TargetRot;
                     player.dimension = prop.TargetDimension;
                     ChatManager.RoleplayMessage(player, $"has entered {prop.PropertyName}.", ChatManager.RoleplayMe);
+
+                    //Supplies.
+                    if (prop.DoesAcceptSupplies &&
+                        player.GetCharacter().JobOne?.Type == JobManager.JobTypes.DeliveryMan && InventoryManager
+                            .DoesInventoryHaveItem<SupplyItem>(player.GetCharacter()).Length > 0)
+                    {
+                        API.sendChatMessageToPlayer(player, "This business is selling supplies for $" + prop.SupplyPrice);
+                    }
                 }
                 else
                 {

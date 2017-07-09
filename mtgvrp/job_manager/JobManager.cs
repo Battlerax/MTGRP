@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using GTANetworkServer;
 using GTANetworkShared;
 using mtgvrp.core;
@@ -20,6 +21,8 @@ namespace mtgvrp.job_manager
             Mechanic,
             Lumberjack,
             Garbageman,
+            Trucker,
+            DeliveryMan
         }
 
         public static List<Job> Jobs = new List<Job>();
@@ -207,6 +210,7 @@ namespace mtgvrp.job_manager
                     job.JoinPos.UseBlip = true;
                     job.JoinPos.Refresh();
                     job.Save();
+                    job.register_job_marker_events();
                     API.sendChatMessageToPlayer(player, Color.White, "You have changed Job " + job.Id + "'s location to your current position");
                     break;
                 case "misc_one_loc":
@@ -227,6 +231,7 @@ namespace mtgvrp.job_manager
                         job.MiscOne.Refresh();
                     }
                     job.Save();
+                    job.register_job_marker_events();
                     API.sendChatMessageToPlayer(player, Color.White, "You have changed Job " + job.Id + "'s misc one location to your current position");
                     break;
 
@@ -280,6 +285,7 @@ namespace mtgvrp.job_manager
                         job.MiscTwo.Refresh();
                     }
                     job.Save();
+                    job.register_job_marker_events();
                     API.sendChatMessageToPlayer(player, Color.White, "You have changed Job " + job.Id + "'s misc two location to your current position");
                     break;
                 case "misc_two_name":
@@ -440,10 +446,8 @@ namespace mtgvrp.job_manager
 
         public static Job GetJobById(int id)
         {
-            if (id == 0 || id > Jobs.Count )
-                return Job.None;
-
-            return (Job)Jobs.ToArray().GetValue(id - 1);
+            var job = Jobs.FirstOrDefault(x => x.Id == id);
+            return job ?? Job.None;
         }
 
         public static void SendPictureNotificationToJob(Job job, string body, string pic, int flash, int iconType, string sender, string subject)

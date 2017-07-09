@@ -177,6 +177,8 @@ namespace mtgvrp.player_manager
                         }
 
                         API.sendChatMessageToPlayer(player, "You have successfully loaded your character: " + charName);
+                        LogManager.Log(LogManager.LogTypes.Connection, player.socialClubName + $" has loaded the character {character.CharacterName}. (IP: " + player.address + ")");
+
                         API.triggerClientEvent(player, "login_finished");
                         OnCharacterLogin(this, new CharacterLoginEventArgs(character));
                     }
@@ -360,8 +362,10 @@ namespace mtgvrp.player_manager
                     API.sendChatMessageToPlayer(player,
                         "~g~If you have any questions please use /n(ewbie) chat or /ask for moderator assitance.");
 
-                    //Startup money.
-                    character.BankBalance = 20000;
+                    LogManager.Log(LogManager.LogTypes.Connection, player.socialClubName + $" has created and loaded the character {character.CharacterName}. (IP: " + player.address + ")");
+
+                        //Startup money.
+                        character.BankBalance = 20000;
                     InventoryManager.GiveInventoryItem(character, new Money(), 5000);
 
                     acc.IsLoggedIn = true;

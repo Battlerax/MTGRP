@@ -80,6 +80,7 @@ namespace mtgvrp.player_manager
             {
                 InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(Money), 500);
             }
+            LogManager.Log(LogManager.LogTypes.Death, $"{character.CharacterName}[{player.socialClubName}] has died.");
         }
 
         public static int basepaycheck = Properties.Settings.Default.basepaycheck;
@@ -124,7 +125,10 @@ namespace mtgvrp.player_manager
                 character.GetTimePlayed(); //Update time played before save.
                 character.Save();
                 RemovePlayer(character);
+                LogManager.Log(LogManager.LogTypes.Connection, $"{character.CharacterName}[{player.socialClubName}] has left the server.");
             }
+            else
+                LogManager.Log(LogManager.LogTypes.Connection, $"{player.socialClubName} has left the server. (Not logged into a character)");
         }
 
         public static void UpdatePlayerNametags()

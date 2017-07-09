@@ -84,7 +84,7 @@ namespace mtgvrp.core
         public float TextLabelSize { get; set; } = 1f;
 
 
-        public bool UseBlip { get; set; } = false;
+        public bool UseBlip { get; set; } = true;
         public bool UseMarker { get; set; } = true;
         public bool UseText { get; set; } = true;
         public bool UseColZone { get; set; } = true;
@@ -102,7 +102,7 @@ namespace mtgvrp.core
         {
             if (this == None)
                 return;
-
+          
             if (UseMarker)
             {
                 Marker = API.shared.createMarker(MarkerType, Location, MarkerDirection, Rotation, MarkerScale,
@@ -115,17 +115,14 @@ namespace mtgvrp.core
                     TextLabelSeeThrough, Dimension);
                 API.shared.setTextLabelColor(Label, TextLabelColor[1], TextLabelColor[2], TextLabelColor[3], TextLabelColor[0]);
             }
-
-            if (UseBlip)
-            {
-                Blip = API.shared.createBlip(Location, Dimension);
-                API.shared.setBlipColor(Blip, BlipColor);
-                API.shared.setBlipName(Blip, BlipName);
-                API.shared.setBlipScale(Blip, BlipScale);
-                API.shared.setBlipShortRange(Blip, BlipShortRange);
-                API.shared.setBlipSprite(Blip, BlipSprite);
-                API.shared.setBlipTransparency(Blip, BlipTransparency);
-            }
+           
+            Blip = API.shared.createBlip(Location, BlipRange, Dimension);
+            API.shared.setBlipColor(Blip, BlipColor);
+            API.shared.setBlipName(Blip, BlipName);
+            API.shared.setBlipScale(Blip, BlipScale);
+            API.shared.setBlipShortRange(Blip, BlipShortRange);
+            API.shared.setBlipSprite(Blip, (UseBlip) ? (BlipSprite) : (2));
+            API.shared.setBlipTransparency(Blip, BlipTransparency);
 
             if (UseColZone)
             {
@@ -194,6 +191,11 @@ namespace mtgvrp.core
         {
             API.shared.deleteColShape(ColZone);
             ColZone = API.shared.createCylinderColShape(Location, ColZoneSize, ColZoneHeight);
+        }
+
+        public void SetMarkerZoneRouteVisible(Client player, bool visible, int color)
+        {
+            API.shared.triggerClientEvent(player, "setMarkerZoneRouteVisible", this, visible, color);
         }
     }
 }

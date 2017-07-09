@@ -5,6 +5,7 @@ using GTANetworkShared;
 using mtgvrp.core;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;
+using mtgvrp.core.Help;
 
 namespace mtgvrp.vehicle_manager
 {
@@ -57,7 +58,7 @@ namespace mtgvrp.vehicle_manager
             }
         }
 
-        [Command("myvehicles")]
+        [Command("myvehicles"), Help(HelpManager.CommandGroups.Vehicles, "Lists the vehicles you own.", null)]
         public void myvehicles_cmd(Client player)
         {
             //Get all owned vehicles and send them.
@@ -69,7 +70,7 @@ namespace mtgvrp.vehicle_manager
             API.triggerClientEvent(player, "myvehicles_showmenu", API.toJson(cars));
         }
 
-        [Command("confirmsellvehicle")]
+        [Command("confirmsellvehicle"), Help(HelpManager.CommandGroups.Vehicles, "To confirm that you want to sell your vehicle.", null)]
         public void confirmsellvehicle_cmd(Client player)
         {
             Character character = player.GetCharacter();
@@ -87,7 +88,7 @@ namespace mtgvrp.vehicle_manager
                 API.sendChatMessageToPlayer(player, "You aren't selling any car.");
         }
 
-        [Command("confirmbuyvehicle")]
+        [Command("confirmbuyvehicle"), Help(HelpManager.CommandGroups.Vehicles, "To confirm that you want to buy a vehicle.", null)]
         public void confirmbuyvehicle_cmd(Client player)
         {
             Character character = player.GetCharacter();

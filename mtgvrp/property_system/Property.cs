@@ -67,6 +67,9 @@ namespace mtgvrp.property_system
         [BsonIgnore]
         public MarkerZone GarbageMarker { get; set; }
 
+        [BsonIgnore]
+        public static int MaxGasSupplies => 300;
+
         public int AdvertisingPrice { get; set; }
 
         public List<string> IPLs { get; set; } = new List<string>();
@@ -76,6 +79,9 @@ namespace mtgvrp.property_system
 
         [BsonIgnore]
         public Object BinObject { get; set; }
+
+        public bool DoesAcceptSupplies { get; set; }
+        public int SupplyPrice { get; set; } = 7;
 
         public Property(PropertyManager.PropertyTypes type, Vector3 entrancePos, Vector3 entranceRot,
             string entranceString)

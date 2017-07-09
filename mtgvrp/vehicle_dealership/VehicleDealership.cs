@@ -7,6 +7,7 @@ using mtgvrp.core;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;
 using mtgvrp.vehicle_manager;
+using mtgvrp.core.Help;
 
 namespace mtgvrp.vehicle_dealership
 {
@@ -193,7 +194,7 @@ namespace mtgvrp.vehicle_dealership
             }
         }
 
-        [Command("buyvehicle")]
+        [Command("buyvehicle"), Help(HelpManager.CommandGroups.Vehicles, "Command used inside dealership to buy a vehicle.", null)]
         public void BuyVehicle(Client player)
         {
             //Check if can buy more cars.

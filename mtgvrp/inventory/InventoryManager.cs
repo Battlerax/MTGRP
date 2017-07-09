@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Reflection;
 using GTANetworkServer;
 using GTANetworkShared;
 using mtgvrp.core;
 using mtgvrp.core.Items;
 using mtgvrp.inventory.bags;
+using mtgvrp.job_manager.delivery;
 using mtgvrp.job_manager.fisher;
 using mtgvrp.job_manager.hunting;
 using mtgvrp.job_manager.scuba;
@@ -40,6 +42,7 @@ namespace mtgvrp.inventory
             BsonClassMap.RegisterClassMap<AnimalItem>();
             BsonClassMap.RegisterClassMap<AmmoItem>();
             BsonClassMap.RegisterClassMap<ScubaItem>();
+            BsonClassMap.RegisterClassMap<SupplyItem>();
 
             BsonClassMap.RegisterClassMap<Weapon>();
             #endregion
@@ -139,6 +142,7 @@ namespace mtgvrp.inventory
                 if (amnt.Key == storage.GetType())
                 {
                     maxAmount = amnt.Value;
+                    break;
                 }
             }
 
@@ -146,7 +150,7 @@ namespace mtgvrp.inventory
             var oldItem = storage.Inventory.FirstOrDefault(x => x.CommandFriendlyName == item.CommandFriendlyName);
             if (oldItem == null || oldItem.CanBeStacked == false)
             {
-                if (maxAmount != -1 && oldItem?.Amount >= maxAmount)
+                if (maxAmount != -1 && (item.Amount + (oldItem?.Amount ?? 0) > maxAmount))
                 {
                     return GiveItemErrors.MaxAmountReached;
                 }
@@ -173,7 +177,7 @@ namespace mtgvrp.inventory
             else
             {
 
-                if (maxAmount != -1 && oldItem.Amount >= maxAmount)
+                if (maxAmount != -1 && item.Amount + (oldItem?.Amount ?? 0) > maxAmount)
                 {
                     return GiveItemErrors.MaxAmountReached;
                 }
@@ -193,6 +197,24 @@ namespace mtgvrp.inventory
                 }
                 else
                     return GiveItemErrors.NotEnoughSpace;
+            }
+        }
+
+        public static int GetItemCount<T>(IStorage storage, Func<T, bool> predicate = null)
+        {
+            var item = ItemTypeToNewObject(typeof(T));
+            var items = DoesInventoryHaveItem<T>(storage, predicate).Cast<IInventoryItem>().ToArray();
+            if (item.CanBeStacked)
+            {
+                if (items.Any())
+                {
+                    return items[0].Amount;
+                }
+                return 0;
+            }
+            else
+            {
+                return items.Length;
             }
         }
 

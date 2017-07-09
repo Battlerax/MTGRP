@@ -5,6 +5,8 @@ using mtgvrp.core;
 using mtgvrp.group_manager;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;
+using mtgvrp.weapon_manager;
+using mtgvrp.core.Help;
 
 
 namespace mtgvrp.weapon_manager
@@ -208,7 +210,7 @@ namespace mtgvrp.weapon_manager
             return new Weapon(WeaponHash.Unarmed, WeaponTint.Normal, true, false, false, Group.None);
         }
 
-        [Command("listweapons")]
+        [Command("listweapons"), Help(HelpManager.CommandGroups.AdminLevel3, "Used to see what weapons a player has on them.", new[] { "ID of target player." })]
         public void listweapons_cmd(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
@@ -231,7 +233,7 @@ namespace mtgvrp.weapon_manager
 
         }
 
-        [Command("removeallweapons")]
+        [Command("removeallweapons"), Help(HelpManager.CommandGroups.AdminLevel3, "Used to sremove all weapons from a player", new[] { "ID of target player." })]
         public void removeallweapons_cmd(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);

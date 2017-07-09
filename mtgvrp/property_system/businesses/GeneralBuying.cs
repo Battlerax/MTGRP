@@ -61,6 +61,12 @@ namespace mtgvrp.property_system.businesses
                     }
                 }
 
+                if (prop.Supplies <= 0)
+                {
+                    API.sendChatMessageToPlayer(sender, "The business is out of supplies.");
+                    return;
+                }
+
                 IInventoryItem item = null;
                 if (prop.Type == PropertyManager.PropertyTypes.TwentyFourSeven)
                 {
@@ -104,8 +110,17 @@ namespace mtgvrp.property_system.businesses
                             item = new RagsItem();
                             break;
                         case "axe":
+                            if (InventoryManager
+                                    .DoesInventoryHaveItem<Weapon>(character, x => x.WeaponHash == WeaponHash.Hatchet)
+                                    .Length > 0)
+                            {
+                                API.sendChatMessageToPlayer(sender, "You already have that weapon.");
+                                return;
+                            }
+
                             WeaponManager.CreateWeapon(sender, WeaponHash.Hatchet, WeaponTint.Normal, true);
                             InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
+                            prop.Supplies--;
                             API.sendChatMessageToPlayer(sender,
                                 $"[BUSINESS] You have sucessfully bought an ~g~Axe~w~ for ~g~${price}.");
                             return;
@@ -122,6 +137,7 @@ namespace mtgvrp.property_system.businesses
                 }
                 else if (prop.Type == PropertyManager.PropertyTypes.Restaurant)
                 {
+                    prop.Supplies--;
                     switch (itemName)
                     {
                         case "sprunk":
@@ -164,6 +180,7 @@ namespace mtgvrp.property_system.businesses
                 }
                 else if (prop.Type == PropertyManager.PropertyTypes.Ammunation)
                 {
+                    prop.Supplies--;
                     switch (itemName)
                     {
                         case "bat":
@@ -273,6 +290,7 @@ namespace mtgvrp.property_system.businesses
                             {
                                 case InventoryManager.GiveItemErrors.Success:
                                     InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
+                                    prop.Supplies--;
                                     WeaponManager.CreateWeapon(sender, WeaponHash.SniperRifle, WeaponTint.Normal, true);
                                     API.sendChatMessageToPlayer(sender,
                                         $"[BUSINESS] You have sucessfully bought a ~g~ 5.56 Bullet ~w~ for ~g~${price}.");
@@ -300,6 +318,7 @@ namespace mtgvrp.property_system.businesses
                             case InventoryManager.GiveItemErrors.Success:
                                 InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
                                 InventoryManager.GiveInventoryItem(sender.GetCharacter(), new AmmoItem());
+                                prop.Supplies--;
                                 API.sendChatMessageToPlayer(sender,
                                     $"[BUSINESS] You have sucessfully bought a ~g~{name}~w~ for ~g~${price}.");
                                 break;
@@ -339,7 +358,7 @@ namespace mtgvrp.property_system.businesses
                             ((Phone)item).SaveNumber();
                             API.sendChatMessageToPlayer(sender, "Your phone number is: ~g~" + ((Phone)item).PhoneNumber);
                         }
-
+                        prop.Supplies--;
                         API.sendChatMessageToPlayer(sender,
                             $"[BUSINESS] You have sucessfully bought a ~g~{name}~w~ for ~g~${price}.");
                         break;

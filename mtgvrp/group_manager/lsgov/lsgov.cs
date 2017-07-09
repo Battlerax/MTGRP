@@ -1,10 +1,8 @@
 ﻿using GTANetworkServer;
 using mtgvrp.player_manager;
-using mtgvrp.group_manager;
 using mtgvrp.Properties;
 
-
-namespace RoleplayServer.group_manager.lsgov
+namespace mtgvrp.group_manager.lsgov
 {
     class lsgov : Script
     {
