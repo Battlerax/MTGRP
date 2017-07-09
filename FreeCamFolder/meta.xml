@@ -1,0 +1,8 @@
+<meta>
+    <info name="FreeCamFolder" author="Begovic" type="script" />        
+    <script src="FreeCam.cs" type="server" lang="csharp" />
+    <script src="FreeCamera.js" type="client" lang="javascript" />
+
+    <export class="Resursi"  />
+    <!-- <acl src="acl.xml" /> -->
+</meta>
