@@ -1496,5 +1496,14 @@ namespace mtgvrp.AdminSystem
             character.ReportCreated = false;
             character.ReportTimer.Stop();
         }
+
+        [Command("testtext"), Help(HelpManager.CommandGroups.AdminLevel3, "Goes into testing on-screen text position.", new[] { "Text to display." })]
+        public void TestText(Client player, string text = "")
+        {
+            if (player.GetAccount().AdminLevel >= 3)
+            {
+                API.triggerClientEvent(player, "texttest_settext", text);
+            }
+        }
     }
 }

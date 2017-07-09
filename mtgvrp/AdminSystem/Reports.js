@@ -66,8 +66,32 @@ API.onServerEventTrigger.connect(function (eventName, args) {
   }
 });
 
+var text = "";
+var pos = null;
+
+API.onServerEventTrigger.connect((event, args) => {
+    if (event === "texttest_settext") {
+        text = args[0];
+
+        if (text !== "") {
+            API.showCursor(true);
+        } else {
+            API.showCursor(false);
+        }
+    }
+});
+
 API.onUpdate.connect(function () {
     if (menu_pool != null) {
         menu_pool.ProcessMenus();
+    }
+
+    if (text !== "" && pos !== null) {
+        API.drawText(text, pos.X, pos.Y, 0.75, 0, 255, 0, 255, 1, 0, true, true, 0);
+    }
+
+    if (API.isControlJustPressed(24) && text !== "") {
+        pos = API.getCursorPositionMantainRatio();
+        API.sendChatMessage("X: " + pos.X + " | Y: " + pos.Y);
     }
 });
