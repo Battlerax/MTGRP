@@ -440,6 +440,9 @@ namespace mtgvrp.job_manager.trucker
                 VehicleManager.respawn_vehicle(veh.GetVehicle());
                 VehicleManager.respawn_vehicle(API.getVehicleTrailer(veh).GetVehicle());
             }
+            Timer timer = API.getEntityData(player, "TRUCKING_CANCELTIMER");
+            timer?.Dispose();
+            API.resetEntityData(player, "TRUCKING_CANCELTIMER");
             API.resetEntityData(player, "TRUCKER_VEHICLE");
             API.resetEntityData(veh, "TRUCKER_DRIVER");
             API.sendChatMessageToPlayer(player, "The trucking run has been done or cancelled.");

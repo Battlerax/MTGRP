@@ -58,7 +58,7 @@ namespace mtgvrp.core
         public string BlipName { get; set; }
         public float BlipScale { get; set; } = 1;
         public bool BlipShortRange { get; set; } = true;
-        public int BlipSprite { get; set; } = -1;
+        public int BlipSprite { get; set; } = 2;
         public int BlipTransparency { get; set; } = 255;
 
         private float _blipRange = 100f;
@@ -121,7 +121,7 @@ namespace mtgvrp.core
             API.shared.setBlipName(Blip, BlipName);
             API.shared.setBlipScale(Blip, BlipScale);
             API.shared.setBlipShortRange(Blip, BlipShortRange);
-            API.shared.setBlipSprite(Blip, (UseBlip) ? (BlipSprite) : (2));
+            API.shared.setBlipSprite(Blip, (UseBlip && BlipSprite != -1) ? (BlipSprite) : (2));
             API.shared.setBlipTransparency(Blip, BlipTransparency);
 
             if (UseColZone)
@@ -181,7 +181,7 @@ namespace mtgvrp.core
                     API.shared.setBlipName(Blip, BlipName);
                     API.shared.setBlipScale(Blip, BlipScale);
                     API.shared.setBlipShortRange(Blip, BlipShortRange);
-                    API.shared.setBlipSprite(Blip, BlipSprite);
+                    API.shared.setBlipSprite(Blip, (UseBlip && BlipSprite != -1) ? (BlipSprite) : (2));
                     API.shared.setBlipTransparency(Blip, BlipTransparency);
                     break;
             }
