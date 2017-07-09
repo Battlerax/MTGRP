@@ -365,12 +365,12 @@ namespace mtgvrp.player_manager
                     }
                     break;
                 case "finish_character_creation":
-                    {
-                        Character character = API.getEntityData(player.handle, "Character");
-                        Account acc = player.GetAccount();
-                        character.Age = (int)arguments[0];
-                        character.Birthday = (string)arguments[1];
-                        character.Birthplace = (string)arguments[2];
+                {
+                    Character character = API.getEntityData(player.handle, "Character");
+                    Account acc = player.GetAccount();
+                    character.Age = (int) arguments[0];
+                    character.Birthday = (string) arguments[1];
+                    character.Birthplace = (string) arguments[2];
 
                     /*if ((int) arguments[3] == 0) //Airport spawn
                     {
@@ -382,7 +382,7 @@ namespace mtgvrp.player_manager
                         character.LastPos = new Vector3(433.2354, -645.8408, 28.72639);
                         character.LastRot = new Vector3(0, 0, 90);
                     }*/
-                    
+
                     character.LastPos = new Vector3(433.2354, -645.8408, 28.72639);
                     character.LastRot = new Vector3(0, 0, 90);
                     character.update_ped();
@@ -397,34 +397,26 @@ namespace mtgvrp.player_manager
                     API.sendChatMessageToPlayer(player,
                         "~g~If you have any questions please use /n(ewbie) chat or /ask for moderator assitance.");
 
-                    LogManager.Log(LogManager.LogTypes.Connection, player.socialClubName + $" has created and loaded the character {character.CharacterName}. (IP: " + player.address + ")");
+                    LogManager.Log(LogManager.LogTypes.Connection,
+                        player.socialClubName +
+                        $" has created and loaded the character {character.CharacterName}. (IP: " + player.address +
+                        ")");
 
-                        //Startup money.
-                        character.BankBalance = 20000;
+                    //Startup money.
+                    character.BankBalance = 20000;
                     InventoryManager.GiveInventoryItem(character, new Money(), 5000);
 
                     acc.IsLoggedIn = true;
                     character.IsCreated = true;
                     character.StartTrackingTimePlayed();
-                    character.PaycheckTimer = new Timer { Interval = 1000 };
+                    character.PaycheckTimer = new Timer {Interval = 1000};
                     character.PaycheckTimer.Elapsed += delegate { PlayerManager.SendPaycheckToPlayer(player); };
                     character.PaycheckTimer.Start();
                     character.Save();
 
                     API.triggerClientEvent(player, "login_finished");
-                        /*if ((int) arguments[3] == 0) //Airport spawn
-{
-    character.LastPos = new Vector3(-1037.253, -2736.865, 13.76621);
-    character.LastRot = new Vector3(0, 0, -37);
-}
-else //Train Station spawn
-{
-    character.LastPos = new Vector3(433.2354, -645.8408, 28.72639);
-    character.LastRot = new Vector3(0, 0, 90);
-}*/
-
-                        API.triggerClientEvent(player, "start_introduction");
-                    }
+                    API.triggerClientEvent(player, "start_introduction");
+                }
                     break;
                 case "initialize_hair":
                     var maxHairStyles = (int)arguments[0] == Character.GenderMale ? ComponentManager.ValidMaleHair.Count : ComponentManager.ValidFemaleHair.Count;
