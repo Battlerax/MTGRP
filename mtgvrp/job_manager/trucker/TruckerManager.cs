@@ -87,7 +87,7 @@ namespace mtgvrp.job_manager.trucker
                     }
 
                     veh.setData("TRUCKING_TRAILER", veh.trailer);
-                    API.setBlipRouteVisible(JobManager.GetJobById(character.JobZone).MiscOne.Blip, false);
+                    API.triggerClientEvent(player, "update_beacon", new Vector3());
 
                     Property needsGasProp = null;
                     foreach (var prop in PropertyManager.Properties.Where(x => x.Type == PropertyManager.PropertyTypes.GasStation))
@@ -115,8 +115,8 @@ namespace mtgvrp.job_manager.trucker
                         character.TruckingStage = Character.TruckingStages.DeliveringFuel;
                         player.freeze(false);
 
-                        API.setBlipRouteVisible(needsGasProp.EntranceMarker.Blip, true);
-                        API.setBlipRouteColor(needsGasProp.EntranceMarker.Blip, 54);
+                        API.triggerClientEvent(player, "update_beacon", needsGasProp.EntranceMarker.Location);
+                        
                         API.setEntityData(player, "TRUCKING_TARGETGAS", needsGasProp);
 
                         API.sendChatMessageToPlayer(player,
@@ -155,7 +155,7 @@ namespace mtgvrp.job_manager.trucker
                         return;
                     }
 
-                    API.setBlipRouteVisible(JobManager.GetJobById(character.JobZone).MiscOne.Blip, false);
+                    API.triggerClientEvent(player, "update_beacon", new Vector3());
 
                     if (SettingsManager.Settings.WoodSupplies < 50)
                     {
@@ -177,8 +177,8 @@ namespace mtgvrp.job_manager.trucker
                         veh.trailer.delete();
                         player.setData("TRUCKING_TRAILER", API.createVehicle(VehicleHash.TrailerLogs, pos, rot, 0, 0).handle);
 
-                        API.setBlipRouteVisible(character.JobOne.MiscTwo.Blip, true);
-                        API.setBlipRouteColor(character.JobOne.MiscTwo.Blip, 54);
+                        API.triggerClientEvent(player, "update_beacon", character.JobOne.MiscTwo.Location);
+                        
 
                         API.sendChatMessageToPlayer(player,
                             "~r~[Trucking]~w~ Your truck have been loaded, head to the checkpoint to deliver them.");
@@ -220,7 +220,7 @@ namespace mtgvrp.job_manager.trucker
                         return;
                     }
 
-                    API.setBlipRouteVisible(JobManager.GetJobById(character.JobZone).MiscOne.Blip, false);
+                    API.triggerClientEvent(player, "update_beacon", new Vector3());
 
                     player.freeze(true);
                     API.sendChatMessageToPlayer(player,
@@ -236,8 +236,8 @@ namespace mtgvrp.job_manager.trucker
                         veh.trailer.delete();
                         player.setData("TRUCKING_TRAILER", API.createVehicle(VehicleHash.TRFlat, pos, rot, 0, 0).handle);
 
-                        API.setBlipRouteVisible(character.JobOne.JoinPos.Blip, true);
-                        API.setBlipRouteColor(character.JobOne.JoinPos.Blip, 54);
+                        API.triggerClientEvent(player, "update_beacon", character.JobOne.JoinPos.Location);
+                        
 
                         API.sendChatMessageToPlayer(player,
                             "~r~[Trucking]~w~ Your truck have been unloaded, head to the checkpoint finish your run.");
@@ -283,7 +283,7 @@ namespace mtgvrp.job_manager.trucker
                         return;
                     }
 
-                    API.setBlipRouteVisible(JobManager.GetJobById(character.JobZone).MiscOne.Blip, false);
+                    API.triggerClientEvent(player, "update_beacon", new Vector3());
 
                     player.freeze(true);
                     API.sendChatMessageToPlayer(player,
@@ -294,8 +294,8 @@ namespace mtgvrp.job_manager.trucker
                         character.TruckingStage = Character.TruckingStages.HeadingBack;
                         player.freeze(false);
 
-                        API.setBlipRouteVisible(character.JobOne.JoinPos.Blip, true);
-                        API.setBlipRouteColor(character.JobOne.JoinPos.Blip, 54);
+                        API.triggerClientEvent(player, "update_beacon", character.JobOne.JoinPos.Location);
+                        
 
                         API.sendChatMessageToPlayer(player,
                             "~r~[Trucking]~w~ Your truck have been unloaded, head to the checkpoint finish your run.");
@@ -326,17 +326,20 @@ namespace mtgvrp.job_manager.trucker
                     return;
                 }
 
-                if ((veh.trailer.model != (int)VehicleHash.Tanker && veh.trailer.model != (int)VehicleHash.TRFlat) ||
-                    veh.trailer.handle != player.getData("TRUCKING_TRAILER"))
+                if (veh.trailer.handle != player.getData("TRUCKING_TRAILER"))
                 {
                     API.sendChatMessageToPlayer(player,
                         "~r~[Trucking]~w~ This is not the trailer you were using.");
                     return;
                 }
 
-                API.setBlipRouteVisible(character.JobOne.JoinPos.Blip, false);
+                API.triggerClientEvent(player, "update_beacon", new Vector3());
                 CancelRun(player);
-                InventoryManager.GiveInventoryItem(character, new Money(), 700, true);
+
+                if(veh.trailer.model == (int)VehicleHash.TRFlat)
+                    InventoryManager.GiveInventoryItem(character, new Money(), 5000, true);
+                else if (veh.trailer.model == (int)VehicleHash.Tanker)
+                    InventoryManager.GiveInventoryItem(character, new Money(), 2000, true);
             }
 
         }
@@ -370,8 +373,8 @@ namespace mtgvrp.job_manager.trucker
                         return;
                     }
 
-                    API.setBlipRouteVisible(character.JobOne.MiscOne.Blip, true);
-                    API.setBlipRouteColor(character.JobOne.MiscOne.Blip, 54);
+                    API.triggerClientEvent(player, "update_beacon", character.JobOne.MiscOne.Location);
+                    
                     API.sendChatMessageToPlayer(player,
                         "~r~[Trucking]~w~ Head to the checkpoint to load your truck with fuel.");
                     player.setData("TRUCKING_TRAILER", trailer);
@@ -383,8 +386,8 @@ namespace mtgvrp.job_manager.trucker
                     if (job == null)
                         return;
 
-                    API.setBlipRouteVisible(job.MiscTwo.Blip, true);
-                    API.setBlipRouteColor(job.MiscTwo.Blip, 54);
+                    API.triggerClientEvent(player, "update_beacon", job.MiscTwo.Location);
+                    
                     API.sendChatMessageToPlayer(player,
                         "~r~[Trucking]~w~ Head to the checkpoint to load your truck with supplies.");
                     player.setData("TRUCKING_TRAILER", trailer);

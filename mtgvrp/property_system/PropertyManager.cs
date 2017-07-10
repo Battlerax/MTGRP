@@ -11,6 +11,7 @@ using mtgvrp.job_manager;
 using mtgvrp.job_manager.delivery;
 using mtgvrp.player_manager;
 using MongoDB.Driver;
+using mtgvrp.core.Help;
 
 namespace mtgvrp.property_system
 {
@@ -588,7 +589,7 @@ namespace mtgvrp.property_system
             return "";
         }
 
-        [Command("togacceptsupplies", Alias = "togas")]
+        [Command("togacceptsupplies", Alias = "togas"), Help(HelpManager.CommandGroups.Bussiness, "Used to toggle accepting supplies for your business.", null)]
         public void TogSupplies(Client player)
         {
             var prop = IsAtPropertyInteraction(player);
@@ -618,7 +619,7 @@ namespace mtgvrp.property_system
             prop.Save();
         }
 
-        [Command("setsupplyprice", Alias = "setsp")]
+        [Command("setsupplyprice", Alias = "setsp"), Help(HelpManager.CommandGroups.Bussiness, "Setting the price you pay per delivery of supplies.", new[] { "Price per supply." })]
         public void SetSupplyPrice(Client player, int amount)
         {
             var prop = IsAtPropertyInteraction(player);
@@ -652,7 +653,7 @@ namespace mtgvrp.property_system
             prop.Save();
         }
 
-        [Command("enter")]
+        [Command("enter"), Help(HelpManager.CommandGroups.General, "How to enter buildings, there is marker on the door for ones that work.", null)]
         public void Enterproperty(Client player)
         {
             var prop = IsAtPropertyEntrance(player);
@@ -686,7 +687,7 @@ namespace mtgvrp.property_system
             }
         }
 
-        [Command("exit")]
+        [Command("exit"), Help(HelpManager.CommandGroups.General, "How to exit buildings, there is marker on the door for ones that work.", null)]
         public void Exitproperty(Client player)
         {
             var prop = IsAtPropertyExit(player);
@@ -712,7 +713,7 @@ namespace mtgvrp.property_system
             }
         }
 
-        [Command("changefoodname", GreedyArg = true)]
+        [Command("changefoodname", GreedyArg = true), Help(HelpManager.CommandGroups.Bussiness, "Changing the name of items in your restaurant.", new[] { "Item", "New name"})]
         public void Changefoodname_cmd(Client player, string item = "", string name = "")
         {
             var prop = IsAtPropertyEntrance(player) ?? IsAtPropertyInteraction(player);
@@ -765,7 +766,7 @@ namespace mtgvrp.property_system
             prop.Save();
         }
 
-        [Command("manageprices")]
+        [Command("manageprices"), Help(HelpManager.CommandGroups.Bussiness, "Setting prices of items inside your business.", new[] { "Item", "Price" })]
         public void Manageprices(Client player, string item = "", int price = 0)
         {
             var prop = IsAtPropertyEntrance(player) ?? IsAtPropertyInteraction(player);
@@ -808,7 +809,7 @@ namespace mtgvrp.property_system
             }
         }
 
-        [Command("buyproperty")]
+        [Command("buyproperty"), Help(HelpManager.CommandGroups.General, "Command to purchause property when near it.", null)]
         public void Buyproperty(Client player)
         {
             var prop = IsAtPropertyEntrance(player);
@@ -839,7 +840,7 @@ namespace mtgvrp.property_system
                 $"You have sucessfully bought a ~r~{prop.Type}~w~ for ~g~{prop.PropertyPrice}~w~.");
         }
 
-        [Command("lockproperty")]
+        [Command("lockproperty"), Help(HelpManager.CommandGroups.General, "Locking your business/house.", null)]
         public void LockProperty(Client player)
         {
             var prop = IsAtPropertyEntrance(player) ?? IsAtPropertyInteraction(player);
@@ -863,7 +864,7 @@ namespace mtgvrp.property_system
             }
         }
 
-        [Command("propertyname", GreedyArg = true)]
+        [Command("propertyname", GreedyArg = true), Help(HelpManager.CommandGroups.General, "Changing the name of your property.", new[] { "Name" })]
         public void PropertyName(Client player, string name)
         {
             var prop = IsAtPropertyEntrance(player) ?? IsAtPropertyInteraction(player);
@@ -886,7 +887,7 @@ namespace mtgvrp.property_system
             }
         }
 
-        [Command("propertystorage")]
+        [Command("propertystorage"), Help(HelpManager.CommandGroups.General, "Command to access the storage inside your property.", null)]
         public void PropertyStorage(Client player)
         {
             var prop = IsAtPropertyEntrance(player) ?? IsAtPropertyInteraction(player);
@@ -906,7 +907,7 @@ namespace mtgvrp.property_system
             InventoryManager.ShowInventoryManager(player, player.GetCharacter(), prop, "Inventory: ", "Property: ");
         }
 
-        [Command("createproperty")]
+        [Command("createproperty"), Help(HelpManager.CommandGroups.AdminLevel5, "To create a new business/house.", new[] { "Property type." })]
         public void create_property(Client player, PropertyTypes type)
         {
             var account = player.GetAccount();
@@ -922,7 +923,7 @@ namespace mtgvrp.property_system
             }
         }
 
-        [Command("propertytypes")]
+        [Command("propertytypes"), Help(HelpManager.CommandGroups.AdminLevel5, "Lists all property types.", null)]
         public void Propertytypes(Client player)
         {
             var account = player.GetAccount();
@@ -937,7 +938,8 @@ namespace mtgvrp.property_system
             }
         }
 
-        [Command("editproperty")]
+        [Command("editproperty"), Help(HelpManager.CommandGroups.AdminLevel5, "Edit any information about a property", new[] { "ID of property." })]
+
         public void edit_property(Client player, int id)
         {
             var account = player.GetAccount();
@@ -957,7 +959,8 @@ namespace mtgvrp.property_system
             }
         }
 
-        [Command("listproperties")]
+        [Command("listproperties"), Help(HelpManager.CommandGroups.AdminLevel5, "Lists all properties.", new[] { "The type." })]
+
         public void listprops_cmd(Client player, PropertyTypes type)
         {
             var account = player.GetAccount();

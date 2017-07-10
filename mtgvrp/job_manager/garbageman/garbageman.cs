@@ -81,16 +81,12 @@ namespace mtgvrp.job_manager.garbageman
                     }
                 }
 
-                if (maxGarbage == 0 && !character.IsOnGarbageRun)
-                {
-                    player.sendChatMessage("There is no garbage to pick up! Try again soon.");
-                    API.warpPlayerOutOfVehicle(player);
-                    return;
-                }
-
                 if (maxGarbage == 0)
                 {
-                    player.sendChatMessage("~r~There is currently no more garbage to pick up.");
+                    Random rand = new Random();
+                    int r = rand.Next(PropertyManager.Properties.Count);
+                    TargetProperty = PropertyManager.Properties[r];
+                    TargetProperty.GarbageBags = 5;
                     return;
                 }
 

@@ -92,7 +92,7 @@ namespace mtgvrp.job_manager.lumberjack
                     API.resetEntityData(vehicle, "Tree_Cancel_Timer");
                     API.resetEntityData(vehicle, "TREE_DRIVER");
                     API.sendChatMessageToPlayer(player, "Wood run cancelled.");
-                    API.setBlipRouteVisible(player.GetCharacter().JobOne.MiscOne.Blip, false);
+                    API.triggerClientEvent(player, "update_beacon", new Vector3());
 
                 }, null, 60000, Timeout.Infinite));
                 API.sendChatMessageToPlayer(player, "You've got 1 minute to get back to your vehicle or the wood will be reset.");
@@ -240,8 +240,8 @@ namespace mtgvrp.job_manager.lumberjack
 
                 ChatManager.RoleplayMessage(player, "picks up the woods using the forklift.", ChatManager.RoleplayMe);
 
-                API.setBlipRouteVisible(character.JobOne.MiscOne.Blip, true);
-                API.setBlipRouteColor(character.JobOne.MiscOne.Blip, 59);
+                API.triggerClientEvent(player, "update_beacon", character.JobOne.MiscOne.Location);
+                
 
                 API.setEntityData(vehicle.NetHandle, "TREE_OBJ", tree);
                 API.setEntityData(vehicle.NetHandle, "TREE_DRIVER", character.Id);
@@ -288,7 +288,7 @@ namespace mtgvrp.job_manager.lumberjack
                 API.warpPlayerOutOfVehicle(player);
                 VehicleManager.respawn_vehicle(vehicle);
                 API.resetEntityData(API.getPlayerVehicle(player), "TREE_DRIVER");
-                API.setBlipRouteVisible(character.JobOne.MiscOne.Blip, false);
+                API.triggerClientEvent(player, "update_beacon", new Vector3());
 
                 InventoryManager.GiveInventoryItem(player.GetCharacter(), new Money(), 500, true);
                 API.sendChatMessageToPlayer(player, "* You have sucessfully sold your wood for ~g~$500");

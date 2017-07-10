@@ -637,9 +637,12 @@ namespace mtgvrp.AdminSystem
             else
             {
                 Vector3 CurrentPlayerPos = API.getEntityPosition(player);
+                Vector3 CurrentPlayerRot = API.getEntityRotation(player);
                 int playerDimension = API.getEntityDimension(player);
                 API.sendChatMessageToPlayer(player, "-----Current Position-----");
                 API.sendChatMessageToPlayer(player, "X: " + CurrentPlayerPos.X + " Y: " + CurrentPlayerPos.Y + " Z: " + CurrentPlayerPos.Z + " Dimension: " + playerDimension);
+                API.consoleOutput($"POSITION: new Vector3({CurrentPlayerPos.X}, {CurrentPlayerPos.Y}, {CurrentPlayerPos.Z})");
+                API.consoleOutput($"ROTATION: new Vector3({CurrentPlayerRot.X}, {CurrentPlayerRot.Y}, {CurrentPlayerRot.Z})");
             }
 
         }
@@ -1399,7 +1402,7 @@ namespace mtgvrp.AdminSystem
             account.IsBanned = false;
         }
 
-        [Command("changeviplevel", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel3, "Change a players VIP level", new[] { "ID of the target player", "The VIP level to change to", "The VIP amount in days" })]
+        [Command("changeviplevel"), Help(HelpManager.CommandGroups.AdminLevel3, "Change a players VIP level", new[] { "ID of the target player", "The VIP level to change to", "The VIP amount in days" })]
         public void changeviplevel_cmd(Client player, string id, int level, int days)
         {
             var receiver = PlayerManager.ParseClient(id);

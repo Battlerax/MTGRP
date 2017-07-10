@@ -169,6 +169,11 @@ namespace mtgvrp.vehicle_manager
                 Fuel = 25;
             }
 
+            if (Job != Job.None)
+            {
+                Fuel = 100;
+            }
+
             return 1; // Successful spawn
         }
 

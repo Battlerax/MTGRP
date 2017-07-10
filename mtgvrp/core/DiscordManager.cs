@@ -19,8 +19,10 @@ namespace mtgvrp.core
         public static CommandsNextModule Commands { get; set; }
 
         public static readonly string AdminChannel = "vrp-admins";
+        public static readonly string VIPChannel = "vip-general";
         public static readonly string AdminRole = "V-RP Admin";
         public const ulong AdminChannelId = 331924706191998987;
+        public const ulong VIPChannelId = 331965611573903363;
 
         public static void StartBot()
         {
@@ -161,6 +163,11 @@ namespace mtgvrp.core
         {
             Client.SendMessageAsync(Client.GetChannelAsync(AdminChannelId).GetAwaiter().GetResult(), msg).GetAwaiter().GetResult();
         }
+
+        public static void SendVIPMessage(string msg)
+        {
+            Client.SendMessageAsync(Client.GetChannelAsync(VIPChannelId).GetAwaiter().GetResult(), msg).GetAwaiter().GetResult();
+        }
     }
 
 
@@ -188,36 +195,50 @@ namespace mtgvrp.core
             }
         }
 
-        [DSharpPlus.CommandsNext.Attributes.Command("admins")] // let's define this method as a command
-        [Description("Views admins online.")] // this will be displayed to tell users what this command does when they invoke help
-        public async Task AdminsList(CommandContext ctx) // this command takes no arguments
+        [DSharpPlus.CommandsNext.Attributes.Command("v")] // let's define this method as a command
+        [Description(
+            "Sends a message in VIP channel.")] // this will be displayed to tell users what this command does when they invoke help
+        public async Task VIPChannel(CommandContext ctx) // this command takes no arguments
         {
-            if (ctx.Channel.Name != DiscordManager.AdminChannel)
+            if (ctx.Channel.Name != DiscordManager.VIPChannel)
                 return;
 
-            if (ctx.Member.Roles.Any(x => x.Name == DiscordManager.AdminRole))
+            var players = API.shared.getAllPlayers();
+            foreach (var p in players)
             {
-                await ctx.TriggerTypingAsync();
-
-                //var msg = "=====ADMINS ONLINE NOW=====\n";
-                var msg = "";
-                foreach (var c in API.shared.getAllPlayers())
+                Account pAccount = API.shared.getEntityData(p.handle, "Account");
+                if (pAccount.VipLevel > 0)
                 {
-                    Account receiverAccount = c.GetAccount();
-
-                    if (receiverAccount.AdminLevel <= 1) continue;
-
-                    msg += receiverAccount.AdminName + " | LEVEL " + receiverAccount.AdminLevel + " | " + (receiverAccount.AdminDuty ? "**On Duty**" : "Off Duty") + "\n";
+                    API.shared.sendChatMessageToPlayer(p, Color.VipChat, "[Discord V] " + ctx.Member.DisplayName + ": " + ctx.RawArgumentString);
                 }
-                var embed = new DiscordEmbed
-                {
-                    Title = "Admins Online",
-                    Description = (msg == "" ? "None" : msg),
-                    Color = 0x00FF00 // red
-                };
-                //await ctx.RespondAsync(msg + "===========================");
-                await ctx.RespondAsync("", embed: embed);
             }
+            await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(DiscordManager.Client, ":white_check_mark:"));
+        }
+
+        [DSharpPlus.CommandsNext.Attributes.Command("admins")] // let's define this method as a command
+        [Description(
+            "Views admins online.")] // this will be displayed to tell users what this command does when they invoke help
+        public async Task AdminsList(CommandContext ctx) // this command takes no arguments
+        {
+            await ctx.TriggerTypingAsync();
+
+            var msg = "";
+            foreach (var c in API.shared.getAllPlayers())
+            {
+                Account receiverAccount = c.GetAccount();
+
+                if (receiverAccount.AdminLevel <= 1) continue;
+
+                msg += receiverAccount.AdminName + " | LEVEL " + receiverAccount.AdminLevel + " | " +
+                       (receiverAccount.AdminDuty ? "**On Duty**" : "Off Duty") + "\n";
+            }
+            var embed = new DiscordEmbed
+            {
+                Title = "Admins Online",
+                Description = (msg == "" ? "None" : msg),
+                Color = 0x00FF00 // green
+            };
+            await ctx.RespondAsync("", embed: embed);
         }
 
         [DSharpPlus.CommandsNext.Attributes.Command("setgame")] // let's define this method as a command
