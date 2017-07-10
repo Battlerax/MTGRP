@@ -326,8 +326,7 @@ namespace mtgvrp.job_manager.trucker
                     return;
                 }
 
-                if ((veh.trailer.model != (int)VehicleHash.Tanker && veh.trailer.model != (int)VehicleHash.TRFlat) ||
-                    veh.trailer.handle != player.getData("TRUCKING_TRAILER"))
+                if (veh.trailer.handle != player.getData("TRUCKING_TRAILER"))
                 {
                     API.sendChatMessageToPlayer(player,
                         "~r~[Trucking]~w~ This is not the trailer you were using.");
@@ -336,7 +335,11 @@ namespace mtgvrp.job_manager.trucker
 
                 API.triggerClientEvent(player, "update_beacon", new Vector3());
                 CancelRun(player);
-                InventoryManager.GiveInventoryItem(character, new Money(), 700, true);
+
+                if(veh.trailer.model == (int)VehicleHash.TRFlat)
+                    InventoryManager.GiveInventoryItem(character, new Money(), 5000, true);
+                else if (veh.trailer.model == (int)VehicleHash.Tanker)
+                    InventoryManager.GiveInventoryItem(character, new Money(), 2000, true);
             }
 
         }
