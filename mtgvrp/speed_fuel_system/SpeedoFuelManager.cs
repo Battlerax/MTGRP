@@ -15,6 +15,7 @@ using mtgvrp.property_system;
 using mtgvrp.vehicle_manager;
 using MongoDB.Driver;
 using Vehicle = mtgvrp.vehicle_manager.Vehicle;
+using mtgvrp.core.Help;
 
 namespace mtgvrp.speed_fuel_system
 {
@@ -68,7 +69,7 @@ namespace mtgvrp.speed_fuel_system
             }
         }
 
-        [Command("togspeedo")]
+        [Command("togspeedo"), Help(HelpManager.CommandGroups.Vehicles, "Used to find your character statistics", null)]
         public void TogSpeedo(Client player)
         {
             Account a = player.GetAccount();
@@ -77,7 +78,7 @@ namespace mtgvrp.speed_fuel_system
             a.Save();
         }
 
-        [Command("refuel")]
+        [Command("refuel"), Help(HelpManager.CommandGroups.Vehicles, "Use this at a gas station to refill your vehicle with fuel.", new[] { "Fuel amount wanted (out of 100)" })]
         public void Refuel(Client player, int fuel = 0)
         {
             var prop = PropertyManager.IsAtPropertyInteraction(player);
