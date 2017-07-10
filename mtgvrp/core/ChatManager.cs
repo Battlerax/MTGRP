@@ -237,6 +237,7 @@ namespace mtgvrp.core
                     API.sendChatMessageToPlayer(p, Color.VipChat, "[V] " + c.CharacterName + ": " + message);
                 }
             }
+            DiscordManager.SendVIPMessage("[V] " + c.CharacterName + $"[{account.AccountName}]" + ": " + message);
         }
 
         public void OnClientEventTrigger(Client player, string eventName, params object[] arguments)
