@@ -216,33 +216,29 @@ namespace mtgvrp.core
         }
 
         [DSharpPlus.CommandsNext.Attributes.Command("admins")] // let's define this method as a command
-        [Description("Views admins online.")] // this will be displayed to tell users what this command does when they invoke help
+        [Description(
+            "Views admins online.")] // this will be displayed to tell users what this command does when they invoke help
         public async Task AdminsList(CommandContext ctx) // this command takes no arguments
         {
-            if (ctx.Channel.Name != DiscordManager.AdminChannel)
-                return;
+            await ctx.TriggerTypingAsync();
 
-            if (ctx.Member.Roles.Any(x => x.Name == DiscordManager.AdminRole))
+            var msg = "";
+            foreach (var c in API.shared.getAllPlayers())
             {
-                await ctx.TriggerTypingAsync();
+                Account receiverAccount = c.GetAccount();
 
-                var msg = "";
-                foreach (var c in API.shared.getAllPlayers())
-                {
-                    Account receiverAccount = c.GetAccount();
+                if (receiverAccount.AdminLevel <= 1) continue;
 
-                    if (receiverAccount.AdminLevel <= 1) continue;
-
-                    msg += receiverAccount.AdminName + " | LEVEL " + receiverAccount.AdminLevel + " | " + (receiverAccount.AdminDuty ? "**On Duty**" : "Off Duty") + "\n";
-                }
-                var embed = new DiscordEmbed
-                {
-                    Title = "Admins Online",
-                    Description = (msg == "" ? "None" : msg),
-                    Color = 0x00FF00 // red
-                };
-                await ctx.RespondAsync("", embed: embed);
+                msg += receiverAccount.AdminName + " | LEVEL " + receiverAccount.AdminLevel + " | " +
+                       (receiverAccount.AdminDuty ? "**On Duty**" : "Off Duty") + "\n";
             }
+            var embed = new DiscordEmbed
+            {
+                Title = "Admins Online",
+                Description = (msg == "" ? "None" : msg),
+                Color = 0x00FF00 // green
+            };
+            await ctx.RespondAsync("", embed: embed);
         }
 
         [DSharpPlus.CommandsNext.Attributes.Command("setgame")] // let's define this method as a command
