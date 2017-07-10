@@ -48,7 +48,8 @@ namespace mtgvrp.core
             Commands,       //Logged
             Connection,     //Logged
             Death,          //Logged
-            GroupChat,
+            GroupChat,      //Logged
+            RadioChat,      //Logged
             GroupInvites,
             ICchat,         //Logged
             Phone,          //Logged

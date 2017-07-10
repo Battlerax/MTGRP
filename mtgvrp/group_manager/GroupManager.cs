@@ -408,6 +408,7 @@ namespace mtgvrp.group_manager
 
                 Character character = player.GetCharacter();
                 SendGroupMessage(player, "[G][" + character.GroupRank + "] " + GetRankName(character) + " " + character.CharacterName + " : " + "~w~" + message);
+                LogManager.Log(LogManager.LogTypes.GroupChat, $"[Group {character.Group.Name}][" + character.GroupRank + "] " + GetRankName(character) + " " + character.CharacterName + $"[{player.socialClubName}]" + " : " + message);
             }
         }
 
@@ -430,6 +431,8 @@ namespace mtgvrp.group_manager
                                character.CharacterName + " : " + "~w~" + message;
 
                 SendRadioMessage(player, radioMsg);
+
+                LogManager.Log(LogManager.LogTypes.GroupChat, $"[Radio {character.Group.Name}][" + character.GroupRank + "] " + GetRankName(character) + " " + character.CharacterName + $"[{player.socialClubName}]" + " : " + message);
             }
         }
 
