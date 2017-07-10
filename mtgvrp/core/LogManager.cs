@@ -41,7 +41,7 @@ namespace mtgvrp.core
                 //Move the files.
                 foreach (var file in Directory.GetFiles("Logs", "*.log"))
                 {
-                    File.Move(file, path + "/" + Path.GetFileName(file) + "-" + GetTimeStamp);
+                    File.Move(file, path + "/" + Path.GetFileNameWithoutExtension(file) + "-" + GetTimeStamp + Path.GetExtension(file));
                 }
                 DebugManager.DebugMessage("** Logs has been archived.");
             }
