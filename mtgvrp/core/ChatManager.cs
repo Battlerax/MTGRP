@@ -56,6 +56,8 @@ namespace mtgvrp.core
                     msg = "~y~[MEGAPHONE] " + character.rp_name() + " says: " + msg;
                     NearbyMessage(player, 30, msg);
                     e.Cancel = true;
+                    LogManager.Log(LogManager.LogTypes.ICchat,
+                        "[MEGAPHONE] " + character.CharacterName + $"[{account.AccountName}]" + " says: " + msg);
                     return;
                 }
             }
@@ -68,6 +70,7 @@ namespace mtgvrp.core
                     BroadcastMessage(msg);
                     NearbyMessage(player, 30, msg);
                     e.Cancel = true;
+                    LogManager.Log(LogManager.LogTypes.ICchat, "[BROADCAST] " + character.CharacterName + $"[{account.AccountName}]" + " says: " + msg);
                     return;
                 }
             }
@@ -95,9 +98,10 @@ namespace mtgvrp.core
                 API.sendChatMessageToPlayer(talkingTo.Client, Color.Grey, phonemsg);
                 e.Cancel = true;
                 e.Reason = "Phone";
+                LogManager.Log(LogManager.LogTypes.Phone, $"[Phone] {character.CharacterName}[{account.AccountName}] To {talkingTo.CharacterName}[{talkingTo.Client.socialClubName}]: {msg}");
                 return;
             }
-            if (account.AdminDuty == false && character.Calling911 == true)
+            else if (account.AdminDuty == false && character.Calling911 == true)
             {
                 //API.getZoneName(player.position);
 
@@ -114,6 +118,7 @@ namespace mtgvrp.core
 
                 e.Cancel = true;
                 e.Reason = "Phone";
+                LogManager.Log(LogManager.LogTypes.Phone, $"[Phone] {character.CharacterName}[{account.AccountName}] To LSPD(911): {msg}");
                 return;
             }
 
@@ -121,11 +126,17 @@ namespace mtgvrp.core
             {
                 msg = character.rp_name() + " says: " + msg;
                 NearbyMessage(player, 15, msg);
+                LogManager.Log(LogManager.LogTypes.ICchat, $"{character.CharacterName}[{account.AccountName}] says: {msg}");
                 e.Cancel = true;
             }
             else
             {
                 b_cmd(player, msg);
+
+                //Not sure where to log this so just why not both lmao
+                LogManager.Log(LogManager.LogTypes.ICchat, $"((Admin {account.AdminName} says: {msg}))");
+                LogManager.Log(LogManager.LogTypes.OOCchat, $"((Admin {account.AdminName} says: {msg}))");
+
                 e.Cancel = true;
             }
         }
@@ -191,14 +202,15 @@ namespace mtgvrp.core
 
             if (c.OocCooldown > new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds())
             {
-                API.sendNotificationToPlayer(player, "~r~ERROR:~w~You must wait 60 seconds before using global OOC chat again.");
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~You must wait 5 seconds before using global OOC chat again.");
                 return;
             }
 
             API.sendChatMessageToAll(Color.GlobalOoc, "[OOC] " + c.CharacterName + ": " + message);
+            LogManager.Log(LogManager.LogTypes.OOCchat, "[OOC] " + c.CharacterName +$"[{account.AccountName}]" + ": " + message);
             if (account.AdminLevel == 0)
             {
-                c.OocCooldown = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds() + 10;
+                c.OocCooldown = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds() + 5;
             }
         }
 
@@ -328,11 +340,14 @@ namespace mtgvrp.core
             if(account.AdminDuty == false)
             {
                 NearbyMessage(player, 10, "(( " + PlayerManager.GetName(player) + ": " + text + " ))", Color.Ooc);
+                LogManager.Log(LogManager.LogTypes.ICchat, $"[B] {player.GetCharacter().CharacterName}[{account.AccountName}] says: {text}");
             }
             else
             {
                 NearbyMessage(player, 10, "(( " + PlayerManager.GetAdminName(player) + ": " + text + " ))", Color.AdminOrange);
+                LogManager.Log(LogManager.LogTypes.ICchat, $"[B] Admin {account.AdminName} says: {text}");
             }
+            
         }
         
         [Command("admin", Alias = "a", GreedyArg = true)]
@@ -412,6 +427,7 @@ namespace mtgvrp.core
 
             API.shared.sendChatMessageToPlayer(player, Color.Pm, "PM to " + PlayerManager.GetName(receiver) + "(" + PlayerManager.GetPlayerId(receiver.GetCharacter()) + "): " + text);
             API.shared.sendChatMessageToPlayer(receiver, Color.Pm, "PM from " + PlayerManager.GetName(player) + "(" + PlayerManager.GetPlayerId(player.GetCharacter()) + "): " + text);
+            LogManager.Log(LogManager.LogTypes.PMchat, "PM to " + PlayerManager.GetName(receiver) + "(" + PlayerManager.GetPlayerId(receiver.GetCharacter()) + "): " + text);
         }
 
         public const int RoleplayMe = 0;
