@@ -30,6 +30,10 @@ namespace mtgvrp.job_manager.trucker
         private void API_onPlayerDisconnected(Client player, string reason)
         {
             Character c = player.GetCharacter();
+
+            if (c == null)
+                return;
+
             if (c.TruckingStage != Character.TruckingStages.None)
             {
                 CancelRun(player);
