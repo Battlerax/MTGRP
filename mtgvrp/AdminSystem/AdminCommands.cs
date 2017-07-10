@@ -65,28 +65,6 @@ namespace mtgvrp.AdminSystem
             }
         }
 
-        [Command("makemeadmin")]
-        public void makemeadmin_cmd(Client player)
-        {
-            Account account = API.getEntityData(player, "Account");
-
-            account.AdminLevel = 10;
-            player.sendChatMessage("You're now admin.");
-        }
-
-        [Command("startintro")]
-        public void startintro_cmd(Client player)
-        {
-            API.triggerClientEvent(player, "start_introduction");
-        }
-
-        [Command("stopintro")]
-        public void stopintro_cmd(Client player)
-        {
-            API.triggerClientEvent(player, "stop_introduction");
-        }
-
-
         [Command("set", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel5, "Used to set items/settings of a player.", new[] { "Id: The id of target player.", "Item: Name of the variable.", "Amount: New value of the variable." })]
         public void SetCharacterData(Client player, string target, string var, string value)
         {

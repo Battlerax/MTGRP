@@ -388,33 +388,6 @@ namespace mtgvrp.player_manager
                     character.update_ped();
                     character.update_nametag();
 
-                    API.setEntityPosition(player.handle, character.LastPos);
-                    API.setEntityRotation(player.handle, character.LastRot);
-                    API.setEntityDimension(player.handle, 0);
-                    API.freezePlayer(player, false);
-                    API.sendChatMessageToPlayer(player,
-                        "~g~You have successfully created your character: " + character.CharacterName + "!");
-                    API.sendChatMessageToPlayer(player,
-                        "~g~If you have any questions please use /n(ewbie) chat or /ask for moderator assitance.");
-
-                    LogManager.Log(LogManager.LogTypes.Connection,
-                        player.socialClubName +
-                        $" has created and loaded the character {character.CharacterName}. (IP: " + player.address +
-                        ")");
-
-                    //Startup money.
-                    character.BankBalance = 20000;
-                    InventoryManager.GiveInventoryItem(character, new Money(), 5000);
-
-                    acc.IsLoggedIn = true;
-                    character.IsCreated = true;
-                    character.StartTrackingTimePlayed();
-                    character.PaycheckTimer = new Timer {Interval = 1000};
-                    character.PaycheckTimer.Elapsed += delegate { PlayerManager.SendPaycheckToPlayer(player); };
-                    character.PaycheckTimer.Start();
-                    character.Save();
-
-                    API.triggerClientEvent(player, "login_finished");
                     API.triggerClientEvent(player, "start_introduction");
                 }
                     break;

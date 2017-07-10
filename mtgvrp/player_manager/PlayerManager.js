@@ -40,7 +40,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 });
 
 API.onUpdate.connect(function () {
-    if(player_money != null){
+    if(player_money != null && !resource.Introduction.isonintro){
         API.drawText("~g~$~w~" + player_money, API.getScreenResolutionMantainRatio().Width - 15, 100, 1, 115, 186, 131, 255, 4, 2, false, true, 0);
     }
 

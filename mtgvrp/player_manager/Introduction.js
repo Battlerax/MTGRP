@@ -56,18 +56,18 @@ var isonintro = false;
 
 //Drawtext for each shot
 var shot_text = [
-"Welcome to Moving Target Gaming Roleplay.\nHere you can turn your dreams into reality\nas you take control of a character you create.\nLet us show you the basics.", 
-"This is the Dashhound bus station\nwhere you will begin your journey in the city of Los Santos.\nThe bus station is located near some important locations.",
-"The Los Santos Police headquarters is where police\nofficers take charge of the streets.\nYou can join them by applying on the forums.",
-"This is one of the many banks found in Los Santos.\nHere you can withdraw and deposit money into your bank account.\nATMs can be used for the same.",
-"There are a number of businesses scattered around the city.\nBuy the essentials at a 24/7 or\ngrab a bite to eat at a local restaurant.",
-"This is the vehicle dealership.\nBuy your very first car here or save up\nfor a more luxurious car for later.",
-"There are many ways to make money.\nYou can hit the waters for fish, grab a hatchet\nand chop some trees, collect trash, and many other exciting jobs.", 
-"You can even grab a rifle and hunting license and see how you fare\nagainst nature itself in the hunting grounds of Paleto Bay.",
-"If that isn't of interest, grab a scuba diving \nkit from a hardware store and hit the waters.\nRumor has it there are ocean wrecks filled with treasure.",
-"That's all we have to show you for now.\nThe development team is always expanding the\nserver to have more exciting new features.", 
-"Be sure to check out our forums and\nbecome apart of the community at www.mt-gaming.com.",
-"If you need further help use /n chat to\nget help from players or /ask to get\nhelp from a moderator directly.\nNow, get going! Los Santos isn't going to run itself."
+"Welcome to ~r~Moving Target Gaming~w~ Roleplay.\nBefore you take control of the character you created,\nlet us show you the basics.", 
+"This is the ~b~Dashhound bus station~w~.\nYou will begin your journey here in the city of Los Santos.\nIt is located near some important locations.",
+"The ~b~Los Santos Police Department~w~ is where\npolice officers take charge of the streets.\nYou can join them by applying on the forums.",
+"This is one of the many banks found in Los Santos.\nHere you can withdraw and deposit money into your bank account.\n~g~ATMs~w~ can be used for the same.",
+"There are a number of businesses scattered around the city.\nBuy the essentials at a ~g~24/7~w~ or\ngrab a bite to eat at a local ~g~restaurant~w~.",
+"This is the ~g~vehicle dealership.~w~\nBuy your very first car here or save up\nfor a more luxurious car later.",
+"There are many ways to make money.\nYou can choose from the many exciting jobs\nsuch as ~y~fisherman~w~ or ~y~trucker~w~, or find your own means of making money.", 
+"You can even grab a rifle and hunting license and see how you fare\nagainst nature itself in the hunting grounds of ~b~Paleto Bay~w~.",
+"If that isn't of interest, grab a scuba diving \nkit from a ~g~hardware store~w~ and hit the waters.\nRumor has it there are ocean wrecks filled with ~b~treasure~w~.",
+"That's all we have to show you for now.\nThe development team is ~b~always~w~ expanding the\nserver~w~ with more exciting new features.", 
+"Be sure to check out our forums and\nbecome a member of our community at\n~r~www.mt-gaming.com~w~.",
+"If you need further help, use ~g~/n~w~ chat to\nget help from players or ~g~/ask~w~ to get\nhelp from a moderator directly.\nNow, get going! ~b~Los Santos~w~ isn't going to run itself."
 ]
 
 API.onServerEventTrigger.connect(function (eventName, args) {
@@ -129,8 +129,8 @@ function next_camera() {
 	set_focus(camera_pos[current_cam_index]);
 	current_cam_index++;
 	current_text_index++;
-	API.interpolateCameras(current_cam, next_cam, 10000, false, false);
-	timer = Date.now() + 10000;
+	API.interpolateCameras(current_cam, next_cam, 11000, false, false);
+	timer = Date.now() + 11000;
 
 }
 
@@ -169,13 +169,7 @@ API.onUpdate.connect(function () {
 	}
 
 	if (showtext == true) {
-	API.drawText(shot_text[current_text_index], API.getScreenResolutionMantainRatio().Width - 15, 160, 1, 96, 183, 255, 255, 0, 2, true, true, 0);
+	API.drawText(shot_text[current_text_index], API.getScreenResolutionMantainRatio().Width/2 - 900, API.getScreenResolutionMantainRatio().Height/2 + 200, 1, 255, 255, 255, 255, 6, 0, true, true, 0);
 	}
-
-	/*
-	if (current_cam_index == 0 && isonintro == true){
-	API.dxDrawTexture("cef_resources/MTGVRP_LOGO_BIG.png", new Point(0, 0), new Size(2));
-	}
-	*/
 
 });

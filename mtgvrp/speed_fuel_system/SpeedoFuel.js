@@ -100,6 +100,9 @@ API.onUpdate.connect(() => {
 		myBrowser.call("setDirection", lastDirection);
 
 	} else {
+		if (resource.Introduction.isonintro == true){
+			return;
+		}
 		if (screenRes === null)
 			screenRes = API.getScreenResolutionMantainRatio();
 
