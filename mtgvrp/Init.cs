@@ -71,13 +71,14 @@ namespace mtgvrp
             VehicleManager.load_all_unowned_vehicles();
             API.consoleOutput("[INIT] Script initalized!");
 
+            LogManager.StartLogArchiveTimer();
+
+            //Must be last to be called.
             if (IsRunningOnMono())
             {
                 API.consoleOutput("[INIT] Starting Discord Bot!");
                 DiscordManager.StartBot();
             }
-
-            LogManager.StartLogArchiveTimer();
         }
 
         private void API_onResourceStop()
