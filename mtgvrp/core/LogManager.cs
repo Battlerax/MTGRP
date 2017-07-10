@@ -32,6 +32,8 @@ namespace mtgvrp.core
         {
             try
             {
+                DebugManager.DebugMessage("** Starting log archive process.", 1);
+
                 var path = "OldLogs/" + DateTime.Now.Year + "-" + DateTime.Now.Month;
                 //Make sure folders exist.
                 Directory.CreateDirectory(path);
@@ -41,7 +43,7 @@ namespace mtgvrp.core
                 {
                     File.Move(file, path + "/" + Path.GetFileName(file) + "-" + GetTimeStamp);
                 }
-                DebugManager.DebugMessage("Logs has been archived.");
+                DebugManager.DebugMessage("** Logs has been archived.");
             }
             catch (Exception e)
             {
