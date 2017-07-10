@@ -41,6 +41,7 @@ namespace mtgvrp.core
                 {
                     File.Move(file, path + "/" + Path.GetFileName(file) + "-" + GetTimeStamp);
                 }
+                DebugManager.DebugMessage("Logs has been archived.");
             }
             catch (Exception e)
             {
