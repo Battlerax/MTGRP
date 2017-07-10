@@ -78,7 +78,7 @@ namespace mtgvrp.speed_fuel_system
             a.Save();
         }
 
-        [Command("refuel"), Help(HelpManager.CommandGroups.Vehicles, "Use this at a gas station to refill your vehicle with fuel.", new[] { "Fuel amount wanted (out of 100)" })]
+        [Command("refuel"), Help(HelpManager.CommandGroups.Vehicles, "Command to refuel your vehicle from a gas station.", new[] { "Fuel amount wanted (out of 100)" })]
         public void Refuel(Client player, int fuel = 0)
         {
             var prop = PropertyManager.IsAtPropertyInteraction(player);
