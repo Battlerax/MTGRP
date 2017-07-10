@@ -637,9 +637,12 @@ namespace mtgvrp.AdminSystem
             else
             {
                 Vector3 CurrentPlayerPos = API.getEntityPosition(player);
+                Vector3 CurrentPlayerRot = API.getEntityRotation(player);
                 int playerDimension = API.getEntityDimension(player);
                 API.sendChatMessageToPlayer(player, "-----Current Position-----");
                 API.sendChatMessageToPlayer(player, "X: " + CurrentPlayerPos.X + " Y: " + CurrentPlayerPos.Y + " Z: " + CurrentPlayerPos.Z + " Dimension: " + playerDimension);
+                API.consoleOutput($"POSITION: new Vector3({CurrentPlayerPos.X}, {CurrentPlayerPos.Y}, {CurrentPlayerPos.Z})");
+                API.consoleOutput($"ROTATION: new Vector3({CurrentPlayerRot.X}, {CurrentPlayerRot.Y}, {CurrentPlayerRot.Z})");
             }
 
         }

@@ -16,6 +16,7 @@
 	<script src="player_manager/login/LoginManager.js" type="client" lang="javascript"/>
 	<file src="player_manager/login/Login.html"/>
 	<script src="player_manager/CharacterMenu.js" type="client" lang="javascript"/>
+  <script src="player_manager/Introduction.js" type="client" lang="javascript"/>
 
 	<!-- JOBS -->
 	<script src="job_manager/JobManager.js" type="client" lang="javascript"/>
@@ -104,6 +105,9 @@
   
   <!-- ADMIN -->
   <script src="AdminSystem/Reports.js" type="client" lang="javascript"/>
+  
+  <!--AUDIO-->
+  <file src="audio_resources/introduction.mp3" />
           
   <file src="jquery.js" />
 </meta>
