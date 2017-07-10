@@ -30,14 +30,21 @@ namespace mtgvrp.core
 
         static void ArchiveLogs()
         {
-            var path = "OldLogs/" + DateTime.Now.Year + "-" + DateTime.Now.Month;
-            //Make sure folders exist.
-            Directory.CreateDirectory(path);
-
-            //Move the files.
-            foreach (var file in Directory.GetFiles("Logs", "*.log"))
+            try
             {
-                File.Move(file, path + "/" + Path.GetFileName(file) + "-" + GetTimeStamp);
+                var path = "OldLogs/" + DateTime.Now.Year + "-" + DateTime.Now.Month;
+                //Make sure folders exist.
+                Directory.CreateDirectory(path);
+
+                //Move the files.
+                foreach (var file in Directory.GetFiles("Logs", "*.log"))
+                {
+                    File.Move(file, path + "/" + Path.GetFileName(file) + "-" + GetTimeStamp);
+                }
+            }
+            catch (Exception e)
+            {
+                DebugManager.DebugMessage(e.Message);
             }
         }
 
