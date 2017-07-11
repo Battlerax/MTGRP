@@ -1402,7 +1402,7 @@ namespace mtgvrp.AdminSystem
             account.IsBanned = false;
         }
 
-        [Command("changeviplevel", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel3, "Change a players VIP level", new[] { "ID of the target player", "The VIP level to change to", "The VIP amount in days" })]
+        [Command("changeviplevel"), Help(HelpManager.CommandGroups.AdminLevel3, "Change a players VIP level", new[] { "ID of the target player", "The VIP level to change to", "The VIP amount in days" })]
         public void changeviplevel_cmd(Client player, string id, int level, int days)
         {
             var receiver = PlayerManager.ParseClient(id);

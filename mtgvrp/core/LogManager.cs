@@ -30,14 +30,24 @@ namespace mtgvrp.core
 
         static void ArchiveLogs()
         {
-            var path = "OldLogs/" + DateTime.Now.Year + "-" + DateTime.Now.Month + "/" + GetTimeStamp;
-            //Make sure folders exist.
-            Directory.CreateDirectory(path);
-
-            //Move the files.
-            foreach (var file in Directory.GetFiles("Logs", "*.log"))
+            try
             {
-                File.Move(file, path + "/" + Path.GetFileName(file));
+                DebugManager.DebugMessage("** Starting log archive process.", 1);
+
+                var path = "OldLogs/" + DateTime.Now.Year + "-" + DateTime.Now.Month;
+                //Make sure folders exist.
+                Directory.CreateDirectory(path);
+
+                //Move the files.
+                foreach (var file in Directory.GetFiles("Logs", "*.log"))
+                {
+                    File.Move(file, path + "/" + Path.GetFileNameWithoutExtension(file) + "-" + GetTimeStamp + Path.GetExtension(file));
+                }
+                DebugManager.DebugMessage("** Logs has been archived.");
+            }
+            catch (Exception e)
+            {
+                DebugManager.DebugMessage(e.Message);
             }
         }
 
@@ -48,12 +58,14 @@ namespace mtgvrp.core
             Commands,       //Logged
             Connection,     //Logged
             Death,          //Logged
-            GroupChat,
+            GroupChat,      //Logged
+            RadioChat,      //Logged
             GroupInvites,
-            ICchat,
+            ICchat,         //Logged
+            Phone,          //Logged
             Money,
-            OOCchat,
-            PMchat,
+            OOCchat,        //Logged
+            PMchat,         //Logged
             Stats,
             Storage,
             Unbans,         //Logged

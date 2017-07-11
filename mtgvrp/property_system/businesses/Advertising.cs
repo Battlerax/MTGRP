@@ -8,6 +8,7 @@ using mtgvrp.inventory;
 using mtgvrp.phone_manager;
 using mtgvrp.player_manager;
 using mtgvrp.property_system;
+using mtgvrp.core.Help;
 
 namespace mtgvrp.property_system.businesses
 {
@@ -20,7 +21,7 @@ namespace mtgvrp.property_system.businesses
 
         // Commands
 
-        [Command("advertise", Alias = "ad", GreedyArg = true)]
+        [Command("advertise", Alias = "ad", GreedyArg = true), Help(HelpManager.CommandGroups.General, "To create an IC advertisment for everyone with a phone to see.", new[] { "Text for your ad." })]
         public void advertisement_cmd(Client player, string text)
         {
 

@@ -10,6 +10,7 @@ using GTANetworkServer;
 using GTANetworkShared;
 using mtgvrp.core;
 using mtgvrp.inventory;
+using mtgvrp.player_manager;
 
 namespace mtgvrp.job_manager.scuba
 {
@@ -148,7 +149,12 @@ namespace mtgvrp.job_manager.scuba
 
         private void API_onPlayerDisconnected(Client player, string reason)
         {
-            if (player.GetCharacter().IsScubaDiving)
+            Character c = player.GetCharacter();
+
+            if (c == null)
+                return;
+
+            if (c.IsScubaDiving)
             {
                 CancelScuba(player);
             }
