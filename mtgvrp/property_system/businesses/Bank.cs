@@ -5,12 +5,13 @@ using mtgvrp.core;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;
 using MongoDB.Bson;
+using mtgvrp.core.Help;
 
 namespace mtgvrp.property_system.businesses
 {
     class Bank : Script
     {
-        [Command("deposit")]
+        [Command("deposit"), Help(HelpManager.CommandGroups.General, "Command to use when putting money into your bank account.", new[] { "Amount" })]
         public void deposit_cmd(Client player, int amount)
         {
             var prop = PropertyManager.IsAtPropertyInteraction(player);
@@ -34,7 +35,7 @@ namespace mtgvrp.property_system.businesses
             }
         }
 
-        [Command("withdraw")]
+        [Command("withdraw"), Help(HelpManager.CommandGroups.General, "Command to use when taking money from your bank account.", new[] { "Amount" })]
         public void withdraw_cmd(Client player, int amount)
         {
             var prop = PropertyManager.IsAtPropertyInteraction(player);
@@ -58,7 +59,7 @@ namespace mtgvrp.property_system.businesses
             }
         }
 
-        [Command("wiretransfer")]
+        [Command("wiretransfer"), Help(HelpManager.CommandGroups.General, "Command to transfer money from one account to another online players account.", new[] { "ID of target player.", "Amount." })]
         public void wiretransfer_cmd(Client player, string id, int amount)
         {
             var prop = PropertyManager.IsAtPropertyInteraction(player);
@@ -91,7 +92,7 @@ namespace mtgvrp.property_system.businesses
             }
         }
 
-        [Command("balance")]
+        [Command("balance"), Help(HelpManager.CommandGroups.General, "Used to see your current bank balance.", null)]
         public void balance_cmd(Client player)
         {
             var prop = PropertyManager.IsAtPropertyInteraction(player);
@@ -105,7 +106,7 @@ namespace mtgvrp.property_system.businesses
                 $"You have ~g~${player.GetCharacter().BankBalance}~w~ in your account.");
         }
 
-        [Command("givecheck")]
+        [Command("givecheck"), Help(HelpManager.CommandGroups.General, "Hand another player a check, taking money from your bank.", new[] { "ID of target player.", "Amount" })]
         public void GiveCheck_cmd(Client player, string id, int amount)
         {
             Client target = PlayerManager.ParseClient(id);
@@ -143,7 +144,7 @@ namespace mtgvrp.property_system.businesses
                 ChatManager.RoleplayMe);
         }
 
-        [Command("redeemcheck")]
+        [Command("redeemcheck"), Help(HelpManager.CommandGroups.General, "To cash in a check when at a bank.", null)]
         public void Redeemcheck_cmd(Client player)
         {
             var prop = PropertyManager.IsAtPropertyInteraction(player);
