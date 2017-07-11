@@ -10,6 +10,7 @@ using DSharpPlus.CommandsNext.Exceptions;
 using DSharpPlus.CommandsNext.Attributes;
 using GTANetworkServer;
 using mtgvrp.player_manager;
+using MongoDB.Bson;
 
 namespace mtgvrp.core
 {
@@ -58,6 +59,9 @@ namespace mtgvrp.core
             {
                 // let's use the string prefix defined in config.json
                 StringPrefix = "/",
+
+                EnableDefaultHelp = false,
+                EnableDms = false,
 
                 // enable mentioning the bot as a command prefix
                 EnableMentionPrefix = true
