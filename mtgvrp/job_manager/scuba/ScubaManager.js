@@ -11,7 +11,7 @@ API.onServerEventTrigger.connect((event, args) => {
 
 API.onUpdate.connect(() => {
     if (text !== null) {
-        var res = API.getScreenResolutionMantainRatio();
+        var res = API.getScreenResolutionMaintainRatio();
         var pos = resource.JsFunctions.scaleCoordsToReal({ X: res.Width - 400, Y: res.Height - 60 });
 
         API.drawText(text, pos.X, pos.Y, 0.75, 0, 255, 0, 255, 1, 0, true, true, 0);

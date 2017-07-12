@@ -1,6 +1,6 @@
 ﻿function getSafeResolution () {
 	var offsetX = 0;
-	var screen = API.getScreenResolutionMantainRatio();
+	var screen = API.getScreenResolutionMaintainRatio();
 	var screenX = screen.Width;
 	var screenY = screen.Height;
 	if (screenX / screenY > 1.7777) {

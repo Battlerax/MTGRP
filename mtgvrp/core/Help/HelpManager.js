@@ -3,7 +3,7 @@ var argss;
 
 API.onServerEventTrigger.connect((eventName, args) => {
     if (eventName === "help_showMenu") {
-        var res = API.getScreenResolutionMantainRatio();
+        var res = API.getScreenResolutionMaintainRatio();
         var width = 1000;
         var height = 600;
         var pos = resource.JsFunctions.scaleCoordsToReal({ X: (res.Width / 2) - (width / 2), Y: (res.Height / 2) - (height / 2) });

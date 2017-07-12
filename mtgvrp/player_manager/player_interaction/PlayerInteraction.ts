@@ -7,7 +7,7 @@ var interactBrowser = null;
 var res = null;
 
 API.onResourceStart.connect(() => {
-    res = API.getScreenResolutionMantainRatio();
+    res = API.getScreenResolutionMaintainRatio();
 });
 
 API.onServerEventTrigger.connect((eventname, args) => {
@@ -43,8 +43,8 @@ API.onUpdate.connect(() => {
 
         var player = API.getLocalPlayer();
 
-        var cursOp = API.getCursorPositionMantainRatio();
-        var s2w = API.screenToWorldMantainRatio(cursOp);
+        var cursOp = API.getCursorPositionMaintainRatio();
+        var s2w = API.screenToWorldMaintainRatio(cursOp);
         var rayCast = API.createRaycast(API.getGameplayCamPos(), s2w, 12, player);
 
         var player_hit = null;

@@ -6,7 +6,7 @@ var nextStrengthTick = 0;
 var nextCatchTick = 0;
 var catchTime = 0;
 API.onResourceStart.connect(function () {
-    res = API.getScreenResolutionMantainRatio();
+    res = API.getScreenResolutionMaintainRatio();
 });
 API.onServerEventTrigger.connect(function (eventName, args) {
     switch (eventName) {

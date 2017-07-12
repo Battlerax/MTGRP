@@ -9,7 +9,7 @@ var nextCatchTick = 0;
 var catchTime = 0;
 
 API.onResourceStart.connect(() => {
-    res = API.getScreenResolutionMantainRatio();
+    res = API.getScreenResolutionMaintainRatio();
 });
 
 API.onServerEventTrigger.connect((eventName, args) => {

@@ -9,7 +9,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
  
     switch (eventName) {
         case "showMDC":
-            var res = API.getScreenResolutionMantainRatio();
+            var res = API.getScreenResolutionMaintainRatio();
 	        var pos = resource.JsFunctions.scaleCoordsToReal({X: res.Width, Y: res.Height});
             mdcBrowser = API.createCefBrowser(pos.X, pos.Y);
         

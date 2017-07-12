@@ -108,8 +108,8 @@ API.onUpdate.connect(function () {
         API.drawMenu(actionMenu);
 
     if (selectingDoor) {
-        var cursOp = API.getCursorPositionMantainRatio();
-        var s2w = API.screenToWorldMantainRatio(cursOp);
+        var cursOp = API.getCursorPositionMaintainRatio();
+        var s2w = API.screenToWorldMaintainRatio(cursOp);
         var rayCast = API.createRaycast(API.getGameplayCamPos(), s2w, -1, null);
         var localH = null;
         var localV = 0;

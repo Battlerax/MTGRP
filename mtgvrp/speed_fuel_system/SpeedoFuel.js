@@ -7,7 +7,7 @@
     case "speedo_showcef":
         if (API.getPlayerVehicleSeat(API.getLocalPlayer()) !== -1) return;
 
-        var res = API.getScreenResolutionMantainRatio();
+        var res = API.getScreenResolutionMaintainRatio();
         var width = 450;
         var height = 200;
         var size = resource.JsFunctions.scaleCoordsToReal({ X: width, Y: height });
@@ -104,7 +104,7 @@ API.onUpdate.connect(() => {
 			return;
 		}
 		if (screenRes === null)
-			screenRes = API.getScreenResolutionMantainRatio();
+			screenRes = API.getScreenResolutionMaintainRatio();
 
 		if (lastDirection !== "")
 			API.drawText(lastDirection, 310, screenRes.Height - 80, 1, 225, 225, 225, 255, 4, 0, false, true, 0); //155

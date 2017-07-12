@@ -2,7 +2,7 @@
 var res = null;
 
 API.onResourceStart.connect(function () {
-    res = API.getScreenResolutionMantainRatio();
+    res = API.getScreenResolutionMaintainRatio();
 });
 
 API.onServerEventTrigger.connect(function (eventName, args) {

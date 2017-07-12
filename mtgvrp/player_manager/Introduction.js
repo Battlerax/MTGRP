@@ -169,7 +169,7 @@ API.onUpdate.connect(function () {
 	}
 
 	if (showtext == true) {
-	API.drawText(shot_text[current_text_index], API.getScreenResolutionMantainRatio().Width/2 - 900, API.getScreenResolutionMantainRatio().Height/2 + 200, 1, 255, 255, 255, 255, 6, 0, true, true, 0);
+	API.drawText(shot_text[current_text_index], API.getScreenResolutionMaintainRatio().Width/2 - 900, API.getScreenResolutionMaintainRatio().Height/2 + 200, 1, 255, 255, 255, 255, 6, 0, true, true, 0);
 	}
 
 });

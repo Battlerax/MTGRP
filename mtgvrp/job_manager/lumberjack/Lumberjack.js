@@ -1,5 +1,5 @@
 ﻿var lastChop = Date.now();
-var res = API.getScreenResolutionMantainRatio();
+var res = API.getScreenResolutionMaintainRatio();
 
 function getPositionInfrontOfPlayer(distance) {
     var pos = API.getEntityPosition(API.getLocalPlayer());

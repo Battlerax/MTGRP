@@ -2,7 +2,7 @@
 
 function showPhoneIfNotShown() {
     if (myBrowser == null) {
-        var res = API.getScreenResolutionMantainRatio();
+        var res = API.getScreenResolutionMaintainRatio();
 	    var width = 400;
 	    var height = 580;
 	    var pos = resource.JsFunctions.scaleCoordsToReal({ X: res.Width - width - 5, Y:  res.Height - height - 5});

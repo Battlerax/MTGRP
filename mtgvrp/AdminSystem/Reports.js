@@ -91,7 +91,7 @@ API.onUpdate.connect(function () {
     }
 
     if (API.isControlJustPressed(24) && text !== "") {
-        pos = API.getCursorPositionMantainRatio();
+        pos = API.getCursorPositionMaintainRatio();
         API.sendChatMessage("X: " + pos.X + " | Y: " + pos.Y);
     }
 });
