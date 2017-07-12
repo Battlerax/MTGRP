@@ -57,7 +57,6 @@ namespace mtgvrp.core.Discord
                 StringPrefix = "/",
 
                 EnableDefaultHelp = false,
-                EnableDms = false,
 
                 // enable mentioning the bot as a command prefix
                 EnableMentionPrefix = true
