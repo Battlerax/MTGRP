@@ -92,6 +92,7 @@
     <Compile Include="core\Items\SprayPaint.cs" />
     <Compile Include="core\LogManager.cs" />
     <Compile Include="core\SettingsManager.cs" />
+    <Compile Include="group_manager\lsgov\IdentificationItem.cs" />
     <Compile Include="job_manager\delivery\DeliveryManager.cs" />
     <Compile Include="job_manager\delivery\SupplyItem.cs" />
     <Compile Include="job_manager\mechanic\MechanicJob.cs" />

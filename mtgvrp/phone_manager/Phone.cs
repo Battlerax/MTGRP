@@ -26,6 +26,7 @@ namespace mtgvrp.phone_manager
         public bool CanBeStacked => false;
         public bool CanBeStashed => true;
         public bool IsBlocking => false;
+        public bool CanBeStored => true;
 
         public Dictionary<Type, int> MaxAmount
         {
