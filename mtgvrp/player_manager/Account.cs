@@ -26,6 +26,8 @@ namespace mtgvrp.player_manager
         public int VipLevel { get; set; }
         public DateTime VipExpirationDate { get; set; }
 
+        public int CharacterSlots { get; set; }
+
         public string LastIp { get; set; }
 
         public DateTime TempBanExpiration { get; set; }

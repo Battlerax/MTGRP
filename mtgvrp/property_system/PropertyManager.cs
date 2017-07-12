@@ -50,6 +50,7 @@ namespace mtgvrp.property_system
             LSNN,
             HuntingStation,
             Housing,
+            VIPLounge,
         }
 
         #region ColShapeKnowing
@@ -603,7 +604,8 @@ namespace mtgvrp.property_system
                 prop.Type == PropertyTypes.Bank ||
                 prop.Type == PropertyTypes.Advertising ||
                 prop.Type == PropertyTypes.Housing ||
-                prop.Type == PropertyTypes.LSNN
+                prop.Type == PropertyTypes.LSNN ||
+                prop.Type == PropertyTypes.VIPLounge
                 )
             {
                 API.sendChatMessageToPlayer(player, "You aren't the owner or the business doesnt support supplies.");
@@ -633,7 +635,8 @@ namespace mtgvrp.property_system
                 prop.Type == PropertyTypes.Bank ||
                 prop.Type == PropertyTypes.Advertising ||
                 prop.Type == PropertyTypes.Housing ||
-                prop.Type == PropertyTypes.LSNN
+                prop.Type == PropertyTypes.LSNN ||
+                prop.Type == PropertyTypes.VIPLounge
             )
             {
                 API.sendChatMessageToPlayer(player, "You aren't the owner or the business doesnt support supplies.");

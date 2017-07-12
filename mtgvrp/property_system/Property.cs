@@ -147,6 +147,8 @@ namespace mtgvrp.property_system
                 case PropertyManager.PropertyTypes.Housing:
                     int value = (OwnerId == 0) ? 40 : 350;
                     return value;
+                case PropertyManager.PropertyTypes.VIPLounge:
+                    return 409;
                 default:
                     return -1;
             }
