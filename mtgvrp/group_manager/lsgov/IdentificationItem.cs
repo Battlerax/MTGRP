@@ -16,9 +16,7 @@ namespace mtgvrp.group_manager.lsgov
         public ObjectId Id { get; set; }
         public int Amount { get; set; }
 
-
-        public int AmountOfSlots => 25;
-
+        public int AmountOfSlots => 1;
 
         public bool CanBeDropped => true;
         public bool CanBeGiven => false;
