@@ -634,7 +634,7 @@ namespace mtgvrp.player_manager
                     break;
 
                 case "finish_intro":
-                    foreach(var veh in SpawnedVehicles) { veh.Despawn(); }
+                    foreach (var veh in SpawnedVehicles) { veh.Despawn(); veh.Delete(); }
                     SpawnCharacter(player);
                     break;
 

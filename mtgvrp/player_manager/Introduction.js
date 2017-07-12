@@ -26,7 +26,7 @@ var camera_pos = [
 /*SHIPWRECK*/ new Vector3(-125.6273, -2316.191, -9.032106), new Vector3(-148.8436, -2325.469, -10.60085),
 /*SkyView2*/ new Vector3(-2221.575, 415.6908, 232.9723), new Vector3(-2101.799, 350.2302, 214.9161),
 /*SkyView3*/ new Vector3(-35.09233, -1821.837, 42.83126), new Vector3(30.9814, -1879.182, 37.73874),
-/*SkyView4*/ new Vector3(2165.094, 2090.795, 156.4328), new Vector3(2151.098, 2122.872, 151.6403)
+/*SkyView4*/ new Vector3(412.3697, -638.3072, 35.48744), new Vector3(421.9597, -641.1315, 32.57067)
 ]
 
 var camera_rot = [
@@ -41,7 +41,7 @@ var camera_rot = [
 /*SHIPWRECK*/ new Vector3(0, 0, 111.7729), new Vector3(0, 0, 111.7729),
 /*SkyView2*/ new Vector3(0, 0, -118.7154), new Vector3(0, 0, -118.7154),
 /*SkyView3*/ new Vector3(0, 0, -130.9785), new Vector3(0, 0, -130.9785),
-/*SkyView4*/ new Vector3(0, 0, 23.58142), new Vector3(0, 0, 23.58142)
+/*SkyView4*/ new Vector3(0, 0, -129.2393), new Vector3(0, 0, -112.0678)
 ]
 
 var during_intro_pos = new Vector3(8.87535, 528.9718, 170.635);
@@ -120,7 +120,7 @@ function next_camera() {
 		return;
 	}
 	API.setEntityDimension(API.getLocalPlayer(), 0);
-	API.setEntityPosition(API.getLocalPlayer(), during_intro_pos);
+	API.setEntityPosition(API.getLocalPlayer(), new Vector3(433.2354, -645.8408, 28.72639));
 	showtext = true;
 	var current_cam = API.createCamera(camera_pos[current_cam_index], camera_rot[current_cam_index]);
 	API.setActiveCamera(current_cam);
