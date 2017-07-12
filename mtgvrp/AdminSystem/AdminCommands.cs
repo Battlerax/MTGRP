@@ -1402,7 +1402,7 @@ namespace mtgvrp.AdminSystem
             account.IsBanned = false;
         }
 
-        [Command("setcharacterslots"), Help(HelpManager.CommandGroups.AdminLevel3, "Set the amount of character slots a player may have", new[] { "ID of the target player", "The amount of character slots permitted" }]
+        [Command("setcharacterslots"), Help(HelpManager.CommandGroups.AdminLevel3, "Set the amount of character slots a player may have", new[] { "ID of the target player", "The amount of character slots permitted" })]
         public void setcharacterslots(Client player, string id, int slots)
         {
             var receiver = PlayerManager.ParseClient(id);

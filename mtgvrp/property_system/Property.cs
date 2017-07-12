@@ -48,6 +48,7 @@ namespace mtgvrp.property_system
         public int InteractionDimension { get; set; }
         public int GarbageDimension { get; set; }
 
+        public bool IsVIP { get; set; }
         public bool IsLocked { get; set; }
 
         public int PropertyPrice { get; set; }

@@ -184,12 +184,15 @@ namespace mtgvrp.weapon_manager
 
         public static void GivePlayerWeapon(Client player, Weapon weapon)
         {
+            Account account = API.shared.getEntityData(player, "Account");
             Character character = API.shared.getEntityData(player.handle, "Character");
 
             if (DoesPlayerHaveWeapon(player, weapon.WeaponHash)) { return; }
 
             API.shared.givePlayerWeapon(player, weapon.WeaponHash, 9999, true, true);
-            API.shared.setPlayerWeaponTint(player, weapon.WeaponHash, weapon.WeaponTint);
+
+            if (account.VipLevel < 1) { API.shared.setPlayerWeaponTint(player, weapon.WeaponHash, WeaponTint.Normal); }
+            else { API.shared.setPlayerWeaponTint(player, weapon.WeaponHash, weapon.WeaponTint); }
             //API.shared.givePlayerWeaponComponent(player, weapon.WeaponHash, weapon.WeaponComponent);
 
             InventoryManager.GiveInventoryItem(character, weapon, 1);
