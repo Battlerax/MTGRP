@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using GTANetworkServer;
+using GrandTheftMultiplayer.Server.API;
+using GrandTheftMultiplayer.Server.Elements;
+using GrandTheftMultiplayer.Server.Managers;
 using mtgvrp.core;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;

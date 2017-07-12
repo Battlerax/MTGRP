@@ -5,7 +5,7 @@ using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.CommandsNext.Exceptions;
-using GTANetworkServer;
+using GrandTheftMultiplayer.Server.API;
 using mtgvrp.player_manager;
 
 namespace mtgvrp.core.Discord

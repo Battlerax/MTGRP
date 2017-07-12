@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Timers;
 using System.Collections.Generic;
-using GTANetworkServer;
-using GTANetworkShared;
+using GrandTheftMultiplayer.Server.API;
+using GrandTheftMultiplayer.Server.Constant;
+using GrandTheftMultiplayer.Server.Elements;
+using GrandTheftMultiplayer.Shared;
+using GrandTheftMultiplayer.Shared.Math;
 using mtgvrp.component_manager;
 using mtgvrp.core;
 using mtgvrp.database_manager;
@@ -13,6 +16,7 @@ using mtgvrp.job_manager;
 using mtgvrp.phone_manager;
 using mtgvrp.vehicle_manager;
 using MongoDB.Driver;
+using Color = mtgvrp.core.Color;
 
 namespace mtgvrp.player_manager
 {

@@ -12,8 +12,10 @@
 
 using System.Collections.Generic;
 using System.Timers;
-using GTANetworkServer;
-using GTANetworkShared;
+using GrandTheftMultiplayer.Server.API;
+using GrandTheftMultiplayer.Server.Elements;
+using GrandTheftMultiplayer.Shared;
+using GrandTheftMultiplayer.Shared.Math;
 using mtgvrp.database_manager;
 using mtgvrp.group_manager;
 using mtgvrp.inventory;

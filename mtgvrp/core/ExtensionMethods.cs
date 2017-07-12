@@ -1,5 +1,8 @@
-﻿using GTANetworkServer;
-using GTANetworkShared;
+﻿
+
+using GrandTheftMultiplayer.Server.API;
+using GrandTheftMultiplayer.Server.Elements;
+using GrandTheftMultiplayer.Shared;
 using mtgvrp.player_manager;
 
 namespace mtgvrp.core

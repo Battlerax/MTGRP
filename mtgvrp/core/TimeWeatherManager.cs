@@ -2,7 +2,8 @@
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Timers;
-using GTANetworkServer;
+using GrandTheftMultiplayer.Server.API;
+using GrandTheftMultiplayer.Server.Elements;
 using NodaTime;
 
 namespace mtgvrp.core

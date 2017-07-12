@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
-using GTANetworkServer;
+using GrandTheftMultiplayer.Server.API;
+using GrandTheftMultiplayer.Server.Elements;
+using GrandTheftMultiplayer.Server.Managers;
 using mtgvrp.group_manager;
 using mtgvrp.job_manager;
 using mtgvrp.player_manager;

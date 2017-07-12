@@ -1,12 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
-using GTANetworkServer;
-using GTANetworkShared;
+using GrandTheftMultiplayer.Server.API;
+using GrandTheftMultiplayer.Server.Constant;
+using GrandTheftMultiplayer.Server.Elements;
+using GrandTheftMultiplayer.Server.Managers;
+using GrandTheftMultiplayer.Shared;
+using GrandTheftMultiplayer.Shared.Math;
+
+
 using mtgvrp.core;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;
 using mtgvrp.weapon_manager;
+using Color = mtgvrp.core.Color;
 
 namespace mtgvrp.group_manager.lspd
 {
@@ -39,7 +46,7 @@ namespace mtgvrp.group_manager.lspd
         public readonly Vector3 JailPosThree = new Vector3(461.8065, -1001.302, 25.06443);
 
 
-        public LinkedList<GTANetworkServer.Object> Objects = new LinkedList<GTANetworkServer.Object>();
+        public LinkedList<Object> Objects = new LinkedList<Object>();
 
 
         private void StartLspd()

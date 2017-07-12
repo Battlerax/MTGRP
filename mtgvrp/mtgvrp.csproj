@@ -46,11 +46,11 @@
     <Reference Include="DSharpPlus.WebSocket.WebSocketSharp, Version=2.4.0.121, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DSharpPlus.WebSocket.WebSocketSharp.2.4.0-beta-00121\lib\net46\DSharpPlus.WebSocket.WebSocketSharp.dll</HintPath>
     </Reference>
-    <Reference Include="GTANetworkServer">
-      <HintPath>..\Latest Server\GTANetworkServer.exe</HintPath>
+    <Reference Include="GrandTheftMultiplayer.Server">
+      <HintPath>..\..\GrandTheftMultiplayer.Server.exe</HintPath>
     </Reference>
-    <Reference Include="GTANetworkShared">
-      <HintPath>..\Latest Server\GTANetworkShared.dll</HintPath>
+    <Reference Include="GrandTheftMultiplayer.Shared">
+      <HintPath>..\..\GrandTheftMultiplayer.Shared.dll</HintPath>
     </Reference>
     <Reference Include="MongoDB.Bson, Version=2.4.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MongoDB.Bson.2.4.4\lib\net45\MongoDB.Bson.dll</HintPath>
@@ -287,16 +287,6 @@
     <TypeScriptCompile Include="job_manager\JobManager.ts" />
     <Content Include="phone_manager\gui\apps\dialpad.html" />
     <TypeScriptCompile Include="player_manager\player_interaction\PlayerInteraction.ts" />
-    <TypeScriptCompile Include="types-gtanetwork\Declarations.d.ts" />
-    <TypeScriptCompile Include="types-gtanetwork\Enums.ts" />
-    <TypeScriptCompile Include="types-gtanetwork\GTANetwork.dll.d.ts" />
-    <TypeScriptCompile Include="types-gtanetwork\GTANetworkShared.dll.d.ts" />
-    <TypeScriptCompile Include="types-gtanetwork\index.d.ts" />
-    <TypeScriptCompile Include="types-gtanetwork\NativeUI.dll.d.ts" />
-    <TypeScriptCompile Include="types-gtanetwork\ScriptHookVDotNet.dll.d.ts" />
-    <TypeScriptCompile Include="types-gtanetwork\System.d.ts" />
-    <TypeScriptCompile Include="types-gtanetwork\System.Drawing.dll.d.ts" />
-    <TypeScriptCompile Include="types-gtanetwork\Xilium.CefGlue.dll.d.ts" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

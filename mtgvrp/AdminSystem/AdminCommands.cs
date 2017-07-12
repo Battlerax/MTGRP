@@ -1,24 +1,28 @@
 ﻿using System;
 using System.Linq;
 using System.Timers;
-using GTANetworkServer;
-using GTANetworkShared;
-using mtgvrp.weapon_manager;
+using GrandTheftMultiplayer.Server.API;
+using GrandTheftMultiplayer.Server.Constant;
+using GrandTheftMultiplayer.Server.Elements;
+using GrandTheftMultiplayer.Server.Managers;
+using GrandTheftMultiplayer.Shared;
+using GrandTheftMultiplayer.Shared.Math;
 using mtgvrp.core;
+using mtgvrp.core.Help;
 using mtgvrp.database_manager;
 using mtgvrp.group_manager;
 using mtgvrp.group_manager.lspd;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;
 using mtgvrp.vehicle_manager;
+using mtgvrp.weapon_manager;
 using MongoDB.Driver;
-using mtgvrp.core.Help;
+using Color = mtgvrp.core.Color;
 
 namespace mtgvrp.AdminSystem
 {
     public class AdminCommands : Script
     {
-
         public AdminCommands()
         {
             DebugManager.DebugMessage("[AdminSys] Initalizing Admin System...");
@@ -74,7 +78,7 @@ namespace mtgvrp.AdminSystem
                 var receiver = PlayerManager.ParseClient(target);
                 if (receiver == null)
                 {
-                    API.sendChatMessageToPlayer(player, Color.White, "That player is not connected.");
+                    API.sendChatMessageToPlayer(player, core.Color.White, "That player is not connected.");
                     return;
                 }
 
@@ -82,7 +86,7 @@ namespace mtgvrp.AdminSystem
                 var prop = recChar.GetType().GetProperties().SingleOrDefault(x => x.Name == var);
                 if (prop == null)
                 {
-                    API.sendChatMessageToPlayer(player, Color.White, "There is no such property.");
+                    API.sendChatMessageToPlayer(player, core.Color.White, "There is no such property.");
                     return;
                 }
 

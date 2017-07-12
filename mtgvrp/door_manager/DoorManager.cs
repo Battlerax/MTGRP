@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Linq;
 using System.Timers;
-using GTANetworkServer;
-using GTANetworkShared;
+using GrandTheftMultiplayer.Server.API;
+using GrandTheftMultiplayer.Server.Elements;
+using GrandTheftMultiplayer.Shared.Math;
 using mtgvrp.core;
 using mtgvrp.database_manager;
 using mtgvrp.group_manager;
 using mtgvrp.player_manager;
+using GrandTheftMultiplayer.Server.Managers;
 using MongoDB.Driver;
 
 namespace mtgvrp.door_manager

@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Timers;
-using GTANetworkServer;
-using GTANetworkShared;
+using GrandTheftMultiplayer.Server.API;
+using GrandTheftMultiplayer.Server.Constant;
+using GrandTheftMultiplayer.Server.Elements;
+using GrandTheftMultiplayer.Server.Managers;
+using GrandTheftMultiplayer.Shared;
 using mtgvrp.core;
+using Color = mtgvrp.core.Color;
 
 namespace mtgvrp.player_manager.player_interaction
 {

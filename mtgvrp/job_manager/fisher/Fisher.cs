@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Timers;
-using GTANetworkServer;
+using GrandTheftMultiplayer.Server.API;
+using GrandTheftMultiplayer.Server.Constant;
+using GrandTheftMultiplayer.Server.Elements;
+using GrandTheftMultiplayer.Server.Managers;
 using mtgvrp.core;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;
+using Color = mtgvrp.core.Color;
 
 namespace mtgvrp.job_manager.fisher
 {

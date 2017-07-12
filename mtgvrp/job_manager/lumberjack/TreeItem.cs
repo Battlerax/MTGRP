@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Timers;
-using GTANetworkServer;
+using GrandTheftMultiplayer.Server.API;
+using GrandTheftMultiplayer.Server.Elements;
+using GrandTheftMultiplayer.Shared.Math;
 using MongoDB.Bson;
-using GTANetworkShared;
+
 using mtgvrp.core;
 using mtgvrp.database_manager;
 using MongoDB.Bson.Serialization.Attributes;
@@ -21,7 +23,7 @@ namespace mtgvrp.job_manager.lumberjack
         public Vector3 TreeRot { get; set; }
 
         [BsonIgnore]
-        public GTANetworkServer.Object TreeObj { get; set; }
+        public Object TreeObj { get; set; }
 
         [BsonIgnore]
         public TextLabel TreeText { get; set; }

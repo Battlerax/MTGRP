@@ -1,12 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using GTANetworkServer;
-using GTANetworkShared;
+
+
 using System.Timers;
+using GrandTheftMultiplayer.Server.API;
+using GrandTheftMultiplayer.Server.Constant;
+using GrandTheftMultiplayer.Server.Elements;
+using GrandTheftMultiplayer.Server.Managers;
+using GrandTheftMultiplayer.Shared;
+using GrandTheftMultiplayer.Shared.Math;
 using mtgvrp.core;
 using mtgvrp.inventory;
 using mtgvrp.property_system;
+using Color = mtgvrp.core.Color;
 
 namespace mtgvrp.job_manager.hunting
 {

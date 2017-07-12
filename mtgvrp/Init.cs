@@ -11,7 +11,7 @@
 
 
 using System;
-using GTANetworkServer;
+using GrandTheftMultiplayer.Server.API;
 using mtgvrp.core;
 using mtgvrp.core.Discord;
 using mtgvrp.database_manager;

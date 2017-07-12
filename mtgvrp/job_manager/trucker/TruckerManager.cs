@@ -5,14 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using GTANetworkServer;
-using GTANetworkShared;
+using GrandTheftMultiplayer.Server.API;
+using GrandTheftMultiplayer.Server.Elements;
+using GrandTheftMultiplayer.Server.Managers;
+using GrandTheftMultiplayer.Shared;
+using GrandTheftMultiplayer.Shared.Math;
 using mtgvrp.core;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;
 using mtgvrp.property_system;
 using mtgvrp.vehicle_manager;
-using Vehicle = GTANetworkServer.Vehicle;
 
 namespace mtgvrp.job_manager.trucker
 {
@@ -348,7 +350,7 @@ namespace mtgvrp.job_manager.trucker
 
         }
 
-        private void API_onVehicleTrailerChange(GTANetworkShared.NetHandle tower, GTANetworkShared.NetHandle trailer)
+        private void API_onVehicleTrailerChange(NetHandle tower, NetHandle trailer)
         {
             var player = (Client) API.getEntityData(tower, "TRUCKER_DRIVER");
 
@@ -400,7 +402,7 @@ namespace mtgvrp.job_manager.trucker
             }
         }
 
-        private void API_onPlayerEnterVehicle(Client player, GTANetworkShared.NetHandle vehicle)
+        private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle)
         {
             var veh = vehicle.GetVehicle();
             var character = player.GetCharacter();

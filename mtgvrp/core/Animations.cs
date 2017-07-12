@@ -6,7 +6,9 @@
 // Will wait till release to make changes that the community suggests
 
 using System;
-using GTANetworkServer;
+using GrandTheftMultiplayer.Server.API;
+using GrandTheftMultiplayer.Server.Elements;
+using GrandTheftMultiplayer.Server.Managers;
 using mtgvrp.player_manager;
 
 namespace mtgvrp.core
@@ -1409,8 +1411,8 @@ namespace mtgvrp.core
 
 /*
 using System;
-using GTANetworkServer;
-using GTANetworkShared;
+
+
 using mtgvrp.player_manager;
 
 namespace mtgvrp.core

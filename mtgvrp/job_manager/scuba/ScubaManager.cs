@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using GTANetworkServer;
-using GTANetworkShared;
+using GrandTheftMultiplayer.Server.API;
+using GrandTheftMultiplayer.Server.Constant;
+using GrandTheftMultiplayer.Server.Elements;
+using GrandTheftMultiplayer.Server.Managers;
+using GrandTheftMultiplayer.Shared.Math;
 using mtgvrp.core;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;
@@ -141,7 +144,7 @@ namespace mtgvrp.job_manager.scuba
             new [] {new Vector3(-159.6433, -2858.358, -13.95227), new Vector3(12.90809, 1.245686, 0.1409214)},
         };
 
-        private readonly List<GTANetworkServer.Object> _treasureObjects = new List<GTANetworkServer.Object>();
+        private readonly List<GrandTheftMultiplayer.Server.Elements.Object> _treasureObjects = new List<GrandTheftMultiplayer.Server.Elements.Object>();
 
         private void API_onPlayerDisconnected(Client player, string reason)
         {
@@ -285,8 +288,8 @@ namespace mtgvrp.job_manager.scuba
             }
 
             //Remove clothes
-            GTANetworkServer.Object head = API.getEntityData(player, "SCUBA_HEAD");
-            GTANetworkServer.Object tank = API.getEntityData(player, "SCUBA_TANK");
+            GrandTheftMultiplayer.Server.Elements.Object head = API.getEntityData(player, "SCUBA_HEAD");
+            GrandTheftMultiplayer.Server.Elements.Object tank = API.getEntityData(player, "SCUBA_TANK");
             if (head != null && API.doesEntityExist(head))
             {
                 head.detach();

@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Timers;
-using GTANetworkServer;
-using GTANetworkShared;
+using GrandTheftMultiplayer.Server.API;
+using GrandTheftMultiplayer.Server.Constant;
+using GrandTheftMultiplayer.Server.Elements;
+using GrandTheftMultiplayer.Shared;
+using GrandTheftMultiplayer.Shared.Math;
+
+
 using mtgvrp.database_manager;
 using mtgvrp.group_manager;
 using mtgvrp.group_manager.lspd;
@@ -275,16 +280,16 @@ namespace mtgvrp.player_manager
         public DateTime NextHotWire;
 
         [BsonIgnore]
-        public GTANetworkServer.Object MegaPhoneObject = null;
+        public GrandTheftMultiplayer.Server.Elements.Object MegaPhoneObject = null;
 
         [BsonIgnore]
-        public GTANetworkServer.Object MicObject = null;
+        public GrandTheftMultiplayer.Server.Elements.Object MicObject = null;
 
         [BsonIgnore]
         public bool IsScubaDiving = false;
 
         [BsonIgnore]
-        public GTANetworkServer.Object GarbageBag = null;
+        public GrandTheftMultiplayer.Server.Elements.Object GarbageBag = null;
 
         public enum TruckingStages
         {

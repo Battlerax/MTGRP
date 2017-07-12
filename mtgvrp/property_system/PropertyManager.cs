@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using GTANetworkServer;
-using GTANetworkShared;
+using GrandTheftMultiplayer.Server.API;
+using GrandTheftMultiplayer.Server.Elements;
+using GrandTheftMultiplayer.Server.Managers;
+using GrandTheftMultiplayer.Shared;
+
+
 using mtgvrp.core;
 using mtgvrp.database_manager;
 using mtgvrp.door_manager;
@@ -54,7 +58,7 @@ namespace mtgvrp.property_system
 
         #region ColShapeKnowing
 
-        private void API_onEntityExitColShape(ColShape colshape, GTANetworkShared.NetHandle entity)
+        private void API_onEntityExitColShape(ColShape colshape, NetHandle entity)
         {
             if (API.getEntityType(entity) == EntityType.Player && colshape.hasData("property_entrance"))
             {
@@ -89,7 +93,7 @@ namespace mtgvrp.property_system
             }
         }
 
-        private void API_onEntityEnterColShape(ColShape colshape, GTANetworkShared.NetHandle entity)
+        private void API_onEntityEnterColShape(ColShape colshape, NetHandle entity)
         {
             if (API.getEntityType(entity) == EntityType.Player && colshape.hasData("property_entrance"))
             {

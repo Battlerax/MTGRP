@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
-using GTANetworkServer;
+using GrandTheftMultiplayer.Server.API;
+using GrandTheftMultiplayer.Server.Elements;
+
 
 namespace mtgvrp.core
 {

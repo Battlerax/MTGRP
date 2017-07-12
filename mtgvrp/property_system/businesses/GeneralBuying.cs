@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using GTANetworkServer;
-using GTANetworkShared;
+using GrandTheftMultiplayer.Server.API;
+using GrandTheftMultiplayer.Server.Constant;
+using GrandTheftMultiplayer.Server.Elements;
+using GrandTheftMultiplayer.Server.Managers;
+using GrandTheftMultiplayer.Shared;
 using mtgvrp.core;
 using mtgvrp.core.Items;
 using mtgvrp.inventory;
@@ -12,6 +15,7 @@ using mtgvrp.player_manager;
 using mtgvrp.group_manager;
 using mtgvrp.job_manager.hunting;
 using mtgvrp.job_manager.scuba;
+using Color = mtgvrp.core.Color;
 
 namespace mtgvrp.property_system.businesses
 {
