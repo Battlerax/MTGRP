@@ -88,7 +88,6 @@ namespace mtgvrp.job_manager.garbageman
                     int r = rand.Next(PropertyManager.Properties.Count);
                     TargetProperty = PropertyManager.Properties[r];
                     TargetProperty.GarbageBags = 5;
-                    return;
                 }
 
                 API.triggerClientEvent(player, "garbage_setwaypoint", TargetProperty.GarbagePoint);
