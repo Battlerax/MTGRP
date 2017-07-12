@@ -14,6 +14,7 @@ using System;
 using GTANetworkServer;
 using GTANetworkShared;
 using mtgvrp.core;
+using mtgvrp.core.Discord;
 using mtgvrp.database_manager;
 using mtgvrp.inventory;
 using mtgvrp.job_manager.hunting;
