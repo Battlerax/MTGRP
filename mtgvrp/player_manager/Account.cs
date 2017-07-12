@@ -40,6 +40,9 @@ namespace mtgvrp.player_manager
         public bool IsLoggedIn { get; set; }
         public bool IsSpectating { get; set; }
 
+        public string DiscordCode { get; set; } = null;
+        public string DiscordUser { get; set; } = null;
+
         public Account()
         {
             AccountName = "default_account";

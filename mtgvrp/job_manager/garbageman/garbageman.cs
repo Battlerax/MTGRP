@@ -88,7 +88,6 @@ namespace mtgvrp.job_manager.garbageman
                     int r = rand.Next(PropertyManager.Properties.Count);
                     TargetProperty = PropertyManager.Properties[r];
                     TargetProperty.GarbageBags = 5;
-                    return;
                 }
 
                 API.triggerClientEvent(player, "garbage_setwaypoint", TargetProperty.GarbagePoint);
@@ -188,8 +187,8 @@ namespace mtgvrp.job_manager.garbageman
 
             InventoryManager.GiveInventoryItem(character, new Money(), closestVeh.GarbageBags * 100);
             ChatManager.RoleplayMessage(character, "uses the garbage truck's control panel to unload the trash.", ChatManager.RoleplayMe);
-            closestVeh.GarbageBags = 0;
             player.sendChatMessage($"You were paid ${closestVeh.GarbageBags * 100} for unloading {closestVeh.GarbageBags} trash bags.");
+            closestVeh.GarbageBags = 0;
             API.shared.sendPictureNotificationToPlayer(player, $"Thanks for keeping Los Santos clean!", "CHAR_PROPERTY_CAR_SCRAP_YARD", 0, 1, "Los Santos Sanitations", "Garbage Notification");
 
 

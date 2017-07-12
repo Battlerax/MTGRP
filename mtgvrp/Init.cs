@@ -13,6 +13,7 @@
 using System;
 using GTANetworkServer;
 using mtgvrp.core;
+using mtgvrp.core.Discord;
 using mtgvrp.database_manager;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;
