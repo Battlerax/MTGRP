@@ -107,13 +107,13 @@ namespace mtgvrp.job_manager.garbageman
                 if (!character.IsOnGarbageRun)
                 {
                     character.IsOnGarbageRun = true;
-                    player.sendChatMessage("~r~You have 5 minutes to pick up the trash!");
-                    character.GarbageTimeLeft = 1000 * 300;
+                    player.sendChatMessage("~r~You have 15 minutes to pick up the trash!");
+                    character.GarbageTimeLeft = 900000;
                     character.GarbageTimeLeftTimer = new Timer { Interval = 1000 };
                     character.GarbageTimeLeftTimer.Elapsed += delegate { UpdateTimer(player); };
                     character.GarbageTimeLeftTimer.Start();
                     character.update_ped();
-                    veh.RespawnTimer = new Timer { Interval = 1000 * 300 };
+                    veh.RespawnTimer = new Timer { Interval = 900000  };
                     veh.RespawnTimer.Elapsed += delegate { RespawnGarbageTruck(player, veh); };
                     veh.RespawnTimer.Start();
                 }
