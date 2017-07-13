@@ -37,6 +37,8 @@
 	
 	<!-- Dealership/Ownership -->
 	<script src="vehicle_dealership/vehicledealer.js" type="client" lang="javascript"/>
+  <script src="vehicle_dealership/vipdealership.js" type="client" lang="javascript"/>
+  <script src="vehicle_dealership/chopperdealership.js" type="client" lang="javascript"/>
 	<script src="vehicle_manager/VehicleOwnership.js" type="client" lang="javascript"/>
 
   <!-- Bag System-->

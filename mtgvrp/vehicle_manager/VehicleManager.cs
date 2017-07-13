@@ -491,8 +491,9 @@ namespace mtgvrp.vehicle_manager
             {
                 if (i == veh.Id)
                 {
-                    if (character.OwnedVehicles.IndexOf(i) > 3 && account.VipLevel == 1 ||
-                        character.OwnedVehicles.IndexOf(i) > 4 && account.VipLevel == 2)
+                    if (character.OwnedVehicles.IndexOf(i) > 1 && account.VipLevel == 0 ||
+                        character.OwnedVehicles.IndexOf(i) > 2 && account.VipLevel == 1 ||
+                        character.OwnedVehicles.IndexOf(i) > 3 && account.VipLevel == 2)
                     {
                         player.sendChatMessage("You do not have the sufficient VIP level to enter this vehicle.");
                         API.warpPlayerOutOfVehicle(player);
