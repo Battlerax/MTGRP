@@ -71,6 +71,8 @@ namespace mtgvrp.player_manager
                 VipLevel = a.VipLevel;
                 VipExpirationDate = a.VipExpirationDate;
 
+                CharacterSlots = a.CharacterSlots;
+
                 LastIp = a.LastIp;
 
                 TempbanLevel = a.TempbanLevel;
