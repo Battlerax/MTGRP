@@ -340,10 +340,16 @@ namespace mtgvrp.job_manager.trucker
                 API.triggerClientEvent(player, "update_beacon", new Vector3());
                 CancelRun(player);
 
-                if(veh.trailer.model == (int)VehicleHash.TRFlat)
+                if (veh.trailer.model == (int)VehicleHash.TRFlat)
+                {
+                    player.sendChatMessage("You have been paid ~g~$5000.");
                     InventoryManager.GiveInventoryItem(character, new Money(), 5000, true);
+                }
                 else if (veh.trailer.model == (int)VehicleHash.Tanker)
+                {
+                    player.sendChatMessage("You have been paid ~g~$2000.");
                     InventoryManager.GiveInventoryItem(character, new Money(), 2000, true);
+                }
             }
 
         }
