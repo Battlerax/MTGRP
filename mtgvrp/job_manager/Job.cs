@@ -162,6 +162,8 @@ namespace mtgvrp.job_manager
                 case JobManager.JobTypes.Fisher: return 410;
                 case JobManager.JobTypes.Lumberjack: return 77;
                 case JobManager.JobTypes.Garbageman: return 318;
+                case JobManager.JobTypes.Trucker: return 477;
+                case JobManager.JobTypes.DeliveryMan: return 478;
                 default: return 1;
             }
         }
