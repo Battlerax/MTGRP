@@ -1,18 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
-using System.IO;
-using DSharpPlus.CommandsNext.Exceptions;
 using DSharpPlus.CommandsNext.Attributes;
+using DSharpPlus.CommandsNext.Exceptions;
 using GTANetworkServer;
 using mtgvrp.player_manager;
-using MongoDB.Bson;
 
-namespace mtgvrp.core
+namespace mtgvrp.core.Discord
 {
     public static class DiscordManager
     {
@@ -61,7 +57,6 @@ namespace mtgvrp.core
                 StringPrefix = "/",
 
                 EnableDefaultHelp = false,
-                EnableDms = false,
 
                 // enable mentioning the bot as a command prefix
                 EnableMentionPrefix = true
@@ -77,6 +72,7 @@ namespace mtgvrp.core
 
             // up next, let's register our commands
             Commands.RegisterCommands<Commands>();
+            Commands.RegisterCommands<PlayerDiscordCommands>();
 
             // finnaly, let's connect and log in
             await Client.ConnectAsync();

@@ -37,14 +37,14 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DSharpPlus, Version=2.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DSharpPlus.2.4.0\lib\net46\DSharpPlus.dll</HintPath>
+    <Reference Include="DSharpPlus, Version=2.4.0.121, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DSharpPlus.2.4.0-beta-00121\lib\net46\DSharpPlus.dll</HintPath>
     </Reference>
-    <Reference Include="DSharpPlus.CommandsNext, Version=2.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DSharpPlus.CommandsNext.2.4.0\lib\net46\DSharpPlus.CommandsNext.dll</HintPath>
+    <Reference Include="DSharpPlus.CommandsNext, Version=2.4.0.121, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DSharpPlus.CommandsNext.2.4.0-beta-00121\lib\net46\DSharpPlus.CommandsNext.dll</HintPath>
     </Reference>
-    <Reference Include="DSharpPlus.WebSocket.WebSocketSharp, Version=2.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DSharpPlus.WebSocket.WebSocketSharp.2.4.0\lib\net46\DSharpPlus.WebSocket.WebSocketSharp.dll</HintPath>
+    <Reference Include="DSharpPlus.WebSocket.WebSocketSharp, Version=2.4.0.121, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DSharpPlus.WebSocket.WebSocketSharp.2.4.0-beta-00121\lib\net46\DSharpPlus.WebSocket.WebSocketSharp.dll</HintPath>
     </Reference>
     <Reference Include="GTANetworkServer">
       <HintPath>..\Latest Server\GTANetworkServer.exe</HintPath>
@@ -86,7 +86,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="core\DiscordManager.cs" />
+    <Compile Include="core\Discord\DiscordManager.cs" />
+    <Compile Include="core\Discord\PlayerDiscordCommands.cs" />
     <Compile Include="core\Items\EngineParts.cs" />
     <Compile Include="core\Items\SprayPaint.cs" />
     <Compile Include="core\LogManager.cs" />

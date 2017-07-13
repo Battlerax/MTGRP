@@ -1,6 +1,7 @@
 ﻿using System;
 using GTANetworkServer;
 using GTANetworkShared;
+using mtgvrp.core.Discord;
 using mtgvrp.group_manager.lspd.MDC;
 using mtgvrp.inventory;
 using mtgvrp.phone_manager;
