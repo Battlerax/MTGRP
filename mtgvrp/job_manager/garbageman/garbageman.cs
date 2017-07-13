@@ -58,6 +58,17 @@ namespace mtgvrp.job_manager.garbageman
                         closestVeh.UpdateMarkers();
                         break;
                     }
+                case "garbage_pickupbag":
+                    {
+                        Character character = API.getEntityData(player.handle, "Character");
+
+                        if (character.JobOne.Type != JobManager.JobTypes.Garbageman)
+                        {
+                            return;
+                        }
+                        pickuptrash_cmd(character.Client);
+                        break;
+                    }
             }
         }
 
