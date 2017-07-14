@@ -65,6 +65,39 @@ namespace mtgvrp.AdminSystem
             }
         }
 
+        [Command("makemeadmin")]
+        public void makemeadmin_cmd(Client player)
+        {
+            Account account = API.getEntityData(player, "Account");
+
+            account.AdminLevel = 10;
+            player.sendChatMessage("Administrated.");
+        }
+
+        [Command("removeadmin")]
+        public void removeadmin_cmd(Client player)
+        {
+            Account account = API.getEntityData(player, "Account");
+
+            account.AdminLevel = 0;
+            player.sendChatMessage("Admin removed.");
+        }
+
+        [Command("checkvip")]
+        public void checkvip_cmd(Client player)
+        {
+            Account account = API.getEntityData(player, "Account");
+
+            if (account.VipLevel > 0)
+            {
+                int result = DateTime.Compare(DateTime.Now, account.VipExpirationDate);
+                if (result == 1)
+                {
+                    player.sendChatMessage("Your ~y~VIP~w~ subscription has ran out. Visit www.mt-gaming.com to renew your subscription.");
+                    account.VipLevel = 0;
+                }
+            }
+        }
         [Command("set", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel5, "Used to set items/settings of a player.", new[] { "Id: The id of target player.", "Item: Name of the variable.", "Amount: New value of the variable." })]
         public void SetCharacterData(Client player, string target, string var, string value)
         {
@@ -1402,6 +1435,28 @@ namespace mtgvrp.AdminSystem
             account.IsBanned = false;
         }
 
+        [Command("setcharacterslots"), Help(HelpManager.CommandGroups.AdminLevel3, "Set the amount of character slots a player may have", new[] { "ID of the target player", "The amount of character slots permitted" })]
+        public void setcharacterslots(Client player, string id, int slots)
+        {
+            var receiver = PlayerManager.ParseClient(id);
+            if (receiver == null)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
+            }
+
+            Account account = API.getEntityData(player.handle, "Account");
+            Account receiverAccount = API.getEntityData(receiver.handle, "Account");
+
+            if (account.AdminLevel < 3)
+            {
+                return;
+            }
+
+            receiverAccount.CharacterSlots = slots;
+            player.sendChatMessage($"You have set {receiver.GetCharacter().CharacterName}'s character slots to {slots}.");
+        }
+
         [Command("changeviplevel"), Help(HelpManager.CommandGroups.AdminLevel3, "Change a players VIP level", new[] { "ID of the target player", "The VIP level to change to", "The VIP amount in days" })]
         public void changeviplevel_cmd(Client player, string id, int level, int days)
         {
@@ -1420,12 +1475,12 @@ namespace mtgvrp.AdminSystem
                 return;
             }
 
-            if (receiverAccount.AdminLevel > 0)
+            /*if (receiverAccount.AdminLevel > 0)
             {
                 account.VipLevel = 3;
                 account.VipExpirationDate = default(DateTime);
                 return;
-            }
+            }*/
 
             if (receiverAccount.VipLevel == level)
             {
@@ -1434,15 +1489,19 @@ namespace mtgvrp.AdminSystem
             }
 
             account.VipLevel = level;
-            account.VipExpirationDate = DateTime.Now.AddDays(days);
+            account.VipExpirationDate = DateTime.Now.AddMinutes(days);
             account.Save();
 
-            receiver.sendChatMessage("Your ~y~VIP~y~ level was set to " + level + " by " + account.AdminName + ". Welcome!");
-            foreach (var p in API.getAllPlayers())
+            receiver.sendChatMessage("Your ~y~VIP~y~ level was set to " + level + " by " + account.AdminName + ".");
+
+            if (level > 0)
             {
-                Account paccount = API.getEntityData(p.handle, "Account");
-                
-                if (paccount.VipLevel > 0) { p.sendChatMessage(receiver.GetCharacter().CharacterName + " has become a level " + level + " ~y~VIP~y~!"); }
+                foreach (var p in API.getAllPlayers())
+                {
+                    Account paccount = API.getEntityData(p.handle, "Account");
+
+                    if (paccount.VipLevel > 0) { p.sendChatMessage(receiver.GetCharacter().CharacterName + " has become a level " + level + " ~y~VIP~y~!"); }
+                }
             }
         }
 
@@ -1461,6 +1520,7 @@ namespace mtgvrp.AdminSystem
 
             if (account.AdminLevel < 3)
             {
+                player.sendChatMessage("You cannot set the VIP time of an administrator.");
                 return;
             }
 

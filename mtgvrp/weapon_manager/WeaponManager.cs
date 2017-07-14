@@ -29,6 +29,7 @@ namespace mtgvrp.weapon_manager
             foreach (Weapon weapon in InventoryManager.DoesInventoryHaveItem<Weapon>(e.Character))
             {
                 API.givePlayerWeapon(e.Character.Client, weapon.WeaponHash, 9999, true, true);
+                API.setPlayerWeaponTint(e.Character.Client, weapon.WeaponHash, weapon.WeaponTint);
             }
         }
 
@@ -75,12 +76,14 @@ namespace mtgvrp.weapon_manager
 
         private void API_onPlayerWeaponSwitch(Client player, WeaponHash weapon)
         {
+            player.sendChatMessage("Switching weapon");
             Character character = API.shared.getEntityData(player.handle, "Character");
-
-            if (character == null) { return; }
-            if (weapon == WeaponHash.Unarmed) { return; }
+            Account playerAccount = API.shared.getEntityData(player.handle, "Account");
 
             WeaponHash currentPlayerWeapon = API.getPlayerCurrentWeapon(player);
+
+            if (character == null) { return; }
+            if (currentPlayerWeapon == WeaponHash.Unarmed) { return; }
 
             if (!DoesPlayerHaveWeapon(player, currentPlayerWeapon) && currentPlayerWeapon != WeaponHash.Unarmed)
             {
@@ -101,12 +104,21 @@ namespace mtgvrp.weapon_manager
                 API.givePlayerWeapon(player, WeaponHash.Unarmed, 1, true, true);
                 return;
             }
-
+            player.sendChatMessage("Before group");
             if (currentWeapon.GroupId != character.GroupId && character.GroupId != 0 && currentWeapon.IsGroupWeapon == true)
             {
                 RemoveAllPlayerWeapons(player);
                 player.sendChatMessage("You must be a member of " + GroupManager.GetGroupById(currentWeapon.GroupId).Name + " to use this weapon. Your weapons were removed.");
+                return;
             }
+            player.sendChatMessage("Tint being set");
+            if (playerAccount.VipLevel == 0)
+            {
+                API.shared.setPlayerWeaponTint(player, currentWeapon.WeaponHash, WeaponTint.Normal);
+                player.sendChatMessage("Tint set");
+                return;
+            }
+            else { API.shared.setPlayerWeaponTint(player, currentWeapon.WeaponHash, currentWeapon.WeaponTint); }
 
         }
 
@@ -184,12 +196,15 @@ namespace mtgvrp.weapon_manager
 
         public static void GivePlayerWeapon(Client player, Weapon weapon)
         {
+            Account account = API.shared.getEntityData(player, "Account");
             Character character = API.shared.getEntityData(player.handle, "Character");
 
             if (DoesPlayerHaveWeapon(player, weapon.WeaponHash)) { return; }
 
             API.shared.givePlayerWeapon(player, weapon.WeaponHash, 9999, true, true);
-            API.shared.setPlayerWeaponTint(player, weapon.WeaponHash, weapon.WeaponTint);
+
+            if (account.VipLevel < 1) { API.shared.setPlayerWeaponTint(player, weapon.WeaponHash, WeaponTint.Normal); }
+            else { API.shared.setPlayerWeaponTint(player, weapon.WeaponHash, weapon.WeaponTint); }
             //API.shared.givePlayerWeaponComponent(player, weapon.WeaponHash, weapon.WeaponComponent);
 
             InventoryManager.GiveInventoryItem(character, weapon, 1);

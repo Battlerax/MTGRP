@@ -239,6 +239,7 @@ namespace mtgvrp.player_manager
 
         public static void SendPaycheckToPlayer(Client player)
         {
+            Account account = API.shared.getEntityData(player.handle, "Account");
             Character character = API.shared.getEntityData(player.handle, "Character");
             if(character != null)
             if ( character.GetTimePlayed() % 3600 == 0)
@@ -256,6 +257,15 @@ namespace mtgvrp.player_manager
                 player.sendChatMessage("Total: ~g~$" + paycheckAmount + "~w~.");
 
                 player.sendPictureNotificationToPlayer("Your paycheck for ~g~$" + paycheckAmount + " ~w~has been added to your balance.", "CHAR_BANK_MAZE", 0, 0, "Maze Bank", "Paycheck Received!");
+                if (account.VipLevel > 0)
+                    {
+                        int result = DateTime.Compare(DateTime.Now, account.VipExpirationDate);
+                        if (result == 1)
+                        {
+                            player.sendChatMessage("Your ~y~VIP~w~ subscription has ran out. Visit www.mt-gaming.com to renew your subscription.");
+                            account.VipLevel = 0;
+                        }
+                    }
             }
         }
 
