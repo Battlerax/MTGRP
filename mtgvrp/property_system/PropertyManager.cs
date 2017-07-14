@@ -51,6 +51,7 @@ namespace mtgvrp.property_system
             HuntingStation,
             Housing,
             VIPLounge,
+            Government,
         }
 
         #region ColShapeKnowing
@@ -586,6 +587,8 @@ namespace mtgvrp.property_system
                     return "/buy";
                 case PropertyTypes.HuntingStation:
                     return "/buy\n/redeemdeertag\n/redeemboartag";
+                case PropertyTypes.Government:
+                    return "/buyid";
             }
             return "";
         }
