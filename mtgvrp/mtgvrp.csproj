@@ -47,10 +47,10 @@
       <HintPath>..\packages\DSharpPlus.WebSocket.WebSocketSharp.2.4.0-beta-00121\lib\net46\DSharpPlus.WebSocket.WebSocketSharp.dll</HintPath>
     </Reference>
     <Reference Include="GrandTheftMultiplayer.Server">
-      <HintPath>..\Latest Server\GrandTheftMultiplayer.Server.exe</HintPath>
+      <HintPath>..\..\GrandTheftMultiplayer.Server.exe</HintPath>
     </Reference>
     <Reference Include="GrandTheftMultiplayer.Shared">
-      <HintPath>..\Latest Server\GrandTheftMultiplayer.Shared.dll</HintPath>
+      <HintPath>..\..\GrandTheftMultiplayer.Shared.dll</HintPath>
     </Reference>
     <Reference Include="MongoDB.Bson, Version=2.4.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MongoDB.Bson.2.4.4\lib\net45\MongoDB.Bson.dll</HintPath>
