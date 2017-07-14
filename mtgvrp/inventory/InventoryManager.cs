@@ -8,6 +8,7 @@ using GTANetworkServer;
 using GTANetworkShared;
 using mtgvrp.core;
 using mtgvrp.core.Items;
+using mtgvrp.group_manager.lsgov;
 using mtgvrp.inventory.bags;
 using mtgvrp.job_manager.delivery;
 using mtgvrp.job_manager.fisher;
@@ -45,6 +46,7 @@ namespace mtgvrp.inventory
             BsonClassMap.RegisterClassMap<AmmoItem>();
             BsonClassMap.RegisterClassMap<ScubaItem>();
             BsonClassMap.RegisterClassMap<SupplyItem>();
+            BsonClassMap.RegisterClassMap<IdentificationItem>();
 
             BsonClassMap.RegisterClassMap<Weapon>();
             #endregion

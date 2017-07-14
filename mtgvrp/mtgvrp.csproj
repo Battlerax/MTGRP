@@ -169,7 +169,6 @@
     <Compile Include="property_system\businesses\Bank.cs" />
     <Compile Include="property_system\businesses\Clothing.cs" />
     <Compile Include="property_system\businesses\GeneralBuying.cs" />
-    <Compile Include="property_system\businesses\Government.cs" />
     <Compile Include="property_system\ItemManager.cs" />
     <Compile Include="property_system\Property.cs" />
     <Compile Include="property_system\PropertyManager.cs" />
