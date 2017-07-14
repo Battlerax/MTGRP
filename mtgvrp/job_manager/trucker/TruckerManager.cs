@@ -342,10 +342,16 @@ namespace mtgvrp.job_manager.trucker
                 API.triggerClientEvent(player, "update_beacon", new Vector3());
                 CancelRun(player);
 
-                if(veh.trailer.model == (int)VehicleHash.TRFlat)
+                if (veh.trailer.model == (int)VehicleHash.TRFlat)
+                {
+                    player.sendChatMessage("You have been paid ~g~$5000.");
                     InventoryManager.GiveInventoryItem(character, new Money(), 5000, true);
+                }
                 else if (veh.trailer.model == (int)VehicleHash.Tanker)
+                {
+                    player.sendChatMessage("You have been paid ~g~$2000.");
                     InventoryManager.GiveInventoryItem(character, new Money(), 2000, true);
+                }
             }
 
         }
@@ -441,19 +447,38 @@ namespace mtgvrp.job_manager.trucker
             if (player.GetCharacter().TruckingStage == Character.TruckingStages.None)
                 return;
 
+            //Respawn cars and warp out.
             API.warpPlayerOutOfVehicle(player);
             player.GetCharacter().TruckingStage = Character.TruckingStages.None;
             NetHandle veh = API.getEntityData(player, "TRUCKER_VEHICLE");
             if (!veh.IsNull)
             {
                 VehicleManager.respawn_vehicle(veh.GetVehicle());
-                VehicleManager.respawn_vehicle(API.getVehicleTrailer(veh).GetVehicle());
             }
+            NetHandle trailer = API.getEntityData(player, "TRUCKING_TRAILER");
+            if (!trailer.IsNull)
+            {
+                VehicleManager.respawn_vehicle(veh.GetVehicle());
+            }
+            
+            //Reset Timers.
             Timer timer = API.getEntityData(player, "TRUCKING_CANCELTIMER");
             timer?.Dispose();
+            timer = API.getEntityData(player, "TRUCKING_UNLOAD_TIMER");
+            timer?.Dispose();
+            timer = API.getEntityData(player, "TRUCKING_LOAD_TIMER");
+            timer?.Dispose();
             API.resetEntityData(player, "TRUCKING_CANCELTIMER");
+            API.resetEntityData(player, "TRUCKING_UNLOAD_TIMER");
+            API.resetEntityData(player, "TRUCKING_LOAD_TIMER");
+
+            //Reset other variables
             API.resetEntityData(player, "TRUCKER_VEHICLE");
+            API.resetEntityData(player, "TRUCKING_TRAILER");
             API.resetEntityData(veh, "TRUCKER_DRIVER");
+
+            //Unfreeze and send message.
+            API.freezePlayer(player, false);
             API.sendChatMessageToPlayer(player, "The trucking run has been done or cancelled.");
         }
 

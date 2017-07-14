@@ -143,9 +143,13 @@ namespace mtgvrp.player_manager
 
         public static Client GetPlayerByName(string name)
         {
-            foreach(var c in Players)
+            foreach (var c in Players)
             {
-                if(string.Equals(c.CharacterName, name, StringComparison.OrdinalIgnoreCase))
+                if ((c.CharacterName.Equals(name, StringComparison.OrdinalIgnoreCase) || c.Client.GetAccount().AdminName.Equals(name, StringComparison.OrdinalIgnoreCase)))
+                {
+                    return c.Client;
+                }
+                else if (c.CharacterName.ToLower().Substring(0, name.Length).Contains(name.ToLower()) || c.Client.GetAccount().AdminName.ToLower().Substring(0, name.Length).Contains(name.ToLower()))
                 {
                     return c.Client;
                 }
