@@ -76,7 +76,6 @@ namespace mtgvrp.weapon_manager
 
         private void API_onPlayerWeaponSwitch(Client player, WeaponHash weapon)
         {
-            player.sendChatMessage("Switching weapon");
             Character character = API.shared.getEntityData(player.handle, "Character");
             Account playerAccount = API.shared.getEntityData(player.handle, "Account");
 
@@ -104,18 +103,15 @@ namespace mtgvrp.weapon_manager
                 API.givePlayerWeapon(player, WeaponHash.Unarmed, 1, true, true);
                 return;
             }
-            player.sendChatMessage("Before group");
             if (currentWeapon.GroupId != character.GroupId && character.GroupId != 0 && currentWeapon.IsGroupWeapon == true)
             {
                 RemoveAllPlayerWeapons(player);
                 player.sendChatMessage("You must be a member of " + GroupManager.GetGroupById(currentWeapon.GroupId).Name + " to use this weapon. Your weapons were removed.");
                 return;
             }
-            player.sendChatMessage("Tint being set");
             if (playerAccount.VipLevel == 0)
             {
                 API.shared.setPlayerWeaponTint(player, currentWeapon.WeaponHash, WeaponTint.Normal);
-                player.sendChatMessage("Tint set");
                 return;
             }
             else { API.shared.setPlayerWeaponTint(player, currentWeapon.WeaponHash, currentWeapon.WeaponTint); }

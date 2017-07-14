@@ -65,39 +65,6 @@ namespace mtgvrp.AdminSystem
             }
         }
 
-        [Command("makemeadmin")]
-        public void makemeadmin_cmd(Client player)
-        {
-            Account account = API.getEntityData(player, "Account");
-
-            account.AdminLevel = 10;
-            player.sendChatMessage("Administrated.");
-        }
-
-        [Command("removeadmin")]
-        public void removeadmin_cmd(Client player)
-        {
-            Account account = API.getEntityData(player, "Account");
-
-            account.AdminLevel = 0;
-            player.sendChatMessage("Admin removed.");
-        }
-
-        [Command("checkvip")]
-        public void checkvip_cmd(Client player)
-        {
-            Account account = API.getEntityData(player, "Account");
-
-            if (account.VipLevel > 0)
-            {
-                int result = DateTime.Compare(DateTime.Now, account.VipExpirationDate);
-                if (result == 1)
-                {
-                    player.sendChatMessage("Your ~y~VIP~w~ subscription has ran out. Visit www.mt-gaming.com to renew your subscription.");
-                    account.VipLevel = 0;
-                }
-            }
-        }
         [Command("set", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel5, "Used to set items/settings of a player.", new[] { "Id: The id of target player.", "Item: Name of the variable.", "Amount: New value of the variable." })]
         public void SetCharacterData(Client player, string target, string var, string value)
         {
