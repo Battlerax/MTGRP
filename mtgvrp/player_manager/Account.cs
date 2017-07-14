@@ -26,6 +26,8 @@ namespace mtgvrp.player_manager
         public int VipLevel { get; set; }
         public DateTime VipExpirationDate { get; set; }
 
+        public int CharacterSlots { get; set; }
+
         public string LastIp { get; set; }
 
         public DateTime TempBanExpiration { get; set; }
@@ -47,6 +49,7 @@ namespace mtgvrp.player_manager
         {
             AccountName = "default_account";
             AdminLevel = 0;
+            CharacterSlots = 3;
             AdminPin = string.Empty;
             Password = string.Empty;
             Salt = string.Empty;
@@ -70,6 +73,8 @@ namespace mtgvrp.player_manager
 
                 VipLevel = a.VipLevel;
                 VipExpirationDate = a.VipExpirationDate;
+
+                CharacterSlots = a.CharacterSlots;
 
                 LastIp = a.LastIp;
 

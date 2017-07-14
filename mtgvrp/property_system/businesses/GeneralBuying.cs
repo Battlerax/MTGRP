@@ -214,6 +214,41 @@ namespace mtgvrp.property_system.businesses
                     return;
 
                 }
+                else if (prop.Type == PropertyManager.PropertyTypes.VIPLounge)
+                {
+                    prop.Supplies--;
+
+                    if (API.getPlayerCurrentWeapon(sender) == WeaponHash.Unarmed)
+                    {
+                        sender.sendChatMessage("You must be holding the weapon you want to tint.");
+                        return;
+                    }
+
+                    switch (itemName)
+                    {
+                        case "pink_tint":
+                            WeaponManager.SetWeaponTint(sender, API.getPlayerCurrentWeapon(sender), WeaponTint.Pink);
+                            break;
+                        case "gold_tint":
+                            WeaponManager.SetWeaponTint(sender, API.getPlayerCurrentWeapon(sender), WeaponTint.Gold);
+                            break;
+                        case "green_tint":
+                            WeaponManager.SetWeaponTint(sender, API.getPlayerCurrentWeapon(sender), WeaponTint.Green);
+                            break;
+                        case "orange_tint":
+                            WeaponManager.SetWeaponTint(sender, API.getPlayerCurrentWeapon(sender), WeaponTint.Orange);
+                            break;
+                        case "platinum_tint":
+                            WeaponManager.SetWeaponTint(sender, API.getPlayerCurrentWeapon(sender), WeaponTint.Platinum);
+                            break;
+
+                    }
+                    name = ItemManager.VIPItems.Single(x => x[0] == itemName)[1];
+
+                    API.sendChatMessageToPlayer(sender, "[BUSINESSES] You have successfully bought a ~g~" + name + "~w~ weapon tint for ~g~" + price + "~w~.");
+                    return;
+
+                }
                 else if (prop.Type == PropertyManager.PropertyTypes.LSNN)
                 {
                     switch (itemName)
@@ -489,6 +524,28 @@ namespace mtgvrp.property_system.businesses
                         });
                         }
                         API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()), "Hunting Shop",
+                            prop.PropertyName);
+                    }
+                    break;
+
+                case PropertyManager.PropertyTypes.VIPLounge:
+                    {
+                        if (player.GetAccount().VipLevel < 1)
+                        {
+                            player.sendChatMessage("You cannot do this as you are not a VIP player.");
+                            return;
+                        }
+
+                        API.freezePlayer(player, true);
+                        List<string[]> itemsWithPrices = new List<string[]>();
+                        foreach (var itm in ItemManager.VIPItems)
+                        {
+                            itemsWithPrices.Add(new[]
+                            {
+                            itm[0], itm[1], itm[2], prop.ItemPrices.SingleOrDefault(x => x.Key == itm[0]).Value.ToString()
+                        });
+                        }
+                        API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()), "VIP Weapon Tints",
                             prop.PropertyName);
                     }
                     break;

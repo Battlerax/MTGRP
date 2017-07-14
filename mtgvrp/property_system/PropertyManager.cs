@@ -54,6 +54,7 @@ namespace mtgvrp.property_system
             LSNN,
             HuntingStation,
             Housing,
+            VIPLounge,
         }
 
         #region ColShapeKnowing
@@ -607,7 +608,8 @@ namespace mtgvrp.property_system
                 prop.Type == PropertyTypes.Bank ||
                 prop.Type == PropertyTypes.Advertising ||
                 prop.Type == PropertyTypes.Housing ||
-                prop.Type == PropertyTypes.LSNN
+                prop.Type == PropertyTypes.LSNN ||
+                prop.Type == PropertyTypes.VIPLounge
                 )
             {
                 API.sendChatMessageToPlayer(player, "You aren't the owner or the business doesnt support supplies.");
@@ -637,7 +639,8 @@ namespace mtgvrp.property_system
                 prop.Type == PropertyTypes.Bank ||
                 prop.Type == PropertyTypes.Advertising ||
                 prop.Type == PropertyTypes.Housing ||
-                prop.Type == PropertyTypes.LSNN
+                prop.Type == PropertyTypes.LSNN ||
+                prop.Type == PropertyTypes.VIPLounge
             )
             {
                 API.sendChatMessageToPlayer(player, "You aren't the owner or the business doesnt support supplies.");
@@ -663,6 +666,12 @@ namespace mtgvrp.property_system
             var prop = IsAtPropertyEntrance(player);
             if (prop != null)
             {
+                if (prop.IsVIP && player.GetAccount().VipLevel < 1)
+                {
+                    player.sendChatMessage("You cannot enter a VIP building. Visit www.mt-gaming.com to check out the available upgrades!");
+                    return;
+                }
+
                 if (prop.IsTeleportable && (!prop.IsLocked || prop.OwnerId == player.GetCharacter().Id))
                 {
                     foreach (var ipl in prop.IPLs)

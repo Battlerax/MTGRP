@@ -51,6 +51,7 @@ namespace mtgvrp.property_system
         public int InteractionDimension { get; set; }
         public int GarbageDimension { get; set; }
 
+        public bool IsVIP { get; set; }
         public bool IsLocked { get; set; }
 
         public int PropertyPrice { get; set; }
@@ -150,6 +151,8 @@ namespace mtgvrp.property_system
                 case PropertyManager.PropertyTypes.Housing:
                     int value = (OwnerId == 0) ? 40 : 350;
                     return value;
+                case PropertyManager.PropertyTypes.VIPLounge:
+                    return 409;
                 default:
                     return -1;
             }

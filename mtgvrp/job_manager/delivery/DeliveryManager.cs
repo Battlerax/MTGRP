@@ -61,7 +61,8 @@ namespace mtgvrp.job_manager.delivery
             if (prop.Type == PropertyManager.PropertyTypes.Bank ||
                 prop.Type == PropertyManager.PropertyTypes.Advertising ||
                 prop.Type == PropertyManager.PropertyTypes.Housing ||
-                prop.Type == PropertyManager.PropertyTypes.LSNN || prop.DoesAcceptSupplies == false
+                prop.Type == PropertyManager.PropertyTypes.LSNN || 
+                prop.Type == PropertyManager.PropertyTypes.VIPLounge || prop.DoesAcceptSupplies == false
             )
             {
                 API.sendChatMessageToPlayer(player, "This business doesnt buy supplies.");

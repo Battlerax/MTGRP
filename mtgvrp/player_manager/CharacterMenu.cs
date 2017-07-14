@@ -85,6 +85,16 @@ namespace mtgvrp.player_manager
 
                     if(charName == "Create new character")
                     {
+
+                        var filter = Builders<Character>.Filter.Eq("AccountId", account.Id.ToString());
+                        var characters = DatabaseManager.CharacterTable.Find(filter).ToList();
+
+                        if (characters.Count >= account.CharacterSlots)
+                        {
+                            player.sendChatMessage($"You cannot own more than {account.CharacterSlots} characters.");
+                            return;
+                        }
+
                         charName = (string)arguments[1];
 
                         if(charName.Length < 1)
