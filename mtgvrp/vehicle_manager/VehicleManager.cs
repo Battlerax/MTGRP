@@ -487,6 +487,21 @@ namespace mtgvrp.vehicle_manager
                 return;
             }
 
+            foreach(var i in character.OwnedVehicles)
+            {
+                if (i == veh.Id)
+                {
+                    if (character.OwnedVehicles.IndexOf(i) > 1 && account.VipLevel == 0 ||
+                        character.OwnedVehicles.IndexOf(i) > 2 && account.VipLevel == 1 ||
+                        character.OwnedVehicles.IndexOf(i) > 3 && account.VipLevel == 2)
+                    {
+                        player.sendChatMessage("You do not have the sufficient VIP level to enter this vehicle.");
+                        API.warpPlayerOutOfVehicle(player);
+                        return;
+                    }
+                }
+            }
+
             if (account.AdminLevel > 1)
             {
                 API.sendChatMessageToPlayer(player, "~w~[VehicleM] You have entered vehicle ~r~" + Vehicles.IndexOf(veh) + "(Owned by: " + PlayerManager.Players.SingleOrDefault(x => x.Id == veh.OwnerId)?.CharacterName + ")");

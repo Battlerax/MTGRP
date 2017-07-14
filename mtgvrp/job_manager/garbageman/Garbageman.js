@@ -33,3 +33,10 @@ API.onUpdate.connect(() => {
         } 
     }
 });
+
+API.onKeyDown.connect((sender, e) =>
+{
+	if (e.KeyCode === Keys.E) {
+	API.triggerServerEvent("garbage_pickupbag");
+	}
+});
