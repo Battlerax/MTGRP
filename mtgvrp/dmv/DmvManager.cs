@@ -9,7 +9,9 @@ using System.Threading.Tasks;
 using GTANetworkServer;
 using GTANetworkShared;
 using mtgvrp.core;
+using mtgvrp.group_manager.lsgov;
 using mtgvrp.inventory;
+using mtgvrp.player_manager;
 using mtgvrp.property_system;
 using mtgvrp.vehicle_manager;
 
@@ -145,6 +147,18 @@ namespace mtgvrp.dmv
 
             var c = player.GetCharacter();
 
+            if (InventoryManager.DoesInventoryHaveItem<IdentificationItem>(c).Length == 0)
+            {
+                API.sendChatMessageToPlayer(player, "You must have a valid identification to do your driving test.");
+                return;
+            }
+
+            if (InventoryManager.DoesInventoryHaveItem<DrivingLicenseItem>(c).Length > 0)
+            {
+                API.sendChatMessageToPlayer(player, "You already have a valid driving license.");
+                return;
+            }
+
             if (c.IsInDmvTest)
             {
                 API.sendChatMessageToPlayer(player, "You already started the DMV test.");
@@ -195,18 +209,21 @@ namespace mtgvrp.dmv
             {
                 API.triggerClientEvent(player, "DMV_UPDATE_MARKER", new Vector3(), new Vector3());
 
-                var isOnTime = DateTime.Now.Subtract(c.TimeStartedDmvTest) <= TimeSpan.FromMinutes(2);
+                var isOnTime = DateTime.Now.Subtract(c.TimeStartedDmvTest) <= TimeSpan.FromMinutes(2).Add(TimeSpan.FromSeconds(5));
                 var isOnHealth = player.vehicle.health >= 995;
 
                 if (isOnTime && isOnHealth)
+                {
+                    InventoryManager.GiveInventoryItem(c, new DrivingLicenseItem(), 1, true);
                     API.sendChatMessageToPlayer(player, "You have ~g~COMPLETED~w~ your test.");
+                }
                 else
                     API.sendChatMessageToPlayer(player, "You have ~r~FAILED~w~ your test.");
 
                 API.sendChatMessageToPlayer(player,
                     isOnTime
-                        ? $"* Time: ~g~ {DateTime.Now.Subtract(c.TimeStartedDmvTest).Minutes:D2}:{DateTime.Now.Subtract(c.TimeStartedDmvTest).Seconds:D2} / 02:00"
-                        : $"* Time: ~r~ {DateTime.Now.Subtract(c.TimeStartedDmvTest).Minutes:D2}:{DateTime.Now.Subtract(c.TimeStartedDmvTest).Seconds:D2} / 02:00");
+                        ? $"* Time: ~g~ {DateTime.Now.Subtract(c.TimeStartedDmvTest).Minutes:D2}:{DateTime.Now.Subtract(c.TimeStartedDmvTest).Seconds:D2} / 02:05"
+                        : $"* Time: ~r~ {DateTime.Now.Subtract(c.TimeStartedDmvTest).Minutes:D2}:{DateTime.Now.Subtract(c.TimeStartedDmvTest).Seconds:D2} / 02:05");
 
                 API.sendChatMessageToPlayer(player,
                     isOnHealth
@@ -219,6 +236,39 @@ namespace mtgvrp.dmv
                 c.IsInDmvTest = false;
             }
 
+        }
+
+        [Command("showlicense")]
+        public void ShowLicense(Client player, string target)
+        {
+            var targetPlayer = PlayerManager.ParseClient(target);
+            if (targetPlayer == null)
+            {
+                API.sendChatMessageToPlayer(player, "That player is not online.");
+                return;
+            }
+
+            var c = player.GetCharacter();
+
+            if (InventoryManager.DoesInventoryHaveItem<DrivingLicenseItem>(c).Length == 0)
+            {
+                API.sendChatMessageToPlayer(player, "You don't have a driving license.");
+                return;
+            }
+
+            if (targetPlayer.position.DistanceTo(player.position) > 3.0)
+            {
+                API.sendChatMessageToPlayer(player, "The player must be near you.");
+                return;
+            }
+
+            API.sendChatMessageToPlayer(targetPlayer, " [**************~t~Driving License **************]");
+            API.sendChatMessageToPlayer(targetPlayer, " [**************~t~~g~VALID~w~     **************]");
+            API.sendChatMessageToPlayer(targetPlayer, $" [Name: ~h~{c.rp_name()}~h~ | Age: ~h~{c.Age}~h~]");
+            API.sendChatMessageToPlayer(targetPlayer, $" [DOB: ~h~{c.Birthday}~h~ | Birth Place: ~h~{c.Birthplace}~h~]");
+            API.sendChatMessageToPlayer(targetPlayer, " [********************************************]");
+
+            ChatManager.RoleplayMessage(player, "shows his driving license to " + targetPlayer.GetCharacter().rp_name(), ChatManager.RoleplayMe);
         }
     }
 }

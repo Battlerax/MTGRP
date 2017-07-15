@@ -8,9 +8,9 @@ using mtgvrp.player_manager;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace mtgvrp.group_manager.lsgov
+namespace mtgvrp.dmv
 {
-    public class IdentificationItem : IInventoryItem
+    public class DrivingLicenseItem : IInventoryItem
     {
         [BsonId]
         public ObjectId Id { get; set; }
@@ -31,9 +31,9 @@ namespace mtgvrp.group_manager.lsgov
             {typeof(Character), 1}
         };
 
-        public string CommandFriendlyName => $"id";
+        public string CommandFriendlyName => $"drivinglicense";
 
-        public string LongName => $"ID";
+        public string LongName => $"Driving License";
 
         public int Object => 0;
     }
