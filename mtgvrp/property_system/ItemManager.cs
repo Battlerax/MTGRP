@@ -89,6 +89,10 @@ namespace mtgvrp.property_system
                 case PropertyManager.PropertyTypes.Government:
                     prop.ItemPrices.Add("id", 150);
                     break;
+
+                case PropertyManager.PropertyTypes.DMV:
+                    prop.ItemPrices.Add("drivingtest", 150);
+                    break;
             }
         }
 

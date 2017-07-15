@@ -52,6 +52,7 @@ namespace mtgvrp.property_system
             Housing,
             VIPLounge,
             Government,
+            DMV,
         }
 
         #region ColShapeKnowing
