@@ -304,6 +304,12 @@ namespace mtgvrp.player_manager
         public DateTime LastRedeemedDeerTag;
         public DateTime LastRedeemedBoarTag;
 
+        //DMV
+        [BsonIgnore] public DateTime TimeStartedTest;
+        [BsonIgnore] public bool IsInDmvTest;
+        [BsonIgnore] public int DmvTestStep;
+        [BsonIgnore] public ColShape NextCheckpointColShape;
+
         public Character()
         {
             Id = 0;
