@@ -305,10 +305,10 @@ namespace mtgvrp.player_manager
         public DateTime LastRedeemedBoarTag;
 
         //DMV
-        [BsonIgnore] public DateTime TimeStartedTest;
+        [BsonIgnore] public DateTime TimeStartedDmvTest;
         [BsonIgnore] public bool IsInDmvTest;
         [BsonIgnore] public int DmvTestStep;
-        [BsonIgnore] public ColShape NextCheckpointColShape;
+        [BsonIgnore] public ColShape NextDmvCheckpointColShape;
 
         public Character()
         {

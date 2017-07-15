@@ -91,6 +91,7 @@
     <Compile Include="core\Items\EngineParts.cs" />
     <Compile Include="core\Items\SprayPaint.cs" />
     <Compile Include="core\LogManager.cs" />
+    <Compile Include="core\ObjectRemovel.cs" />
     <Compile Include="core\SettingsManager.cs" />
     <Compile Include="dmv\DmvManager.cs" />
     <Compile Include="group_manager\lsgov\IdentificationItem.cs" />

@@ -13,7 +13,7 @@ namespace mtgvrp.dmv
 {
     public class DmvManager : Script
     {
-        public static Vector3[] testCheckpoints =
+        private readonly Vector3[] _testCheckpoints =
         {
             new Vector3(275.7367, -381.1554, 44.43955),
             new Vector3(295.1309, -451.0204, 42.92255),
@@ -49,6 +49,37 @@ namespace mtgvrp.dmv
             new Vector3(290.8339, -339.3133, 44.36193),
         };
 
+        private readonly dynamic[][] _testVehicles =
+        {
+            new dynamic[] {new Vector3(266.3742, -332.2829, 44.48646), new Vector3(0.02338559, -0.0002331526, -109.5953), null},
+            new dynamic[] {new Vector3(267.7154, -329.0442, 44.48596), new Vector3(0.02338559, -0.0002331526, -109.5953), null},
+            new dynamic[] {new Vector3(268.8224, -325.9093, 44.48621), new Vector3(0.02338559, -0.0002331526, -109.5953), null},
+            new dynamic[] {new Vector3(269.9587, -322.6313, 44.48601), new Vector3(0.02338559, -0.0002331526, -109.5953), null},
+            new dynamic[] {new Vector3(271.149, -319.2983, 44.4863), new Vector3(0.02338559, -0.0002331526, -109.5953), null},
+        };
+
+        public DmvManager()
+        {
+            API.onResourceStart += API_onResourceStart;
+        }
+
+        private void API_onResourceStart()
+        {
+            //Creating the vehicles.
+            foreach (var car in _testVehicles)
+            {
+                car[2] = VehicleManager.CreateVehicle(VehicleHash.Asea, car[0], car[1], "DMV", 0,
+                    vehicle_manager.Vehicle.VehTypePerm, 89, 89);
+
+                VehicleManager.spawn_vehicle(car[2]);
+            }
+
+            ObjectRemovel.RegisterObject(new Vector3(266.102691650391, -348.641571044922, 43.7301368713379), 242636620);
+            ObjectRemovel.RegisterObject(new Vector3(285.719482421875, -356.067474365234, 44.1401863098145), 406416082);
+
+            API.consoleOutput("Spawned DMV Vehicles.");
+        }
+
         [Command("/starttest")]
         public void StartTest(Client player)
         {
@@ -57,12 +88,7 @@ namespace mtgvrp.dmv
             if (c.IsInDmvTest)
                 return;
 
-            //SPAWN CAR. Temporary.
-            var veh = VehicleManager.CreateVehicle(VehicleHash.Asea, player.position, player.rotation, "", 0, vehicle_manager.Vehicle.VehTypeTemp, 89, 89);
-            VehicleManager.spawn_vehicle(veh);
-            API.setPlayerIntoVehicle(player, veh.NetHandle, -1);
-
-            c.TimeStartedTest = DateTime.Now;
+            c.TimeStartedDmvTest = DateTime.Now;
             c.IsInDmvTest = true;
             c.DmvTestStep = 0;
             NextCheckpoint(player);
@@ -73,14 +99,14 @@ namespace mtgvrp.dmv
         {
             var c = player.GetCharacter();
 
-            if (c.NextCheckpointColShape != null)
-                API.deleteColShape(c.NextCheckpointColShape);
+            if (c.NextDmvCheckpointColShape != null)
+                API.deleteColShape(c.NextDmvCheckpointColShape);
 
             //Check next.
-            if (c.DmvTestStep < testCheckpoints.Length)
+            if (c.DmvTestStep < _testCheckpoints.Length)
             {
-                c.NextCheckpointColShape = API.createSphereColShape(testCheckpoints[c.DmvTestStep], 5.0f);
-                c.NextCheckpointColShape.onEntityEnterColShape += (shape, entity) =>
+                c.NextDmvCheckpointColShape = API.createSphereColShape(_testCheckpoints[c.DmvTestStep], 5.0f);
+                c.NextDmvCheckpointColShape.onEntityEnterColShape += (shape, entity) =>
                 {
                     if (entity != player) return;
 
@@ -88,12 +114,14 @@ namespace mtgvrp.dmv
                     c.DmvTestStep += 1;
                     NextCheckpoint(player);
                 };
-                API.triggerClientEvent(player, "DMV_UPDATE_MARKER", testCheckpoints[c.DmvTestStep].Subtract(new Vector3(0, 0, 0.2)));
+                API.triggerClientEvent(player, "DMV_UPDATE_MARKER",
+                    _testCheckpoints[c.DmvTestStep].Subtract(new Vector3(0, 0, 0.3)));
             }
             else
             {
                 API.triggerClientEvent(player, "DMV_UPDATE_MARKER", new Vector3());
-                API.sendChatMessageToPlayer(player, "DONE IN " + DateTime.Now.Subtract(c.TimeStartedTest).ToString());
+                API.sendChatMessageToPlayer(player,
+                    "DONE IN " + DateTime.Now.Subtract(c.TimeStartedDmvTest).ToString("g"));
                 c.IsInDmvTest = false;
             }
 
