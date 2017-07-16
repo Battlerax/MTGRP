@@ -9,11 +9,15 @@ using System.Threading.Tasks;
 using GTANetworkServer;
 using GTANetworkShared;
 using mtgvrp.core;
+using mtgvrp.database_manager;
 using mtgvrp.group_manager.lsgov;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;
 using mtgvrp.property_system;
 using mtgvrp.vehicle_manager;
+using MongoDB.Bson.Serialization;
+using MongoDB.Driver;
+using Vehicle = mtgvrp.vehicle_manager.Vehicle;
 
 namespace mtgvrp.dmv
 {
@@ -69,6 +73,107 @@ namespace mtgvrp.dmv
             API.onResourceStart += API_onResourceStart;
             API.onPlayerEnterVehicle += API_onPlayerEnterVehicle;
             API.onPlayerExitVehicle += API_onPlayerExitVehicle;
+            API.onClientEventTrigger += API_onClientEventTrigger;
+        }
+
+        private void API_onClientEventTrigger(Client player, string eventName, params object[] arguments)
+        {
+            if (eventName == "DMV_REGISTER_VEHICLE")
+            {
+                var prop = PropertyManager.IsAtPropertyInteraction(player);
+                if (prop?.Type != PropertyManager.PropertyTypes.DMV)
+                {
+                    API.sendChatMessageToPlayer(player, "You need to be at a DMV.");
+                    return;
+                }
+
+                var c = player.GetCharacter();
+
+                if (InventoryManager.DoesInventoryHaveItem<IdentificationItem>(c).Length == 0)
+                {
+                    API.sendChatMessageToPlayer(player, "You must have a valid identification.");
+                    return;
+                }
+
+                if (InventoryManager.DoesInventoryHaveItem<DrivingLicenseItem>(c).Length == 0)
+                {
+                    API.sendChatMessageToPlayer(player, "You must have a valid driving license.");
+                    return;
+                }
+
+                int vehid = Convert.ToInt32(arguments[0]);
+                if (!c.OwnedVehicles.Exists(x => x == vehid))
+                {
+                    API.sendChatMessageToPlayer(player, "You don't own that vehicle!!!");
+                    return;
+                }
+
+                var veh = VehicleManager.Vehicles.FirstOrDefault(x => x.Id == vehid);
+                if (veh == null || veh.OwnerId != c.Id)
+                {
+                    API.sendChatMessageToPlayer(player, "You don't own that vehicle!!!");
+                    return;
+                }
+
+                if (veh.IsRegistered)
+                {
+                    API.sendChatMessageToPlayer(player, "Vehicle is already registered!!!");
+                    return;
+                }
+
+                if (Money.GetCharacterMoney(c) < 100)
+                {
+                    API.sendChatMessageToPlayer(player, "You need $100 to register your vehicle.");
+                    return;
+                }
+
+                //Set License Plate.
+                veh.LicensePlate = GetValidLicensePlate();
+                veh.IsRegistered = true;
+
+                if (veh.IsSpawned)
+                {
+                    VehicleManager.respawn_vehicle(veh);
+                }
+
+                //Remove money.
+                InventoryManager.DeleteInventoryItem<Money>(c, 100);
+
+                API.sendChatMessageToPlayer(player, $"You've sucessfully registered your {API.getVehicleDisplayName(veh.VehModel)}. License: {veh.LicensePlate}");
+                veh.Save();
+            }
+        }
+
+        string GetValidLicensePlate()
+        {
+            var rng = new Random();
+            char GetRandomCharacter()
+            {
+                int index = rng.Next("ABCDEFGHIJKLMNOPQRSTUVWXYZ".Length);
+                return "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[index];
+            }
+            char GetRandomNumber()
+            {
+                int index = rng.Next("1234567890".Length);
+                return "1234567890"[index];
+            }
+
+            RestartProcess:
+
+            var plate = $"{GetRandomCharacter()}{GetRandomCharacter()}{GetRandomCharacter()} {GetRandomNumber()}{GetRandomNumber()}{GetRandomNumber()}";
+            
+            //Make sure plate doesn't exist.
+            var filter = MongoDB.Driver.Builders<LicensePlate>.Filter.Eq(x => x.Plate, plate);
+            if (DatabaseManager.NumberPlatesTable.Count(filter) > 0)
+            {
+                goto RestartProcess; //Restart
+            }
+
+            //Save.
+            DatabaseManager.NumberPlatesTable.InsertOne(new LicensePlate() {Plate = plate});
+
+            //Else return;
+            return plate;
         }
 
         private void API_onPlayerExitVehicle(Client player, NetHandle vehicle)
@@ -135,7 +240,7 @@ namespace mtgvrp.dmv
             }
         }
 
-        [Command("/starttest")]
+        [Command("starttest")]
         public void StartTest(Client player)
         {
             var prop = PropertyManager.IsAtPropertyInteraction(player);
@@ -241,7 +346,29 @@ namespace mtgvrp.dmv
         [Command("registervehicle")]
         public void RegisterVehicle(Client player)
         {
-            
+            var prop = PropertyManager.IsAtPropertyInteraction(player);
+            if (prop?.Type != PropertyManager.PropertyTypes.DMV)
+            {
+                API.sendChatMessageToPlayer(player, "You need to be at a DMV.");
+                return;
+            }
+
+            var c = player.GetCharacter();
+
+            if (InventoryManager.DoesInventoryHaveItem<IdentificationItem>(c).Length == 0)
+            {
+                API.sendChatMessageToPlayer(player, "You must have a valid identification.");
+                return;
+            }
+
+            if (InventoryManager.DoesInventoryHaveItem<DrivingLicenseItem>(c).Length == 0)
+            {
+                API.sendChatMessageToPlayer(player, "You must have a valid driving license.");
+                return;
+            }
+
+            string[][] vehList = VehicleManager.Vehicles.Where(x => c.OwnedVehicles.Exists(y => x.Id == y) && x.IsRegistered == false).Select(x => new[] {API.getVehicleDisplayName(x.VehModel), x.Id.ToString() }).ToArray();
+            API.triggerClientEvent(player, "DMV_SELECTVEHICLE", API.toJson(vehList));
         }
 
         [Command("showlicense")]
@@ -275,5 +402,10 @@ namespace mtgvrp.dmv
 
             ChatManager.RoleplayMessage(player, "shows his driving license to " + targetPlayer.GetCharacter().rp_name(), ChatManager.RoleplayMe);
         }
+    }
+
+    public class LicensePlate
+    {
+        public string Plate { get; set; }
     }
 }
