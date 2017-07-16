@@ -238,6 +238,12 @@ namespace mtgvrp.dmv
 
         }
 
+        [Command("registervehicle")]
+        public void RegisterVehicle(Client player)
+        {
+            
+        }
+
         [Command("showlicense")]
         public void ShowLicense(Client player, string target)
         {
@@ -262,11 +268,10 @@ namespace mtgvrp.dmv
                 return;
             }
 
-            API.sendChatMessageToPlayer(targetPlayer, " [**************~t~Driving License **************]");
-            API.sendChatMessageToPlayer(targetPlayer, " [**************~t~~g~VALID~w~     **************]");
-            API.sendChatMessageToPlayer(targetPlayer, $" [Name: ~h~{c.rp_name()}~h~ | Age: ~h~{c.Age}~h~]");
-            API.sendChatMessageToPlayer(targetPlayer, $" [DOB: ~h~{c.Birthday}~h~ | Birth Place: ~h~{c.Birthplace}~h~]");
-            API.sendChatMessageToPlayer(targetPlayer, " [********************************************]");
+            API.sendChatMessageToPlayer(targetPlayer, " [************** Driving License ~g~VALID~w~ **************]");
+            API.sendChatMessageToPlayer(targetPlayer, $"* Name: ~h~{c.rp_name()}~h~ | Age: ~h~{c.Age}~h~");
+            API.sendChatMessageToPlayer(targetPlayer, $"* DOB: ~h~{c.Birthday}~h~ | Birth Place: ~h~{c.Birthplace}~h~");
+            API.sendChatMessageToPlayer(targetPlayer, " [***********/**********************************************]");
 
             ChatManager.RoleplayMessage(player, "shows his driving license to " + targetPlayer.GetCharacter().rp_name(), ChatManager.RoleplayMe);
         }

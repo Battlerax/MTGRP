@@ -90,6 +90,8 @@ namespace mtgvrp.vehicle_manager
         [BsonIgnore]
         public Property RefuelProp { get; set; }
 
+        public bool IsRegistered { get; set; }
+
         public Vehicle()
         {
             Id = 0;

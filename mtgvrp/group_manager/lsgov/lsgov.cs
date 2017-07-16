@@ -184,8 +184,8 @@ namespace mtgvrp.group_manager.lsgov
             }
 
             API.sendChatMessageToPlayer(targetPlayer, " [************** Identification **************]");
-            API.sendChatMessageToPlayer(targetPlayer, $" [Name: ~h~{c.rp_name()}~h~ | Age: ~h~{c.Age}~h~]");
-            API.sendChatMessageToPlayer(targetPlayer, $" [DOB: ~h~{c.Birthday}~h~ | Birth Place: ~h~{c.Birthplace}~h~]");
+            API.sendChatMessageToPlayer(targetPlayer, $"* Name: ~h~{c.rp_name()}~h~ | Age: ~h~{c.Age}~h~");
+            API.sendChatMessageToPlayer(targetPlayer, $"* DOB: ~h~{c.Birthday}~h~ | Birth Place: ~h~{c.Birthplace}~h~");
             API.sendChatMessageToPlayer(targetPlayer, " [********************************************]");
 
             ChatManager.RoleplayMessage(player, "shows his id to " + targetPlayer.GetCharacter().rp_name(), ChatManager.RoleplayMe);
