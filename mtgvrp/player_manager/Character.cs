@@ -514,10 +514,16 @@ namespace mtgvrp.player_manager
             record.Insert();
         }
 
-        public List<CriminalRecord> GetCriminalRecord()
+        public List<CriminalRecord> GetCriminalRecord(int amountToSkip = 0)
         {
             var filter = Builders<CriminalRecord>.Filter.Eq("CharacterId", Id.ToString());
-            return DatabaseManager.CriminalRecordTable.Find(filter).ToList();
+            return DatabaseManager.CriminalRecordTable.Find(filter).SortByDescending(x => x.DateTime).Skip(amountToSkip).Limit(10).ToList();
+        }
+
+        public long GetCrimesNumber()
+        {
+            var filter = Builders<CriminalRecord>.Filter.Eq("CharacterId", Id.ToString());
+            return DatabaseManager.CriminalRecordTable.Find(filter).Count();
         }
 
         public int HasActiveCriminalRecord()

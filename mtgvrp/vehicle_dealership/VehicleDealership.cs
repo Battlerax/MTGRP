@@ -171,6 +171,7 @@ namespace mtgvrp.vehicle_dealership
                         character.Id,
                         vehicle_manager.Vehicle.VehTypePerm
                     );
+                    theVehicle.OwnerName = character.CharacterName;
 
                     //Add it to the players cars.
                     theVehicle.Insert();
