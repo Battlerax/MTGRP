@@ -1536,7 +1536,7 @@ namespace mtgvrp.AdminSystem
             }
         }
 
-        [Command("giveitem")]
+        [Command("giveitem", Help(HelpManager.CommandGroups.AdminLevel4, "Gives an inventory item to a player.<br/> <strong>This could cause problems with the player, use with caution.</strong>", new[] { "Target ID or name.", "Item name, you can get this from a dev.", "Amount to give." }))]
         public void GiveItem(Client player, string target, string item, int amount)
         {
             if (player.GetAccount().AdminLevel < 4)
