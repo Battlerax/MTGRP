@@ -1535,5 +1535,32 @@ namespace mtgvrp.AdminSystem
                 API.triggerClientEvent(player, "texttest_settext", text);
             }
         }
+
+        [Command("giveitem"), Help(HelpManager.CommandGroups.AdminLevel4, "Gives an inventory item to a player.<br/> <strong>This could cause problems with the player, use with caution.</strong>", new[] { "Target ID or name.", "Item name, you can get this from a dev.", "Amount to give." })]
+        public void GiveItem(Client player, string target, string item, int amount)
+        {
+            if (player.GetAccount().AdminLevel < 4)
+            {
+                return;
+            }
+
+            var targetPlayer = PlayerManager.ParseClient(target);
+            if (targetPlayer == null)
+            {
+                API.sendChatMessageToPlayer(player, "That player is not online.");
+                return;
+            }
+
+            var type = InventoryManager.ParseInventoryItem(item);
+            if (type == null)
+            {
+                API.sendChatMessageToPlayer(player, "Unexisting Item.");
+                return;
+            }
+
+            var itema = InventoryManager.ItemTypeToNewObject(type);
+            InventoryManager.GiveInventoryItem(targetPlayer.GetCharacter(), itema, amount);
+            API.sendChatMessageToPlayer(player, "Done.");
+        }
     }
 }
