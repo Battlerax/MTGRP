@@ -26,7 +26,7 @@ namespace mtgvrp.job_manager.fisher
 
         public Dictionary<Type, int> MaxAmount => new Dictionary<Type, int>();
 
-        public string CommandFriendlyName => Name.Replace(" ", "") + "_" + ActualWeight;
+        public string CommandFriendlyName => Name?.Replace(" ", "") + "_" + ActualWeight;
         public string LongName => Name;
         public int Object => 0;
 
