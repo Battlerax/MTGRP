@@ -398,9 +398,43 @@ namespace mtgvrp.dmv
             API.sendChatMessageToPlayer(targetPlayer, " [************** Driving License ~g~VALID~w~ **************]");
             API.sendChatMessageToPlayer(targetPlayer, $"* Name: ~h~{c.rp_name()}~h~ | Age: ~h~{c.Age}~h~");
             API.sendChatMessageToPlayer(targetPlayer, $"* DOB: ~h~{c.Birthday}~h~ | Birth Place: ~h~{c.Birthplace}~h~");
-            API.sendChatMessageToPlayer(targetPlayer, " [***********/**********************************************]");
+            API.sendChatMessageToPlayer(targetPlayer, " [**********************************************************]");
 
             ChatManager.RoleplayMessage(player, "shows his driving license to " + targetPlayer.GetCharacter().rp_name(), ChatManager.RoleplayMe);
+        }
+
+        [Command("showregistration", Alias = "showreg")]
+        public void ShowReg(Client player, string target)
+        {
+            var targetPlayer = PlayerManager.ParseClient(target);
+            if (targetPlayer == null)
+            {
+                API.sendChatMessageToPlayer(player, "That player is not online.");
+                return;
+            }
+
+            var c = player.GetCharacter();
+
+            if (!VehicleManager.Vehicles.Where(x => c.OwnedVehicles.Contains(x.Id)).Any(x => x.IsRegistered))
+            {
+                API.sendChatMessageToPlayer(player, "You don't have any registered vehicles.");
+                return;
+            }
+
+            if (targetPlayer.position.DistanceTo(player.position) > 3.0)
+            {
+                API.sendChatMessageToPlayer(player, "The player must be near you.");
+                return;
+            }
+
+            API.sendChatMessageToPlayer(targetPlayer, $" [************** Vehicles Of {c.rp_name()} **************]");
+            foreach (var veh in VehicleManager.Vehicles.Where(x => c.OwnedVehicles.Contains(x.Id)).Where(x => x.IsRegistered))
+            {
+                API.sendChatMessageToPlayer(player, $"* Model: {API.getVehicleDisplayName(veh.VehModel)} | Registeration: {veh.LicensePlate}");
+            }
+            API.sendChatMessageToPlayer(targetPlayer, " [**********************************************************]");
+
+            ChatManager.RoleplayMessage(player, "shows his vehicle registrations to " + targetPlayer.GetCharacter().rp_name(), ChatManager.RoleplayMe);
         }
     }
 
