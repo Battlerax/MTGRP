@@ -1,0 +1,123 @@
+﻿<html>
+<head>
+    <link href="../stylesheet/css/metro.css" rel="stylesheet">
+    <script src="../jquery.js"></script>
+    <script src="../stylesheet/js/metro.js"></script>
+    <link href="../stylesheet/css/metro-icons.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="panel">
+        <div class="heading">
+            <span class="icon mif-cogs"></span>
+            <span class="title">Mapping Manager</span>
+        </div>
+
+        <div class="content" style="padding:10px;font-family:BebasKai">
+
+            <!-- Navigation buttons & error message -->
+            <div data-role="group" data-group-type="one-state">
+                <button class="button active" onclick="show('#view_all')">View all</button>
+                <button class="button" onclick="show('#create_mapping')">Create mapping</button>
+                <button class="button" onclick="show('#view_specific')">View mapping</button>
+            </div>
+
+            <!-- View all mapping requests -->
+            <div id="view_all">
+                <table class="table border striped" id="mapping_table">
+                    <thead>
+                        <tr>
+                            <th>Request ID</th>
+                            <th>Description</th>
+                            <th>Created By</th>
+                            <th>Active</th>
+                        </tr>
+                    </thead>
+                    <tbody id="mapping_table_body"></tbody>
+                </table>
+
+                <div class="pagination" id="pagination">
+                </div>
+            </div>
+
+            <!-- Create a new mapping request -->
+            <div id="create_mapping" style="display:none">
+                <div class="grid condensed">
+                    <div class="row cells5">
+                        <div class="cell">Mapping ID:</div>
+                        <div class="cell">Created by:</div>
+                        <div class="cell">Created Date:</div>
+                        <div class="cell">Property Link:</div>
+                        <div class="cell">Dimension:</div>
+                    </div>
+                    <div class="row cells5">
+                        <div class="cell"><div class="input-control text"><input id="createID" type="text" placeholder="10" readonly></div></div>
+                        <div class="cell"><div class="input-control text"><input id="createCreator" type="text" placeholder="Chenko" readonly></div></div>
+                        <div class="cell"><div class="input-control text"><input id="createDate" type="text" placeholder="7/14/2017 07:49:00PM" readonly></div></div>
+                        <div class="cell"><div class="input-control text"><input id="createPropLink" type="text" placeholder="0"></div></div>
+                        <div class="cell"><div class="input-control text"><input id="createDim" type="text" placeholder="0"></div></div>
+                    </div>
+                    <div class="row cells5">
+                        <div class="cell">Pastebin code:</div>
+                        <div class="cell">Description:</div>
+                    </div>
+                    <div class="row cells5">
+                        <div class="cell"><div class="input-control text"><input id="createPastebinLink" type="text" placeholder="Ex: 0avqAqTu"></div></div>
+                        <div class="cell"><div class="input-control text"><input id="createDesc" type="text"></div></div>
+                        <div class="cell"><button onclick="createMappingRequest()" class="button success">Create Mapping</button></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View a specific mapping request -->
+            <div id="view_specific" style="display:none">
+                <div class="grid condensed">
+                    <div class="row cells5">
+                        <div class="cell">Search for ID:</div>
+                        <div class="cell">Created by:</div>
+                        <div class="cell">Created Date:</div>
+                        <div class="cell">Property Link:</div>
+                        <div class="cell">Dimension:</div>
+                    </div>
+                    <div class="row cells5">
+                        <div class="cell"><div class="input-control text"><input id="viewID" type="text" placeholder="1"></div></div>
+                        <div class="cell"><div class="input-control text"><input id="viewCreator" type="text" placeholder="Chenko" readonly></div></div>
+                        <div class="cell"><div class="input-control text"><input id="viewDate" type="text" placeholder="7/14/2017 07:49:00PM" readonly></div></div>
+                        <div class="cell"><div class="input-control text"><input id="viewPropLink" type="text" placeholder="0"></div></div>
+                        <div class="cell"><div class="input-control text"><input id="viewDim" type="text" placeholder="0"></div></div>
+                    </div>
+                    <div class="row cells5">
+                        <div class="cell">Pastebin code:</div>
+                        <div class="cell">Description</div>
+                        <div class="cell">Is Loaded:</div>
+                        <div class="cell">Is Active:</div>
+                    </div>
+                    <div class="row cells5">
+                        <div class="cell"><div class="input-control text"><input id="viewPastebinLink" type="text" placeholder="Ex: 0avqAqTu"></div></div>
+                        <div class="cell"><div class="input-control text"><input id="viewDesc" type="text"></div></div>
+                        <div class="cell"><label class="input-control checkbox"><input onclick="toggleMappingLoaded()" id="viewLoaded" type="checkbox" checked=""><span class="check"></span></label></div>
+                        <div class="cell"><label class="input-control checkbox"><input onclick="toggleMappingActive()" id="viewActive" type="checkbox" checked=""><span class="check"></span></label></div>
+                        <div class="cell">
+                            <button onclick="searchForMappingRequest()" class="button primary" style="margin-top:10px" data-role="hint" data-hint-background="bg-blue" data-hint-color="fg-white" data-hint-mode="2" data-hint="Search|Search for mapping"><span class="mif-search"></span> </button>
+                            <button onclick="saveMappingRequest()" class="button success" style="margin-top:10px" data-role="hint" data-hint-background="bg-green" data-hint-color="fg-white" data-hint-mode="2" data-hint="Save|Save changes"><span class="mif-floppy-disk"></span> </button>
+                            <button onclick="deleteMappingRequest()" class="button warning" style="margin-top:10px"><span class="mif-cross" data-role="hint" data-hint-background="bg-red" data-hint-color="fg-white" data-hint-mode="2" data-hint="Delete|Delete mapping"></span> </button>
+                        </div>
+                    </div>
+                    <div class="row cells5">
+                        <div class="cell"><div class="cell"><button class="button success" onclick="requestMappingCode()">Output mapping</button></div></div>
+                    </div>
+                    <div class="input-control textarea" style="display:none" data-role="input" data-text-auto-resize="true" data-text-max-height="300">
+                        <textarea readonly>test&#13;&#10;test2</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Box to display error or success messages -->
+            <div id="error_box" class="popover marker-on-top bg-red" style="display: none;padding:8px;max-width:25%;">
+                <div class="fg-black" id="error_msg">Default Text</div>
+            </div>
+    </div>
+
+    <script src="MappingManagerInterface.js" type="text/javascript"></script>
+</body>
+</html>

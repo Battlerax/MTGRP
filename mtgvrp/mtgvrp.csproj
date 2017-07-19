@@ -108,6 +108,9 @@
     <Compile Include="job_manager\scuba\ScubaItem.cs" />
     <Compile Include="job_manager\scuba\ScubaManager.cs" />
     <Compile Include="job_manager\trucker\TruckerManager.cs" />
+    <Compile Include="mapping_manager\Mapping.cs" />
+    <Compile Include="mapping_manager\MappingManager.cs" />
+    <Compile Include="mapping_manager\MappingObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AdminSystem\AdminCommands.cs" />
     <Compile Include="AdminSystem\AdminReports.cs" />
@@ -229,6 +232,9 @@
     <Content Include="job_manager\scuba\ScubaManager.js" />
     <Content Include="job_manager\taxi\TaxiJob.js" />
     <Content Include="jquery.js" />
+    <Content Include="mapping_manager\MappingManager.html" />
+    <Content Include="mapping_manager\MappingManager.js" />
+    <Content Include="mapping_manager\MappingManagerInterface.js" />
     <Content Include="meta.xml">
       <SubType>Designer</SubType>
     </Content>

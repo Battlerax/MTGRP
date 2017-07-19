@@ -10,6 +10,7 @@ using mtgvrp.property_system;
 using mtgvrp.vehicle_manager;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using mtgvrp.mapping_manager;
 
 namespace mtgvrp.database_manager
 {
@@ -32,6 +33,7 @@ namespace mtgvrp.database_manager
         public static IMongoCollection<Crime> CrimeTable;
         public static IMongoCollection<CriminalRecord> CriminalRecordTable;
         public static IMongoCollection<Tree> TreesTable;
+        public static IMongoCollection<Mapping> MappingTable;
 
 
         public static void DatabaseManagerInit()
@@ -54,6 +56,7 @@ namespace mtgvrp.database_manager
             CrimeTable = _database.GetCollection<Crime>("crimes");
             CriminalRecordTable = _database.GetCollection<CriminalRecord>("criminalrecords");
             TreesTable = _database.GetCollection<Tree>("lumberjacktrees");
+            MappingTable = _database.GetCollection<Mapping>("mapping");
 
             DebugManager.DebugMessage("[DatabaseM] Database Manager initalized!");
         }
