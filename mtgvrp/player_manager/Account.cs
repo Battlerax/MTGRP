@@ -49,6 +49,7 @@ namespace mtgvrp.player_manager
         {
             AccountName = "default_account";
             AdminLevel = 0;
+            AdminName = "";
             CharacterSlots = 3;
             AdminPin = string.Empty;
             Password = string.Empty;
