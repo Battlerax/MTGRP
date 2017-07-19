@@ -149,7 +149,7 @@ namespace mtgvrp.player_manager
                 {
                     return c.Client;
                 }
-                else if (c.CharacterName.ToLower().Substring(0, name.Length).Contains(name.ToLower()) || c.Client.GetAccount().AdminName.ToLower().Substring(0, name.Length).Contains(name.ToLower()))
+                else if (c.CharacterName.ToLower().Substring(0, (name.Length > c.CharacterName.Length) ? (c.CharacterName.Length) : (name.Length)).Contains(name.ToLower()) || c.Client.GetAccount().AdminName.ToLower().Substring(0, (name.Length > c.Client.GetAccount().AdminName.Length) ? (c.Client.GetAccount().AdminName.Length) : (name.Length)).Contains(name.ToLower()))
                 {
                     return c.Client;
                 }
