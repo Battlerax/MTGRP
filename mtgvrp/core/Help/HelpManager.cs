@@ -17,13 +17,19 @@ namespace mtgvrp.core.Help
             Vehicles,
             Bussiness,
             Houses,
+            ScubaActivity,
+            HuntingActivity,
             JobsGeneral,
             TaxiJob,
             MechanicJob,
             FisherJob,
+            DeliveryJob,
+            GarbageJob,
+            TruckerJob,
             GroupGeneral,
             LSNN,
             LSPD,
+            Gov,
             AdminLevel1,
             AdminLevel2,
             AdminLevel3,
@@ -79,6 +85,7 @@ namespace mtgvrp.core.Help
 
             bool isPD = false;
             bool isLSNN = false;
+            bool isGov = false;
             if (character.Group != Group.None)
             {
                 if (character.Group.CommandType == Group.CommandTypeLspd)
@@ -86,9 +93,12 @@ namespace mtgvrp.core.Help
 
                 if (character.Group.CommandType == Group.CommandTypeLsnn)
                     isLSNN = true;
+
+                if (character.Group.CommandType == Group.CommandTypeLSGov)
+                    isGov = true;
             }
 
-            API.triggerClientEvent(player, "help_showMenu", CommandStuff, player.GetAccount().AdminLevel, isPD, isLSNN);
+            API.triggerClientEvent(player, "help_showMenu", CommandStuff, player.GetAccount().AdminLevel, isPD, isLSNN, isGov);
         }
     }
 }

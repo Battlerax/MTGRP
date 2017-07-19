@@ -402,7 +402,7 @@ namespace mtgvrp.job_manager.hunting
             List<Client> playersInRadius = new List<Client>();
             try
             {
-                playersInRadius = API.shared.getPlayersInRadiusOfPosition(500f, API.shared.getEntityPosition(handle));
+                //playersInRadius = API.shared.getPlayersInRadiusOfPosition(500f, API.shared.getEntityPosition(handle));
             }
             catch (Exception)
             {

@@ -11,7 +11,7 @@ using mtgvrp.core.Help;
 
 namespace mtgvrp.vehicle_dealership
 {
-    class VehicleDealership : Script
+    class VipDealership : Script
     {
         #region Vehicle Info [NAME/HASH/PRICE]
 
@@ -85,28 +85,29 @@ namespace mtgvrp.vehicle_dealership
         //Vars: 
         private readonly Vector3[] _dealershipsLocations =
         {
-            new Vector3(-56.77422f, -1097.052f, 26.42235f)
+            new Vector3(-41.50781, -1675.438, 29.42231)
         };
 
         private List<MarkerZone> _markerZones = new List<MarkerZone>();
-        public VehicleDealership()
+        public VipDealership()
         {
             API.onClientEventTrigger += API_onClientEventTrigger;
 
             //Setup the blip.
             foreach (var loc in _dealershipsLocations)
             {
-                var marker = new MarkerZone(loc, new Vector3()) {BlipSprite = 100, TextLabelText = "/buyvehicle"};
+                var marker = new MarkerZone(loc, new Vector3()) {BlipSprite = 100, TextLabelText = "/buyvipvehicle", BlipColor = 46};
                 marker.Create();
                 API.shared.setBlipShortRange(marker.Blip, true);
-                API.shared.setBlipName(marker.Blip, "Vehicle Dealership");
+                API.shared.setBlipName(marker.Blip, "VIP Vehicle Dealership");
+                API.shared.setBlipColor(marker.Blip, 46);
                 _markerZones.Add(marker);
             }
         }
 
         private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
         {
-            if (eventName == "vehicledealer_selectcar")
+            if (eventName == "vipdealer_selectcar")
             {
                 Character character = sender.GetCharacter();
 
@@ -151,14 +152,10 @@ namespace mtgvrp.vehicle_dealership
                     //Spawn positions.
                     Vector3[] spawnPoss =
                     {
-                        new Vector3(-42.44885, -1115.865, 25.86397),
-                        new Vector3(-45.04674, -1116.336, 25.86318),
-                        new Vector3(-47.77579, -1116.404, 25.86377),
-                        new Vector3(-50.53339, -1116.758, 25.86334),
-                        new Vector3(-53.56507, -1116.645, 25.86412),
-                        new Vector3(-56.42249, -1116.668, 25.8641),
-                        new Vector3(-59.06798, -1117.206, 25.86339),
-                        new Vector3(-61.86055, -1117.122, 25.8629)
+                        new Vector3(-51.88548, -1694.663, 29.09777),
+                        new Vector3(-52.7189, -1689.862, 29.09228),
+                        new Vector3(-58.41274, -1683.702, 29.09858),
+                        new Vector3(-55.86712, -1687.208, 29.09822),
                     };
                     var randomPos = new Random().Next(1, spawnPoss.Length) - 1;
 
@@ -172,7 +169,7 @@ namespace mtgvrp.vehicle_dealership
                         vehicle_manager.Vehicle.VehTypePerm
                     );
                     theVehicle.OwnerName = character.CharacterName;
-
+                    theVehicle.IsVip = true;
                     //Add it to the players cars.
                     theVehicle.Insert();
                     character.OwnedVehicles.Add(theVehicle.Id);
@@ -187,7 +184,7 @@ namespace mtgvrp.vehicle_dealership
                     API.sendChatMessageToPlayer(sender, "Use /myvehicles to manage it.");
 
                     //Exit.
-                    API.triggerClientEvent(sender, "dealership_exitdealermenu");
+                    API.triggerClientEvent(sender, "vipdealership_exitdealermenu");
                 }
                 else
                     API.sendChatMessageToPlayer(sender,
@@ -195,22 +192,29 @@ namespace mtgvrp.vehicle_dealership
             }
         }
 
-        [Command("buyvehicle"), Help(HelpManager.CommandGroups.Vehicles, "Command used inside dealership to buy a vehicle.", null)]
+        [Command("buyvipvehicle"), Help(HelpManager.CommandGroups.Vehicles, "Command used inside dealership to buy a vehicle.", null)]
         public void BuyVehicle(Client player)
         {
             //Check if can buy more cars.
             Character character = player.GetCharacter();
+            Account account = API.getEntityData(player, "Account");
+
+            if (account.VipLevel < 1)
+            {
+                player.sendChatMessage("You must be a VIP to use the VIP dealership.");
+                return;
+            }
             if (character.OwnedVehicles.Count >= VehicleManager.GetMaxOwnedVehicles(player))
             {
                 API.sendChatMessageToPlayer(player, "You can't own anymore vehicles.");
-                API.sendChatMessageToPlayer(player, "~g~NOTE: You can buy VIP to increase your vehicle slots.");
+                API.sendChatMessageToPlayer(player, "~g~NOTE: You can upgrade your VIP to increase your vehicle slots.");
                 return;
             }
 
             var currentPos = API.getEntityPosition(player);
             if (_dealershipsLocations.Any(dealer => currentPos.DistanceTo(dealer) < 5F))
             {
-                API.triggerClientEvent(player, "dealership_showbuyvehiclemenu", API.toJson(_motorsycles),
+                API.triggerClientEvent(player, "vipdealership_showbuyvehiclemenu", API.toJson(_motorsycles),
                     API.toJson(_copues), API.toJson(_trucksnvans), API.toJson(_offroad), API.toJson(_musclecars),
                     API.toJson(_suv), API.toJson(_supercars));
             }

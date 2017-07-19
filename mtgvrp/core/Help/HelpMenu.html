@@ -12,7 +12,7 @@
 
         var cmdsList = [];
 
-        function fillUpCommands(cmds, adminRank, isPD, isLSNN) {
+        function fillUpCommands(cmds, adminRank, isPD, isLSNN, isGov) {
             var cmdsGroups = JSON.parse(cmds);
 
             $.each(cmdsGroups, function (index, commands) {
@@ -56,6 +56,9 @@
 
             if (isLSNN || adminRank > 0)
                 $("#LSNN").show();
+
+            if (isGov || adminRank > 0)
+                $("#Gov").show();
         }
 
         function showCmds(index) {
@@ -117,16 +120,27 @@
                             </ul>
                         </li>
                         <li class="">
+                            <a href="javascript:void(0)" class="dropdown-toggle">Activities Commands</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                <li class="item"><a href="javascript:void(0)" onclick="showCmds('ScubaActivity');">Scuba Diving</a></li>
+                                <li class="item"><a href="javascript:void(0)" onclick="showCmds('HuntingActivity');">Hunting</a></li>
+                            </ul>
+                        </li>
+                        <li class="">
                             <a class="dropdown-toggle" href="javascript:void(0)" onclick="showCmds('JobsGeneral');">Jobs Commands</a>
                             <ul class="d-menu" data-role="dropdown">
                                 <li class="item"><a href="javascript:void(0)" onclick="showCmds('TaxiJob');">Taxi</a></li>
                                 <li class="item"><a href="javascript:void(0)" onclick="showCmds('FisherJob');">Fisherman</a></li>
                                 <li class="item"><a href="javascript:void(0)" onclick="showCmds('MechanicJob');">Mechanic</a></li>
+                                <li class="item"><a href="javascript:void(0)" onclick="showCmds('DeliveryJob');">Mechanic</a></li>
+                                <li class="item"><a href="javascript:void(0)" onclick="showCmds('GarbageJob');">Mechanic</a></li>
+                                <li class="item"><a href="javascript:void(0)" onclick="showCmds('TruckerJob');">Mechanic</a></li>
                             </ul>
                         </li>
                         <li class="">
                             <a class="dropdown-toggle" href="javascript:void(0)" onclick="showCmds('GroupGeneral');">Group Commands</a>
                             <ul class="d-menu" data-role="dropdown">
+                                <li style="display: none;" class="item" id="Gov"><a href="javascript:void(0)" onclick="showCmds('Gov');">Government</a></li>
                                 <li style="display: none;" class="item" id="LSPD"><a href="javascript:void(0)" onclick="showCmds('LSPD');">LSPD</a></li>
                                 <li style="display: none;" class="item" id="LSNN"><a href="javascript:void(0)" onclick="showCmds('LSNN');">LSNN</a></li>
                             </ul>

@@ -50,6 +50,14 @@ namespace mtgvrp.vehicle_manager
                         return;
                     }
                     var targetChar = target.GetCharacter();
+                    var targetAccount = target.GetAccount();
+
+                    if (targetChar.OwnedVehicles.Count >= VehicleManager.GetMaxOwnedVehicles(targetChar.Client))
+                    {
+                        API.sendChatMessageToPlayer(sender, "This player cannot own any more vehicles.");
+                        return;
+                    }
+
                     API.sendChatMessageToPlayer(sender,
                         $"Are you sure you would like to sell the ~r~{API.getVehicleDisplayName(scVeh.VehModel)}~w~ for ~r~${arguments[2]}~w~ to the player ~r~{targetChar.CharacterName}~w~");
                     API.sendChatMessageToPlayer(sender, "Use /confirmsellvehicle to sell.");
@@ -111,8 +119,10 @@ namespace mtgvrp.vehicle_manager
                             InventoryManager.GiveInventoryItem(buyingFrom, new Money(), price);
                             InventoryManager.DeleteInventoryItem(character, typeof(Money), price);
                             veh.OwnerId = character.Id;
+                            veh.OwnerName = character.CharacterName;
                             buyingFrom.OwnedVehicles.Remove(veh.Id);
                             character.OwnedVehicles.Add(veh.Id);
+                            veh.Save();
 
                             //DONE, now spawn if hes vip.
                             if (!veh.IsSpawned)

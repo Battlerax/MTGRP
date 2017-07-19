@@ -91,7 +91,11 @@
     <Compile Include="core\Items\EngineParts.cs" />
     <Compile Include="core\Items\SprayPaint.cs" />
     <Compile Include="core\LogManager.cs" />
+    <Compile Include="core\ObjectRemovel.cs" />
     <Compile Include="core\SettingsManager.cs" />
+    <Compile Include="dmv\DmvManager.cs" />
+    <Compile Include="dmv\DrivingLicenseItem.cs" />
+    <Compile Include="group_manager\lsgov\IdentificationItem.cs" />
     <Compile Include="job_manager\delivery\DeliveryManager.cs" />
     <Compile Include="job_manager\delivery\SupplyItem.cs" />
     <Compile Include="job_manager\mechanic\MechanicJob.cs" />
@@ -174,6 +178,8 @@
     <Compile Include="property_system\businesses\Advertising.cs" />
     <Compile Include="rp_scripts\BankMenu.cs" />
     <Compile Include="speed_fuel_system\SpeedoFuelManager.cs" />
+    <Compile Include="vehicle_dealership\ChopperDealership.cs" />
+    <Compile Include="vehicle_dealership\VipDealership.cs" />
     <Compile Include="vehicle_dealership\VehicleDealership.cs" />
     <Compile Include="vehicle_manager\Vehicle.cs" />
     <Compile Include="vehicle_manager\VehicleManager.cs" />
@@ -208,6 +214,7 @@
     <Content Include="core\Items\RagManager.js" />
     <Content Include="core\JsFunctions.js" />
     <Content Include="core\MarkerZone.js" />
+    <Content Include="dmv\DmvManager.js" />
     <Content Include="door_manager\DoorManager.js" />
     <Content Include="group_manager\GroupEditor.html" />
     <Content Include="group_manager\lsnn\LowerThird.html" />
@@ -270,6 +277,8 @@
     <Content Include="stylesheet\js\metro.min.js" />
     <Content Include="stylesheet\js\raphael-2.1.4.min.js" />
     <Content Include="types-gtanetwork\Enums.js" />
+    <Content Include="vehicle_dealership\chopperdealership.js" />
+    <Content Include="vehicle_dealership\vipdealership.js" />
     <Content Include="vehicle_dealership\vehicledealer.js" />
     <Content Include="vehicle_manager\VehicleOwnership.js" />
     <Content Include="vehicle_manager\vehicle_editor\VehicleEdit.js" />

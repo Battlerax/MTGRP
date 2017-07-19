@@ -10,6 +10,8 @@ using mtgvrp.phone_manager;
 using mtgvrp.weapon_manager;
 using mtgvrp.player_manager;
 using mtgvrp.group_manager;
+using mtgvrp.group_manager.lsgov;
+using mtgvrp.job_manager;
 using mtgvrp.job_manager.hunting;
 using mtgvrp.job_manager.scuba;
 
@@ -210,6 +212,41 @@ namespace mtgvrp.property_system.businesses
                     return;
 
                 }
+                else if (prop.Type == PropertyManager.PropertyTypes.VIPLounge)
+                {
+                    prop.Supplies--;
+
+                    if (API.getPlayerCurrentWeapon(sender) == WeaponHash.Unarmed)
+                    {
+                        sender.sendChatMessage("You must be holding the weapon you want to tint.");
+                        return;
+                    }
+
+                    switch (itemName)
+                    {
+                        case "pink_tint":
+                            WeaponManager.SetWeaponTint(sender, API.getPlayerCurrentWeapon(sender), WeaponTint.Pink);
+                            break;
+                        case "gold_tint":
+                            WeaponManager.SetWeaponTint(sender, API.getPlayerCurrentWeapon(sender), WeaponTint.Gold);
+                            break;
+                        case "green_tint":
+                            WeaponManager.SetWeaponTint(sender, API.getPlayerCurrentWeapon(sender), WeaponTint.Green);
+                            break;
+                        case "orange_tint":
+                            WeaponManager.SetWeaponTint(sender, API.getPlayerCurrentWeapon(sender), WeaponTint.Orange);
+                            break;
+                        case "platinum_tint":
+                            WeaponManager.SetWeaponTint(sender, API.getPlayerCurrentWeapon(sender), WeaponTint.Platinum);
+                            break;
+
+                    }
+                    name = ItemManager.VIPItems.Single(x => x[0] == itemName)[1];
+
+                    API.sendChatMessageToPlayer(sender, "[BUSINESSES] You have successfully bought a ~g~" + name + "~w~ weapon tint for ~g~" + price + "~w~.");
+                    return;
+
+                }
                 else if (prop.Type == PropertyManager.PropertyTypes.LSNN)
                 {
                     switch (itemName)
@@ -337,9 +374,18 @@ namespace mtgvrp.property_system.businesses
                     }
                     else return;
                 }
+                else if (prop.Type == PropertyManager.PropertyTypes.Government)
+                {
+                    name = ItemManager.GovItems.Single(x => x[0] == itemName)[1];
+                    switch (itemName)
+                    {
+                        case "id":
+                            item = new IdentificationItem();
+                            break;
+                    }
+                }
 
-
-                    if (item == null)
+                if (item == null)
                 {
                     API.sendChatMessageToPlayer(sender,
                         "Error finding the item you bought, report this as a bug report.");
@@ -372,6 +418,16 @@ namespace mtgvrp.property_system.businesses
                         API.sendChatMessageToPlayer(sender,
                             $"[BUSINESS] You have reached the maximum allowed amount of that item.");
                         break;
+
+                   case InventoryManager.GiveItemErrors.HasSimilarItem:
+                       API.sendChatMessageToPlayer(sender,
+                           $"[BUSINESS] You already have a similar item.");
+                        break;
+
+                    case InventoryManager.GiveItemErrors.HasBlockingItem:
+                        API.sendChatMessageToPlayer(sender,
+                            $"[BUSINESS] You have a blocking item, please store it somewhere first.");
+                        break;
                 }
             }
         }
@@ -396,7 +452,8 @@ namespace mtgvrp.property_system.businesses
                     {
                         itemsWithPrices.Add(new[]
                         {
-                            itm[0], itm[1], itm[2], prop.ItemPrices.SingleOrDefault(x => x.Key == itm[0]).Value.ToString()
+                            itm[0], itm[1], itm[2],
+                            prop.ItemPrices.SingleOrDefault(x => x.Key == itm[0]).Value.ToString()
                         });
                     }
                     API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()), "Hardware",
@@ -411,7 +468,8 @@ namespace mtgvrp.property_system.businesses
                     {
                         itemsWithPrices.Add(new[]
                         {
-                            itm[0], itm[1], itm[2], prop.ItemPrices.SingleOrDefault(x => x.Key == itm[0]).Value.ToString()
+                            itm[0], itm[1], itm[2],
+                            prop.ItemPrices.SingleOrDefault(x => x.Key == itm[0]).Value.ToString()
                         });
                     }
                     API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()), "24/7",
@@ -422,7 +480,7 @@ namespace mtgvrp.property_system.businesses
                 {
                     API.freezePlayer(player, true);
                     List<string[]> itemsWithPrices = new List<string[]>();
-                    for(int i = 0; i < 5; i++)
+                    for (int i = 0; i < 5; i++)
                     {
                         if (i == 0)
                         {
@@ -450,7 +508,8 @@ namespace mtgvrp.property_system.businesses
                     {
                         itemsWithPrices.Add(new[]
                         {
-                            itm[0], itm[1], itm[2], prop.ItemPrices.SingleOrDefault(x => x.Key == itm[0]).Value.ToString()
+                            itm[0], itm[1], itm[2],
+                            prop.ItemPrices.SingleOrDefault(x => x.Key == itm[0]).Value.ToString()
                         });
                     }
                     API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()), "Ammunation",
@@ -459,35 +518,81 @@ namespace mtgvrp.property_system.businesses
                     break;
 
                 case PropertyManager.PropertyTypes.LSNN:
+                {
+                    API.freezePlayer(player, true);
+                    List<string[]> itemsWithPrices = new List<string[]>();
+                    foreach (var itm in ItemManager.LSNNItems)
                     {
-                        API.freezePlayer(player, true);
-                        List<string[]> itemsWithPrices = new List<string[]>();
-                        foreach (var itm in ItemManager.LSNNItems)
+                        itemsWithPrices.Add(new[]
                         {
-                            itemsWithPrices.Add(new[]
-                            {
-                            itm[0], itm[1], itm[2], prop.ItemPrices.SingleOrDefault(x => x.Key == itm[0]).Value.ToString()
+                            itm[0], itm[1], itm[2],
+                            prop.ItemPrices.SingleOrDefault(x => x.Key == itm[0]).Value.ToString()
                         });
-                        }
-                        API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()), "Los Santos News Network",
-                            prop.PropertyName);
                     }
+                    API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()),
+                        "Los Santos News Network",
+                        prop.PropertyName);
+                }
                     break;
                 case PropertyManager.PropertyTypes.HuntingStation:
+                {
+                    API.freezePlayer(player, true);
+                    List<string[]> itemsWithPrices = new List<string[]>();
+                    foreach (var itm in ItemManager.HuntingItems)
                     {
-                        API.freezePlayer(player, true);
-                        List<string[]> itemsWithPrices = new List<string[]>();
-                        foreach (var itm in ItemManager.HuntingItems)
+                        itemsWithPrices.Add(new[]
                         {
-                            itemsWithPrices.Add(new[]
-                            {
-                            itm[0], itm[1], itm[2], prop.ItemPrices.SingleOrDefault(x => x.Key == itm[0]).Value.ToString()
+                            itm[0], itm[1], itm[2],
+                            prop.ItemPrices.SingleOrDefault(x => x.Key == itm[0]).Value.ToString()
                         });
-                        }
-                        API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()), "Hunting Shop",
-                            prop.PropertyName);
                     }
+                    API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()),
+                        "Hunting Shop",
+                        prop.PropertyName);
+                }
                     break;
+
+                case PropertyManager.PropertyTypes.VIPLounge:
+                {
+                    if (player.GetAccount().VipLevel < 1)
+                    {
+                        player.sendChatMessage("You cannot do this as you are not a VIP player.");
+                        return;
+                    }
+
+                    API.freezePlayer(player, true);
+                    List<string[]> itemsWithPrices = new List<string[]>();
+                    foreach (var itm in ItemManager.VIPItems)
+                    {
+                        itemsWithPrices.Add(new[]
+                        {
+                            itm[0], itm[1], itm[2],
+                            prop.ItemPrices.SingleOrDefault(x => x.Key == itm[0]).Value.ToString()
+                        });
+                    }
+                    API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()),
+                        "VIP Weapon Tints",
+                        prop.PropertyName);
+                }
+                    break;
+
+                case PropertyManager.PropertyTypes.Government:
+                {
+                    API.freezePlayer(player, true);
+                    List<string[]> itemsWithPrices = new List<string[]>();
+                    foreach (var itm in ItemManager.GovItems)
+                    {
+                        itemsWithPrices.Add(new[]
+                        {
+                            itm[0], itm[1], itm[2],
+                            prop.ItemPrices.SingleOrDefault(x => x.Key == itm[0]).Value.ToString()
+                        });
+                    }
+                    API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()), "Government",
+                        prop.PropertyName);
+                        break;
+                }
+
                 default:
                     API.sendChatMessageToPlayer(player, "This property doesn't sell anything.");
                     break;

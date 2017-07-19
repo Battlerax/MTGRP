@@ -22,6 +22,8 @@ namespace mtgvrp.job_manager.hunting
         public bool CanBeStacked => true;
         public bool CanBeStashed => true;
         public bool IsBlocking => true;
+        public bool CanBeStored => true;
+
         public Dictionary<Type, int> MaxAmount => new Dictionary<Type, int>()
         {
             {typeof(Character), 2}

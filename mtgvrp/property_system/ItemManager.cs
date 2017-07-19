@@ -76,6 +76,22 @@ namespace mtgvrp.property_system
                     prop.ItemPrices.Add("boar_tag", 500);
                     prop.ItemPrices.Add("ammo", 150);
                     break;
+
+                case PropertyManager.PropertyTypes.VIPLounge:
+                    prop.ItemPrices.Add("pink_tint", 10000);
+                    prop.ItemPrices.Add("gold_tint", 20000);
+                    prop.ItemPrices.Add("green_tint", 5000);
+                    prop.ItemPrices.Add("orange_tint", 3000);
+                    prop.ItemPrices.Add("platinum_tint", 50000);
+                    break;
+
+                case PropertyManager.PropertyTypes.Government:
+                    prop.ItemPrices.Add("id", 150);
+                    break;
+
+                case PropertyManager.PropertyTypes.DMV:
+                    prop.ItemPrices.Add("drivingtest", 150);
+                    break;
             }
         }
 
@@ -116,11 +132,26 @@ namespace mtgvrp.property_system
 
         };
 
+        public static string[][] VIPItems =
+{
+            //ID, NAME, PRICE, DESCRIPTION
+            new[] {"pink_tint", "Pink", "Change your weapon tint."},
+            new[] {"gold_tint", "Gold", "Change your weapon tint."},
+            new[] {"green_tint", "Green", "Change your weapon tint."},
+            new[] {"orange_tint", "Orange", "Change your weapon tint."},
+            new[] {"platinum_tint", "Platinum", "Change your weapon tint."},
+        };
+
         public static string[][] HuntingItems =
         {
             new [] {"deer_tag", "Deer Tag", "Used to turn in a killed deer for cash. Can only purchase one per day."},
             new [] {"boar_tag", "Boar Tag", "Used to turn in a kiled boar for cash. Can only be purchase one per day."},
             new [] {"ammo", "5.56 Ammo", "Extra ammo in case you miss. Each tag comes with one free bullet."},
+        };
+
+        public static string[][] GovItems =
+        {
+            new [] {"id", "Identification", "Used to identify yourself to anyone."},
         };
     }
 }

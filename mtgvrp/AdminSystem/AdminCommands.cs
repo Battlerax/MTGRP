@@ -1402,6 +1402,28 @@ namespace mtgvrp.AdminSystem
             account.IsBanned = false;
         }
 
+        [Command("setcharacterslots"), Help(HelpManager.CommandGroups.AdminLevel3, "Set the amount of character slots a player may have", new[] { "ID of the target player", "The amount of character slots permitted" })]
+        public void setcharacterslots(Client player, string id, int slots)
+        {
+            var receiver = PlayerManager.ParseClient(id);
+            if (receiver == null)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
+            }
+
+            Account account = API.getEntityData(player.handle, "Account");
+            Account receiverAccount = API.getEntityData(receiver.handle, "Account");
+
+            if (account.AdminLevel < 3)
+            {
+                return;
+            }
+
+            receiverAccount.CharacterSlots = slots;
+            player.sendChatMessage($"You have set {receiver.GetCharacter().CharacterName}'s character slots to {slots}.");
+        }
+
         [Command("changeviplevel"), Help(HelpManager.CommandGroups.AdminLevel3, "Change a players VIP level", new[] { "ID of the target player", "The VIP level to change to", "The VIP amount in days" })]
         public void changeviplevel_cmd(Client player, string id, int level, int days)
         {
@@ -1420,12 +1442,12 @@ namespace mtgvrp.AdminSystem
                 return;
             }
 
-            if (receiverAccount.AdminLevel > 0)
+            /*if (receiverAccount.AdminLevel > 0)
             {
                 account.VipLevel = 3;
                 account.VipExpirationDate = default(DateTime);
                 return;
-            }
+            }*/
 
             if (receiverAccount.VipLevel == level)
             {
@@ -1434,15 +1456,19 @@ namespace mtgvrp.AdminSystem
             }
 
             account.VipLevel = level;
-            account.VipExpirationDate = DateTime.Now.AddDays(days);
+            account.VipExpirationDate = DateTime.Now.AddMinutes(days);
             account.Save();
 
-            receiver.sendChatMessage("Your ~y~VIP~y~ level was set to " + level + " by " + account.AdminName + ". Welcome!");
-            foreach (var p in API.getAllPlayers())
+            receiver.sendChatMessage("Your ~y~VIP~y~ level was set to " + level + " by " + account.AdminName + ".");
+
+            if (level > 0)
             {
-                Account paccount = API.getEntityData(p.handle, "Account");
-                
-                if (paccount.VipLevel > 0) { p.sendChatMessage(receiver.GetCharacter().CharacterName + " has become a level " + level + " ~y~VIP~y~!"); }
+                foreach (var p in API.getAllPlayers())
+                {
+                    Account paccount = API.getEntityData(p.handle, "Account");
+
+                    if (paccount.VipLevel > 0) { p.sendChatMessage(receiver.GetCharacter().CharacterName + " has become a level " + level + " ~y~VIP~y~!"); }
+                }
             }
         }
 
@@ -1461,6 +1487,7 @@ namespace mtgvrp.AdminSystem
 
             if (account.AdminLevel < 3)
             {
+                player.sendChatMessage("You cannot set the VIP time of an administrator.");
                 return;
             }
 
@@ -1507,6 +1534,33 @@ namespace mtgvrp.AdminSystem
             {
                 API.triggerClientEvent(player, "texttest_settext", text);
             }
+        }
+
+        [Command("giveitem"), Help(HelpManager.CommandGroups.AdminLevel4, "Gives an inventory item to a player.<br/> <strong>This could cause problems with the player, use with caution.</strong>", new[] { "Target ID or name.", "Item name, you can get this from a dev.", "Amount to give." })]
+        public void GiveItem(Client player, string target, string item, int amount)
+        {
+            if (player.GetAccount().AdminLevel < 4)
+            {
+                return;
+            }
+
+            var targetPlayer = PlayerManager.ParseClient(target);
+            if (targetPlayer == null)
+            {
+                API.sendChatMessageToPlayer(player, "That player is not online.");
+                return;
+            }
+
+            var type = InventoryManager.ParseInventoryItem(item);
+            if (type == null)
+            {
+                API.sendChatMessageToPlayer(player, "Unexisting Item.");
+                return;
+            }
+
+            var itema = InventoryManager.ItemTypeToNewObject(type);
+            InventoryManager.GiveInventoryItem(targetPlayer.GetCharacter(), itema, amount);
+            API.sendChatMessageToPlayer(player, "Done.");
         }
     }
 }

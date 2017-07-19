@@ -11,7 +11,7 @@ namespace mtgvrp.group_manager.lspd
         public ObjectId Id { get; set; }
 
         public string CharacterId { get; set; }
-        public string OfficerId { get; set; }
+        public string OfficerName { get; set; }
         public Crime Crime { get; set; }
         public DateTime DateTime { get; set; }
         public bool ActiveCrime { get; set; }
@@ -19,7 +19,7 @@ namespace mtgvrp.group_manager.lspd
         public CriminalRecord(string characterId, string arrestingOfficerId, Crime crime, bool activecrime)
         {
             CharacterId = characterId;
-            OfficerId = arrestingOfficerId;
+            OfficerName = arrestingOfficerId;
             Crime = crime;
             DateTime = DateTime.Now;
             ActiveCrime = activecrime;

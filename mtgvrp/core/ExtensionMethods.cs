@@ -1,6 +1,8 @@
 ﻿using GTANetworkServer;
 using GTANetworkShared;
+using mtgvrp.inventory;
 using mtgvrp.player_manager;
+using Object = System.Object;
 
 namespace mtgvrp.core
 {
@@ -24,6 +26,11 @@ namespace mtgvrp.core
             if (!API.shared.hasEntityData(veh, "Vehicle")) return null;
 
             return (vehicle_manager.Vehicle)API.shared.getEntityData(veh, "Vehicle");
+        }
+
+        public static T CastTo<T>(this object obj)
+        {
+            return (T) obj;
         }
     }
 }
