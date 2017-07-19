@@ -99,6 +99,7 @@ namespace mtgvrp.core
              "ChipotleAwayJay",
              "wimbacah",
              "Venturas50",
+             "EarlUK",
         };
 
         public Whitelist()
