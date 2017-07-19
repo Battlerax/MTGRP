@@ -224,7 +224,6 @@
     <Content Include="group_manager\lspd\MDC\LSPDMDC.png" />
     <Content Include="group_manager\lspd\MDC\MDC.html" />
     <Content Include="group_manager\lspd\MDC\MDC.js" />
-    <Content Include="group_manager\lspd\MDC\MDC.ts" />
     <Content Include="inventory\ManageInv.html" />
     <Content Include="group_manager\lspd\Lspd.js" />
     <Content Include="job_manager\fisher\Fisher.js" />

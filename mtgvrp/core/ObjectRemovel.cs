@@ -5,8 +5,8 @@ using System.Security.AccessControl;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using GTANetworkServer;
-using GTANetworkShared;
+using GrandTheftMultiplayer.Server.API;
+using GrandTheftMultiplayer.Shared.Math;
 
 namespace mtgvrp.core
 {
