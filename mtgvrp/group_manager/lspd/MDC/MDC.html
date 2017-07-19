@@ -174,7 +174,7 @@
                         <br/>
                         <a style="font-family: BebasKai;font-size:25px">Phone Number</a><br />
                         <div class="input-control text">
-                            <input id="name_input" type="text">
+                            <input id="phone_input" type="text">
                         </div>
                         <button id="citizen_search" class="button success"><span class="mif-search"></span> Search</button>
                     </div>
@@ -205,21 +205,6 @@
                 </div>
                 <div id="prism_search_results" class="content padding10">
                     
-                    <a style="color: #01AAD4; font-family: BebasKai;font-size:25px"> Name: <span style="color: black; font-family: BebasKai;font-size:25px"> Sergei Chenko</span></a> 
-                    
-                    <br/>
-
-                    <a style="color: #01AAD4; font-family: BebasKai;font-size:25px"> Birthday: <span style="color: black; font-family: BebasKai;font-size:25px"> Jan 01, 1997</span></a> 
-                    
-                    <br/>
-                    
-                    <a style="color: #01AAD4; font-family: BebasKai;font-size:25px"> Address: <span style="color: black; font-family: BebasKai;font-size:25px"> N/A</span></a> 
-                    
-                    <br/>
-                    <br/>
-
-                    <a style="color: #01AAD4; font-family: BebasKai;font-size:25px"> Registered Vehicles: <span style="color: black; font-family: BebasKai;font-size:25px"> <br/>123-ABC<br/>ABC-123</span></a> 
-
                 </div>
             </div>
 
@@ -272,6 +257,191 @@
         document.getElementById('announcement_textarea_input').value = $('#announcement_text').text();
         set_active('#highcommand_menu', '#highcommand_content');
     });
+
+    $('#citizen_search').click(() => {
+        var name = $("#name_input").val();
+        var phone = $("#phone_input").val();
+
+        if (!$("#name_input").val()) {
+            name = "NONE";
+        }
+        if (!$("#phone_input").val()) {
+            phone = "NONE";
+        }
+
+        resourceCall("MDC_SearchForCitizen", name, phone);
+    });
+
+    $('#vehicle_search').click(() => {
+        var lic = $("#license_input").val();
+
+        if (!$("#license_input").val()) {
+            lic = "NONE";
+        }
+
+        resourceCall("MDC_SearchForVehicle", lic);
+    });
+
+    function html_showcitizeninfo(name, age, vehicles, crimes, crimePages) {
+        if (name === "") {
+            $.Notify({
+                caption: "ERROR",
+                content: "The system couldn't find a citizen with such name or phone.",
+                type: 'alert'
+            });
+            return;
+        }
+
+        //Set the vehicles list.
+        var vehText = "";
+        var vehList = JSON.parse(vehicles);
+        for (var i = 0; i < vehList.length; i++) {
+            vehText += vehList[i][0] + " - " + vehList[i][1];
+            if (i !== vehList.length - 2) {
+                vehText += "<br/>";
+            }
+        }
+
+        //Setup crimes.
+        var crimeList = JSON.parse(crimes);
+        var crimeText = "";
+        for (var i = 0; i < crimeList.length; i++) {
+            if (crimeList[i][4] === "true") {
+                crimeText += `
+                            <tr style="background-color: red;">
+                                <th>${crimeList[i][0]}</th>
+                                <th>${crimeList[i][1]}</th>
+                                <th>${crimeList[i][2]}</th>
+                                <th>${crimeList[i][3]}</th>
+                                <th>${crimeList[i][4]}</th>
+                            </tr>
+`;
+            } else {
+                crimeText += `
+                            <tr>
+                                <th>${crimeList[i][0]}</th>
+                                <th>${crimeList[i][1]}</th>
+                                <th>${crimeList[i][2]}</th>
+                                <th>${crimeList[i][3]}</th>
+                                <th>${crimeList[i][4]}</th>
+                            </tr>
+`;
+            }
+        }
+
+        //Setup crime pages.
+        var pagescode = "";
+        for (var a = 0; a < crimePages; a++) {
+            pagescode += `<button class="button" onclick="showNextCrimes(${a + 1});">${a + 1}</button>`;
+        }
+
+        //Print shit.
+        $("#prism_search_results").html(`
+                    <a style="color: #01AAD4; font-family: BebasKai;font-size:25px"> Name: <span style="color: black; font-family: BebasKai;font-size:25px"> ${name}</span></a> 
+                    
+                    <br/>
+
+                    <a style="color: #01AAD4; font-family: BebasKai;font-size:25px"> Birthday: <span style="color: black; font-family: BebasKai;font-size:25px"> ${age}</span></a> 
+                    
+                    <br/>
+                    
+                    <a style="color: #01AAD4; font-family: BebasKai;font-size:25px"> Address: <span style="color: black; font-family: BebasKai;font-size:25px"> N/A</span></a> 
+                    
+                    <br/>
+
+                    <a style="color: #01AAD4; font-family: BebasKai;font-size:25px"> Registered Vehicles: <span style="color: black; font-family: BebasKai;font-size:25px"> <br/>${vehText}</span></a> 
+
+                    <br/>
+                    <br/>
+
+                    <div style="border: black solid 2px;" class="content padding10">
+                        <table class="table striped hovered cell-hovered border bordered">
+                            <thead>
+                            <tr>
+                                <th>Crime Type</th>
+                                <th>Crime Name</th>
+                                <th>Date/Time</th>
+                                <th>Officer Issued Crime</th>
+                                <th>Is Active</th>
+                            </tr>
+                            </thead>
+                            <tbody id="CrimesBody">
+                                ${crimeText}
+                            </tbody>
+                        </table>
+                        <div data-role="group" data-group-type="one-state" style="text-align: center;">
+                            ${pagescode}
+                        </div>
+                    </div>
+`);
+
+        $.Notify({
+            caption: "Success",
+            content: "Citizen was sucessfully found.",
+            type: 'success'
+        });
+    }
+
+    function showNextCrimes(page) {
+        resourceCall("MDC_RequestNextCrimesPage", page);
+    }
+
+    function html_updatecrimes(crimes) {
+        //Setup crimes.
+        var crimeList = JSON.parse(crimes);
+        var crimeText = "";
+        for (var i = 0; i < crimeList.length; i++) {
+            if (crimeList[i][4] === "true") {
+                crimeText += `
+                            <tr style="background-color: red;">
+                                <th>${crimeList[i][0]}</th>
+                                <th>${crimeList[i][1]}</th>
+                                <th>${crimeList[i][2]}</th>
+                                <th>${crimeList[i][3]}</th>
+                                <th>${crimeList[i][4]}</th>
+                            </tr>
+`;
+            } else {
+                crimeText += `
+                            <tr>
+                                <th>${crimeList[i][0]}</th>
+                                <th>${crimeList[i][1]}</th>
+                                <th>${crimeList[i][2]}</th>
+                                <th>${crimeList[i][3]}</th>
+                                <th>${crimeList[i][4]}</th>
+                            </tr>
+`;
+            }
+        }
+
+        $("#CrimesBody").html(crimeText);
+    }
+
+    function html_showvehicleinfo(type, owner, cls) {
+        if (owner === "" || type === "") {
+            $.Notify({
+                caption: "ERROR",
+                content: "The system couldn't find this vehicle.",
+                type: 'alert'
+            });
+            return;
+        }
+
+        //Print shit.
+        $("#prism_search_results").html(`
+                    <a style="color: #01AAD4; font-family: BebasKai;font-size:25px"> Vehicle Model: <span style="color: black; font-family: BebasKai;font-size:25px"> ${type}</span></a>                
+                    <br/>
+                    <a style="color: #01AAD4; font-family: BebasKai;font-size:25px"> Vehicle Class: <span style="color: black; font-family: BebasKai;font-size:25px"> ${cls}</span></a>                
+                    <br/>
+                    <a style="color: #01AAD4; font-family: BebasKai;font-size:25px"> Vehicle Owner: <span style="color: black; font-family: BebasKai;font-size:25px"> ${owner}</span></a> 
+`);
+
+        $.Notify({
+            caption: "Success",
+            content: "Vehicle was sucessfully found.",
+            type: 'success'
+        });
+    }
 
     function setImageBackground() {
         $("#main").css("background", 'url("LSPDMDC.png")');

@@ -33,6 +33,7 @@ public class Weapon : IInventoryItem
         public bool CanBeStashed => true;
         public bool CanBeStacked => false;
         public bool IsBlocking => false;
+        public bool CanBeStored => true;
 
         public Dictionary<Type, int> MaxAmount => new Dictionary<Type, int>()
         {

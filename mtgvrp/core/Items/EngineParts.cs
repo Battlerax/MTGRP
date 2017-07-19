@@ -24,6 +24,8 @@ namespace mtgvrp.core.Items
         public bool CanBeStacked => true;
         public bool CanBeStashed => true;
         public bool IsBlocking => false;
+        public bool CanBeStored => true;
+
         public Dictionary<Type, int> MaxAmount
         {
             get

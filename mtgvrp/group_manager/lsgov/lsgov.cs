@@ -158,5 +158,37 @@ namespace mtgvrp.group_manager.lsgov
             //PICKUP PODIUM WHEN MAPPING IS READY
         }
 
+
+        [Command("showid"), Help(HelpManager.CommandGroups.General, "Show your ID to a player.", new [] {"Target player ID or name." })]
+        public void ShowId(Client player, string target)
+        {
+            var targetPlayer = PlayerManager.ParseClient(target);
+            if (targetPlayer == null)
+            {
+                API.sendChatMessageToPlayer(player, "That player is not online.");
+                return;
+            }
+
+            var c = player.GetCharacter();
+
+            if (InventoryManager.DoesInventoryHaveItem<IdentificationItem>(c).Length == 0)
+            {
+                API.sendChatMessageToPlayer(player, "You don't have an identification.");
+                return;
+            }
+
+            if (targetPlayer.position.DistanceTo(player.position) > 3.0)
+            {
+                API.sendChatMessageToPlayer(player, "The player must be near you.");
+                return;
+            }
+
+            API.sendChatMessageToPlayer(targetPlayer, " [************** Identification **************]");
+            API.sendChatMessageToPlayer(targetPlayer, $"* Name: ~h~{c.rp_name()}~h~ | Age: ~h~{c.Age}~h~");
+            API.sendChatMessageToPlayer(targetPlayer, $"* DOB: ~h~{c.Birthday}~h~ | Birth Place: ~h~{c.Birthplace}~h~");
+            API.sendChatMessageToPlayer(targetPlayer, " [********************************************]");
+
+            ChatManager.RoleplayMessage(player, "shows his id to " + targetPlayer.GetCharacter().rp_name(), ChatManager.RoleplayMe);
+        }
     }
 }

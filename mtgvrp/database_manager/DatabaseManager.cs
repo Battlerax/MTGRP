@@ -1,4 +1,5 @@
 ﻿using mtgvrp.core;
+using mtgvrp.dmv;
 using mtgvrp.door_manager;
 using mtgvrp.group_manager;
 using mtgvrp.group_manager.lspd;
@@ -32,7 +33,7 @@ namespace mtgvrp.database_manager
         public static IMongoCollection<Crime> CrimeTable;
         public static IMongoCollection<CriminalRecord> CriminalRecordTable;
         public static IMongoCollection<Tree> TreesTable;
-
+        public static IMongoCollection<LicensePlate> NumberPlatesTable;
 
         public static void DatabaseManagerInit()
         {
@@ -54,6 +55,7 @@ namespace mtgvrp.database_manager
             CrimeTable = _database.GetCollection<Crime>("crimes");
             CriminalRecordTable = _database.GetCollection<CriminalRecord>("criminalrecords");
             TreesTable = _database.GetCollection<Tree>("lumberjacktrees");
+            NumberPlatesTable = _database.GetCollection<LicensePlate>("numberplates");
 
             DebugManager.DebugMessage("[DatabaseM] Database Manager initalized!");
         }

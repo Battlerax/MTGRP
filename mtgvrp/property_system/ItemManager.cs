@@ -84,6 +84,14 @@ namespace mtgvrp.property_system
                     prop.ItemPrices.Add("orange_tint", 3000);
                     prop.ItemPrices.Add("platinum_tint", 50000);
                     break;
+
+                case PropertyManager.PropertyTypes.Government:
+                    prop.ItemPrices.Add("id", 150);
+                    break;
+
+                case PropertyManager.PropertyTypes.DMV:
+                    prop.ItemPrices.Add("drivingtest", 150);
+                    break;
             }
         }
 
@@ -139,6 +147,11 @@ namespace mtgvrp.property_system
             new [] {"deer_tag", "Deer Tag", "Used to turn in a killed deer for cash. Can only purchase one per day."},
             new [] {"boar_tag", "Boar Tag", "Used to turn in a kiled boar for cash. Can only be purchase one per day."},
             new [] {"ammo", "5.56 Ammo", "Extra ammo in case you miss. Each tag comes with one free bullet."},
+        };
+
+        public static string[][] GovItems =
+        {
+            new [] {"id", "Identification", "Used to identify yourself to anyone."},
         };
     }
 }

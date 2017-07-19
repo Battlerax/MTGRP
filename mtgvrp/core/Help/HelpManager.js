@@ -23,7 +23,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
 });
 
 function loaded() {
-    myBrowser.call("fillUpCommands", argss[0], argss[1], argss[2], argss[3]);
+    myBrowser.call("fillUpCommands", argss[0], argss[1], argss[2], argss[3], argss[4]);
 }
 
 function unauth() {

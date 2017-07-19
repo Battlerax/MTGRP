@@ -179,7 +179,7 @@ namespace mtgvrp.property_system.businesses
         public bool CanBeDropped => true;
         public bool CanBeStashed => false;
         public bool CanBeStacked => false;
-
+        public bool CanBeStored => false;
         public bool IsBlocking => false;
 
         public Dictionary<Type, int> MaxAmount => new Dictionary<Type, int>();

@@ -97,6 +97,7 @@ namespace mtgvrp.vehicle_dealership
                         vehicle_manager.Vehicle.VehTypePerm
                     );
                     theVehicle.IsVip = true;
+                    theVehicle.OwnerName = character.CharacterName;
                     //Add it to the players cars.
                     theVehicle.Insert();
                     character.OwnedVehicles.Add(theVehicle.Id);

@@ -13,6 +13,7 @@ namespace mtgvrp.core.Items
         public bool CanBeDropped => true;
         public bool CanBeStashed => true;
         public bool CanBeStacked => true;
+        public bool CanBeStored => true;
 
         public bool IsBlocking => false;
 

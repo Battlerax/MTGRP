@@ -49,6 +49,7 @@ namespace mtgvrp.vehicle_manager
         public int[] SpawnColors = new int[2];
         public int SpawnDimension { get; set; }
         public int OwnerId { get; set; }
+        public string OwnerName { get; set; }
         public string LicensePlate { get; set; }
 
         public int RespawnDelay { get; set; }
@@ -90,6 +91,8 @@ namespace mtgvrp.vehicle_manager
 
         [BsonIgnore]
         public Property RefuelProp { get; set; }
+
+        public bool IsRegistered { get; set; }
 
         public Vehicle()
         {
@@ -163,7 +166,6 @@ namespace mtgvrp.vehicle_manager
 
             //Set owner detials.
             OwnerClient = PlayerManager.ParseClient(OwnerId.ToString());
-
             IsSpawned = true;
 
             if (OwnerId == 0 && GroupId == 0)

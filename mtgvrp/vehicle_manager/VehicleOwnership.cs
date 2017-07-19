@@ -121,8 +121,10 @@ namespace mtgvrp.vehicle_manager
                             InventoryManager.GiveInventoryItem(buyingFrom, new Money(), price);
                             InventoryManager.DeleteInventoryItem(character, typeof(Money), price);
                             veh.OwnerId = character.Id;
+                            veh.OwnerName = character.CharacterName;
                             buyingFrom.OwnedVehicles.Remove(veh.Id);
                             character.OwnedVehicles.Add(veh.Id);
+                            veh.Save();
 
                             //DONE, now spawn if hes vip.
                             if (!veh.IsSpawned)

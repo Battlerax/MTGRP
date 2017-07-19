@@ -111,6 +111,9 @@
   
   <!--AUDIO-->
   <file src="audio_resources/introduction.mp3" />
-          
+         
+  <!--DMV-->
+  <script src="dmv/DmvManager.js" type="client" lang="javascript"/>
+
   <file src="jquery.js" />
 </meta>
