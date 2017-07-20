@@ -145,11 +145,10 @@ namespace mtgvrp.player_manager
         {
             foreach (var c in Players)
             {
-                if ((c.CharacterName.Equals(name, StringComparison.OrdinalIgnoreCase) || c.Client.GetAccount().AdminName.Equals(name, StringComparison.OrdinalIgnoreCase)))
-                {
-                    return c.Client;
-                }
-                else if (c.CharacterName.ToLower().Substring(0, (name.Length > c.CharacterName.Length) ? (c.CharacterName.Length) : (name.Length)).Contains(name.ToLower()) || c.Client.GetAccount().AdminName.ToLower().Substring(0, (name.Length > c.Client.GetAccount().AdminName.Length) ? (c.Client.GetAccount().AdminName.Length) : (name.Length)).Contains(name.ToLower()))
+                if (c.CharacterName.Equals(name, StringComparison.OrdinalIgnoreCase) || 
+                    c.Client.GetAccount().AdminName.Equals(name, StringComparison.OrdinalIgnoreCase) ||
+                    c.CharacterName.StartsWith(name, StringComparison.OrdinalIgnoreCase) ||
+                    c.Client.GetAccount().AdminName.StartsWith(name, StringComparison.OrdinalIgnoreCase))
                 {
                     return c.Client;
                 }
