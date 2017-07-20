@@ -13,14 +13,9 @@ namespace mtgvrp.core.Discord
 {
     class RandomFunCommands
     {
-        [Command("poll"), Description("Run a poll with reactions.")]
+        [Command("poll"), Description("Run a poll with reactions."), RequirePermissions(Permissions.ChangeNickname | Permissions.ManageNicknames)]
         public async Task Poll(CommandContext ctx, [Description("How long should the poll last.")] int duration, [Description("What options should people have.")] params DiscordEmoji[] options)
         {
-            if (!ctx.Member.Roles.Any(x => x.Permissions.HasFlag(Permissions.ManageNicknames)))
-            {
-                return;
-            }
-
             // first retrieve the interactivity module from the client
             var interactivity = ctx.Client.GetInteractivityModule();
             var poll_options = options;
@@ -50,14 +45,9 @@ namespace mtgvrp.core.Discord
             await ctx.RespondAsync(string.Join("\n", results));
         }
 
-        [Command("waitforcode"), Description("Waits for a response containing a generated code.")]
+        [Command("waitforcode"), Description("Waits for a response containing a generated code."), RequirePermissions(Permissions.ChangeNickname | Permissions.ManageNicknames)]
         public async Task WaitForCode(CommandContext ctx)
-        {
-            if (!ctx.Member.Roles.Any(x => x.Permissions.HasFlag(Permissions.ManageNicknames)))
-            {
-                return;
-            }
-
+        { 
             // first retrieve the interactivity module from the client
             var interactivity = ctx.Client.GetInteractivityModule();
 
@@ -85,14 +75,9 @@ namespace mtgvrp.core.Discord
             }
         }
 
-        [Command("waitforreact"), Description("Waits for a reaction.")]
+        [Command("waitforreact"), Description("Waits for a reaction."), RequirePermissions(Permissions.ChangeNickname | Permissions.ManageNicknames)]
         public async Task WaitForReaction(CommandContext ctx)
         {
-            if (!ctx.Member.Roles.Any(x => x.Permissions.HasFlag(Permissions.ManageNicknames)))
-            {
-                return;
-            }
-
             // first retrieve the interactivity module from the client
             var interactivity = ctx.Client.GetInteractivityModule();
 
@@ -126,14 +111,9 @@ namespace mtgvrp.core.Discord
             }
         }
 
-        [Command("waitfortyping"), Description("Waits for a typing indicator.")]
+        [Command("waitfortyping"), Description("Waits for a typing indicator."), RequirePermissions(Permissions.ChangeNickname | Permissions.ManageNicknames)]
         public async Task WaitForTyping(CommandContext ctx)
         {
-            if (!ctx.Member.Roles.Any(x => x.Permissions.HasFlag(Permissions.ManageNicknames)))
-            {
-                return;
-            }
-
             // first retrieve the interactivity module from the client
             var interactivity = ctx.Client.GetInteractivityModule();
 
