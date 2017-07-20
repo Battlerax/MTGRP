@@ -5,6 +5,7 @@ using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.CommandsNext.Exceptions;
+using DSharpPlus.Interactivity;
 using GrandTheftMultiplayer.Server.API;
 using mtgvrp.player_manager;
 
@@ -65,6 +66,8 @@ namespace mtgvrp.core.Discord
             // and hook them up
             Commands = Client.UseCommandsNext(ccfg);
 
+            Client.UseInteractivity();
+
             // let's hook some command events, so we know what's 
             // going on
             Commands.CommandExecuted += Commands_CommandExecuted;
@@ -73,6 +76,7 @@ namespace mtgvrp.core.Discord
             // up next, let's register our commands
             Commands.RegisterCommands<Commands>();
             Commands.RegisterCommands<PlayerDiscordCommands>();
+            Commands.RegisterCommands<RandomFunCommands>();
 
             // finnaly, let's connect and log in
             await Client.ConnectAsync();
