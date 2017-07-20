@@ -593,7 +593,9 @@ namespace mtgvrp.property_system
                 case PropertyTypes.HuntingStation:
                     return "/buy\n/redeemdeertag\n/redeemboartag";
                 case PropertyTypes.Government:
-                    return "/buyid";
+                    return "/buy";
+                case PropertyTypes.DMV:
+                    return "/starttest /registervehicle";
             }
             return "";
         }
