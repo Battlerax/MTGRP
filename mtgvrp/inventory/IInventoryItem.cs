@@ -18,6 +18,7 @@ namespace mtgvrp.inventory
         bool CanBeStacked { get; } //NO for stuff like IDs and YES for stuff like engine parts.
         bool IsBlocking { get; } //if true, users inv cannot be updated anyway while its in their inv.
         Dictionary<Type, int> MaxAmount { get; } //Negative one for infinte. Default
+        bool CanBeStored { get; }
 
         //Amount of slots it takes.
         int AmountOfSlots { get; }

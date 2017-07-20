@@ -24,6 +24,8 @@ namespace mtgvrp.job_manager.scuba
         public bool CanBeStacked => false;
         public bool CanBeStashed => false;
         public bool IsBlocking => true;
+        public bool CanBeStored => true;
+
         public Dictionary<Type, int> MaxAmount => new Dictionary<Type, int>();
 
         public string CommandFriendlyName => "scuba_kit";

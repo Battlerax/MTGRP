@@ -8,6 +8,8 @@ using GTANetworkServer;
 using GTANetworkShared;
 using mtgvrp.core;
 using mtgvrp.core.Items;
+using mtgvrp.dmv;
+using mtgvrp.group_manager.lsgov;
 using mtgvrp.inventory.bags;
 using mtgvrp.job_manager.delivery;
 using mtgvrp.job_manager.fisher;
@@ -45,6 +47,8 @@ namespace mtgvrp.inventory
             BsonClassMap.RegisterClassMap<AmmoItem>();
             BsonClassMap.RegisterClassMap<ScubaItem>();
             BsonClassMap.RegisterClassMap<SupplyItem>();
+            BsonClassMap.RegisterClassMap<IdentificationItem>();
+            BsonClassMap.RegisterClassMap<DrivingLicenseItem>();
 
             BsonClassMap.RegisterClassMap<Weapon>();
             #endregion
@@ -385,21 +389,10 @@ namespace mtgvrp.inventory
                 return;
             }
 
-            string[][] leftItems;
-            if (activeRight.GetType() == typeof(BagItem))
-            {
-                leftItems = activeLeft.Inventory.Where(x => x.GetType() != typeof(BagItem))
-                    .Select(x => new[] { x.LongName, x.CommandFriendlyName, x.Amount.ToString() })
-                    .ToArray();
-            }
-            else
-            {
-                leftItems = activeLeft.Inventory.Select(x => new[] { x.LongName, x.CommandFriendlyName, x.Amount.ToString() })
-                    .ToArray();
-            }
+            string[][] leftItems = activeLeft.Inventory.TakeWhile(x => x.CanBeStored).Select(x => new[] { x.LongName, x.CommandFriendlyName, x.Amount.ToString() }).ToArray();
 
             string[][] rightItems =
-                activeRight.Inventory.Select(x => new[] { x.LongName, x.CommandFriendlyName, x.Amount.ToString() })
+                activeRight.Inventory.TakeWhile(x => x.CanBeStored).Select(x => new[] { x.LongName, x.CommandFriendlyName, x.Amount.ToString() })
                     .ToArray();
 
             var leftJson = API.shared.toJson(leftItems);
