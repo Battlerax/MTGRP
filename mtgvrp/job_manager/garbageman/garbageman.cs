@@ -95,9 +95,13 @@ namespace mtgvrp.job_manager.garbageman
 
                 if (maxGarbage == 0)
                 {
-                    Random rand = new Random();
-                    int r = rand.Next(PropertyManager.Properties.Count);
-                    TargetProperty = PropertyManager.Properties[r];
+                    TargetProperty = ChooseRandomProperty();
+
+                    while (!TargetProperty.HasGarbagePoint)
+                    {
+                        TargetProperty = ChooseRandomProperty();
+                    }
+
                     TargetProperty.GarbageBags = 5;
                 }
 
@@ -119,6 +123,15 @@ namespace mtgvrp.job_manager.garbageman
                 }
 
             }
+        }
+        
+        public static Property ChooseRandomProperty()
+        {
+            Property randomProp;
+            Random rand = new Random();
+            int r = rand.Next(PropertyManager.Properties.Count);
+            randomProp = PropertyManager.Properties[r];
+            return randomProp;
         }
 
         public static void UpdateTimer(Client player)
