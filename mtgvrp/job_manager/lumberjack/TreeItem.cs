@@ -117,7 +117,7 @@ namespace mtgvrp.job_manager.lumberjack
                     API.shared.attachEntityToEntity(TreeMarker.Marker, TreeObj, "0", new Vector3(1, 0, 0), new Vector3());
                     break;
                 case Stages.Waiting:
-                    TreeText = API.shared.createTextLabel("~g~Waiting to be picked, use /pickupwood with a Forklift.", TreePos, 10f, 1f, true);
+                    TreeText = API.shared.createTextLabel("~g~Waiting to be picked, use /pickupwood with a Flatbed.", TreePos, 10f, 1f, true);
                     TreeMarker.Location = TreePos;
                     TreeMarker.Refresh();      
                     API.shared.attachEntityToEntity(TreeText, TreeObj, "0", new Vector3(1, 0, 1), new Vector3());
