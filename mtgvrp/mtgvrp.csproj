@@ -299,6 +299,7 @@
     <TypeScriptCompile Include="job_manager\JobManager.ts" />
     <Content Include="phone_manager\gui\apps\dialpad.html" />
     <TypeScriptCompile Include="player_manager\player_interaction\PlayerInteraction.ts" />
+    <Content Include="vehicle_manager\VehicleManager.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

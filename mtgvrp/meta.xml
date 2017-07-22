@@ -26,6 +26,7 @@
   <script src="job_manager/hunting/HuntingManager.js" type="client" lang="javascript"/>
 
 	<!-- VEHICLE -->
+	<script src="vehicle_manager/VehicleManager.js" type="client" lang="javascript"/>
 	<script src="vehicle_manager/VehicleMenu.js" type="client" lang="javascript"/>
 	<script src="vehicle_manager/vehicle_editor/VehicleEdit.js" type="client" lang="javascript"/>
 	<file src="vehicle_manager/vehicle_editor/VehicleEdit.html"/>
