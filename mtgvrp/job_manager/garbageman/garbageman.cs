@@ -253,7 +253,7 @@ namespace mtgvrp.job_manager.garbageman
 
             var veh = VehicleManager.GetVehFromNetHandle(API.getPlayerVehicle(player));
 
-            if (veh.Job.Type != JobManager.JobTypes.Garbageman)
+            if (veh?.Job?.Type != JobManager.JobTypes.Garbageman)
             {
                 player.sendChatMessage("You must be in your garbage truck to end the garbage run.");
                 return;
