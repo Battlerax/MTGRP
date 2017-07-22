@@ -67,7 +67,7 @@ namespace mtgvrp.job_manager.fisher
                         var weight = MapValue(0, 100, c.CatchingFish.MinWeight, c.CatchingFish.MaxWeight, catchStrength);
 
                         API.sendChatMessageToPlayer(player, Color.White,
-                            "You caught a " + c.CatchingFish.Name + " that weighs " + (int)weight + " pounds. It is worth about $" + c.CatchingFish.calculate_value((int)weight));
+                            "You caught a " + c.CatchingFish.Name + " that weighs " + weight + " pounds. It is worth about $" + c.CatchingFish.calculate_value(weight));
                         API.stopPlayerAnimation(player);
 
                         var fish = (Fish) c.CatchingFish;

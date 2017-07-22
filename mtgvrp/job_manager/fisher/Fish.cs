@@ -31,9 +31,9 @@ namespace mtgvrp.job_manager.fisher
         public int Object => 0;
 
         public string Name { get; set; }
-        public int MinValue { get; set; }
-        public int MaxWeight { get; set; }
-        public int MinWeight { get; set; }
+        public double MinValue { get; set; }
+        public double MaxWeight { get; set; }
+        public double MinWeight { get; set; }
         public bool RequiresBoat { get; set; }
         public int Rarity { get; set; }
         public double ActualWeight { get; set; }
@@ -53,18 +53,16 @@ namespace mtgvrp.job_manager.fisher
             
         }
 
-        public int calculate_value()
+        public double calculate_value()
         {
             return (MinValue * 2) -
-                   (int)
                    Math.Round((double) MinValue * ((double) MaxWeight - (double) ActualWeight) /
                               ((double) MaxWeight - (double) MinWeight));
         }
 
-        public int calculate_value(int weight)
+        public double calculate_value(double weight)
         {
             return (MinValue * 2) -
-                   (int)
                    Math.Round((double)MinValue * ((double)MaxWeight - (double)weight) /
                               ((double)MaxWeight - (double)MinWeight));
         }
