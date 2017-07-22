@@ -1,10 +1,4 @@
-﻿var res = API.getScreenResolutionMantainRatio();
-var width = 450;
-var height = 200;
-var size = resource.JsFunctions.scaleCoordsToReal({ X: width, Y: height });
-var pos = resource.JsFunctions.scaleCoordsToReal({ X: 310, Y: res.Height - height - 5 });
-
-API.onServerEventTrigger.connect((eventName, args) => {
+﻿API.onServerEventTrigger.connect((eventName, args) => {
 	switch (eventName) {
 	case "fuel_updatevalue":
 		if(myBrowser !== null)
@@ -13,6 +7,11 @@ API.onServerEventTrigger.connect((eventName, args) => {
     case "speedo_showcef":
         if (API.getPlayerVehicleSeat(API.getLocalPlayer()) !== -1) return;
 
+        var res = API.getScreenResolutionMaintainRatio();
+        var width = 450;
+        var height = 200;
+        var size = resource.JsFunctions.scaleCoordsToReal({ X: width, Y: height });
+        var pos = resource.JsFunctions.scaleCoordsToReal({ X: 310, Y: res.Height - height - 5 });
         myBrowser = API.createCefBrowser(size.X, size.Y);
         API.waitUntilCefBrowserInit(myBrowser);
         API.setCefBrowserPosition(myBrowser, pos.X, pos.Y);
@@ -24,9 +23,14 @@ API.onServerEventTrigger.connect((eventName, args) => {
             if (myBrowser === null) {
                 if (API.getPlayerVehicleSeat(API.getLocalPlayer()) !== -1) return;
 
-                myBrowser = API.createCefBrowser(size.X, size.Y);
+                var res2 = API.getScreenResolutionMantainRatio();
+                var width2 = 450;
+                var height2 = 200;
+                var size2 = resource.JsFunctions.scaleCoordsToReal({ X: width2, Y: height2 });
+                var pos2 = resource.JsFunctions.scaleCoordsToReal({ X: 310, Y: res2.Height - height2 - 5 });
+                myBrowser = API.createCefBrowser(size2.X, size2.Y);
                 API.waitUntilCefBrowserInit(myBrowser);
-                API.setCefBrowserPosition(myBrowser, pos.X, pos.Y);
+                API.setCefBrowserPosition(myBrowser, pos2.X, pos2.Y);
                 API.loadPageCefBrowser(myBrowser, "speed_fuel_system/SpeedoFuel.html");
                 API.waitUntilCefBrowserLoaded(myBrowser);
             } else {
