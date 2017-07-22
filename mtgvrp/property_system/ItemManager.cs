@@ -146,7 +146,7 @@ namespace mtgvrp.property_system
         public static string[][] HuntingItems =
         {
             new [] {"deer_tag", "Deer Tag", "Used to turn in a killed deer for cash. Can only purchase one per day."},
-            new [] {"boar_tag", "Boar Tag", "Used to turn in a kiled boar for cash. Can only be purchase one per day."},
+            new [] {"boar_tag", "Boar Tag", "Used to turn in a killed boar for cash. Can only purchase one per day."},
             new [] {"ammo", "5.56 Ammo", "Extra ammo in case you miss. Each tag comes with one free bullet."},
         };
 
