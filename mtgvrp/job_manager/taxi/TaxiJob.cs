@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Timers;
 using GrandTheftMultiplayer.Server.API;
+using GrandTheftMultiplayer.Server.Constant;
 using GrandTheftMultiplayer.Server.Elements;
 using GrandTheftMultiplayer.Server.Managers;
 using GrandTheftMultiplayer.Shared;
@@ -12,6 +13,7 @@ using mtgvrp.core;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;
 using mtgvrp.vehicle_manager;
+using Color = mtgvrp.core.Color;
 using Vehicle = mtgvrp.vehicle_manager.Vehicle;
 
 namespace mtgvrp.job_manager.taxi
@@ -88,13 +90,15 @@ namespace mtgvrp.job_manager.taxi
 
         private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle)
         {
+            var seat = API.fetchNativeFromPlayer<int>(player, Hash.GET_SEAT_PED_IS_TRYING_TO_ENTER, player.handle);
+
             Character character = API.getEntityData(player.handle, "Character");
             var veh = VehicleManager.GetVehFromNetHandle(vehicle);
 
             //Cancel taxi car respawn 
             if (OnDutyDrivers.Contains(character) && veh.Job.Type == JobManager.JobTypes.Taxi)
             {
-                if (veh.RespawnTimer.Enabled && API.getPlayerVehicleSeat(player) == -1)
+                if (veh.RespawnTimer.Enabled && seat == -1)
                 {
                     API.sendChatMessageToPlayer(player, Color.Yellow, "[TAXI] You have returned to your taxi and will no longer be taken off-duty.");
                     veh.RespawnTimer.Stop();
@@ -102,7 +106,7 @@ namespace mtgvrp.job_manager.taxi
             }
 
             //Check for passengers entering available cabs
-            if (API.getPlayerVehicleSeat(player) != -1)
+            if (seat != -1)
             {
                 if (veh.Job?.Type == JobManager.JobTypes.Taxi)
                 {

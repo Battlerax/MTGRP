@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GrandTheftMultiplayer.Server.API;
+using GrandTheftMultiplayer.Server.Constant;
 using GrandTheftMultiplayer.Server.Elements;
 using GrandTheftMultiplayer.Server.Managers;
 using GrandTheftMultiplayer.Shared;
@@ -27,6 +28,7 @@ using mtgvrp.job_manager;
 using mtgvrp.player_manager;
 using MongoDB.Driver;
 using mtgvrp.core.Help;
+using Color = mtgvrp.core.Color;
 
 namespace mtgvrp.vehicle_manager
 {
@@ -629,6 +631,8 @@ namespace mtgvrp.vehicle_manager
 
         private void OnPlayerEnterVehicle(Client player, NetHandle vehicleHandle)
         {
+            var seat = API.fetchNativeFromPlayer<int>(player, Hash.GET_SEAT_PED_IS_TRYING_TO_ENTER, player.handle);
+
             // Admin check in future
 
             var veh = GetVehFromNetHandle(vehicleHandle);
@@ -648,7 +652,7 @@ namespace mtgvrp.vehicle_manager
             }
 
             //IS A VIP VEHICLE
-            if (veh.IsVip == true && account.VipLevel <= 1 && API.getPlayerVehicleSeat(player) == -1)
+            if (veh.IsVip == true && account.VipLevel <= 1 && seat == -1)
             {
                 player.sendChatMessage("This is a ~y~VIP~y~ vehicle. You must be a VIP to drive it.");
                 API.warpPlayerOutOfVehicle(player);

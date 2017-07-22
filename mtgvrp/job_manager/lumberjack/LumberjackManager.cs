@@ -58,7 +58,7 @@ namespace mtgvrp.job_manager.lumberjack
                     System.Threading.Timer timer = API.getEntityData(vehicle, "Tree_Cancel_Timer");
                     timer.Dispose();
                     API.resetEntityData(vehicle, "Tree_Cancel_Timer");
-                    API.sendChatMessageToPlayer(player, "You've got back into your forklift.");
+                    API.sendChatMessageToPlayer(player, "You've got back into your vehicle.");
                 }
             }
         }

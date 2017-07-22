@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using GrandTheftMultiplayer.Server.API;
+using GrandTheftMultiplayer.Server.Constant;
 using GrandTheftMultiplayer.Server.Elements;
 using GrandTheftMultiplayer.Server.Managers;
 using GrandTheftMultiplayer.Shared;
@@ -11,6 +12,7 @@ using mtgvrp.database_manager;
 using mtgvrp.player_manager;
 using mtgvrp.vehicle_manager;
 using MongoDB.Driver;
+using Color = mtgvrp.core.Color;
 
 namespace mtgvrp.job_manager
 {
@@ -77,12 +79,14 @@ namespace mtgvrp.job_manager
 
         private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle)
         {
+            var seat = API.fetchNativeFromPlayer<int>(player, Hash.GET_SEAT_PED_IS_TRYING_TO_ENTER, player.handle);
+
             Character character = player.GetCharacter();
             var veh = VehicleManager.GetVehFromNetHandle(vehicle);
 
             if (veh?.JobId != 0)
             {
-                if (API.getPlayerVehicleSeat(player) == -1 && veh?.JobId != 0 && veh?.JobId != character.JobOneId && player.GetAccount().AdminDuty == false)
+                if (seat == -1 && veh?.JobId != 0 && veh?.JobId != character.JobOneId && player.GetAccount().AdminDuty == false)
                 { 
                     API.warpPlayerOutOfVehicle(player);
                     API.sendPictureNotificationToPlayer(player, "This vehicle is only available to " + veh?.Job?.Name, "CHAR_BLOCKED", 0, 1, "Server", "~r~Vehicle Locked");
