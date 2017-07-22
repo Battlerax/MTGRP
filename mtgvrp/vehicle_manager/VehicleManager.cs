@@ -320,7 +320,8 @@ namespace mtgvrp.vehicle_manager
         [Command("vstorage"), Help(HelpManager.CommandGroups.Vehicles, "Used to use your vehicles boot.", null)]
         public void VehicleStorage(Client player)
         {
-            var lastVeh = GetNearestVehicle(player);
+            var lastVehNetHandle = GetClosestVehicle(player, 10f);
+            var lastVeh = lastVehNetHandle.GetVehicle();
 
             if (lastVeh == null) return;
             if (!DoesPlayerHaveVehicleAccess(player, lastVeh))
@@ -471,7 +472,8 @@ namespace mtgvrp.vehicle_manager
         [Command("lock"), Help(HelpManager.CommandGroups.General, "How to lock and unlock your vehicle.", null)]
         public void Lockvehicle_cmd(Client player)
         {
-            var lastVeh = GetNearestVehicle(player);
+            var lastVehNetHandle = GetClosestVehicle(player, 10f);
+            var lastVeh = lastVehNetHandle.GetVehicle();
 
             if (lastVeh == null) return;
             if (!DoesPlayerHaveVehicleAccess(player, lastVeh)) return;
@@ -746,22 +748,6 @@ namespace mtgvrp.vehicle_manager
         * ========== FUNCTIONS =========
         * 
         */
-
-        public static Vehicle GetNearestVehicle(Client player, float radius = 5f)
-        {
-            Vehicle lastVeh = null;
-            float lastPos = radius;
-            foreach (Vehicle veh in Vehicles)
-            {
-                if (veh.IsSpawned == false) continue;
-
-                if (API.shared.getEntityPosition(veh.NetHandle).DistanceTo(player.position) < lastPos)
-                {
-                    lastVeh = veh;
-                }
-            }
-            return lastVeh;
-        }
 
         public static NetHandle GetClosestVehicle(Client sender, float distance = 1000.0f)
         {
