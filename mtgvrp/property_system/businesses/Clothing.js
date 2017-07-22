@@ -231,27 +231,47 @@ API.onServerEventTrigger.connect((eventName, args) => {
 				list.Add((j + 1).toString());
 			}
 			torso_menu.AddItem(API.createListItem("Style " + i, "Press enter to select and go back.", list, 0));
-		}
+        }
 
 		var characterCreationMenu = API.createMenu("Clothes Shop", "Outfit Selection", 0, 0, 6);
-		characterCreationMenu.AddItem(API.createMenuItem("Pants" + "          ~g~($" + pant_price + ")",
-			"View the available pants"));
-		characterCreationMenu.AddItem(API.createMenuItem("Shoes" + "           ~g~($" + shoe_price + ")",
-			"View the available shoes"));
-		characterCreationMenu.AddItem(API.createMenuItem("Accessories" + "     ~g~($" + accessory_price + ")",
-			"View the available accesories. These may require not having an undershirt or top to see."));
-		characterCreationMenu.AddItem(API.createMenuItem("Tops" + "            ~g~($" + top_price + ")",
-			"View the available tops. Some of these require an undershirt."));
-		characterCreationMenu.AddItem(API.createMenuItem("Undershirts" + "     ~g~($" + undershirt_price + ")",
-			"View the available undershirts. These may require a certain top to look correct."));
-		characterCreationMenu.AddItem(API.createMenuItem("Hats" + "            ~g~($" + hat_price + ")",
-			"View the available hats"));
-		characterCreationMenu.AddItem(API.createMenuItem("Glasses" + "         ~g~($" + glasses_price + ")",
-			"View the available glasses"));
-		characterCreationMenu.AddItem(API.createMenuItem("Ear Accessories" + " ~g~($" + ear_price + ")",
-			"View the available ear accessories"));
-		characterCreationMenu.AddItem(API.createMenuItem("Torsos ~g~(Free)",
-			"View the available torsos."));
+        var item = API.createMenuItem("Pants", "View the available pants");
+        item.SetRightLabel("~g~$" + pant_price);
+        characterCreationMenu.AddItem(item);
+
+        item = API.createMenuItem("Shoes", "View the available shoes");
+	    item.SetRightLabel("~g~$" + shoe_price);
+        characterCreationMenu.AddItem(item);
+
+	    item = API.createMenuItem("Accessories",
+	        "View the available accesories. These may require not having an undershirt or top to see.");
+	    item.SetRightLabel("~g~$" + accessory_price);
+        characterCreationMenu.AddItem(item);
+
+	    item = API.createMenuItem("Tops", "View the available tops. Some of these require an undershirt.");
+	    item.SetRightLabel("~g~$" + top_price);
+        characterCreationMenu.AddItem(item);
+
+	    item = API.createMenuItem("Undershirts",
+	        "View the available undershirts. These may require a certain top to look correct.");
+	    item.SetRightLabel("~g~$" + undershirt_price);
+        characterCreationMenu.AddItem(item);
+
+	    item = API.createMenuItem("Hats", "View the available hats");
+	    item.SetRightLabel("~g~$" + hat_price);
+        characterCreationMenu.AddItem(item);
+
+	    item = API.createMenuItem("Glasses", "View the available glasses");
+	    item.SetRightLabel("~g~$" + glasses_price);
+        characterCreationMenu.AddItem(item);
+
+	    item = API.createMenuItem("Ear Accessories", "View the available ear accessories");
+	    item.SetRightLabel("~g~$" + ear_price);
+        characterCreationMenu.AddItem(item);
+
+	    item = API.createMenuItem("Torsos", "View the available torsos.");
+	    item.SetRightLabel("~g~Free");
+        characterCreationMenu.AddItem(item);
+
 		menu_pool.Add(characterCreationMenu);
 		characterCreationMenu.Visible = true;
 

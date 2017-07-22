@@ -7,8 +7,10 @@ API.onServerEventTrigger.connect((eventName, args) => {
 			API.setMenuBannerRectangle(menu, 255, 60, 60, 255);
 
 			var items = JSON.parse(args[0]);
-			for (var i = 0; i < items.length; i++) {
-				menu.AddItem(API.createMenuItem(items[i][1] + `\t~g~(\$${items[i][3]})`, items[i][2]));
+            for (var i = 0; i < items.length; i++) {
+                var item = API.createMenuItem(items[i][1], items[i][2]);
+                item.SetRightLabel(`~g~$${items[i][3]}`);
+                menu.AddItem(item);
 			}
            
 			menu.Visible = true;
