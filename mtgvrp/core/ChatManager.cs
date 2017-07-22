@@ -175,20 +175,35 @@ namespace mtgvrp.core
 
             Character c = API.getEntityData(player.handle, "Character");
 
-            if(c.NewbieCooldown > new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds())
+            if (c.NewbieCooldown > new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds())
             {
-                API.sendNotificationToPlayer(player, "~r~ERROR:~w~You must wait 60 seconds before using newbie chat again.");
+                API.sendNotificationToPlayer(player,
+                    "~r~ERROR:~w~You must wait 60 seconds before using newbie chat again.");
                 return;
             }
 
-            API.sendChatMessageToAll(Color.NewbieChat, "[N] " + c.CharacterName + ": " + message);
-            if(account.AdminLevel == 0)
+//Figure rank.
+            string rank = "";
+            if (account.AdminLevel == 1) rank = "Moderator";
+            else if (account.AdminLevel > 1) rank = "Admin";
+            else if (account.DevLevel == 1) rank = "Developer";
+            else if (account.VipLevel >= 1) rank = "VIP";
+            else if (account.TotalPlayingHours < 2) rank = "Guest";
+            else if (account.TotalPlayingHours >= 2 && account.TotalPlayingHours < 75) rank = "Player";
+            else if (account.TotalPlayingHours >= 75 && account.TotalPlayingHours < 250) rank = "MTG-Player";
+            else if (account.TotalPlayingHours >= 250 && account.TotalPlayingHours < 750) rank = "MTG-Pro";
+            else if (account.TotalPlayingHours >= 750 && account.TotalPlayingHours < 1250) rank = "MTG-All Star";
+            else if (account.TotalPlayingHours >= 1250 && account.TotalPlayingHours < 2000) rank = "MTG-Legend";
+            else if (account.TotalPlayingHours >= 2000) rank = "MTG-Icon";
+
+            API.sendChatMessageToAll(Color.NewbieChat, $"[N] {rank} " + c.CharacterName + ": " + message);
+            if (account.AdminLevel == 0)
             {
                 c.NewbieCooldown = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds() + 60;
             }
         }
 
-       
+
 
         [Command("ooc", Alias = "o", GreedyArg = true)]
         public void ooc_cmd(Client player, string message)

@@ -45,6 +45,8 @@ namespace mtgvrp.player_manager
         public string DiscordCode { get; set; } = null;
         public string DiscordUser { get; set; } = null;
 
+        public int TotalPlayingHours { get; set; }
+
         public Account()
         {
             AccountName = "default_account";

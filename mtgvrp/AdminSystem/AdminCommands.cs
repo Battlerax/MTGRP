@@ -69,6 +69,33 @@ namespace mtgvrp.AdminSystem
             }
         }
 
+        [Command("makedev"),
+         Help(HelpManager.CommandGroups.AdminLevel7, "Used to set a player as a developer.",
+             new[] {"The id of target player.", "Dev level, 0 = none."})]
+        public void SetDevLevel(Client player, string target, int level)
+        {
+            var acc = player.GetAccount();
+            if (acc.AdminLevel >= 5)
+            {
+                var receiver = PlayerManager.ParseClient(target);
+                if (receiver == null)
+                {
+                    API.sendChatMessageToPlayer(player, core.Color.White, "That player is not connected.");
+                    return;
+                }
+
+                if (level < 0)
+                {
+                    API.sendChatMessageToPlayer(player, "Level cant be under 0");
+                    return;
+                }
+
+                receiver.GetAccount().DevLevel = level;
+                receiver.GetAccount().Save();
+                API.sendChatMessageToPlayer(player, $"You've successfully set {receiver.GetCharacter().CharacterName}[{receiver.socialClubName}]'s dev level to " + level);
+            }
+        }
+
         [Command("set", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel5, "Used to set items/settings of a player.", new[] { "Id: The id of target player.", "Item: Name of the variable.", "Amount: New value of the variable." })]
         public void SetCharacterData(Client player, string target, string var, string value)
         {
