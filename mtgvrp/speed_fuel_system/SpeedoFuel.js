@@ -1,4 +1,10 @@
-﻿API.onServerEventTrigger.connect((eventName, args) => {
+﻿var res = API.getScreenResolutionMantainRatio();
+var width = 450;
+var height = 200;
+var size = resource.JsFunctions.scaleCoordsToReal({ X: width, Y: height });
+var pos = resource.JsFunctions.scaleCoordsToReal({ X: 310, Y: res.Height - height - 5 });
+
+API.onServerEventTrigger.connect((eventName, args) => {
 	switch (eventName) {
 	case "fuel_updatevalue":
 		if(myBrowser !== null)
@@ -7,16 +13,26 @@
     case "speedo_showcef":
         if (API.getPlayerVehicleSeat(API.getLocalPlayer()) !== -1) return;
 
-        var res = API.getScreenResolutionMaintainRatio();
-        var width = 450;
-        var height = 200;
-        var size = resource.JsFunctions.scaleCoordsToReal({ X: width, Y: height });
         myBrowser = API.createCefBrowser(size.X, size.Y);
         API.waitUntilCefBrowserInit(myBrowser);
-        var pos = resource.JsFunctions.scaleCoordsToReal({ X: 310, Y: res.Height - height - 5 });
         API.setCefBrowserPosition(myBrowser, pos.X, pos.Y);
         API.loadPageCefBrowser(myBrowser, "speed_fuel_system/SpeedoFuel.html");
         API.waitUntilCefBrowserLoaded(myBrowser);
+        break;
+
+    case "TOGGLE_SPEEDO":
+            if (myBrowser === null) {
+                if (API.getPlayerVehicleSeat(API.getLocalPlayer()) !== -1) return;
+
+                myBrowser = API.createCefBrowser(size.X, size.Y);
+                API.waitUntilCefBrowserInit(myBrowser);
+                API.setCefBrowserPosition(myBrowser, pos.X, pos.Y);
+                API.loadPageCefBrowser(myBrowser, "speed_fuel_system/SpeedoFuel.html");
+                API.waitUntilCefBrowserLoaded(myBrowser);
+            } else {
+                API.destroyCefBrowser(myBrowser);
+                myBrowser = null;
+            }
         break;
 	}
 });

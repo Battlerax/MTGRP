@@ -98,9 +98,13 @@ namespace mtgvrp.job_manager.garbageman
 
                 if (maxGarbage == 0)
                 {
-                    Random rand = new Random();
-                    int r = rand.Next(PropertyManager.Properties.Count);
-                    TargetProperty = PropertyManager.Properties[r];
+                    TargetProperty = ChooseRandomProperty();
+
+                    while (!TargetProperty.HasGarbagePoint)
+                    {
+                        TargetProperty = ChooseRandomProperty();
+                    }
+
                     TargetProperty.GarbageBags = 5;
                 }
 
@@ -123,6 +127,15 @@ namespace mtgvrp.job_manager.garbageman
 
             }
         }
+        
+        public static Property ChooseRandomProperty()
+        {
+            Property randomProp;
+            Random rand = new Random();
+            int r = rand.Next(PropertyManager.Properties.Count);
+            randomProp = PropertyManager.Properties[r];
+            return randomProp;
+        }
 
         public static void UpdateTimer(Client player)
         {
@@ -139,7 +152,7 @@ namespace mtgvrp.job_manager.garbageman
             player.GetCharacter().GarbageTimeLeft = 0;
             player.GetCharacter().GarbageTimeLeftTimer.Stop();
             player.GetCharacter().IsOnGarbageRun = false;
-            player.sendChatMessage("~r~Your time to collect garbage is up. Your garbage truck was removed.");
+            player.sendChatMessage("~r~The garbage run has ended. Your garbage truck was removed.");
         }
 
         public static void SendNotificationToGarbagemen(string message)
@@ -203,8 +216,38 @@ namespace mtgvrp.job_manager.garbageman
             ChatManager.RoleplayMessage(character, "uses the garbage truck's control panel to unload the trash.", ChatManager.RoleplayMe);
             player.sendChatMessage($"You were paid ${closestVeh.GarbageBags * 100} for unloading {closestVeh.GarbageBags} trash bags.");
             closestVeh.GarbageBags = 0;
+            closestVeh.UpdateMarkers();
             API.shared.sendPictureNotificationToPlayer(player, $"Thanks for keeping Los Santos clean!", "CHAR_PROPERTY_CAR_SCRAP_YARD", 0, 1, "Los Santos Sanitations", "Garbage Notification");
 
+
+        }
+
+        [Command("endtrash")]
+        public void endtrash_cmd(Client player)
+        {
+            Character character = API.getEntityData(player, "Character");
+
+            if (character.JobOne.Type != JobManager.JobTypes.Garbageman)
+            {
+                player.sendChatMessage("You must be a garbageman to use this command!");
+                return;
+            }
+
+            if (!character.IsOnGarbageRun)
+            {
+                player.sendChatMessage("You aren't on a garbage run!");
+                return;
+            }
+
+            var veh = VehicleManager.GetVehFromNetHandle(API.getPlayerVehicle(player));
+
+            if (veh.Job.Type != JobManager.JobTypes.Garbageman)
+            {
+                player.sendChatMessage("You must be in your garbage truck to end the garbage run.");
+                return;
+            }
+
+            RespawnGarbageTruck(player, veh);
 
         }
 

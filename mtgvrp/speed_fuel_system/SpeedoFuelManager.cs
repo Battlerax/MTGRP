@@ -70,6 +70,11 @@ namespace mtgvrp.speed_fuel_system
             a.IsSpeedoOn = !a.IsSpeedoOn;
             API.sendChatMessageToPlayer(player, a.IsSpeedoOn ? "You've sucessfully turned on the speedometer." : "You've sucessfully turned off the speedometer.");
             a.Save();
+
+            if (player.isInVehicle)
+            {
+                API.triggerClientEvent(player, "TOGGLE_SPEEDO");
+            }
         }
 
         [Command("refuel"), Help(HelpManager.CommandGroups.Vehicles, "Command to refuel your vehicle from a gas station.", new[] { "Fuel amount wanted (out of 100)" })]
