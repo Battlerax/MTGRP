@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Reflection;
+using System.Xml;
 using GrandTheftMultiplayer.Server.API;
 using GrandTheftMultiplayer.Server.Elements;
 using GrandTheftMultiplayer.Server.Managers;
@@ -660,7 +661,7 @@ namespace mtgvrp.inventory
             }
         }
 
-        private Dictionary<NetHandle, IInventoryItem> _stashedItems = new Dictionary<NetHandle, IInventoryItem>();
+        private Dictionary<NetHandle, KeyValuePair<string[], IInventoryItem>> _stashedItems = new Dictionary<NetHandle, KeyValuePair<string[], IInventoryItem>>();
 
         [Command("stash")]
         public void stash_cmd(Client player, string item, int amount)
@@ -683,7 +684,8 @@ namespace mtgvrp.inventory
 
             //Create object and add to list.
             var droppedObject = API.createObject(sendersItem[0].Object, player.position, new Vector3());
-            _stashedItems.Add(droppedObject, CloneItem(sendersItem[0], amount));
+            var itemaa = CloneItem(sendersItem[0], amount);
+            _stashedItems.Add(droppedObject, new KeyValuePair<string[], IInventoryItem>(new []{character.CharacterName, player.GetAccount().AccountName}, itemaa));
             var rnd = new Random();
             var number = rnd.Next(0, 10000).ToString();
             API.setEntitySyncedData(droppedObject, "TargetObj", number);
@@ -709,9 +711,20 @@ namespace mtgvrp.inventory
                 return;
             }
 
-            //Just get the first one and take it.
             Character character = player.GetCharacter();
-            switch (GiveInventoryItem(character, items.First().Value, items.First().Value.Amount))
+            Account a = player.GetAccount();
+
+            var item = items.First().Value.Value;
+            var names = items.First().Value.Key;
+
+            if (a.AccountName == names[1] && character.CharacterName != names[0])
+            {
+                API.sendChatMessageToPlayer(player, "You cannot pickup a stash you placed from one of your other characters.");
+                return;
+            }
+
+            //Just get the first one and take it.
+            switch (GiveInventoryItem(character, item, item.Amount))
             {
                 case GiveItemErrors.NotEnoughSpace:
                     API.sendNotificationToPlayer(player, "You don't have enough space in his inventory.");
@@ -725,7 +738,7 @@ namespace mtgvrp.inventory
                     break;
                 case GiveItemErrors.Success:
                     API.sendNotificationToPlayer(player,
-                        $"You have sucessfully taken ~g~{items.First().Value.Amount}~w~ ~g~{items.First().Value.LongName}~w~ from the stash.");
+                        $"You have sucessfully taken ~g~{item.Amount}~w~ ~g~{item.LongName}~w~ from the stash.");
 
                     //Remove object and item from list.
                     API.deleteEntity(items.First().Key);
