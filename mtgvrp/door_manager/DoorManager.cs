@@ -15,8 +15,6 @@ namespace mtgvrp.door_manager
 {
     public class DoorManager : Script
     {
-        Timer reloadDoorsTimer = new Timer();
-
         public DoorManager()
         {
             API.onClientEventTrigger += API_onClientEventTrigger;
@@ -27,26 +25,6 @@ namespace mtgvrp.door_manager
                 door.RegisterDoor();
             }
             API.consoleOutput("Loaded " + DatabaseManager.DoorsTable.Count(FilterDefinition<Door>.Empty) + " Doors");
-
-            reloadDoorsTimer.Interval = 1000;
-            reloadDoorsTimer.Elapsed += ReloadDoorsTimer_Elapsed;
-            reloadDoorsTimer.Start();
-        }
-
-        private void ReloadDoorsTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            foreach (var door in Door.Doors)
-            {
-                foreach (var player in door.Shape.getAllEntities())
-                {
-                    var client = API.getPlayerFromHandle(player);
-                    if(client == null)
-                        continue;
-                    API.shared.sendNativeToPlayer(client, Door.SetStateOfClosestDoorOfType,
-                        door.Hash, door.Position.X, door.Position.Y, door.Position.Z,
-                        door.Locked, door.State, false);
-                }
-            }
         }
 
         private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
