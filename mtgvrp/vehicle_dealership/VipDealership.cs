@@ -96,7 +96,7 @@ namespace mtgvrp.vehicle_dealership
             //Setup the blip.
             foreach (var loc in _dealershipsLocations)
             {
-                var marker = new MarkerZone(loc, new Vector3()) {BlipSprite = 100, TextLabelText = "/buyvehicle", BlipColor = 46};
+                var marker = new MarkerZone(loc, new Vector3()) {BlipSprite = 100, TextLabelText = "/buyvipvehicle", BlipColor = 46};
                 marker.Create();
                 API.shared.setBlipShortRange(marker.Blip, true);
                 API.shared.setBlipName(marker.Blip, "VIP Vehicle Dealership");
@@ -164,10 +164,11 @@ namespace mtgvrp.vehicle_dealership
                         (VehicleHash)Convert.ToInt32(selectedCar[1]),
                         spawnPoss[randomPos],
                         new Vector3(0.1917319, 0.1198539, -177.1394),
-                        "Unregistered",
+                        " ",
                         character.Id,
                         vehicle_manager.Vehicle.VehTypePerm
                     );
+                    theVehicle.OwnerName = character.CharacterName;
                     theVehicle.IsVip = true;
                     //Add it to the players cars.
                     theVehicle.Insert();
@@ -191,7 +192,7 @@ namespace mtgvrp.vehicle_dealership
             }
         }
 
-        [Command("buyvehicle"), Help(HelpManager.CommandGroups.Vehicles, "Command used inside dealership to buy a vehicle.", null)]
+        [Command("buyvipvehicle"), Help(HelpManager.CommandGroups.Vehicles, "Command used inside dealership to buy a vehicle.", null)]
         public void BuyVehicle(Client player)
         {
             //Check if can buy more cars.

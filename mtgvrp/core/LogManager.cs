@@ -70,6 +70,7 @@ namespace mtgvrp.core
             Storage,
             Unbans,         //Logged
             Warns,          //Logged
+            MappingRequests,
         }
 
         public static void Log(LogTypes type, string log)

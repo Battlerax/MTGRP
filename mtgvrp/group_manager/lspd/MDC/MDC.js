@@ -32,12 +32,23 @@ API.onServerEventTrigger.connect(function (eventName, args) {
         case "addBolo":
 
             //boloId, officer, time, priority, info
-            API.sendChatMessage("Calling html_addBolo with: " + args[0] + " " + args[1] + " " + args[2] + " " + args[3] + " " + args[4]);
             mdcBrowser.call("html_addBolo", args[0], args[1], args[2], args[3], args[4]);
             break;
 
         case "remove911":
 
+            break;
+
+        case "MDC_SHOW_CITIZEN_INFO":
+            mdcBrowser.call("html_showcitizeninfo", args[0], args[1], args[2], args[3], args[4]);
+            break;
+
+        case "MDC_SHOW_VEHICLE_INFO":
+            mdcBrowser.call("html_showvehicleinfo", args[0], args[1], args[2]);
+            break;
+
+        case "MDC_UPDATE_CRIMES":
+            mdcBrowser.call("html_updatecrimes", args[0]);
             break;
     }
 });
@@ -67,4 +78,16 @@ function client_mdc_close() {
     //API.setCefDrawState(false);
     API.setCanOpenChat(true);
     API.triggerServerEvent("server_mdc_close");
+}
+
+function MDC_SearchForCitizen(name, phone) {
+    API.triggerServerEvent("MDC_SearchForCitizen", name, phone);
+}
+
+function MDC_SearchForVehicle(lic) {
+    API.triggerServerEvent("MDC_SearchForVehicle", lic);
+}
+
+function MDC_RequestNextCrimesPage(number) {
+    API.triggerServerEvent("MDC_RequestNextCrimesPage", number);
 }

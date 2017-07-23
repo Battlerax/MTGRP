@@ -26,6 +26,8 @@ namespace mtgvrp.inventory.bags
         public bool CanBeStacked => false;
         public bool CanBeStashed => true;
         public bool IsBlocking => false;
+        public bool CanBeStored => false;
+
         public Dictionary<Type, int> MaxAmount
         {
             get

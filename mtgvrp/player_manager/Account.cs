@@ -5,6 +5,7 @@ using mtgvrp.database_manager;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
+using mtgvrp.mapping_manager;
 
 namespace mtgvrp.player_manager
 {
@@ -45,9 +46,13 @@ namespace mtgvrp.player_manager
         public string DiscordCode { get; set; } = null;
         public string DiscordUser { get; set; } = null;
 
+        [BsonIgnore]
+        public Mapping ViewingMappingRequest { get; set; } = 0;
+
         public Account()
         {
             AccountName = "default_account";
+            AdminName = "Unset";
             AdminLevel = 0;
             CharacterSlots = 3;
             AdminPin = string.Empty;

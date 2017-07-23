@@ -80,11 +80,11 @@
                         <div class="cell">Dimension:</div>
                     </div>
                     <div class="row cells5">
-                        <div class="cell"><div class="input-control text"><input id="viewID" type="text" placeholder="1"></div></div>
+                        <div class="cell"><div class="input-control text"><input id="viewID" type="text"></div></div>
                         <div class="cell"><div class="input-control text"><input id="viewCreator" type="text" placeholder="Chenko" readonly></div></div>
                         <div class="cell"><div class="input-control text"><input id="viewDate" type="text" placeholder="7/14/2017 07:49:00PM" readonly></div></div>
-                        <div class="cell"><div class="input-control text"><input id="viewPropLink" type="text" placeholder="0"></div></div>
-                        <div class="cell"><div class="input-control text"><input id="viewDim" type="text" placeholder="0"></div></div>
+                        <div class="cell"><div class="input-control text"><input id="viewPropLink" type="text" placeholder="0" disabled></div></div>
+                        <div class="cell"><div class="input-control text"><input id="viewDim" type="text" placeholder="0" disabled></div></div>
                     </div>
                     <div class="row cells5">
                         <div class="cell">Pastebin code:</div>
@@ -93,10 +93,10 @@
                         <div class="cell">Is Active:</div>
                     </div>
                     <div class="row cells5">
-                        <div class="cell"><div class="input-control text"><input id="viewPastebinLink" type="text" placeholder="Ex: 0avqAqTu"></div></div>
-                        <div class="cell"><div class="input-control text"><input id="viewDesc" type="text"></div></div>
-                        <div class="cell"><label class="input-control checkbox"><input onclick="toggleMappingLoaded()" id="viewLoaded" type="checkbox" checked=""><span class="check"></span></label></div>
-                        <div class="cell"><label class="input-control checkbox"><input onclick="toggleMappingActive()" id="viewActive" type="checkbox" checked=""><span class="check"></span></label></div>
+                        <div class="cell"><div class="input-control text"><input id="viewPastebinLink" type="text" placeholder="Ex: 0avqAqTu" readonly></div></div>
+                        <div class="cell"><div class="input-control text"><input id="viewDesc" type="text" disabled></div></div>
+                        <div class="cell"><label class="input-control checkbox"><input onclick="toggleMappingLoaded()" id="viewLoaded" type="checkbox" checked="" disabled><span class="check"></span></label></div>
+                        <div class="cell"><label class="input-control checkbox"><input onclick="toggleMappingActive()" id="viewActive" type="checkbox" checked="" disabled><span class="check"></span></label></div>
                         <div class="cell">
                             <button onclick="searchForMappingRequest()" class="button primary" style="margin-top:10px" data-role="hint" data-hint-background="bg-blue" data-hint-color="fg-white" data-hint-mode="2" data-hint="Search|Search for mapping"><span class="mif-search"></span> </button>
                             <button onclick="saveMappingRequest()" class="button success" style="margin-top:10px" data-role="hint" data-hint-background="bg-green" data-hint-color="fg-white" data-hint-mode="2" data-hint="Save|Save changes"><span class="mif-floppy-disk"></span> </button>
@@ -117,7 +117,7 @@
                 <div class="fg-black" id="error_msg">Default Text</div>
             </div>
     </div>
-
+       
     <script>
         //-------------- Button Navigation Code --------------
         activeView = $('#view_all');
@@ -160,7 +160,7 @@
                 return send_error("You left the mapping ID empty.");
             }
 
-            resourceCall("callServerEvent", "saveMappingRequest", $('#viewID').val());
+            resourceCall("callServerEvent", "saveMappingRequest", $('#viewID').val(), $('#viewPropLink').val(), $('#viewDim').val(), $('#viewDesc').val());
         }
 
         function deleteMappingRequest() {
@@ -191,12 +191,42 @@
                 return send_error("You left the mapping ID empty.");
             }
 
-            resourceCall("callServerEvent", "requestMappingCode", $('#viewID').val());
+            resourceCall("callServerEvent", "requestMappingCode");
         }
 
         function viewMappingRequest(id) {
             show('#view_specific');
             searchForMappingRequest(id);
+        }
+
+        function populateViewMappingRequest(id, createdBy, createdDate, propLink, dim, pastebinLink, description, isLoaded, isActive) {
+            $('#viewID').val(id);
+            $('#viewCreator').val(createdBy);
+            $('#viewDate').val(createdDate);
+            $('#viewPropLink').val(propLink);
+            $('#viewDim').val(dim);
+            $('#viewPastebinLink').val(pastebinLink);
+            $('#viewDesc').val(description);
+
+            if (isLoaded == true) {
+                $('#viewLoaded').attr("checked", "");
+            }
+            else {
+                $('#viewLoaded').removeAttr("checked");
+            }
+
+            if (isActive == true) {
+                $('#viewActive').attr("checked", "");
+            }
+            else {
+                $('#viewActive').removeAttr("checked");
+            }
+
+            $('#viewPropLink').removeAttr("disabled");
+            $('#viewDim').removeAttr("disabled");
+            $('#viewDesc').removeAttr("disabled");
+            $('#viewLoaded').removeAttr("disabled");
+            $('#viewActive').removeAttr("disabled");
         }
 
         //-------------- Error Message Functions --------------

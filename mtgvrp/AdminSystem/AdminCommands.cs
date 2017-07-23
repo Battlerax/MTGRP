@@ -1497,6 +1497,24 @@ namespace mtgvrp.AdminSystem
             receiver.sendChatMessage("Your ~y~VIP~y~ days were increased by " + int.Parse(days) + " days by " + account.AdminName + "!");
         }
 
+        [Command("closestveh")]
+        public void closestveh_cmd(Client player)
+        {
+            Account account = API.shared.getEntityData(player.handle, "Account");
+
+            if (account.AdminLevel < 2)
+                return;
+
+            var ClosestVeh = GetClosestVeh(player);
+            if (ClosestVeh == null)
+            {
+                player.sendChatMessage("There are no nearby vehicles.");
+                return;
+            }
+
+            API.setPlayerIntoVehicle(player, ClosestVeh, -1);
+        }
+
         public void startReportTimer(Client player)
         {
             Character senderchar = API.getEntityData(player.handle, "Character");
@@ -1527,6 +1545,23 @@ namespace mtgvrp.AdminSystem
             character.ReportTimer.Stop();
         }
 
+        public NetHandle GetClosestVeh(Client player)
+        {
+            var shortestDistance = 2000f;
+            NetHandle closestveh = new NetHandle();
+            foreach (var veh in API.getAllVehicles())
+            {
+                Vector3 Position = API.getEntityPosition(veh);
+                var VehicleDistance = player.position.DistanceTo(Position);
+                if (VehicleDistance < shortestDistance)
+                {
+                    shortestDistance = VehicleDistance;
+                    closestveh = veh;
+                }
+            }
+            return closestveh;
+        }
+
         [Command("testtext"), Help(HelpManager.CommandGroups.AdminLevel3, "Goes into testing on-screen text position.", new[] { "Text to display." })]
         public void TestText(Client player, string text = "")
         {
@@ -1534,6 +1569,33 @@ namespace mtgvrp.AdminSystem
             {
                 API.triggerClientEvent(player, "texttest_settext", text);
             }
+        }
+
+        [Command("giveitem"), Help(HelpManager.CommandGroups.AdminLevel4, "Gives an inventory item to a player.<br/> <strong>This could cause problems with the player, use with caution.</strong>", new[] { "Target ID or name.", "Item name, you can get this from a dev.", "Amount to give." })]
+        public void GiveItem(Client player, string target, string item, int amount)
+        {
+            if (player.GetAccount().AdminLevel < 4)
+            {
+                return;
+            }
+
+            var targetPlayer = PlayerManager.ParseClient(target);
+            if (targetPlayer == null)
+            {
+                API.sendChatMessageToPlayer(player, "That player is not online.");
+                return;
+            }
+
+            var type = InventoryManager.ParseInventoryItem(item);
+            if (type == null)
+            {
+                API.sendChatMessageToPlayer(player, "Unexisting Item.");
+                return;
+            }
+
+            var itema = InventoryManager.ItemTypeToNewObject(type);
+            InventoryManager.GiveInventoryItem(targetPlayer.GetCharacter(), itema, amount);
+            API.sendChatMessageToPlayer(player, "Done.");
         }
     }
 }
