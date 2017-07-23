@@ -448,9 +448,10 @@ namespace mtgvrp.job_manager.trucker
                 return;
 
             //Respawn cars and warp out.
-            API.warpPlayerOutOfVehicle(player);
             player.GetCharacter().TruckingStage = Character.TruckingStages.None;
             NetHandle veh = API.getEntityData(player, "TRUCKER_VEHICLE");
+            if (player.vehicle == veh)
+                API.warpPlayerOutOfVehicle(player);
             if (!veh.IsNull)
             {
                 VehicleManager.respawn_vehicle(veh.GetVehicle());
