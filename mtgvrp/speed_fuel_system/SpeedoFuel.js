@@ -7,6 +7,8 @@
     case "speedo_showcef":
         if (API.getPlayerVehicleSeat(API.getLocalPlayer()) !== -1) return;
 
+        if (resource.Introduction.isonintro) return;
+
         var res = API.getScreenResolutionMaintainRatio();
         var width = 450;
         var height = 200;

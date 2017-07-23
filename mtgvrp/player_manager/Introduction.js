@@ -108,7 +108,10 @@ function spawn_sequence_start() {
 	entity_spawn(spawn_cam_entity);
 	var current_cam = API.createCamera(spawn_sequence_campos[spawn_cam_index], spawn_sequence_camrot[spawn_cam_index]);
 	API.setActiveCamera(current_cam);
-	set_focus(spawn_sequence_campos[spawn_cam_index]);
+    set_focus(spawn_sequence_campos[spawn_cam_index]);
+    /*if (spawn_cam_index < spawn_sequence_campos.length - 1) {
+        set_focus(spawn_sequence_campos[spawn_cam_index + 1]);
+    }*/
 	spawn_cam_index++;
 	var next_cam = API.createCamera(spawn_sequence_campos[spawn_cam_index], spawn_sequence_camrot[spawn_cam_index]);
 	spawn_cam_index++;
@@ -129,7 +132,10 @@ function next_camera() {
 	API.setActiveCamera(current_cam);
 	current_cam_index++;
 	var next_cam = API.createCamera(camera_pos[current_cam_index], camera_rot[current_cam_index]);
-	set_focus(camera_pos[current_cam_index]);
+    set_focus(camera_pos[current_cam_index]);
+    /*if (current_cam_index < camera_pos.length - 1) {
+        set_focus(camera_pos[current_cam_index + 1]);
+    }*/
 	current_cam_index++;
 	current_text_index++;
 	API.interpolateCameras(current_cam, next_cam, 11000, false, false);
@@ -138,7 +144,7 @@ function next_camera() {
 }
 
 function set_focus(vect){
-	API.callNative("0xBB7454BAFF08FE25", vect.X, vect.Y, vect.Z, 0.0, 0.0, 0.0); //SET FOCUS
+    API.callNative("_SET_FOCUS_AREA", vect.X, vect.Y, vect.Z, 0.0, 0.0, 0.0); //SET FOCUS
 }
 
 function stop_introduction(){
@@ -149,7 +155,7 @@ function stop_introduction(){
 	API.setChatVisible(true);
     API.stopMusic();
 	API.setActiveCamera(null);
-	API.callNative("0x31B73D1EA9F01DA2"); //RESET FOCUS
+    API.callNative("CLEAR_FOCUS"); //RESET FOCUS
 	current_cam_index = 0;
 	spawn_cam_index = 0;
 	API.triggerServerEvent("finish_intro");
