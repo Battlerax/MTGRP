@@ -14,6 +14,7 @@ using mtgvrp.group_manager;
 using mtgvrp.group_manager.lspd;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;
+using mtgvrp.property_system;
 using mtgvrp.vehicle_manager;
 using mtgvrp.weapon_manager;
 using MongoDB.Driver;
@@ -69,13 +70,37 @@ namespace mtgvrp.AdminSystem
             }
         }
 
+        [Command("setallsupplies"), Help(HelpManager.CommandGroups.AdminLevel5, "Used to set all non gas station properties' supplies.",
+             new[] { "Amount of supplies to set." })]
+        public void SetAllSupplies(Client player, int supply)
+        {
+            var acc = player.GetAccount();
+            if (acc.AdminLevel >= 5)
+            {
+                PropertyManager.Properties.Where(y => y.Type != PropertyManager.PropertyTypes.GasStation).AsParallel().ForAll(x => { x.Supplies = supply; });
+                API.sendChatMessageToPlayer(player, "Set all non gas station properties supplies to " + supply);
+            }  
+        }
+
+        [Command("setgassupplies"), Help(HelpManager.CommandGroups.AdminLevel5, "Used to set all gas station properties' supplies.",
+             new[] { "Amount of supplies to set." })]
+        public void SetGasSupplies(Client player, int supply)
+        {
+            var acc = player.GetAccount();
+            if (acc.AdminLevel >= 5)
+            {
+                PropertyManager.Properties.Where(y => y.Type == PropertyManager.PropertyTypes.GasStation).AsParallel().ForAll(x => { x.Supplies = supply; });
+                API.sendChatMessageToPlayer(player, "Set all gas station properties supplies to " + supply);
+            }
+        }
+
         [Command("makedev"),
          Help(HelpManager.CommandGroups.AdminLevel7, "Used to set a player as a developer.",
              new[] {"The id of target player.", "Dev level, 0 = none."})]
         public void SetDevLevel(Client player, string target, int level)
         {
             var acc = player.GetAccount();
-            if (acc.AdminLevel >= 5)
+            if (acc.AdminLevel >= 7)
             {
                 var receiver = PlayerManager.ParseClient(target);
                 if (receiver == null)
