@@ -175,8 +175,8 @@ function next_character_creation_step(player, step) {
 	        if(mother_ped !== null)
 		        API.deleteEntity(mother_ped);
 
-            father_ped = API.createPed(1885233650, new Vector3(402.5, -996.5, -99), new Vector3(0, 0, 172));
-            mother_ped = API.createPed(-1667301416, new Vector3(403.38, -996.5, -99), new Vector3(0, 0, 172));
+            father_ped = API.createPed(1885233650, new Vector3(402.5, -996.5, -99), 172);
+            mother_ped = API.createPed(-1667301416, new Vector3(403.38, -996.5, -99), 172);
             API.triggerServerEvent("change_parent_info", father_ped, mother_ped, father_int_id, mother_int_id, parent_lean, gender);
 
 			//Set default clothes.
