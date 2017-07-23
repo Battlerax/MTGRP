@@ -1,16 +1,75 @@
 ﻿using GTANetworkServer;
 using GTANetworkShared;
+using mtgvrp.core;
+using mtgvrp.property_system;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace mtgvrp.mapping_manager
 {
-    public class MappingManager
+    public class MappingManager : Script
     {
+        public MappingManager()
+        {
+            DebugManager.DebugMessage("[MAPPING MANAGER] Initializing mapping manager...");
+
+            API.onClientEventTrigger += Mapping_onClientEventTrigger;
+
+            DebugManager.DebugMessage("[MAPPING MANAGER] Mapping initialized.");
+        }
+
+        public void Mapping_onClientEventTrigger(Client player, string eventName, params object[] arguments)
+        {
+            switch (eventName)
+            {
+                case "requestCreateMapping":
+                    var propLink = Convert.ToInt32(arguments[0]);
+                    var dimension = Convert.ToInt32(arguments[1]);
+                    var description = Convert.ToString(arguments[1]);
+                    var pastebinLink = Convert.ToString(arguments[2]);
+                    
+                    if(dimension < 0)
+                    {
+                        API.triggerClientEvent(player, "callMappingFunction", "send_error", "The dimension entered is less than 0.");
+                        return;
+                    }
+
+                    if (PropertyManager.Properties.FindAll(p => p.Id == propLink).Count < 1)
+                    {
+                        API.triggerClientEvent(player, "callMappingFunction", "send_error", "The property link ID you entered is invalid.");
+                        return;
+                    }
+
+                    var webClient = new WebClient();
+
+                    try
+                    {
+                        var pastebinData = webClient.DownloadString("http://pastebin.com/raw/" + pastebinLink);
+
+                        var newMapping = new Mapping(player.GetAccount().AdminName, pastebinLink, description, propLink, dimension);
+                        newMapping.Objects = ParseObjectsFromString(pastebinData);
+                        newMapping.DeleteObjects = ParseDeleteObjectsFromString(pastebinData);
+                        newMapping.Insert();
+                        newMapping.Load();
+
+                    }
+                    catch(WebException e)
+                    {
+                        ((HttpWebResponse)e.Response).StatusCode.ToString() == "NotFound"){
+                            API.triggerClientEvent(player, "callMappingFunction", "send_error", "The pastebin link you entered does not exist.");
+                            return;
+                        }
+                    }
+                   
+                    break;
+            }
+        }
+
         public List<MappingObject> ParseObjectsFromString(string input)
         {
             List<MappingObject> objectList = new List<MappingObject>();

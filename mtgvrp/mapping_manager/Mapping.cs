@@ -28,6 +28,19 @@ namespace mtgvrp.mapping_manager
 
         public string PastebinLink;
 
+        public Mapping(string createdBy, string pastebinLink, string description, int propertyLink, int dimension)
+        {
+            CreatedBy = createdBy;
+            PastebinLink = pastebinLink;
+            Description = description;
+            PropertyLinkId = propertyLink;
+            Dimension = dimension;
+
+            IsActive = true;
+            IsSpawned = true;
+            CreatedDate = DateTime.Now;
+        }
+
         public void Insert()
         {
             Id = DatabaseManager.GetNextId("mapping");
@@ -49,14 +62,6 @@ namespace mtgvrp.mapping_manager
                     o.Spawn(Dimension);
                 }
                 IsSpawned = true;
-            }
-        }
-
-        public void LoadDeletedObjectsForPlayer(Client player)
-        {
-            foreach(var o in DeleteObjects)
-            {
-                o.Spawn(player);
             }
         }
     }

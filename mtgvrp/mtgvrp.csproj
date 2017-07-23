@@ -234,7 +234,6 @@
     <Content Include="jquery.js" />
     <Content Include="mapping_manager\MappingManager.html" />
     <Content Include="mapping_manager\MappingManager.js" />
-    <Content Include="mapping_manager\MappingManagerInterface.js" />
     <Content Include="meta.xml">
       <SubType>Designer</SubType>
     </Content>
