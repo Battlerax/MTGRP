@@ -81,7 +81,7 @@ namespace mtgvrp.core
             Directory.CreateDirectory("Logs");
 
             //Append
-            File.AppendAllText("Logs/" + file, $"[{GetTimeStamp}] " + log + "\r\n");
+            File.AppendAllText("Logs/" + file, $"[{DateTime.UtcNow:R}] " + log + "\r\n");
         }
     }
 }
