@@ -120,9 +120,9 @@ namespace mtgvrp.job_manager.garbageman
                     character.GarbageTimeLeftTimer.Elapsed += delegate { UpdateTimer(player); };
                     character.GarbageTimeLeftTimer.Start();
                     character.update_ped();
-                    veh.RespawnTimer = new Timer { Interval = 900000  };
-                    veh.RespawnTimer.Elapsed += delegate { RespawnGarbageTruck(player, veh); };
-                    veh.RespawnTimer.Start();
+                    veh.CustomRespawnTimer = new Timer { Interval = 900000  };
+                    veh.CustomRespawnTimer.Elapsed += delegate { RespawnGarbageTruck(player, veh); };
+                    veh.CustomRespawnTimer.Start();
                 }
 
             }
@@ -145,7 +145,7 @@ namespace mtgvrp.job_manager.garbageman
 
         public void RespawnGarbageTruck(Client player, vehicle_manager.Vehicle vehicle)
         {
-            vehicle.RespawnTimer.Stop();
+            vehicle.CustomRespawnTimer.Stop();
             vehicle.GarbageBags = 0;
             VehicleManager.respawn_vehicle(vehicle);
             vehicle.UpdateMarkers();

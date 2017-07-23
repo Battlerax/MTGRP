@@ -10,6 +10,7 @@
  * */
 
 
+using System;
 using System.Collections.Generic;
 using System.Timers;
 using GrandTheftMultiplayer.Server.API;
@@ -52,9 +53,9 @@ namespace mtgvrp.vehicle_manager
         public string OwnerName { get; set; }
         public string LicensePlate { get; set; }
 
-        public int RespawnDelay { get; set; }
+        public TimeSpan RespawnDelay { get; set; }
         [BsonIgnore]
-        public Timer RespawnTimer { get; set; }
+        public Timer CustomRespawnTimer { get; set; }
 
         public int VehType { get; set; }
        
@@ -94,6 +95,9 @@ namespace mtgvrp.vehicle_manager
 
         public bool IsRegistered { get; set; }
 
+        [BsonIgnore]
+        public DateTime LastOccupied { get; set; }
+
         public Vehicle()
         {
             Id = 0;
@@ -106,7 +110,7 @@ namespace mtgvrp.vehicle_manager
             LicensePlate = "DEFAULT";
             Fuel = 100;
 
-            RespawnDelay = 600;
+            RespawnDelay = TimeSpan.FromMinutes(15);
             VehType = VehTypeTemp;
 
             NetHandle = new NetHandle();

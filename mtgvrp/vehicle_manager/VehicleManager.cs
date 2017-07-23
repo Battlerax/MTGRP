@@ -12,6 +12,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Timers;
 using GrandTheftMultiplayer.Server.API;
 using GrandTheftMultiplayer.Server.Constant;
 using GrandTheftMultiplayer.Server.Elements;
@@ -208,6 +209,8 @@ namespace mtgvrp.vehicle_manager
         public ColShape dropcarShape;
         public Vector3 dropcarPosition = new Vector3(487.0575, -1334.377, 29.30219);
 
+        public Timer VehicleRespawnTimer = new Timer();
+
         public VehicleManager()
         {
             DebugManager.DebugMessage("[VehicleM] Initilizing vehicle manager...");
@@ -217,6 +220,11 @@ namespace mtgvrp.vehicle_manager
             API.onVehicleDeath += OnVehicleDeath;
             API.onPlayerExitVehicle += OnPlayerExitVehicle;
             API.onPlayerDisconnected += API_onPlayerDisconnected;
+
+            //Setup respawn timer.
+            VehicleRespawnTimer.Interval = 5000;
+            VehicleRespawnTimer.Elapsed += VehicleRespawnTimer_Elapsed;
+            VehicleRespawnTimer.Start();
 
             //Register for on character enter to show his cars.
             CharacterMenu.OnCharacterLogin += CharacterMenu_OnCharacterLogin;
@@ -250,6 +258,18 @@ namespace mtgvrp.vehicle_manager
 
 
             DebugManager.DebugMessage("[VehicleM] Vehicle Manager initalized!");
+        }
+
+        private void VehicleRespawnTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            Vehicles.AsParallel().ForAll(x =>
+            {
+                if (x.IsSpawned && API.getVehicleOccupants(x.NetHandle).Length == 0 && x.OwnerId == 0 && x.LastOccupied != new DateTime() && (DateTime.Now - x.LastOccupied) >= x.RespawnDelay)
+                {
+                    x.LastOccupied = new DateTime();
+                    respawn_vehicle(x);
+                }
+            });
         }
 
         /*
@@ -696,6 +716,8 @@ namespace mtgvrp.vehicle_manager
 
             if(account.IsSpeedoOn)
                 API.triggerClientEvent(player, "speedo_showcef");
+
+            veh.LastOccupied = DateTime.Now;
         }
 
         public void OnPlayerExitVehicle(Client player, NetHandle vehicleHandle)
@@ -737,7 +759,7 @@ namespace mtgvrp.vehicle_manager
             var veh = GetVehFromNetHandle(vehicleHandle);
             if (veh == null) return;
             API.consoleOutput("Vehicle " + vehicleHandle + " died");
-            API.delay(veh.RespawnDelay, true, () =>
+            API.delay(1000, true, () =>
             {
                 respawn_vehicle(veh);
             });

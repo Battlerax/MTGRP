@@ -58,9 +58,9 @@ namespace mtgvrp.job_manager.taxi
                 {
                     API.sendChatMessageToPlayer(player, Color.Yellow, "[TAXI] You have left your taxi. Please return to it within 60 seconds or you will be taken off-duty and it will respawn.");
 
-                    veh.RespawnTimer = new Timer {Interval = 1000 * 60};
-                    veh.RespawnTimer.Elapsed += delegate { RespawnTaxi(character, veh); };
-                    veh.RespawnTimer.Start();
+                    veh.CustomRespawnTimer = new Timer {Interval = 1000 * 60};
+                    veh.CustomRespawnTimer.Elapsed += delegate { RespawnTaxi(character, veh); };
+                    veh.CustomRespawnTimer.Start();
                 }
 
                 if(veh.Driver != null && character.TaxiDriver != null)
@@ -98,10 +98,10 @@ namespace mtgvrp.job_manager.taxi
             //Cancel taxi car respawn 
             if (OnDutyDrivers.Contains(character) && veh.Job.Type == JobManager.JobTypes.Taxi)
             {
-                if (veh.RespawnTimer.Enabled && seat == -1)
+                if (veh.CustomRespawnTimer.Enabled && seat == -1)
                 {
                     API.sendChatMessageToPlayer(player, Color.Yellow, "[TAXI] You have returned to your taxi and will no longer be taken off-duty.");
-                    veh.RespawnTimer.Stop();
+                    veh.CustomRespawnTimer.Stop();
                 }
             }
 
@@ -169,7 +169,7 @@ namespace mtgvrp.job_manager.taxi
             }
 
             API.setVehicleEngineStatus(veh.NetHandle, false);
-            veh.RespawnTimer.Stop();
+            veh.CustomRespawnTimer.Stop();
             VehicleManager.respawn_vehicle(veh);
         }
 
