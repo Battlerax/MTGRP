@@ -910,6 +910,19 @@ function next_character_creation_step(player, step) {
                 switch(item.Text){
                     case "Birthday":
                         birthday = API.getUserInput("DD/MM", 5);
+
+                        var patt = new RegExp("([0-9]+)\/([0-9]+)");
+                        var res = patt.exec(birthday);
+                        if (res == null) {
+                            birthday = "01/01";
+                            API.sendChatMessage("Wrong age format.");
+                        } else {
+                            if (parseInt(res[1]) > 31 || parseInt(res[2]) > 12) {
+                                birthday = "01/01";
+                                API.sendChatMessage("Days must be less than 31 and month must be less than 12.");
+                            }
+                        }
+
                         birthday_menu.SetRightLabel(birthday);
                         break;
                     case "Birthplace":
