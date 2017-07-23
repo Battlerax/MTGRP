@@ -37,5 +37,10 @@ namespace mtgvrp.core
         {
             _objects.Add(new dynamic[] {position, hash});
         }
+
+        public static void RemoveObject(Vector3 position, int hash)
+        {
+            _objects.RemoveAll(x => x[0] == position && x[1] == hash);
+        }
     }
 }
