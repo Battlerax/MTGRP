@@ -79,6 +79,7 @@ function client_mdc_close() {
     //API.setCefDrawState(false);
     API.setCanOpenChat(true);
     API.triggerServerEvent("server_mdc_close");
+    mdcBrowser = null;
 }
 
 function MDC_SearchForCitizen(name, phone) {
