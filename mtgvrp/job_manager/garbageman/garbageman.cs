@@ -32,7 +32,7 @@ namespace mtgvrp.job_manager.garbageman
                         API.deleteEntity(character.GarbageBag);
                         character.GarbageBag = null;
 
-                        vehicle_manager.Vehicle closestVeh = VehicleManager.GetNearestVehicle(player, 10f);
+                        vehicle_manager.Vehicle closestVeh = VehicleManager.GetClosestVehicle(player, 10f).GetVehicle();
 
                         if (closestVeh == null || closestVeh.Job.Type != JobManager.JobTypes.Garbageman)
                         {
@@ -192,7 +192,7 @@ namespace mtgvrp.job_manager.garbageman
                 return;
             }
 
-            vehicle_manager.Vehicle closestVeh = VehicleManager.GetNearestVehicle(player, 10f);
+            vehicle_manager.Vehicle closestVeh = VehicleManager.GetClosestVehicle(player, 10f).GetVehicle();
 
             if (closestVeh == null || closestVeh.Job.Type != JobManager.JobTypes.Garbageman)
             {

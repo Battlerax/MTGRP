@@ -189,7 +189,7 @@ namespace mtgvrp.job_manager.fisher
                 return;
             }
 
-            var totalValue = 0;
+            double totalValue = 0;
 
             foreach (var f in character.Inventory)
             {
@@ -201,7 +201,7 @@ namespace mtgvrp.job_manager.fisher
             }
 
             InventoryManager.DeleteInventoryItem(character, typeof(Fish));
-            InventoryManager.GiveInventoryItem(character, new Money(), totalValue);
+            InventoryManager.GiveInventoryItem(character, new Money(), (int)Math.Round(totalValue));
             API.sendChatMessageToPlayer(player, "You have sold all of your fish for $" + totalValue);
         }
 
