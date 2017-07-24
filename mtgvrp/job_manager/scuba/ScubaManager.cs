@@ -211,7 +211,26 @@ namespace mtgvrp.job_manager.scuba
             {
                 CancelScuba(player);
                 API.sendChatMessageToPlayer(player, "You have dequiped the scuba set.");
+                character.update_ped();
                 return;
+            }
+
+            //Set clothes.
+            if (character.Model.Gender == 0)
+            {
+                API.setPlayerClothes(player, 4, 16, 0);   //Legs
+                API.setPlayerClothes(player, 8, 57, 0);   //Undershirt
+                API.setPlayerClothes(player, 11, 15, 0); //Tops
+                API.setPlayerClothes(player, 3, 15, 0); //Torso
+                API.setPlayerClothes(player, 6, 34, 0); //feet
+            }
+            else
+            {
+                API.setPlayerClothes(player, 4, 15, 0);   //Legs
+                API.setPlayerClothes(player, 8, 3, 0);   //Undershirt
+                API.setPlayerClothes(player, 11, 101, 0); //Tops
+                API.setPlayerClothes(player, 3, 15, 0); //Torso
+                API.setPlayerClothes(player, 6, 35, 0); //feet
             }
 
             //Create the objects for the player.
