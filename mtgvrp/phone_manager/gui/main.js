@@ -47,7 +47,10 @@ $(document).ready(function () {
 $(document).ready(function () {
     $(".tile").click(function () {
         var file = $(this).data("file");
-       
+
+        if (file === "")
+            return;
+
         //Load app: 
         $("#app-browser").attr("src", "apps/" + file);
         $("#apps-list").css("display", "none"); //Set the apps list as hidden.

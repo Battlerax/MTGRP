@@ -138,19 +138,16 @@ function callServerEvent(eventName /* Args */) {
 }
 
 var lsnn = null;
-function playLSNN() {
-    if (lsnn != null)
-        return;
-
-    lsnn = API.createCefBrowser(200, 200, false);
-    API.waitUntilCefBrowserInit(lsnn);
-    API.setCefBrowserPosition(lsnn, 0, 0);
-    API.loadPageCefBrowser(lsnn, "http://mt-gaming.com/lsnnlive.html");
-}
-
-function stopLSNN() {
-    if (lsnn != null) {
+function toggleLSNN() {
+    if (lsnn == null) {
+        lsnn = API.createCefBrowser(0, 0, false);
+        API.waitUntilCefBrowserInit(lsnn);
+        API.setCefBrowserPosition(lsnn, 0, 0);
+        API.loadPageCefBrowser(lsnn, "http://www.mt-gaming.com/lsnnlive.html");
+        API.sendNotification("LSNN radio has been turned on! It might take a few seconds so please be patient.");
+    } else {
         API.destroyCefBrowser(lsnn);
         lsnn = null;
+        API.sendNotification("LSNN radio has been turned off!");
     }
 }
