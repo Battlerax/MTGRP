@@ -1,12 +1,8 @@
-﻿using GTANetworkServer;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using mtgvrp.core;
 using mtgvrp.database_manager;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace mtgvrp.mapping_manager
 {

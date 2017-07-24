@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.AccessControl;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 using GTANetworkServer;
 using GTANetworkShared;
 
@@ -40,7 +35,7 @@ namespace mtgvrp.core
 
         public static void UnregisterObject(Vector3 pos, int hash)
         {
-           
+            _objects.RemoveAll(x => x[0] == pos && x[1] == hash);
         }
     }
 }

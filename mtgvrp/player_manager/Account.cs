@@ -46,8 +46,9 @@ namespace mtgvrp.player_manager
         public string DiscordCode { get; set; } = null;
         public string DiscordUser { get; set; } = null;
 
+        //Mapping manager stuff
         [BsonIgnore]
-        public Mapping ViewingMappingRequest { get; set; } = 0;
+        public Mapping ViewingMappingRequest { get; set; } = null;
 
         public Account()
         {

@@ -7,13 +7,13 @@
 </head>
 
 <body>
-    <div class="panel">
+    <div class="panel" style="overflow:hidden;">
         <div class="heading">
             <span class="icon mif-cogs"></span>
             <span class="title">Mapping Manager</span>
         </div>
 
-        <div class="content" style="padding:10px;font-family:BebasKai">
+        <div class="content" style="padding:10px;font-family:BebasKai;max-height:600px;overflow:auto;">
 
             <!-- Navigation buttons & error message -->
             <div data-role="group" data-group-type="one-state">
@@ -44,27 +44,27 @@
             <div id="create_mapping" style="display:none">
                 <div class="grid condensed">
                     <div class="row cells5">
-                        <div class="cell">Mapping ID:</div>
-                        <div class="cell">Created by:</div>
-                        <div class="cell">Created Date:</div>
-                        <div class="cell">Property Link:</div>
-                        <div class="cell">Dimension:</div>
+                        <div class="cell" style="font-family: BebasKai;">Mapping ID:</div>
+                        <div class="cell" style="font-family: BebasKai;">Created by:</div>
+                        <div class="cell" style="font-family: BebasKai;">Created Date:</div>
+                        <div class="cell" style="font-family: BebasKai;">Property Link:</div>
+                        <div class="cell" style="font-family: BebasKai;">Dimension:</div>
                     </div>
                     <div class="row cells5">
-                        <div class="cell"><div class="input-control text"><input id="createID" type="text" placeholder="10" readonly></div></div>
-                        <div class="cell"><div class="input-control text"><input id="createCreator" type="text" placeholder="Chenko" readonly></div></div>
-                        <div class="cell"><div class="input-control text"><input id="createDate" type="text" placeholder="7/14/2017 07:49:00PM" readonly></div></div>
-                        <div class="cell"><div class="input-control text"><input id="createPropLink" type="text" placeholder="0"></div></div>
-                        <div class="cell"><div class="input-control text"><input id="createDim" type="text" placeholder="0"></div></div>
+                        <div class="cell" style="font-family: BebasKai;"><div class="input-control text"><input id="createID" type="text" placeholder="10" readonly></div></div>
+                        <div class="cell" style="font-family: BebasKai;"><div class="input-control text"><input id="createCreator" type="text" placeholder="Chenko" readonly></div></div>
+                        <div class="cell" style="font-family: BebasKai;"><div class="input-control text"><input id="createDate" type="text" placeholder="7/14/2017 07:49:00PM" readonly></div></div>
+                        <div class="cell" style="font-family: BebasKai;"><div class="input-control text"><input id="createPropLink" type="text" placeholder="0"></div></div>
+                        <div class="cell" style="font-family: BebasKai;"><div class="input-control text"><input id="createDim" type="text" placeholder="0"></div></div>
                     </div>
                     <div class="row cells5">
-                        <div class="cell">Pastebin code:</div>
-                        <div class="cell">Description:</div>
+                        <div class="cell" style="font-family: BebasKai;">Pastebin code:</div>
+                        <div class="cell" style="font-family: BebasKai;">Description:</div>
                     </div>
                     <div class="row cells5">
-                        <div class="cell"><div class="input-control text"><input id="createPastebinLink" type="text" placeholder="Ex: 0avqAqTu"></div></div>
-                        <div class="cell"><div class="input-control text"><input id="createDesc" type="text"></div></div>
-                        <div class="cell"><button onclick="createMappingRequest()" class="button success">Create Mapping</button></div>
+                        <div class="cell" style="font-family: BebasKai;"><div class="input-control text"><input id="createPastebinLink" type="text" placeholder="Ex: 0avqAqTu"></div></div>
+                        <div class="cell" style="font-family: BebasKai;"><div class="input-control text"><input id="createDesc" type="text"></div></div>
+                        <div class="cell" style="font-family: BebasKai;"><button onclick="createMappingRequest()" class="button success">Create Mapping</button></div>
                     </div>
                 </div>
             </div>
@@ -73,52 +73,63 @@
             <div id="view_specific" style="display:none">
                 <div class="grid condensed">
                     <div class="row cells5">
-                        <div class="cell">Search for ID:</div>
-                        <div class="cell">Created by:</div>
-                        <div class="cell">Created Date:</div>
-                        <div class="cell">Property Link:</div>
-                        <div class="cell">Dimension:</div>
+                        <div class="cell" style="font-family: BebasKai;">Search for ID:</div>
+                        <div class="cell" style="font-family: BebasKai;">Created by:</div>
+                        <div class="cell" style="font-family: BebasKai;">Created Date:</div>
+                        <div class="cell" style="font-family: BebasKai;">Property Link:</div>
+                        <div class="cell" style="font-family: BebasKai;">Dimension:</div>
                     </div>
                     <div class="row cells5">
-                        <div class="cell"><div class="input-control text"><input id="viewID" type="text"></div></div>
-                        <div class="cell"><div class="input-control text"><input id="viewCreator" type="text" placeholder="Chenko" readonly></div></div>
-                        <div class="cell"><div class="input-control text"><input id="viewDate" type="text" placeholder="7/14/2017 07:49:00PM" readonly></div></div>
-                        <div class="cell"><div class="input-control text"><input id="viewPropLink" type="text" placeholder="0" disabled></div></div>
-                        <div class="cell"><div class="input-control text"><input id="viewDim" type="text" placeholder="0" disabled></div></div>
+                        <div class="cell" style="font-family: BebasKai;"><div class="input-control text"><input id="viewID" type="text"></div></div>
+                        <div class="cell" style="font-family: BebasKai;"><div class="input-control text"><input id="viewCreator" type="text" placeholder="Chenko" readonly></div></div>
+                        <div class="cell" style="font-family: BebasKai;"><div class="input-control text"><input id="viewDate" type="text" placeholder="7/14/2017 07:49:00PM" readonly></div></div>
+                        <div class="cell" style="font-family: BebasKai;"><div class="input-control text"><input id="viewPropLink" type="text" placeholder="0" disabled></div></div>
+                        <div class="cell" style="font-family: BebasKai;"><div class="input-control text"><input id="viewDim" type="text" placeholder="0" disabled></div></div>
                     </div>
                     <div class="row cells5">
-                        <div class="cell">Pastebin code:</div>
-                        <div class="cell">Description</div>
-                        <div class="cell">Is Loaded:</div>
-                        <div class="cell">Is Active:</div>
+                        <div class="cell" style="font-family: BebasKai;">Pastebin code:</div>
+                        <div class="cell" style="font-family: BebasKai;">Description</div>
+                        <div class="cell" style="font-family: BebasKai;">Is Loaded:</div>
+                        <div class="cell" style="font-family: BebasKai;">Is Active:</div>
                     </div>
                     <div class="row cells5">
-                        <div class="cell"><div class="input-control text"><input id="viewPastebinLink" type="text" placeholder="Ex: 0avqAqTu" readonly></div></div>
-                        <div class="cell"><div class="input-control text"><input id="viewDesc" type="text" disabled></div></div>
-                        <div class="cell"><label class="input-control checkbox"><input onclick="toggleMappingLoaded()" id="viewLoaded" type="checkbox" checked="" disabled><span class="check"></span></label></div>
-                        <div class="cell"><label class="input-control checkbox"><input onclick="toggleMappingActive()" id="viewActive" type="checkbox" checked="" disabled><span class="check"></span></label></div>
-                        <div class="cell">
-                            <button onclick="searchForMappingRequest()" class="button primary" style="margin-top:10px" data-role="hint" data-hint-background="bg-blue" data-hint-color="fg-white" data-hint-mode="2" data-hint="Search|Search for mapping"><span class="mif-search"></span> </button>
-                            <button onclick="saveMappingRequest()" class="button success" style="margin-top:10px" data-role="hint" data-hint-background="bg-green" data-hint-color="fg-white" data-hint-mode="2" data-hint="Save|Save changes"><span class="mif-floppy-disk"></span> </button>
-                            <button onclick="deleteMappingRequest()" class="button warning" style="margin-top:10px"><span class="mif-cross" data-role="hint" data-hint-background="bg-red" data-hint-color="fg-white" data-hint-mode="2" data-hint="Delete|Delete mapping"></span> </button>
+                        <div class="cell" style="font-family: BebasKai;"><div class="input-control text"><input id="viewPastebinLink" type="text" placeholder="Ex: 0avqAqTu" readonly></div></div>
+                        <div class="cell" style="font-family: BebasKai;"><div class="input-control text"><input id="viewDesc" type="text" disabled></div></div>
+                        <div class="cell" style="font-family: BebasKai;"><label class="input-control checkbox"><input onclick="toggleMappingLoaded()" id="viewLoaded" type="checkbox" checked="" disabled><span class="check"></span></label></div>
+                        <div class="cell" style="font-family: BebasKai;"><label class="input-control checkbox"><input onclick="toggleMappingActive()" id="viewActive" type="checkbox" checked="" disabled><span class="check"></span></label></div>
+                        <div class="cell" style="font-family: BebasKai;">
+                            <button onclick="searchForMappingRequest()" class="button primary" style="margin-top:10px;font-family:BebasKai" data-role="hint" data-hint-background="bg-blue" data-hint-color="fg-white" data-hint-mode="2" data-hint="Search|Search for mapping"><span class="mif-search"></span> </button>
+                            <button onclick="saveMappingRequest()" class="button success" style="margin-top:10px;font-family:BebasKai;" data-role="hint" data-hint-background="bg-green" data-hint-color="fg-white" data-hint-mode="2" data-hint="Save|Save changes"><span class="mif-floppy-disk"></span> </button>
+                            <button onclick="deleteMappingRequest()" class="button warning" style="margin-top:10px;font-family:BebasKai;"><span class="mif-cross" data-role="hint" data-hint-background="bg-red" data-hint-color="fg-white" data-hint-mode="2" data-hint="Delete|Delete mapping"></span> </button>
                         </div>
                     </div>
                     <div class="row cells5">
-                        <div class="cell"><div class="cell"><button class="button success" onclick="requestMappingCode()">Output mapping</button></div></div>
+                        <div class="cell"><div class="cell"><button class="button success" style="font-family: BebasKai;" onclick="requestMappingCode()">Output mapping</button></div></div>
                     </div>
-                    <div class="input-control textarea" style="display:none" data-role="input" data-text-auto-resize="true" data-text-max-height="300">
-                        <textarea readonly>test&#13;&#10;test2</textarea>
+                    <div id="requestCodeDiv" class="input-control textarea" style="display:none" data-role="input" data-text-auto-resize="true">
+                        <textarea readonly id="requestCode">test&#13;&#10;test2</textarea>
                     </div>
                 </div>
             </div>
 
             <!-- Box to display error or success messages -->
-            <div id="error_box" class="popover marker-on-top bg-red" style="display: none;padding:8px;max-width:25%;">
+            <div id="error_box" class="popover marker-on-top bg-red" style="display: none;padding:8px;max-width:25%;font-family:BebasKai">
                 <div class="fg-black" id="error_msg">Default Text</div>
             </div>
+        </div>
     </div>
        
     <script>
+        var gCurrentPage = 0;
+        var gMinPage = 0;
+        var gMiddlePage = 0;
+        var gMaxPage = 0;
+
+
+        $(document).ready(function () {
+            resourceCall("pageLoaded");
+        });
+
         //-------------- Button Navigation Code --------------
         activeView = $('#view_all');
         function show(id) {
@@ -191,15 +202,27 @@
                 return send_error("You left the mapping ID empty.");
             }
 
-            resourceCall("callServerEvent", "requestMappingCode");
+            resourceCall("callServerEvent", "requestMappingCode", $('#viewID').val());
+        }
+
+        function showRequestCode(code) {
+            $('#requestCodeDiv').css("display", "block");
+            $('#requestCode').val(code);
         }
 
         function viewMappingRequest(id) {
             show('#view_specific');
+            $('#viewID').val(id);
             searchForMappingRequest(id);
         }
 
         function populateViewMappingRequest(id, createdBy, createdDate, propLink, dim, pastebinLink, description, isLoaded, isActive) {
+            $('#viewPropLink').removeAttr("disabled");
+            $('#viewDim').removeAttr("disabled");
+            $('#viewDesc').removeAttr("disabled");
+            $('#viewLoaded').removeAttr("disabled");
+            $('#viewActive').removeAttr("disabled");
+
             $('#viewID').val(id);
             $('#viewCreator').val(createdBy);
             $('#viewDate').val(createdDate);
@@ -221,12 +244,6 @@
             else {
                 $('#viewActive').removeAttr("checked");
             }
-
-            $('#viewPropLink').removeAttr("disabled");
-            $('#viewDim').removeAttr("disabled");
-            $('#viewDesc').removeAttr("disabled");
-            $('#viewLoaded').removeAttr("disabled");
-            $('#viewActive').removeAttr("disabled");
         }
 
         //-------------- Error Message Functions --------------
@@ -237,46 +254,73 @@
 
         //-------------- Pagination Functions --------------
         function lastPage() {
-            //resourceCall("requestLastPage");
-            alert("Selected last page");
+            if (gCurrentPage - 1 > 0) {
+                if (gCurrentPage - 1 < gMinPage) {
+                    var minPage = Math.max(1, gCurrentPage - 10);
+                    createPagination(minPage, ((minPage + gMaxPage) / 2) - 1, gMaxPage)
+                }
+                viewPage(gCurrentPage - 1);
+            }
         }
 
         function nextPage() {
-            //resourceCall("requestNextPage");
-            alert("Selected next page");
+            if (gCurrentPage + 1 <= gMaxPage) {
+                viewPage(gCurrentPage + 1);
+            }
         }
 
         function viewPage(page) {
-            //resourceCal("requestPage", page);
-            alert("Selected page " + page);
+            if (page != gCurrentPage) {
+                if (page == gMiddlePage) {
+                    createPagination(gMiddlePage, ((gMiddlePage + gMaxPage) / 2) - 1, gMaxPage);
+                }
+                $('#page_' + gCurrentPage).removeClass("current");
+                $('#page_' + page).addClass("current");
+                gCurrentPage = page;
+
+                resourceCall("callServerEvent", "requestMappingPage", page);
+            }
+        }
+
+        function emptyMappingTable() {
+            $('#mapping_table_body').empty();
         }
 
         function addMappingRequest(id, description, createdBy, active) {
             if (active == true) {
                 $('#mapping_table_body').append('<tr class="info" id=' + id + ' onclick="viewMappingRequest(' + id + ' )"> \
-                <td style="color: black;">' + id + '</td> \
-                <td style="color: black;">' + description + '</td> \
-                <td style="color: black;">' + createdBy + '</td> \
-                <td style="color: green">Yes</td>');
+                <td style="color: black;font-family:BebasKai">' + id + '</td> \
+                <td style="color: black;font-family:BebasKai">' + description + '</td> \
+                <td style="color: black;font-family:BebasKai">' + createdBy + '</td> \
+                <td style="color: green;font-family:BebasKai">Yes</td>');
             }
             else {
                 $('#mapping_table_body').append('<tr class="info" id=' + id + ' onclick="viewMappingRequest(' + id + ' )"> \
-                <td style="color: black;">' + id + '</td> \
-                <td style="color: black;">' + description + '</td> \
-                <td style="color: black;">' + createdBy + '</td> \
-                <td style="color: red">No</td>');
+                <td style="color: black;font-family:BebasKai">' + id + '</td> \
+                <td style="color: black;font-family:BebasKai">' + description + '</td> \
+                <td style="color: black;font-family:BebasKai">' + createdBy + '</td> \
+                <td style="color: red;font-family:BebasKai">No</td>');
             }
         }
 
         function createPagination(minPage, middlePage, maxPage) {
+            gCurrentPage = minPage;
+            gMinPage = minPage;
+            gMiddlePage = middlePage;
+            gMaxPage = maxPage;
+
+            var pageCount = 0;
+
             $('#pagination').empty();
-            $('#pagination').append('<span class="item" onclick="lastPage()" id="last_page">&lt;</span><span class="item current">' + minPage + '</span>');
+            $('#pagination').append('<span class="item" onclick="lastPage()" id="last_page">&lt;</span><span class="item current" id="page_' + minPage + '" onclick="viewPage('+ minPage +')">' + minPage + '</span>');
             for (i = minPage + 1; i <= maxPage; i++) {
-                $('#pagination').append('<span class="item" id="' + i + '" onclick="viewPage(' + i + ')">' + i + '</span>')
-                if (i == middlePage && middlePage != maxPage) {
+                $('#pagination').append('<span class="item" id="page_' + i + '" onclick="viewPage(' + i + ')">' + i + '</span>')
+                pageCount++;
+                if ((i == middlePage && middlePage != maxPage) || pageCount == 9) {
+                    gMiddlePage = i;
                     $('#pagination').append('<span class="item spaces">...</span>')
-                    $('#pagination').append('<span class="item" id="' + (maxPage - 1) + '" onclick="viewPage(' + (maxPage - 1) + ')">' + (maxPage - 1) + '</span>')
-                    $('#pagination').append('<span class="item" id="' + maxPage + '" onclick="viewPage(' + maxPage + ')">' + maxPage + '</span>')
+                    $('#pagination').append('<span class="item" id="page_' + (maxPage - 1) + '" onclick="viewPage(' + (maxPage - 1) + ')">' + (maxPage - 1) + '</span>')
+                    $('#pagination').append('<span class="item" id="page_' + maxPage + '" onclick="viewPage(' + maxPage + ')">' + maxPage + '</span>')
                     break;
                 }
             }

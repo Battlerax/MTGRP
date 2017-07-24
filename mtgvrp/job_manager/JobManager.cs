@@ -6,7 +6,6 @@ using GTANetworkShared;
 using mtgvrp.core;
 using mtgvrp.database_manager;
 using mtgvrp.player_manager;
-using mtgvrp.rp_scripts;
 using mtgvrp.vehicle_manager;
 using MongoDB.Driver;
 

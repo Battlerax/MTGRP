@@ -7,7 +7,6 @@
 
 using System;
 using GTANetworkServer;
-using GTANetworkShared;
 using mtgvrp.player_manager;
 
 namespace mtgvrp.core
