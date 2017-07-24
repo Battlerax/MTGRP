@@ -136,3 +136,21 @@ function callServerEvent(eventName /* Args */) {
     var args = Array.prototype.slice.call(arguments, 1);
     API.triggerServerEvent(eventName, ...args);
 }
+
+var lsnn = null;
+function playLSNN() {
+    if (lsnn != null)
+        return;
+
+    lsnn = API.createCefBrowser(200, 200, false);
+    API.waitUntilCefBrowserInit(lsnn);
+    API.setCefBrowserPosition(lsnn, 0, 0);
+    API.loadPageCefBrowser(lsnn, "http://mt-gaming.com/lsnnlive.html");
+}
+
+function stopLSNN() {
+    if (lsnn != null) {
+        API.destroyCefBrowser(lsnn);
+        lsnn = null;
+    }
+}

@@ -74,6 +74,7 @@
   <file src="phone_manager/gui/apps/dialpad.html"/>
   <file src="phone_manager/gui/apps/contacts.html"/>
   <file src="phone_manager/gui/apps/mail.html"/>
+  <file src="phone_manager/gui/apps/LSNN.html"/>
   <file src="phone_manager/gui/apps/settings.html"/>
 
   <!-- Speedometer and Fuel -->
