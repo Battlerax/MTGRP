@@ -1375,6 +1375,43 @@ namespace mtgvrp.AdminSystem
                 return;
             }
         }
+
+        [Command("respawnveh", GreedyArg = false)]
+        public void respawnveh_cmd(Client player, int id = 0)
+        {
+            Account account = API.shared.getEntityData(player.handle, "Account");
+
+            if (account.AdminLevel < 3)
+            {
+                return;
+            }
+
+            if (id == 0 && !player.isInVehicle)
+            {
+                player.sendChatMessage("You must enter a vehicle ID.");
+                return;
+            }
+
+            mtgvrp.vehicle_manager.Vehicle veh = null;
+
+            if (player.isInVehicle)
+            {
+                veh = VehicleManager.GetVehFromNetHandle(API.getPlayerVehicle(player));
+            }
+
+            if (veh == null)
+            {
+                veh = VehicleManager.GetVehicleById(id);
+                if (veh == null)
+                {
+                    player.sendChatMessage("Invalid vehicle ID.");
+                    return;
+                }
+            }
+
+            VehicleManager.respawn_vehicle(veh);
+            player.sendChatMessage("Vehicle respawned.");
+        }
     
 
         public static void ShowWarns(Client player, Client receiver = null)
@@ -1553,6 +1590,24 @@ namespace mtgvrp.AdminSystem
             receiver.sendChatMessage("Your ~y~VIP~y~ days were increased by " + int.Parse(days) + " days by " + account.AdminName + "!");
         }
 
+        [Command("closestveh")]
+        public void closestveh_cmd(Client player)
+        {
+            Account account = API.shared.getEntityData(player.handle, "Account");
+
+            if (account.AdminLevel < 2)
+                return;
+
+            var ClosestVeh = GetClosestVeh(player);
+            if (ClosestVeh == null)
+            {
+                player.sendChatMessage("There are no nearby vehicles.");
+                return;
+            }
+
+            API.setPlayerIntoVehicle(player, ClosestVeh, -1);
+        }
+
         public void startReportTimer(Client player)
         {
             Character senderchar = API.getEntityData(player.handle, "Character");
@@ -1581,6 +1636,23 @@ namespace mtgvrp.AdminSystem
 
             character.ReportCreated = false;
             character.ReportTimer.Stop();
+        }
+
+        public NetHandle GetClosestVeh(Client player)
+        {
+            var shortestDistance = 2000f;
+            NetHandle closestveh = new NetHandle();
+            foreach (var veh in API.getAllVehicles())
+            {
+                Vector3 Position = API.getEntityPosition(veh);
+                var VehicleDistance = player.position.DistanceTo(Position);
+                if (VehicleDistance < shortestDistance)
+                {
+                    shortestDistance = VehicleDistance;
+                    closestveh = veh;
+                }
+            }
+            return closestveh;
         }
 
         [Command("testtext"), Help(HelpManager.CommandGroups.AdminLevel3, "Goes into testing on-screen text position.", new[] { "Text to display." })]

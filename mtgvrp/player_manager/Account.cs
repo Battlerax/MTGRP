@@ -50,6 +50,7 @@ namespace mtgvrp.player_manager
         public Account()
         {
             AccountName = "default_account";
+            AdminName = "Unset";
             AdminLevel = 0;
             AdminName = "";
             CharacterSlots = 3;

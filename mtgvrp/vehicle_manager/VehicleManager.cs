@@ -788,6 +788,16 @@ namespace mtgvrp.vehicle_manager
             return handleReturned;
         }
 
+        public static Vehicle GetVehicleById(int id)
+        {
+            foreach (Vehicle v in Vehicles)
+            {
+                if (v.Id == id) { return v; }
+            }
+
+            return null;
+        }
+
         public static int GetMaxOwnedVehicles(Client chr)
         {
             Account acc = API.shared.getEntityData(chr, "Account");

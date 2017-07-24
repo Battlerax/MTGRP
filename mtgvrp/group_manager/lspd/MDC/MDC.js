@@ -32,7 +32,6 @@ API.onServerEventTrigger.connect(function (eventName, args) {
         case "addBolo":
 
             //boloId, officer, time, priority, info
-            API.sendChatMessage("Calling html_addBolo with: " + args[0] + " " + args[1] + " " + args[2] + " " + args[3] + " " + args[4]);
             mdcBrowser.call("html_addBolo", args[0], args[1], args[2], args[3], args[4]);
             break;
 

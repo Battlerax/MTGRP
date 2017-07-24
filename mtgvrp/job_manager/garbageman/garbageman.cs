@@ -98,6 +98,20 @@ namespace mtgvrp.job_manager.garbageman
 
                 if (maxGarbage == 0)
                 {
+
+                    int GarbageProperties = 0;
+                    foreach(var p in PropertyManager.Properties)
+                    {
+                        if (p.HasGarbagePoint) { GarbageProperties++; }
+                    }
+
+                    if (GarbageProperties == PropertyManager.Properties.Count)
+                    {
+                        player.sendChatMessage("There is no garbage to pick up!");
+                        player.warpOutOfVehicle();
+                        return;
+                    }
+
                     TargetProperty = ChooseRandomProperty();
 
                     while (!TargetProperty.HasGarbagePoint)
@@ -169,6 +183,7 @@ namespace mtgvrp.job_manager.garbageman
 
 
         //Commands
+
         [Command("unloadtrash")]
         public void unloadtrash_cmd(Client player)
         {
@@ -241,7 +256,7 @@ namespace mtgvrp.job_manager.garbageman
 
             var veh = VehicleManager.GetVehFromNetHandle(API.getPlayerVehicle(player));
 
-            if (veh.Job.Type != JobManager.JobTypes.Garbageman)
+            if (veh?.Job?.Type != JobManager.JobTypes.Garbageman)
             {
                 player.sendChatMessage("You must be in your garbage truck to end the garbage run.");
                 return;
