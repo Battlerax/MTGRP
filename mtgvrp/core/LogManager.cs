@@ -69,7 +69,7 @@ namespace mtgvrp.core
             Storage,        //Logged
             Unbans,         //Logged
             Warns,          //Logged
-            Ads,
+            Ads,            //Logged
         }
 
         public static void Log(LogTypes type, string log)
