@@ -31,6 +31,9 @@ namespace mtgvrp.core
 
         private void API_onChatCommand(Client sender, string command, CancelEventArgs cancel)
         {
+            if (command.EndsWith("login") || command.EndsWith("register"))
+                return;
+
             LogManager.Log(LogManager.LogTypes.Commands, $"{sender.GetCharacter()?.CharacterName}[{sender.GetAccount()?.AccountName}] has executed: " + command);
         }
 
