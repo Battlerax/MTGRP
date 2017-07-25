@@ -11,6 +11,7 @@ using mtgvrp.player_manager;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
+using mtgvrp.core.Help;
 
 namespace mtgvrp.phone_manager
 {
@@ -177,7 +178,7 @@ namespace mtgvrp.phone_manager
         }
 
 
-        [Command("setphonename")]
+        [Command("setphonename"), Help(HelpManager.CommandGroups.General, "To change your phone's name from being boring.", new[] { "Name of phone" })]
         public void setphonename_cmd(Client player, string name)
         {
             Character character = API.shared.getEntityData(player.handle, "Character");
@@ -193,7 +194,7 @@ namespace mtgvrp.phone_manager
             API.sendChatMessageToPlayer(player, "You have changed your phone name to " + name + ".");
         }
 
-        [Command("pickup")]
+        [Command("pickup"), Help(HelpManager.CommandGroups.General, "To answer a call.", null)]
         public void pickup_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -224,7 +225,7 @@ namespace mtgvrp.phone_manager
             API.triggerClientEvent(player, "phone_calling", contact?.Name ?? "Unknown", targetphone.PhoneNumber);
         }
 
-        [Command("h")]
+        [Command("h"), Help(HelpManager.CommandGroups.General, "Hangup.", null)]
         public static void h_cmd(Client player)
         {
             Character character = player.GetCharacter();
@@ -611,7 +612,7 @@ namespace mtgvrp.phone_manager
             }
         }
 
-        [Command("phone")]
+        [Command("phone"), Help(HelpManager.CommandGroups.General, "How to view your phone.", null)]
         public void ShowPhone(Client player)
         {
             Character character = API.shared.getEntityData(player.handle, "Character");
