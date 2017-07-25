@@ -82,7 +82,7 @@ namespace mtgvrp.property_system.businesses
                 AdvertTimer.Elapsed += delegate { ResetAdvertTimer(); };
                 AdvertTimer.Start();
             }
-
+            LogManager.Log(LogManager.LogTypes.Ads, $"{player.GetCharacter().CharacterName}[{player.GetAccount().AccountName}]: {text}");
         }
 
 

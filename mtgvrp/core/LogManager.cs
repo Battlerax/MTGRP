@@ -63,13 +63,13 @@ namespace mtgvrp.core
             GroupInvites,   //Logged
             ICchat,         //Logged
             Phone,          //Logged
-            Money,
             OOCchat,        //Logged
             PMchat,         //Logged
-            Stats,
+            Stats,          //Logged
             Storage,        //Logged
             Unbans,         //Logged
             Warns,          //Logged
+            Ads,
         }
 
         public static void Log(LogTypes type, string log)

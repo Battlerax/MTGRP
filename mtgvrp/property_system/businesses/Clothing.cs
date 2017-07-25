@@ -302,6 +302,7 @@ namespace mtgvrp.property_system.businesses
 
                 API.sendChatMessageToPlayer(sender, "You've successfully bought this.");
                 API.triggerClientEvent(sender, "clothing_boughtsucess", arguments[0], arguments[1], arguments[2]);
+                LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought some clothing for {price} from property ID {prop.Id}.");
             }
             else if (eventName == "clothing_bag_preview")
             {

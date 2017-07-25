@@ -129,6 +129,7 @@ namespace mtgvrp.property_system.businesses
                             prop.Supplies--;
                             API.sendChatMessageToPlayer(sender,
                                 $"[BUSINESS] You have sucessfully bought an ~g~Axe~w~ for ~g~${price}.");
+                            LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought an Axe for {price} from property ID {prop.Id}.");
                             return;
                         case "scuba":
                             item = new ScubaItem();
@@ -157,6 +158,7 @@ namespace mtgvrp.property_system.businesses
                             if (sender.health > 100) sender.health = 100;
                             API.sendChatMessageToPlayer(sender,
                                 $"[BUSINESS] You have sucessfully bought a ~g~{prop.RestaurantItems[0]}~w~ for ~g~${price}.");
+                            LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a {prop.RestaurantItems[0]} for {price} from property ID {prop.Id}.");
                             return;
 
                         case "custom2":
@@ -165,6 +167,7 @@ namespace mtgvrp.property_system.businesses
                             if (sender.health > 100) sender.health = 100;
                             API.sendChatMessageToPlayer(sender,
                                 $"[BUSINESS] You have sucessfully bought a ~g~{prop.RestaurantItems[1]}~w~ for ~g~${price}.");
+                            LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a {prop.RestaurantItems[1]} for {price} from property ID {prop.Id}.");
                             return;
 
                         case "custom3":
@@ -173,6 +176,7 @@ namespace mtgvrp.property_system.businesses
                             if (sender.health > 100) sender.health = 100;
                             API.sendChatMessageToPlayer(sender,
                                 $"[BUSINESS] You have sucessfully bought a ~g~{prop.RestaurantItems[2]}~w~ for ~g~${price}.");
+                            LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a {prop.RestaurantItems[2]} for {price} from property ID {prop.Id}.");
                             return;
 
                         case "custom4":
@@ -181,6 +185,7 @@ namespace mtgvrp.property_system.businesses
                             if (sender.health > 100) sender.health = 100;
                             API.sendChatMessageToPlayer(sender,
                                 $"[BUSINESS] You have sucessfully bought a ~g~{prop.RestaurantItems[3]}~w~ for ~g~${price}.");
+                            LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a {prop.RestaurantItems[3]} for {price} from property ID {prop.Id}.");
                             return;
                     }
                 }
@@ -213,6 +218,7 @@ namespace mtgvrp.property_system.businesses
                     name = ItemManager.AmmunationItems.Single(x => x[0] == itemName)[1];
 
                     API.sendChatMessageToPlayer(sender, "[BUSINESSES] You have successfully bought a ~g~" + name + "~w~ for ~g~" + price + "~w~.");
+                    LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a {name} for {price} from property ID {prop.Id}.");
                     return;
 
                 }
@@ -248,6 +254,7 @@ namespace mtgvrp.property_system.businesses
                     name = ItemManager.VIPItems.Single(x => x[0] == itemName)[1];
 
                     API.sendChatMessageToPlayer(sender, "[BUSINESSES] You have successfully bought a ~g~" + name + "~w~ weapon tint for ~g~" + price + "~w~.");
+                    LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a {name} for {price} from property ID {prop.Id}.");
                     return;
 
                 }
@@ -263,6 +270,7 @@ namespace mtgvrp.property_system.businesses
                             InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
                             character.HasLottoTicket = true;
                             API.sendChatMessageToPlayer(sender, "You purchased a lottery ticket. Good luck!");
+                            LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a lottery ticket for {price} from property ID {prop.Id}.");
                             return;
                     }
                     return;
@@ -335,7 +343,8 @@ namespace mtgvrp.property_system.businesses
                                     WeaponManager.CreateWeapon(sender, WeaponHash.SniperRifle, WeaponTint.Normal, true);
                                     API.sendChatMessageToPlayer(sender,
                                         $"[BUSINESS] You have sucessfully bought a ~g~ 5.56 Bullet ~w~ for ~g~${price}.");
-                                    break;
+                                    LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a 5.56 Bullet for {price} from property ID {prop.Id}.");
+                                        break;
 
                                 case InventoryManager.GiveItemErrors.NotEnoughSpace:
                                     API.sendChatMessageToPlayer(sender,
@@ -362,6 +371,7 @@ namespace mtgvrp.property_system.businesses
                                 prop.Supplies--;
                                 API.sendChatMessageToPlayer(sender,
                                     $"[BUSINESS] You have sucessfully bought a ~g~{name}~w~ for ~g~${price}.");
+                                LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a {name} for {price} from property ID {prop.Id}.");
                                 break;
 
                             case InventoryManager.GiveItemErrors.NotEnoughSpace:
@@ -411,6 +421,8 @@ namespace mtgvrp.property_system.businesses
                         prop.Supplies--;
                         API.sendChatMessageToPlayer(sender,
                             $"[BUSINESS] You have sucessfully bought a ~g~{name}~w~ for ~g~${price}.");
+
+                        LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a {name} for {price} from property ID {prop.Id}.");
                         break;
 
                     case InventoryManager.GiveItemErrors.NotEnoughSpace:

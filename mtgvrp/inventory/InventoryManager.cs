@@ -22,9 +22,12 @@ using mtgvrp.job_manager.hunting;
 using mtgvrp.job_manager.scuba;
 using mtgvrp.phone_manager;
 using mtgvrp.player_manager;
+using mtgvrp.property_system;
 using mtgvrp.property_system.businesses;
+using mtgvrp.vehicle_manager;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
+using Vehicle = GrandTheftMultiplayer.Server.Elements.Vehicle;
 
 namespace mtgvrp.inventory
 {
@@ -376,6 +379,34 @@ namespace mtgvrp.inventory
             GiveInventoryItem(storage, ItemTypeToNewObject(item), amount);
         }
 
+        public string GetStorageInfo(IStorage stor)
+        {
+            string text = "";
+
+            if (stor.GetType() == typeof(Character))
+            {
+                var c = (Character)stor;
+                text = $"Inventory<{c.CharacterName}>";
+            }
+            else if (stor.GetType() == typeof(vehicle_manager.Vehicle))
+            {
+                var c = (vehicle_manager.Vehicle)stor;
+                text = $"Vehicle<{c.Id}, {API.getVehicleDisplayName(c.VehModel)}>";
+            }
+            else if (stor.GetType() == typeof(Property))
+            {
+                var c = (Property)stor;
+                text = $"Property<{c.Id}, {c.Type}>";
+            }
+            else if (stor.GetType() == typeof(BagItem))
+            {
+                var c = (BagItem)stor;
+                text = $"Bag<{c.BagName}>";
+            }
+
+            return text;
+        }
+
         /// <summary>
         /// Creates a new object from Type.
         /// </summary>
@@ -480,6 +511,8 @@ namespace mtgvrp.inventory
                             var usedRight = GetInventoryFilledSlots(storages.Value) + "/" + storages.Value.MaxInvStorage;
                             API.triggerClientEvent(sender, "moveItemFromLeftToRightSuccess", shortname, amount, usedLeft, usedRight); //Id should be same cause it was already set since it was in player inv.
                             API.sendNotificationToPlayer(sender, $"The item ~g~{shortname}~w~ was moved sucessfully.");
+
+                            LogManager.Log(LogManager.LogTypes.Stats, $"[InventoryManagement] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] moved item '{playerItem.LongName}', Amount: '{playerItem.Amount}'. From {GetStorageInfo(storages.Key)} To {GetStorageInfo(storages.Value)}");
                             break;
                     }
                     break;
@@ -545,6 +578,8 @@ namespace mtgvrp.inventory
                             var usedRight = GetInventoryFilledSlots(rlstorages.Value) + "/" + rlstorages.Value.MaxInvStorage;
                             API.triggerClientEvent(sender, "moveItemFromRightToLeftSuccess", rlshortname, rlamount, usedLeft, usedRight); //Id should be same cause it was already set since it was in player inv.
                             API.sendNotificationToPlayer(sender, $"The item ~g~{rlshortname}~w~ was moved sucessfully.");
+
+                            LogManager.Log(LogManager.LogTypes.Stats, $"[InventoryManagement] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] moved item '{rlplayerItem.LongName}', Amount: '{rlplayerItem.Amount}'. From {GetStorageInfo(rlstorages.Value)} To {GetStorageInfo(rlstorages.Key)}");
                             break;
                     }
 
@@ -617,6 +652,8 @@ namespace mtgvrp.inventory
 
                     //RP
                     ChatManager.RoleplayMessage(player, $"gives an item to {target.rp_name()}", ChatManager.RoleplayMe);
+
+                    LogManager.Log(LogManager.LogTypes.Stats, $"[Give] {sender.CharacterName}[{player.GetAccount().AccountName}] has given {target.CharacterName}[{targetClient.GetAccount().AccountName}] a '{sendersItem[0].LongName}', Amount: '{amount}'.");
                     break;
             }
         }
@@ -645,6 +682,8 @@ namespace mtgvrp.inventory
                 API.sendNotificationToPlayer(player, "Item(s) was sucessfully dropped.");
                 //RP
                 ChatManager.RoleplayMessage(player, $"drops an item.", ChatManager.RoleplayMe);
+
+                LogManager.Log(LogManager.LogTypes.Stats, $"[Drop] {character.CharacterName}[{player.GetAccount().AccountName}] has dropped '{sendersItem[0].LongName}', Amount: '{amount}'.");
             }
         }
 
@@ -702,6 +741,8 @@ namespace mtgvrp.inventory
             API.sendNotificationToPlayer(player, $"You have sucessfully stashed ~g~{amount} {sendersItem[0].LongName}~w~. Use /pickupstash to take it.");
             //RP
             ChatManager.RoleplayMessage(player, $"stashs an item.", ChatManager.RoleplayMe);
+
+            LogManager.Log(LogManager.LogTypes.Stats, $"[Stash] {character.CharacterName}[{player.GetAccount().AccountName}] has stashed '{sendersItem[0].LongName}', Amount: '{amount}' at {player.position}.");
         }
 
         [Command("pickupstash")]
@@ -750,6 +791,8 @@ namespace mtgvrp.inventory
 
                     //RP
                     ChatManager.RoleplayMessage(player, $"picks an item from the ground.", ChatManager.RoleplayMe);
+
+                    LogManager.Log(LogManager.LogTypes.Stats, $"[Stash] {character.CharacterName}[{player.GetAccount().AccountName}] has picked up stash '{item.LongName}', Amount: '{item.Amount}' at {player.position}.");
                     break;
             }
         }
@@ -774,21 +817,6 @@ namespace mtgvrp.inventory
 
             //Ending
             API.sendChatMessageToPlayer(player, "-------------------------------------------------------------");
-        }
-
-        //TODO: TEST COMMAND.
-        [Command("givemeitem")]
-        public void GiveMeItem(Client player, string item, int amount)
-        {
-            Character character = player.GetCharacter();
-            Type itemType = ParseInventoryItem(item);
-            if (itemType != null)
-            {
-                var actualitem = ItemTypeToNewObject(itemType);
-                API.sendChatMessageToPlayer(player, GiveInventoryItem(character, actualitem, amount).ToString());
-            }
-            else
-                API.sendChatMessageToPlayer(player, "Invalid item name.");
         }
     }
 }

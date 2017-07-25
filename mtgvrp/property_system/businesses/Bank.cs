@@ -30,6 +30,7 @@ namespace mtgvrp.property_system.businesses
                 InventoryManager.DeleteInventoryItem(character, typeof(Money), amount);
                 ChatManager.RoleplayMessage(player, "deposits some money into their bank account.",
                     ChatManager.RoleplayMe);
+                LogManager.Log(LogManager.LogTypes.Stats, $"[Bank] {player.GetCharacter().CharacterName}[{player.GetAccount().AccountName}] has deposited ${amount} into their bank account. CharacterMoney: ${Money.GetCharacterMoney(character)} | BankMoney: ${character.BankBalance}");
             }
             else
             {
@@ -54,6 +55,7 @@ namespace mtgvrp.property_system.businesses
                 InventoryManager.GiveInventoryItem(character, new Money(), amount);
                 ChatManager.RoleplayMessage(player, "withdraws some money from their bank account.",
                     ChatManager.RoleplayMe);
+                LogManager.Log(LogManager.LogTypes.Stats, $"[Bank] {player.GetCharacter().CharacterName}[{player.GetAccount().AccountName}] has withdrawn ${amount} from their bank account. CharacterMoney: ${Money.GetCharacterMoney(character)} | BankMoney: ${character.BankBalance}");
             }
             else
             {
@@ -87,6 +89,7 @@ namespace mtgvrp.property_system.businesses
                     ChatManager.RoleplayMe);
                 API.sendChatMessageToPlayer(target,
                     $"~r~* {character.rp_name()}~w~ has sent you a wire transfer of ~g~${amount}");
+                LogManager.Log(LogManager.LogTypes.Stats, $"[Bank] {player.GetCharacter().CharacterName}[{player.GetAccount().AccountName}] has wire transferred ${amount} to {target.GetCharacter().CharacterName}[{target.GetAccount().AccountName}] into their bank account.");
             }
             else
             {
@@ -144,6 +147,8 @@ namespace mtgvrp.property_system.businesses
 
             ChatManager.RoleplayMessage(player, $"hands a check to {target.GetCharacter().rp_name()}.",
                 ChatManager.RoleplayMe);
+
+            LogManager.Log(LogManager.LogTypes.Stats, $"[Bank] {player.GetCharacter().CharacterName}[{player.GetAccount().AccountName}] has given a check worth ${amount} to {target.GetCharacter().CharacterName}[{target.GetAccount().AccountName}].");
         }
 
         [Command("redeemcheck"), Help(HelpManager.CommandGroups.General, "To cash in a check when at a bank.", null)]
@@ -163,6 +168,7 @@ namespace mtgvrp.property_system.businesses
                 c.BankBalance += item[0].CheckAmount;
                 API.sendChatMessageToPlayer(player, $"You have redemeed ~g~${item[0].CheckAmount}~w~. Balance now is: ~g~${c.BankBalance}");
                 InventoryManager.DeleteInventoryItem(c, typeof(CheckItem));
+                LogManager.Log(LogManager.LogTypes.Stats, $"[Bank] {player.GetCharacter().CharacterName}[{player.GetAccount().AccountName}] has redeemed a check worth ${item[0].CheckAmount}.");
             }
             else
             {
