@@ -5,6 +5,7 @@ using GTANetworkShared;
 using mtgvrp.core;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;
+using mtgvrp.core.Help;
 
 namespace mtgvrp.rp_scripts
 {
@@ -102,7 +103,7 @@ namespace mtgvrp.rp_scripts
         }
 
         // Commands
-        [Command("atm")]
+        [Command("atm"), Help(HelpManager.CommandGroups.General, "Use this command near an atm to use it to withdraw money.", null)]
         public void atm_cmd(Client player)
         {
             if (Atms.Any(x=> x.DistanceTo(player.position) <= 5.0))
