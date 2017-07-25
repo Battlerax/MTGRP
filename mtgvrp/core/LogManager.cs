@@ -67,7 +67,7 @@ namespace mtgvrp.core
             OOCchat,        //Logged
             PMchat,         //Logged
             Stats,
-            Storage,
+            Storage,        //Logged
             Unbans,         //Logged
             Warns,          //Logged
         }
