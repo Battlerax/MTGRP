@@ -187,9 +187,9 @@ namespace mtgvrp.core
 
 //Figure rank.
             string rank = "";
-            if (account.AdminLevel == 1) rank = "Moderator";
+            if (account.DevLevel == 1) rank = "Developer";
+            else if(account.AdminLevel == 1) rank = "Moderator";
             else if (account.AdminLevel > 1) rank = "Admin";
-            else if (account.DevLevel == 1) rank = "Developer";
             else if (account.VipLevel >= 1) rank = "VIP";
             else if (account.TotalPlayingHours < 2) rank = "Guest";
             else if (account.TotalPlayingHours >= 2 && account.TotalPlayingHours < 75) rank = "Player";
