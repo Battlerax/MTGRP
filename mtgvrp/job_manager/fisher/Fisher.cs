@@ -21,17 +21,17 @@ namespace mtgvrp.job_manager.fisher
         {
             FishTypes = new List<Fish>
             {
-                new Fish("Large Mouth Bass", 50, 1, 15, false, 100),
-                new Fish("Pacific Cod", 100, 10, 25, false, 80),
-                new Fish("Chinook Salmon", 200, 25, 50, false, 70),
-                new Fish("Atlantic Mackerel", 250, 25, 26, false, 60),
-                new Fish("Bluefin Tuna", 300, 35, 70, true, 50),
-                new Fish("Common Carp", 350, 15, 30, false, 40),
-                new Fish("Pacific Herring", 400, 10, 15, false, 30),
-                new Fish("Marlin", 500, 75, 150, true, 30),
-                new Fish("Shortfin Mako Shark", 550, 125, 200, true, 15),
-                new Fish("Dungeness Crab", 600, 1, 3, true, 10),
-                new Fish("Great White Shark", 1000, 1500, 1500, true, 5),
+                new Fish("Large Mouth Bass", 10, 1, 15, false, 100),
+                new Fish("Pacific Cod", 20, 10, 25, false, 80),
+                new Fish("Chinook Salmon", 40, 25, 50, false, 70),
+                new Fish("Atlantic Mackerel", 50, 25, 26, false, 60),
+                new Fish("Bluefin Tuna", 60, 35, 70, true, 50),
+                new Fish("Common Carp", 70, 15, 30, false, 40),
+                new Fish("Pacific Herring", 80, 10, 15, false, 30),
+                new Fish("Marlin", 100, 75, 150, true, 30),
+                new Fish("Shortfin Mako Shark", 110, 125, 200, true, 15),
+                new Fish("Dungeness Crab", 120, 1, 3, true, 10),
+                new Fish("Great White Shark", 200, 1500, 1500, true, 5),
             };
 
             API.onClientEventTrigger += API_onClientEventTrigger;

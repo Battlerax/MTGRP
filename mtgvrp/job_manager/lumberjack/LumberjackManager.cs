@@ -293,8 +293,8 @@ namespace mtgvrp.job_manager.lumberjack
                 API.resetEntityData(API.getPlayerVehicle(player), "TREE_DRIVER");
                 API.triggerClientEvent(player, "update_beacon", new Vector3());
 
-                InventoryManager.GiveInventoryItem(player.GetCharacter(), new Money(), 500, true);
-                API.sendChatMessageToPlayer(player, "* You have sucessfully sold your wood for ~g~$500");
+                InventoryManager.GiveInventoryItem(player.GetCharacter(), new Money(), 200, true);
+                API.sendChatMessageToPlayer(player, "* You have sucessfully sold your wood for ~g~$200");
 
                 SettingsManager.Settings.WoodSupplies += 50;
             }

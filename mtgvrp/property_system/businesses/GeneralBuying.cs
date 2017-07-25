@@ -17,6 +17,7 @@ using mtgvrp.group_manager.lsgov;
 using mtgvrp.job_manager;
 using mtgvrp.job_manager.hunting;
 using mtgvrp.job_manager.scuba;
+using mtgvrp.core.Help;
 using Color = mtgvrp.core.Color;
 
 namespace mtgvrp.property_system.businesses
@@ -448,7 +449,7 @@ namespace mtgvrp.property_system.businesses
             }
         }
 
-        [Command("buy")]
+        [Command("buy"), Help(HelpManager.CommandGroups.Bussiness, "Used inside businesses to buy items.", null)]
         public void Buy(Client player)
         {
             var prop = PropertyManager.IsAtPropertyInteraction(player);

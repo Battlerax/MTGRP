@@ -8,6 +8,7 @@ using mtgvrp.core;
 using mtgvrp.inventory;
 using mtgvrp.inventory.bags;
 using mtgvrp.player_manager;
+using mtgvrp.core.Help;
 
 namespace mtgvrp.property_system.businesses
 {
@@ -565,7 +566,7 @@ namespace mtgvrp.property_system.businesses
             API.consoleOutput("Finished loading componentes into array for clothes.");
         }
 
-        [Command("buyclothes")]
+        [Command("buyclothes"), Help(HelpManager.CommandGroups.Bussiness, "Used inside a clothing store to buy clothes.", null)]
         public void BuyClothes(Client player)
         {
             var biz = PropertyManager.IsAtPropertyInteraction(player);
@@ -676,7 +677,7 @@ namespace mtgvrp.property_system.businesses
             API.triggerClientEvent(player, "properties_buyclothes", (character.Model.Gender == Character.GenderMale ? _maleComponents : _femaleComponents), API.toJson(oldClothes), API.toJson(prices));
         }
 
-        [Command("buybag")]
+        [Command("buybag"), Help(HelpManager.CommandGroups.General, "Used inside a clothing store to buy a bag.", null)]
         public void Buybag(Client player)
         {
             var biz = PropertyManager.IsAtPropertyInteraction(player);
