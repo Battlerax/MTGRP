@@ -220,8 +220,8 @@ namespace mtgvrp.AdminSystem
             }
         }
 
-        [Command("makemeleader"), Help(HelpManager.CommandGroups.AdminLevel5, "Making yourself and others the leader of a group.", new[] { "Id: The id of target player.", "Group ID of the group." })]
-        public void makemeleader(Client player, string playerid, int groupId)
+        [Command("makeleader"), Help(HelpManager.CommandGroups.AdminLevel5, "Making someone the leader of a group.", new[] { "The id of target player.", "Group ID of the group." })]
+        public void makeleader(Client player, string playerid, int groupId)
         {
             var account = player.GetAccount();
             if (account.AdminLevel < 5)
@@ -255,6 +255,7 @@ namespace mtgvrp.AdminSystem
 
             GroupManager.SendGroupMessage(player,
                 leaderChar.CharacterName + " has joined the group. (Made leader by " + player.GetCharacter().CharacterName + ")");
+            LogManager.Log(LogManager.LogTypes.GroupInvites, $"{leaderChar.CharacterName}[{leaderChar.Client.GetAccount().AccountName}] has joined the group. (Made leader by {player.GetAccount().AdminName}[{player.GetAccount().AccountName}])");
         }
 
         [Command("gotopos"), Help(HelpManager.CommandGroups.AdminLevel2, "Teleports you to the given coordinates", new[] { "X coordinate", "Y coordinate", "Z coordinate" })]

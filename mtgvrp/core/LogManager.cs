@@ -60,7 +60,7 @@ namespace mtgvrp.core
             Death,          //Logged
             GroupChat,      //Logged
             RadioChat,      //Logged
-            GroupInvites,
+            GroupInvites,   //Logged
             ICchat,         //Logged
             Phone,          //Logged
             Money,

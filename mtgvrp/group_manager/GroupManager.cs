@@ -469,7 +469,7 @@ namespace mtgvrp.group_manager
                     return;
                 }
 
-                character.GroupId = inviteSender.GroupId ;
+                character.GroupId = inviteSender.GroupId;
                 character.Group = inviteSender.Group;
                 character.Group.CommandType = inviteSender.Group.CommandType;
                 character.GroupRank = 1;
@@ -478,7 +478,9 @@ namespace mtgvrp.group_manager
                 API.sendChatMessageToPlayer(player, "You have joined " + inviteSender.Group.Name + ".");
 
                 SendGroupMessage(player,
-                    character.CharacterName + " has joined the group. (Invited by: " + inviteSender.CharacterName + ")");
+                    character.CharacterName + " has joined the group. (Invited by: " + inviteSender.CharacterName +
+                    ")");
+                LogManager.Log(LogManager.LogTypes.GroupInvites, $"{character.CharacterName}[{player.GetAccount().AccountName}] has joined the group {character.Group.Name}. (Invited by: {inviteSender.CharacterName}[{inviteSender.Client.GetAccount().AccountName}])");
             }
         }
         
@@ -547,7 +549,7 @@ namespace mtgvrp.group_manager
 
             API.sendChatMessageToPlayer(invited, Color.Pm, "You have been invited to " + sender.Group.Name + ". Type /accept groupinvitation.");
             API.sendChatMessageToPlayer(player, "You sent a group invitation to " + invitedchar.CharacterName + ".");
-            
+            LogManager.Log(LogManager.LogTypes.GroupInvites, $"{sender.CharacterName}[{player.GetAccount().AccountName}] has invited {invitedchar.CharacterName}[{invitedchar.Client.GetAccount().AccountName}] to their group. ({sender.Group.Name})");
         }
 
         [Command("setrankname", GreedyArg = true)]
