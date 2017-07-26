@@ -145,7 +145,7 @@ namespace mtgvrp.group_manager.lsnn
             CameraSet = true;
         }
 
-        [Command("choppercam")]
+        [Command("choppercam"), Help(HelpManager.CommandGroups.General, "Toggle the chopper cam on/off", null )]
         public void choppercam_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -211,7 +211,7 @@ namespace mtgvrp.group_manager.lsnn
         }
 
 
-        [Command("pickupcamera")]
+        [Command("pickupcamera"), Help(HelpManager.CommandGroups.General, "Pick up the a broadcast camera.", null)]
         public void pickupcamera_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -272,7 +272,7 @@ namespace mtgvrp.group_manager.lsnn
             CameraSet = false;
             }
 
-        [Command("viewercount")]
+        [Command("viewercount"), Help(HelpManager.CommandGroups.General, "Show the amount of viewers currently watching the broadcast.", null)]
         public void viewercount_cmd(Client player)
         {
             var count = 0;
@@ -287,7 +287,7 @@ namespace mtgvrp.group_manager.lsnn
             API.sendChatMessageToPlayer(player, count + " people are watching the broadcast.");
         }
         
-        [Command("lotto")]
+        [Command("lotto"), Help(HelpManager.CommandGroups.General, "Throw a lotto and show the winner. Players must buy lotto tickets.", null)]
         public void lotto_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -322,7 +322,7 @@ namespace mtgvrp.group_manager.lsnn
 
         }
 
-        [Command("watchbroadcast")]
+        [Command("watchbroadcast"), Help(HelpManager.CommandGroups.General, "Start watching the broadcast.", null)]
         public void watchbroadcast_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -375,7 +375,7 @@ namespace mtgvrp.group_manager.lsnn
             character.IsWatchingBroadcast = true;
         }
 
-        [Command("stopwatching")]
+        [Command("stopwatching"), Help(HelpManager.CommandGroups.General, "Stop watching the broadcast.", null)]
         public void stopwatching_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -389,7 +389,7 @@ namespace mtgvrp.group_manager.lsnn
             character.IsWatchingBroadcast = false;
         }
 
-        [Command("mic")]
+        [Command("mic"), Help(HelpManager.CommandGroups.General, "Toggle the use of a microphone. Speak normally to use it.", null)]
         public void mictoggle_cmd(Client player)
         {
             var playerPos = API.getEntityPosition(player);
@@ -416,7 +416,7 @@ namespace mtgvrp.group_manager.lsnn
             character.MicObject = null;
         }
 
-        [Command("givemic")]
+        [Command("givemic"), Help(HelpManager.CommandGroups.General, "Give a microphone to a player.", null)]
         public void micpower_cmd(Client player, string id)
         {
             var target = PlayerManager.ParseClient(id);
@@ -449,7 +449,7 @@ namespace mtgvrp.group_manager.lsnn
 
         }
 
-        [Command("createarticle")]
+        [Command("createarticle"), Help(HelpManager.CommandGroups.General, "Start making an article.", null)]
         public void createarticle_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
