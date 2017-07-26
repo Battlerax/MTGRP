@@ -76,7 +76,7 @@ namespace mtgvrp.group_manager.lsgov
             }
         }
 
-        [Command("managebudget")]
+        [Command("managebudget"), Help(HelpManager.CommandGroups.General, "Manage the government budget (factions, stores, etc.)", null)]
         public void managebudget_cmd(Client player)
         {
             Character character = API.getEntityData(player, "Character");
@@ -98,7 +98,7 @@ namespace mtgvrp.group_manager.lsgov
             }
         }
 
-        [Command("setfunding")]
+        [Command("setfunding"), Help(HelpManager.CommandGroups.General, "Set the funding for a specific group.", new[] { "Target group ID", "Percentage of funds being given." })]
         public void setfunding_cmd(Client player, string groupid, string percentage)
         {
             Character character = API.getEntityData(player, "Character");
@@ -126,7 +126,7 @@ namespace mtgvrp.group_manager.lsgov
             player.sendChatMessage($"You have set ~b~{group.Name}~w~'s funding to ~r~{percentage}%~w~.");
         }
 
-        [Command("setgovbalance")]
+        [Command("setgovbalance"), Help(HelpManager.CommandGroups.General, "Set the government balance (Admin only)", new[] { "The amount being set." })]
         public void setgovbalance_cmd(Client player, string amount)
         {
             Account account = API.getEntityData(player, "Account");
