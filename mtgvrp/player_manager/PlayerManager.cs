@@ -257,7 +257,7 @@ namespace mtgvrp.player_manager
                 player.sendChatMessage("Total: ~g~$" + paycheckAmount + "~w~.");
 
                 player.sendPictureNotificationToPlayer("Your paycheck for ~g~$" + paycheckAmount + " ~w~has been added to your balance.", "CHAR_BANK_MAZE", 0, 0, "Maze Bank", "Paycheck Received!");
-                if (account.VipLevel > 0)
+                if (account.VipLevel > 0 && account.AdminLevel < 1)
                     {
                         int result = DateTime.Compare(DateTime.Now, account.VipExpirationDate);
                         if (result == 1)

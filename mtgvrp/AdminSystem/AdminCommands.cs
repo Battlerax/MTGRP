@@ -1479,12 +1479,14 @@ namespace mtgvrp.AdminSystem
                 return;
             }
 
-            /*if (receiverAccount.AdminLevel > 0)
+            if (account.AdminLevel > 0)
             {
                 account.VipLevel = 3;
-                account.VipExpirationDate = default(DateTime);
+                account.Save();
+                receiver.sendChatMessage("Your ~y~VIP~y~ level was set to " + 3 + " by " + account.AdminName + ".");
                 return;
-            }*/
+
+            }
 
             if (receiverAccount.VipLevel == level)
             {
