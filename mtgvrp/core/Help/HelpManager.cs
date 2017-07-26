@@ -58,7 +58,12 @@ namespace mtgvrp.core.Help
             var animCmds = typeof(Animations).GetMethods()
                 .Where(m => m.GetCustomAttributes(typeof(CommandAttribute), false).Length > 0).ToArray();
 
-            API.consoleOutput($"*** Intializing Help. [ {methods.Length + animCmds.Length} Commands ]");
+            var totalCommands = Assembly.GetExecutingAssembly()
+                .GetTypes()
+                .SelectMany(t => t.GetMethods())
+                .Count(m => m.GetCustomAttributes(typeof(CommandAttribute), false).Length > 0);
+
+            API.consoleOutput($"*** Intializing Help. [ {methods.Length + animCmds.Length} Commands Of {totalCommands} ]");
 
             Dictionary<CommandGroups, List<string[]>> cmds = new Dictionary<CommandGroups, List<string[]>>();
             foreach (var cmd in methods)
