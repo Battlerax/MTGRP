@@ -416,7 +416,7 @@ namespace mtgvrp.group_manager.lsnn
             character.MicObject = null;
         }
 
-        [Command("givemic"), Help(HelpManager.CommandGroups.General, "Give a microphone to a player.", null)]
+        [Command("givemic"), Help(HelpManager.CommandGroups.General, "Give a microphone to a player.", new[] { "The target player ID." })]
         public void micpower_cmd(Client player, string id)
         {
             var target = PlayerManager.ParseClient(id);
