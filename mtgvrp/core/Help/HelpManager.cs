@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using GrandTheftMultiplayer.Server.API;
@@ -10,6 +11,7 @@ namespace mtgvrp.core.Help
 {
     public class HelpManager : Script
     {
+        [Flags]
         public enum CommandGroups
         {
             General,
@@ -51,13 +53,17 @@ namespace mtgvrp.core.Help
                 .Where(m => m.GetCustomAttributes(typeof(Help), false).Length > 0)
                 .ToArray();
 
-            API.consoleOutput($"*** Intializing Help. [ {methods.Length} Commands ]");
+            //Animation Commands.
+            var animCmds = typeof(Animations).GetMethods()
+                .Where(m => m.GetCustomAttributes(typeof(CommandAttribute), false).Length > 0).ToArray();
+
+            API.consoleOutput($"*** Intializing Help. [ {methods.Length + animCmds.Length} Commands ]");
 
             Dictionary<CommandGroups, List<string[]>> cmds = new Dictionary<CommandGroups, List<string[]>>();
             foreach (var cmd in methods)
             {
                 Help commandHelp = (Help)cmd.GetCustomAttributes(typeof(Help), false)[0];
-                CommandAttribute commandInfo = (CommandAttribute)cmd.GetCustomAttributes(typeof(CommandAttribute), false)[0];
+                CommandAttribute commandInfo = cmd.GetCustomAttribute<CommandAttribute>();
 
                 if (cmd.GetParameters().Skip(1).Select(x => x.Name).Count() != commandHelp.Parameters.Length)
                 {
@@ -65,11 +71,22 @@ namespace mtgvrp.core.Help
                     continue;
                 }
 
-                if(!cmds.ContainsKey(commandHelp.Group))
-                    cmds[commandHelp.Group] = new List<string[]>();
+                foreach (var grp in commandHelp.Group.GetIndividualFlags().Cast<CommandGroups>())
+                {
+                    if (!cmds.ContainsKey(grp))
+                        cmds[grp] = new List<string[]>();
 
-                cmds[commandHelp.Group].Add(new[] { commandInfo.CommandString, string.Join("|", cmd.GetParameters().Skip(1).Select(x => x.Name)) /* Skip sender */ , commandHelp.Description, string.Join("|", commandHelp.Parameters) });
-                
+                    cmds[grp].Add(new[] { commandInfo.CommandString, string.Join("|", cmd.GetParameters().Skip(1).Select(x => x.Name)) /* Skip sender */ , commandHelp.Description, string.Join("|", commandHelp.Parameters) });
+                }
+            }
+
+            //Animation Commands: 
+            if (!cmds.ContainsKey(CommandGroups.Animation))
+                cmds[CommandGroups.Animation] = new List<string[]>();
+            foreach (var cmd in animCmds)
+            {
+                var commandInfo = cmd.GetCustomAttribute<CommandAttribute>();
+                cmds[CommandGroups.Animation].Add(new[] { commandInfo.CommandString, string.Join("|", cmd.GetParameters().Skip(1).Select(x => x.Name)) /* Skip sender */ , "", ""});
             }
 
             CommandStuff = API.toJson(cmds);
