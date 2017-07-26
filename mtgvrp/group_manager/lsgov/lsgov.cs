@@ -15,7 +15,7 @@ namespace mtgvrp.group_manager.lsgov
         }
 
         //SET VIP BONUS PERCENTAGE (ONLY FOR ADMINS)
-        [Command("setvipbonus")]
+        [Command("setvipbonus"), Help(HelpManager.CommandGroups.General, "Set the VIP bonus for paychecks.", new[] { "The VIP level being changed.", "VIP bonus percentage"})]
         public void setvipbonus_cmd(Client player, string viplevel, string percentage)
         {
             Account account = API.shared.getEntityData(player.handle, "Account");
@@ -41,7 +41,7 @@ namespace mtgvrp.group_manager.lsgov
         }
 
         //SET TAXATION FOR PAYCHECKS AS MAYOR/OFFICIAL
-        [Command("settax")]
+        [Command("settax"), Help(HelpManager.CommandGroups.General, "Set the tax percentage for paychecks.", new[] { "Percentage being deducted from paychecks." })]
         public void settax_cmd(Client player, string percentage)
         {
 
@@ -52,7 +52,7 @@ namespace mtgvrp.group_manager.lsgov
         }
 
         //SET BASE PAYCHECK AS MAYOR/OFFICIAL
-        [Command("setbasepaycheck", GreedyArg = true)]
+        [Command("setbasepaycheck", GreedyArg = true), Help(HelpManager.CommandGroups.General, "Set the base paycheck.", new[] { "Base paycheck amount." })]
         public void setbasepaycheck_cmd(Client player, string amount)
         {
             Character character = API.shared.getEntityData(player, "Character");
@@ -63,7 +63,7 @@ namespace mtgvrp.group_manager.lsgov
         }
 
         //GOVERNMENT ANNOUNCEMENT AS MAYOR OR HIGH RANKING LSPD
-        [Command("gov", GreedyArg = true)]
+        [Command("gov", GreedyArg = true), Help(HelpManager.CommandGroups.General, "Speak publically to everyone as the government.", new[] { "Message to be sent" })]
         public void gov_cmd(Client player, string text)
         {
             Character character = API.shared.getEntityData(player, "Character");
