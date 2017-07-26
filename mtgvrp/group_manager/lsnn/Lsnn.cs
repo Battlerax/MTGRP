@@ -7,6 +7,7 @@ using mtgvrp.core;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;
 using mtgvrp.vehicle_manager;
+using mtgvrp.core.Help;
 
 namespace mtgvrp.group_manager.lsnn
 {
@@ -48,7 +49,7 @@ namespace mtgvrp.group_manager.lsnn
         public Vector3 OffSet = new Vector3(0, 0, -3);
         public Timer ChopperRotation = new Timer();
 
-        [Command("broadcast")]
+        [Command("broadcast"), Help(HelpManager.CommandGroups.General, "Start a broadcast.", null)]
         public void broadcast_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -95,7 +96,7 @@ namespace mtgvrp.group_manager.lsnn
 
         }
 
-        [Command("editheadline", GreedyArg = true)]
+        [Command("editheadline", GreedyArg = true), Help(HelpManager.CommandGroups.General, "Edit the broadcast headline text.", new[] { "Text being displayed on the broadcast." })]
         public void editbanner_cmd(Client player, string text)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -110,7 +111,7 @@ namespace mtgvrp.group_manager.lsnn
             API.sendChatMessageToPlayer(player, "Headline edited.");
         }
 
-        [Command("setcamera")]
+        [Command("setcamera"), Help(HelpManager.CommandGroups.General, "Set down a camera for broadcasting.", null)]
         public void setcamera_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
