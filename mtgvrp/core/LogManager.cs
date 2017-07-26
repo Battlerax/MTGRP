@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
+using GrandTheftMultiplayer.Server.Elements;
 
 namespace mtgvrp.core
 {
@@ -53,7 +54,7 @@ namespace mtgvrp.core
 
         public enum LogTypes
         {
-            AdminActions,
+            AdminActions,   //Logged
             Bans,           //Logged
             Commands,       //Logged
             Connection,     //Logged
@@ -83,5 +84,7 @@ namespace mtgvrp.core
             //Append
             File.AppendAllText("Logs/" + file, $"[{DateTime.UtcNow:R}] " + log + "\r\n");
         }
+
+        public static string GetLogName(Client player) => $"{player.GetCharacter().CharacterName}[{player.GetAccount().AccountName}]";
     }
 }
