@@ -6,6 +6,7 @@ using GrandTheftMultiplayer.Server.Constant;
 using GrandTheftMultiplayer.Server.Elements;
 using GrandTheftMultiplayer.Server.Managers;
 using mtgvrp.core;
+using mtgvrp.core.Help;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;
 using Color = mtgvrp.core.Color;
@@ -98,7 +99,7 @@ namespace mtgvrp.job_manager.fisher
             }
         }
 
-        [Command("fish")]
+        [Command("fish"), Help(HelpManager.CommandGroups.FisherJob, "Pretty obvious, its to fish!")]
         public void fish_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -147,7 +148,7 @@ namespace mtgvrp.job_manager.fisher
             character.CatchTimer.Start();
         }
 
-        [Command("viewfish")]
+        [Command("viewfish"), Help(HelpManager.CommandGroups.FisherJob, "View the fish in your inventory")]
         public void viewfish_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -164,7 +165,7 @@ namespace mtgvrp.job_manager.fisher
             API.sendChatMessageToPlayer(player, Color.White, "----------------------------------------------");
         }
 
-        [Command("sellfish")]
+        [Command("sellfish"), Help(HelpManager.CommandGroups.FisherJob, "Sell the fish you currently have.")]
         public void sellfish_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");

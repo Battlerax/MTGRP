@@ -8,6 +8,7 @@ using GrandTheftMultiplayer.Server.Elements;
 using GrandTheftMultiplayer.Server.Managers;
 using GrandTheftMultiplayer.Shared.Math;
 using mtgvrp.core;
+using mtgvrp.core.Help;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;
 
@@ -159,7 +160,7 @@ namespace mtgvrp.job_manager.scuba
             }
         }
 
-        [Command("pickuptreasure")]
+        [Command("pickuptreasure"), Help(HelpManager.CommandGroups.ScubaActivity, "Pickup a treasure you found in the ocean while diving.")]
         public void Pickuptreasure(Client player)
         {
             var character = player.GetCharacter();
@@ -196,7 +197,7 @@ namespace mtgvrp.job_manager.scuba
             _treasureObjects.Add(API.createObject(-994740387, _treasuresLocations[a][0], _treasuresLocations[a][1]));
         }
 
-        [Command("togglescuba")]
+        [Command("togglescuba"), Help(HelpManager.CommandGroups.ScubaActivity, "Toggle your scuba kit on and off.")]
         public void EquipScuba(Client player)
         {
             var character = player.GetCharacter();

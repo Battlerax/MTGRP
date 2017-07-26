@@ -26,6 +26,7 @@ namespace mtgvrp.core.Help
             JobsGeneral,
             TaxiJob,
             MechanicJob,
+            LumberJob,
             FisherJob,
             DeliveryJob,
             GarbageJob,

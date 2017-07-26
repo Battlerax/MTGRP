@@ -7,6 +7,7 @@ using GrandTheftMultiplayer.Server.API;
 using GrandTheftMultiplayer.Server.Elements;
 using GrandTheftMultiplayer.Server.Managers;
 using mtgvrp.core;
+using mtgvrp.core.Help;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;
 using mtgvrp.property_system;
@@ -15,7 +16,7 @@ namespace mtgvrp.job_manager.delivery
 {
     public class DeliveryManager : Script
     {
-        [Command("getsupplies")]
+        [Command("getsupplies"), Help(HelpManager.CommandGroups.DeliveryJob, "Used to get supplies which you can later sell at a business.", new []{"The amount of supplies you'd like to buy."})]
         public void GetSupplies(Client player, int amount)
         {
             Character c = player.GetCharacter();
@@ -48,7 +49,7 @@ namespace mtgvrp.job_manager.delivery
             }
         }
 
-        [Command("sellsupplies")]
+        [Command("sellsupplies"), Help(HelpManager.CommandGroups.DeliveryJob, "Sell supplies to a business.", new []{"The amount of supplies you'd like to sell."})]
         public void SellSupplies(Client player, int amount)
         {
             var prop = PropertyManager.IsAtPropertyInteraction(player);

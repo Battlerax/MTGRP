@@ -8,7 +8,7 @@ namespace mtgvrp.core.Help
         public readonly string Description;
         public readonly string[] Parameters;
 
-        public Help(HelpManager.CommandGroups group, string description, string[] parameterinfo)
+        public Help(HelpManager.CommandGroups group, string description, params string[] parameterinfo)
         {
             Group = group;
             Description = description;

@@ -6,14 +6,17 @@ using mtgvrp.player_manager;
 using mtgvrp.vehicle_manager;
 using mtgvrp.inventory;
 using mtgvrp.core;
+using mtgvrp.core.Help;
 using mtgvrp.core.Items;
+using System.Linq;
+using GrandTheftMultiplayer.Server;
 
 namespace mtgvrp.job_manager.taxi
 {
     public class MechanicJob : Script
     {
 
-        [Command("fixcar")]
+        [Command("fixcar"), Help(HelpManager.CommandGroups.MechanicJob, "Used to fix the car you're inside.")]
         public void fixcar_cmd(Client player)
         {
             Character character = player.GetCharacter();
@@ -52,7 +55,7 @@ namespace mtgvrp.job_manager.taxi
             character.FixcarPrevention = DateTime.Now.Add(TimeSpan.FromSeconds(10));
         }
 
-        [Command("paintcar")]
+        [Command("paintcar"), Help(HelpManager.CommandGroups.MechanicJob, "Used to paint the car you're inside. <br/> Use the wiki to get the color ids.", "The primary color.", "The secondary color.")]
         public void paintcar_cmd(Client player, int col1, int col2)
         {
             Character character = player.GetCharacter();
@@ -77,6 +80,8 @@ namespace mtgvrp.job_manager.taxi
             veh.Save();
             InventoryManager.DeleteInventoryItem(character, typeof(SprayPaint), 1);
             player.sendChatMessage("Vehicle painted.");
+
+            var tst = Enum.GetValues(typeof(HelpManager.CommandGroups)).Cast<HelpManager.CommandGroups>().Where(x => x > HelpManager.CommandGroups.AdminLevel1);
         }
    
     }
