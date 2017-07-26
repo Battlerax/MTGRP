@@ -391,7 +391,7 @@ namespace mtgvrp.inventory
             else if (stor.GetType() == typeof(vehicle_manager.Vehicle))
             {
                 var c = (vehicle_manager.Vehicle)stor;
-                text = $"Vehicle<{c.Id}, {API.getVehicleDisplayName(c.VehModel)}>";
+                text = $"Vehicle<{c.Id}, {API.shared.getVehicleDisplayName(c.VehModel)}>";
             }
             else if (stor.GetType() == typeof(Property))
             {
