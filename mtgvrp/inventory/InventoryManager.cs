@@ -182,7 +182,7 @@ namespace mtgvrp.inventory
                     storage.Inventory.Add(item);
                     OnStorageGetItem?.Invoke(storage, new OnGetItemEventArgs(sentitem, amount));
                     OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item.GetType(), item.Amount));
-                    LogManager.Log(LogManager.LogTypes.Storage, $"[{storage.GetType()}] Add Item '{item.LongName}', Amount: '{amount}'");
+                    LogManager.Log(LogManager.LogTypes.Storage, $"[{GetStorageInfo(storage)}] Add Item '{item.LongName}', Amount: '{amount}'");
                     return GiveItemErrors.Success;
                 }
                 else
@@ -207,7 +207,7 @@ namespace mtgvrp.inventory
                     }
                     OnStorageGetItem?.Invoke(storage, new OnGetItemEventArgs(sentitem, amount));
                     OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item.GetType(), oldItem.Amount));
-                    LogManager.Log(LogManager.LogTypes.Storage, $"[{storage.GetType()}] Add Item '{item.LongName}', Amount: '{amount}'");
+                    LogManager.Log(LogManager.LogTypes.Storage, $"[{GetStorageInfo(storage)}] Add Item '{item.LongName}', Amount: '{amount}'");
                     return GiveItemErrors.Success;
                 }
                 else
@@ -319,7 +319,7 @@ namespace mtgvrp.inventory
                     OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(i, amount));
                 }
                 OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item, 0));
-                LogManager.Log(LogManager.LogTypes.Storage, $"[{storage.GetType()}] Removed Item '{ItemTypeToNewObject(item).LongName}', Amount: '{amount}'");
+                LogManager.Log(LogManager.LogTypes.Storage, $"[{GetStorageInfo(storage)}] Removed Item '{ItemTypeToNewObject(item).LongName}', Amount: '{amount}'");
                 return true;
             }
 
@@ -332,7 +332,7 @@ namespace mtgvrp.inventory
 
             OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(itm, amount));
             OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item, itm.Amount));
-            LogManager.Log(LogManager.LogTypes.Storage, $"[{storage.GetType()}] Removed Item '{ItemTypeToNewObject(item).LongName}', Amount: '{amount}'");
+            LogManager.Log(LogManager.LogTypes.Storage, $"[{GetStorageInfo(storage)}] Removed Item '{ItemTypeToNewObject(item).LongName}', Amount: '{amount}'");
             return true;
         }
 
@@ -379,7 +379,7 @@ namespace mtgvrp.inventory
             GiveInventoryItem(storage, ItemTypeToNewObject(item), amount);
         }
 
-        public string GetStorageInfo(IStorage stor)
+        public static string GetStorageInfo(IStorage stor)
         {
             string text = "";
 
