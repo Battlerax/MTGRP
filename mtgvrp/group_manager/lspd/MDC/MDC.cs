@@ -65,6 +65,20 @@ namespace mtgvrp.group_manager.lspd.MDC
                 return;
             }
 
+            var vehHandle = API.getPlayerVehicle(player);
+            var veh = VehicleManager.GetVehFromNetHandle(vehHandle);
+            if(veh.Group.CommandType != Group.CommandTypeLspd)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "This vehicle is not equipped with a Mobile Database Computer.");
+                return;
+            }
+
+            if(API.getPlayerVehicleSeat(player) != -1 && API.getPlayerVehicleSeat(player) != 0)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "You can only access the Mobile Database Computer from the front seats.");
+                return;
+            }
+
             if (character.IsViewingMdc)
             {
                 API.shared.triggerClientEvent(character.Client, "hideMDC");
@@ -97,7 +111,6 @@ namespace mtgvrp.group_manager.lspd.MDC
                 case "server_createBolo":
                 {
                     Character character = API.getEntityData(player, "Character");
-                    API.sendChatMessageToPlayer(player, "ARGS: " + arguments[0] + " " + arguments[1]);
                     var newBolo = new Bolo(character.CharacterName, Convert.ToInt32(arguments[1]),
                         Convert.ToString(arguments[0]));
 
