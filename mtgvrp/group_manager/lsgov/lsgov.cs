@@ -17,7 +17,7 @@ namespace mtgvrp.group_manager.lsgov
         }
 
         //SET VIP BONUS PERCENTAGE (ONLY FOR ADMINS)
-        [Command("setvipbonus")]
+        [Command("setvipbonus"), Help(HelpManager.CommandGroups.Gov, "Set the VIP bonus for paychecks.", new[] { "The VIP level being changed.", "VIP bonus percentage"})]
         public void setvipbonus_cmd(Client player, string viplevel, string percentage)
         {
             Account account = API.shared.getEntityData(player.handle, "Account");
@@ -43,7 +43,7 @@ namespace mtgvrp.group_manager.lsgov
         }
 
         //SET TAXATION FOR PAYCHECKS AS MAYOR/OFFICIAL
-        [Command("settax")]
+        [Command("settax"), Help(HelpManager.CommandGroups.Gov, "Set the tax percentage for paychecks.", new[] { "Percentage being deducted from paychecks." })]
         public void settax_cmd(Client player, string percentage)
         {
 
@@ -54,7 +54,7 @@ namespace mtgvrp.group_manager.lsgov
         }
 
         //SET BASE PAYCHECK AS MAYOR/OFFICIAL
-        [Command("setbasepaycheck", GreedyArg = true)]
+        [Command("setbasepaycheck", GreedyArg = true), Help(HelpManager.CommandGroups.Gov, "Set the base paycheck.", new[] { "Base paycheck amount." })]
         public void setbasepaycheck_cmd(Client player, string amount)
         {
             Character character = API.shared.getEntityData(player, "Character");
@@ -65,7 +65,7 @@ namespace mtgvrp.group_manager.lsgov
         }
 
         //GOVERNMENT ANNOUNCEMENT AS MAYOR OR HIGH RANKING LSPD
-        [Command("gov", GreedyArg = true)]
+        [Command("gov", GreedyArg = true), Help(HelpManager.CommandGroups.Gov, "Speak publically to everyone as the government.", new[] { "Message to be sent" })]
         public void gov_cmd(Client player, string text)
         {
             Character character = API.shared.getEntityData(player, "Character");
@@ -78,7 +78,7 @@ namespace mtgvrp.group_manager.lsgov
             }
         }
 
-        [Command("managebudget")]
+        [Command("managebudget"), Help(HelpManager.CommandGroups.Gov, "Manage the government budget (factions, stores, etc.)", null)]
         public void managebudget_cmd(Client player)
         {
             Character character = API.getEntityData(player, "Character");
@@ -100,7 +100,7 @@ namespace mtgvrp.group_manager.lsgov
             }
         }
 
-        [Command("setfunding")]
+        [Command("setfunding"), Help(HelpManager.CommandGroups.Gov, "Set the funding for a specific group.", new[] { "Target group ID", "Percentage of funds being given." })]
         public void setfunding_cmd(Client player, string groupid, string percentage)
         {
             Character character = API.getEntityData(player, "Character");
@@ -128,7 +128,7 @@ namespace mtgvrp.group_manager.lsgov
             player.sendChatMessage($"You have set ~b~{group.Name}~w~'s funding to ~r~{percentage}%~w~.");
         }
 
-        [Command("setgovbalance")]
+        [Command("setgovbalance"), Help(HelpManager.CommandGroups.Gov, "Set the government balance (Admin only)", new[] { "The amount being set." })]
         public void setgovbalance_cmd(Client player, string amount)
         {
             Account account = API.getEntityData(player, "Account");
@@ -140,7 +140,7 @@ namespace mtgvrp.group_manager.lsgov
         }
 
         //DEPLOY A PODIUM AS MAYOR OR HIGH RANKING LSPD
-        [Command("deploypodium")]
+        [Command("deploypodium"), Help(HelpManager.CommandGroups.Gov, "Deploy a podium outside the city hall.", null)]
         public void deploypodium_cmd(Client player)
         {
             Character character = API.shared.getEntityData(player, "Character");
@@ -150,7 +150,7 @@ namespace mtgvrp.group_manager.lsgov
             //DEPLOY A PODIUM WHEN MAPPING IS READY
         }
 
-        [Command("pickuppodium")]
+        [Command("pickuppodium"), Help(HelpManager.CommandGroups.Gov, "Remove the podium from outside the city hall.", null)]
         public void pickuppodium_cmd(Client player)
         {
             Character character = API.shared.getEntityData(player, "Character");
@@ -161,7 +161,7 @@ namespace mtgvrp.group_manager.lsgov
         }
 
 
-        [Command("showid"), Help(HelpManager.CommandGroups.General, "Show your ID to a player.", new [] {"Target player ID or name." })]
+        [Command("showid"), Help(HelpManager.CommandGroups.Gov, "Show your ID to a player.", new [] {"Target player ID or name." })]
         public void ShowId(Client player, string target)
         {
             var targetPlayer = PlayerManager.ParseClient(target);

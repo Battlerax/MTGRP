@@ -263,10 +263,8 @@ namespace mtgvrp.player_manager
                     player.sendChatMessage("----------------------------------------------");
                     player.sendChatMessage("Total: ~g~$" + paycheckAmount + "~w~.");
 
-                    player.sendPictureNotificationToPlayer(
-                        "Your paycheck for ~g~$" + paycheckAmount + " ~w~has been added to your balance.",
-                        "CHAR_BANK_MAZE", 0, 0, "Maze Bank", "Paycheck Received!");
-                    if (account.VipLevel > 0)
+                player.sendPictureNotificationToPlayer("Your paycheck for ~g~$" + paycheckAmount + " ~w~has been added to your balance.", "CHAR_BANK_MAZE", 0, 0, "Maze Bank", "Paycheck Received!");
+                if (account.VipLevel > 0 && account.AdminLevel < 1)
                     {
                         int result = DateTime.Compare(DateTime.Now, account.VipExpirationDate);
                         if (result == 1)
@@ -334,6 +332,18 @@ namespace mtgvrp.player_manager
             API.sendChatMessageToPlayer(player, Color.White, "__________________ TIME __________________");
         }
 
+        [Command("attempt", GreedyArg = true)]
+        public void attempt_cmd(Client player, string message)
+        {
+            Character character = API.getEntityData(player.handle, "Character");
+
+            Random ran = new Random();
+            var chance = ran.Next(100);
+
+            string val = (chance <= 50) ? "succeeded" : "failed";
+
+            ChatManager.RoleplayMessage(character, $"attempted to {message} and {val}.", ChatManager.RoleplayMe);
+        }
 
         //Show player stats (admins can show stats of other players).
         public void ShowStats(Client sender)
