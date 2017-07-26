@@ -937,7 +937,7 @@ namespace mtgvrp.AdminSystem
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has accepted {GetLogName(receiver)}'s /ask.");
         }
 
-        [Command("mfinish", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel1, "When you're done with the player hit em with this.", new[] { "Id: The id of target player." })]
+        [Command("mfinish", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel1, "When you're done with the player hit em with this.", null)]
         public void mfinish_cmd(Client player)
         {
             Account account = API.getEntityData(player.handle, "Account");
@@ -1136,7 +1136,7 @@ namespace mtgvrp.AdminSystem
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has jailed {GetLogName(receiver)} for {time} second(s).");
         }
 
-        [Command("kickplayer", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel2, "Kicks a player from the server", new [] {"ID of the target player"})]
+        [Command("kickplayer", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel2, "Kicks a player from the server", new [] {"ID of the target player", "The kick reason."})]
         public static void kick_cmd(Client player, string id, string reason)
         {
             var receiver = PlayerManager.ParseClient(id);

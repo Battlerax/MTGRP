@@ -547,7 +547,7 @@ namespace mtgvrp.vehicle_manager
             return;
         }
 
-        [Command("respawnunownedcars"), Help(HelpManager.CommandGroups.AdminLevel4, "Used to find your character statistics", new[] { "ID of target player." })]
+        [Command("respawnunownedcars"), Help(HelpManager.CommandGroups.AdminLevel4, "Used to find your character statistics", null)]
         public void respawnallcars_cmd(Client player)
         {
             var account = player.GetAccount();
@@ -567,7 +567,7 @@ namespace mtgvrp.vehicle_manager
             return;
         }
 
-        [Command("respawnnearbycars"), Help(HelpManager.CommandGroups.AdminLevel4, "Respawns all the vehicles near you to their original pos.", null)]
+        [Command("respawnnearbycars"), Help(HelpManager.CommandGroups.AdminLevel4, "Respawns all the vehicles near you to their original pos.", new [] {"The radius around you where the vehicles will get respawned."})]
         public void respawnnearbycars_cmd(Client player, int radius = 15)
         {
             var account = player.GetAccount();
