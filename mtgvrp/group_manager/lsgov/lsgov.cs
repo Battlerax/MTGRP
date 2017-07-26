@@ -138,7 +138,7 @@ namespace mtgvrp.group_manager.lsgov
         }
 
         //DEPLOY A PODIUM AS MAYOR OR HIGH RANKING LSPD
-        [Command("deploypodium")]
+        [Command("deploypodium"), Help(HelpManager.CommandGroups.General, "Deploy a podium outside the city hall.", null)]
         public void deploypodium_cmd(Client player)
         {
             Character character = API.shared.getEntityData(player, "Character");
@@ -148,7 +148,7 @@ namespace mtgvrp.group_manager.lsgov
             //DEPLOY A PODIUM WHEN MAPPING IS READY
         }
 
-        [Command("pickuppodium")]
+        [Command("pickuppodium"), Help(HelpManager.CommandGroups.General, "Remove the podium from outside the city hall.", null)]
         public void pickuppodium_cmd(Client player)
         {
             Character character = API.shared.getEntityData(player, "Character");
