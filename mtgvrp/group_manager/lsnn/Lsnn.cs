@@ -276,7 +276,7 @@ namespace mtgvrp.group_manager.lsnn
             CameraSet = false;
             }
 
-        [Command("viewercount"), Help(HelpManager.CommandGroups.LSNN, "Show the amount of viewers currently watching the broadcast.", null)]
+        [Command("viewercount"), Help(HelpManager.CommandGroups.LSNN | HelpManager.CommandGroups.General, "Show the amount of viewers currently watching the broadcast.", null)]
         public void viewercount_cmd(Client player)
         {
             var count = 0;
@@ -326,7 +326,7 @@ namespace mtgvrp.group_manager.lsnn
 
         }
 
-        [Command("watchbroadcast"), Help(HelpManager.CommandGroups.LSNN, "Start watching the broadcast.", null)]
+        [Command("watchbroadcast"), Help(HelpManager.CommandGroups.LSNN | HelpManager.CommandGroups.General, "Start watching the broadcast.", null)]
         public void watchbroadcast_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -379,7 +379,7 @@ namespace mtgvrp.group_manager.lsnn
             character.IsWatchingBroadcast = true;
         }
 
-        [Command("stopwatching"), Help(HelpManager.CommandGroups.LSNN, "Stop watching the broadcast.", null)]
+        [Command("stopwatching"), Help(HelpManager.CommandGroups.LSNN | HelpManager.CommandGroups.General, "Stop watching the broadcast.", null)]
         public void stopwatching_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -393,7 +393,7 @@ namespace mtgvrp.group_manager.lsnn
             character.IsWatchingBroadcast = false;
         }
 
-        [Command("mic"), Help(HelpManager.CommandGroups.LSNN, "Toggle the use of a microphone. Speak normally to use it.", null)]
+        [Command("mic"), Help(HelpManager.CommandGroups.LSNN | HelpManager.CommandGroups.General, "Toggle the use of a microphone. Speak normally to use it.", null)]
         public void mictoggle_cmd(Client player)
         {
             var playerPos = API.getEntityPosition(player);

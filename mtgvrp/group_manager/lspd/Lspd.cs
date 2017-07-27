@@ -13,6 +13,7 @@ using mtgvrp.core;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;
 using mtgvrp.weapon_manager;
+using mtgvrp.core.Help;
 using Color = mtgvrp.core.Color;
 
 namespace mtgvrp.group_manager.lspd
@@ -121,7 +122,7 @@ namespace mtgvrp.group_manager.lspd
                     }
             }
         }
-        [Command("recordcrime", GreedyArg = true)]
+        [Command("recordcrime", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Record a player's crime, adding them to the wanted list.", new[] { "The target player ID.", "The crime ID" })]
         public void recordcrimes_cmd(Client player, string id, string crimeid)
         {
             var receiver = PlayerManager.ParseClient(id);
@@ -154,7 +155,7 @@ namespace mtgvrp.group_manager.lspd
             API.sendNotificationToPlayer(receiver, character.CharacterName + " has recorded a crime you committed: ~r~" + crime.Name + "~w~.");
         }
 
-        [Command("showcriminalrecord", GreedyArg = true)]
+        [Command("showcriminalrecord", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Show the criminal record of a player.", new[] { "The target player ID." })]
         public void criminalrecord_cmd(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
@@ -188,7 +189,7 @@ namespace mtgvrp.group_manager.lspd
             }
         }
 
-        [Command("listcrimes")]
+        [Command("listcrimes"), Help(HelpManager.CommandGroups.LSPD, "List the available crimes and their crime ID", null)]
         public void listcrimes_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -210,7 +211,7 @@ namespace mtgvrp.group_manager.lspd
             }
         }
 
-        [Command("createcrime", GreedyArg=true)]
+        [Command("createcrime", GreedyArg=true), Help(HelpManager.CommandGroups.LSPD, "Create a crime and add it to the crime list.", null)]
         public void createcrime_cmd(Client player, string type, int jailTime, int fine, string crimeName)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -232,7 +233,7 @@ namespace mtgvrp.group_manager.lspd
             API.sendChatMessageToPlayer(player, "Crime created and added to crime list.");
         }
 
-        [Command("editcrime")]
+        [Command("editcrime"), Help(HelpManager.CommandGroups.LSPD, "Edit a crime.", new[] { "Crime ID", "The crime type", "The crime name", "The jail time", "The fine for this crime" })]
         public void editcrime_cmd(Client player, int id, string type, string crimeName, int jailTime, int fine)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -255,7 +256,7 @@ namespace mtgvrp.group_manager.lspd
             API.sendChatMessageToPlayer(player, "Crime edited.");
         }
 
-        [Command("deletecrime")]
+        [Command("deletecrime"), Help(HelpManager.CommandGroups.LSPD, "Delete a crime by its ID.", new[] { "The target crime ID." })]
         public void deletecrime_cmd(Client player, int id)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -279,7 +280,7 @@ namespace mtgvrp.group_manager.lspd
             API.sendChatMessageToPlayer(player, "Crime deleted from crime list.");
         }
 
-        [Command("wanted", GreedyArg = true)]
+        [Command("wanted", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Show the wanted list.", null)]
         public void wanted_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -304,7 +305,7 @@ namespace mtgvrp.group_manager.lspd
         }
 
 
-        [Command("arrest", GreedyArg = true)]
+        [Command("arrest", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Arrest a player after their crimes are recorded.", new[] { "The target player ID." })]
         public void arrest_cmd(Client player, string id)
         {
 
@@ -375,7 +376,7 @@ namespace mtgvrp.group_manager.lspd
 
         }
 
-        [Command("release", GreedyArg = true)]
+        [Command("release", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Release a player from prison.", new[] { "The target player ID." })]
         public void release_cmd(Client player, string id)
         {
 
@@ -409,7 +410,7 @@ namespace mtgvrp.group_manager.lspd
 
         }
 
-        [Command("cuff", GreedyArg = true)]
+        [Command("cuff", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Handcuff a player.", new[] { "The target player ID." })]
         public void cuff_cmd(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
@@ -457,7 +458,7 @@ namespace mtgvrp.group_manager.lspd
             ChatManager.RoleplayMessage(player, "places handcuffs onto " + receivercharacter.rp_name(), ChatManager.RoleplayMe);
         }
 
-        [Command("frisk", GreedyArg = true)]
+        [Command("frisk", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD | HelpManager.CommandGroups.General, "Frisk a player to show their inventory items.", new[] { "The target player ID." })]
         public void frisk_cmd(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
@@ -496,7 +497,7 @@ namespace mtgvrp.group_manager.lspd
 
         }
 
-        [Command("backupbeacon", GreedyArg = true)]
+        [Command("backupbeacon", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Deploy a backup beacon.", null)]
         public void backupbeacon_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -518,7 +519,7 @@ namespace mtgvrp.group_manager.lspd
 
         }
 
-        [Command("acceptbeacon", GreedyArg = true)]
+        [Command("acceptbeacon", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Accept the recent backup beacon.", null)]
         public void acceptbeacon_cmd(Client player)
         {
             Character character = API.shared.getEntityData(player.handle, "Character");
@@ -548,7 +549,7 @@ namespace mtgvrp.group_manager.lspd
             API.triggerClientEvent(player, "update_beacon", API.getEntityPosition(beaconCreator), beaconCreator);
         }
 
-        [Command("megaphonetoggle", Alias = "mp", GreedyArg = true)]
+        [Command("megaphonetoggle", Alias = "mp", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Toggle the megaphone.", null)]
         public void megaphonetog_cmd(Client player)
         {
             var playerPos = API.getEntityPosition(player);
@@ -575,7 +576,7 @@ namespace mtgvrp.group_manager.lspd
         }
 
 
-        [Command("locker")]
+        [Command("locker"), Help(HelpManager.CommandGroups.LSPD, "View the locker menu.", null)]
         public void locker_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -596,7 +597,7 @@ namespace mtgvrp.group_manager.lspd
         }
 
 
-        [Command("ticket")]
+        [Command("ticket"), Help(HelpManager.CommandGroups.LSPD, "Give a player a ticket with a fine.", new[] { "The target player ID.", "Fine amount." })]
         public void ticket_cmd(Client player, string id, int amount)
         {
             var target = PlayerManager.ParseClient(id);
@@ -631,7 +632,7 @@ namespace mtgvrp.group_manager.lspd
 
         }
 
-        [Command("unpaidtickets", GreedyArg = false)]
+        [Command("unpaidtickets", GreedyArg = false), Help(HelpManager.CommandGroups.General | HelpManager.CommandGroups.LSPD, "Check your own, or another player's unpaid tickets as a cop.", new[] { "The target player ID." })]
         public void unpaidtickets_cmd(Client player, string id = null)
         {
             var target = PlayerManager.ParseClient(id);
@@ -654,7 +655,7 @@ namespace mtgvrp.group_manager.lspd
             API.sendChatMessageToPlayer(player, receiverCharacter.CharacterName + " has ~b~ " + receiverCharacter.UnpaidTickets + "~w~ unpaid tickets.");
         }
 
-        [Command("acceptcopticket", GreedyArg = true)]
+        [Command("acceptcopticket", GreedyArg = true), Help(HelpManager.CommandGroups.General, "Accept the cop ticket.", null)]
         public void ticketaccept_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -676,7 +677,7 @@ namespace mtgvrp.group_manager.lspd
 
         }
 
-        [Command("paycoptickets", GreedyArg = true)]
+        [Command("paycoptickets", GreedyArg = true), Help(HelpManager.CommandGroups.General, "Pay all current cop tickets.", null)]
         public void paytickets_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -711,7 +712,7 @@ namespace mtgvrp.group_manager.lspd
             character.UnpaidTickets = 0;
         }
 
-        [Command("deploy", GreedyArg = true)]
+        [Command("deploy", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Deploy an LSPD object.", new[] { "The target object ID" })]
         public void deploy_cmd(Client player, string objectid)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -770,7 +771,7 @@ namespace mtgvrp.group_manager.lspd
         }
 
 
-        [Command("removelastobject", GreedyArg = true)]
+        [Command("removelastobject", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Remove the last placed object.", null)]
         public void removeobject_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -792,7 +793,7 @@ namespace mtgvrp.group_manager.lspd
             API.sendNotificationToPlayer(player, "Object removed. There are now ~r~" + Objects.Count + "~w~ placed.");
         }
 
-        [Command("removeallobjects", GreedyArg = true)]
+        [Command("removeallobjects", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Remove all placed LSPD objects.", null)]
         public void removeallobjects_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -828,7 +829,7 @@ namespace mtgvrp.group_manager.lspd
             API.sendNotificationToPlayer(player, "~r~" + len + " objects removed.");
         }
 
-        [Command("setlockerpos")]
+        [Command("setlockerpos"), Help(HelpManager.CommandGroups.LSPD, "Set the locker position.", null)]
         public void setlockerpos_cmd(Client player)
         {
             Character character = player.GetCharacter();
@@ -863,7 +864,7 @@ namespace mtgvrp.group_manager.lspd
             return;
         }
 
-        [Command("setfrontdeskpos")]
+        [Command("setfrontdeskpos"), Help(HelpManager.CommandGroups.LSPD, "Se the front desk position.", null)]
         public void setfrontdeskpos_cmd(Client player)
         {
             Character character = player.GetCharacter();
@@ -898,7 +899,7 @@ namespace mtgvrp.group_manager.lspd
             return;
         }
 
-        [Command("setarrestpos")]
+        [Command("setarrestpos"), Help(HelpManager.CommandGroups.LSPD, "Set the arrest location.", null)]
         public void setarrestpos_cmd(Client player)
 
         {
