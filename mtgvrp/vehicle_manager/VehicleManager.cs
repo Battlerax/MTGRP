@@ -456,7 +456,7 @@ namespace mtgvrp.vehicle_manager
 
         }
 
-        [Command("dropcar"), Help(HelpManager.CommandGroups.General, "Use this to sell a vehicle that is unowned by a player for some quick cash.", null)]
+        [Command("dropcar"), Help(HelpManager.CommandGroups.Vehicles, "Use this to sell a vehicle that is unowned by a player for some quick cash.", null)]
         public void dropcar_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -489,7 +489,7 @@ namespace mtgvrp.vehicle_manager
             player.sendChatMessage("A waypoint has been set. Take this vehicle to the waypoint to earn money.");
         }
 
-        [Command("lock"), Help(HelpManager.CommandGroups.General, "How to lock and unlock your vehicle.", null)]
+        [Command("lock"), Help(HelpManager.CommandGroups.Vehicles, "How to lock and unlock your vehicle.", null)]
         public void Lockvehicle_cmd(Client player)
         {
             var lastVehNetHandle = GetClosestVehicle(player, 10f);
