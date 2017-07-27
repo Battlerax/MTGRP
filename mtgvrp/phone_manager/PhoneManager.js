@@ -1,7 +1,7 @@
 ﻿var myBrowser = null;
 
 function showPhoneIfNotShown() {
-    if (myBrowser == null) {
+    if (myBrowser === null) {
         var res = API.getScreenResolutionMaintainRatio();
 	    var width = 400;
 	    var height = 580;

@@ -14,6 +14,7 @@ using mtgvrp.core;
 using mtgvrp.core.Help;
 using mtgvrp.inventory;
 using mtgvrp.property_system;
+using Color = mtgvrp.core.Color;
 
 namespace mtgvrp.job_manager.hunting
 {

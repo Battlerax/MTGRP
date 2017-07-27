@@ -1,5 +1,6 @@
-﻿using GTANetworkServer;
-using GTANetworkShared;
+﻿using GrandTheftMultiplayer.Server.API;
+using GrandTheftMultiplayer.Shared;
+using GrandTheftMultiplayer.Shared.Math;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace mtgvrp.mapping_manager

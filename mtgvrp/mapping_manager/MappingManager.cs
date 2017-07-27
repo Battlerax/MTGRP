@@ -1,7 +1,4 @@
-﻿using GTANetworkServer;
-using GTANetworkShared;
-using MongoDB.Driver;
-using mtgvrp.core;
+﻿using mtgvrp.core;
 using mtgvrp.core.Help;
 using mtgvrp.database_manager;
 using mtgvrp.property_system;
@@ -10,6 +7,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
+using GrandTheftMultiplayer.Server.API;
+using GrandTheftMultiplayer.Server.Elements;
+using GrandTheftMultiplayer.Server.Managers;
+using GrandTheftMultiplayer.Shared.Math;
+using MongoDB.Driver;
 
 namespace mtgvrp.mapping_manager
 {

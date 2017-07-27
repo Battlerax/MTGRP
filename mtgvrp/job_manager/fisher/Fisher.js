@@ -20,11 +20,11 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 });
 API.onUpdate.connect(function () {
     if (isFishing) {
-        if (nextCatchTick == 0 || (nextCatchTick < API.getGlobalTime())) {
+        if (nextCatchTick === 0 || (nextCatchTick < API.getGlobalTime())) {
             nextCatchTick = API.getGlobalTime() + 1000;
             catchTime++;
         }
-        if (nextStrengthTick == 0 || (nextStrengthTick < API.getGlobalTime())) {
+        if (nextStrengthTick === 0 || (nextStrengthTick < API.getGlobalTime())) {
             nextStrengthTick = API.getGlobalTime() + 250;
             if (currentCatchStrength - 1 > 0) {
                 currentCatchStrength--;
@@ -61,7 +61,7 @@ API.onUpdate.connect(function () {
     }
 });
 API.onKeyDown.connect(function (sender, e) {
-    if (e.KeyCode == Keys.Space && isFishing) {
+    if (e.KeyCode === Keys.Space && isFishing) {
         currentCatchStrength += 5;
         if (currentCatchStrength >= 125) {
             API.triggerServerEvent("snapped_rod");

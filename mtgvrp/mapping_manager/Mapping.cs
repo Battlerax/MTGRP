@@ -1,5 +1,4 @@
-﻿using GTANetworkServer;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using mtgvrp.core;
 using mtgvrp.database_manager;
