@@ -8,7 +8,6 @@ using mtgvrp.core;
 using mtgvrp.inventory;
 using mtgvrp.phone_manager;
 using mtgvrp.player_manager;
-using mtgvrp.property_system;
 using mtgvrp.core.Help;
 
 namespace mtgvrp.property_system.businesses

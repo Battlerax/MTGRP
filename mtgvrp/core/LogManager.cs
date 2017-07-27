@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Timers;
 using GrandTheftMultiplayer.Server.Elements;
 
@@ -70,6 +66,7 @@ namespace mtgvrp.core
             Storage,        //Logged
             Unbans,         //Logged
             Warns,          //Logged
+            MappingRequests,
             Ads,            //Logged
         }
 

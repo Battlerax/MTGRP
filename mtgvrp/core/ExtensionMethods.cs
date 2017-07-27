@@ -7,7 +7,6 @@ using GrandTheftMultiplayer.Server.API;
 using GrandTheftMultiplayer.Server.Elements;
 using GrandTheftMultiplayer.Shared;
 using mtgvrp.player_manager;
-using Object = System.Object;
 
 namespace mtgvrp.core
 {

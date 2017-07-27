@@ -7,7 +7,6 @@ using GrandTheftMultiplayer.Server.Managers;
 using mtgvrp.core;
 using mtgvrp.core.Help;
 using mtgvrp.database_manager;
-using mtgvrp.inventory;
 using mtgvrp.phone_manager;
 using mtgvrp.player_manager;
 using mtgvrp.vehicle_manager;

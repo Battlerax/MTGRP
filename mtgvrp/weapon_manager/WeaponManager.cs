@@ -10,7 +10,6 @@ using mtgvrp.core;
 using mtgvrp.group_manager;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;
-using mtgvrp.weapon_manager;
 using mtgvrp.core.Help;
 
 
