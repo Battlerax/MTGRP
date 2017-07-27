@@ -1,3 +1,4 @@
+"use strict";
 var isFishing = false;
 var res = null;
 var perfectCatchStrength = 0;
@@ -60,7 +61,7 @@ API.onUpdate.connect(function () {
     }
 });
 API.onKeyDown.connect(function (sender, e) {
-    if (e.KeyCode == Keys.Up && isFishing) {
+    if (e.KeyCode == Keys.Space && isFishing) {
         currentCatchStrength += 5;
         if (currentCatchStrength >= 125) {
             API.triggerServerEvent("snapped_rod");

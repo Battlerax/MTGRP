@@ -4,6 +4,7 @@ using GrandTheftMultiplayer.Server.Elements;
 using GrandTheftMultiplayer.Server.Managers;
 using GrandTheftMultiplayer.Shared.Math;
 using mtgvrp.core.Discord;
+using mtgvrp.core.Help;
 using mtgvrp.group_manager.lspd.MDC;
 using mtgvrp.inventory;
 using mtgvrp.phone_manager;
@@ -158,7 +159,7 @@ namespace mtgvrp.core
             }
         }
 
-        [Command("newbiechat", Alias = "n", GreedyArg = true)]
+        [Command("newbiechat", Alias = "n", GreedyArg = true), Help.Help(HelpManager.CommandGroups.Chat, "Talk in the newbie chat to get help.", "Your question")]
         public void newbie_cmd(Client player, string message)
         {
             Account account = API.getEntityData(player.handle, "Account");
@@ -208,7 +209,7 @@ namespace mtgvrp.core
 
 
 
-        [Command("ooc", Alias = "o", GreedyArg = true)]
+        [Command("ooc", Alias = "o", GreedyArg = true), Help.Help(HelpManager.CommandGroups.Chat, "Talk on the global OOC channel.", "The message")]
         public void ooc_cmd(Client player, string message)
         {
             Account account = API.getEntityData(player.handle, "Account");
@@ -235,7 +236,7 @@ namespace mtgvrp.core
             }
         }
 
-        [Command("vip", Alias ="v", GreedyArg =true)]
+        [Command("vip", Alias ="v", GreedyArg =true), Help.Help(HelpManager.CommandGroups.Chat, "Talk in the VIP channel.", "The message")]
         public void vip_chat(Client player, string message)
         {
             Account account = API.getEntityData(player.handle, "Account");
@@ -310,14 +311,14 @@ namespace mtgvrp.core
 
         
 
-        [Command("me", GreedyArg = true)]
+        [Command("me", GreedyArg = true), Help.Help(HelpManager.CommandGroups.Roleplay, "Descrive an action you're doing.", "The action")]
         public void me_cmd(Client player, string action)
         {
             Character playerchar = API.shared.getEntityData(player.handle, "Character");
             RoleplayMessage(playerchar, action, RoleplayMe, 10, 0);
         }
 
-        [Command("ame", GreedyArg = true)]
+        [Command("ame", GreedyArg = true), Help.Help(HelpManager.CommandGroups.Roleplay, "Describe an action you're doing, shows on top of your head.", "The action")]
         public void ame_cmd(Client player, string action)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -325,14 +326,14 @@ namespace mtgvrp.core
         }
 
        
-        [Command("do", GreedyArg = true)]
+        [Command("do", GreedyArg = true), Help.Help(HelpManager.CommandGroups.Roleplay, "Describe an event that's occuring near you.", "The action")]
         public void do_cmd(Client player, string action)
         {
             Character playerchar = API.shared.getEntityData(player.handle, "Character");
             RoleplayMessage(playerchar, action, RoleplayDo, 10, 0);
         }
 
-        [Command("shout", Alias = "s", GreedyArg = true)]
+        [Command("shout", Alias = "s", GreedyArg = true), Help.Help(HelpManager.CommandGroups.Chat, "Sends a mesage to nearby players but with a high range. (Shouts)", "The message")]
         public void shout_cmd(Client player, string text)
         {
             if (API.hasEntityData(player, "IS_MOUTH_RAGGED"))
@@ -343,7 +344,7 @@ namespace mtgvrp.core
             NearbyMessage(player, 25, PlayerManager.GetName(player) + " shouts: " + text);
         }
 
-        [Command("low", GreedyArg = true)]
+        [Command("low", GreedyArg = true), Help.Help(HelpManager.CommandGroups.Chat, "Sends a message to nearby players with a low range.", "The message")]
         public void low_cmd(Client player, string text)
         {
             if (API.hasEntityData(player, "IS_MOUTH_RAGGED"))
@@ -354,7 +355,7 @@ namespace mtgvrp.core
             NearbyMessage(player, 5, PlayerManager.GetName(player) + " whispers: " + text, Color.Grey);
         }
 
-        [Command("b", GreedyArg = true)]
+        [Command("b", GreedyArg = true), Help.Help(HelpManager.CommandGroups.Chat, "Sends a local OOC chat.", "The message")]
         public void b_cmd(Client player, string text)
         {
             Account account = API.getEntityData(player.handle, "Account");
@@ -371,7 +372,7 @@ namespace mtgvrp.core
             
         }
         
-        [Command("admin", Alias = "a", GreedyArg = true)]
+        [Command("admin", Alias = "a", GreedyArg = true), Help.Help(HelpManager.CommandGroups.AdminLevel1, "Talk in admin channel.", "The message")]
         public void admin_cmd(Client player,  string text)
         {
             Account account = API.getEntityData(player.handle, "Account");
@@ -391,7 +392,7 @@ namespace mtgvrp.core
             }
         }
 
-        [Command("rp", GreedyArg = true)]
+        [Command("rp", GreedyArg = true), Help.Help(HelpManager.CommandGroups.Roleplay, "Send an RP message to someone far away not in range of /me or /do", "Id of player", "The RP")]
         public void rp_cmd(Client player, string id, string text)
         {
             var receiver = PlayerManager.ParseClient(id);
@@ -406,7 +407,7 @@ namespace mtgvrp.core
             API.sendChatMessageToPlayer(receiver, Color.LongDistanceRoleplay, "RP from " + PlayerManager.GetName(player) + "(" + PlayerManager.GetPlayerId(player.GetCharacter()) + "): " + text);
         }
 
-        [Command("whisper", Alias = "w", GreedyArg = true)]
+        [Command("whisper", Alias = "w", GreedyArg = true), Help.Help(HelpManager.CommandGroups.Chat, "Simply whisper someone.", "Id of player", "The message to whisper")]
         public void w_cmd(Client player, string id, string text)
         {
             if (API.hasEntityData(player, "IS_MOUTH_RAGGED"))
@@ -435,7 +436,7 @@ namespace mtgvrp.core
         }
 
 
-        [Command("pm", GreedyArg = true)]
+        [Command("pm", GreedyArg = true), Help.Help(HelpManager.CommandGroups.Chat, "PM/DM a player.", "Id of player", "PM text")]
         public static void pm_cmd(Client player, string id, string text)
         {
             var receiver = PlayerManager.ParseClient(id);

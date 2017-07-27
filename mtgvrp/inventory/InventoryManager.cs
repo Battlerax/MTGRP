@@ -12,6 +12,7 @@ using GrandTheftMultiplayer.Shared.Math;
 
 
 using mtgvrp.core;
+using mtgvrp.core.Help;
 using mtgvrp.core.Items;
 using mtgvrp.dmv;
 using mtgvrp.group_manager.lsgov;
@@ -589,7 +590,7 @@ namespace mtgvrp.inventory
 
         #endregion
 
-        [Command("give")]
+        [Command("give"), Help(HelpManager.CommandGroups.Inventory, "Give an item to a player near you.", "id or name of the target player.", "Short name of the item.", "The amount you'd like to give.")]
         public void give_cmd(Client player, string id, string item, int amount)
         {
             var targetClient = PlayerManager.ParseClient(id);
@@ -658,7 +659,7 @@ namespace mtgvrp.inventory
             }
         }
 
-        [Command("drop")]
+        [Command("drop"), Help(HelpManager.CommandGroups.Inventory, "Drop an item to the void where no one will ever find..", "Name of the item", "Amount you'd like to drop.")]
         public void drop_cmd(Client player, string item, int amount)
         {
             Character character = player.GetCharacter();
@@ -706,7 +707,7 @@ namespace mtgvrp.inventory
 
         private Dictionary<NetHandle, KeyValuePair<string[], IInventoryItem>> _stashedItems = new Dictionary<NetHandle, KeyValuePair<string[], IInventoryItem>>();
 
-        [Command("stash")]
+        [Command("stash"), Help(HelpManager.CommandGroups.Inventory, "Stashes an item on the ground for someone else to /pickupstash", "Name of the item", "Amount to stash.")]
         public void stash_cmd(Client player, string item, int amount)
         {
             Character character = player.GetCharacter();
@@ -745,7 +746,7 @@ namespace mtgvrp.inventory
             LogManager.Log(LogManager.LogTypes.Stats, $"[Stash] {character.CharacterName}[{player.GetAccount().AccountName}] has stashed '{sendersItem[0].LongName}', Amount: '{amount}' at {player.position}.");
         }
 
-        [Command("pickupstash")]
+        [Command("pickupstash"), Help(HelpManager.CommandGroups.Inventory, "Picks up a stash from the ground near you.")]
         public void pickupstash_cmd(Client player)
         {
             //Check if near any stash.
@@ -799,7 +800,7 @@ namespace mtgvrp.inventory
 
         #endregion
 
-        [Command("inventory", Alias = "inv")]
+        [Command("inventory", Alias = "inv"), Help(HelpManager.CommandGroups.Inventory, "See your inventory items.")]
         public void showinventory_cmd(Client player)
         {
             //TODO: For now can be just text-based even though I'd recommend it to be a CEF.

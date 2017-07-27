@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using GrandTheftMultiplayer.Server.API;
 using GrandTheftMultiplayer.Server.Constant;
 using GrandTheftMultiplayer.Server.Elements;
@@ -8,6 +9,7 @@ using GrandTheftMultiplayer.Server.Managers;
 using GrandTheftMultiplayer.Shared;
 using GrandTheftMultiplayer.Shared.Math;
 using mtgvrp.core;
+using mtgvrp.core.Help;
 using mtgvrp.database_manager;
 using mtgvrp.player_manager;
 using mtgvrp.vehicle_manager;
@@ -94,7 +96,7 @@ namespace mtgvrp.job_manager
             }
         }
 
-        [Command("joinjob")]
+        [Command("joinjob"), Help(HelpManager.CommandGroups.JobsGeneral, "Joins a new job, must be near joinjob location.")]
         public void joinjob_cmd(Client player)
         {
             Character character = player.GetCharacter();
@@ -112,13 +114,19 @@ namespace mtgvrp.job_manager
                 return;
             }
 
+            if (character.JobOne != Job.None)
+            {
+                API.sendChatMessageToPlayer(player, "You already have a job. /quitjob first.");
+                return;
+            }
+
             character.JobOneId = job.Id;
             character.JobOne = job;
             character.Save();
             API.sendChatMessageToPlayer(player, Color.White, "You have become a " + job.Name);
         }
 
-        [Command("quitjob")]
+        [Command("quitjob"), Help(HelpManager.CommandGroups.JobsGeneral, "Exits your current job.")]
         public void quitjob_cmd(Client player)
         {
             Character character = player.GetCharacter();
@@ -135,7 +143,7 @@ namespace mtgvrp.job_manager
             character.Save();
         }
 
-        [Command("jobtypes")]
+        [Command("jobtypes"), Help(HelpManager.CommandGroups.AdminLevel5, "View all available jobs.")]
         public void jobtypes_cmd(Client player)
         {
             Account account = API.getEntityData(player.handle, "Account");
@@ -150,7 +158,7 @@ namespace mtgvrp.job_manager
             API.sendChatMessageToPlayer(player, Color.White, "-----------------------------------------");
         }
 
-        [Command("createjob", GreedyArg = true)]
+        [Command("createjob", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel5, "Creates a job in your position.", "The job type", "Name of the job")]
         public void createjob_cmd(Client player, JobTypes type, string name)
         {
             Account account = API.getEntityData(player.handle, "Account");
@@ -180,7 +188,7 @@ namespace mtgvrp.job_manager
             API.sendChatMessageToPlayer(player, Color.Grey, "You have created job " + job.Id + " ( " + job.Name + ", Type: " + job.Type + " ). Use /editjob to edit it.");
         }
 
-        [Command("editjob", GreedyArg = true)]
+        [Command("editjob", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel5, "Edit an existing job.", "The id of the job", "Edit option", "Value")]
         public void editjob_cmd(Client player, int jobId, string option, string value = "None")
         {
             Account account = player.GetAccount();
@@ -334,7 +342,7 @@ namespace mtgvrp.job_manager
             }
         }
 
-        [Command("createjobzone")]
+        [Command("createjobzone"), Help(HelpManager.CommandGroups.AdminLevel5, "Create a jobzone, for example where Fishermen do /fish", "Job Id", "Option to do")]
         public void createjobzone_cmd(Client player, int jobId, string option)
         {
             Account account = player.GetAccount();
@@ -369,7 +377,7 @@ namespace mtgvrp.job_manager
             }
         }
 
-        [Command("deletejobzone")]
+        [Command("deletejobzone"), Help(HelpManager.CommandGroups.AdminLevel5, "Deletes a jobzone.", "The jobid", "The zoneid")]
         public void deletejobzone_cmd(Client player, int jobId, int zoneId)
         {
             Account account = player.GetAccount();
@@ -394,7 +402,7 @@ namespace mtgvrp.job_manager
             API.sendChatMessageToPlayer(player, Color.White, "You have successfully deleted Job " + job.Id + "'s Zone " + zoneId);
         }
 
-        [Command("viewjobzone")]
+        [Command("viewjobzone"), Help(HelpManager.CommandGroups.AdminLevel5, "View a jobzone", "Job Id", "Zone ID")]
         public void viewjobzone_cmd(Client player, int jobId, int zoneId)
         {
             Account account = player.GetAccount();

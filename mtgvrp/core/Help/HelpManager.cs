@@ -15,6 +15,7 @@ namespace mtgvrp.core.Help
         public enum CommandGroups
         {
             General,
+            Chat,
             Roleplay,
             Animation,
             Inventory,
@@ -100,7 +101,7 @@ namespace mtgvrp.core.Help
             API.consoleOutput($"*** Help Done");
         }
 
-        [Command("help")]
+        [Command("help"), Help(CommandGroups.General, "Shows the list of commands available.")]
         public void Help_cmd(Client player)
         {
             if (!player.GetAccount().IsLoggedIn)

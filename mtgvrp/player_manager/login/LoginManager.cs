@@ -4,6 +4,7 @@ using GrandTheftMultiplayer.Server.API;
 using GrandTheftMultiplayer.Server.Elements;
 using GrandTheftMultiplayer.Server.Managers;
 using mtgvrp.core;
+using mtgvrp.core.Help;
 using mtgvrp.database_manager;
 using MongoDB.Driver;
 
@@ -236,7 +237,7 @@ namespace mtgvrp.player_manager.login
         }
 
        
-        [Command("login")]
+        [Command("login"), Help(HelpManager.CommandGroups.General, "Used to login.", "Your password")]
         public void login_cmd(Client player, string inputPass)
         {
             if (inputPass.Length < 8)
@@ -328,7 +329,7 @@ namespace mtgvrp.player_manager.login
         }
 
 
-        [Command("register", GreedyArg =true)]
+        [Command("register", GreedyArg =true), Help(HelpManager.CommandGroups.General, "Used to create an account", "Your desired password")]
         public void register_cmd(Client player, string inputPass)
         {
             if(inputPass.Length < 8)
