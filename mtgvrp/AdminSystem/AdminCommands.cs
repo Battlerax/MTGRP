@@ -1671,7 +1671,7 @@ namespace mtgvrp.AdminSystem
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has increased {GetLogName(receiver)} VIP time by {days} days.");
         }
 
-        [Command("closestveh")]
+        [Command("closestveh"), Help(HelpManager.CommandGroups.AdminLevel3, "Sets you into the closest vehicle.")]
         public void closestveh_cmd(Client player)
         {
             Account account = API.shared.getEntityData(player.handle, "Account");
