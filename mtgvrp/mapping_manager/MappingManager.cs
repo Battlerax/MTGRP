@@ -289,7 +289,7 @@ namespace mtgvrp.mapping_manager
             var regex = new Regex(objectPattern);
             foreach (Match match in regex.Matches(input))
             {
-                objectList.Add(new MappingObject(MappingObject.ObjectType.CreateObject, Convert.ToInt32(match.Groups["model"].ToString()), new Vector3((float)Convert.ToDouble(match.Groups["posX"].ToString()), (float)Convert.ToDouble(match.Groups["posY"].ToString()), (float)Convert.ToDouble(match.Groups["posZ"].ToString())), new Vector3((float)Convert.ToDouble(match.Groups["rotX"].ToString()), (float)Convert.ToDouble(match.Groups["rotY"].ToString()), (float)Convert.ToDouble(match.Groups["rotZ"].ToString()))));
+                objectList.Add(new MappingObject(MappingObject.ObjectType.DeleteObject, Convert.ToInt32(match.Groups["model"].ToString()), new Vector3((float)Convert.ToDouble(match.Groups["posX"].ToString()), (float)Convert.ToDouble(match.Groups["posY"].ToString()), (float)Convert.ToDouble(match.Groups["posZ"].ToString())), new Vector3((float)Convert.ToDouble(match.Groups["rotX"].ToString()), (float)Convert.ToDouble(match.Groups["rotY"].ToString()), (float)Convert.ToDouble(match.Groups["rotZ"].ToString()))));
             }
 
             return objectList;

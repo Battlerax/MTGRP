@@ -1,4 +1,6 @@
-﻿using MongoDB.Driver;
+﻿using GTANetworkServer;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Driver;
 using mtgvrp.core;
 using mtgvrp.database_manager;
 using System;
@@ -13,6 +15,7 @@ namespace mtgvrp.mapping_manager
 
         public int PropertyLinkId;
         public bool IsActive;
+        [BsonIgnore]
         public bool IsSpawned;
 
         public string CreatedBy;
@@ -34,7 +37,7 @@ namespace mtgvrp.mapping_manager
             Dimension = dimension;
 
             IsActive = true;
-            IsSpawned = true;
+            IsSpawned = false;
             CreatedDate = DateTime.Now;
         }
 
@@ -58,34 +61,28 @@ namespace mtgvrp.mapping_manager
 
         public void Load()
         {
-            if(IsSpawned == false)
+            foreach (var o in Objects)
             {
-                foreach (var o in Objects)
-                {
-                    o.Spawn(Dimension);
-                }
-                foreach(var o in DeleteObjects)
-                {
-                    ObjectRemoval.RegisterObject(o.Pos, o.Model);
-                }
-                IsSpawned = true;
+                o.Spawn(Dimension);
             }
+            foreach(var o in DeleteObjects)
+            {
+                ObjectRemoval.RegisterObject(o.Pos, o.Model);
+            }
+            IsSpawned = true;
         }
 
         public void Unload()
         {
-            if(IsSpawned == true)
+            foreach (var o in Objects)
             {
-                foreach (var o in Objects)
-                {
-                    o.Despawn();
-                }
-                foreach (var o in DeleteObjects)
-                {
-                    ObjectRemoval.UnregisterObject(o.Pos, o.Model);
-                }
-                IsSpawned = false;
+                o.Despawn();
             }
+            foreach (var o in DeleteObjects)
+            {
+                ObjectRemoval.UnregisterObject(o.Pos, o.Model);
+            }
+            IsSpawned = false;
         }
     }
 }

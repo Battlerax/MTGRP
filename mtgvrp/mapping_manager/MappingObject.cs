@@ -36,14 +36,6 @@ namespace mtgvrp.mapping_manager
             }
         }
 
-        public void Spawn(Client player)
-        {
-            if(Type == ObjectType.DeleteObject)
-            {
-                API.shared.deleteObject(player, Pos, Model);
-            }
-        }
-
         public void Despawn()
         {
             API.shared.deleteEntity(handle);
