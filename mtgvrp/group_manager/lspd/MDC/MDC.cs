@@ -4,7 +4,6 @@ using System.Linq;
 using GTANetworkServer;
 using mtgvrp.core;
 using mtgvrp.database_manager;
-using mtgvrp.inventory;
 using mtgvrp.phone_manager;
 using mtgvrp.player_manager;
 using mtgvrp.vehicle_manager;

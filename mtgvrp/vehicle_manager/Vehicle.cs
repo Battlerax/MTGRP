@@ -20,7 +20,6 @@ using mtgvrp.inventory;
 using mtgvrp.job_manager;
 using mtgvrp.player_manager;
 using mtgvrp.property_system;
-using mtgvrp.core;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 

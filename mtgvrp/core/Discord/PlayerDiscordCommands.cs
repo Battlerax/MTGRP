@@ -1,17 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using DSharpPlus;
-using DSharpPlus.CommandsNext;
-using DSharpPlus.CommandsNext.Attributes;
-using mtgvrp.database_manager;
-using mtgvrp.player_manager;
-using MongoDB.Driver;
-
-namespace mtgvrp.core.Discord
+﻿namespace mtgvrp.core.Discord
 {
     class PlayerDiscordCommands
     {

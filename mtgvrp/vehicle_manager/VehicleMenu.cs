@@ -1,5 +1,4 @@
-﻿using System;
-using GTANetworkServer;
+﻿using GTANetworkServer;
 using GTANetworkShared;
 using mtgvrp.core;
 using mtgvrp.player_manager;

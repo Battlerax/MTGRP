@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net.Http.Headers;
 using System.Reflection;
 using GTANetworkServer;
 using GTANetworkShared;
@@ -18,7 +16,6 @@ using mtgvrp.job_manager.scuba;
 using mtgvrp.phone_manager;
 using mtgvrp.player_manager;
 using mtgvrp.property_system.businesses;
-using mtgvrp.weapon_manager;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 
@@ -754,21 +751,6 @@ namespace mtgvrp.inventory
 
             //Ending
             API.sendChatMessageToPlayer(player, "-------------------------------------------------------------");
-        }
-
-        //TODO: TEST COMMAND.
-        [Command("givemeitem")]
-        public void GiveMeItem(Client player, string item, int amount)
-        {
-            Character character = player.GetCharacter();
-            Type itemType = ParseInventoryItem(item);
-            if (itemType != null)
-            {
-                var actualitem = ItemTypeToNewObject(itemType);
-                API.sendChatMessageToPlayer(player, GiveInventoryItem(character, actualitem, amount).ToString());
-            }
-            else
-                API.sendChatMessageToPlayer(player, "Invalid item name.");
         }
     }
 }

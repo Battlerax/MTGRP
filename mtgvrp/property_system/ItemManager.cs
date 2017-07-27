@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using GTANetworkShared;
 
 namespace mtgvrp.property_system
 {

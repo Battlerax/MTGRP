@@ -1,11 +1,5 @@
 ﻿using System;
-using System.CodeDom;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 using GTANetworkServer;
 using GTANetworkShared;
 using mtgvrp.core;
@@ -15,9 +9,7 @@ using mtgvrp.inventory;
 using mtgvrp.player_manager;
 using mtgvrp.property_system;
 using mtgvrp.vehicle_manager;
-using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
-using Vehicle = mtgvrp.vehicle_manager.Vehicle;
 
 namespace mtgvrp.dmv
 {
@@ -209,8 +201,8 @@ namespace mtgvrp.dmv
                 VehicleManager.spawn_vehicle(car[2]);
             }
 
-            ObjectRemovel.RegisterObject(new Vector3(266.102691650391, -348.641571044922, 43.7301368713379), 242636620);
-            ObjectRemovel.RegisterObject(new Vector3(285.719482421875, -356.067474365234, 44.1401863098145), 406416082);
+            ObjectRemoval.RegisterObject(new Vector3(266.102691650391, -348.641571044922, 43.7301368713379), 242636620);
+            ObjectRemoval.RegisterObject(new Vector3(285.719482421875, -356.067474365234, 44.1401863098145), 406416082);
 
             API.consoleOutput("Spawned DMV Vehicles.");
         }

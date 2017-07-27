@@ -1,8 +1,6 @@
 ﻿using GTANetworkServer;
 using GTANetworkShared;
-using mtgvrp.inventory;
 using mtgvrp.player_manager;
-using Object = System.Object;
 
 namespace mtgvrp.core
 {

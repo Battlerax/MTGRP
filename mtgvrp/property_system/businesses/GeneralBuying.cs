@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting;
 using GTANetworkServer;
 using GTANetworkShared;
 using mtgvrp.core;
@@ -12,7 +11,6 @@ using mtgvrp.weapon_manager;
 using mtgvrp.player_manager;
 using mtgvrp.group_manager;
 using mtgvrp.group_manager.lsgov;
-using mtgvrp.job_manager;
 using mtgvrp.job_manager.hunting;
 using mtgvrp.job_manager.scuba;
 using mtgvrp.core.Help;
