@@ -100,12 +100,12 @@ namespace mtgvrp.AdminSystem
         }
 
         [Command("makedev"),
-         Help(HelpManager.CommandGroups.AdminLevel7, "Used to set a player as a developer.",
+         Help(HelpManager.CommandGroups.AdminLevel6, "Used to set a player as a developer.",
              new[] {"The id of target player.", "Dev level, 0 = none."})]
         public void SetDevLevel(Client player, string target, int level)
         {
             var acc = player.GetAccount();
-            if (acc.AdminLevel >= 7)
+            if (acc.AdminLevel >= 6)
             {
                 var receiver = PlayerManager.ParseClient(target);
                 if (receiver == null)
@@ -482,6 +482,9 @@ namespace mtgvrp.AdminSystem
                 return;
             }
             account.IsSpectating = true;
+            API.shared.setEntityTransparency(player, 0);
+            player.GetCharacter().LastPos = player.position;
+            API.shared.setEntityPosition(player, target.position);
             API.shared.setPlayerToSpectatePlayer(player, target);
             API.shared.setPlayerNametagVisible(player, false);
             API.shared.setEntityTransparency(player, 0);
@@ -504,7 +507,9 @@ namespace mtgvrp.AdminSystem
                 return;
             }
             account.IsSpectating = false;
+            API.shared.setEntityTransparency(player, 255);
             API.unspectatePlayer(player);
+            API.shared.setEntityPosition(player, player.GetCharacter().LastPos);
             API.shared.setPlayerNametagVisible(player, true);
             API.shared.setEntityTransparency(player, 255);
             API.sendChatMessageToPlayer(player, "You are no longer spectating anyone.");
@@ -1587,6 +1592,7 @@ namespace mtgvrp.AdminSystem
             }
 
             receiverAccount.CharacterSlots = slots;
+            receiverAccount.Save();
             player.sendChatMessage($"You have set {receiver.GetCharacter().CharacterName}'s character slots to {slots}.");
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has set {GetLogName(receiver)} character slots to {slots}");
@@ -1610,10 +1616,10 @@ namespace mtgvrp.AdminSystem
                 return;
             }
 
-            if (account.AdminLevel > 0)
+            if (receiverAccount.AdminLevel > 0)
             {
-                account.VipLevel = 3;
-                account.Save();
+                receiverAccount.VipLevel = 3;
+                receiverAccount.Save();
                 receiver.sendChatMessage("Your ~y~VIP~y~ level was set to " + 3 + " by " + account.AdminName + ".");
                 return;
 
@@ -1625,9 +1631,9 @@ namespace mtgvrp.AdminSystem
                 return;
             }
 
-            account.VipLevel = level;
-            account.VipExpirationDate = DateTime.Now.AddMinutes(days);
-            account.Save();
+            receiverAccount.VipLevel = level;
+            receiverAccount.VipExpirationDate = DateTime.Now.AddMinutes(days);
+            receiverAccount.Save();
 
             receiver.sendChatMessage("Your ~y~VIP~y~ level was set to " + level + " by " + account.AdminName + ".");
             Log(LogTypes.AdminActions,

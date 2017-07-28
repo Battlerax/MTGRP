@@ -495,15 +495,21 @@ namespace mtgvrp.player_manager
 
         public long GetTimePlayed()
         {
-            TimePlayed += new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds() - TimeLoggedIn;
-            StartTrackingTimePlayed();
+            if(TimeLoggedIn > 0)
+            {
+                TimePlayed += new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds() - TimeLoggedIn;
+                StartTrackingTimePlayed();
+            }
             return TimePlayed;
         }
 
         public int GetPlayingHours()
         {
-            TimePlayed += new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds() - TimeLoggedIn;
-            StartTrackingTimePlayed();
+            if(TimeLoggedIn > 0)
+            {
+                TimePlayed += new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds() - TimeLoggedIn;
+                StartTrackingTimePlayed();
+            }
             return (int) TimePlayed / 3600;
         }
 
