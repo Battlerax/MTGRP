@@ -415,7 +415,7 @@ namespace mtgvrp.player_manager
                     Character cha = API.getEntityData(player.handle, "Character");
                     API.triggerClientEvent(player, "initialize_components", (cha.Model.Gender == Character.GenderMale ? Clothing.MaleComponents : Clothing.FemaleComponents));
                     break;
-
+/*
                 case "bus_driving_bridge":
                     var vehicle = VehicleManager.CreateVehicle(VehicleHash.Bus, new Vector3(-276.1117, -2411.626, 59.68943), new Vector3(0, 0, 53.19402), "Unregistered", player.GetCharacter().Id, vehicle_manager.Vehicle.VehTypeTemp, 0, 0, API.getEntityDimension(player));
                     vehicle.Insert();
@@ -448,9 +448,9 @@ namespace mtgvrp.player_manager
 
                     API.sendNativeToAllPlayers(Hash.TASK_LEAVE_VEHICLE, player.handle, vehicle.NetHandle, 0);
                     break;
-
+*/
                 case "finish_intro":
-                    foreach (var veh in SpawnedVehicles) { veh.Despawn(); veh.Delete(); }
+                    //foreach (var veh in SpawnedVehicles) { veh.Despawn(); veh.Delete(); }
                     SpawnCharacter(player);
                     break;
 
