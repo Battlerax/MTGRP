@@ -512,7 +512,6 @@ namespace mtgvrp.group_manager.lspd
             GroupManager.SendGroupMessage(player, character.CharacterName + " has deployed a backup beacon. Use /acceptbeacon to accept.");
 
             character.BeaconSet = true;
-            character.BeaconCreator = player; 
             character.BeaconResetTimer = new Timer { Interval = 60000 };
             character.BeaconResetTimer.Elapsed += delegate { ResetBeacon(player); };
             character.BeaconResetTimer.Start();
@@ -534,19 +533,20 @@ namespace mtgvrp.group_manager.lspd
             foreach (var c in PlayerManager.Players)
             {
                 int i = 0;
-                if (c.BeaconSet == false)
+                if (c.BeaconSet == true)
                 {
-                    i++;
-                    if (i == PlayerManager.Players.Count()) { API.sendChatMessageToPlayer(player, "There are no active beacons."); }
+                    beaconCreator = c.Client;
+                    API.sendNotificationToPlayer(player, "~b~Beacon accepted~w~. A waypoint has been added to your map.");
+                    API.triggerClientEvent(player, "update_beacon", API.getEntityPosition(beaconCreator));
                     return;
                 }
-
-                beaconCreator = c.Client;
-
+                i++;
+                if (i == PlayerManager.Players.Count())
+                {
+                    API.sendChatMessageToPlayer(player, "There are no active beacons.");
+                    return;
+                }
             }
-
-            API.sendNotificationToPlayer(player, "~b~Beacon accepted~w~. A waypoint has been added to your map.");
-            API.triggerClientEvent(player, "update_beacon", API.getEntityPosition(beaconCreator), beaconCreator);
         }
 
         [Command("megaphonetoggle", Alias = "mp", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Toggle the megaphone.", null)]
