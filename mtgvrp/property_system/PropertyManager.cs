@@ -596,6 +596,8 @@ namespace mtgvrp.property_system
                     return "/buy";
                 case PropertyTypes.DMV:
                     return "/starttest /registervehicle";
+                case PropertyTypes.VIPLounge:
+                    return "/buyweapontint";
             }
             return "";
         }
