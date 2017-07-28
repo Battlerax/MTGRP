@@ -204,6 +204,7 @@ namespace mtgvrp.job_manager.fisher
             InventoryManager.DeleteInventoryItem(character, typeof(Fish));
             InventoryManager.GiveInventoryItem(character, new Money(), (int)Math.Round(totalValue));
             API.sendChatMessageToPlayer(player, "You have sold all of your fish for $" + totalValue);
+            LogManager.Log(LogManager.LogTypes.Stats, $"[Job] {character.CharacterName}[{player.GetAccount().AccountName}] has earned ${totalValue} from selling their fish.");
         }
 
         public void StartCatchFish(Character c, bool boatFishing)

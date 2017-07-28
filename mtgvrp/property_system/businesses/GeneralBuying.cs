@@ -238,6 +238,11 @@ namespace mtgvrp.property_system.businesses
                             WeaponManager.SetWeaponTint(sender, API.getPlayerCurrentWeapon(sender), WeaponTint.Pink);
                             break;
                         case "gold_tint":
+                            if (sender.GetAccount().VipLevel < 3)
+                            {
+                                sender.sendChatMessage("You must be a gold VIP to buy a gold tint.");
+                                return;
+                            }
                             WeaponManager.SetWeaponTint(sender, API.getPlayerCurrentWeapon(sender), WeaponTint.Gold);
                             break;
                         case "green_tint":

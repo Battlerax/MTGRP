@@ -228,14 +228,13 @@ namespace mtgvrp.job_manager.garbageman
                 return;
             }
 
+            LogManager.Log(LogManager.LogTypes.Stats, $"[Job] {character.CharacterName}[{player.GetAccount().AccountName}] has earned ${closestVeh.GarbageBags * 100} from a garbage run.");
             InventoryManager.GiveInventoryItem(character, new Money(), closestVeh.GarbageBags * 100);
             ChatManager.RoleplayMessage(character, "uses the garbage truck's control panel to unload the trash.", ChatManager.RoleplayMe);
             player.sendChatMessage($"You were paid ${closestVeh.GarbageBags * 100} for unloading {closestVeh.GarbageBags} trash bags.");
             closestVeh.GarbageBags = 0;
             closestVeh.UpdateMarkers();
-            API.shared.sendPictureNotificationToPlayer(player, $"Thanks for keeping Los Santos clean!", "CHAR_PROPERTY_CAR_SCRAP_YARD", 0, 1, "Los Santos Sanitations", "Garbage Notification");
-
-
+            API.shared.sendPictureNotificationToPlayer(player, $"Thanks for keeping Los Santos clean!", "CHAR_PROPERTY_CAR_SCRAP_YARD", 0, 1, "Los Santos Sanitations", "Garbage Notification"); 
         }
 
         [Command("endtrash"), Help(HelpManager.CommandGroups.GarbageJob, "Ends your current trash job.")]

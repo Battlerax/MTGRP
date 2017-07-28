@@ -78,11 +78,11 @@ namespace mtgvrp.property_system
                     break;
 
                 case PropertyManager.PropertyTypes.VIPLounge:
-                    prop.ItemPrices.Add("pink_tint", 10000);
-                    prop.ItemPrices.Add("gold_tint", 20000);
-                    prop.ItemPrices.Add("green_tint", 5000);
-                    prop.ItemPrices.Add("orange_tint", 3000);
-                    prop.ItemPrices.Add("platinum_tint", 50000);
+                    prop.ItemPrices.Add("pink_tint", 500);
+                    prop.ItemPrices.Add("gold_tint", 500);
+                    prop.ItemPrices.Add("green_tint", 300);
+                    prop.ItemPrices.Add("orange_tint", 300);
+                    prop.ItemPrices.Add("platinum_tint", 400);
                     break;
 
                 case PropertyManager.PropertyTypes.Government:

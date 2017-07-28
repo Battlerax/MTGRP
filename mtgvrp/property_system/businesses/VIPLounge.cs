@@ -1,8 +1,10 @@
-﻿using GTANetworkServer;
-using System.Linq;
+﻿using System.Linq;
 using System.Collections.Generic;
 using mtgvrp.player_manager;
 using mtgvrp.core.Help;
+using GrandTheftMultiplayer.Server.API;
+using GrandTheftMultiplayer.Server.Managers;
+using GrandTheftMultiplayer.Server.Elements;
 
 namespace mtgvrp.property_system.businesses
 {

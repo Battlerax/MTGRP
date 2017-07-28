@@ -52,6 +52,7 @@ namespace mtgvrp.job_manager.taxi
             API.repairVehicle(veh.NetHandle);
             InventoryManager.DeleteInventoryItem(character, typeof(EngineParts), 1);
             player.sendChatMessage("Vehicle repaired.");
+            LogManager.Log(LogManager.LogTypes.Stats, $"[Vehicle] {character.CharacterName}[{player.GetAccount().AccountName}] has fixed vehicle #{veh.Id}.");
             character.FixcarPrevention = DateTime.Now.Add(TimeSpan.FromSeconds(10));
         }
 
@@ -80,6 +81,8 @@ namespace mtgvrp.job_manager.taxi
             veh.Save();
             InventoryManager.DeleteInventoryItem(character, typeof(SprayPaint), 1);
             player.sendChatMessage("Vehicle painted.");
+
+            LogManager.Log(LogManager.LogTypes.Stats, $"[Vehicle] {character.CharacterName}[{player.GetAccount().AccountName}] has painted vehicle #{veh.Id}.");
 
             var tst = Enum.GetValues(typeof(HelpManager.CommandGroups)).Cast<HelpManager.CommandGroups>().Where(x => x > HelpManager.CommandGroups.AdminLevel1);
         }

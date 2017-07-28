@@ -81,6 +81,9 @@ namespace mtgvrp.job_manager.taxi
                         API.triggerClientEvent(player, "update_fare_display", 0, 0, "");
                         API.triggerClientEvent(veh.Driver.Client, "update_fare_display", 0, 0, "");
 
+                        LogManager.Log(LogManager.LogTypes.Stats, $"[Job] {veh.Driver.CharacterName}[{veh.Driver.Client.GetAccount().AccountName}] has earned ${character.TotalFare} from a taxi fare. (Fare: {character.CharacterName})");
+                        LogManager.Log(LogManager.LogTypes.Stats, $"[Job] {character.CharacterName}[{player.GetAccount().AccountName}] has paided ${character.TotalFare} for a taxi fare. (Driver: {veh.Driver.CharacterName})");
+
                         veh.Driver.TaxiPassenger = null;
                         character.TaxiDriver = null;
                         character.TaxiTimer.Stop();
