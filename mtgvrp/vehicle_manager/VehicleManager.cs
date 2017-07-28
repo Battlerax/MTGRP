@@ -262,14 +262,14 @@ namespace mtgvrp.vehicle_manager
 
         private void VehicleRespawnTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            Vehicles.AsParallel().ForAll(x =>
+            foreach (var x in Vehicles)
             {
                 if (x.IsSpawned && API.getVehicleOccupants(x.NetHandle).Length == 0 && x.OwnerId == 0 && x.LastOccupied != new DateTime() && (DateTime.Now - x.LastOccupied) >= x.RespawnDelay)
                 {
                     x.LastOccupied = new DateTime();
                     respawn_vehicle(x);
                 }
-            });
+            }
         }
 
         /*

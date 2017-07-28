@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using GrandTheftMultiplayer.Server.API;
 using GrandTheftMultiplayer.Server.Elements;
 using GrandTheftMultiplayer.Server.Managers;
@@ -14,8 +15,11 @@ namespace mtgvrp.property_system.businesses
 {
     class Clothing : Script
     {
-        public static List<string> MaleComponents = new List<string>();
-        public static List<string> FemaleComponents = new List<string>();
+        Dictionary<string, string> _maleComponents = new Dictionary<string, string>();
+        Dictionary<string, string> _femaleComponents = new Dictionary<string, string>();
+
+        public static string MaleComponents;
+        public static string FemaleComponents;
 
         public Clothing()
         {
@@ -371,204 +375,36 @@ namespace mtgvrp.property_system.businesses
         private void API_onResourceStart()
         {
             API.consoleOutput("Loading componentes into array for clothes.");
-            foreach (var c in ComponentManager.ValidMaleLegs)
-            {
-                var dic = new Dictionary<string, object>
-                {
-                    ["type"] = Component.ComponentTypeLegs,
-                    ["name"] = c.Name,
-                    ["id"] = c.ComponentId,
-                    ["variations"] = c.Variations.Count
-                };
-                MaleComponents.Add(API.toJson(dic));
-            }
 
-            foreach (var c in ComponentManager.ValidMaleShoes)
-            {
-                var dic = new Dictionary<string, object>
-                {
-                    ["type"] = Component.ComponentTypeShoes,
-                    ["name"] = c.Name,
-                    ["id"] = c.ComponentId,
-                    ["variations"] = c.Variations.Count
-                };
-                MaleComponents.Add(API.toJson(dic));
-            }
+            _maleComponents.Add("Legs", API.toJson(ComponentManager.ValidMaleLegs.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.toJson(x.Variations) }).ToArray()));
+            _maleComponents.Add("Shoes", API.toJson(ComponentManager.ValidMaleShoes.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.toJson(x.Variations) }).ToArray()));
+            _maleComponents.Add("Accessories", API.toJson(ComponentManager.ValidMaleAccessories.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.toJson(x.Variations) }).ToArray()));
+            _maleComponents.Add("Undershirts", API.toJson(ComponentManager.ValidMaleUndershirt.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.toJson(x.Variations) }).ToArray()));
+            _maleComponents.Add("Tops", API.toJson(ComponentManager.ValidMaleTops.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.toJson(x.Variations) }).ToArray()));
+            _maleComponents.Add("Hats", API.toJson(ComponentManager.ValidMaleHats.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.toJson(x.Variations) }).ToArray()));
+            _maleComponents.Add("Glasses", API.toJson(ComponentManager.ValidMaleGlasses.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.toJson(x.Variations) }).ToArray()));
+            _maleComponents.Add("Ears", API.toJson(ComponentManager.ValidMaleEars.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.toJson(x.Variations) }).ToArray()));
+            MaleComponents = API.toJson(_maleComponents);
 
-            foreach (var c in ComponentManager.ValidMaleAccessories)
-            {
-                var dic = new Dictionary<string, object>
-                {
-                    ["type"] = Component.ComponentTypeAccessories,
-                    ["name"] = c.Name,
-                    ["id"] = c.ComponentId,
-                    ["variations"] = c.Variations.Count
-                };
-                MaleComponents.Add(API.toJson(dic));
-            }
+            _femaleComponents.Add("Legs", API.toJson(ComponentManager.ValidFemaleLegs.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.toJson(x.Variations) }).ToArray()));
+            _femaleComponents.Add("Shoes", API.toJson(ComponentManager.ValidFemaleShoes.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.toJson(x.Variations) }).ToArray()));
+            _femaleComponents.Add("Accessories", API.toJson(ComponentManager.ValidFemaleAccessories.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.toJson(x.Variations) }).ToArray()));
+            _femaleComponents.Add("Undershirts", API.toJson(ComponentManager.ValidFemaleUndershirt.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.toJson(x.Variations) }).ToArray()));
+            _femaleComponents.Add("Tops", API.toJson(ComponentManager.ValidFemaleTops.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.toJson(x.Variations) }).ToArray()));
+            _femaleComponents.Add("Hats", API.toJson(ComponentManager.ValidFemaleHats.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.toJson(x.Variations) }).ToArray()));
+            _femaleComponents.Add("Glasses", API.toJson(ComponentManager.ValidFemaleGlasses.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.toJson(x.Variations) }).ToArray()));
+            _femaleComponents.Add("Ears", API.toJson(ComponentManager.ValidFemaleEars.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.toJson(x.Variations) }).ToArray()));
+            FemaleComponents = API.toJson(_femaleComponents);
 
-            foreach (var c in ComponentManager.ValidMaleUndershirt)
-            {
-                var dic = new Dictionary<string, object>
-                {
-                    ["type"] = Component.ComponentTypeUndershirt,
-                    ["name"] = c.Name,
-                    ["id"] = c.ComponentId,
-                    ["variations"] = c.Variations.Count
-                };
-                MaleComponents.Add(API.toJson(dic));
-            }
-
-            foreach (var c in ComponentManager.ValidMaleTops)
-            {
-                var dic = new Dictionary<string, object>
-                {
-                    ["type"] = Component.ComponentTypeTops,
-                    ["name"] = c.Name,
-                    ["id"] = c.ComponentId,
-                    ["variations"] = c.Variations.Count
-                };
-                MaleComponents.Add(API.toJson(dic));
-            }
-
-            foreach (var c in ComponentManager.ValidMaleHats)
-            {
-                var dic = new Dictionary<string, object>
-                {
-                    ["type"] = Component.ComponentTypeHats,
-                    ["name"] = c.Name,
-                    ["id"] = c.ComponentId,
-                    ["variations"] = c.Variations.Count
-                };
-                MaleComponents.Add(API.toJson(dic));
-            }
-
-            foreach (var c in ComponentManager.ValidMaleGlasses)
-            {
-                var dic = new Dictionary<string, object>
-                {
-                    ["type"] = Component.ComponentTypeGlasses,
-                    ["name"] = c.Name,
-                    ["id"] = c.ComponentId,
-                    ["variations"] = c.Variations.Count
-                };
-                MaleComponents.Add(API.toJson(dic));
-            }
-
-            foreach (var c in ComponentManager.ValidMaleEars)
-            {
-                var dic = new Dictionary<string, object>
-                {
-                    ["type"] = Component.ComponentTypeEars,
-                    ["name"] = c.Name,
-                    ["id"] = c.ComponentId,
-                    ["variations"] = c.Variations.Count
-                };
-                MaleComponents.Add(API.toJson(dic));
-            }
-
-
-            foreach (var c in ComponentManager.ValidFemaleLegs)
-            {
-                var dic = new Dictionary<string, object>
-                {
-                    ["type"] = Component.ComponentTypeLegs,
-                    ["name"] = c.Name,
-                    ["id"] = c.ComponentId,
-                    ["variations"] = c.Variations.Count
-                };
-                FemaleComponents.Add(API.toJson(dic));
-            }
-
-            foreach (var c in ComponentManager.ValidFemaleShoes)
-            {
-                var dic = new Dictionary<string, object>
-                {
-                    ["type"] = Component.ComponentTypeShoes,
-                    ["name"] = c.Name,
-                    ["id"] = c.ComponentId,
-                    ["variations"] = c.Variations.Count
-                };
-                FemaleComponents.Add(API.toJson(dic));
-            }
-
-            foreach (var c in ComponentManager.ValidFemaleAccessories)
-            {
-                var dic = new Dictionary<string, object>
-                {
-                    ["type"] = Component.ComponentTypeAccessories,
-                    ["name"] = c.Name,
-                    ["id"] = c.ComponentId,
-                    ["variations"] = c.Variations.Count
-                };
-                FemaleComponents.Add(API.toJson(dic));
-            }
-
-            foreach (var c in ComponentManager.ValidFemaleUndershirt)
-            {
-                var dic = new Dictionary<string, object>
-                {
-                    ["type"] = Component.ComponentTypeUndershirt,
-                    ["name"] = c.Name,
-                    ["id"] = c.ComponentId,
-                    ["variations"] = c.Variations.Count
-                };
-                FemaleComponents.Add(API.toJson(dic));
-            }
-
-            foreach (var c in ComponentManager.ValidFemaleTops)
-            {
-                var dic = new Dictionary<string, object>
-                {
-                    ["type"] = Component.ComponentTypeTops,
-                    ["name"] = c.Name,
-                    ["id"] = c.ComponentId,
-                    ["variations"] = c.Variations.Count
-                };
-                FemaleComponents.Add(API.toJson(dic));
-            }
-
-            foreach (var c in ComponentManager.ValidFemaleHats)
-            {
-                var dic = new Dictionary<string, object>
-                {
-                    ["type"] = Component.ComponentTypeHats,
-                    ["name"] = c.Name,
-                    ["id"] = c.ComponentId,
-                    ["variations"] = c.Variations.Count
-                };
-                FemaleComponents.Add(API.toJson(dic));
-            }
-
-            foreach (var c in ComponentManager.ValidFemaleGlasses)
-            {
-                var dic = new Dictionary<string, object>
-                {
-                    ["type"] = Component.ComponentTypeGlasses,
-                    ["name"] = c.Name,
-                    ["id"] = c.ComponentId,
-                    ["variations"] = c.Variations.Count
-                };
-                FemaleComponents.Add(API.toJson(dic));
-            }
-
-            foreach (var c in ComponentManager.ValidFemaleEars)
-            {
-                var dic = new Dictionary<string, object>
-                {
-                    ["type"] = Component.ComponentTypeEars,
-                    ["name"] = c.Name,
-                    ["id"] = c.ComponentId,
-                    ["variations"] = c.Variations.Count
-                };
-                FemaleComponents.Add(API.toJson(dic));
-            }
             API.consoleOutput("Finished loading componentes into array for clothes.");
         }
 
         [Command("buyclothes"), Help(HelpManager.CommandGroups.Bussiness, "Used inside a clothing store to buy clothes.", null)]
         public void BuyClothes(Client player)
         {
+            API.sendChatMessageToPlayer(player, "This command is disabled until an issue is fixed.");
+            return;
+
             var biz = PropertyManager.IsAtPropertyInteraction(player);
             if (biz?.Type != PropertyManager.PropertyTypes.Clothing)
             {
