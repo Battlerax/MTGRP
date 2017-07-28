@@ -31,7 +31,7 @@ namespace mtgvrp.core
             {
                 DebugManager.DebugMessage("** Starting log archive process.", 1);
 
-                var path = "OldLogs/" + DateTime.Now.Year + "-" + DateTime.Now.Month;
+                var path = "Logs/OldLogs/" + DateTime.Now.Year + "-" + DateTime.Now.Month;
                 //Make sure folders exist.
                 Directory.CreateDirectory(path);
 
