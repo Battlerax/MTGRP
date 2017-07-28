@@ -14,7 +14,6 @@ var MAX_LIPSTICK_COLORS = 27;
 //Component (clothing) 
 var Component = (function () {
     function Component() {
-        this.type = 0;
         this.name = "";
         this.id = 0;
         this.variations = 0;
@@ -22,7 +21,14 @@ var Component = (function () {
     return Component;
 }());
 
-var component_list = [];
+var legs_list = [];
+var shoes_list = [];
+var access_list = [];
+var undershits_list = [];
+var tops_list = [];
+var hats_list = [];
+var glasses_list = [];
+var ears_list = [];
 
 //Create the camera view to watch character creation
 var creation_view = API.createCamera(new Vector3(403, -999.5, -98), new Vector3(0, 0, -15));
@@ -79,17 +85,94 @@ API.onServerEventTrigger.connect(function (eventName, args) {
     }
     else if (eventName == "initialize_components") {
        
-        var list = args[0];
-        for (var i = 0; i < list.Count; i++) {
-            var obj = JSON.parse(list[i]);
+        var list = JSON.parse(args[0]);
+
+        var newList = JSON.parse(list["Legs"]);
+        for (var a = 0; a < newList.length; a++) {
 
             var component = new Component();
-            component.type = obj.type;
-            component.name = obj.name;
-            component.id = obj.id;
-            component.variations = obj.variations;
+            component.name = newList[a][0];
+            component.id = newList[a][1];
+            component.variations = JSON.parse(newList[a][2]);
 
-            component_list.push(component);
+            legs_list.push(component);
+        }
+
+        newList = JSON.parse(list["Shoes"]);
+        for (var a = 0; a < newList.length; a++) {
+
+            var component = new Component();
+            component.name = newList[a][0];
+            component.id = newList[a][1];
+            component.variations = JSON.parse(newList[a][2]);
+
+            shoes_list.push(component);
+        }
+
+        newList = JSON.parse(list["Accessories"]);
+        for (var a = 0; a < newList.length; a++) {
+
+            var component = new Component();
+            component.name = newList[a][0];
+            component.id = newList[a][1];
+            component.variations = JSON.parse(newList[a][2]);
+
+            access_list.push(component);
+        }
+
+        newList = JSON.parse(list["Undershirts"]);
+        for (var a = 0; a < newList.length; a++) {
+
+            var component = new Component();
+            component.name = newList[a][0];
+            component.id = newList[a][1];
+            component.variations = JSON.parse(newList[a][2]);
+
+            undershits_list.push(component);
+        }
+
+        newList = JSON.parse(list["Tops"]);
+        for (var a = 0; a < newList.length; a++) {
+
+            var component = new Component();
+            component.name = newList[a][0];
+            component.id = newList[a][1];
+            component.variations = JSON.parse(newList[a][2]);
+
+            tops_list.push(component);
+        }
+
+        newList = JSON.parse(list["Hats"]);
+        for (var a = 0; a < newList.length; a++) {
+
+            var component = new Component();
+            component.name = newList[a][0];
+            component.id = newList[a][1];
+            component.variations = JSON.parse(newList[a][2]);
+
+            hats_list.push(component);
+        }
+
+        newList = JSON.parse(list["Glasses"]);
+        for (var a = 0; a < newList.length; a++) {
+
+            var component = new Component();
+            component.name = newList[a][0];
+            component.id = newList[a][1];
+            component.variations = JSON.parse(newList[a][2]);
+
+            glasses_list.push(component);
+        }
+
+        newList = JSON.parse(list["Ears"]);
+        for (var a = 0; a < newList.length; a++) {
+
+            var component = new Component();
+            component.name = newList[a][0];
+            component.id = newList[a][1];
+            component.variations = JSON.parse(newList[a][2]);
+
+            ears_list.push(component);
         }
     }
 });
@@ -180,9 +263,9 @@ function next_character_creation_step(player, step) {
             API.triggerServerEvent("change_parent_info", father_ped, mother_ped, father_int_id, mother_int_id, parent_lean, gender);
 
 			//Set default clothes.
-	        /*API.triggerServerEvent("change_clothes", 4, 0, 0);
-	        API.triggerServerEvent("change_clothes", 6, 0, 0);
-	        API.triggerServerEvent("change_clothes", 11, 0, 0);*/
+	        /*updateClothes(4, 0, 0);
+	        updateClothes(6, 0, 0);
+	        updateClothes(11, 0, 0);*/
 
             //Handle the lists
             gender_menu_item.OnListChanged.connect(function (sender, new_index) {
@@ -271,7 +354,10 @@ function next_character_creation_step(player, step) {
                         break;
                 }
 
-                API.triggerServerEvent("change_parent_info", father_ped, mother_ped, father_int_id, mother_int_id, parent_lean, gender);
+                API.callNative("SET_PED_HEAD_BLEND_DATA", father_ped, father_int_id, father_int_id, 0, father_int_id, father_int_id, 0, 1.0, 1.0, 0, false);
+                API.callNative("SET_PED_HEAD_BLEND_DATA", mother_ped, mother_int_id, mother_int_id, 0, mother_int_id, mother_int_id, 0, 1.0, 1.0, 0, false);
+                API.callNative("SET_PED_HEAD_BLEND_DATA", API.getLocalPlayer(), father_int_id,
+                    mother_int_id, 0, father_int_id, mother_int_id, 0, parent_lean, parent_lean, 0, false);
             });
 
 
@@ -288,6 +374,7 @@ function next_character_creation_step(player, step) {
 
             character_creation_menu.OnItemSelect.connect(function (sender, item, index) {
                 if (item.Text == "Next") {
+                    API.triggerServerEvent("change_parent_info", father_ped, mother_ped, father_int_id, mother_int_id, parent_lean, gender);
                     next_character_creation_step(player, 1);
                 }
             });
@@ -447,83 +534,108 @@ function next_character_creation_step(player, step) {
             character_creation_menu.Visible = true;
 
             character_creation_menu.OnListChange.connect(function (sender, list, new_index) {
+                var playerHandle = API.getLocalPlayer();
                 switch (list.Text) {
                     case "Hair Style":
                         hair_style = new_index;
+                        API.setPlayerClothes(playerHandle, 2, hair_style, 0);
                         break;
                     case "Hair Color":
                         hair_color = new_index;
+                        API.callNative("_SET_PED_HAIR_COLOR", playerHandle, hair_color);
                         break;
                     case "Blemishes":
                         if (new_index == 0)
                             blemishes = 255;
                         else blemishes = new_index - 1;
+                        API.sendChatMessage("Blemishes: " + blemishes);
+                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 0, blemishes, 1.0);
                         break;
                     case "Eyebrows":
                         eyebrows = new_index;
+                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 2, eyebrows, 1.0);
+                        API.callNative("_SET_PED_HEAD_OVERLAY_COLOR", playerHandle, 2, 1, hair_color,
+                            hair_color);
                         break;
                     case "Ageing":
                         if (new_index == 0)
                             ageing = 255;
                         else ageing = new_index - 1;
+                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 3, ageing, 1.0);
                         break;
                     case "Complexion":
                         if (new_index == 0)
                             complexion = 255;
                         else complexion = new_index - 1;
+                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 6, complexion, 1.0);
                         break;
                     case "Sundamage":
                         if (new_index == 0)
                             sun_damage = 255;
                         else sun_damage = new_index - 1;
+                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 7, sun_damage, 1.0);
                         break;
                     case "Moles & Freckles":
                         if (new_index == 0)
                             moles_freckles = 255;
                         else moles_freckles = new_index - 1;
+                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 9, moles_freckles, 1.0);
                         break;
                     case "Facial Hair":
                         if (new_index == 0)
                             facial_hair = 255;
                         else facial_hair = new_index - 1;
+                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 1, facial_hair, 1.0);
+                        API.callNative("_SET_PED_HEAD_OVERLAY_COLOR", playerHandle, 1, 1, hair_color,
+                            hair_color);
                         break;
                     case "Makeup":
                         if (new_index == 0)
                             makeup = 255;
                         else makeup = new_index - 1;
+                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 4, makeup, 1.0);
                         break;
                     case "Makeup Color":
                         if (new_index == 0)
                             makeup_color = 255;
                         else makeup_color = new_index - 1;
+                        API.callNative("_SET_PED_HEAD_OVERLAY_COLOR", playerHandle, 4, 0, makeup_color,
+                            makeup_color);
                         break;
                     case "Blush":
                         if (new_index == 0)
                             blush = 255;
                         else blush = new_index - 1;
+                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 5, blush, 1.0);
                         break;
                     case "Blush Color":
                         if (new_index == 0)
                             blush_color = 255;
                         else blush_color = new_index - 1;
+                        API.callNative("_SET_PED_HEAD_OVERLAY_COLOR", playerHandle, 5, 2, blush_color,
+                            blush_color);
                         break;
                     case "Lipstick":
                         if (new_index == 0)
                             lipstick = 255;
                         else lipstick = new_index - 1;
+                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 8, lipstick, 1.0);
                         break;
                     case "Lipstick Color":
                         if (new_index == 0)
                             lipstick_color = 255;
                         else lipstick_color = new_index - 1;
+                        API.callNative("_SET_PED_HEAD_OVERLAY_COLOR", playerHandle, 8, 2, lipstick_color,
+                            lipstick_color);
                         break;
                 }
-              
-                API.triggerServerEvent("change_facial_features", hair_style, hair_color, blemishes, facial_hair, eyebrows, ageing, makeup, makeup_color, blush, blush_color, complexion, sun_damage, lipstick, lipstick_color, moles_freckles);
             });
 
             character_creation_menu.OnItemSelect.connect(function (sender, item, index) {
                 if (item.Text == "Next") {
+                    //Save em.
+                    API.triggerServerEvent("change_facial_features", hair_style, hair_color, blemishes, facial_hair, eyebrows, ageing, makeup, makeup_color, blush, blush_color, complexion, sun_damage, lipstick, lipstick_color, moles_freckles);
+
                     API.sendChatMessage("~o~Creating menus... Please wait, this may take a second!");
                     next_character_creation_step(player, 2);
                 }
@@ -566,65 +678,70 @@ function next_character_creation_step(player, step) {
             menu_pool.Add(ear_menu);
             menu_pool.Add(torso_menu);
 
-            for (var i = 0; i < component_list.length; i++) {
-
-                if (component_list[i].type == 4) { //Pants
-                    var list = new List(String);
-                    for (var j = 0; j < component_list[i].variations; j++) {
-                        list.Add((j + 1).toString());
-                    }
-                    pant_menu.AddItem(API.createListItem(component_list[i].name, "Press enter to select and go back.", list, 0))
+            for (var i = 0; i < legs_list.length; i++) {
+                var list = new List(String);
+                for (var j = 0; j < legs_list[i].variations.length; j++) {
+                    list.Add((j + 1).toString());
                 }
-                else if (component_list[i].type == 6) { //Shoes
-                    var list = new List(String);
-                    for (var j = 0; j < component_list[i].variations; j++) {
-                        list.Add((j + 1).toString());
-                    }
-                    shoe_menu.AddItem(API.createListItem(component_list[i].name, "Press enter to select and go back.", list, 0));
-                }
-                else if (component_list[i].type == 7) { //Accessory
-                    var list = new List(String);
-                    for (var j = 0; j < component_list[i].variations; j++) {
-                        list.Add((j + 1).toString());
-                    }
-                    accessory_menu.AddItem(API.createListItem(component_list[i].name, "Press enter to select and go back.", list, 0));
-                }
-                else if (component_list[i].type == 8) { //Undershirt
-                    var list = new List(String);
-                    for (var j = 0; j < component_list[i].variations; j++) {
-                        list.Add((j + 1).toString());
-                    }
-                    undershirt_menu.AddItem(API.createListItem(component_list[i].name, "Press enter to select and go back.", list, 0));
-                }
-                else if (component_list[i].type == 11) { //Tops
-                    var list = new List(String);
-                    for (var j = 0; j < component_list[i].variations; j++) {
-                        list.Add((j + 1).toString());
-                    }
-                    top_menu.AddItem(API.createListItem(component_list[i].name, "Press enter to select and go back.", list, 0));
-                }
-                else if (component_list[i].type == 20) { // hat
-                    var list = new List(String);
-                    for (var j = 0; j < component_list[i].variations; j++) {
-                        list.Add((j + 1).toString());
-                    }
-                    hat_menu.AddItem(API.createListItem(component_list[i].name, "Press enter to select and go back.", list, 0));
-                }
-                else if (component_list[i].type == 21) { //glasses
-                    var list = new List(String);
-                    for (var j = 0; j < component_list[i].variations; j++) {
-                        list.Add((j + 1).toString());
-                    }
-                    glasses_menu.AddItem(API.createListItem(component_list[i].name, "Press enter to select and go back.", list, 0));
-                }
-                else if (component_list[i].type == 22) { //ear
-                    var list = new List(String);
-                    for (var j = 0; j < component_list[i].variations; j++) {
-                        list.Add((j + 1).toString());
-                    }
-                    ear_menu.AddItem(API.createListItem(component_list[i].name, "Press enter to select and go back.", list, 0));
-                } 
+                pant_menu.AddItem(API.createListItem(legs_list[i].name, "Press enter to select and go back.", list, 0));
             }
+
+            for (var i = 0; i < shoes_list.length; i++) {
+                var list = new List(String);
+                for (var j = 0; j < shoes_list[i].variations.length; j++) {
+                    list.Add((j + 1).toString());
+                }
+                shoe_menu.AddItem(API.createListItem(shoes_list[i].name, "Press enter to select and go back.", list, 0));
+            }
+
+            for (var i = 0; i < access_list.length; i++) {
+                var list = new List(String);
+                for (var j = 0; j < access_list[i].variations.length; j++) {
+                    list.Add((j + 1).toString());
+                }
+                accessory_menu.AddItem(API.createListItem(access_list[i].name, "Press enter to select and go back.", list, 0));
+            }
+
+            for (var i = 0; i < undershits_list.length; i++) {
+                var list = new List(String);
+                for (var j = 0; j < undershits_list[i].variations.length; j++) {
+                    list.Add((j + 1).toString());
+                }
+                undershirt_menu.AddItem(API.createListItem(undershits_list[i].name, "Press enter to select and go back.", list, 0));
+            }
+
+            for (var i = 0; i < tops_list.length; i++) {
+                var list = new List(String);
+                for (var j = 0; j < tops_list[i].variations.length; j++) {
+                    list.Add((j + 1).toString());
+                }
+                top_menu.AddItem(API.createListItem(tops_list[i].name, "Press enter to select and go back.", list, 0));
+            }
+
+            for (var i = 0; i < hats_list.length; i++) {
+                var list = new List(String);
+                for (var j = 0; j < hats_list[i].variations.length; j++) {
+                    list.Add((j + 1).toString());
+                }
+                hat_menu.AddItem(API.createListItem(hats_list[i].name, "Press enter to select and go back.", list, 0));
+            }
+
+            for (var i = 0; i < glasses_list.length; i++) {
+                var list = new List(String);
+                for (var j = 0; j < glasses_list[i].variations.length; j++) {
+                    list.Add((j + 1).toString());
+                }
+                glasses_menu.AddItem(API.createListItem(glasses_list[i].name, "Press enter to select and go back.", list, 0));
+            }
+
+            for (var i = 0; i < ears_list.length; i++) {
+                var list = new List(String);
+                for (var j = 0; j < ears_list[i].variations.length; j++) {
+                    list.Add((j + 1).toString());
+                }
+                ear_menu.AddItem(API.createListItem(ears_list[i].name, "Press enter to select and go back.", list, 0));
+            }
+            
 	        var variations = API.returnNative("2834476523764480066", 0, player, 3);
 	        for (var i = 0; i < variations; i++) {
 		        var list = new List(String);
@@ -672,12 +789,12 @@ function next_character_creation_step(player, step) {
             pant_menu.OnIndexChange.connect(function (sender, index) {
                 pants_index = index;
                 pants_variation = 0;
-                API.triggerServerEvent("change_clothes", 4, pants_index, pants_variation);
+                updateClothes(4, pants_index, pants_variation);
             });
 
             pant_menu.OnListChange.connect(function (sender, list, index) {
                 pants_variation = index;
-                API.triggerServerEvent("change_clothes", 4, pants_index, pants_variation);
+                updateClothes(4, pants_index, pants_variation);
             });
 
 	        pant_menu.OnMenuClose.connect((menu) => {
@@ -687,12 +804,12 @@ function next_character_creation_step(player, step) {
             shoe_menu.OnIndexChange.connect(function (sender, index) {
                 shoe_index = index;
                 shoe_variation = 0;
-                API.triggerServerEvent("change_clothes", 6, shoe_index, shoe_variation);
+                updateClothes(6, shoe_index, shoe_variation);
             });
 
             shoe_menu.OnListChange.connect(function (sender, list, index) {
                 shoe_variation = index;
-                API.triggerServerEvent("change_clothes", 6, shoe_index, shoe_variation);
+                updateClothes(6, shoe_index, shoe_variation);
             });
 
 	        shoe_menu.OnMenuClose.connect((menu) => {
@@ -702,12 +819,12 @@ function next_character_creation_step(player, step) {
             accessory_menu.OnIndexChange.connect(function (sender, index) {
                 accessory_index = index;
                 accessory_variation = 0;
-                API.triggerServerEvent("change_clothes", 7, accessory_index, accessory_variation);
+                updateClothes(7, accessory_index, accessory_variation);
             });
 
             accessory_menu.OnListChange.connect(function (sender, list, index) {
                 accessory_variation = index;
-                API.triggerServerEvent("change_clothes", 7, accessory_index, accessory_variation);
+                updateClothes(7, accessory_index, accessory_variation);
             });
 
 	        accessory_menu.OnMenuClose.connect((menu) => {
@@ -717,12 +834,12 @@ function next_character_creation_step(player, step) {
             undershirt_menu.OnIndexChange.connect(function (sender, index) {
                 undershirt_index = index;
                 undershirt_variation = 0;
-                API.triggerServerEvent("change_clothes", 8, undershirt_index, undershirt_variation);
+                updateClothes(8, undershirt_index, undershirt_variation);
             });
 
             undershirt_menu.OnListChange.connect(function (sender, list, index) {
                 undershirt_variation = index;
-                API.triggerServerEvent("change_clothes", 8, undershirt_index, undershirt_variation);
+                updateClothes(8, undershirt_index, undershirt_variation);
             });
 
 	        undershirt_menu.OnMenuClose.connect((menu) => {
@@ -732,12 +849,12 @@ function next_character_creation_step(player, step) {
             top_menu.OnIndexChange.connect(function (sender, index) {
                 top_index = index;
                 top_variation = 0;
-                API.triggerServerEvent("change_clothes", 11, top_index, top_variation);
+                updateClothes(11, top_index, top_variation);
             });
 
             top_menu.OnListChange.connect(function (sender, list, index) {
                 top_variation = index;
-                API.triggerServerEvent("change_clothes", 11, top_index, top_variation);
+                updateClothes(11, top_index, top_variation);
             });
 
 	        top_menu.OnMenuClose.connect((menu) => {
@@ -747,12 +864,12 @@ function next_character_creation_step(player, step) {
             hat_menu.OnIndexChange.connect(function (sender, index) {
                 hat_index = index;
                 hat_variation = 0;
-                API.triggerServerEvent("change_clothes", 20, hat_index, hat_variation);
+                updateClothes(20, hat_index, hat_variation);
             });
 
             hat_menu.OnListChange.connect(function (sender, list, index) {
                 hat_variation = index;
-                API.triggerServerEvent("change_clothes", 20, hat_index, hat_variation);
+                updateClothes(20, hat_index, hat_variation);
             });
 
 	        hat_menu.OnMenuClose.connect((menu) => {
@@ -762,12 +879,12 @@ function next_character_creation_step(player, step) {
             glasses_menu.OnIndexChange.connect(function (sender, index) {
                 glasses_index = index;
                 glasses_variation = 0;
-                API.triggerServerEvent("change_clothes", 21, glasses_index, glasses_variation);
+                updateClothes(21, glasses_index, glasses_variation);
             });
 
             glasses_menu.OnListChange.connect(function (sender, list, index) {
                 glasses_variation = index;
-                API.triggerServerEvent("change_clothes", 21, glasses_index, glasses_variation);
+                updateClothes(21, glasses_index, glasses_variation);
             });
 
 	        glasses_menu.OnMenuClose.connect((menu) => {
@@ -777,12 +894,12 @@ function next_character_creation_step(player, step) {
             ear_menu.OnIndexChange.connect(function (sender, index) {
                 ear_index = index;
                 ear_variation = 0;
-                API.triggerServerEvent("change_clothes", 22, ear_index, ear_variation);
+                updateClothes(22, ear_index, ear_variation);
             });
 
             ear_menu.OnListChange.connect(function (sender, list, index) {
                 ear_variation = index;
-                API.triggerServerEvent("change_clothes", 22, ear_index, ear_variation);
+                updateClothes(22, ear_index, ear_variation);
             });
 
 	        ear_menu.OnMenuClose.connect((menu) => {
@@ -792,12 +909,12 @@ function next_character_creation_step(player, step) {
 	        torso_menu.OnIndexChange.connect(function (sender, index) {
 		        torso_index = index;
 		        torso_variation = 0;
-		        API.triggerServerEvent("change_clothes", 3, torso_index, torso_variation);
+		        updateClothes(3, torso_index, torso_variation);
 	        });
 
 	        torso_menu.OnListChange.connect(function (sender, list, index) {
 		        torso_variation = index;
-		        API.triggerServerEvent("change_clothes", 3, torso_index, torso_variation);
+		        updateClothes(3, torso_index, torso_variation);
 	        });
 
 	        torso_menu.OnMenuClose.connect((menu) => {
@@ -856,6 +973,9 @@ function next_character_creation_step(player, step) {
 						torso_menu.CurrentSelection = 0;
 						break;
                     case "Next":
+                        //Save clothes.
+                        API.triggerServerEvent("change_clothes", pants_index, pants_variation, shoe_index, shoe_variation, accessory_index, accessory_variation, undershirt_index, undershirt_variation, top_index, top_variation, hat_index, hat_variation, glasses_index, glasses_variation, ear_index, ear_variation, torso_index, top_variation);
+
                         next_character_creation_step(player, 3);
                         break;
                 }
@@ -949,6 +1069,36 @@ function next_character_creation_step(player, step) {
 		        next_character_creation_step(player, 2);
 	        });
         }
+    }
+}
+
+function updateClothes(type, index, variation) {
+    if (type === 4) {
+        API.setPlayerClothes(API.getLocalPlayer(), type, parseInt(legs_list[index].id), parseInt(legs_list[index].variations[variation]) - 1);
+    }
+    else if (type === 6) {
+        API.setPlayerClothes(API.getLocalPlayer(), type, parseInt(shoes_list[index].id), parseInt(shoes_list[index].variations[variation]) - 1);
+    }
+    else if (type === 7) {
+        API.setPlayerClothes(API.getLocalPlayer(), type, parseInt(access_list[index].id), parseInt(access_list[index].variations[variation]) - 1);
+    }
+    else if (type === 8) {
+        API.setPlayerClothes(API.getLocalPlayer(), type, parseInt(undershits_list[index].id), parseInt(undershits_list[index].variations[variation]) - 1);
+    }
+    else if (type === 11) {
+        API.setPlayerClothes(API.getLocalPlayer(), type, parseInt(tops_list[index].id), parseInt(tops_list[index].variations[variation]) - 1);
+    }
+    else if (type === 20) {
+        API.setPlayerAccessory(API.getLocalPlayer(), 0, parseInt(hats_list[index].id), parseInt(hats_list[index].variations[variation]) - 1);
+    }
+    else if (type === 21) {
+        API.setPlayerAccessory(API.getLocalPlayer(), 1, parseInt(glasses_list[index].id), parseInt(glasses_list[index].variations[variation]) - 1);
+    }
+    else if (type === 22) {
+        API.setPlayerAccessory(API.getLocalPlayer(), 2, parseInt(ears_list[index].id), parseInt(ears_list[index].variations[variation]) - 1);
+    }
+    else if (type === 3) {
+        API.setPlayerClothes(API.getLocalPlayer(), type, index, variation);
     }
 }
 

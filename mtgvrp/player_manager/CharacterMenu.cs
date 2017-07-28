@@ -292,87 +292,87 @@ namespace mtgvrp.player_manager
 
                         if (character.Model.Gender == Character.GenderMale)
                         {
-                            switch ((int)arguments[0])
-                            {
-                                case Component.ComponentTypeLegs:
-                                    character.Model.PantsStyle = ComponentManager.ValidMaleLegs[(int)arguments[1]].ComponentId;
-                                    character.Model.PantsVar = (int)ComponentManager.ValidMaleLegs[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                                    break;
-                                case Component.ComponentTypeShoes:
-                                    character.Model.ShoeStyle = ComponentManager.ValidMaleShoes[(int)arguments[1]].ComponentId;
-                                    character.Model.ShoeVar = (int)ComponentManager.ValidMaleShoes[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                                    break;
-                                case Component.ComponentTypeAccessories:
-                                    character.Model.AccessoryStyle = ComponentManager.ValidMaleAccessories[(int)arguments[1]].ComponentId;
-                                    character.Model.AccessoryVar = (int)ComponentManager.ValidMaleAccessories[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                                    break;
-                                case Component.ComponentTypeUndershirt:
-                                    character.Model.UndershirtStyle = ComponentManager.ValidMaleUndershirt[(int)arguments[1]].ComponentId;
-                                    character.Model.UndershirtVar = (int)ComponentManager.ValidMaleUndershirt[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                                    break;
-                                case Component.ComponentTypeTops:
-                                    character.Model.TopStyle = ComponentManager.ValidMaleTops[(int)arguments[1]].ComponentId;
-                                    character.Model.TopVar = (int)ComponentManager.ValidMaleTops[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                                    break;
-                                case Component.ComponentTypeHats:
-                                    character.Model.HatStyle = ComponentManager.ValidMaleHats[(int)arguments[1]].ComponentId;
-                                    character.Model.HatVar = (int)ComponentManager.ValidMaleHats[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                                    break;
-                                case Component.ComponentTypeGlasses:
-                                    character.Model.GlassesStyle = ComponentManager.ValidMaleGlasses[(int)arguments[1]].ComponentId;
-                                    character.Model.GlassesVar = (int)ComponentManager.ValidMaleGlasses[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                                    break;
-                                case Component.ComponentTypeEars:
-                                    character.Model.EarStyle = ComponentManager.ValidMaleEars[(int)arguments[1]].ComponentId;
-                                    character.Model.EarVar = (int)ComponentManager.ValidMaleEars[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                                    break;
-                                case Component.ComponentTypeTorso:
-                                    character.Model.TorsoStyle = (int)arguments[1];
-                                    character.Model.TorsoVar = (int)arguments[2];
-                                    break;
-                            }
+                            character.Model.PantsStyle = ComponentManager.ValidMaleLegs[(int) arguments[0]].ComponentId;
+                            character.Model.PantsVar = (int) ComponentManager.ValidMaleLegs[(int) arguments[0]]
+                                .Variations[(int) arguments[1]];
+
+                            character.Model.ShoeStyle = ComponentManager.ValidMaleShoes[(int) arguments[2]].ComponentId;
+                            character.Model.ShoeVar = (int) ComponentManager.ValidMaleShoes[(int) arguments[2]]
+                                .Variations.ToArray().GetValue((int) arguments[3]);
+
+                            character.Model.AccessoryStyle = ComponentManager.ValidMaleAccessories[(int) arguments[4]]
+                                .ComponentId;
+                            character.Model.AccessoryVar = (int) ComponentManager
+                                .ValidMaleAccessories[(int) arguments[4]].Variations.ToArray()
+                                .GetValue((int) arguments[5]);
+
+                            character.Model.UndershirtStyle = ComponentManager.ValidMaleUndershirt[(int) arguments[6]]
+                                .ComponentId;
+                            character.Model.UndershirtVar = (int) ComponentManager
+                                .ValidMaleUndershirt[(int) arguments[6]].Variations.ToArray()
+                                .GetValue((int) arguments[7]);
+
+                            character.Model.TopStyle = ComponentManager.ValidMaleTops[(int) arguments[8]].ComponentId;
+                            character.Model.TopVar = (int) ComponentManager.ValidMaleTops[(int) arguments[8]].Variations
+                                .ToArray().GetValue((int) arguments[9]);
+
+                            character.Model.HatStyle = ComponentManager.ValidMaleHats[(int) arguments[10]].ComponentId;
+                            character.Model.HatVar = (int) ComponentManager.ValidMaleHats[(int) arguments[10]]
+                                .Variations.ToArray().GetValue((int) arguments[11]);
+
+                            character.Model.GlassesStyle = ComponentManager.ValidMaleGlasses[(int) arguments[12]]
+                                .ComponentId;
+                            character.Model.GlassesVar = (int) ComponentManager.ValidMaleGlasses[(int) arguments[12]]
+                                .Variations.ToArray().GetValue((int) arguments[13]);
+
+                            character.Model.EarStyle = ComponentManager.ValidMaleEars[(int) arguments[14]].ComponentId;
+                            character.Model.EarVar = (int) ComponentManager.ValidMaleEars[(int) arguments[14]]
+                                .Variations.ToArray().GetValue((int) arguments[15]);
+
+                            character.Model.TorsoStyle = (int) arguments[16];
+                            character.Model.TorsoVar = (int) arguments[17];
                         }
                         else
                         {
-                            switch ((int)arguments[0])
-                            {
-                                case Component.ComponentTypeLegs:
-                                    character.Model.PantsStyle = ComponentManager.ValidFemaleLegs[(int)arguments[1]].ComponentId;
-                                    character.Model.PantsVar = (int)ComponentManager.ValidFemaleLegs[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                                    break;
-                                case Component.ComponentTypeShoes:
-                                    character.Model.ShoeStyle = ComponentManager.ValidFemaleShoes[(int)arguments[1]].ComponentId;
-                                    character.Model.ShoeVar = (int)ComponentManager.ValidFemaleShoes[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                                    break;
-                                case Component.ComponentTypeAccessories:
-                                    character.Model.AccessoryStyle = ComponentManager.ValidFemaleAccessories[(int)arguments[1]].ComponentId;
-                                    character.Model.AccessoryVar = (int)ComponentManager.ValidFemaleAccessories[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                                    break;
-                                case Component.ComponentTypeUndershirt:
-                                    character.Model.UndershirtStyle = ComponentManager.ValidFemaleUndershirt[(int)arguments[1]].ComponentId;
-                                    character.Model.UndershirtVar = (int)ComponentManager.ValidFemaleUndershirt[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                                    break;
-                                case Component.ComponentTypeTops:
-                                    character.Model.TopStyle = ComponentManager.ValidFemaleTops[(int)arguments[1]].ComponentId;
-                                    character.Model.TopVar = (int)ComponentManager.ValidFemaleTops[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                                    break;
-                                case Component.ComponentTypeHats:
-                                    character.Model.HatStyle = ComponentManager.ValidFemaleHats[(int)arguments[1]].ComponentId;
-                                    character.Model.HatVar = (int)ComponentManager.ValidFemaleHats[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                                    break;
-                                case Component.ComponentTypeGlasses:
-                                    character.Model.GlassesStyle = ComponentManager.ValidFemaleGlasses[(int)arguments[1]].ComponentId;
-                                    character.Model.GlassesVar = (int)ComponentManager.ValidFemaleGlasses[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                                    break;
-                                case Component.ComponentTypeEars:
-                                    character.Model.EarStyle = ComponentManager.ValidFemaleEars[(int)arguments[1]].ComponentId;
-                                    character.Model.EarVar = (int)ComponentManager.ValidFemaleEars[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                                    break;
-                                case Component.ComponentTypeTorso:
-                                    character.Model.TorsoStyle = (int)arguments[1];
-                                    character.Model.TorsoVar = (int)arguments[2];
-                                    break;
-                            }
+                            character.Model.PantsStyle = ComponentManager.ValidFemaleLegs[(int)arguments[0]].ComponentId;
+                            character.Model.PantsVar = (int)ComponentManager.ValidFemaleLegs[(int)arguments[0]]
+                                .Variations[(int)arguments[1]];
+
+                            character.Model.ShoeStyle = ComponentManager.ValidFemaleShoes[(int)arguments[2]].ComponentId;
+                            character.Model.ShoeVar = (int)ComponentManager.ValidFemaleShoes[(int)arguments[2]]
+                                .Variations.ToArray().GetValue((int)arguments[3]);
+
+                            character.Model.AccessoryStyle = ComponentManager.ValidFemaleAccessories[(int)arguments[4]]
+                                .ComponentId;
+                            character.Model.AccessoryVar = (int)ComponentManager
+                                .ValidFemaleAccessories[(int)arguments[4]].Variations.ToArray()
+                                .GetValue((int)arguments[5]);
+
+                            character.Model.UndershirtStyle = ComponentManager.ValidFemaleUndershirt[(int)arguments[6]]
+                                .ComponentId;
+                            character.Model.UndershirtVar = (int)ComponentManager
+                                .ValidFemaleUndershirt[(int)arguments[6]].Variations.ToArray()
+                                .GetValue((int)arguments[7]);
+
+                            character.Model.TopStyle = ComponentManager.ValidFemaleTops[(int)arguments[8]].ComponentId;
+                            character.Model.TopVar = (int)ComponentManager.ValidFemaleTops[(int)arguments[8]].Variations
+                                .ToArray().GetValue((int)arguments[9]);
+
+                            character.Model.HatStyle = ComponentManager.ValidFemaleHats[(int)arguments[10]].ComponentId;
+                            character.Model.HatVar = (int)ComponentManager.ValidFemaleHats[(int)arguments[10]]
+                                .Variations.ToArray().GetValue((int)arguments[11]);
+
+                            character.Model.GlassesStyle = ComponentManager.ValidFemaleGlasses[(int)arguments[12]]
+                                .ComponentId;
+                            character.Model.GlassesVar = (int)ComponentManager.ValidFemaleGlasses[(int)arguments[12]]
+                                .Variations.ToArray().GetValue((int)arguments[13]);
+
+                            character.Model.EarStyle = ComponentManager.ValidFemaleEars[(int)arguments[14]].ComponentId;
+                            character.Model.EarVar = (int)ComponentManager.ValidFemaleEars[(int)arguments[14]]
+                                .Variations.ToArray().GetValue((int)arguments[15]);
+
+                            character.Model.TorsoStyle = (int)arguments[16];
+                            character.Model.TorsoVar = (int)arguments[17];
                         }
 
                         character.update_ped();
