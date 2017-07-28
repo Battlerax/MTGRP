@@ -5,6 +5,7 @@ using mtgvrp.database_manager;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
+using mtgvrp.mapping_manager;
 
 namespace mtgvrp.player_manager
 {
@@ -46,6 +47,10 @@ namespace mtgvrp.player_manager
         public string DiscordUser { get; set; } = null;
 
         public int TotalPlayingHours { get; set; }
+
+        //Mapping manager stuff
+        [BsonIgnore]
+        public Mapping ViewingMappingRequest { get; set; } = null;
 
         public Account()
         {

@@ -116,5 +116,9 @@
   <!--DMV-->
   <script src="dmv/DmvManager.js" type="client" lang="javascript"/>
 
+  <!-- Mapping Manager -->
+  <script src="mapping_manager/MappingManager.js" type="client" lang="javascript"/>
+  <file src="mapping_manager/MappingManager.html"/>
+  
   <file src="jquery.js" />
 </meta>

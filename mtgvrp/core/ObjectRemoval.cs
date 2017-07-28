@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.AccessControl;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using GrandTheftMultiplayer.Server.API;
@@ -10,10 +6,10 @@ using GrandTheftMultiplayer.Shared.Math;
 
 namespace mtgvrp.core
 {
-    public class ObjectRemovel : Script
+    public class ObjectRemoval : Script
     {
         private Timer _timer;
-        public ObjectRemovel()
+        public ObjectRemoval()
         {
             _timer = new Timer((state) =>
             {
@@ -38,9 +34,9 @@ namespace mtgvrp.core
             _objects.Add(new dynamic[] {position, hash});
         }
 
-        public static void RemoveObject(Vector3 position, int hash)
+        public static void UnregisterObject(Vector3 pos, int hash)
         {
-            _objects.RemoveAll(x => x[0] == position && x[1] == hash);
+            _objects.RemoveAll(x => x[0] == pos && x[1] == hash);
         }
     }
 }

@@ -6,6 +6,7 @@ using GrandTheftMultiplayer.Server.Managers;
 using GrandTheftMultiplayer.Shared;
 using GrandTheftMultiplayer.Shared.Math;
 using mtgvrp.core;
+using mtgvrp.core.Help;
 using mtgvrp.player_manager;
 using mtgvrp.vehicle_manager;
 using mtgvrp.property_system;
@@ -184,7 +185,7 @@ namespace mtgvrp.job_manager.garbageman
 
         //Commands
 
-        [Command("unloadtrash")]
+        [Command("unloadtrash"), Help(HelpManager.CommandGroups.GarbageJob, "Unloads your truck's garabge and get your payment!")]
         public void unloadtrash_cmd(Client player)
         {
             Character character = API.getEntityData(player, "Character");
@@ -237,7 +238,7 @@ namespace mtgvrp.job_manager.garbageman
 
         }
 
-        [Command("endtrash")]
+        [Command("endtrash"), Help(HelpManager.CommandGroups.GarbageJob, "Ends your current trash job.")]
         public void endtrash_cmd(Client player)
         {
             Character character = API.getEntityData(player, "Character");
@@ -266,7 +267,7 @@ namespace mtgvrp.job_manager.garbageman
 
         }
 
-        [Command("pickuptrash")]
+        [Command("pickuptrash"), Help(HelpManager.CommandGroups.GarbageJob, "Picks up trash from a garbage bin.")]
         public void pickuptrash_cmd(Client player)
         {
             Character character = API.getEntityData(player, "Character");

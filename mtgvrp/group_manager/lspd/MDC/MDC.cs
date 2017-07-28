@@ -5,8 +5,8 @@ using GrandTheftMultiplayer.Server.API;
 using GrandTheftMultiplayer.Server.Elements;
 using GrandTheftMultiplayer.Server.Managers;
 using mtgvrp.core;
+using mtgvrp.core.Help;
 using mtgvrp.database_manager;
-using mtgvrp.inventory;
 using mtgvrp.phone_manager;
 using mtgvrp.player_manager;
 using mtgvrp.vehicle_manager;
@@ -57,7 +57,7 @@ namespace mtgvrp.group_manager.lspd.MDC
             API.onClientEventTrigger += MDC_onClientEventTrigger;
         }
 
-        [Command("mdc")]
+        [Command("mdc"), Help(HelpManager.CommandGroups.LSPD, "Open the MDC. Must be in vehicle.")]
         public void mdc_cmd(Client player)
         {
             var character = player.GetCharacter();

@@ -11,13 +11,14 @@ using GrandTheftMultiplayer.Server.Managers;
 using GrandTheftMultiplayer.Shared;
 using GrandTheftMultiplayer.Shared.Math;
 using mtgvrp.core;
+using mtgvrp.core.Help;
 using mtgvrp.inventory;
 using mtgvrp.property_system;
 using Color = mtgvrp.core.Color;
 
 namespace mtgvrp.job_manager.hunting
 {
-   
+
 
     public class HuntingManager : Script
     {
@@ -153,7 +154,7 @@ namespace mtgvrp.job_manager.hunting
             return choices[Init.Random.Next(choices.Length)];
         }
 
-        [Command("gotoanimal")]
+        [Command("gotoanimal"), Help(HelpManager.CommandGroups.AdminLevel2, "Goto an animal", "Id of the animal you'd like to TP to.")]
         public void gotoanimal_cmd(Client player, int index)
         {
             if (player.GetAccount().AdminLevel < 1)
@@ -184,7 +185,7 @@ namespace mtgvrp.job_manager.hunting
             return;
         }
 
-        [Command("pickupdeer")]
+        [Command("pickupdeer"), Help(HelpManager.CommandGroups.HuntingActivity, "Picks up the deer from the ground so you could sell it.")]
         public void pickupdeer_cmd(Client player)
         {
             var character = player.GetCharacter();
@@ -237,7 +238,7 @@ namespace mtgvrp.job_manager.hunting
             }
         }
 
-        [Command("pickupboar")]
+        [Command("pickupboar"), Help(HelpManager.CommandGroups.HuntingActivity, "Picks up the boar from the ground so you could sell it.")]
         public void pickupboar_cmd(Client player)
         {
             var character = player.GetCharacter();
@@ -290,7 +291,7 @@ namespace mtgvrp.job_manager.hunting
             }
         }
 
-        [Command("redeemdeertag")]
+        [Command("redeemdeertag"), Help(HelpManager.CommandGroups.HuntingActivity, "Sells the deer you have in your hands.")]
         public void redeemdeertag_cmd(Client player)
         {
             var prop = PropertyManager.IsAtPropertyInteraction(player);
@@ -327,7 +328,7 @@ namespace mtgvrp.job_manager.hunting
             else API.sendChatMessageToPlayer(player, Color.White, "~r~ERROR:~w~ You do not have a Deer tag for today.");
         }
 
-        [Command("redeemboartag")]
+        [Command("redeemboartag"), Help(HelpManager.CommandGroups.HuntingActivity, "Sells the boar you have in your hands.")]
         public void redeemboartag_cmd(Client player)
         {
             var prop = PropertyManager.IsAtPropertyInteraction(player);

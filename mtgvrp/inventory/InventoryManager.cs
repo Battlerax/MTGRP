@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http.Headers;
 using System.Reflection;
 using System.Xml;
 using GrandTheftMultiplayer.Server.API;
@@ -12,6 +11,7 @@ using GrandTheftMultiplayer.Shared.Math;
 
 
 using mtgvrp.core;
+using mtgvrp.core.Help;
 using mtgvrp.core.Items;
 using mtgvrp.dmv;
 using mtgvrp.group_manager.lsgov;
@@ -182,7 +182,7 @@ namespace mtgvrp.inventory
                     storage.Inventory.Add(item);
                     OnStorageGetItem?.Invoke(storage, new OnGetItemEventArgs(sentitem, amount));
                     OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item.GetType(), item.Amount));
-                    LogManager.Log(LogManager.LogTypes.Storage, $"[{storage.GetType()}] Add Item '{item.LongName}', Amount: '{amount}'");
+                    LogManager.Log(LogManager.LogTypes.Storage, $"[{GetStorageInfo(storage)}] Add Item '{item.LongName}', Amount: '{amount}'");
                     return GiveItemErrors.Success;
                 }
                 else
@@ -207,7 +207,7 @@ namespace mtgvrp.inventory
                     }
                     OnStorageGetItem?.Invoke(storage, new OnGetItemEventArgs(sentitem, amount));
                     OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item.GetType(), oldItem.Amount));
-                    LogManager.Log(LogManager.LogTypes.Storage, $"[{storage.GetType()}] Add Item '{item.LongName}', Amount: '{amount}'");
+                    LogManager.Log(LogManager.LogTypes.Storage, $"[{GetStorageInfo(storage)}] Add Item '{item.LongName}', Amount: '{amount}'");
                     return GiveItemErrors.Success;
                 }
                 else
@@ -319,7 +319,7 @@ namespace mtgvrp.inventory
                     OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(i, amount));
                 }
                 OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item, 0));
-                LogManager.Log(LogManager.LogTypes.Storage, $"[{storage.GetType()}] Removed Item '{ItemTypeToNewObject(item).LongName}', Amount: '{amount}'");
+                LogManager.Log(LogManager.LogTypes.Storage, $"[{GetStorageInfo(storage)}] Removed Item '{ItemTypeToNewObject(item).LongName}', Amount: '{amount}'");
                 return true;
             }
 
@@ -332,7 +332,7 @@ namespace mtgvrp.inventory
 
             OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(itm, amount));
             OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item, itm.Amount));
-            LogManager.Log(LogManager.LogTypes.Storage, $"[{storage.GetType()}] Removed Item '{ItemTypeToNewObject(item).LongName}', Amount: '{amount}'");
+            LogManager.Log(LogManager.LogTypes.Storage, $"[{GetStorageInfo(storage)}] Removed Item '{ItemTypeToNewObject(item).LongName}', Amount: '{amount}'");
             return true;
         }
 
@@ -379,7 +379,7 @@ namespace mtgvrp.inventory
             GiveInventoryItem(storage, ItemTypeToNewObject(item), amount);
         }
 
-        public string GetStorageInfo(IStorage stor)
+        public static string GetStorageInfo(IStorage stor)
         {
             string text = "";
 
@@ -391,7 +391,7 @@ namespace mtgvrp.inventory
             else if (stor.GetType() == typeof(vehicle_manager.Vehicle))
             {
                 var c = (vehicle_manager.Vehicle)stor;
-                text = $"Vehicle<{c.Id}, {API.getVehicleDisplayName(c.VehModel)}>";
+                text = $"Vehicle<{c.Id}, {API.shared.getVehicleDisplayName(c.VehModel)}>";
             }
             else if (stor.GetType() == typeof(Property))
             {
@@ -589,7 +589,7 @@ namespace mtgvrp.inventory
 
         #endregion
 
-        [Command("give")]
+        [Command("give"), Help(HelpManager.CommandGroups.Inventory, "Give an item to a player near you.", "id or name of the target player.", "Short name of the item.", "The amount you'd like to give.")]
         public void give_cmd(Client player, string id, string item, int amount)
         {
             var targetClient = PlayerManager.ParseClient(id);
@@ -658,7 +658,7 @@ namespace mtgvrp.inventory
             }
         }
 
-        [Command("drop")]
+        [Command("drop"), Help(HelpManager.CommandGroups.Inventory, "Drop an item to the void where no one will ever find..", "Name of the item", "Amount you'd like to drop.")]
         public void drop_cmd(Client player, string item, int amount)
         {
             Character character = player.GetCharacter();
@@ -706,7 +706,7 @@ namespace mtgvrp.inventory
 
         private Dictionary<NetHandle, KeyValuePair<string[], IInventoryItem>> _stashedItems = new Dictionary<NetHandle, KeyValuePair<string[], IInventoryItem>>();
 
-        [Command("stash")]
+        [Command("stash"), Help(HelpManager.CommandGroups.Inventory, "Stashes an item on the ground for someone else to /pickupstash", "Name of the item", "Amount to stash.")]
         public void stash_cmd(Client player, string item, int amount)
         {
             Character character = player.GetCharacter();
@@ -745,7 +745,7 @@ namespace mtgvrp.inventory
             LogManager.Log(LogManager.LogTypes.Stats, $"[Stash] {character.CharacterName}[{player.GetAccount().AccountName}] has stashed '{sendersItem[0].LongName}', Amount: '{amount}' at {player.position}.");
         }
 
-        [Command("pickupstash")]
+        [Command("pickupstash"), Help(HelpManager.CommandGroups.Inventory, "Picks up a stash from the ground near you.")]
         public void pickupstash_cmd(Client player)
         {
             //Check if near any stash.
@@ -799,7 +799,7 @@ namespace mtgvrp.inventory
 
         #endregion
 
-        [Command("inventory", Alias = "inv")]
+        [Command("inventory", Alias = "inv"), Help(HelpManager.CommandGroups.Inventory, "See your inventory items.")]
         public void showinventory_cmd(Client player)
         {
             //TODO: For now can be just text-based even though I'd recommend it to be a CEF.

@@ -3,6 +3,7 @@ using GrandTheftMultiplayer.Server.API;
 using GrandTheftMultiplayer.Server.Elements;
 using GrandTheftMultiplayer.Server.Managers;
 using mtgvrp.core;
+using mtgvrp.core.Help;
 using mtgvrp.player_manager;
 
 namespace mtgvrp.inventory.bags
@@ -51,7 +52,7 @@ namespace mtgvrp.inventory.bags
             }
         }
 
-        [Command("managebag")]
+        [Command("managebag"), Help(HelpManager.CommandGroups.Inventory, "Manages your backpack.")]
         public void Managebag(Client player)
         {
             Character character = player.GetCharacter();
@@ -66,7 +67,7 @@ namespace mtgvrp.inventory.bags
             InventoryManager.ShowInventoryManager(player, character, (BagItem)bag[0], "Inventory: ", "Bag: ");
         }
 
-        [Command("bagname")]
+        [Command("bagname"), Help(HelpManager.CommandGroups.Inventory, "Changes your bag name.", "The name")]
         public void BagName(Client player, string name)
         {
             Character character = player.GetCharacter();

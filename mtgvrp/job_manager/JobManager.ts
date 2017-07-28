@@ -1,4 +1,4 @@
-﻿/// <reference path="../../types-gtanetwork/index.d.ts" />
+﻿/// <reference path="../types-gt-mp/index.d.ts" />
 
 var cornerStart = null;
 var cornerUp = null;

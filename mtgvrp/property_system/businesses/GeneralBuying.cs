@@ -14,7 +14,6 @@ using mtgvrp.weapon_manager;
 using mtgvrp.player_manager;
 using mtgvrp.group_manager;
 using mtgvrp.group_manager.lsgov;
-using mtgvrp.job_manager;
 using mtgvrp.job_manager.hunting;
 using mtgvrp.job_manager.scuba;
 using mtgvrp.core.Help;

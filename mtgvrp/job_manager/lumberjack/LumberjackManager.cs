@@ -7,6 +7,7 @@ using GrandTheftMultiplayer.Server.Managers;
 using GrandTheftMultiplayer.Shared;
 using GrandTheftMultiplayer.Shared.Math;
 using mtgvrp.core;
+using mtgvrp.core.Help;
 using mtgvrp.inventory;
 using mtgvrp.vehicle_manager;
 using MongoDB.Bson;
@@ -176,7 +177,7 @@ namespace mtgvrp.job_manager.lumberjack
             }
         }
 
-        [Command("createtree")]
+        [Command("createtree"), Help(HelpManager.CommandGroups.AdminLevel5, "Creates a tree for lumberjack under you.")]
         public void CreateTreeCmd(Client player)
         {
             if (player.GetAccount().AdminLevel < 4)
@@ -189,7 +190,7 @@ namespace mtgvrp.job_manager.lumberjack
             API.triggerClientEvent(player, "PLACE_OBJECT_ON_GROUND_PROPERLY", tree.Id.ToString(), "lumberjack_settreepositionadmin");
         }
 
-        [Command("deletetree")]
+        [Command("deletetree"), Help(HelpManager.CommandGroups.AdminLevel5, "Delete the nearest lumberjack tree to you.")]
         public void DeleteTreeCmd(Client player)
         {
             if (player.GetAccount().AdminLevel < 4)
@@ -205,7 +206,7 @@ namespace mtgvrp.job_manager.lumberjack
             tree.Delete();
         }
 
-        [Command("pickupwood")]
+        [Command("pickupwood"), Help(HelpManager.CommandGroups.LumberJob, "Pick up the nearest processed wood to you from the ground to your truck.")]
         public void PickupWood(Client player)
         {
             var character = player.GetCharacter();
@@ -254,7 +255,7 @@ namespace mtgvrp.job_manager.lumberjack
                 API.sendChatMessageToPlayer(player, "You have to be in a forklift to pickup the wood.");
         }
 
-        [Command("sellwood")]
+        [Command("sellwood"), Help(HelpManager.CommandGroups.LumberJob, "Sells the wood you currently have on the truck.")]
         public void SellWoodCmd(Client player)
         {
             var character = player.GetCharacter();

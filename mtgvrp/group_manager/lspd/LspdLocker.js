@@ -1,3 +1,4 @@
+"use strict";
 var lspd_menu = null;
 var menu_pool = null;
 API.onServerEventTrigger.connect(function (eventName, args) {

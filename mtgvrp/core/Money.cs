@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using mtgvrp.inventory;
-using mtgvrp.player_manager;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 

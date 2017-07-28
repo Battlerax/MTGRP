@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Timers;
+using GrandTheftMultiplayer.Server.Elements;
 
 namespace mtgvrp.core
 {
@@ -34,7 +31,7 @@ namespace mtgvrp.core
             {
                 DebugManager.DebugMessage("** Starting log archive process.", 1);
 
-                var path = "OldLogs/" + DateTime.Now.Year + "-" + DateTime.Now.Month;
+                var path = "Logs/OldLogs/" + DateTime.Now.Year + "-" + DateTime.Now.Month;
                 //Make sure folders exist.
                 Directory.CreateDirectory(path);
 
@@ -53,7 +50,7 @@ namespace mtgvrp.core
 
         public enum LogTypes
         {
-            AdminActions,
+            AdminActions,   //Logged
             Bans,           //Logged
             Commands,       //Logged
             Connection,     //Logged
@@ -69,6 +66,7 @@ namespace mtgvrp.core
             Storage,        //Logged
             Unbans,         //Logged
             Warns,          //Logged
+            MappingRequests,
             Ads,            //Logged
         }
 
@@ -83,5 +81,7 @@ namespace mtgvrp.core
             //Append
             File.AppendAllText("Logs/" + file, $"[{DateTime.UtcNow:R}] " + log + "\r\n");
         }
+
+        public static string GetLogName(Client player) => $"{player.GetCharacter().CharacterName}[{player.GetAccount().AccountName}]";
     }
 }

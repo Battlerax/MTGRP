@@ -47,13 +47,13 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 
 					  API.sendNotification("~r~Enter your report reason.");
 					  API.sendChatMessage("~r~Enter your report reason.");
-                      var message = API.getUserInput("", 200);
-					  if(message.length == 0){
+                      var nmessage = API.getUserInput("", 200);
+                      if (nmessage.length == 0){
 						API.sendNotification("~r~Please enter a valid report reason.");
 						API.sendChatMessage("~r~Please enter a valid report reason.");
 						return;
 					  }
-                      API.triggerServerEvent("OnReportMade", message, targetPlayer);
+                      API.triggerServerEvent("OnReportMade", nmessage, targetPlayer);
                     }
 
                 });

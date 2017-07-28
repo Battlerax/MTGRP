@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Timers;
 using GrandTheftMultiplayer.Server.API;
 using GrandTheftMultiplayer.Server.Constant;
@@ -10,6 +11,7 @@ using GrandTheftMultiplayer.Shared.Math;
 
 
 using mtgvrp.core;
+using mtgvrp.core.Help;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;
 using mtgvrp.vehicle_manager;
@@ -173,7 +175,7 @@ namespace mtgvrp.job_manager.taxi
             VehicleManager.respawn_vehicle(veh);
         }
 
-        [Command("taxiduty")]
+        [Command("taxiduty"), Help(HelpManager.CommandGroups.TaxiJob, "Toggle taxi duty.")]
         public void taxiduty_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -224,7 +226,7 @@ namespace mtgvrp.job_manager.taxi
             }
         }
 
-        [Command("setfare")]
+        [Command("setfare"), Help(HelpManager.CommandGroups.TaxiJob, "Sets your taxi fare.", "The price you'd like to set as the fare.")]
         public void setfare_cmd(Client player, int farePrice)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -252,7 +254,7 @@ namespace mtgvrp.job_manager.taxi
             API.sendChatMessageToPlayer(player, Color.Yellow, "[TAXI] You have changed your taxi fare to $" + farePrice + ".");
         }
 
-        [Command("requesttaxi")]
+        [Command("requesttaxi"), Help(HelpManager.CommandGroups.TaxiJob, "Request a taxi.")]
         public void requesttaxi_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -284,7 +286,7 @@ namespace mtgvrp.job_manager.taxi
             }
         }
 
-        [Command("setdestination")]
+        [Command("setdestination"), Help(HelpManager.CommandGroups.TaxiJob, "Sets the taxi destintion, after you get in.")]
         public void setdestination_cmd(Client player)
         {
             if (!API.isPlayerInAnyVehicle(player))
@@ -326,7 +328,7 @@ namespace mtgvrp.job_manager.taxi
             API.triggerClientEvent(c.TaxiDriver.Client, "update_fare_display", c.TaxiDriver.TaxiFare, c.TotalFare, fareMsg);
         }
 
-        [Command("acceptfare")]
+        [Command("acceptfare"), Help(HelpManager.CommandGroups.TaxiJob, "Accepts a taxi fare.", "Id of the player you'd like to accept.")]
         public void acceptfare_cmd(Client player, string id)
         {
             Character character = API.getEntityData(player.handle, "Character");

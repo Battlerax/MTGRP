@@ -1,7 +1,4 @@
 ﻿using System;
-using System.CodeDom;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
@@ -12,12 +9,14 @@ using GrandTheftMultiplayer.Server.Managers;
 using GrandTheftMultiplayer.Shared;
 using GrandTheftMultiplayer.Shared.Math;
 using mtgvrp.core;
+using mtgvrp.core.Help;
 using mtgvrp.database_manager;
 using mtgvrp.group_manager.lsgov;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;
 using mtgvrp.property_system;
 using mtgvrp.vehicle_manager;
+using MongoDB.Driver;
 
 namespace mtgvrp.dmv
 {
@@ -209,8 +208,8 @@ namespace mtgvrp.dmv
                 VehicleManager.spawn_vehicle(car[2]);
             }
 
-            ObjectRemovel.RegisterObject(new Vector3(266.102691650391, -348.641571044922, 43.7301368713379), 242636620);
-            ObjectRemovel.RegisterObject(new Vector3(285.719482421875, -356.067474365234, 44.1401863098145), 406416082);
+            ObjectRemoval.RegisterObject(new Vector3(266.102691650391, -348.641571044922, 43.7301368713379), 242636620);
+            ObjectRemoval.RegisterObject(new Vector3(285.719482421875, -356.067474365234, 44.1401863098145), 406416082);
 
             API.consoleOutput("Spawned DMV Vehicles.");
         }
@@ -240,7 +239,7 @@ namespace mtgvrp.dmv
             }
         }
 
-        [Command("starttest")]
+        [Command("starttest"), Help(HelpManager.CommandGroups.Vehicles, "Starts driving test. (Must be at a DMV)")]
         public void StartTest(Client player)
         {
             var prop = PropertyManager.IsAtPropertyInteraction(player);
@@ -343,7 +342,7 @@ namespace mtgvrp.dmv
 
         }
 
-        [Command("registervehicle")]
+        [Command("registervehicle"), Help(HelpManager.CommandGroups.Vehicles, "Register your vehicle. (At DMV)")]
         public void RegisterVehicle(Client player)
         {
             var prop = PropertyManager.IsAtPropertyInteraction(player);
@@ -371,7 +370,7 @@ namespace mtgvrp.dmv
             API.triggerClientEvent(player, "DMV_SELECTVEHICLE", API.toJson(vehList));
         }
 
-        [Command("showlicense")]
+        [Command("showlicense"), Help(HelpManager.CommandGroups.Vehicles, "Show your driving license to someone.", "Id of target.")]
         public void ShowLicense(Client player, string target)
         {
             var targetPlayer = PlayerManager.ParseClient(target);
@@ -403,7 +402,7 @@ namespace mtgvrp.dmv
             ChatManager.RoleplayMessage(player, "shows his driving license to " + targetPlayer.GetCharacter().rp_name(), ChatManager.RoleplayMe);
         }
 
-        [Command("showregistration", Alias = "showreg")]
+        [Command("showregistration", Alias = "showreg"), Help(HelpManager.CommandGroups.Vehicles, "Show your vehicles registeration to someone.", "Id of target.")]
         public void ShowReg(Client player, string target)
         {
             var targetPlayer = PlayerManager.ParseClient(target);

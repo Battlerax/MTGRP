@@ -1,4 +1,5 @@
-/// <reference path="../../types-gtanetwork/index.d.ts" />
+/// <reference path="../types-gt-mp/index.d.ts" />
+"use strict";
 var cornerStart = null;
 var cornerUp = null;
 var cornerDown = null;

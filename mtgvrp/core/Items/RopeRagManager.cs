@@ -2,14 +2,16 @@
 using GrandTheftMultiplayer.Server.API;
 using GrandTheftMultiplayer.Server.Elements;
 using GrandTheftMultiplayer.Server.Managers;
+using mtgvrp.core.Help;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;
+using mtgvrp.property_system.businesses;
 
 namespace mtgvrp.core.Items
 {
     class RopeRagManager : Script
     {
-        [Command("tie")]
+        [Command("tie"), Help.Help(HelpManager.CommandGroups.General, "Tie someone so he can't move.", "The plauyerid")]
         public void tie_cmd(Client player, string id)
         {
             Client target = PlayerManager.ParseClient(id);
@@ -44,7 +46,7 @@ namespace mtgvrp.core.Items
             }
         }
 
-        [Command("untie")]
+        [Command("untie"), Help.Help(HelpManager.CommandGroups.General, "Untie someone so can move again.", "The playerid")]
         public void untie_cmd(Client player, string id)
         {
             Client target = PlayerManager.ParseClient(id);
@@ -75,7 +77,7 @@ namespace mtgvrp.core.Items
             }
         }
 
-        [Command("blindfold")]
+        [Command("blindfold"), Help.Help(HelpManager.CommandGroups.General, "Blindfold someone so he couldn't see.", "The player id")]
         public void blindfold_cmd(Client player, string id)
         {
             Client target = PlayerManager.ParseClient(id);
@@ -110,7 +112,7 @@ namespace mtgvrp.core.Items
             }
         }
 
-        [Command("unblindfold")]
+        [Command("unblindfold"), Help.Help(HelpManager.CommandGroups.General, "Unlindfold someone so he could see again.", "The player id")]
         public void unblindfold_cmd(Client player, string id)
         {
             Client target = PlayerManager.ParseClient(id);
@@ -141,7 +143,7 @@ namespace mtgvrp.core.Items
             }
         }
 
-        [Command("rag")]
+        [Command("rag"), Help.Help(HelpManager.CommandGroups.General, "Rag someone so he couldn't talk.", "The player id")]
         public void rag_cmd(Client player, string id)
         {
             Client target = PlayerManager.ParseClient(id);
@@ -175,7 +177,7 @@ namespace mtgvrp.core.Items
             }
         }
 
-        [Command("unrag")]
+        [Command("unrag"), Help.Help(HelpManager.CommandGroups.General, "Unrag someone so he couldn talk again.", "The player id")]
         public void unrag_cmd(Client player, string id)
         {
             Client target = PlayerManager.ParseClient(id);
@@ -205,7 +207,7 @@ namespace mtgvrp.core.Items
             }
         }
 
-        [Command("usesprunk")]
+        [Command("usesprunk"), Help.Help(HelpManager.CommandGroups.General, "Use a sprunk item. Gets you +5 health.")]
         public void usesprunk_cmd(Client player)
         {
             var rag = InventoryManager.DoesInventoryHaveItem<SprunkItem>(player.GetCharacter());
@@ -215,7 +217,7 @@ namespace mtgvrp.core.Items
                 return;
             }
 
-            player.health += 10;
+            player.health += 5;
             if (player.health > 100) player.health = 100;
             ChatManager.RoleplayMessage(player, "drinks a sprunk.", ChatManager.RoleplayMe);
             InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(SprunkItem), 1);

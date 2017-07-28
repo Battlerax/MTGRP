@@ -9,6 +9,7 @@ using mtgvrp.database_manager;
 using mtgvrp.group_manager;
 using mtgvrp.player_manager;
 using GrandTheftMultiplayer.Server.Managers;
+using mtgvrp.core.Help;
 using MongoDB.Driver;
 
 namespace mtgvrp.door_manager
@@ -209,7 +210,7 @@ namespace mtgvrp.door_manager
             }
         }
 
-        [Command("managedoors")]
+        [Command("managedoors"), Help(HelpManager.CommandGroups.AdminLevel5, "Manage all existing doors.")]
         public void manage_doors(Client player)
         {
             if (player.GetAccount().AdminLevel >= 5)
@@ -219,7 +220,7 @@ namespace mtgvrp.door_manager
             }
         }
 
-        [Command("editdoor")]
+        [Command("editdoor"), Help(HelpManager.CommandGroups.AdminLevel5, "Edit a door.", "Door id")]
         public void edit_door(Client player, int id)
         {
             if (player.GetAccount().AdminLevel >= 5)
@@ -235,7 +236,7 @@ namespace mtgvrp.door_manager
         }
 
         //Failsafe if the cursor doesn't work.
-        [Command("createdoor", GreedyArg = true)]
+        [Command("createdoor", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel5, "Create a door manually.", "The door object model", "X position", "Y position", "Z position", "Description of the door")]
         public void create_door(Client player, int model, float x, float y, float z, string desc)
         {
             if (player.GetAccount().AdminLevel >= 5)
@@ -258,7 +259,7 @@ namespace mtgvrp.door_manager
             return false;
         }
 
-        [Command("lockdoor")]
+        [Command("lockdoor"), Help(HelpManager.CommandGroups.AdminLevel5 | HelpManager.CommandGroups.GroupGeneral, "Locks a door.", "Door id")]
         public void Lockdoor(Client player, int id)
         {
             var door = Door.Doors.SingleOrDefault(x => x.Id == id);
@@ -284,7 +285,7 @@ namespace mtgvrp.door_manager
                 API.sendChatMessageToPlayer(player, "Insufficient permissions.");
         }
 
-        [Command("unlockdoor")]
+        [Command("unlockdoor"), Help(HelpManager.CommandGroups.AdminLevel5 | HelpManager.CommandGroups.GroupGeneral, "Unlocks a door.", "Door id")]
         public void Unlockdoor(Client player, int id)
         {
             var door = Door.Doors.SingleOrDefault(x => x.Id == id);

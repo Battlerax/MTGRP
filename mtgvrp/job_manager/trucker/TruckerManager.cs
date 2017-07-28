@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using GrandTheftMultiplayer.Server.API;
@@ -11,6 +8,7 @@ using GrandTheftMultiplayer.Server.Managers;
 using GrandTheftMultiplayer.Shared;
 using GrandTheftMultiplayer.Shared.Math;
 using mtgvrp.core;
+using mtgvrp.core.Help;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;
 using mtgvrp.property_system;
@@ -274,7 +272,7 @@ namespace mtgvrp.job_manager.trucker
 
         }
 
-        [Command("startrun")]
+        [Command("startrun"), Help(HelpManager.CommandGroups.TruckerJob, "Start a trucker run.", "Run type [gas/supplies]")]
         public void StartRun(Client player, string type)
         {
             var character = player.GetCharacter();
@@ -355,7 +353,7 @@ namespace mtgvrp.job_manager.trucker
             }
         }
 
-        [Command("canceltruck")]
+        [Command("canceltruck"), Help(HelpManager.CommandGroups.TruckerJob, "Cancels the current trucker run")]
         public void CancelRun(Client player)
         {
             if (player.GetCharacter().TruckingStage == Character.TruckingStages.None)
@@ -393,7 +391,7 @@ namespace mtgvrp.job_manager.trucker
             API.sendChatMessageToPlayer(player, "The trucking run has been done or cancelled.");
         }
 
-        [Command("supplydemand")]
+        [Command("supplydemand"), Help(HelpManager.CommandGroups.TruckerJob, "Check the current supply and gas status.")]
         public void CheckDemand(Client player)
         {
 

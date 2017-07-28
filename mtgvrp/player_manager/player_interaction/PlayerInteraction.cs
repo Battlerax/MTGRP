@@ -6,6 +6,7 @@ using GrandTheftMultiplayer.Server.Elements;
 using GrandTheftMultiplayer.Server.Managers;
 using GrandTheftMultiplayer.Shared;
 using mtgvrp.core;
+using mtgvrp.core.Help;
 using Color = mtgvrp.core.Color;
 
 namespace mtgvrp.player_manager.player_interaction
@@ -152,7 +153,7 @@ namespace mtgvrp.player_manager.player_interaction
             };
         }
 
-        [Command("detain", GreedyArg = true)]
+        [Command("detain", GreedyArg = true), Help(HelpManager.CommandGroups.Vehicles, "Detain someone into your vehicle. (Must be inside the vehicle)", "The player id", "Seat number you'd like to detain to")]
         public void DetainPlayer(Client player, string id, string seatNumber)
         {
 
@@ -195,7 +196,7 @@ namespace mtgvrp.player_manager.player_interaction
 
         }
 
-        [Command("eject", GreedyArg = true)]
+        [Command("eject", GreedyArg = true), Help(HelpManager.CommandGroups.Vehicles, "Eject someone from your vehicle.", "The player you'd like to kick out")]
         public void ejectPlayer(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);

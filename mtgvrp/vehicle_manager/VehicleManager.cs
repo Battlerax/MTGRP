@@ -456,7 +456,7 @@ namespace mtgvrp.vehicle_manager
 
         }
 
-        [Command("dropcar"), Help(HelpManager.CommandGroups.General, "Use this to sell a vehicle that is unowned by a player for some quick cash.", null)]
+        [Command("dropcar"), Help(HelpManager.CommandGroups.Vehicles, "Use this to sell a vehicle that is unowned by a player for some quick cash.", null)]
         public void dropcar_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -489,7 +489,7 @@ namespace mtgvrp.vehicle_manager
             player.sendChatMessage("A waypoint has been set. Take this vehicle to the waypoint to earn money.");
         }
 
-        [Command("lock"), Help(HelpManager.CommandGroups.General, "How to lock and unlock your vehicle.", null)]
+        [Command("lock"), Help(HelpManager.CommandGroups.Vehicles, "How to lock and unlock your vehicle.", null)]
         public void Lockvehicle_cmd(Client player)
         {
             var lastVehNetHandle = GetClosestVehicle(player, 10f);
@@ -511,43 +511,7 @@ namespace mtgvrp.vehicle_manager
             }
         }
 
-        [Command("respawnveh"), Help(HelpManager.CommandGroups.AdminLevel4, "To respawn the vehicle at it's parked point.", new[] { "ID of the vehicle", "True for spawning at it's parked point." })]
-
-        public void respawnveh_cmd(Client player, int id, bool originalPos = true)
-        {
-            var account = player.GetAccount();
-            if (account.AdminLevel < 4)
-            {
-                return;
-            }
-
-            if (id > Vehicles.Count)
-            {
-                API.sendChatMessageToPlayer(player, Color.White, "Invalid vehicle ID.");
-                return; 
-            }
-
-            var vehicle = Vehicles[id];
-            if (vehicle == null)
-            {
-                API.sendChatMessageToPlayer(player, Color.White,
-                    "~r~[ERROR]~w~ No vehicle was found with that nethandle.");
-                return;
-            }
-
-            if (originalPos == true)
-            {
-                VehicleManager.respawn_vehicle(vehicle);
-            }
-            else
-            {
-                VehicleManager.respawn_vehicle(vehicle, API.getEntityPosition(vehicle.NetHandle));
-            }
-            API.sendChatMessageToPlayer(player, Color.White, "You have respawned the vehicle with id " + id);
-            return;
-        }
-
-        [Command("respawnunownedcars"), Help(HelpManager.CommandGroups.AdminLevel4, "Used to find your character statistics", new[] { "ID of target player." })]
+        [Command("respawnunownedcars"), Help(HelpManager.CommandGroups.AdminLevel4, "Used to find your character statistics", null)]
         public void respawnallcars_cmd(Client player)
         {
             var account = player.GetAccount();
@@ -567,7 +531,7 @@ namespace mtgvrp.vehicle_manager
             return;
         }
 
-        [Command("respawnnearbycars"), Help(HelpManager.CommandGroups.AdminLevel4, "Respawns all the vehicles near you to their original pos.", null)]
+        [Command("respawnnearbycars"), Help(HelpManager.CommandGroups.AdminLevel4, "Respawns all the vehicles near you to their original pos.", new [] {"The radius around you where the vehicles will get respawned."})]
         public void respawnnearbycars_cmd(Client player, int radius = 15)
         {
             var account = player.GetAccount();
