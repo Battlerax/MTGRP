@@ -159,6 +159,49 @@ namespace mtgvrp.core
             }
         }
 
+        [Command("togglenewbie"), Help.Help(HelpManager.CommandGroups.AdminLevel2, "Used to toggle newbie chat on and off.", null)]
+        public void togglenewbie_cmd(Client player)
+        {
+            if(player.GetAccount().AdminLevel < 2)
+            {
+                return;
+            }
+
+            NewbieStatus = !NewbieStatus;
+            API.sendChatMessageToAll("Newbie chat has been toggled " + ((NewbieStatus == true) ? ("on") : ("off")) + " by an admin.");
+            LogManager.Log(LogManager.LogTypes.AdminActions, player.GetAccount().AdminName + " has toggled newbie chat " + ((NewbieStatus == true) ? ("on") : ("off")) + ".");
+            return;
+        }
+
+
+        [Command("toggleooc"), Help.Help(HelpManager.CommandGroups.AdminLevel2, "Used to toggle ooc chat on and off.", null)]
+        public void toggleooc_cmd(Client player)
+        {
+            if (player.GetAccount().AdminLevel < 2)
+            {
+                return;
+            }
+
+            OocStatus = !OocStatus;
+            API.sendChatMessageToAll("OOC chat has been toggled " + ((OocStatus == true) ? ("on") : ("off")) + " by an admin.");
+            LogManager.Log(LogManager.LogTypes.AdminActions, player.GetAccount().AdminName + " has toggled ooc chat " + ((OocStatus == true) ? ("on") : ("off")) + ".");
+            return;
+        }
+
+        [Command("togglevip"), Help.Help(HelpManager.CommandGroups.AdminLevel2, "Used to toggle VIP chat on and off.", null)]
+        public void togglevip_cmd(Client player)
+        {
+            if (player.GetAccount().AdminLevel < 2)
+            {
+                return;
+            }
+
+            VipStatus = !VipStatus;
+            API.sendChatMessageToAll("VIP chat has been toggled " + ((VipStatus == true) ? ("on") : ("off")) + " by an admin.");
+            LogManager.Log(LogManager.LogTypes.AdminActions, player.GetAccount().AdminName + " has toggled VIP chat " + ((VipStatus == true) ? ("on") : ("off")) + ".");
+            return;
+        }
+
         [Command("newbiechat", Alias = "n", GreedyArg = true), Help.Help(HelpManager.CommandGroups.Chat, "Talk in the newbie chat to get help.", "Your question")]
         public void newbie_cmd(Client player, string message)
         {
