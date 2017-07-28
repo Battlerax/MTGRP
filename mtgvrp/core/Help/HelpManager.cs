@@ -63,9 +63,16 @@ namespace mtgvrp.core.Help
             var totalCommands = Assembly.GetExecutingAssembly()
                 .GetTypes()
                 .SelectMany(t => t.GetMethods())
-                .Count(m => m.GetCustomAttributes(typeof(CommandAttribute), false).Length > 0);
+                .Where(m => m.GetCustomAttributes(typeof(CommandAttribute), false).Length > 0).ToArray();
 
-            API.consoleOutput($"*** Intializing Help. [ {methods.Length + animCmds.Length} Commands Of {totalCommands} ]");
+            API.consoleOutput($"*** Intializing Help. [ {methods.Length + animCmds.Length} Commands Of {totalCommands.Length} ]");
+
+            //Show commands with no help.
+            foreach (var missing in totalCommands.Except(animCmds).Except(methods))
+            {
+                var info = missing.GetCustomAttribute<CommandAttribute>();
+                API.consoleOutput($"*** [ERROR] COMMAND `/{info.CommandString}` HAS NO HELP.");
+            }
 
             Dictionary<CommandGroups, List<string[]>> cmds = new Dictionary<CommandGroups, List<string[]>>();
             foreach (var cmd in methods)

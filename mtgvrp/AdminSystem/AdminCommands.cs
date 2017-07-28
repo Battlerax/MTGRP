@@ -1448,7 +1448,7 @@ namespace mtgvrp.AdminSystem
             }
         }
 
-        [Command("respawnveh", GreedyArg = false)]
+        [Command("respawnveh", GreedyArg = false), Help(HelpManager.CommandGroups.AdminLevel4, "Respawns a vehicle.", "Id of vehicle to respawn. (OPTIONAL)")]
         public void respawnveh_cmd(Client player, int id = 0)
         {
             Account account = API.shared.getEntityData(player.handle, "Account");

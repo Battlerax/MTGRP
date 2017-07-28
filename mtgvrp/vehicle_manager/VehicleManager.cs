@@ -511,42 +511,6 @@ namespace mtgvrp.vehicle_manager
             }
         }
 
-        [Command("respawnveh"), Help(HelpManager.CommandGroups.AdminLevel4, "To respawn the vehicle at it's parked point.", new[] { "ID of the vehicle", "True for spawning at it's parked point." })]
-
-        public void respawnveh_cmd(Client player, int id, bool originalPos = true)
-        {
-            var account = player.GetAccount();
-            if (account.AdminLevel < 4)
-            {
-                return;
-            }
-
-            if (id > Vehicles.Count)
-            {
-                API.sendChatMessageToPlayer(player, Color.White, "Invalid vehicle ID.");
-                return; 
-            }
-
-            var vehicle = Vehicles[id];
-            if (vehicle == null)
-            {
-                API.sendChatMessageToPlayer(player, Color.White,
-                    "~r~[ERROR]~w~ No vehicle was found with that nethandle.");
-                return;
-            }
-
-            if (originalPos == true)
-            {
-                VehicleManager.respawn_vehicle(vehicle);
-            }
-            else
-            {
-                VehicleManager.respawn_vehicle(vehicle, API.getEntityPosition(vehicle.NetHandle));
-            }
-            API.sendChatMessageToPlayer(player, Color.White, "You have respawned the vehicle with id " + id);
-            return;
-        }
-
         [Command("respawnunownedcars"), Help(HelpManager.CommandGroups.AdminLevel4, "Used to find your character statistics", null)]
         public void respawnallcars_cmd(Client player)
         {

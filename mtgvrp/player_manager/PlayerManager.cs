@@ -333,7 +333,7 @@ namespace mtgvrp.player_manager
             API.sendChatMessageToPlayer(player, Color.White, "__________________ TIME __________________");
         }
 
-        [Command("attempt", GreedyArg = true)]
+        [Command("attempt", GreedyArg = true), Help(HelpManager.CommandGroups.Roleplay, "Attempt to do something with a 50% chance of either success or fail.", "The attempt message")]
         public void attempt_cmd(Client player, string message)
         {
             Character character = API.getEntityData(player.handle, "Character");
