@@ -569,30 +569,6 @@ namespace mtgvrp.property_system.businesses
                 }
                     break;
 
-                case PropertyManager.PropertyTypes.VIPLounge:
-                {
-                    if (player.GetAccount().VipLevel < 1)
-                    {
-                        player.sendChatMessage("You cannot do this as you are not a VIP player.");
-                        return;
-                    }
-
-                    API.freezePlayer(player, true);
-                    List<string[]> itemsWithPrices = new List<string[]>();
-                    foreach (var itm in ItemManager.VIPItems)
-                    {
-                        itemsWithPrices.Add(new[]
-                        {
-                            itm[0], itm[1], itm[2],
-                            prop.ItemPrices.SingleOrDefault(x => x.Key == itm[0]).Value.ToString()
-                        });
-                    }
-                    API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()),
-                        "VIP Weapon Tints",
-                        prop.PropertyName);
-                }
-                    break;
-
                 case PropertyManager.PropertyTypes.Government:
                 {
                     API.freezePlayer(player, true);
