@@ -724,7 +724,7 @@ namespace mtgvrp.AdminSystem
             {
                 account.AdminDuty = true;
                 API.setPlayerNametagColor(player, 51, 102, 255);
-                API.setPlayerNametag(player, account.AdminName + " (" + character.Id + ")");
+                API.setPlayerNametag(player, account.AdminName + " (" + PlayerManager.GetPlayerId(character) + ")");
                 API.sendChatMessageToPlayer(player, "You are now on admin duty.");
                 return;
             }
@@ -1632,7 +1632,7 @@ namespace mtgvrp.AdminSystem
             }
 
             receiverAccount.VipLevel = level;
-            receiverAccount.VipExpirationDate = DateTime.Now.AddMinutes(days);
+            receiverAccount.VipExpirationDate = DateTime.Now.AddDays(days);
             receiverAccount.Save();
 
             receiver.sendChatMessage("Your ~y~VIP~y~ level was set to " + level + " by " + account.AdminName + ".");
