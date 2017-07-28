@@ -23,7 +23,7 @@ namespace mtgvrp
 {
     public class Init : Script
     {
-        public static string SERVER_NAME = "[EN] MT-Gaming V-RP Closed Beta";
+        public static string SERVER_NAME = "[EN] Moving Target Gaming Roleplay";
         public static string SERVER_VERSION = "v0.0.1231";
         public static string SERVER_WEBSITE = "www.mt-gaming.com";
         public static Random Random = new Random();
@@ -73,11 +73,11 @@ namespace mtgvrp
             LogManager.StartLogArchiveTimer();
 
             //Must be last to be called.
-            /*if (IsRunningOnMono())
+            if (IsRunningOnMono())
             {
                 API.consoleOutput("[INIT] Starting Discord Bot!");
                 DiscordManager.StartBot();
-            }*/
+            }
         }
 
         private void API_onResourceStop()
