@@ -828,7 +828,7 @@ namespace mtgvrp.property_system
             }
         }
 
-        [Command("buyproperty"), Help(HelpManager.CommandGroups.General, "Command to purchause property when near it.", null)]
+        [Command("buyproperty"), Help(HelpManager.CommandGroups.PropertyGeneral, "Command to purchause property when near it.", null)]
         public void Buyproperty(Client player)
         {
             var prop = IsAtPropertyEntrance(player);
@@ -859,7 +859,7 @@ namespace mtgvrp.property_system
                 $"You have sucessfully bought a ~r~{prop.Type}~w~ for ~g~{prop.PropertyPrice}~w~.");
         }
 
-        [Command("lockproperty"), Help(HelpManager.CommandGroups.General, "Locking your business/house.", null)]
+        [Command("lockproperty"), Help(HelpManager.CommandGroups.PropertyGeneral, "Locking your business/house.", null)]
         public void LockProperty(Client player)
         {
             var prop = IsAtPropertyEntrance(player) ?? IsAtPropertyInteraction(player);
@@ -883,7 +883,7 @@ namespace mtgvrp.property_system
             }
         }
 
-        [Command("propertyname", GreedyArg = true), Help(HelpManager.CommandGroups.General, "Changing the name of your property.", new[] { "Name" })]
+        [Command("propertyname", GreedyArg = true), Help(HelpManager.CommandGroups.PropertyGeneral, "Changing the name of your property.", new[] { "Name" })]
         public void PropertyName(Client player, string name)
         {
             var prop = IsAtPropertyEntrance(player) ?? IsAtPropertyInteraction(player);
@@ -906,7 +906,7 @@ namespace mtgvrp.property_system
             }
         }
 
-        [Command("propertystorage"), Help(HelpManager.CommandGroups.General, "Command to access the storage inside your property.", null)]
+        [Command("propertystorage"), Help(HelpManager.CommandGroups.PropertyGeneral, "Command to access the storage inside your property.", null)]
         public void PropertyStorage(Client player)
         {
             var prop = IsAtPropertyEntrance(player) ?? IsAtPropertyInteraction(player);

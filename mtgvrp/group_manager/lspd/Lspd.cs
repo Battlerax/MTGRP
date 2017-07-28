@@ -211,7 +211,7 @@ namespace mtgvrp.group_manager.lspd
             }
         }
 
-        [Command("createcrime", GreedyArg=true), Help(HelpManager.CommandGroups.LSPD, "Create a crime and add it to the crime list.", null)]
+        [Command("createcrime", GreedyArg=true), Help(HelpManager.CommandGroups.LSPD, "Create a crime and add it to the crime list.", "The type of the crime", "The jail time in seconds", "The fine amount", "Crime name")]
         public void createcrime_cmd(Client player, string type, int jailTime, int fine, string crimeName)
         {
             Character character = API.getEntityData(player.handle, "Character");
