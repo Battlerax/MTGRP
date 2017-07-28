@@ -86,7 +86,7 @@ namespace mtgvrp.job_manager.delivery
             InventoryManager.DeleteInventoryItem<SupplyItem>(player.GetCharacter(), amount);
             InventoryManager.DeleteInventoryItem<Money>(prop, amount * prop.SupplyPrice);
             InventoryManager.GiveInventoryItem(player.GetCharacter(), new Money(), amount * prop.SupplyPrice, true);
-
+            LogManager.Log(LogManager.LogTypes.Stats, $"[Job] {player.GetCharacter().CharacterName}[{player.GetAccount().AccountName}] has earned ${amount * prop.SupplyPrice} from delivering supplies. (Prop: {prop.Id}.");
             API.sendChatMessageToPlayer(player, $"You've successfully sold {amount} supplies to the property for a total of ${amount * prop.SupplyPrice}");
         }
     }

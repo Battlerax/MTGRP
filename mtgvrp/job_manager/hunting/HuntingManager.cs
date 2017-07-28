@@ -322,6 +322,8 @@ namespace mtgvrp.job_manager.hunting
                     character.LastRedeemedDeerTag = DateTime.Today.Date;
                     API.sendChatMessageToPlayer(player, Color.White, "You redeemed your Deer carcass for ~g~$2500!");
                     ChatManager.RoleplayMessage(character, "redeems their Deer carcass.", ChatManager.RoleplayMe);
+
+                    LogManager.Log(LogManager.LogTypes.Stats, $"[Minigame] {character.CharacterName}[{player.GetAccount().AccountName}] has earned $2500 from a deer tag.");
                 }
                 else API.sendChatMessageToPlayer(player, Color.White, "~r~ERROR:~w~ You do not have a Deer to redeem.");
             }
@@ -359,6 +361,8 @@ namespace mtgvrp.job_manager.hunting
                     character.LastRedeemedBoarTag = DateTime.Today.Date;
                     API.sendChatMessageToPlayer(player, Color.White, "You redeemed your Boar carcass for ~g~$2500!");
                     ChatManager.RoleplayMessage(character, "redeems their Boar carcass.", ChatManager.RoleplayMe);
+
+                    LogManager.Log(LogManager.LogTypes.Stats, $"[Minigame] {character.CharacterName}[{player.GetAccount().AccountName}] has earned $2500 from a boar tag.");
                 }
                 else API.sendChatMessageToPlayer(player, Color.White, "~r~ERROR:~w~ You do not have a Boar to redeem.");
             }
