@@ -14,8 +14,8 @@ namespace mtgvrp.property_system.businesses
 {
     class Clothing : Script
     {
-        List<string> _maleComponents = new List<string>();
-        List<string> _femaleComponents = new List<string>();
+        public static List<string> MaleComponents = new List<string>();
+        public static List<string> FemaleComponents = new List<string>();
 
         public Clothing()
         {
@@ -380,7 +380,7 @@ namespace mtgvrp.property_system.businesses
                     ["id"] = c.ComponentId,
                     ["variations"] = c.Variations.Count
                 };
-                _maleComponents.Add(API.toJson(dic));
+                MaleComponents.Add(API.toJson(dic));
             }
 
             foreach (var c in ComponentManager.ValidMaleShoes)
@@ -392,7 +392,7 @@ namespace mtgvrp.property_system.businesses
                     ["id"] = c.ComponentId,
                     ["variations"] = c.Variations.Count
                 };
-                _maleComponents.Add(API.toJson(dic));
+                MaleComponents.Add(API.toJson(dic));
             }
 
             foreach (var c in ComponentManager.ValidMaleAccessories)
@@ -404,7 +404,7 @@ namespace mtgvrp.property_system.businesses
                     ["id"] = c.ComponentId,
                     ["variations"] = c.Variations.Count
                 };
-                _maleComponents.Add(API.toJson(dic));
+                MaleComponents.Add(API.toJson(dic));
             }
 
             foreach (var c in ComponentManager.ValidMaleUndershirt)
@@ -416,7 +416,7 @@ namespace mtgvrp.property_system.businesses
                     ["id"] = c.ComponentId,
                     ["variations"] = c.Variations.Count
                 };
-                _maleComponents.Add(API.toJson(dic));
+                MaleComponents.Add(API.toJson(dic));
             }
 
             foreach (var c in ComponentManager.ValidMaleTops)
@@ -428,7 +428,7 @@ namespace mtgvrp.property_system.businesses
                     ["id"] = c.ComponentId,
                     ["variations"] = c.Variations.Count
                 };
-                _maleComponents.Add(API.toJson(dic));
+                MaleComponents.Add(API.toJson(dic));
             }
 
             foreach (var c in ComponentManager.ValidMaleHats)
@@ -440,7 +440,7 @@ namespace mtgvrp.property_system.businesses
                     ["id"] = c.ComponentId,
                     ["variations"] = c.Variations.Count
                 };
-                _maleComponents.Add(API.toJson(dic));
+                MaleComponents.Add(API.toJson(dic));
             }
 
             foreach (var c in ComponentManager.ValidMaleGlasses)
@@ -452,7 +452,7 @@ namespace mtgvrp.property_system.businesses
                     ["id"] = c.ComponentId,
                     ["variations"] = c.Variations.Count
                 };
-                _maleComponents.Add(API.toJson(dic));
+                MaleComponents.Add(API.toJson(dic));
             }
 
             foreach (var c in ComponentManager.ValidMaleEars)
@@ -464,7 +464,7 @@ namespace mtgvrp.property_system.businesses
                     ["id"] = c.ComponentId,
                     ["variations"] = c.Variations.Count
                 };
-                _maleComponents.Add(API.toJson(dic));
+                MaleComponents.Add(API.toJson(dic));
             }
 
 
@@ -477,7 +477,7 @@ namespace mtgvrp.property_system.businesses
                     ["id"] = c.ComponentId,
                     ["variations"] = c.Variations.Count
                 };
-                _femaleComponents.Add(API.toJson(dic));
+                FemaleComponents.Add(API.toJson(dic));
             }
 
             foreach (var c in ComponentManager.ValidFemaleShoes)
@@ -489,7 +489,7 @@ namespace mtgvrp.property_system.businesses
                     ["id"] = c.ComponentId,
                     ["variations"] = c.Variations.Count
                 };
-                _femaleComponents.Add(API.toJson(dic));
+                FemaleComponents.Add(API.toJson(dic));
             }
 
             foreach (var c in ComponentManager.ValidFemaleAccessories)
@@ -501,7 +501,7 @@ namespace mtgvrp.property_system.businesses
                     ["id"] = c.ComponentId,
                     ["variations"] = c.Variations.Count
                 };
-                _femaleComponents.Add(API.toJson(dic));
+                FemaleComponents.Add(API.toJson(dic));
             }
 
             foreach (var c in ComponentManager.ValidFemaleUndershirt)
@@ -513,7 +513,7 @@ namespace mtgvrp.property_system.businesses
                     ["id"] = c.ComponentId,
                     ["variations"] = c.Variations.Count
                 };
-                _femaleComponents.Add(API.toJson(dic));
+                FemaleComponents.Add(API.toJson(dic));
             }
 
             foreach (var c in ComponentManager.ValidFemaleTops)
@@ -525,7 +525,7 @@ namespace mtgvrp.property_system.businesses
                     ["id"] = c.ComponentId,
                     ["variations"] = c.Variations.Count
                 };
-                _femaleComponents.Add(API.toJson(dic));
+                FemaleComponents.Add(API.toJson(dic));
             }
 
             foreach (var c in ComponentManager.ValidFemaleHats)
@@ -537,7 +537,7 @@ namespace mtgvrp.property_system.businesses
                     ["id"] = c.ComponentId,
                     ["variations"] = c.Variations.Count
                 };
-                _femaleComponents.Add(API.toJson(dic));
+                FemaleComponents.Add(API.toJson(dic));
             }
 
             foreach (var c in ComponentManager.ValidFemaleGlasses)
@@ -549,7 +549,7 @@ namespace mtgvrp.property_system.businesses
                     ["id"] = c.ComponentId,
                     ["variations"] = c.Variations.Count
                 };
-                _femaleComponents.Add(API.toJson(dic));
+                FemaleComponents.Add(API.toJson(dic));
             }
 
             foreach (var c in ComponentManager.ValidFemaleEars)
@@ -561,7 +561,7 @@ namespace mtgvrp.property_system.businesses
                     ["id"] = c.ComponentId,
                     ["variations"] = c.Variations.Count
                 };
-                _femaleComponents.Add(API.toJson(dic));
+                FemaleComponents.Add(API.toJson(dic));
             }
             API.consoleOutput("Finished loading componentes into array for clothes.");
         }
@@ -674,7 +674,7 @@ namespace mtgvrp.property_system.businesses
             }
 
             var prices = biz.ItemPrices.Select(x => x.Value).ToArray();
-            API.triggerClientEvent(player, "properties_buyclothes", (character.Model.Gender == Character.GenderMale ? _maleComponents : _femaleComponents), API.toJson(oldClothes), API.toJson(prices));
+            API.triggerClientEvent(player, "properties_buyclothes", (character.Model.Gender == Character.GenderMale ? MaleComponents : FemaleComponents), API.toJson(oldClothes), API.toJson(prices));
         }
 
         [Command("buybag"), Help(HelpManager.CommandGroups.General, "Used inside a clothing store to buy a bag.", null)]
