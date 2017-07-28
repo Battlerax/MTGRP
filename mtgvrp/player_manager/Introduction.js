@@ -106,7 +106,7 @@ function entity_spawn(type) {
 }
 
 function bus_driving_bridge(){
-	vehicle = API.createVehicle(-713569950, new Vector3(-276.1117, -2411.626, 59.68943), new Vector3(0, 0, 53.19402), 0, 0, API.getEntityDimension(API.getLocalPlayer()));
+	vehicle = API.createVehicle(-713569950, new Vector3(-276.1117, -2411.626, 59.68943), new Vector3(0, 0, 53.19402));
 	API.setPlayerIntoVehicle(vehicle, -1);
 	API.setVehicleEngineStatus(vehicle, true);
 	API.callNative("TASK_VEHICLE_DRIVE_TO_COORD", API.getLocalPlayer(), vehicle, -582.3301, -2201.367, 56.25008, 120.0, 1.0, -713569950, 16777216, 1.0, true);
@@ -114,14 +114,14 @@ function bus_driving_bridge(){
 }
 
 function bus_driving_station(){
-	vehicle = API.createVehicle(-713569950, new Vector3(513.3119, -676.2706, 25.19653), new Vector3(0, 0, 85.25442), 0, 0, API.getEntityDimension(API.getLocalPlayer()));
+	vehicle = API.createVehicle(-713569950, new Vector3(513.3119, -676.2706, 25.19653), new Vector3(0, 0, 85.25442));
 	API.setPlayerIntoVehicle(vehicle, -1);
 	API.setVehicleEngineStatus(vehicle, true);
 	API.callNative("TASK_VEHICLE_DRIVE_TO_COORD", API.getLocalPlayer(), vehicle, 464.645, -673.3629, 27.20791, 10.0, 1.0, -713569950, 16777216, 1.0, true);           
 }
 
 function player_exiting_bus(){
-	vehicle = API.createVehicle(-713569950, new Vector3(429.8345, -672.5932, 29.05217), new Vector3(0.9295838, 3.945374, 90.3828), 0, 0, API.getEntityDimension(API.getLocalPlayer()));
+	vehicle = API.createVehicle(-713569950, new Vector3(429.8345, -672.5932, 29.05217), new Vector3(0.9295838, 3.945374, 90.3828));
 	API.setPlayerIntoVehicle(vehicle, -1);
 	API.setVehicleEngineStatus(vehicle, true);
 	API.callNative("TASK_LEAVE_VEHICLE", API.getLocalPlayer(), vehicle, 0);
