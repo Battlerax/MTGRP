@@ -442,7 +442,7 @@ namespace mtgvrp.group_manager.lspd
                 return;
             }
 
-            var isStunned = API.fetchNativeFromPlayer<bool>(player, Hash.IS_PED_BEING_STUNNED, receiver, 0);
+            var isStunned = API.fetchNativeFromPlayer<bool>(receiver, Hash.IS_PED_BEING_STUNNED, receiver.handle, 0);
 
             if (receivercharacter.AreHandsUp == false && isStunned == false)
             {

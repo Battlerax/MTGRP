@@ -153,6 +153,8 @@ namespace mtgvrp.property_system
                     return value;
                 case PropertyManager.PropertyTypes.VIPLounge:
                     return 409;
+                case PropertyManager.PropertyTypes.DMV:
+                    return 355;
                 default:
                     return -1;
             }

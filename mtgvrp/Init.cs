@@ -65,6 +65,16 @@ namespace mtgvrp
             //For Dealership.
             API.removeIpl("fakeint"); // remove the IPL "fakeint"
             API.requestIpl("shr_int"); // Request the IPL "shr_int"
+            API.requestIpl("ex_dt1_02_office_02b"); //Office.
+            API.requestIpl("ex_dt1_02_office_02c"); //Office.
+            API.requestIpl("ex_dt1_02_office_02a"); //Office.
+            API.requestIpl("ex_dt1_02_office_01a"); //Office.
+            API.requestIpl("ex_dt1_02_office_01b"); //Office.
+            API.requestIpl("ex_dt1_02_office_01c"); //Office.
+            API.requestIpl("ex_dt1_02_office_03b"); //Office.
+            API.requestIpl("ex_dt1_02_office_03a"); //Office.
+            API.requestIpl("ex_dt1_02_office_03c"); //Office.
+
             API.consoleOutput("[INIT] Unloaded fakeint IPL and loaded shr_int IPL.!");
 
             VehicleManager.load_all_unowned_vehicles();
