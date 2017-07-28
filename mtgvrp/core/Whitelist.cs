@@ -10,7 +10,7 @@ namespace mtgvrp.core
 
        
 
-        private static bool _useWhitelist = true;
+        private static bool _useWhitelist = false;
 
         private static readonly List<string> WhitelistedNames = new List<string>
         {
