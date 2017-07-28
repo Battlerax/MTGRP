@@ -16,7 +16,7 @@ namespace mtgvrp.player_manager
     class PlayerManager : Script
     {
         private static Dictionary<int, Character> _players = new Dictionary<int, Character>();
-        public static List<Character> Players => _players.Values.ToList();
+        public static List<Character> Players => (from pair in _players orderby pair.Key ascending select pair.Value).ToList<Character>();//_players.Values.ToList();
 
         public static void AddPlayer(Character c)
         {

@@ -938,7 +938,7 @@ function next_character_creation_step(player, step) {
             });
 
             age_menu.OnListChanged.connect(function (sender, new_index) {
-                age = new_index + 1;
+                age = new_index + 19;
             });
 
             spawn_menu.OnListChanged.connect(function (sender, new_index) {

@@ -32,7 +32,7 @@ namespace mtgvrp.player_manager.player_list
                         return;
                     }
 
-                    foreach(var c in PlayerManager.Players)
+                    foreach (var c in PlayerManager.Players)
                     {
                         if(type == 1)
                         {
