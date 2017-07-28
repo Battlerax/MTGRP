@@ -124,8 +124,7 @@ function player_exiting_bus(){
 	vehicle = API.CreateVehicle(-713569950, new Vector3(429.8345, -672.5932, 29.05217), new Vector3(0.9295838, 3.945374, 90.3828), 0, 0, API.getEntityDimension(API.getLocalPlayer()));
 	API.setPlayerIntoVehicle(vehicle, -1);
 	API.setVehicleEngineStatus(vehicle, true);
-	API.callNative()
-	API.sendNativeToAllPlayers("0x458C747DC544B598", vehicle, 0);
+	API.callNative("0x458C747DC544B598", vehicle, 0);
 }
 
 var timer = 0;
