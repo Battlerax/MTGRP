@@ -56,12 +56,13 @@ namespace mtgvrp.player_manager
 
         private void API_onPlayerHealthChange(Client player, int oldValue)
         {
-
             Account account = API.getEntityData(player, "Account");
+            if (account == null)
+                return;
 
-            if (API.getPlayerHealth(player) < oldValue)
+            if (API.getPlayerHealth(player) < oldValue && account.AdminDuty)
             {
-                if (account.AdminDuty) { API.setPlayerHealth(player, 100); }
+                API.setPlayerHealth(player, 100); 
             }
         }
 
