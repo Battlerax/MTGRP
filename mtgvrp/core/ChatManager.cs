@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using GrandTheftMultiplayer.Server.API;
 using GrandTheftMultiplayer.Server.Elements;
 using GrandTheftMultiplayer.Server.Managers;
@@ -327,22 +328,30 @@ namespace mtgvrp.core
 
         public static void NearbyMessage(Client player, float radius, string msg, string color)
         {
-            var players = API.shared.getPlayersInRadiusOfPlayer(radius, player);
-           
+            //var players = API.shared.getPlayersInRadiusOfPlayer(radius, player);
+
+            var players = PlayerManager.Players.Where(x => GrandTheftMultiplayer.Server.API.API.shared
+                                                               .getEntityPosition(x.Client)
+                                                               .DistanceTo(player.position) <= radius);
+
             foreach(var i in players)
             {
-                API.shared.sendChatMessageToPlayer(i, color, msg);
+                API.shared.sendChatMessageToPlayer(i.Client, color, msg);
             }
         }
 
 
         public static void NearbyMessage(Client player, float radius, string msg)
         {
-            var players = API.shared.getPlayersInRadiusOfPlayer(radius, player);
+            //var players = API.shared.getPlayersInRadiusOfPlayer(radius, player);
+
+            var players = PlayerManager.Players.Where(x => GrandTheftMultiplayer.Server.API.API.shared
+                                                               .getEntityPosition(x.Client)
+                                                               .DistanceTo(player.position) <= radius);
 
             foreach (var i in players)
             {
-                API.shared.sendChatMessageToPlayer(i, msg);
+                API.shared.sendChatMessageToPlayer(i.Client, msg);
             }
         }
 
