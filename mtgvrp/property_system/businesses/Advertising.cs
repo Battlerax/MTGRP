@@ -73,13 +73,14 @@ namespace mtgvrp.property_system.businesses
                 {
                     receiver.Client.sendChatMessage("~g~[AD] (#" + senderPhone.PhoneNumber + "): " + text);
                 }
-
-                player.sendChatMessage("Advertisement subimtted.");
-                CanAdvertise = false;
-                AdvertTimer = new Timer { Interval = 15000 };
-                AdvertTimer.Elapsed += delegate { ResetAdvertTimer(); };
-                AdvertTimer.Start();
             }
+
+            CanAdvertise = false;
+            AdvertTimer = new Timer { Interval = 15000 };
+            AdvertTimer.Elapsed += delegate { ResetAdvertTimer(); };
+            AdvertTimer.Start();
+
+            player.sendChatMessage("Advertisement subimtted.");
             LogManager.Log(LogManager.LogTypes.Ads, $"{player.GetCharacter().CharacterName}[{player.GetAccount().AccountName}]: {text}");
         }
 
