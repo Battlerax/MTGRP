@@ -155,6 +155,8 @@ namespace mtgvrp.property_system
                     return 409;
                 case PropertyManager.PropertyTypes.DMV:
                     return 355;
+                case PropertyManager.PropertyTypes.Government:
+                    return 475;
                 default:
                     return -1;
             }
