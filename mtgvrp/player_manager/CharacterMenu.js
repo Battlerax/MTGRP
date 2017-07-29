@@ -303,7 +303,10 @@ function next_character_creation_step(player, step) {
                     }
                 }
 
-                API.triggerServerEvent("change_parent_info", father_ped, mother_ped, father_int_id, mother_int_id, parent_lean, gender);
+                API.callNative("SET_PED_HEAD_BLEND_DATA", father_ped, father_int_id, father_int_id, 0, father_int_id, father_int_id, 0, 1.0, 1.0, 0, false);
+                API.callNative("SET_PED_HEAD_BLEND_DATA", mother_ped, mother_int_id, mother_int_id, 0, mother_int_id, mother_int_id, 0, 1.0, 1.0, 0, false);
+                API.callNative("SET_PED_HEAD_BLEND_DATA", API.getLocalPlayer(), father_int_id,
+                    mother_int_id, 0, father_int_id, mother_int_id, 0, parent_lean, parent_lean, 0, false);
             });
 
             mother_menu_item.OnListChanged.connect(function (sender, new_index) {
@@ -314,7 +317,10 @@ function next_character_creation_step(player, step) {
                     mother_int_id = 45;
                 }
 
-                API.triggerServerEvent("change_parent_info", father_ped, mother_ped, father_int_id, mother_int_id, parent_lean, gender);
+                API.callNative("SET_PED_HEAD_BLEND_DATA", father_ped, father_int_id, father_int_id, 0, father_int_id, father_int_id, 0, 1.0, 1.0, 0, false);
+                API.callNative("SET_PED_HEAD_BLEND_DATA", mother_ped, mother_int_id, mother_int_id, 0, mother_int_id, mother_int_id, 0, 1.0, 1.0, 0, false);
+                API.callNative("SET_PED_HEAD_BLEND_DATA", API.getLocalPlayer(), father_int_id,
+                    mother_int_id, 0, father_int_id, mother_int_id, 0, parent_lean, parent_lean, 0, false);
             });
 
             parent_lean_menu_item.OnListChanged.connect(function (sender, new_index) {
