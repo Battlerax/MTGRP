@@ -168,6 +168,7 @@ namespace mtgvrp.job_manager.garbageman
             player.GetCharacter().GarbageTimeLeft = 0;
             player.GetCharacter().GarbageTimeLeftTimer.Stop();
             player.GetCharacter().IsOnGarbageRun = false;
+            player.GetCharacter().update_ped();
             player.sendChatMessage("~r~The garbage run has ended. Your garbage truck was removed.");
         }
 
@@ -263,7 +264,9 @@ namespace mtgvrp.job_manager.garbageman
                 return;
             }
 
+            character.IsOnGarbageRun = false;
             RespawnGarbageTruck(player, veh);
+            character.update_ped();
 
         }
 
