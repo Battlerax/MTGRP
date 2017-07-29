@@ -371,7 +371,7 @@ namespace mtgvrp.vehicle_manager
             var vehAccess = DoesPlayerHaveVehicleAccess(player, vehicle);
             if (!engineState)
             {
-                if (vehicle.Fuel <= 0)
+                if (vehicle?.Fuel <= 0)
                 {
                     API.shared.sendChatMessageToPlayer(player, "The vehicle has no fuel.");
                     return;

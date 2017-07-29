@@ -376,35 +376,35 @@ namespace mtgvrp.property_system.businesses
             {
                 var pantsStyle = ComponentManager.ValidFemaleLegs.SingleOrDefault(x => x.ComponentId == character.Model.PantsStyle);
                 var pantid = ComponentManager.ValidFemaleLegs.IndexOf(pantsStyle);
-                var pantsVar = pantsStyle.Variations.IndexOf(character.Model.PantsVar);
+                var pantsVar = pantsStyle?.Variations.IndexOf(character.Model.PantsVar) ?? 0;
 
                 var shoesStyle = ComponentManager.ValidFemaleShoes.SingleOrDefault(x => x.ComponentId == character.Model.ShoeStyle);
                 var shoeid = ComponentManager.ValidFemaleShoes.IndexOf(shoesStyle);
-                var shoesVar = shoesStyle.Variations.IndexOf(character.Model.ShoeVar);
+                var shoesVar = shoesStyle?.Variations.IndexOf(character.Model.ShoeVar) ?? 0;
 
                 var accessoriesStyle = ComponentManager.ValidFemaleAccessories.SingleOrDefault(x => x.ComponentId == character.Model.AccessoryStyle);
                 var accessoryid = ComponentManager.ValidFemaleAccessories.IndexOf(accessoriesStyle);
-                var accessoryVar = accessoriesStyle.Variations.IndexOf(character.Model.AccessoryVar);
+                var accessoryVar = accessoriesStyle?.Variations.IndexOf(character.Model.AccessoryVar) ?? 0;
 
                 var undershirtStyle = ComponentManager.ValidFemaleUndershirt.SingleOrDefault(x => x.ComponentId == character.Model.UndershirtStyle);
                 var undershirtid = ComponentManager.ValidFemaleUndershirt.IndexOf(undershirtStyle);
-                var undershirtVar = undershirtStyle.Variations.IndexOf(character.Model.UndershirtVar);
+                var undershirtVar = undershirtStyle?.Variations.IndexOf(character.Model.UndershirtVar) ?? 0;
 
                 var topStyle = ComponentManager.ValidFemaleTops.SingleOrDefault(x => x.ComponentId == character.Model.TopStyle);
                 var topid = ComponentManager.ValidFemaleTops.IndexOf(topStyle);
-                var topVar = topStyle.Variations.IndexOf(character.Model.TopVar);
+                var topVar = topStyle?.Variations.IndexOf(character.Model.TopVar) ?? 0;
 
                 var hatsStyle = ComponentManager.ValidFemaleHats.SingleOrDefault(x => x.ComponentId == character.Model.HatStyle);
                 var hatsid = ComponentManager.ValidFemaleHats.IndexOf(hatsStyle);
-                var hatsVar = hatsStyle.Variations.IndexOf(character.Model.HatVar);
+                var hatsVar = hatsStyle?.Variations.IndexOf(character.Model.HatVar) ?? 0;
 
                 var glassesStyle = ComponentManager.ValidFemaleGlasses.SingleOrDefault(x => x.ComponentId == character.Model.GlassesStyle);
                 var glassesid = ComponentManager.ValidFemaleGlasses.IndexOf(glassesStyle);
-                var glassesVar = glassesStyle.Variations.IndexOf(character.Model.GlassesVar);
+                var glassesVar = glassesStyle?.Variations.IndexOf(character.Model.GlassesVar) ?? 0;
 
                 var earStyle = ComponentManager.ValidFemaleEars.SingleOrDefault(x => x.ComponentId == character.Model.EarStyle);
                 var earid = ComponentManager.ValidFemaleEars.IndexOf(earStyle);
-                var earsVar = earStyle.Variations.IndexOf(character.Model.EarVar);
+                var earsVar = earStyle?.Variations.IndexOf(character.Model.EarVar) ?? 0;
 
                 oldClothes.Add(new[] { pantid, pantsVar });
                 oldClothes.Add(new[] { shoeid, shoesVar });
