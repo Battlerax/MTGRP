@@ -410,6 +410,7 @@ namespace mtgvrp.group_manager.lspd
 
         }
 
+
         [Command("cuff", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Handcuff a player.", new[] { "The target player ID." })]
         public void cuff_cmd(Client player, string id)
         {
@@ -435,7 +436,7 @@ namespace mtgvrp.group_manager.lspd
                 API.sendNotificationToPlayer(player, "~r~You can't cuff yourself!");
                 return;
             }
-           
+
             if (API.getEntityPosition(player).DistanceToSquared(API.getEntityPosition(receiver)) > 16f)
             {
                 API.sendNotificationToPlayer(player, "~r~You're too far away!");
@@ -456,6 +457,45 @@ namespace mtgvrp.group_manager.lspd
             API.playPlayerAnimation(receiver, (1 << 0 | 1 << 4 | 1 << 5), "mp_arresting", "idle");
             API.freezePlayer(receiver, true);
             ChatManager.RoleplayMessage(player, "places handcuffs onto " + receivercharacter.rp_name(), ChatManager.RoleplayMe);
+        }
+
+
+        [Command("uncuff", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Remove handcuffs from a player.", new[] { "The target player ID." })]
+        public void uncuff_cmd(Client player, string id)
+        {
+            var receiver = PlayerManager.ParseClient(id);
+
+            Character character = API.getEntityData(player.handle, "Character");
+            Character receivercharacter = API.getEntityData(receiver, "Character");
+
+            if (character.Group.CommandType != Group.CommandTypeLspd)
+            {
+                API.sendChatMessageToPlayer(player, "You are not in the LSPD.");
+                return;
+            }
+
+            if (receiver == null)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
+            }
+           
+            if (API.getEntityPosition(player).DistanceToSquared(API.getEntityPosition(receiver)) > 16f)
+            {
+                API.sendNotificationToPlayer(player, "~r~You're too far away!");
+                return;
+            }
+
+            if (!receivercharacter.IsCuffed)
+            {
+                player.sendChatMessage("This player is not handcuffed.");
+                return;
+            }
+
+            API.sendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, receivercharacter, false);
+            receivercharacter.IsCuffed = false;
+            API.freezePlayer(receiver, false);
+            ChatManager.RoleplayMessage(player, "removes handcuffs from " + receivercharacter.rp_name(), ChatManager.RoleplayMe);
         }
 
         [Command("frisk", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD | HelpManager.CommandGroups.General, "Frisk a player to show their inventory items.", new[] { "The target player ID." })]
@@ -497,7 +537,7 @@ namespace mtgvrp.group_manager.lspd
 
         }
 
-        [Command("backupbeacon", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Deploy a backup beacon.", null)]
+        [Command("beacon", Alias = "bc", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Deploy a backup beacon.", null)]
         public void backupbeacon_cmd(Client player)
         {
             Character character = API.getEntityData(player.handle, "Character");
@@ -511,6 +551,7 @@ namespace mtgvrp.group_manager.lspd
             API.sendNotificationToPlayer(player, "~b~Backup beacon deployed~w~. Available officers have been notified.");
             GroupManager.SendGroupMessage(player, character.CharacterName + " has deployed a backup beacon. Use /acceptbeacon to accept.");
 
+            foreach(var c in PlayerManager.Players) { c.BeaconSet = false; }
             character.BeaconSet = true;
             character.BeaconResetTimer = new Timer { Interval = 60000 };
             character.BeaconResetTimer.Elapsed += delegate { ResetBeacon(player); };
@@ -518,7 +559,7 @@ namespace mtgvrp.group_manager.lspd
 
         }
 
-        [Command("acceptbeacon", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Accept the recent backup beacon.", null)]
+        [Command("acceptbeacon", Alias = "ab", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Accept the recent backup beacon.", null)]
         public void acceptbeacon_cmd(Client player)
         {
             Character character = API.shared.getEntityData(player.handle, "Character");

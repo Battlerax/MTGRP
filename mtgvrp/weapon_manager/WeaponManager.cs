@@ -88,7 +88,7 @@ namespace mtgvrp.weapon_manager
             if (character == null) { return; }
             if (currentPlayerWeapon == WeaponHash.Unarmed) { return; }
 
-            if (!DoesPlayerHaveWeapon(player, currentPlayerWeapon) && currentPlayerWeapon != WeaponHash.Unarmed)
+            if (!DoesPlayerHaveWeapon(player, currentPlayerWeapon) && currentPlayerWeapon != WeaponHash.Unarmed && character.JobOne.Type != job_manager.JobManager.JobTypes.Fisher)
             {
                 API.removePlayerWeapon(player, currentPlayerWeapon);
                 foreach (var p in API.getAllPlayers())
