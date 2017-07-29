@@ -211,7 +211,7 @@ namespace mtgvrp.core.Discord
             foreach (var p in players)
             {
                 Account pAccount = API.shared.getEntityData(p.handle, "Account");
-                if (pAccount.VipLevel > 0)
+                if (pAccount?.VipLevel > 0)
                 {
                     API.shared.sendChatMessageToPlayer(p, Color.VipChat, "[Discord V] " + ctx.Member.DisplayName + ": " + ctx.RawArgumentString);
                 }
@@ -230,6 +230,8 @@ namespace mtgvrp.core.Discord
             foreach (var c in API.shared.getAllPlayers())
             {
                 Account receiverAccount = c.GetAccount();
+                if(receiverAccount == null)
+                    continue;
 
                 if (receiverAccount.AdminLevel <= 1) continue;
 

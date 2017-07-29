@@ -313,7 +313,8 @@ namespace mtgvrp.core
                     continue;
 
                 Account pAccount = API.getEntityData(p.handle, "Account");
-                if(pAccount.VipLevel > 0)
+
+                if(pAccount?.VipLevel > 0)
                 {
                     API.sendChatMessageToPlayer(p, Color.VipChat, "[V] " + c.CharacterName + ": " + message);
                 }
@@ -441,7 +442,7 @@ namespace mtgvrp.core
 
                     Account receiverAccount = API.getEntityData(c, "Account");
 
-                    if (receiverAccount.AdminLevel > 0)
+                    if (receiverAccount?.AdminLevel > 0)
                     {
                         API.sendChatMessageToPlayer(c, Color.AdminChat, "[A] " + account.AdminName + ": " + text);
                     }
