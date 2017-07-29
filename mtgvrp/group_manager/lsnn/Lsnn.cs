@@ -81,6 +81,10 @@ namespace mtgvrp.group_manager.lsnn
                         continue;
 
                     Character receivercharacter = API.getEntityData(c, "Character");
+
+                    if(receivercharacter == null)
+                        continue;
+
                     if (receivercharacter.IsWatchingBroadcast)
                     {
 
@@ -188,6 +192,9 @@ namespace mtgvrp.group_manager.lsnn
                             continue;
 
                         Character receivercharacter = API.getEntityData(c, "Character");
+                        if (receivercharacter == null)
+                            continue;
+
                         if (receivercharacter.IsWatchingBroadcast)
                         {
 
@@ -245,7 +252,7 @@ namespace mtgvrp.group_manager.lsnn
                         continue;
 
                     Character c = API.getEntityData(p, "Character");
-                    if (c.HasCamera == true)
+                    if (c?.HasCamera == true)
                     {
                         API.sendChatMessageToPlayer(player, "There are no cameras left to pick up.");
                         return;
@@ -509,6 +516,9 @@ namespace mtgvrp.group_manager.lsnn
                     continue;
 
                 Character character = API.getEntityData(p, "Character");
+
+                if(character == null)
+                    continue;
 
                 if (character.IsWatchingBroadcast)
                 {

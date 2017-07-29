@@ -121,6 +121,11 @@ namespace mtgvrp.property_system.businesses
                 return;
             }
 
+            if (target == player)
+            {
+                API.sendChatMessageToPlayer(player, "You can't give a check to yourself.");
+            }
+
             if (player.position.DistanceTo(target.position) > 5.0)
             {
                 API.sendChatMessageToPlayer(player, "Must be near the target.");
