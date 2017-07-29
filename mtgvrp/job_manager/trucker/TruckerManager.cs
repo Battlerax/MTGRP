@@ -324,11 +324,10 @@ namespace mtgvrp.job_manager.trucker
 
         private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle)
         {
-            if (API.getPlayerVehicle(player) == null) { return; }
             var veh = vehicle.GetVehicle();
             var character = player.GetCharacter();
 
-            if (veh.Job?.Type == JobManager.JobTypes.Trucker && character.JobOne?.Type == JobManager.JobTypes.Trucker)
+            if (veh?.Job?.Type == JobManager.JobTypes.Trucker && character.JobOne?.Type == JobManager.JobTypes.Trucker)
             {
                 if (API.hasEntityData(player, "TRUCKING_CANCELTIMER") &&
                     API.getEntityData(vehicle, "TRUCKER_DRIVER") == player)

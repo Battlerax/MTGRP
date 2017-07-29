@@ -79,11 +79,10 @@ namespace mtgvrp.job_manager.garbageman
         private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle)
         {
 
-            if (API.getPlayerVehicle(player) == null) { return; }
             Character character = API.getEntityData(player, "Character");
             var veh = VehicleManager.GetVehFromNetHandle(vehicle);
 
-            if (veh.Job?.Type == JobManager.JobTypes.Garbageman && character.JobOne?.Type == JobManager.JobTypes.Garbageman)
+            if (veh?.Job?.Type == JobManager.JobTypes.Garbageman && character.JobOne?.Type == JobManager.JobTypes.Garbageman)
             {
                 Property TargetProperty = null;
                 int maxGarbage = 0;
@@ -176,7 +175,7 @@ namespace mtgvrp.job_manager.garbageman
         {
             foreach(var player in PlayerManager.Players)
             {
-                if (player.JobOne.Type == JobManager.JobTypes.Garbageman)
+                if (player?.JobOne?.Type == JobManager.JobTypes.Garbageman)
                 {
                     API.shared.sendPictureNotificationToPlayer(player.Client, message, "CHAR_PROPERTY_CAR_SCRAP_YARD", 
                         0, 1, "Los Santos Sanitations", "Garbage Notification");
