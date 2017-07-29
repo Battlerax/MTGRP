@@ -23,7 +23,6 @@ namespace mtgvrp.vehicle_dealership
         //Could be changed to dynamic later on.
         private readonly string[][] _motorsycles =
         {
-            new[] {"Quad", "-2128233223", "8000"},
             new[] {"Faggio", "-1842748181", "5000"},
             new[] {"Hexer", "301427732", "25000"},
             new[] {"Sanchez", "788045382", "12000"},
@@ -83,6 +82,7 @@ namespace mtgvrp.vehicle_dealership
             new[] {"Fusilade", "499169875", "120000"},
             new[] {"Coquette", "108773431", "150000"},
             new[] {"Lynx", "482197771", "165000"},
+            new[] { "Sultan", "970598228", "90000"},
         };
 
         #endregion
