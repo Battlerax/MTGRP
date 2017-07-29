@@ -188,6 +188,9 @@ namespace mtgvrp.group_manager.lsnn
                             continue;
 
                         Character receivercharacter = API.getEntityData(c, "Character");
+                        if (receivercharacter == null)
+                            continue;
+
                         if (receivercharacter.IsWatchingBroadcast)
                         {
 
