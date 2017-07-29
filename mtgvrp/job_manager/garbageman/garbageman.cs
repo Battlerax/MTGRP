@@ -66,10 +66,14 @@ namespace mtgvrp.job_manager.garbageman
                     {
                         Character character = API.getEntityData(player.handle, "Character");
 
-                        if (character.JobOne.Type != JobManager.JobTypes.Garbageman)
+                        if (character == null)
+                            return;
+
+                        if (character.JobOne?.Type != JobManager.JobTypes.Garbageman)
                         {
                             return;
                         }
+
                         pickuptrash_cmd(character.Client);
                         break;
                     }
