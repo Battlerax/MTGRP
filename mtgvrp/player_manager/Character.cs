@@ -333,6 +333,8 @@ namespace mtgvrp.player_manager
 
             LastVehicle = null;
 
+            JobOne = Job.None;
+
             TaxiFare = TaxiJob.MinFare;
             TaxiPassenger = null;
             TaxiDriver = null;
