@@ -71,7 +71,14 @@ var Component = (function () {
     return Component;
 }());
 
-var component_list = [];
+var legs_list = [];
+var shoes_list = [];
+var access_list = [];
+var undershits_list = [];
+var tops_list = [];
+var hats_list = [];
+var glasses_list = [];
+var ears_list = [];
 
 var creation_view = API.createCamera(new Vector3(403, -999.5, -98), new Vector3(0, 0, -15));
 API.pointCameraAtPosition(creation_view, new Vector3(403, -998, -98.5));
@@ -82,18 +89,95 @@ API.onServerEventTrigger.connect((eventName, args) => {
 	switch (eventName) {
 	case "properties_buyclothes":
 		//Setup items first.
-		var lost = args[0];
-		for (var a = 0; a < lost.Count; a++) {
-			var obj = JSON.parse(lost[a]);
+	    var list = JSON.parse(args[0]);
 
-			var component = new Component();
-			component.type = obj.type;
-			component.name = obj.name;
-			component.id = obj.id;
-			component.variations = obj.variations;
+	    var newList = JSON.parse(list["Legs"]);
+	    for (var a = 0; a < newList.length; a++) {
 
-			component_list.push(component);
-		}
+	        var component = new Component();
+	        component.name = newList[a][0];
+	        component.id = newList[a][1];
+	        component.variations = JSON.parse(newList[a][2]);
+
+	        legs_list.push(component);
+	    }
+
+	    newList = JSON.parse(list["Shoes"]);
+	    for (var a = 0; a < newList.length; a++) {
+
+	        var component = new Component();
+	        component.name = newList[a][0];
+	        component.id = newList[a][1];
+	        component.variations = JSON.parse(newList[a][2]);
+
+	        shoes_list.push(component);
+	    }
+
+	    newList = JSON.parse(list["Accessories"]);
+	    for (var a = 0; a < newList.length; a++) {
+
+	        var component = new Component();
+	        component.name = newList[a][0];
+	        component.id = newList[a][1];
+	        component.variations = JSON.parse(newList[a][2]);
+
+	        access_list.push(component);
+	    }
+
+	    newList = JSON.parse(list["Undershirts"]);
+	    for (var a = 0; a < newList.length; a++) {
+
+	        var component = new Component();
+	        component.name = newList[a][0];
+	        component.id = newList[a][1];
+	        component.variations = JSON.parse(newList[a][2]);
+
+	        undershits_list.push(component);
+	    }
+
+	    newList = JSON.parse(list["Tops"]);
+	    for (var a = 0; a < newList.length; a++) {
+
+	        var component = new Component();
+	        component.name = newList[a][0];
+	        component.id = newList[a][1];
+	        component.variations = JSON.parse(newList[a][2]);
+
+	        tops_list.push(component);
+	    }
+
+	    newList = JSON.parse(list["Hats"]);
+	    for (var a = 0; a < newList.length; a++) {
+
+	        var component = new Component();
+	        component.name = newList[a][0];
+	        component.id = newList[a][1];
+	        component.variations = JSON.parse(newList[a][2]);
+
+	        hats_list.push(component);
+	    }
+
+	    newList = JSON.parse(list["Glasses"]);
+	    for (var a = 0; a < newList.length; a++) {
+
+	        var component = new Component();
+	        component.name = newList[a][0];
+	        component.id = newList[a][1];
+	        component.variations = JSON.parse(newList[a][2]);
+
+	        glasses_list.push(component);
+	    }
+
+	    newList = JSON.parse(list["Ears"]);
+	    for (var a = 0; a < newList.length; a++) {
+
+	        var component = new Component();
+	        component.name = newList[a][0];
+	        component.id = newList[a][1];
+	        component.variations = JSON.parse(newList[a][2]);
+
+	        ears_list.push(component);
+	    }
 
 		//Set old clothes
 		var oldClothes = JSON.parse(args[1]);
@@ -161,68 +245,70 @@ API.onServerEventTrigger.connect((eventName, args) => {
 		menu_pool.Add(ear_menu);
 		menu_pool.Add(torso_menu);
 
-		for (var i = 0; i < component_list.length; i++) {
+	    for (var i = 0; i < legs_list.length; i++) {
+	        var list = new List(String);
+	        for (var j = 0; j < legs_list[i].variations.length; j++) {
+	            list.Add((j + 1).toString());
+	        }
+	        pant_menu.AddItem(API.createListItem(legs_list[i].name, "Press enter to select and go back.", list, 0));
+	    }
 
-			if (component_list[i].type == 4) { //Pants
-				var list = new List(String);
-				for (var j = 0; j < component_list[i].variations; j++) {
-					list.Add((j + 1).toString());
-				}
-				pant_menu.AddItem(API.createListItem(component_list[i].name, "Press enter to select and go back.", list, 0));
-			} else if (component_list[i].type == 6) { //Shoes
-				var list = new List(String);
-				for (var j = 0; j < component_list[i].variations; j++) {
-					list.Add((j + 1).toString());
-				}
-				shoe_menu.AddItem(API.createListItem(component_list[i].name, "Press enter to select and go back.", list, 0));
-			} else if (component_list[i].type == 7) { //Accessory
-				var list = new List(String);
-				for (var j = 0; j < component_list[i].variations; j++) {
-					list.Add((j + 1).toString());
-				}
-				accessory_menu.AddItem(API.createListItem(component_list[i].name,
-					"Press enter to select and go back.",
-					list,
-					0));
-			} else if (component_list[i].type == 8) { //Undershirt
-				var list = new List(String);
-				for (var j = 0; j < component_list[i].variations; j++) {
-					list.Add((j + 1).toString());
-				}
-				undershirt_menu.AddItem(API.createListItem(component_list[i].name,
-					"Press enter to select and go back.",
-					list,
-					0));
-			} else if (component_list[i].type == 11) { //Tops
-				var list = new List(String);
-				for (var j = 0; j < component_list[i].variations; j++) {
-					list.Add((j + 1).toString());
-				}
-				top_menu.AddItem(API.createListItem(component_list[i].name, "Press enter to select and go back.", list, 0));
-			} else if (component_list[i].type == 20) { // hat
-				var list = new List(String);
-				for (var j = 0; j < component_list[i].variations; j++) {
-					list.Add((j + 1).toString());
-				}
-				hat_menu.AddItem(API.createListItem(component_list[i].name, "Press enter to select and go back.", list, 0));
-			} else if (component_list[i].type == 21) { //glasses
-				var list = new List(String);
-				for (var j = 0; j < component_list[i].variations; j++) {
-					list.Add((j + 1).toString());
-				}
-				glasses_menu.AddItem(API.createListItem(component_list[i].name,
-					"Press enter to select and go back.",
-					list,
-					0));
-			} else if (component_list[i].type == 22) { //ear
-				var list = new List(String);
-				for (var j = 0; j < component_list[i].variations; j++) {
-					list.Add((j + 1).toString());
-				}
-				ear_menu.AddItem(
-					API.createListItem(component_list[i].name, "Press enter to select and go back.", list, 0));
-			}
-		}
+	    for (var i = 0; i < shoes_list.length; i++) {
+	        var list = new List(String);
+	        for (var j = 0; j < shoes_list[i].variations.length; j++) {
+	            list.Add((j + 1).toString());
+	        }
+	        shoe_menu.AddItem(API.createListItem(shoes_list[i].name, "Press enter to select and go back.", list, 0));
+	    }
+
+	    for (var i = 0; i < access_list.length; i++) {
+	        var list = new List(String);
+	        for (var j = 0; j < access_list[i].variations.length; j++) {
+	            list.Add((j + 1).toString());
+	        }
+	        accessory_menu.AddItem(API.createListItem(access_list[i].name, "Press enter to select and go back.", list, 0));
+	    }
+
+	    for (var i = 0; i < undershits_list.length; i++) {
+	        var list = new List(String);
+	        for (var j = 0; j < undershits_list[i].variations.length; j++) {
+	            list.Add((j + 1).toString());
+	        }
+	        undershirt_menu.AddItem(API.createListItem(undershits_list[i].name, "Press enter to select and go back.", list, 0));
+	    }
+
+	    for (var i = 0; i < tops_list.length; i++) {
+	        var list = new List(String);
+	        for (var j = 0; j < tops_list[i].variations.length; j++) {
+	            list.Add((j + 1).toString());
+	        }
+	        top_menu.AddItem(API.createListItem(tops_list[i].name, "Press enter to select and go back.", list, 0));
+	    }
+
+	    for (var i = 0; i < hats_list.length; i++) {
+	        var list = new List(String);
+	        for (var j = 0; j < hats_list[i].variations.length; j++) {
+	            list.Add((j + 1).toString());
+	        }
+	        hat_menu.AddItem(API.createListItem(hats_list[i].name, "Press enter to select and go back.", list, 0));
+	    }
+
+	    for (var i = 0; i < glasses_list.length; i++) {
+	        var list = new List(String);
+	        for (var j = 0; j < glasses_list[i].variations.length; j++) {
+	            list.Add((j + 1).toString());
+	        }
+	        glasses_menu.AddItem(API.createListItem(glasses_list[i].name, "Press enter to select and go back.", list, 0));
+	    }
+
+	    for (var i = 0; i < ears_list.length; i++) {
+	        var list = new List(String);
+	        for (var j = 0; j < ears_list[i].variations.length; j++) {
+	            list.Add((j + 1).toString());
+	        }
+	        ear_menu.AddItem(API.createListItem(ears_list[i].name, "Press enter to select and go back.", list, 0));
+	    }
+
 		var variations = API.returnNative("2834476523764480066", 0, player, 3);
 		for (var i = 0; i < variations; i++) {
 			var list = new List(String);
@@ -339,17 +425,17 @@ API.onServerEventTrigger.connect((eventName, args) => {
 		pant_menu.OnIndexChange.connect(function(sender, index) {
 			pantsIndex = index;
 			pantsVariation = 0;
-			API.triggerServerEvent("clothing_preview", 4, pantsIndex, pantsVariation);
+			updateClothes(4, pantsIndex, pantsVariation);
 		});
 
 		pant_menu.OnListChange.connect(function(sender, list, index) {
 			pantsVariation = index;
-			API.triggerServerEvent("clothing_preview", 4, pantsIndex, pantsVariation);
+			updateClothes(4, pantsIndex, pantsVariation);
 		});
 
 		pant_menu.OnMenuClose.connect(function(menu) {
 			characterCreationMenu.Visible = true;
-			API.triggerServerEvent("clothing_preview", 4, oldpantsIndex, oldpantsVariation);
+			updateClothes(4, oldpantsIndex, oldpantsVariation);
 		});
 
 		pant_menu.OnItemSelect.connect(function(sender, item, index) {
@@ -362,17 +448,17 @@ API.onServerEventTrigger.connect((eventName, args) => {
 		shoe_menu.OnIndexChange.connect(function(sender, index) {
 			shoeIndex = index;
 			shoeVariation = 0;
-			API.triggerServerEvent("clothing_preview", 6, shoeIndex, shoeVariation);
+			updateClothes(6, shoeIndex, shoeVariation);
 		});
 
 		shoe_menu.OnListChange.connect(function(sender, list, index) {
 			shoeVariation = index;
-			API.triggerServerEvent("clothing_preview", 6, shoeIndex, shoeVariation);
+			updateClothes(6, shoeIndex, shoeVariation);
 		});
 
 		shoe_menu.OnMenuClose.connect(function(menu) {
 			characterCreationMenu.Visible = true;
-			API.triggerServerEvent("clothing_preview", 6, oldshoeIndex, oldshoeVariation);
+			updateClothes(6, oldshoeIndex, oldshoeVariation);
 		});
 
 		shoe_menu.OnItemSelect.connect(function(sender, item, index) {
@@ -385,17 +471,17 @@ API.onServerEventTrigger.connect((eventName, args) => {
 		accessory_menu.OnIndexChange.connect(function(sender, index) {
 			accessoryIndex = index;
 			accessoryVariation = 0;
-			API.triggerServerEvent("clothing_preview", 7, accessoryIndex, accessoryVariation);
+			updateClothes(7, accessoryIndex, accessoryVariation);
 		});
 
 		accessory_menu.OnListChange.connect(function(sender, list, index) {
 			accessoryVariation = index;
-			API.triggerServerEvent("clothing_preview", 7, accessoryIndex, accessoryVariation);
+			updateClothes(7, accessoryIndex, accessoryVariation);
 		});
 
 		accessory_menu.OnMenuClose.connect(function(menu) {
 			characterCreationMenu.Visible = true;
-			API.triggerServerEvent("clothing_preview", 7, oldaccessoryIndex, oldaccessoryVariation);
+			updateClothes(7, oldaccessoryIndex, oldaccessoryVariation);
 		});
 
 		accessory_menu.OnItemSelect.connect(function(sender, item, index) {
@@ -414,17 +500,17 @@ API.onServerEventTrigger.connect((eventName, args) => {
 		undershirt_menu.OnIndexChange.connect(function(sender, index) {
 			undershirtIndex = index;
 			undershirtVariation = 0;
-			API.triggerServerEvent("clothing_preview", 8, undershirtIndex, undershirtVariation);
+			updateClothes(8, undershirtIndex, undershirtVariation);
 		});
 
 		undershirt_menu.OnListChange.connect(function(sender, list, index) {
 			undershirtVariation = index;
-			API.triggerServerEvent("clothing_preview", 8, undershirtIndex, undershirtVariation);
+			updateClothes(8, undershirtIndex, undershirtVariation);
 		});
 
 		undershirt_menu.OnMenuClose.connect(function(menu) {
 			characterCreationMenu.Visible = true;
-			API.triggerServerEvent("clothing_preview", 8, oldundershirtIndex, oldundershirtVariation);
+			updateClothes(8, oldundershirtIndex, oldundershirtVariation);
 		});
 
 		undershirt_menu.OnItemSelect.connect(function(sender, item, index) {
@@ -443,17 +529,17 @@ API.onServerEventTrigger.connect((eventName, args) => {
 		top_menu.OnIndexChange.connect(function(sender, index) {
 			topIndex = index;
 			topVariation = 0;
-			API.triggerServerEvent("clothing_preview", 11, topIndex, topVariation);
+			updateClothes(11, topIndex, topVariation);
 		});
 
 		top_menu.OnListChange.connect(function(sender, list, index) {
 			topVariation = index;
-			API.triggerServerEvent("clothing_preview", 11, topIndex, topVariation);
+			updateClothes(11, topIndex, topVariation);
 		});
 
 		top_menu.OnMenuClose.connect(function(menu) {
 			characterCreationMenu.Visible = true;
-			API.triggerServerEvent("clothing_preview", 11, oldtopIndex, oldtopVariation);
+			updateClothes(11, oldtopIndex, oldtopVariation);
 		});
 
 		top_menu.OnItemSelect.connect(function(sender, item, index) {
@@ -466,18 +552,18 @@ API.onServerEventTrigger.connect((eventName, args) => {
 		hat_menu.OnIndexChange.connect(function(sender, index) {
 			hatIndex = index;
 			hatVariation = 0;
-			API.triggerServerEvent("clothing_preview", 20, hatIndex, hatVariation);
+			updateClothes(20, hatIndex, hatVariation);
 
 		});
 
 		hat_menu.OnListChange.connect(function(sender, list, index) {
 			hatVariation = index;
-			API.triggerServerEvent("clothing_preview", 20, hatIndex, hatVariation);
+			updateClothes(20, hatIndex, hatVariation);
 		});
 
 		hat_menu.OnMenuClose.connect(function(menu) {
 			characterCreationMenu.Visible = true;
-			API.triggerServerEvent("clothing_preview", 20, oldhatIndex, oldhatVariation);
+			updateClothes(20, oldhatIndex, oldhatVariation);
 		});
 
 		hat_menu.OnItemSelect.connect(function(sender, item, index) {
@@ -495,16 +581,16 @@ API.onServerEventTrigger.connect((eventName, args) => {
 		glasses_menu.OnIndexChange.connect(function(sender, index) {
 			glassesIndex = index;
 			glassesVariation = 0;
-			API.triggerServerEvent("clothing_preview", 21, glassesIndex, glassesVariation);
+			updateClothes(21, glassesIndex, glassesVariation);
 		});
 
 		glasses_menu.OnListChange.connect(function(sender, list, index) {
 			glassesVariation = index;
-			API.triggerServerEvent("clothing_preview", 21, glassesIndex, glassesVariation);
+			updateClothes(21, glassesIndex, glassesVariation);
 		});
 
 		glasses_menu.OnMenuClose.connect(function(menu) {
-			API.triggerServerEvent("clothing_preview", 21, oldglassesIndex, oldglassesVariation);
+			updateClothes(21, oldglassesIndex, oldglassesVariation);
 			characterCreationMenu.Visible = true;
 		});
 
@@ -524,17 +610,17 @@ API.onServerEventTrigger.connect((eventName, args) => {
 		ear_menu.OnIndexChange.connect(function(sender, index) {
 			earIndex = index;
 			earVariation = 0;
-			API.triggerServerEvent("clothing_preview", 22, earIndex, earVariation);
+			updateClothes(22, earIndex, earVariation);
 		});
 
 		ear_menu.OnListChange.connect(function(sender, list, index) {
 			earVariation = index;
-			API.triggerServerEvent("clothing_preview", 22, earIndex, earVariation);
+			updateClothes(22, earIndex, earVariation);
 		});
 
 		ear_menu.OnMenuClose.connect(function(menu) {
 			characterCreationMenu.Visible = true;
-			API.triggerServerEvent("clothing_preview", 22, oldearIndex, oldearVariation);
+			updateClothes(22, oldearIndex, oldearVariation);
 		});
 
 		ear_menu.OnItemSelect.connect(function(sender, item, index) {
@@ -552,17 +638,17 @@ API.onServerEventTrigger.connect((eventName, args) => {
 		torso_menu.OnIndexChange.connect(function(sender, index) {
 			torsoIndex = index;
 			torsoVariation = 0;
-			API.triggerServerEvent("clothing_preview", 3, torsoIndex, torsoVariation);
+			updateClothes(3, torsoIndex, torsoVariation);
 		});
 
 		torso_menu.OnListChange.connect(function(sender, list, index) {
 			earVariation = index;
-			API.triggerServerEvent("clothing_preview", 3, torsoIndex, torsoVariation);
+			updateClothes(3, torsoIndex, torsoVariation);
 		});
 
 		torso_menu.OnMenuClose.connect(function(menu) {
 			characterCreationMenu.Visible = true;
-			API.triggerServerEvent("clothing_preview", 3, oldtorsoIndex, oldtorsoVariation);
+			updateClothes(3, oldtorsoIndex, oldtorsoVariation);
 		});
 
 		torso_menu.OnItemSelect.connect(function(sender, item, index) {
@@ -666,6 +752,36 @@ API.onServerEventTrigger.connect((eventName, args) => {
 			break;
 	}
 });
+
+function updateClothes(type, index, variation) {
+    if (type === 4) {
+        API.setPlayerClothes(API.getLocalPlayer(), type, parseInt(legs_list[index].id), parseInt(legs_list[index].variations[variation]) - 1);
+    }
+    else if (type === 6) {
+        API.setPlayerClothes(API.getLocalPlayer(), type, parseInt(shoes_list[index].id), parseInt(shoes_list[index].variations[variation]) - 1);
+    }
+    else if (type === 7) {
+        API.setPlayerClothes(API.getLocalPlayer(), type, parseInt(access_list[index].id), parseInt(access_list[index].variations[variation]) - 1);
+    }
+    else if (type === 8) {
+        API.setPlayerClothes(API.getLocalPlayer(), type, parseInt(undershits_list[index].id), parseInt(undershits_list[index].variations[variation]) - 1);
+    }
+    else if (type === 11) {
+        API.setPlayerClothes(API.getLocalPlayer(), type, parseInt(tops_list[index].id), parseInt(tops_list[index].variations[variation]) - 1);
+    }
+    else if (type === 20) {
+        API.setPlayerAccessory(API.getLocalPlayer(), 0, parseInt(hats_list[index].id), parseInt(hats_list[index].variations[variation]) - 1);
+    }
+    else if (type === 21) {
+        API.setPlayerAccessory(API.getLocalPlayer(), 1, parseInt(glasses_list[index].id), parseInt(glasses_list[index].variations[variation]) - 1);
+    }
+    else if (type === 22) {
+        API.setPlayerAccessory(API.getLocalPlayer(), 2, parseInt(ears_list[index].id), parseInt(ears_list[index].variations[variation]) - 1);
+    }
+    else if (type === 3) {
+        API.setPlayerClothes(API.getLocalPlayer(), type, index, variation);
+    }
+}
 
 var bags_menu = null;
 

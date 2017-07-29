@@ -37,96 +37,6 @@ namespace mtgvrp.property_system.businesses
                 sender.rotation = API.getEntityData(sender, "clothing_lastrot");
                 API.sendChatMessageToPlayer(sender, "You have exiting the clothing menu.");
             }
-            else if (eventName == "clothing_preview")
-            {
-                Character character = sender.GetCharacter();
-
-                if (character.Model.Gender == Character.GenderMale)
-                {
-                    switch ((int)arguments[0])
-                    {
-                        case Component.ComponentTypeLegs:
-                            character.Model.PantsStyle = ComponentManager.ValidMaleLegs[(int)arguments[1]].ComponentId;
-                            character.Model.PantsVar = (int)ComponentManager.ValidMaleLegs[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                            break;
-                        case Component.ComponentTypeShoes:
-                            character.Model.ShoeStyle = ComponentManager.ValidMaleShoes[(int)arguments[1]].ComponentId;
-                            character.Model.ShoeVar = (int)ComponentManager.ValidMaleShoes[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                            break;
-                        case Component.ComponentTypeAccessories:
-                            character.Model.AccessoryStyle = ComponentManager.ValidMaleAccessories[(int)arguments[1]].ComponentId;
-                            character.Model.AccessoryVar = (int)ComponentManager.ValidMaleAccessories[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                            break;
-                        case Component.ComponentTypeUndershirt:
-                            character.Model.UndershirtStyle = ComponentManager.ValidMaleUndershirt[(int)arguments[1]].ComponentId;
-                            character.Model.UndershirtVar = (int)ComponentManager.ValidMaleUndershirt[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                            break;
-                        case Component.ComponentTypeTops:
-                            character.Model.TopStyle = ComponentManager.ValidMaleTops[(int)arguments[1]].ComponentId;
-                            character.Model.TopVar = (int)ComponentManager.ValidMaleTops[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                            break;
-                        case Component.ComponentTypeHats:
-                            character.Model.HatStyle = ComponentManager.ValidMaleHats[(int)arguments[1]].ComponentId;
-                            character.Model.HatVar = (int)ComponentManager.ValidMaleHats[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                            break;
-                        case Component.ComponentTypeGlasses:
-                            character.Model.GlassesStyle = ComponentManager.ValidMaleGlasses[(int)arguments[1]].ComponentId;
-                            character.Model.GlassesVar = (int)ComponentManager.ValidMaleGlasses[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                            break;
-                        case Component.ComponentTypeEars:
-                            character.Model.EarStyle = ComponentManager.ValidMaleEars[(int)arguments[1]].ComponentId;
-                            character.Model.EarVar = (int)ComponentManager.ValidMaleEars[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                            break;
-                        case Component.ComponentTypeTorso:
-                            character.Model.TorsoStyle = (int)arguments[1];
-                            character.Model.TorsoVar = (int)arguments[2];
-                            break;
-                    }
-                }
-                else
-                {
-                    switch ((int)arguments[0])
-                    {
-                        case Component.ComponentTypeLegs:
-                            character.Model.PantsStyle = ComponentManager.ValidFemaleLegs[(int)arguments[1]].ComponentId;
-                            character.Model.PantsVar = (int)ComponentManager.ValidFemaleLegs[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                            break;
-                        case Component.ComponentTypeShoes:
-                            character.Model.ShoeStyle = ComponentManager.ValidFemaleShoes[(int)arguments[1]].ComponentId;
-                            character.Model.ShoeVar = (int)ComponentManager.ValidFemaleShoes[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                            break;
-                        case Component.ComponentTypeAccessories:
-                            character.Model.AccessoryStyle = ComponentManager.ValidFemaleAccessories[(int)arguments[1]].ComponentId;
-                            character.Model.AccessoryVar = (int)ComponentManager.ValidFemaleAccessories[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                            break;
-                        case Component.ComponentTypeUndershirt:
-                            character.Model.UndershirtStyle = ComponentManager.ValidFemaleUndershirt[(int)arguments[1]].ComponentId;
-                            character.Model.UndershirtVar = (int)ComponentManager.ValidFemaleUndershirt[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                            break;
-                        case Component.ComponentTypeTops:
-                            character.Model.TopStyle = ComponentManager.ValidFemaleTops[(int)arguments[1]].ComponentId;
-                            character.Model.TopVar = (int)ComponentManager.ValidFemaleTops[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                            break;
-                        case Component.ComponentTypeHats:
-                            character.Model.HatStyle = ComponentManager.ValidFemaleHats[(int)arguments[1]].ComponentId;
-                            character.Model.HatVar = (int)ComponentManager.ValidFemaleHats[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                            break;
-                        case Component.ComponentTypeGlasses:
-                            character.Model.GlassesStyle = ComponentManager.ValidFemaleGlasses[(int)arguments[1]].ComponentId;
-                            character.Model.GlassesVar = (int)ComponentManager.ValidFemaleGlasses[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                            break;
-                        case Component.ComponentTypeEars:
-                            character.Model.EarStyle = ComponentManager.ValidFemaleEars[(int)arguments[1]].ComponentId;
-                            character.Model.EarVar = (int)ComponentManager.ValidFemaleEars[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                            break;
-                        case Component.ComponentTypeTorso:
-                            character.Model.TorsoStyle = (int)arguments[1];
-                            character.Model.TorsoVar = (int)arguments[2];
-                            break;
-                    }
-                }
-                character.update_ped();
-            }
             else if (eventName == "clothing_buyclothe")
             {
                 Character character = sender.GetCharacter();
@@ -402,9 +312,6 @@ namespace mtgvrp.property_system.businesses
         [Command("buyclothes"), Help(HelpManager.CommandGroups.Bussiness, "Used inside a clothing store to buy clothes.", null)]
         public void BuyClothes(Client player)
         {
-            API.sendChatMessageToPlayer(player, "This command is disabled until an issue is fixed.");
-            return;
-
             var biz = PropertyManager.IsAtPropertyInteraction(player);
             if (biz?.Type != PropertyManager.PropertyTypes.Clothing)
             {
