@@ -274,9 +274,11 @@ namespace mtgvrp.dmv
             if (Money.GetCharacterMoney(c) < prop.ItemPrices["drivingtest"])
             {
                 API.sendChatMessageToPlayer(player, "You need $" + prop.ItemPrices["drivingtest"] + " to do the test.");
+                return;
             }
 
             InventoryManager.DeleteInventoryItem<Money>(c, prop.ItemPrices["drivingtest"]);
+
 
             c.IsInDmvTest = true;
 

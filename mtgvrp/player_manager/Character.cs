@@ -206,7 +206,7 @@ namespace mtgvrp.player_manager
         //LSPD Related
         public bool IsInPoliceUniform { get; set; }
         public bool IsOnPoliceDuty { get; set; }
-
+        public string BadgeNumber { get; set; }
         public Vector3 BeaconPosition { get; set; }
         public bool BeaconSet { get; set; }
         public Timer BeaconTimer { get; set; }

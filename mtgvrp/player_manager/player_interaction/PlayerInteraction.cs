@@ -211,7 +211,7 @@ namespace mtgvrp.player_manager.player_interaction
                 return;
             }
 
-            if (API.isPlayerInAnyVehicle(player) == false || API.getPlayerVehicleSeat(player) != 0)
+            if (API.isPlayerInAnyVehicle(player) == false || API.getPlayerVehicleSeat(player) != -1)
             {
                 API.sendChatMessageToPlayer(player, "You must be in the front seat of a vehicle to eject another player.");
                 return;
