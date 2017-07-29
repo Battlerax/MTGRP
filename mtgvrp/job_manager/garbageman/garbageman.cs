@@ -79,11 +79,10 @@ namespace mtgvrp.job_manager.garbageman
         private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle)
         {
 
-            if (API.getPlayerVehicle(player) == null) { return; }
             Character character = API.getEntityData(player, "Character");
             var veh = VehicleManager.GetVehFromNetHandle(vehicle);
 
-            if (veh.Job?.Type == JobManager.JobTypes.Garbageman && character.JobOne?.Type == JobManager.JobTypes.Garbageman)
+            if (veh?.Job?.Type == JobManager.JobTypes.Garbageman && character.JobOne?.Type == JobManager.JobTypes.Garbageman)
             {
                 Property TargetProperty = null;
                 int maxGarbage = 0;

@@ -617,12 +617,15 @@ namespace mtgvrp.vehicle_manager
 
         private void OnPlayerEnterVehicle(Client player, NetHandle vehicleHandle)
         {
-            if (API.getPlayerVehicle(player) == null) { return; }
             var seat = API.fetchNativeFromPlayer<int>(player, Hash.GET_SEAT_PED_IS_TRYING_TO_ENTER, player.handle);
 
             // Admin check in future
 
             var veh = GetVehFromNetHandle(vehicleHandle);
+
+            if (veh == null)
+                return;
+
             API.setBlipTransparency(veh.Blip, 0);
 
             Character character = API.getEntityData(player.handle, "Character");

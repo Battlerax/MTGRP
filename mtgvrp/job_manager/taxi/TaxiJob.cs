@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Net.Http.Headers;
 using System.Timers;
 using GrandTheftMultiplayer.Server.API;
 using GrandTheftMultiplayer.Server.Constant;
@@ -95,11 +96,13 @@ namespace mtgvrp.job_manager.taxi
 
         private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle)
         {
-            if (API.getPlayerVehicle(player) == null) { return; }
             var seat = API.fetchNativeFromPlayer<int>(player, Hash.GET_SEAT_PED_IS_TRYING_TO_ENTER, player.handle);
 
             Character character = API.getEntityData(player.handle, "Character");
             var veh = VehicleManager.GetVehFromNetHandle(vehicle);
+
+            if(veh == null)
+                return;
 
             //Cancel taxi car respawn 
             if (OnDutyDrivers.Contains(character) && veh.Job.Type == JobManager.JobTypes.Taxi)
