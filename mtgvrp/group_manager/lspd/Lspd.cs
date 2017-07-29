@@ -410,6 +410,73 @@ namespace mtgvrp.group_manager.lspd
 
         }
 
+        [Command("givebadge"), Help(HelpManager.CommandGroups.LSPD, "Give a badge to a police officer.", new[] { "The target player ID.", "The badge number being given." })]
+        public void givebadge_cmd(Client player, string id, string number)
+        {
+            var receiver = PlayerManager.ParseClient(id);
+
+            Character character = API.getEntityData(player.handle, "Character");
+            Character receivercharacter = API.getEntityData(receiver, "Character");
+
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
+            {
+                API.sendChatMessageToPlayer(player, "You are not in the LSPD.");
+                return;
+            }
+
+            if (receiver == null)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
+            }
+
+            if (API.getEntityPosition(player).DistanceToSquared(API.getEntityPosition(receiver)) > 16f)
+            {
+                API.sendNotificationToPlayer(player, "~r~You're too far away!");
+                return;
+            }
+
+            if (receivercharacter.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
+            {
+                player.sendChatMessage("This player must be a member of the LSPD to own a badge.");
+                return;
+            }
+
+            receivercharacter.BadgeNumber = number;
+            player.sendChatMessage($"You have handed badge #{number} to {receivercharacter.CharacterName}");
+            player.sendChatMessage($"You have received badge #{number} from {character.CharacterName}");
+            receivercharacter.Save();
+        }
+
+        [Command("showbadge"), Help(HelpManager.CommandGroups.LSPD, "Show our police badge to a player.", new[] { "The target player ID." })]
+        public void showbadge_cmd(Client player, string id)
+        {
+            var receiver = PlayerManager.ParseClient(id);
+
+            Character character = API.getEntityData(player.handle, "Character");
+            Character receivercharacter = API.getEntityData(player, "Character");
+
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
+            {
+                API.sendChatMessageToPlayer(player, "You are not in the LSPD.");
+                return;
+            }
+
+            if (receiver == null)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
+            }
+
+            if (API.getEntityPosition(player).DistanceToSquared(API.getEntityPosition(receiver)) > 16f)
+            {
+                API.sendNotificationToPlayer(player, "~r~You're too far away!");
+                return;
+            }
+
+            ChatManager.RoleplayMessage(character, $"shows their badge to {receivercharacter.CharacterName}", ChatManager.RoleplayMe);
+            receiver.sendChatMessage($"~h~Badge:~h~ #{character.BadgeNumber} | ~h~Officer:~h~ {character.CharacterName}");
+        }
 
         [Command("cuff", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Handcuff a player.", new[] { "The target player ID." })]
         public void cuff_cmd(Client player, string id)
@@ -419,7 +486,7 @@ namespace mtgvrp.group_manager.lspd
             Character character = API.getEntityData(player.handle, "Character");
             Character receivercharacter = API.getEntityData(receiver, "Character");
 
-            if (character.Group.CommandType != Group.CommandTypeLspd)
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
                 API.sendChatMessageToPlayer(player, "You are not in the LSPD.");
                 return;
@@ -468,7 +535,7 @@ namespace mtgvrp.group_manager.lspd
             Character character = API.getEntityData(player.handle, "Character");
             Character receivercharacter = API.getEntityData(receiver, "Character");
 
-            if (character.Group.CommandType != Group.CommandTypeLspd)
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
                 API.sendChatMessageToPlayer(player, "You are not in the LSPD.");
                 return;
