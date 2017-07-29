@@ -1225,6 +1225,7 @@ namespace mtgvrp.AdminSystem
 
             var receiver = PlayerManager.ParseClient(id);
 
+            receiver.GetCharacter().JailTimeLeft = int.Parse(time) * 1000;
             Lspd.JailControl(receiver, int.Parse(time));
             API.sendChatMessageToPlayer(player, "You have jailed " + receiver.nametag + " for " + time + " seconds.");
             API.sendChatMessageToPlayer(receiver, "You have been jailed by " + player.nametag + " for " + time + " seconds.");
