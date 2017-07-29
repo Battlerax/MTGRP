@@ -15,8 +15,10 @@ using mtgvrp.group_manager;
 using mtgvrp.group_manager.lspd;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;
+using mtgvrp.player_manager.login;
 using mtgvrp.property_system;
 using mtgvrp.vehicle_manager;
+using System.Security.Cryptography;
 using mtgvrp.weapon_manager;
 using MongoDB.Driver;
 using static mtgvrp.core.LogManager;
@@ -97,6 +99,72 @@ namespace mtgvrp.AdminSystem
                 API.sendChatMessageToPlayer(player, "Set all gas station properties supplies to " + supply);
                 Log(LogTypes.AdminActions, $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {acc.AdminName} has set all gas station properties supplies to {supply}");
             }
+        }
+
+        [Command("resetpassword"), Help(HelpManager.CommandGroups.AdminLevel5, "Reset a player's password.",
+             new[] { "The player", "The new passsword."})]
+        public void resetpassword_cmd(Client player, string accountname, string newpass)
+        {
+            Account account = API.getEntityData(player, "Account");
+
+            if (account.AdminLevel < 4)
+                return;
+
+            if (newpass.Length < 8)
+            {
+                player.sendChatMessage("Please choose a password that is at least 8 characters long.");
+                return;
+            }
+
+            var salt = new byte[32];
+            LoginManager.Randomizer.GetBytes(salt);
+
+            //Add salt to the end of input_pass
+            var inputPass = newpass + System.Text.Encoding.UTF8.GetString(salt);
+
+            //Convert inputted password to bytes
+            var password = System.Text.Encoding.UTF8.GetBytes(inputPass);
+            password = new SHA256Managed().ComputeHash(password);
+
+            var filter = Builders<Account>.Filter.Eq("AccountName", accountname);
+            var foundAccount = DatabaseManager.AccountTable.Find(filter).ToList();
+
+            foreach (var c in foundAccount)
+            {
+                c.Password = System.Text.Encoding.UTF8.GetString(password);
+                c.Salt = System.Text.Encoding.UTF8.GetString(salt);
+            }
+
+            player.sendChatMessage("Account password set.");
+        }
+
+        [Command("resetmypass"), Help(HelpManager.CommandGroups.AdminLevel5, "Reset your own password.",
+             new[] { "Your new password." })]
+        public void resetmypass_cmd(Client player, string newpass)
+        {
+            if (newpass.Length < 8)
+            {
+                player.sendChatMessage("Please choose a password that is at least 8 characters long.");
+                return;
+            }
+
+            Account account = API.getEntityData(player, "Account");
+
+            var salt = new byte[32];
+            LoginManager.Randomizer.GetBytes(salt);
+
+            //Add salt to the end of input_pass
+            var inputPass = newpass + System.Text.Encoding.UTF8.GetString(salt);
+
+            //Convert inputted password to bytes
+            var password = System.Text.Encoding.UTF8.GetBytes(inputPass);
+            password = new SHA256Managed().ComputeHash(password);
+
+            account.Password = System.Text.Encoding.UTF8.GetString(password);
+            account.Salt = System.Text.Encoding.UTF8.GetString(salt);
+            account.Save();
+
+            player.sendChatMessage("Account password reset.");
         }
 
         [Command("makedev"),
