@@ -220,10 +220,10 @@ namespace mtgvrp.player_manager.login
         public void OnPlayerFinishedDownload(Client player)
         {
             Account account = API.getEntityData(player.handle, "Account");
-      
-            API.setEntityDimension(player.handle, player.handle.Value);
-            
-            if(account.is_registered())
+            API.setEntitySyncedData(player, "REG_DIMENSION", player.GetCharacter().Id + 1000);
+            API.setEntityDimension(player, player.GetCharacter().Id + 1000);
+
+            if (account.is_registered())
             {
                 API.sendChatMessageToPlayer(player, "This account is already registered. Use /login [password] to continue to character selection.");
             }
@@ -311,7 +311,7 @@ namespace mtgvrp.player_manager.login
                     else
                     {
                         API.sendChatMessageToPlayer(player, Color.AdminOrange,
-                            "Pleae login with your admin pin to continue.");
+                            "Please login with your admin pin to continue.");
                         API.triggerClientEvent(player, "admin_pin_check");
                     }
 
