@@ -244,7 +244,7 @@ namespace mtgvrp.core
             else if (account.TotalPlayingHours >= 2000) rank = "MTG-Icon";
 
             API.sendChatMessageToAll(Color.NewbieChat, $"[N] {rank} " + c.CharacterName + ": " + message);
-            if (account.AdminLevel == 0)
+            if (account.AdminLevel == 0 && account.DevLevel == 0)
             {
                 c.NewbieCooldown = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds() + 60;
             }
