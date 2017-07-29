@@ -739,26 +739,31 @@ namespace mtgvrp.AdminSystem
             API.sendChatMessageToPlayer(player, "----------------------------------------------");
         }
 
-        [Command("getplayercar"), Help(HelpManager.CommandGroups.AdminLevel2, "Teleports a players vehicle to you.", new[] { "Id: The id of player.", "Vehicle id" })]
-        public void getplayercar_cmd(Client player, string id, int nethandle)
+        [Command("getvehicle"), Help(HelpManager.CommandGroups.AdminLevel2, "Teleports a vehicle to you.", new[] { "Vehicle ID" })]
+        public void getplayercar_cmd(Client player, int vID)
         {
             Account account = API.getEntityData(player.handle, "Account");
             if (account.AdminLevel < 2)
                 return;
 
-            var receiver = PlayerManager.ParseClient(id);
-            if (receiver == null)
+            var veh = VehicleManager.GetVehicleById(vID);
+
+            if(veh == null)
             {
-                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                API.sendChatMessageToPlayer(player, Color.White, "That vehicle ID does not exist.");
                 return;
             }
 
-            Character character = API.getEntityData(player.handle, "Character");
-            var car = VehicleManager.Vehicles.Find(x => x.NetHandle.Value == nethandle && x.OwnerId == character.Id);
-            API.setEntityPosition(car.NetHandle, player.position);
+            if(veh.IsSpawned == false)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "That vehicle is not spawned.");
+                return;
+            }
+
+            API.setEntityPosition(veh.NetHandle, player.position);
             API.sendChatMessageToPlayer(player, "Sucessfully teleported the car to you.");
             Log(LogTypes.AdminActions,
-                $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has teleported {GetLogName(receiver)} vehicle to the Admin's position.");
+                $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has teleported vehicle #{vID} to the Admin's position.");
         }
 
         [Command("setadminname"), Help(HelpManager.CommandGroups.AdminLevel6, "Can set the admin name for admins.", new[] { "Id: The id of player.", "Desired name they want." })]
