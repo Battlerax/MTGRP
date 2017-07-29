@@ -242,7 +242,7 @@ namespace mtgvrp.player_manager
         public static int CalculatePaycheck(Client player)
         {
             Character character = API.shared.getEntityData(player.handle, "Character");
-            return basepaycheck - (basepaycheck * taxationAmount/100) + (basepaycheck * getVIPPaycheckBonus(player)/100) + getFactionBonus(player) + character.BankBalance/1000;
+            return basepaycheck - (Properties.Settings.Default.basepaycheck * Properties.Settings.Default.taxationamount/100) + (Properties.Settings.Default.basepaycheck * getVIPPaycheckBonus(player)/100) + getFactionBonus(player) + character.BankBalance/1000;
         }
 
         public static void SendPaycheckToPlayer(Client player)
