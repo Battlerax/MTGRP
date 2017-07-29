@@ -278,5 +278,30 @@ namespace mtgvrp.core.Discord
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(DiscordManager.Client, ":white_check_mark:"));
             }
         }
+
+        [DSharpPlus.CommandsNext.Attributes.Command("saveall")] // let's define this method as a command
+        [Description("Save all characters and kick players.")] // this will be displayed to tell users what this command does when they invoke help
+        public async Task SaveAll(CommandContext ctx) // this command takes no arguments
+        {
+            if (ctx.Channel.Name != "vrp-development")
+                return;
+
+            if (ctx.Member.Roles.Any(x => x.Name == "V-RP Developer"))
+            {
+                foreach (var player in API.shared.getAllPlayers())
+                {
+                    if (player == null)
+                        continue;
+
+                    var character = player.GetCharacter();
+                    if(character == null)
+                        continue;
+
+                    character.Save();
+                    character.Client?.kick(ctx.RawArgumentString);
+                }
+                await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(DiscordManager.Client, ":white_check_mark:"));
+            }
+        }
     }
 }
