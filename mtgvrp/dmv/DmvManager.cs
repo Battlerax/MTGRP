@@ -216,6 +216,7 @@ namespace mtgvrp.dmv
 
         private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle)
         {
+            if (API.getPlayerVehicle(player) == null) { return; }
             if (_testVehicles.Any(x => x[2] == vehicle.GetVehicle()))
             {
                 var c = player.GetCharacter();

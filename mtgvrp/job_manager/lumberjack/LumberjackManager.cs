@@ -29,6 +29,7 @@ namespace mtgvrp.job_manager.lumberjack
 
         private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle)
         {
+            if (API.getPlayerVehicle(player) == null) { return; }
             if (API.getEntityModel(vehicle) == (int)VehicleHash.Flatbed && player.GetCharacter().JobOne.Type == JobManager.JobTypes.Lumberjack)
             {
                 Vehicle veh = API.getEntityData(vehicle, "Vehicle");

@@ -95,6 +95,7 @@ namespace mtgvrp.job_manager.taxi
 
         private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle)
         {
+            if (API.getPlayerVehicle(player) == null) { return; }
             var seat = API.fetchNativeFromPlayer<int>(player, Hash.GET_SEAT_PED_IS_TRYING_TO_ENTER, player.handle);
 
             Character character = API.getEntityData(player.handle, "Character");

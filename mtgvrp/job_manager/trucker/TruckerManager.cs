@@ -324,6 +324,7 @@ namespace mtgvrp.job_manager.trucker
 
         private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle)
         {
+            if (API.getPlayerVehicle(player) == null) { return; }
             var veh = vehicle.GetVehicle();
             var character = player.GetCharacter();
 

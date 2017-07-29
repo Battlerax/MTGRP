@@ -81,6 +81,7 @@ namespace mtgvrp.job_manager
 
         private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle)
         {
+            if (API.getPlayerVehicle(player) == null) { return; }
             var seat = API.fetchNativeFromPlayer<int>(player, Hash.GET_SEAT_PED_IS_TRYING_TO_ENTER, player.handle);
 
             Character character = player.GetCharacter();
