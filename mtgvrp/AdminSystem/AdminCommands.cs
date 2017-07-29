@@ -128,6 +128,26 @@ namespace mtgvrp.AdminSystem
             }
         }
 
+        [Command("resetcharacterjob"), Help(HelpManager.CommandGroups.AdminLevel5, "Used to reset a player's job.", new[] { "The target player"})]
+        public void resetcharacterjob_cmd(Client player, string target)
+        {
+            Account account = API.getEntityData(player, "Account");
+
+            if (account.AdminLevel < 5)
+                return;
+
+            var receiver = PlayerManager.ParseClient(target);
+
+            if (receiver == null)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "That player is not connected.");
+                return;
+            }
+
+            receiver.GetCharacter().JobOne = job_manager.Job.None;
+        }
+
+
         [Command("set", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel5, "Used to set items/settings of a player.", new[] { "Id: The id of target player.", "Item: Name of the variable.", "Amount: New value of the variable." })]
         public void SetCharacterData(Client player, string target, string var, string value)
         {
