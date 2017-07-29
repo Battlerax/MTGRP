@@ -227,6 +227,7 @@ namespace mtgvrp.dmv
                     c.DmvTestStep = 0;
                     NextCheckpoint(player);
                     player.setData("DMV_VEHICLE", vehicle);
+                    API.setVehicleEngineStatus(API.getPlayerVehicle(player), true);
                     API.sendChatMessageToPlayer(player, "~y~** GO! You'll have to finish in less than or equal to 2 minutes and with less than 995 damage to the vehicle.");
                 }
                 else
