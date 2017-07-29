@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using GrandTheftMultiplayer.Server;
 using GrandTheftMultiplayer.Server.API;
 using GrandTheftMultiplayer.Server.Elements;
 using GrandTheftMultiplayer.Server.Managers;
@@ -16,7 +17,8 @@ namespace mtgvrp.player_manager
     class PlayerManager : Script
     {
         private static Dictionary<int, Character> _players = new Dictionary<int, Character>();
-        public static List<Character> Players => _players.Values.ToList();//(from pair in _players orderby pair.Key ascending select pair.Value).ToList<Character>();
+
+        public static List<Character> Players => _players.Values.Copy().ToList();
 
         public static void AddPlayer(Character c)
         {

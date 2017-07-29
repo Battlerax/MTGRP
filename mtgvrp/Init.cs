@@ -83,11 +83,11 @@ namespace mtgvrp
             LogManager.StartLogArchiveTimer();
 
             //Must be last to be called.
-            /*if (IsRunningOnMono())
+            if (IsRunningOnMono())
             {
                 API.consoleOutput("[INIT] Starting Discord Bot!");
                 DiscordManager.StartBot();
-            }*/
+            }
         }
 
         private void API_onResourceStop()

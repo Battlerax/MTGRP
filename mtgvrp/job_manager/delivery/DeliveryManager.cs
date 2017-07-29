@@ -26,7 +26,7 @@ namespace mtgvrp.job_manager.delivery
                 return;
             }
 
-            if (JobManager.GetJobById(c.JobZone)?.Type != JobManager.JobTypes.Trucker || c.JobZoneType != 3)
+            if (JobManager.GetJobById(c.JobZone)?.Type != JobManager.JobTypes.DeliveryMan || c.JobZoneType != 2)
             {
                 API.sendChatMessageToPlayer(player, "You aren't at the /getsupplies spot.");
                 return;
