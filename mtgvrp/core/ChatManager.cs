@@ -328,30 +328,30 @@ namespace mtgvrp.core
 
         public static void NearbyMessage(Client player, float radius, string msg, string color)
         {
-            //var players = API.shared.getPlayersInRadiusOfPlayer(radius, player);
-
-            var players = PlayerManager.Players.Where(x => GrandTheftMultiplayer.Server.API.API.shared
-                                                               .getEntityPosition(x.Client)
-                                                               .DistanceTo(player.position) <= radius);
-
-            foreach(var i in players)
+            foreach(var i in API.shared.getAllPlayers())
             {
-                API.shared.sendChatMessageToPlayer(i.Client, color, msg);
+                if (i == null)
+                    return;
+
+                if (i.position.DistanceTo(player.position) > radius)
+                    return;
+
+                API.shared.sendChatMessageToPlayer(i, color, msg);
             }
         }
 
 
         public static void NearbyMessage(Client player, float radius, string msg)
-        {
-            //var players = API.shared.getPlayersInRadiusOfPlayer(radius, player);
-
-            var players = PlayerManager.Players.Where(x => GrandTheftMultiplayer.Server.API.API.shared
-                                                               .getEntityPosition(x.Client)
-                                                               .DistanceTo(player.position) <= radius);
-
-            foreach (var i in players)
+        {   
+            foreach (var i in API.shared.getAllPlayers())
             {
-                API.shared.sendChatMessageToPlayer(i.Client, msg);
+                if(i == null)
+                    return;
+
+                if(i.position.DistanceTo(player.position) > radius)
+                    return;
+
+                API.shared.sendChatMessageToPlayer(i, msg);
             }
         }
 

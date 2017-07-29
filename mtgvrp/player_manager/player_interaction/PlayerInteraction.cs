@@ -140,6 +140,10 @@ namespace mtgvrp.player_manager.player_interaction
                     case "cancel_following":
                     {
                         Character character = API.getEntityData(player.handle, "Character");
+
+                            if (character == null)
+                            return;
+
                         if (character.FollowingPlayer != Character.None && character.IsBeingDragged == false)
                         {
 
