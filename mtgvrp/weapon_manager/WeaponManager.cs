@@ -93,6 +93,9 @@ namespace mtgvrp.weapon_manager
                 API.removePlayerWeapon(player, currentPlayerWeapon);
                 foreach (var p in API.getAllPlayers())
                 {
+                    if (p == null)
+                        continue;
+
                     Account account = API.shared.getEntityData(p, "Account");
                     if (account.AdminLevel > 1) { p.sendChatMessage("~r~ [WARNING]: " + player.nametag + " HAS A WEAPON THEY SHOULD NOT HAVE. TAKE ACTION."); }
                 }

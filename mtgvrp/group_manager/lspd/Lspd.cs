@@ -1019,7 +1019,7 @@ namespace mtgvrp.group_manager.lspd
             int jailOnePlayers = API.shared.getPlayersInRadiusOfPosition(3.7f, JailOne).Count;
             int jailTwoPlayers = API.shared.getPlayersInRadiusOfPosition(3.7f, JailTwo).Count;
             int jailThreePlayers = API.shared.getPlayersInRadiusOfPosition(3.7f, JailThree).Count;
-            int smallest = API.shared.getAllPlayers().Count;
+            int smallest = API.shared.getAllPlayers().SkipWhile(x =>  x== null).Count();
             int chosenCell = 0;
             List<int> list = new List<int>(new int[] { jailOnePlayers, jailTwoPlayers, jailThreePlayers });
 

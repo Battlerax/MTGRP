@@ -309,6 +309,9 @@ namespace mtgvrp.core
             var players = API.getAllPlayers();
             foreach(var p in players)
             {
+                if (p == null)
+                    continue;
+
                 Account pAccount = API.getEntityData(p.handle, "Account");
                 if(pAccount.VipLevel > 0)
                 {
@@ -331,10 +334,10 @@ namespace mtgvrp.core
             foreach(var i in API.shared.getAllPlayers())
             {
                 if (i == null)
-                    return;
+                    continue;
 
                 if (i.position.DistanceTo(player.position) > radius)
-                    return;
+                    continue;
 
                 API.shared.sendChatMessageToPlayer(i, color, msg);
             }
@@ -346,10 +349,10 @@ namespace mtgvrp.core
             foreach (var i in API.shared.getAllPlayers())
             {
                 if(i == null)
-                    return;
+                    continue;
 
                 if(i.position.DistanceTo(player.position) > radius)
-                    return;
+                    continue;
 
                 API.shared.sendChatMessageToPlayer(i, msg);
             }
@@ -433,6 +436,9 @@ namespace mtgvrp.core
             {
                 foreach (var c in API.getAllPlayers())
                 {
+                    if (c == null)
+                        continue;
+
                     Account receiverAccount = API.getEntityData(c, "Account");
 
                     if (receiverAccount.AdminLevel > 0)
