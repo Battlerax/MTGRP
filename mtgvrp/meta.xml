@@ -1,5 +1,5 @@
 <meta>
-   <info name="Init" author="Chenko" type="gamemode"/>
+   <info name="Init" author="Chenko" type="gamemode" async="true"/>
 
 	<!-- MAIN script with all *.cs files. -->
 	<script src="bin/Debug/mtgvrp.dll" type="server" lang="compiled"/>

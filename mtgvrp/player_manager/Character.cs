@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Timers;
 using GrandTheftMultiplayer.Server.API;
 using GrandTheftMultiplayer.Server.Constant;
@@ -359,14 +360,20 @@ namespace mtgvrp.player_manager
 
         public void Insert()
         {
-            Id = DatabaseManager.GetNextId("characters");
-            DatabaseManager.CharacterTable.InsertOne(this);
+            Task.Run(() =>
+            {
+                Id = DatabaseManager.GetNextId("characters");
+                DatabaseManager.CharacterTable.InsertOne(this);
+            });
         }
 
         public void Save()
         {
-            var filter = Builders<Character>.Filter.Eq("_id", Id);
-            DatabaseManager.CharacterTable.ReplaceOne(filter, this);
+            Task.Run(() =>
+            {
+                var filter = Builders<Character>.Filter.Eq("_id", Id);
+                DatabaseManager.CharacterTable.ReplaceOne(filter, this);
+            });
         }
 
         public static bool IsCharacterRegistered(string name)

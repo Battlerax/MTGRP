@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using mtgvrp.AdminSystem;
 using mtgvrp.database_manager;
 using MongoDB.Bson;
@@ -98,13 +99,19 @@ namespace mtgvrp.player_manager
 
         public void Register()
         {
-            DatabaseManager.AccountTable.InsertOne(this);
+            Task.Run(() =>
+            {
+                DatabaseManager.AccountTable.InsertOne(this);
+            });
         }
 
         public void Save()
         {
-            var filter = Builders<Account>.Filter.Eq("_id", Id);
-            DatabaseManager.AccountTable.ReplaceOne(filter, this);
+            Task.Run(() =>
+            {
+                var filter = Builders<Account>.Filter.Eq("_id", Id);
+                DatabaseManager.AccountTable.ReplaceOne(filter, this);
+            });
         }
 
         public bool is_registered()
