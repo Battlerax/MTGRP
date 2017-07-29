@@ -20,6 +20,48 @@ namespace mtgvrp.job_manager.scuba
         {
             API.onPlayerDisconnected += API_onPlayerDisconnected;
             API.onResourceStart += API_onResourceStart;
+            API.onClientEventTrigger += API_onClientEventTrigger;
+        }
+
+        private void API_onClientEventTrigger(Client player, string eventName, params object[] arguments)
+        {
+            if (eventName == "SCUBA_ISUNDERWATER")
+            {
+                float val = (float)arguments[0];
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (val == 1f)
+                {
+                    var character = player.GetCharacter();
+                    var scubaitem = InventoryManager.DoesInventoryHaveItem<ScubaItem>(character);
+
+                    if (scubaitem.Length == 0)
+                    {
+                        CancelScuba(player);
+                        API.sendChatMessageToPlayer(player, "The scuba set has been removed.");
+                        return;
+                    }
+
+                    if (character.IsScubaDiving != true)
+                    {
+                        CancelScuba(player);
+                        API.sendChatMessageToPlayer(player, "The scuba set has been removed.");
+                        return;
+                    }
+
+                    scubaitem[0].OxygenRemaining--;
+                    if (scubaitem[0].OxygenRemaining <= 0)
+                    {
+                        CancelScuba(player);
+                        InventoryManager.DeleteInventoryItem<ScubaItem>(character);
+                        API.sendChatMessageToPlayer(player, "Your oxygen have run out.");
+                        return;
+                    }
+
+                    API.sendNativeToPlayer(player, Hash.SET_PED_MAX_TIME_UNDERWATER, player.handle, 3600.0f);
+                    API.triggerClientEvent(player, "UPDATE_SCUBA_PERCENTAGE",
+                        "Oxygen Remaining: " + Math.Round((scubaitem[0].OxygenRemaining / ScubaItem.MaxOxygen) * 100f) + "%");
+                }
+            }
         }
 
         private void API_onResourceStart()
@@ -277,23 +319,7 @@ namespace mtgvrp.job_manager.scuba
                 return;
             }
 
-            // ReSharper disable once CompareOfFloatsByEqualityOperator
-            if (API.fetchNativeFromPlayer<float>(player, Hash.GET_ENTITY_SUBMERGED_LEVEL, player.handle) == 1f)
-            {
-                scubaitem[0].OxygenRemaining--;
-                if (scubaitem[0].OxygenRemaining <= 0)
-                {
-                    CancelScuba(player);
-                    InventoryManager.DeleteInventoryItem<ScubaItem>(character);
-                    API.sendChatMessageToPlayer(player, "Your oxygen have run out.");
-                    return;
-                }
-                
-                API.sendNativeToPlayer(player, Hash.SET_PED_MAX_TIME_UNDERWATER, player.handle, 3600.0f);
-                API.triggerClientEvent(player, "UPDATE_SCUBA_PERCENTAGE",
-                    "Oxygen Remaining: " + Math.Round((scubaitem[0].OxygenRemaining / ScubaItem.MaxOxygen) * 100f) + "%");
-                return;
-            }
+            API.triggerClientEvent(player, "REQUEST_SCUBA_UNDERWATER");
         }
 
         void CancelScuba(Client player)

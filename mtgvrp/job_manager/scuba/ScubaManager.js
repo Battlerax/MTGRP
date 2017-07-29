@@ -7,6 +7,10 @@ API.onServerEventTrigger.connect((event, args) => {
         else
             text = args[0];
     }
+    else if (event === "REQUEST_SCUBA_UNDERWATER") {
+        var value = API.returnNative("GET_ENTITY_SUBMERGED_LEVEL", 7, API.getLocalPlayer());
+        API.triggerServerEvent("SCUBA_ISUNDERWATER", value);
+    }
 });
 
 API.onUpdate.connect(() => {
