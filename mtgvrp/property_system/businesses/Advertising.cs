@@ -65,11 +65,14 @@ namespace mtgvrp.property_system.businesses
             foreach (var receiver in PlayerManager.Players)
             {
                 var senderPhone = InventoryManager.DoesInventoryHaveItem<Phone>(character)[0];
-                var receiverPhone = InventoryManager.DoesInventoryHaveItem<Phone>(receiver)[0];
+                var receiverPhone = InventoryManager.DoesInventoryHaveItem<Phone>(receiver);
                 
                 InventoryManager.DeleteInventoryItem(character, typeof(Money), price);
 
-                if (receiverPhone.IsOn)
+                if(receiverPhone.Length == 0)
+                    continue;
+
+                if (receiverPhone[0].IsOn)
                 {
                     receiver.Client.sendChatMessage("~g~[AD] (#" + senderPhone.PhoneNumber + "): " + text);
                 }
