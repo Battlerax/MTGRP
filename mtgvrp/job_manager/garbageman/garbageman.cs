@@ -175,7 +175,7 @@ namespace mtgvrp.job_manager.garbageman
         {
             foreach(var player in PlayerManager.Players)
             {
-                if (player.JobOne.Type == JobManager.JobTypes.Garbageman)
+                if (player?.JobOne?.Type == JobManager.JobTypes.Garbageman)
                 {
                     API.shared.sendPictureNotificationToPlayer(player.Client, message, "CHAR_PROPERTY_CAR_SCRAP_YARD", 
                         0, 1, "Los Santos Sanitations", "Garbage Notification");
