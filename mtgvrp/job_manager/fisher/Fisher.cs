@@ -214,7 +214,7 @@ namespace mtgvrp.job_manager.fisher
             c.PerfectCatchStrength = _random.Next(25, 95);
 
             API.sendChatMessageToPlayer(c.Client, Color.AdminOrange,
-                "* You begin to feel a fish tugging at your line! Control your reeling strength by tapping up arrow.");
+                "* You begin to feel a fish tugging at your line! Control your reeling strength by tapping space bar.");
             API.triggerClientEvent(c.Client, "start_fishing", c.PerfectCatchStrength);
         }
 
