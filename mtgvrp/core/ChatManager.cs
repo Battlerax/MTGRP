@@ -309,6 +309,9 @@ namespace mtgvrp.core
             var players = API.getAllPlayers();
             foreach(var p in players)
             {
+                if (p == null)
+                    continue;
+
                 Account pAccount = API.getEntityData(p.handle, "Account");
                 if(pAccount.VipLevel > 0)
                 {
@@ -328,30 +331,30 @@ namespace mtgvrp.core
 
         public static void NearbyMessage(Client player, float radius, string msg, string color)
         {
-            //var players = API.shared.getPlayersInRadiusOfPlayer(radius, player);
-
-            var players = PlayerManager.Players.Where(x => GrandTheftMultiplayer.Server.API.API.shared
-                                                               .getEntityPosition(x.Client)
-                                                               .DistanceTo(player.position) <= radius);
-
-            foreach(var i in players)
+            foreach(var i in API.shared.getAllPlayers())
             {
-                API.shared.sendChatMessageToPlayer(i.Client, color, msg);
+                if (i == null)
+                    continue;
+
+                if (i.position.DistanceTo(player.position) > radius)
+                    continue;
+
+                API.shared.sendChatMessageToPlayer(i, color, msg);
             }
         }
 
 
         public static void NearbyMessage(Client player, float radius, string msg)
-        {
-            //var players = API.shared.getPlayersInRadiusOfPlayer(radius, player);
-
-            var players = PlayerManager.Players.Where(x => GrandTheftMultiplayer.Server.API.API.shared
-                                                               .getEntityPosition(x.Client)
-                                                               .DistanceTo(player.position) <= radius);
-
-            foreach (var i in players)
+        {   
+            foreach (var i in API.shared.getAllPlayers())
             {
-                API.shared.sendChatMessageToPlayer(i.Client, msg);
+                if(i == null)
+                    continue;
+
+                if(i.position.DistanceTo(player.position) > radius)
+                    continue;
+
+                API.shared.sendChatMessageToPlayer(i, msg);
             }
         }
 
@@ -433,6 +436,9 @@ namespace mtgvrp.core
             {
                 foreach (var c in API.getAllPlayers())
                 {
+                    if (c == null)
+                        continue;
+
                     Account receiverAccount = API.getEntityData(c, "Account");
 
                     if (receiverAccount.AdminLevel > 0)

@@ -789,6 +789,9 @@ namespace mtgvrp.AdminSystem
             API.sendChatMessageToPlayer(player, "=====ADMINS ONLINE NOW=====");
             foreach (var c in API.getAllPlayers())
             {
+                if (c == null)
+                    continue;
+
                 Account receiverAccount = API.getEntityData(c.handle, "Account");
 
                 if (receiverAccount.AdminLevel > 1 && receiverAccount.AdminDuty)
@@ -1731,6 +1734,9 @@ namespace mtgvrp.AdminSystem
             {
                 foreach (var p in API.getAllPlayers())
                 {
+                    if (p == null)
+                        continue;
+
                     Account paccount = API.getEntityData(p.handle, "Account");
 
                     if (paccount.VipLevel > 0) { p.sendChatMessage(receiver.GetCharacter().CharacterName + " has become a level " + level + " ~y~VIP~y~!"); }
@@ -1796,6 +1802,9 @@ namespace mtgvrp.AdminSystem
         {
             foreach (var c in API.shared.getAllPlayers())
             {
+                if (c == null)
+                    continue;
+
                 Account receiverAccount = API.shared.getEntityData(c.handle, "Account");
 
                 if (receiverAccount.AdminLevel > 0)

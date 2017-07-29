@@ -682,7 +682,7 @@ namespace mtgvrp.property_system
 
                 if (prop.IsTeleportable && (!prop.IsLocked || prop.OwnerId == player.GetCharacter().Id))
                 {
-                    foreach (var ipl in prop.IPLs)
+                    foreach (var ipl in prop.IPLs ?? new List<string>())
                     {
                         //TODO: request ipl for player.
                     }

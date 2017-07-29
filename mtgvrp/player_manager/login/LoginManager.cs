@@ -220,8 +220,8 @@ namespace mtgvrp.player_manager.login
         public void OnPlayerFinishedDownload(Client player)
         {
             Account account = API.getEntityData(player.handle, "Account");
-            API.setEntitySyncedData(player, "REG_DIMENSION", player.GetCharacter().Id + 1000);
-            API.setEntityDimension(player, player.GetCharacter().Id + 1000);
+            API.setEntitySyncedData(player, "REG_DIMENSION",  1000);
+            API.setEntityDimension(player, 1000);
 
             if (account.is_registered())
             {

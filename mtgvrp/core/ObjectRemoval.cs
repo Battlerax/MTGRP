@@ -15,6 +15,9 @@ namespace mtgvrp.core
             {
                 foreach (var player in API.getAllPlayers())
                 {
+                    if (player == null)
+                        continue;
+
                     foreach (var obj in _objects)
                     {
                         if (player.position.DistanceTo(obj[0]) <= 175.0f)

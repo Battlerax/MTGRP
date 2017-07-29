@@ -18,7 +18,7 @@ namespace mtgvrp.player_manager
     {
         private static Dictionary<int, Character> _players = new Dictionary<int, Character>();
 
-        public static List<Character> Players => _players.Values.Copy().ToList();
+        public static List<Character> Players => _players.Values.ToList();
 
         public static void AddPlayer(Character c)
         {

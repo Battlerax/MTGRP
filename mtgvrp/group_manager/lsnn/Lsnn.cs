@@ -77,6 +77,9 @@ namespace mtgvrp.group_manager.lsnn
 
                 foreach (var c in API.getAllPlayers())
                 {
+                    if (c == null)
+                        continue;
+
                     Character receivercharacter = API.getEntityData(c, "Character");
                     if (receivercharacter.IsWatchingBroadcast)
                     {
@@ -181,6 +184,9 @@ namespace mtgvrp.group_manager.lsnn
                 {
                     foreach (var c in API.getAllPlayers())
                     {
+                        if (c == null)
+                            continue;
+
                         Character receivercharacter = API.getEntityData(c, "Character");
                         if (receivercharacter.IsWatchingBroadcast)
                         {
@@ -235,6 +241,9 @@ namespace mtgvrp.group_manager.lsnn
             {
                 foreach (var p in API.getAllPlayers())
                 {
+                    if (p == null)
+                        continue;
+
                     Character c = API.getEntityData(p, "Character");
                     if (c.HasCamera == true)
                     {
@@ -496,6 +505,9 @@ namespace mtgvrp.group_manager.lsnn
 
             foreach (var p in API.getAllPlayers())
             {
+                if (p == null)
+                    continue;
+
                 Character character = API.getEntityData(p, "Character");
 
                 if (character.IsWatchingBroadcast)

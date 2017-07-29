@@ -170,7 +170,7 @@ namespace mtgvrp.speed_fuel_system
                 return;
             }
 
-            int pendingFuel = API.getEntityData(vehEntity, "PENDING_FUEL");
+            int pendingFuel = API.getEntityData(vehEntity, "PENDING_FUEL") ?? 0;
 
             if (pendingFuel <= 0 || veh.RefuelProp.Supplies <= 0)
             {

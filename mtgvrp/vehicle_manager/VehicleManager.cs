@@ -867,6 +867,9 @@ namespace mtgvrp.vehicle_manager
             Account account = API.shared.getEntityData(player.handle, "Account");
             Character character = API.shared.getEntityData(player.handle, "Character");
 
+            if (vehicle == null)
+                return false;
+
             if (account.AdminLevel >= 3) { return true; }
             if (character.Id == vehicle.OwnerId) { return true; }
             if (vehicle.GroupId == character.GroupId && character.GroupId != 0) return true;
