@@ -394,13 +394,13 @@ namespace mtgvrp.job_manager.hunting
             Type = type;
             State = state;
 
-            StateTimer = new Timer()
+            /*StateTimer = new Timer()
             {
                 Interval = 1000,
                 AutoReset = true
             };
             StateTimer.Elapsed += delegate { AnimalAI(this); };
-            StateTimer.Start();
+            StateTimer.Start();*/
 
             HuntingManager.SpawnedAnimals.Add(this);
             API.shared.setEntitySyncedData(handle, "IS_ANIMAL", true);
@@ -409,7 +409,7 @@ namespace mtgvrp.job_manager.hunting
 
         public void AnimalAI(HuntingAnimal animal)
         {
-            API.shared.setEntityPositionFrozen(handle, false);
+            /*API.shared.setEntityPositionFrozen(handle, false);
 
             List<Client> playersInRadius = new List<Client>();
 
@@ -484,7 +484,7 @@ namespace mtgvrp.job_manager.hunting
                     break;
 
             }
-            UpdateState = false;
+            UpdateState = false;*/
         }
 
         public void Respawn()
