@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Timers;
 using GrandTheftMultiplayer.Server;
 using GrandTheftMultiplayer.Server.API;
 using GrandTheftMultiplayer.Server.Elements;
@@ -19,6 +20,8 @@ namespace mtgvrp.player_manager
         private static Dictionary<int, Character> _players = new Dictionary<int, Character>();
 
         public static List<Character> Players => _players.Values.ToList();
+
+        public Timer PlayerSaveTimer = new Timer();
 
         public static void AddPlayer(Character c)
         {
@@ -53,7 +56,29 @@ namespace mtgvrp.player_manager
             API.onPlayerRespawn += API_onPlayerRespawn;
             API.onPlayerHealthChange += API_onPlayerHealthChange;
 
+            //Setup respawn timer.
+            PlayerSaveTimer.Interval = 900000;
+            PlayerSaveTimer.Elapsed += PlayerSaveTimer_Elapsed;
+            PlayerSaveTimer.Start();
+
             DebugManager.DebugMessage("[PlayerM] Player Manager initalized.");
+        }
+
+        private void PlayerSaveTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            foreach (var player in API.shared.getAllPlayers())
+            {
+                if (player == null)
+                    continue;
+
+                var character = player.GetCharacter();
+                if (character == null)
+                    continue;
+
+                character.Save();
+
+                player.sendChatMessage("Character saved.");
+            }
         }
 
         private void API_onPlayerHealthChange(Client player, int oldValue)
