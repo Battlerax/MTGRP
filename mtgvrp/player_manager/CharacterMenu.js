@@ -11,6 +11,10 @@ var MAX_MAKEUP_COLORS = API.returnNative("_GET_NUM_MAKEUP_COLORS", 0);
 var MAX_BLUSH_COLORS = 33;
 var MAX_LIPSTICK_COLORS = 27;
 
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 //Component (clothing) 
 var Component = (function () {
     function Component() {
@@ -74,6 +78,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
         });
     } else if (eventName == "show_character_creation_menu") {
         var player = API.getLocalPlayer();
+        API.setEntityDimension(player, getRandomInt(1, 5000));
         next_character_creation_step(player, 0);
     }
     else if (eventName == "login_finished") {
