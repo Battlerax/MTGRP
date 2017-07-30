@@ -775,7 +775,7 @@ namespace mtgvrp.group_manager.lspd
                 character.UnpaidTickets += 1;
                 character.Save();
                 API.sendChatMessageToPlayer(player, "Ticket accepted. Pay for this ticket at the main desk of the police station.");
-           
+                ChatManager.RoleplayMessage(character, "has accepted a cop ticket", ChatManager.RoleplayMe);
 
             }
             else

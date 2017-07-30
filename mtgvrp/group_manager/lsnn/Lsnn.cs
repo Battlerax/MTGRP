@@ -52,6 +52,7 @@ namespace mtgvrp.group_manager.lsnn
         public Vector3 CameraRotation = null;
         public Vector3 OffSet = new Vector3(0, 0, -3);
         public Timer ChopperRotation = new Timer();
+        public int CameraDimension = 0;
 
         [Command("broadcast"), Help(HelpManager.CommandGroups.LSNN, "Start a broadcast.", null)]
         public void broadcast_cmd(Client player)
@@ -149,6 +150,7 @@ namespace mtgvrp.group_manager.lsnn
             var angle = API.getEntityRotation(player.handle).Z;
             CameraPosition = XyInFrontOfPoint(pos, angle, 1) - new Vector3(0, 0, 0.5);
             CameraRotation = API.getEntityRotation(player.handle) + new Vector3(0, 0, 180);
+            CameraDimension = API.getEntityDimension(player);
             API.sendNotificationToPlayer(player, "A camera has been placed on your position.");
             ChatManager.NearbyMessage(player, 10, "~p~" + character.CharacterName + " sets down a news camera");
             API.createObject(API.getHashKey("p_tv_cam_02_s"), CameraPosition, CameraRotation);
@@ -289,6 +291,7 @@ namespace mtgvrp.group_manager.lsnn
             character.HasCamera = true;
             CameraPosition = null;
             CameraRotation = null;
+            CameraDimension = 0;
             CameraSet = false;
             }
 
@@ -389,6 +392,7 @@ namespace mtgvrp.group_manager.lsnn
                 return;
             }
 
+            API.setEntityDimension(player, CameraDimension);
             API.sendChatMessageToPlayer(player, "You are watching the broadcast. Use /stopwatching to stop watching .");
             API.triggerClientEvent(player, "watch_broadcast", camPos, camRot, Headline, focusX, focusY, focusZ);
             API.freezePlayer(player, true);
