@@ -499,7 +499,7 @@ namespace mtgvrp.group_manager
             {
                 if (p.Group == sender.Group)
                 {
-                    API.sendChatMessageToPlayer(player, p.CharacterName + " | Rank: " + p.GroupRank + " | Division: " + p.DivisionRank);
+                    API.sendChatMessageToPlayer(player, p.CharacterName + " | Rank: " + p.GroupRank + " | Division: " + p.Division + " | Division Rank: " + p.DivisionRank);
                 }
             }
 

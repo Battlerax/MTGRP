@@ -178,7 +178,7 @@ namespace mtgvrp.job_manager.lumberjack
             }
         }
 
-        [Command("createtree"), Help(HelpManager.CommandGroups.AdminLevel5, "Creates a tree for lumberjack under you.")]
+        [Command("createtree"), Help(HelpManager.CommandGroups.LumberJob, "Creates a tree for lumberjack under you.")]
         public void CreateTreeCmd(Client player)
         {
             if (player.GetAccount().AdminLevel < 4)
@@ -191,7 +191,7 @@ namespace mtgvrp.job_manager.lumberjack
             API.triggerClientEvent(player, "PLACE_OBJECT_ON_GROUND_PROPERLY", tree.Id.ToString(), "lumberjack_settreepositionadmin");
         }
 
-        [Command("deletetree"), Help(HelpManager.CommandGroups.AdminLevel5, "Delete the nearest lumberjack tree to you.")]
+        [Command("deletetree"), Help(HelpManager.CommandGroups.LumberJob, "Delete the nearest lumberjack tree to you.")]
         public void DeleteTreeCmd(Client player)
         {
             if (player.GetAccount().AdminLevel < 4)
