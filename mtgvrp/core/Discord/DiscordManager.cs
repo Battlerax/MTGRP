@@ -304,7 +304,6 @@ namespace mtgvrp.core.Discord
                     character.Client?.kick(ctx.RawArgumentString);
                 }
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(DiscordManager.Client, ":white_check_mark:"));
-                Environment.Exit(0);
             }
         }
     }
