@@ -24,12 +24,14 @@ namespace mtgvrp.job_manager.lumberjack
 
             API.onClientEventTrigger += API_onClientEventTrigger;
             API.onPlayerExitVehicle += API_onPlayerExitVehicle;
-            API.onPlayerEnterVehicle += API_onPlayerEnterVehicle;
+            Init.OnPlayerEnterVehicleEx += API_onPlayerEnterVehicle;
         }
 
-        private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle)
+        private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle, int seat)
         {
-            if (API.getPlayerVehicle(player) == null) { return; }
+            if(vehicle.GetVehicle() == null)
+                return;
+
             if (API.getEntityModel(vehicle) == (int)VehicleHash.Flatbed && player.GetCharacter().JobOne.Type == JobManager.JobTypes.Lumberjack)
             {
                 Vehicle veh = API.getEntityData(vehicle, "Vehicle");
@@ -49,7 +51,7 @@ namespace mtgvrp.job_manager.lumberjack
                     int id = API.getEntityData(vehicle, "TREE_DRIVER");
                     if (id != player.GetCharacter().Id)
                     {
-                        API.warpPlayerOutOfVehicle(player);
+                        API.delay(1000, true, () => API.warpPlayerOutOfVehicle(player));;
                         API.sendChatMessageToPlayer(player, "This is not yours.");
                         return;
                     }
@@ -290,7 +292,7 @@ namespace mtgvrp.job_manager.lumberjack
 
                 Vehicle vehicle = API.getEntityData(API.getPlayerVehicle(player), "Vehicle");
                 API.resetEntityData(API.getPlayerVehicle(player), "TREE_OBJ");
-                API.warpPlayerOutOfVehicle(player);
+                API.delay(1000, true, () => API.warpPlayerOutOfVehicle(player));;
                 VehicleManager.respawn_vehicle(vehicle);
                 API.resetEntityData(API.getPlayerVehicle(player), "TREE_DRIVER");
                 API.triggerClientEvent(player, "update_beacon", new Vector3());

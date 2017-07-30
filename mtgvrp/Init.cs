@@ -12,6 +12,8 @@
 
 using System;
 using GrandTheftMultiplayer.Server.API;
+using GrandTheftMultiplayer.Server.Elements;
+using GrandTheftMultiplayer.Shared;
 using mtgvrp.core;
 using mtgvrp.core.Discord;
 using mtgvrp.database_manager;
@@ -37,12 +39,42 @@ namespace mtgvrp
 
             API.onResourceStart += OnResourceStartHandler;
             API.onResourceStop += API_onResourceStop;
+            API.onClientEventTrigger += API_onClientEventTrigger;
             InventoryManager.OnStorageItemUpdateAmount += InventoryManager_OnStorageItemUpdateAmount;
 
             SettingsManager.Load();
 
             DebugManager.DebugManagerInit();
             DatabaseManager.DatabaseManagerInit();
+        }
+
+        /*public class OnPlayerEnterVehicleExEventArgs : EventArgs
+        {
+            public OnPlayerEnterVehicleExEventArgs(Client player, NetHandle vehicle, int seat)
+            {
+                Vehicle = vehicle;
+                Player = player;
+                Seat = seat;
+            }
+
+            public NetHandle Vehicle { get; }
+
+            public Client Player { get; }
+
+            public int Seat { get; }
+        }*/
+        public delegate void OnPlayerEnterVehicleExHandler(Client player, NetHandle vehicle, int seat);
+        public static event OnPlayerEnterVehicleExHandler OnPlayerEnterVehicleEx;
+
+        private void API_onClientEventTrigger(GrandTheftMultiplayer.Server.Elements.Client sender, string eventName, params object[] arguments)
+        {
+            if (eventName == "OnPlayerEnterVehicleEx")
+            {
+                NetHandle veh = (NetHandle) arguments[0];
+                int seat = (int) arguments[1];
+
+                OnPlayerEnterVehicleEx?.Invoke(sender, veh, seat);
+            }
         }
 
         private void InventoryManager_OnStorageItemUpdateAmount(IStorage sender,

@@ -19,7 +19,7 @@ namespace mtgvrp.job_manager.garbageman
 
         public Garbageman()
         {
-            API.onPlayerEnterVehicle += API_onPlayerEnterVehicle;
+            Init.OnPlayerEnterVehicleEx += API_onPlayerEnterVehicle;
             API.onClientEventTrigger += API_onClientEventTrigger;
         }
 
@@ -80,15 +80,14 @@ namespace mtgvrp.job_manager.garbageman
             }
         }
 
-        private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle)
+        private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle, int seat)
         {
-
             Character character = API.getEntityData(player, "Character");
             var veh = VehicleManager.GetVehFromNetHandle(vehicle);
 
             if (veh?.Job?.Type == JobManager.JobTypes.Garbageman && character.JobOne?.Type == JobManager.JobTypes.Garbageman)
             {
-                Property TargetProperty = null;
+                Property targetProperty = null;
                 int maxGarbage = 0;
                 foreach (var prop in PropertyManager.Properties)
                 {
@@ -97,7 +96,7 @@ namespace mtgvrp.job_manager.garbageman
                         if (prop.GarbageBags > maxGarbage)
                         {
                             maxGarbage = prop.GarbageBags;
-                            TargetProperty = prop;
+                            targetProperty = prop;
                         }
                     }
                 }
@@ -118,17 +117,17 @@ namespace mtgvrp.job_manager.garbageman
                         return;
                     }
 
-                    TargetProperty = ChooseRandomProperty();
+                    targetProperty = ChooseRandomProperty();
 
-                    while (!TargetProperty.HasGarbagePoint)
+                    while (!targetProperty.HasGarbagePoint)
                     {
-                        TargetProperty = ChooseRandomProperty();
+                        targetProperty = ChooseRandomProperty();
                     }
 
-                    TargetProperty.GarbageBags = 5;
+                    targetProperty.GarbageBags = 5;
                 }
 
-                API.triggerClientEvent(player, "garbage_setwaypoint", TargetProperty.GarbagePoint);
+                API.triggerClientEvent(player, "garbage_setwaypoint", targetProperty.GarbagePoint);
                 player.sendChatMessage("A garbage waypoint has been set on your map.");
 
                 if (!character.IsOnGarbageRun)

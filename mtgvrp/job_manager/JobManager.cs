@@ -38,7 +38,7 @@ namespace mtgvrp.job_manager
         {
             DebugManager.DebugMessage("[JobM] Initalizing job manager...");
 
-            API.onPlayerEnterVehicle += API_onPlayerEnterVehicle;
+            Init.OnPlayerEnterVehicleEx += API_onPlayerEnterVehicle;
 
             API.onClientEventTrigger += ApiOnOnClientEventTrigger;
 
@@ -79,19 +79,17 @@ namespace mtgvrp.job_manager
             }
         }
 
-        private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle)
+        private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle, int seat)
         {
-            var seat = API.fetchNativeFromPlayer<int>(player, Hash.GET_SEAT_PED_IS_TRYING_TO_ENTER, player.handle);
-
             Character character = player.GetCharacter();
             var veh = VehicleManager.GetVehFromNetHandle(vehicle);
 
             if (veh?.JobId != 0)
             {
                 if (seat == -1 && veh?.JobId != 0 && veh?.JobId != character.JobOneId && player.GetAccount().AdminDuty == false)
-                { 
-                    API.warpPlayerOutOfVehicle(player);
+                {
                     API.sendPictureNotificationToPlayer(player, "This vehicle is only available to " + veh?.Job?.Name, "CHAR_BLOCKED", 0, 1, "Server", "~r~Vehicle Locked");
+                    API.delay(1000, true, () => API.warpPlayerOutOfVehicle(player));;
                 }
             }
         }
