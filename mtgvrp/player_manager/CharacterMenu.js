@@ -1033,7 +1033,8 @@ function next_character_creation_step(player, step) {
                     case "Finish Character Creation":
                         character_creation_menu.Visible = false;
                         API.triggerServerEvent("finish_character_creation", age, birthday, birthplace, spawn_point);
-						menu_pool = null;
+                        menu_pool = null;
+                        API.setActiveCamera(null);
                         break;
                 }
             });
