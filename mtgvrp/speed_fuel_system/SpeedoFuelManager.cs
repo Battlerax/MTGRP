@@ -156,7 +156,21 @@ namespace mtgvrp.speed_fuel_system
             var handles = (NetHandle[])vars;
             Client playerEntity = API.getPlayerFromHandle(handles[0]);
             NetHandle vehEntity = handles[1];
+
+            if (vehEntity.IsNull)
+            {
+                return;
+            }
+
             Vehicle veh = API.getEntityData(vehEntity, "Vehicle");
+
+            if (playerEntity == null)
+            {
+                veh.FuelingTimer?.Dispose();
+                API.resetEntityData(vehEntity, "PENDING_FUEL");
+                return;
+            }
+
             Character c = API.getEntityData(playerEntity, "Character");
 
             if (veh == null)
