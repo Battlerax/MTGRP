@@ -20,7 +20,7 @@ namespace mtgvrp.job_manager.trucker
     {
         public TruckerManager()
         {
-            API.onPlayerEnterVehicle += API_onPlayerEnterVehicle;
+            Init.OnPlayerEnterVehicleEx += API_onPlayerEnterVehicle;
             API.onPlayerExitVehicle += API_onPlayerExitVehicle;
             API.onEntityEnterColShape += API_onEntityEnterColShape;
             API.onPlayerDisconnected += API_onPlayerDisconnected;
@@ -322,7 +322,7 @@ namespace mtgvrp.job_manager.trucker
             }
         }
 
-        private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle)
+        private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle, int seat)
         {
             var veh = vehicle.GetVehicle();
             var character = player.GetCharacter();
@@ -344,7 +344,7 @@ namespace mtgvrp.job_manager.trucker
 
                 if (character.TruckingStage != Character.TruckingStages.None)
                 {
-                    API.warpPlayerOutOfVehicle(player);
+                    API.delay(1000, true, () => API.warpPlayerOutOfVehicle(player));;
                     return;
                 }
 
@@ -366,7 +366,7 @@ namespace mtgvrp.job_manager.trucker
             NetHandle veh = API.getEntityData(player, "TRUCKER_VEHICLE");
 
             if (player.vehicle != null && player.vehicle == veh)
-                API.warpPlayerOutOfVehicle(player);
+                API.delay(1000, true, () => API.warpPlayerOutOfVehicle(player));;
 
             if (!veh.IsNull)
             {

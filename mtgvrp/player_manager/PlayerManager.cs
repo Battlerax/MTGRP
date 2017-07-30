@@ -365,7 +365,7 @@ namespace mtgvrp.player_manager
             API.sendChatMessageToPlayer(sender, "==============================================");
             API.sendChatMessageToPlayer(sender, "~g~General:~g~");
             API.sendChatMessageToPlayer(sender,
-                $"~h~Character name:~h~ {character.CharacterName} | ~h~ID:~h~ {character.Id} | ~h~Money:~h~ {Money.GetCharacterMoney(character)} | ~h~Bank balance:~h~ {character.BankBalance} | ~h~Playing hours:~h~ {character.GetPlayingHours()}");
+                $"~h~Character name:~h~ {character.CharacterName} | ~h~ID:~h~ {character.Id} | ~h~Money:~h~ {Money.GetCharacterMoney(character)} | ~h~Bank balance:~h~ {character.BankBalance} | ~h~Playing hours:~h~ {character.GetPlayingHours()}  | ~h~Total hours:~h~ {account.TotalPlayingHours}");
 
             API.sendChatMessageToPlayer(sender,
                 $"~h~Age:~h~ {character.Age} ~h~Birthplace:~h~ {character.Birthplace} ~h~Birthday:~h~ {character.Birthday} ~h~VIP level:~h~ {account.VipLevel} ~h~VIP expires:~h~ {account.VipExpirationDate}");
