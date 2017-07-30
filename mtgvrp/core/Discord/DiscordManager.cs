@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
@@ -281,8 +282,8 @@ namespace mtgvrp.core.Discord
             }
         }
 
-        [DSharpPlus.CommandsNext.Attributes.Command("saveall")] // let's define this method as a command
-        [Description("Save all characters and kick players.")] // this will be displayed to tell users what this command does when they invoke help
+        [DSharpPlus.CommandsNext.Attributes.Command("saveandclose")] // let's define this method as a command
+        [Description("Save all characters, kick em and close.")] // this will be displayed to tell users what this command does when they invoke help
         public async Task SaveAll(CommandContext ctx) // this command takes no arguments
         {
             if (ctx.Channel.Name != "vrp-development")
@@ -301,6 +302,7 @@ namespace mtgvrp.core.Discord
 
                     character.Save();
                     character.Client?.kick(ctx.RawArgumentString);
+                    Environment.Exit(0);
                 }
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(DiscordManager.Client, ":white_check_mark:"));
             }
