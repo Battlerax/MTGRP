@@ -159,6 +159,11 @@ namespace mtgvrp.speed_fuel_system
             Vehicle veh = API.getEntityData(vehEntity, "Vehicle");
             Character c = API.getEntityData(playerEntity, "Character");
 
+            if (veh == null)
+            {
+                return;
+            }
+
             if (c == null)
             {
                 veh.FuelingTimer?.Dispose();
