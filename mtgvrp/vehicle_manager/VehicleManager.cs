@@ -582,8 +582,6 @@ namespace mtgvrp.vehicle_manager
 
                 if (spawn_vehicle(car) != 1)
                     API.consoleOutput($"There was an error spawning vehicle #{car.Id} of {e.Character.CharacterName}.");
-                else
-                    API.setVehicleLocked(car.NetHandle, true);
             }
         }
 
@@ -823,6 +821,10 @@ namespace mtgvrp.vehicle_manager
             }
 
             API.shared.setVehicleEngineStatus(veh.NetHandle, false);
+            if (veh.OwnerId != 0)
+            {
+                API.shared.setVehicleLocked(veh.NetHandle, true);
+            }
             return returnCode;
         }
 
