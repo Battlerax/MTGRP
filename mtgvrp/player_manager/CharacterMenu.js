@@ -554,7 +554,6 @@ function next_character_creation_step(player, step) {
                         if (new_index == 0)
                             blemishes = 255;
                         else blemishes = new_index - 1;
-                        API.sendChatMessage("Blemishes: " + blemishes);
                         API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 0, blemishes, 1.0);
                         break;
                     case "Eyebrows":
