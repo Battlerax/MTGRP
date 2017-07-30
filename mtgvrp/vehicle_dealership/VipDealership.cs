@@ -78,7 +78,7 @@ namespace mtgvrp.vehicle_dealership
             API.onClientEventTrigger += API_onClientEventTrigger;
 
             //Setup the blip.
-            foreach (var loc in _dealershipsLocations)
+            /*foreach (var loc in _dealershipsLocations)
             {
                 var marker = new MarkerZone(loc, new Vector3()) {BlipSprite = 100, TextLabelText = "/buyvipvehicle", BlipColor = 46};
                 marker.Create();
@@ -87,6 +87,7 @@ namespace mtgvrp.vehicle_dealership
                 API.shared.setBlipColor(marker.Blip, 46);
                 _markerZones.Add(marker);
             }
+            */
         }
 
         private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
@@ -176,7 +177,7 @@ namespace mtgvrp.vehicle_dealership
             }
         }
 
-        [Command("buyvipvehicle"), Help(HelpManager.CommandGroups.Vehicles, "Command used inside dealership to buy a vehicle.", null)]
+        //[Command("buyvipvehicle"), Help(HelpManager.CommandGroups.Vehicles, "Command used inside dealership to buy a vehicle.", null)]
         public void BuyVehicle(Client player)
         {
             //Check if can buy more cars.
