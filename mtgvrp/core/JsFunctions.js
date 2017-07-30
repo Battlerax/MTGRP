@@ -61,6 +61,11 @@ API.onEntityStreamIn.connect((entity, entityType) => {
         var pos = API.getEntityPosition(entity);
         var rot = API.getEntityRotation(entity);
         API.triggerServerEvent(lastEvent, lastObj, pos, rot);
+        return;
+    }
+
+    if (entityType === 6) {
+        API.triggerServerEvent("PLAYER_STREAMED_IN", entity);
     }
 });
 
