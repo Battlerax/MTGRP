@@ -540,107 +540,83 @@ function next_character_creation_step(player, step) {
             character_creation_menu.Visible = true;
 
             character_creation_menu.OnListChange.connect(function (sender, list, new_index) {
-                var playerHandle = API.getLocalPlayer();
                 switch (list.Text) {
                     case "Hair Style":
                         hair_style = new_index;
-                        API.setPlayerClothes(playerHandle, 2, hair_style, 0);
                         break;
                     case "Hair Color":
                         hair_color = new_index;
-                        API.callNative("_SET_PED_HAIR_COLOR", playerHandle, hair_color);
                         break;
                     case "Blemishes":
                         if (new_index == 0)
                             blemishes = 255;
                         else blemishes = new_index - 1;
-                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 0, blemishes, 1.0);
                         break;
                     case "Eyebrows":
                         eyebrows = new_index;
-                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 2, eyebrows, 1.0);
-                        API.callNative("_SET_PED_HEAD_OVERLAY_COLOR", playerHandle, 2, 1, hair_color,
-                            hair_color);
                         break;
                     case "Ageing":
                         if (new_index == 0)
                             ageing = 255;
                         else ageing = new_index - 1;
-                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 3, ageing, 1.0);
                         break;
                     case "Complexion":
                         if (new_index == 0)
                             complexion = 255;
                         else complexion = new_index - 1;
-                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 6, complexion, 1.0);
                         break;
                     case "Sundamage":
                         if (new_index == 0)
                             sun_damage = 255;
                         else sun_damage = new_index - 1;
-                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 7, sun_damage, 1.0);
                         break;
                     case "Moles & Freckles":
                         if (new_index == 0)
                             moles_freckles = 255;
                         else moles_freckles = new_index - 1;
-                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 9, moles_freckles, 1.0);
                         break;
                     case "Facial Hair":
                         if (new_index == 0)
                             facial_hair = 255;
                         else facial_hair = new_index - 1;
-                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 1, facial_hair, 1.0);
-                        API.callNative("_SET_PED_HEAD_OVERLAY_COLOR", playerHandle, 1, 1, hair_color,
-                            hair_color);
                         break;
                     case "Makeup":
                         if (new_index == 0)
                             makeup = 255;
                         else makeup = new_index - 1;
-                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 4, makeup, 1.0);
                         break;
                     case "Makeup Color":
                         if (new_index == 0)
                             makeup_color = 255;
                         else makeup_color = new_index - 1;
-                        API.callNative("_SET_PED_HEAD_OVERLAY_COLOR", playerHandle, 4, 0, makeup_color,
-                            makeup_color);
                         break;
                     case "Blush":
                         if (new_index == 0)
                             blush = 255;
                         else blush = new_index - 1;
-                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 5, blush, 1.0);
                         break;
                     case "Blush Color":
                         if (new_index == 0)
                             blush_color = 255;
                         else blush_color = new_index - 1;
-                        API.callNative("_SET_PED_HEAD_OVERLAY_COLOR", playerHandle, 5, 2, blush_color,
-                            blush_color);
                         break;
                     case "Lipstick":
                         if (new_index == 0)
                             lipstick = 255;
                         else lipstick = new_index - 1;
-                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 8, lipstick, 1.0);
                         break;
                     case "Lipstick Color":
                         if (new_index == 0)
                             lipstick_color = 255;
                         else lipstick_color = new_index - 1;
-                        API.callNative("_SET_PED_HEAD_OVERLAY_COLOR", playerHandle, 8, 2, lipstick_color,
-                            lipstick_color);
                         break;
                 }
+
+                API.triggerServerEvent("change_facial_features", hair_style, hair_color, blemishes, facial_hair, eyebrows, ageing, makeup, makeup_color, blush, blush_color, complexion, sun_damage, lipstick, lipstick_color, moles_freckles);
             });
 
             character_creation_menu.OnItemSelect.connect(function (sender, item, index) {
                 if (item.Text == "Next") {
-                    //Save em.
-                    API.triggerServerEvent("change_facial_features", hair_style, hair_color, blemishes, facial_hair, eyebrows, ageing, makeup, makeup_color, blush, blush_color, complexion, sun_damage, lipstick, lipstick_color, moles_freckles);
-
                     API.sendChatMessage("~o~Creating menus... Please wait, this may take a second!");
                     next_character_creation_step(player, 2);
                 }

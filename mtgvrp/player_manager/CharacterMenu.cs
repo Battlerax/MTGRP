@@ -282,8 +282,7 @@ namespace mtgvrp.player_manager
                     character.Model.Lipstick = (int)arguments[12];
                     character.Model.LipstickColor = (int)arguments[13];
                     character.Model.MolesFreckles = (int)arguments[14];
-                    character.update_ped();
-                    character.Save();
+                    character.update_ped(player);
                 }
                     break;
                 case "change_clothes":
