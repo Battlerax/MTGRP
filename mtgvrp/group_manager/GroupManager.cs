@@ -374,7 +374,7 @@ namespace mtgvrp.group_manager
 
             Character receiverChar = API.getEntityData(receiver.handle, "Character");
 
-            if (receiverChar.DivisionRank <= character.DivisionRank && character.DivisionRank > rank)
+            if (receiverChar.DivisionRank <= character.DivisionRank && character.DivisionRank > rank || character.GroupRank > 6)
             {
 
                 if (rank > receiverChar.DivisionRank)
