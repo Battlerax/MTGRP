@@ -21,11 +21,8 @@ namespace mtgvrp.vehicle_dealership
         //Could be changed to dynamic later on.
         private readonly string[][] _helicopters =
         {
-            new[] {"Frogger", "744705981", "100000"},
-            new[] {"Maverick", "-1660661558", "130000"},
-            new[] {"Supervolito", "710198397", "200000"},
-            new[] {"Swift", " -339587598", "300000"},
-            new[] {"Volatus", "-1845487887", "400000"},
+            new[] {"Frogger", "744705981", "120000"},
+            new[] {"Maverick", "-1660661558", "200000"},
         };
         #endregion
 
@@ -96,7 +93,7 @@ namespace mtgvrp.vehicle_dealership
                         character.Id,
                         vehicle_manager.Vehicle.VehTypePerm
                     );
-                    theVehicle.IsVip = true;
+                    //theVehicle.IsVip = true;
                     theVehicle.OwnerName = character.CharacterName;
                     //Add it to the players cars.
                     theVehicle.Insert();
@@ -127,11 +124,12 @@ namespace mtgvrp.vehicle_dealership
             Character character = player.GetCharacter();
             Account account = API.getEntityData(player, "Account");
 
-            if (account.VipLevel < 1)
+            /*if (account.VipLevel < 1)
             {
                 player.sendChatMessage("You must be a VIP to use the chopper dealership.");
                 return;
             }
+            */
             if (character.OwnedVehicles.Count >= VehicleManager.GetMaxOwnedVehicles(player))
             {
                 API.sendChatMessageToPlayer(player, "You can't own anymore vehicles.");

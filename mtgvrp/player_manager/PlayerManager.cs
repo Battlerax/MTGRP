@@ -269,7 +269,7 @@ namespace mtgvrp.player_manager
         public static int CalculatePaycheck(Client player)
         {
             Character character = API.shared.getEntityData(player.handle, "Character");
-            return basepaycheck - (Properties.Settings.Default.basepaycheck * Properties.Settings.Default.taxationamount/100) + (Properties.Settings.Default.basepaycheck * getVIPPaycheckBonus(player)/100) + getFactionBonus(player) + character.BankBalance/1000;
+            return basepaycheck - (Properties.Settings.Default.basepaycheck * Properties.Settings.Default.taxationamount/100) + /*(Properties.Settings.Default.basepaycheck * getVIPPaycheckBonus(player)/100) +*/ getFactionBonus(player) + character.BankBalance/1000;
         }
 
         public static void SendPaycheckToPlayer(Client player)
@@ -286,7 +286,7 @@ namespace mtgvrp.player_manager
                     player.sendChatMessage("Base paycheck: $" + basepaycheck + ".");
                     player.sendChatMessage("Interest: $" + character.BankBalance / 1000 + ".");
                     player.sendChatMessage("You were taxed at " + taxationAmount + "%.");
-                    player.sendChatMessage("VIP bonus: " + getVIPPaycheckBonus(player) + "%.");
+                    //player.sendChatMessage("VIP bonus: " + getVIPPaycheckBonus(player) + "%.");
                     player.sendChatMessage("Faction bonus: $" + getFactionBonus(player) + ".");
                     player.sendChatMessage("----------------------------------------------");
                     player.sendChatMessage("Total: ~g~$" + paycheckAmount + "~w~.");
