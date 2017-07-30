@@ -65,7 +65,7 @@ namespace mtgvrp.weapon_manager
                 {
                     Character chr = (Character)sender;
                     Weapon item = (Weapon)args.Item;
-                    GivePlayerWeapon(chr.Client, item);
+                    API.shared.givePlayerWeapon(chr.Client, item.WeaponHash, 9999, true, true);
                 }
             }
         }
@@ -203,8 +203,6 @@ namespace mtgvrp.weapon_manager
             Character character = API.shared.getEntityData(player.handle, "Character");
 
             if (DoesPlayerHaveWeapon(player, weapon.WeaponHash)) { return; }
-
-            API.shared.givePlayerWeapon(player, weapon.WeaponHash, 9999, true, true);
 
             if (account.VipLevel < 1) { API.shared.setPlayerWeaponTint(player, weapon.WeaponHash, WeaponTint.Normal); }
             else { API.shared.setPlayerWeaponTint(player, weapon.WeaponHash, weapon.WeaponTint); }
