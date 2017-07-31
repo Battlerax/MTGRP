@@ -35,20 +35,23 @@ namespace mtgvrp.job_manager.garbageman
 
                         vehicle_manager.Vehicle closestVeh = VehicleManager.GetClosestVehicle(player, 10f).GetVehicle();
 
+                        if (API.isPlayerInAnyVehicle(player))
+                        {
+                            player.sendChatMessage("You cannot be in a vehicle while doing this.");
+                            return;
+                        }
                         if (closestVeh == null || closestVeh.Job.Type != JobManager.JobTypes.Garbageman)
                         {
                             ChatManager.RoleplayMessage(character, "throws the garbage bag into the air.", ChatManager.RoleplayMe);
                             player.sendChatMessage("~r~You must throw the garbage bag into the back of the garbage truck!");
                             return;
                         }
-
                         if (player.rotation.Z > API.getEntityRotation(closestVeh.NetHandle).Z + 15 || player.rotation.Z < API.getEntityRotation(closestVeh.NetHandle).Z - 15)
                         {
                             ChatManager.RoleplayMessage(character, "throws the garbage bag at the garbage truck and misses.", ChatManager.RoleplayMe);
                             player.sendChatMessage("~r~You failed to throw the garbage bag into the back of the garbage truck!");
                             return;
                         }
-
                         if (closestVeh.GarbageBags >= 10)
                         {
                             ChatManager.RoleplayMessage(character, "throws the garbage bag at the garbage truck and the garbage goes everywhere!", ChatManager.RoleplayMe);
@@ -297,6 +300,11 @@ namespace mtgvrp.job_manager.garbageman
                 return;
             }
 
+            if (API.isPlayerInAnyVehicle(player))
+            {
+                player.sendChatMessage("You cannot do this while in a vehicle.");
+                return;
+            }
             if (prop.GarbageBags == 0)
             {
                 player.sendChatMessage("There is no garbage to pick up.");

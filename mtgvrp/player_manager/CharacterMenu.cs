@@ -211,6 +211,17 @@ namespace mtgvrp.player_manager
                         API.setEntityDimension(player.handle, character.LastDimension);
                         API.setPlayerHealth(player, character.Health);
 
+                        if (account.AdminLevel > 0)
+                        {
+                            foreach(var p in PlayerManager.Players)
+                            {
+                                if (p.Client.GetAccount().AdminLevel > 0)
+                                {
+                                    p.Client.sendChatMessage($"Admin {account.AdminName} has signed in.");
+                                }
+                            }
+                        }
+
                         if (character.Group != Group.None)
                         {
                             GroupManager.SendGroupMessage(player,

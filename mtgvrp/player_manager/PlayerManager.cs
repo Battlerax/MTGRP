@@ -98,17 +98,23 @@ namespace mtgvrp.player_manager
         {
             var character = player.GetCharacter();
 
-            player.sendChatMessage("You were revived by the ~b~Los Santos Medical Department ~w~ and were charged $500 for hospital fees.");
+            player.sendChatMessage("You were revived by the ~b~Los Santos Medical Department ~w~ and were charged $200 for hospital fees.");
             WeaponManager.RemoveAllPlayerWeapons(player);
-            int amount = -500;
+            int amount = -200;
 
-            if (Money.GetCharacterMoney(character) < 500)
+            if (character.IsJailed)
+            {
+                group_manager.lspd.Lspd.JailControl(player, character.JailTimeLeft);
+            }
+
+            if (Money.GetCharacterMoney(character) < 200)
             {
                 character.BankBalance += amount;
             }
+
             else
             {
-                InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(Money), 500);
+                InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(Money), 200);
             }
             LogManager.Log(LogManager.LogTypes.Death, $"{character.CharacterName}[{player.socialClubName}] has died.");
         }
@@ -141,13 +147,25 @@ namespace mtgvrp.player_manager
 
             if (character != null)
             {
+                var account = player.GetAccount();
+
+                if (account.AdminLevel > 0)
+                {
+                    foreach (var p in PlayerManager.Players)
+                    {
+                        if (p.Client.GetAccount().AdminLevel > 0)
+                        {
+                            p.Client.sendChatMessage($"Admin {account.AdminName} has left the server.");
+                        }
+                    }
+                }
+
                 if (character.Group != Group.None)
                 {
                     GroupManager.SendGroupMessage(player,
                         character.CharacterName + " from your group has left the server. (" + reason + ")");
                 }
 
-                var account = player.GetAccount();
                 account.Save();
                 character.Health = API.getPlayerHealth(player);
                 character.LastPos = player.position;

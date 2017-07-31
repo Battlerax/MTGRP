@@ -799,9 +799,16 @@ namespace mtgvrp.AdminSystem
 
                 Account receiverAccount = API.getEntityData(c.handle, "Account");
 
-                if (receiverAccount.AdminLevel > 1 && receiverAccount.AdminDuty)
+                if (receiverAccount.AdminLevel > 0)
                 {
-                    API.sendChatMessageToPlayer(player, "~g~" + receiverAccount.AdminName + " | LEVEL " + receiverAccount.AdminLevel);
+                    if (receiverAccount.AdminDuty)
+                    {
+                        API.sendChatMessageToPlayer(player, "~g~[ONDUTY] " + receiverAccount.AdminName + " | LEVEL " + receiverAccount.AdminLevel);
+                    }
+                    else
+                    {
+                        API.sendChatMessageToPlayer(player, "~r~[OFFDUTY] " + receiverAccount.AdminName + " | LEVEL " + receiverAccount.AdminLevel);
+                    }
                 }
             }
         }
@@ -1221,7 +1228,7 @@ namespace mtgvrp.AdminSystem
 
         //PLAYER-ADMIN STUFF
 
-        [Command("prison", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel2, "Places a player into prison for the specificed amount of time.", new [] {"ID of the target player", "Time in seconds"})]
+        [Command("prison", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel2, "Places a player into prison for the specificed amount of time.", new [] {"ID of the target player", "Time in minutes."})]
         public void prison_cmd(Client player, string id, string time)
         {
             Account account = API.getEntityData(player.handle, "Account");
@@ -1230,10 +1237,10 @@ namespace mtgvrp.AdminSystem
 
             var receiver = PlayerManager.ParseClient(id);
 
-            receiver.GetCharacter().JailTimeLeft = int.Parse(time) * 1000;
+            receiver.GetCharacter().JailTimeLeft = int.Parse(time) * 1000 * 60;
             Lspd.JailControl(receiver, int.Parse(time));
-            API.sendChatMessageToPlayer(player, "You have jailed " + receiver.nametag + " for " + time + " seconds.");
-            API.sendChatMessageToPlayer(receiver, "You have been jailed by " + player.nametag + " for " + time + " seconds.");
+            API.sendChatMessageToPlayer(player, "You have jailed " + receiver.nametag + " for " + time + " minutes.");
+            API.sendChatMessageToPlayer(receiver, "You have been jailed by " + player.nametag + " for " + time + " minutes.");
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has jailed {GetLogName(receiver)} for {time} second(s).");
         }

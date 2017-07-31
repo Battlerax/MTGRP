@@ -191,6 +191,11 @@ namespace mtgvrp.property_system.businesses
                 }
                 else if (prop.Type == PropertyManager.PropertyTypes.Ammunation)
                 {
+                    if (character.GetPlayingHours() < 2)
+                    {
+                        sender.sendChatMessage("You must have more than 2 playing hours to buy a weapon.");
+                        return;
+                    }
                     prop.Supplies--;
                     switch (itemName)
                     {

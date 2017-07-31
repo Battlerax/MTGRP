@@ -319,7 +319,7 @@ namespace mtgvrp.dmv
             {
                 API.triggerClientEvent(player, "DMV_UPDATE_MARKER", new Vector3(), new Vector3());
 
-                var isOnTime = DateTime.Now.Subtract(c.TimeStartedDmvTest) <= TimeSpan.FromMinutes(2).Add(TimeSpan.FromSeconds(5));
+                var isOnTime = DateTime.Now.Subtract(c.TimeStartedDmvTest) <= TimeSpan.FromMinutes(2).Add(TimeSpan.FromSeconds(6));
                 var isOnHealth = player.vehicle.health >= 995;
 
                 if (isOnTime && isOnHealth)
@@ -435,7 +435,7 @@ namespace mtgvrp.dmv
             API.sendChatMessageToPlayer(targetPlayer, $" [************** Vehicles Of {c.rp_name()} **************]");
             foreach (var veh in VehicleManager.Vehicles.Where(x => c.OwnedVehicles.Contains(x.Id)).Where(x => x.IsRegistered))
             {
-                API.sendChatMessageToPlayer(player, $"* Model: {API.getVehicleDisplayName(veh.VehModel)} | Registeration: {veh.LicensePlate}");
+                API.sendChatMessageToPlayer(targetPlayer, $"* Model: {API.getVehicleDisplayName(veh.VehModel)} | Registration: {veh.LicensePlate}");
             }
             API.sendChatMessageToPlayer(targetPlayer, " [**********************************************************]");
 

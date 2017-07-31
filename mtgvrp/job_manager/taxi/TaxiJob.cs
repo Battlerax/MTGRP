@@ -244,7 +244,7 @@ namespace mtgvrp.job_manager.taxi
 
             if(farePrice < MinFare || farePrice > MaxFare)
             {
-                API.sendPictureNotificationToPlayer(player, "Your fair price must be between $" + MinFare + " and $" + MaxFare + ".", "CHAR_BLOCKED", 0, 1, "Server", "~r~Command Error");
+                API.sendPictureNotificationToPlayer(player, "Your fare price must be between $" + MinFare + " and $" + MaxFare + ".", "CHAR_BLOCKED", 0, 1, "Server", "~r~Command Error");
                 return;
             }
 
