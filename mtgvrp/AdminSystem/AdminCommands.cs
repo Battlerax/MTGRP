@@ -799,7 +799,7 @@ namespace mtgvrp.AdminSystem
 
                 Account receiverAccount = API.getEntityData(c.handle, "Account");
 
-                if (receiverAccount.AdminLevel > 1 && receiverAccount.AdminDuty)
+                if (receiverAccount.AdminLevel >= 1 && receiverAccount.AdminDuty || receiverAccount.AdminLevel == 1)
                 {
                     API.sendChatMessageToPlayer(player, "~g~" + receiverAccount.AdminName + " | LEVEL " + receiverAccount.AdminLevel);
                 }
