@@ -99,7 +99,7 @@ namespace mtgvrp.job_manager.lumberjack
                     API.resetEntityData(vehicle, "Tree_Cancel_Timer");
                     API.resetEntityData(vehicle, "TREE_DRIVER");
                     API.sendChatMessageToPlayer(player, "Wood run cancelled.");
-                    Init.SendEvent(player, "update_beacon", new Vector3());
+                    API.triggerClientEvent(player, "update_beacon", new Vector3());
 
                 }, null, 60000, Timeout.Infinite));
                 API.sendChatMessageToPlayer(player, "You've got 1 minute to get back to your vehicle or the wood will be reset.");
@@ -190,7 +190,7 @@ namespace mtgvrp.job_manager.lumberjack
             tree.CreateTree();
             tree.Insert();
             API.setEntitySyncedData(tree.TreeObj, "TargetObj", tree.Id.ToString());
-            Init.SendEvent(player, "PLACE_OBJECT_ON_GROUND_PROPERLY", tree.Id.ToString(), "lumberjack_settreepositionadmin");
+            API.triggerClientEvent(player, "PLACE_OBJECT_ON_GROUND_PROPERLY", tree.Id.ToString(), "lumberjack_settreepositionadmin");
         }
 
         [Command("deletetree"), Help(HelpManager.CommandGroups.LumberJob, "Delete the nearest lumberjack tree to you.")]
@@ -247,7 +247,7 @@ namespace mtgvrp.job_manager.lumberjack
 
                 ChatManager.RoleplayMessage(player, "picks up the woods using the forklift.", ChatManager.RoleplayMe);
 
-                Init.SendEvent(player, "update_beacon", character.JobOne.MiscOne.Location);
+                API.triggerClientEvent(player, "update_beacon", character.JobOne.MiscOne.Location);
                 
 
                 API.setEntityData(vehicle.NetHandle, "TREE_OBJ", tree);
@@ -295,7 +295,7 @@ namespace mtgvrp.job_manager.lumberjack
                 API.delay(1000, true, () => API.warpPlayerOutOfVehicle(player));;
                 VehicleManager.respawn_vehicle(vehicle);
                 API.resetEntityData(API.getPlayerVehicle(player), "TREE_DRIVER");
-                Init.SendEvent(player, "update_beacon", new Vector3());
+                API.triggerClientEvent(player, "update_beacon", new Vector3());
 
                 InventoryManager.GiveInventoryItem(player.GetCharacter(), new Money(), 200, true);
                 API.sendChatMessageToPlayer(player, "* You have sucessfully sold your wood for ~g~$200");

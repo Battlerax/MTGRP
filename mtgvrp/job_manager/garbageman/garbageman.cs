@@ -130,7 +130,7 @@ namespace mtgvrp.job_manager.garbageman
                     targetProperty.GarbageBags = 5;
                 }
 
-                Init.SendEvent(player, "garbage_setwaypoint", targetProperty.GarbagePoint);
+                API.triggerClientEvent(player, "garbage_setwaypoint", targetProperty.GarbagePoint);
                 player.sendChatMessage("A garbage waypoint has been set on your map.");
 
                 if (!character.IsOnGarbageRun)

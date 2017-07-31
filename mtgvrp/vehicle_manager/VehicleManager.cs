@@ -485,7 +485,7 @@ namespace mtgvrp.vehicle_manager
 
             character.DropcarReset = DateTime.Now.AddMinutes(15);
             character.IsOnDropcar = true;
-            Init.SendEvent(player, "dropcar_setwaypoint", new Vector3(487.0575, -1334.377, 29.30219) - new Vector3(0, 0, 1));
+            API.triggerClientEvent(player, "dropcar_setwaypoint", new Vector3(487.0575, -1334.377, 29.30219) - new Vector3(0, 0, 1));
             player.sendChatMessage("A waypoint has been set. Take this vehicle to the waypoint to earn money.");
         }
 

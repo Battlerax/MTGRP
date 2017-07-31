@@ -94,7 +94,7 @@ namespace mtgvrp.job_manager.hunting
                 foreach (var a in SpawnedAnimals)
                 {
                     if(API.doesEntityExistForPlayer(player, a.handle))
-                        Init.SendEvent(player, "toggle_animal_invincible", a.handle, true);
+                        API.triggerClientEvent(player, "toggle_animal_invincible", a.handle, true);
                 }
             }
             else if (API.shared.getPlayerCurrentWeapon(player) == WeaponHash.SniperRifle)
@@ -102,7 +102,7 @@ namespace mtgvrp.job_manager.hunting
                 foreach (var a in SpawnedAnimals)
                 {
                     if (API.doesEntityExistForPlayer(player, a.handle))
-                        Init.SendEvent(player, "toggle_animal_invincible", a.handle, false);
+                        API.triggerClientEvent(player, "toggle_animal_invincible", a.handle, false);
                 }
             }
         }
@@ -426,7 +426,7 @@ namespace mtgvrp.job_manager.hunting
 
             if (playersInRadius.Count > 0)
             {
-                Init.SendEvent(playersInRadius[0], "update_animal_position", handle);
+                API.shared.triggerClientEvent(playersInRadius[0], "update_animal_position", handle);
 
                 var tooClosePlayers = new List<Client>();
                 foreach (var player in API.shared.getAllPlayers())

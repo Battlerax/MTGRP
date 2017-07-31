@@ -51,7 +51,7 @@ namespace mtgvrp.player_manager.player_list
                         playerList.Add(new [] { c.CharacterName , PlayerManager.GetPlayerId(c).ToString() });
                     }
 
-                    Init.SendEvent(player, "send_player_list", API.toJson(playerList.ToArray()), account.AdminLevel != 0);
+                    API.triggerClientEvent(player, "send_player_list", API.toJson(playerList.ToArray()), account.AdminLevel != 0);
                     break;
                 case "player_list_pm":
                     ChatManager.pm_cmd(player, Convert.ToString(arguments[0]), Convert.ToString(arguments[1]));

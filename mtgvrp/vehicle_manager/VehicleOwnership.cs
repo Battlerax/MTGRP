@@ -27,7 +27,7 @@ namespace mtgvrp.vehicle_manager
                     vehicle_manager.Vehicle lcVeh =
                         VehicleManager.Vehicles.Single(x => x.NetHandle.Value == Convert.ToInt32(arguments[0]) && x.OwnerId == character.Id);
                     Vector3 loc = API.getEntityPosition(lcVeh.NetHandle);
-                    Init.SendEvent(sender, "myvehicles_setCheckpointToCar", loc.X, loc.Y, loc.Z);
+                    API.triggerClientEvent(sender, "myvehicles_setCheckpointToCar", loc.X, loc.Y, loc.Z);
                     API.sendChatMessageToPlayer(sender, "A checkpoint has been set to the vehicle.");
                     break;
 
@@ -77,7 +77,7 @@ namespace mtgvrp.vehicle_manager
                 .Where(x => x.OwnerId == character.Id)
                 .Select(x => new [] { API.getVehicleDisplayName(x.VehModel), x.Id.ToString(), x.NetHandle.Value.ToString()}).ToArray();
 
-            Init.SendEvent(player, "myvehicles_showmenu", API.toJson(cars));
+            API.triggerClientEvent(player, "myvehicles_showmenu", API.toJson(cars));
         }
 
         [Command("confirmsellvehicle"), Help(HelpManager.CommandGroups.Vehicles, "To confirm that you want to sell your vehicle.", null)]

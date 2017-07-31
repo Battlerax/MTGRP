@@ -1878,7 +1878,7 @@ namespace mtgvrp.AdminSystem
         {
             if (player.GetAccount().AdminLevel >= 3)
             {
-                Init.SendEvent(player, "texttest_settext", text);
+                API.triggerClientEvent(player, "texttest_settext", text);
             }
         }
 

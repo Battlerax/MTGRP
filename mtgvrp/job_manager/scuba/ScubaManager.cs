@@ -350,7 +350,7 @@ namespace mtgvrp.job_manager.scuba
             API.sendNativeToPlayer(player, Hash.SET_ENABLE_SCUBA, player.handle, false);
 
             //Remove exygen
-            Init.SendEvent(player, "UPDATE_SCUBA_PERCENTAGE", "none");
+            API.triggerClientEvent(player, "UPDATE_SCUBA_PERCENTAGE", "none");
 
             //Set the variable.
             character.IsScubaDiving = false;
