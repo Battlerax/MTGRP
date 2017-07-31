@@ -799,9 +799,16 @@ namespace mtgvrp.AdminSystem
 
                 Account receiverAccount = API.getEntityData(c.handle, "Account");
 
-                if (receiverAccount.AdminLevel > 1 && receiverAccount.AdminDuty)
+                if (receiverAccount.AdminLevel > 0)
                 {
-                    API.sendChatMessageToPlayer(player, "~g~" + receiverAccount.AdminName + " | LEVEL " + receiverAccount.AdminLevel);
+                    if (receiverAccount.AdminDuty)
+                    {
+                        API.sendChatMessageToPlayer(player, "~g~[ONDUTY] " + receiverAccount.AdminName + " | LEVEL " + receiverAccount.AdminLevel);
+                    }
+                    else
+                    {
+                        API.sendChatMessageToPlayer(player, "~r~[OFFDUTY] " + receiverAccount.AdminName + " | LEVEL " + receiverAccount.AdminLevel);
+                    }
                 }
             }
         }
