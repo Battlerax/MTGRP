@@ -82,7 +82,7 @@ namespace mtgvrp.AdminSystem
             var acc = player.GetAccount();
             if (acc.AdminLevel >= 5)
             {
-                PropertyManager.Properties.Where(y => y.Type != PropertyManager.PropertyTypes.GasStation).AsParallel().ForAll(x => { x.Supplies = supply; });
+                PropertyManager.Properties.Where(y => y.Type != PropertyManager.PropertyTypes.GasStation).AsParallel().ForAll(x => { x.Supplies = supply; x.Save(); });
                 API.sendChatMessageToPlayer(player, "Set all non gas station properties supplies to " + supply);
                 Log(LogTypes.AdminActions, $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {acc.AdminName} has set all non gas station properties supplies to {supply}");
             }  
