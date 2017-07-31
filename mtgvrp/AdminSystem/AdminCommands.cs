@@ -1228,7 +1228,7 @@ namespace mtgvrp.AdminSystem
 
         //PLAYER-ADMIN STUFF
 
-        [Command("prison", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel2, "Places a player into prison for the specificed amount of time.", new [] {"ID of the target player", "Time in seconds"})]
+        [Command("prison", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel2, "Places a player into prison for the specificed amount of time.", new [] {"ID of the target player", "Time in minutes."})]
         public void prison_cmd(Client player, string id, string time)
         {
             Account account = API.getEntityData(player.handle, "Account");

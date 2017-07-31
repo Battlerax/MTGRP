@@ -477,7 +477,7 @@ namespace mtgvrp.vehicle_manager
 
             var veh = GetVehFromNetHandle(API.getPlayerVehicle(player));
 
-            if (veh.Group != Group.None || veh.OwnerId != 0)
+            if (veh.Group != Group.None || veh.OwnerId != 0 || veh.Job != Job.None || veh.JobId != 0)
             {
                 API.sendChatMessageToPlayer(player, "This is an owned vehicle.");
                 return;
