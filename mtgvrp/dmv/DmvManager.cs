@@ -319,7 +319,7 @@ namespace mtgvrp.dmv
             {
                 API.triggerClientEvent(player, "DMV_UPDATE_MARKER", new Vector3(), new Vector3());
 
-                var isOnTime = DateTime.Now.Subtract(c.TimeStartedDmvTest) <= TimeSpan.FromMinutes(2).Add(TimeSpan.FromSeconds(5));
+                var isOnTime = DateTime.Now.Subtract(c.TimeStartedDmvTest) <= TimeSpan.FromMinutes(2).Add(TimeSpan.FromSeconds(6));
                 var isOnHealth = player.vehicle.health >= 995;
 
                 if (isOnTime && isOnHealth)
