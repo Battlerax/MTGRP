@@ -25,7 +25,7 @@
             if (myBrowser === null) {
                 if (API.getPlayerVehicleSeat(API.getLocalPlayer()) !== -1) return;
 
-                var res2 = API.getScreenResolutionMantainRatio();
+                var res2 = API.getScreenResolutionMaintainRatio();
                 var width2 = 450;
                 var height2 = 200;
                 var size2 = resource.JsFunctions.scaleCoordsToReal({ X: width2, Y: height2 });
