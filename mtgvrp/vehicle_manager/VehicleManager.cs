@@ -216,7 +216,7 @@ namespace mtgvrp.vehicle_manager
             DebugManager.DebugMessage("[VehicleM] Initilizing vehicle manager...");
 
             // Register callbacks
-            API.onPlayerEnterVehicle += OnPlayerEnterVehicle;
+            Init.OnPlayerEnterVehicleEx += OnPlayerEnterVehicle;
             API.onVehicleDeath += OnVehicleDeath;
             API.onPlayerExitVehicle += OnPlayerExitVehicle;
             API.onPlayerDisconnected += API_onPlayerDisconnected;
@@ -582,8 +582,6 @@ namespace mtgvrp.vehicle_manager
 
                 if (spawn_vehicle(car) != 1)
                     API.consoleOutput($"There was an error spawning vehicle #{car.Id} of {e.Character.CharacterName}.");
-                else
-                    API.setVehicleLocked(car.NetHandle, true);
             }
         }
 
@@ -615,10 +613,8 @@ namespace mtgvrp.vehicle_manager
             }
         }
 
-        private void OnPlayerEnterVehicle(Client player, NetHandle vehicleHandle)
+        private void OnPlayerEnterVehicle(Client player, NetHandle vehicleHandle, int seat)
         {
-            var seat = API.fetchNativeFromPlayer<int>(player, Hash.GET_SEAT_PED_IS_TRYING_TO_ENTER, player.handle);
-
             // Admin check in future
 
             var veh = GetVehFromNetHandle(vehicleHandle);
@@ -632,11 +628,11 @@ namespace mtgvrp.vehicle_manager
             Account account = API.getEntityData(player.handle, "Account");
 
             //IS A GROUP VEHICLE
-            if (veh.Group != null && character.Group != veh.Group && veh.Group != Group.None && API.getPlayerVehicleSeat(player) == -1)
+            if (veh.Group != null || character.Group != veh.Group || veh.Group != Group.None && API.getPlayerVehicleSeat(player) == -1)
             {
                 {
                     API.sendChatMessageToPlayer(player, "You must be a member of " + veh.Group.Name + " to use this vehicle.");
-                    API.warpPlayerOutOfVehicle(player);
+                    API.delay(1000, true, () => API.warpPlayerOutOfVehicle(player));;
                     return;
                 }
             }
@@ -645,7 +641,7 @@ namespace mtgvrp.vehicle_manager
             if (veh.IsVip == true && account.VipLevel <= 1 && seat == -1)
             {
                 player.sendChatMessage("This is a ~y~VIP~y~ vehicle. You must be a VIP to drive it.");
-                API.warpPlayerOutOfVehicle(player);
+                API.delay(1000, true, () => API.warpPlayerOutOfVehicle(player));;
                 return;
             }
 
@@ -658,7 +654,7 @@ namespace mtgvrp.vehicle_manager
                         character.OwnedVehicles.IndexOf(i) > 3 && account.VipLevel == 2)
                     {
                         player.sendChatMessage("You do not have the sufficient VIP level to enter this vehicle.");
-                        API.warpPlayerOutOfVehicle(player);
+                        API.delay(1000, true, () => API.warpPlayerOutOfVehicle(player));;
                         return;
                     }
                 }
@@ -671,7 +667,7 @@ namespace mtgvrp.vehicle_manager
             
             if (API.getVehicleLocked(vehicleHandle))
             {
-                API.warpPlayerOutOfVehicle(player);
+                API.delay(1000, true, () => API.warpPlayerOutOfVehicle(player));;
                 API.sendChatMessageToPlayer(player, "~r~The vehicle is locked.");
                 return;
             }
@@ -825,6 +821,10 @@ namespace mtgvrp.vehicle_manager
             }
 
             API.shared.setVehicleEngineStatus(veh.NetHandle, false);
+            if (veh.OwnerId != 0)
+            {
+                API.shared.setVehicleLocked(veh.NetHandle, true);
+            }
             return returnCode;
         }
 

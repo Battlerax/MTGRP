@@ -1852,6 +1852,24 @@ namespace mtgvrp.AdminSystem
             return closestveh;
         }
 
+        [Command("forceredochar"), Help(HelpManager.CommandGroups.AdminLevel3, "Force someone to redo character creation.", new[] { "Target player id." })]
+        public void RedoCharacterSelection(Client player, string target)
+        {
+            if (player.GetAccount().AdminLevel >= 2)
+            {
+                var targetClient = PlayerManager.ParseClient(target);
+                if (targetClient == null)
+                    return;
+
+                targetClient.setData("REDOING_CHAR", true);
+                API.freezePlayer(targetClient, true);
+                API.setEntityDimension(targetClient, targetClient.GetCharacter().Id + 1000);
+                API.setEntitySyncedData(targetClient, "REG_DIMENSION", targetClient.GetCharacter().Id + 1000);
+                targetClient.GetCharacter().Model.SetDefault();
+                API.triggerClientEvent(targetClient, "show_character_creation_menu");
+            }
+        }
+
         [Command("testtext"), Help(HelpManager.CommandGroups.AdminLevel3, "Goes into testing on-screen text position.", new[] { "Text to display." })]
         public void TestText(Client player, string text = "")
         {

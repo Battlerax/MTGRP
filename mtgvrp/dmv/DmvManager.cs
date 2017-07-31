@@ -70,7 +70,7 @@ namespace mtgvrp.dmv
         public DmvManager()
         {
             API.onResourceStart += API_onResourceStart;
-            API.onPlayerEnterVehicle += API_onPlayerEnterVehicle;
+            Init.OnPlayerEnterVehicleEx += API_onPlayerEnterVehicle;
             API.onPlayerExitVehicle += API_onPlayerExitVehicle;
             API.onClientEventTrigger += API_onClientEventTrigger;
         }
@@ -184,7 +184,7 @@ namespace mtgvrp.dmv
 
             if (player.hasData("DMV_VEHICLE"))
                 VehicleManager.respawn_vehicle(((NetHandle)player.getData("DMV_VEHICLE")).GetVehicle());
-            API.warpPlayerOutOfVehicle(player);
+            API.delay(1000, true, () => API.warpPlayerOutOfVehicle(player));;
 
             player.resetData("DMV_VEHICLE");
             c.IsInDmvTest = false;
@@ -214,9 +214,11 @@ namespace mtgvrp.dmv
             API.consoleOutput("Spawned DMV Vehicles.");
         }
 
-        private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle)
+        private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle, int seat)
         {
-            if (API.getPlayerVehicle(player) == null) { return; }
+            if (vehicle.GetVehicle() == null)
+                return;
+
             if (_testVehicles.Any(x => x[2] == vehicle.GetVehicle()))
             {
                 var c = player.GetCharacter();
@@ -235,7 +237,7 @@ namespace mtgvrp.dmv
                     if (!player.GetAccount().AdminDuty)
                     {
                         API.sendChatMessageToPlayer(player, "You haven't started the driving test.");
-                        API.warpPlayerOutOfVehicle(player);
+                        API.delay(1000, true, () => API.warpPlayerOutOfVehicle(player));;
                     }
                 }
             }
@@ -339,7 +341,7 @@ namespace mtgvrp.dmv
                         : $"* Vehicle Health: ~r~ {player.vehicle.health} / 995");
 
                 VehicleManager.respawn_vehicle(player.vehicle.handle.GetVehicle());
-                API.warpPlayerOutOfVehicle(player);
+                API.delay(1000, true, () => API.warpPlayerOutOfVehicle(player));;
 
                 c.IsInDmvTest = false;
             }
@@ -433,7 +435,7 @@ namespace mtgvrp.dmv
             API.sendChatMessageToPlayer(targetPlayer, $" [************** Vehicles Of {c.rp_name()} **************]");
             foreach (var veh in VehicleManager.Vehicles.Where(x => c.OwnedVehicles.Contains(x.Id)).Where(x => x.IsRegistered))
             {
-                API.sendChatMessageToPlayer(player, $"* Model: {API.getVehicleDisplayName(veh.VehModel)} | Registeration: {veh.LicensePlate}");
+                API.sendChatMessageToPlayer(targetPlayer, $"* Model: {API.getVehicleDisplayName(veh.VehModel)} | Registration: {veh.LicensePlate}");
             }
             API.sendChatMessageToPlayer(targetPlayer, " [**********************************************************]");
 

@@ -31,7 +31,7 @@ namespace mtgvrp.job_manager.taxi
 
         public TaxiJob()
         {
-            API.onPlayerEnterVehicle += API_onPlayerEnterVehicle;
+            Init.OnPlayerEnterVehicleEx += API_onPlayerEnterVehicle;
             API.onPlayerExitVehicle += API_onPlayerExitVehicle;
             API.onClientEventTrigger += API_onClientEventTrigger;
         }
@@ -94,10 +94,8 @@ namespace mtgvrp.job_manager.taxi
             }
         }
 
-        private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle)
+        private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle, int seat)
         {
-            var seat = API.fetchNativeFromPlayer<int>(player, Hash.GET_SEAT_PED_IS_TRYING_TO_ENTER, player.handle);
-
             Character character = API.getEntityData(player.handle, "Character");
             var veh = VehicleManager.GetVehFromNetHandle(vehicle);
 
@@ -122,7 +120,7 @@ namespace mtgvrp.job_manager.taxi
                     if (veh.Driver == null)
                     {
                         API.sendChatMessageToPlayer(player, Color.Yellow, "[TAXI] This taxi currently has no driver.");
-                        API.warpPlayerOutOfVehicle(player);
+                        API.delay(1000, true, () => API.warpPlayerOutOfVehicle(player));;
                         return;
                     }
 
@@ -131,7 +129,7 @@ namespace mtgvrp.job_manager.taxi
                         /*if (!taxi_requests.Contains(character))
                         {
                             API.sendChatMessageToPlayer(player, Color.Yellow, "[TAXI] You must have an active taxi request to ride in a taxi. ( /requesttaxi )");
-                            API.warpPlayerOutOfVehicle(player);
+                            API.delay(1000, true, () => API.warpPlayerOutOfVehicle(player));;
                             return;
                         }
 
@@ -246,7 +244,7 @@ namespace mtgvrp.job_manager.taxi
 
             if(farePrice < MinFare || farePrice > MaxFare)
             {
-                API.sendPictureNotificationToPlayer(player, "Your fair price must be between $" + MinFare + " and $" + MaxFare + ".", "CHAR_BLOCKED", 0, 1, "Server", "~r~Command Error");
+                API.sendPictureNotificationToPlayer(player, "Your fare price must be between $" + MinFare + " and $" + MaxFare + ".", "CHAR_BLOCKED", 0, 1, "Server", "~r~Command Error");
                 return;
             }
 

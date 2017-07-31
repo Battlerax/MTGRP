@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Timers;
 using GrandTheftMultiplayer.Server;
 using GrandTheftMultiplayer.Server.API;
 using GrandTheftMultiplayer.Server.Elements;
@@ -19,6 +20,8 @@ namespace mtgvrp.player_manager
         private static Dictionary<int, Character> _players = new Dictionary<int, Character>();
 
         public static List<Character> Players => _players.Values.ToList();
+
+        public Timer PlayerSaveTimer = new Timer();
 
         public static void AddPlayer(Character c)
         {
@@ -53,7 +56,29 @@ namespace mtgvrp.player_manager
             API.onPlayerRespawn += API_onPlayerRespawn;
             API.onPlayerHealthChange += API_onPlayerHealthChange;
 
+            //Setup respawn timer.
+            PlayerSaveTimer.Interval = 900000;
+            PlayerSaveTimer.Elapsed += PlayerSaveTimer_Elapsed;
+            PlayerSaveTimer.Start();
+
             DebugManager.DebugMessage("[PlayerM] Player Manager initalized.");
+        }
+
+        private void PlayerSaveTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            foreach (var player in API.shared.getAllPlayers())
+            {
+                if (player == null)
+                    continue;
+
+                var character = player.GetCharacter();
+                if (character == null)
+                    continue;
+
+                character.Save();
+
+                player.sendChatMessage("Character saved.");
+            }
         }
 
         private void API_onPlayerHealthChange(Client player, int oldValue)
@@ -73,17 +98,23 @@ namespace mtgvrp.player_manager
         {
             var character = player.GetCharacter();
 
-            player.sendChatMessage("You were revived by the ~b~Los Santos Medical Department ~w~ and were charged $500 for hospital fees.");
+            player.sendChatMessage("You were revived by the ~b~Los Santos Medical Department ~w~ and were charged $200 for hospital fees.");
             WeaponManager.RemoveAllPlayerWeapons(player);
-            int amount = -500;
+            int amount = -200;
 
-            if (Money.GetCharacterMoney(character) < 500)
+            if (character.IsJailed)
+            {
+                group_manager.lspd.Lspd.JailControl(player, character.JailTimeLeft);
+            }
+
+            if (Money.GetCharacterMoney(character) < 200)
             {
                 character.BankBalance += amount;
             }
+
             else
             {
-                InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(Money), 500);
+                InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(Money), 200);
             }
             LogManager.Log(LogManager.LogTypes.Death, $"{character.CharacterName}[{player.socialClubName}] has died.");
         }
@@ -116,13 +147,25 @@ namespace mtgvrp.player_manager
 
             if (character != null)
             {
+                var account = player.GetAccount();
+
+                if (account.AdminLevel > 0)
+                {
+                    foreach (var p in PlayerManager.Players)
+                    {
+                        if (p.Client.GetAccount().AdminLevel > 0)
+                        {
+                            p.Client.sendChatMessage($"Admin {account.AdminName} has left the server.");
+                        }
+                    }
+                }
+
                 if (character.Group != Group.None)
                 {
                     GroupManager.SendGroupMessage(player,
                         character.CharacterName + " from your group has left the server. (" + reason + ")");
                 }
 
-                var account = player.GetAccount();
                 account.Save();
                 character.Health = API.getPlayerHealth(player);
                 character.LastPos = player.position;
@@ -244,7 +287,7 @@ namespace mtgvrp.player_manager
         public static int CalculatePaycheck(Client player)
         {
             Character character = API.shared.getEntityData(player.handle, "Character");
-            return basepaycheck - (Properties.Settings.Default.basepaycheck * Properties.Settings.Default.taxationamount/100) + (Properties.Settings.Default.basepaycheck * getVIPPaycheckBonus(player)/100) + getFactionBonus(player) + character.BankBalance/1000;
+            return basepaycheck - (Properties.Settings.Default.basepaycheck * Properties.Settings.Default.taxationamount/100) + /*(Properties.Settings.Default.basepaycheck * getVIPPaycheckBonus(player)/100) +*/ getFactionBonus(player) + character.BankBalance/1000;
         }
 
         public static void SendPaycheckToPlayer(Client player)
@@ -261,7 +304,7 @@ namespace mtgvrp.player_manager
                     player.sendChatMessage("Base paycheck: $" + basepaycheck + ".");
                     player.sendChatMessage("Interest: $" + character.BankBalance / 1000 + ".");
                     player.sendChatMessage("You were taxed at " + taxationAmount + "%.");
-                    player.sendChatMessage("VIP bonus: " + getVIPPaycheckBonus(player) + "%.");
+                    //player.sendChatMessage("VIP bonus: " + getVIPPaycheckBonus(player) + "%.");
                     player.sendChatMessage("Faction bonus: $" + getFactionBonus(player) + ".");
                     player.sendChatMessage("----------------------------------------------");
                     player.sendChatMessage("Total: ~g~$" + paycheckAmount + "~w~.");
@@ -365,7 +408,7 @@ namespace mtgvrp.player_manager
             API.sendChatMessageToPlayer(sender, "==============================================");
             API.sendChatMessageToPlayer(sender, "~g~General:~g~");
             API.sendChatMessageToPlayer(sender,
-                $"~h~Character name:~h~ {character.CharacterName} | ~h~ID:~h~ {character.Id} | ~h~Money:~h~ {Money.GetCharacterMoney(character)} | ~h~Bank balance:~h~ {character.BankBalance} | ~h~Playing hours:~h~ {character.GetPlayingHours()}");
+                $"~h~Character name:~h~ {character.CharacterName} | ~h~ID:~h~ {character.Id} | ~h~Money:~h~ {Money.GetCharacterMoney(character)} | ~h~Bank balance:~h~ {character.BankBalance} | ~h~Playing hours:~h~ {character.GetPlayingHours()}  | ~h~Total hours:~h~ {account.TotalPlayingHours}");
 
             API.sendChatMessageToPlayer(sender,
                 $"~h~Age:~h~ {character.Age} ~h~Birthplace:~h~ {character.Birthplace} ~h~Birthday:~h~ {character.Birthday} ~h~VIP level:~h~ {account.VipLevel} ~h~VIP expires:~h~ {account.VipExpirationDate}");

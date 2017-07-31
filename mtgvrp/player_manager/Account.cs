@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using mtgvrp.AdminSystem;
 using mtgvrp.database_manager;
@@ -68,32 +69,14 @@ namespace mtgvrp.player_manager
         public void load_by_name()
         {
             var filter = Builders<Account>.Filter.Eq("AccountName", AccountName);
-            var foundAccount = DatabaseManager.AccountTable.Find(filter).ToList();
+            var foundAccount = DatabaseManager.AccountTable.Find(filter).FirstOrDefault();
 
-            foreach(var a in foundAccount)
+            if (foundAccount == null)
+                return;
+
+            foreach (var prop in typeof(Account).GetProperties().Where(x => x.CanWrite && x.CanRead))
             {
-                Id = a.Id;
-                AdminLevel = a.AdminLevel;
-                AdminName = a.AdminName;
-                AdminPin = a.AdminPin;
-                AdminDuty = a.AdminDuty;
-                DevLevel = a.DevLevel;
-                Password = a.Password;
-                Salt = a.Salt;
-
-                VipLevel = a.VipLevel;
-                VipExpirationDate = a.VipExpirationDate;
-
-                CharacterSlots = a.CharacterSlots;
-
-                LastIp = a.LastIp;
-
-                TempbanLevel = a.TempbanLevel;
-                IsBanned = a.IsBanned;
-                PlayerWarns = a.PlayerWarns;
-                TempBanExpiration = a.TempBanExpiration;
-                IsTempbanned = a.IsTempbanned;
-                break;
+                prop.SetValue(this, prop.GetValue(foundAccount));
             }
         }
 

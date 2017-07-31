@@ -229,7 +229,7 @@ namespace mtgvrp.player_manager.player_interaction
                 return;
             }
 
-            API.warpPlayerOutOfVehicle(receiver);
+            API.delay(1000, true, () => API.warpPlayerOutOfVehicle(receiver));;
             API.sendChatMessageToPlayer(player, "You have ejected ~b~" + receiver.name + "~w~ from your vehicle.");
             API.sendChatMessageToPlayer(receiver, "~b~" + player.name + "~w~ has ejected you from their vehicle.");
         }

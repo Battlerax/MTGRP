@@ -19,7 +19,7 @@ namespace mtgvrp.job_manager.garbageman
 
         public Garbageman()
         {
-            API.onPlayerEnterVehicle += API_onPlayerEnterVehicle;
+            Init.OnPlayerEnterVehicleEx += API_onPlayerEnterVehicle;
             API.onClientEventTrigger += API_onClientEventTrigger;
         }
 
@@ -35,20 +35,23 @@ namespace mtgvrp.job_manager.garbageman
 
                         vehicle_manager.Vehicle closestVeh = VehicleManager.GetClosestVehicle(player, 10f).GetVehicle();
 
+                        if (API.isPlayerInAnyVehicle(player))
+                        {
+                            player.sendChatMessage("You cannot be in a vehicle while doing this.");
+                            return;
+                        }
                         if (closestVeh == null || closestVeh.Job.Type != JobManager.JobTypes.Garbageman)
                         {
                             ChatManager.RoleplayMessage(character, "throws the garbage bag into the air.", ChatManager.RoleplayMe);
                             player.sendChatMessage("~r~You must throw the garbage bag into the back of the garbage truck!");
                             return;
                         }
-
                         if (player.rotation.Z > API.getEntityRotation(closestVeh.NetHandle).Z + 15 || player.rotation.Z < API.getEntityRotation(closestVeh.NetHandle).Z - 15)
                         {
                             ChatManager.RoleplayMessage(character, "throws the garbage bag at the garbage truck and misses.", ChatManager.RoleplayMe);
                             player.sendChatMessage("~r~You failed to throw the garbage bag into the back of the garbage truck!");
                             return;
                         }
-
                         if (closestVeh.GarbageBags >= 10)
                         {
                             ChatManager.RoleplayMessage(character, "throws the garbage bag at the garbage truck and the garbage goes everywhere!", ChatManager.RoleplayMe);
@@ -80,15 +83,14 @@ namespace mtgvrp.job_manager.garbageman
             }
         }
 
-        private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle)
+        private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle, int seat)
         {
-
             Character character = API.getEntityData(player, "Character");
             var veh = VehicleManager.GetVehFromNetHandle(vehicle);
 
             if (veh?.Job?.Type == JobManager.JobTypes.Garbageman && character.JobOne?.Type == JobManager.JobTypes.Garbageman)
             {
-                Property TargetProperty = null;
+                Property targetProperty = null;
                 int maxGarbage = 0;
                 foreach (var prop in PropertyManager.Properties)
                 {
@@ -97,7 +99,7 @@ namespace mtgvrp.job_manager.garbageman
                         if (prop.GarbageBags > maxGarbage)
                         {
                             maxGarbage = prop.GarbageBags;
-                            TargetProperty = prop;
+                            targetProperty = prop;
                         }
                     }
                 }
@@ -118,17 +120,17 @@ namespace mtgvrp.job_manager.garbageman
                         return;
                     }
 
-                    TargetProperty = ChooseRandomProperty();
+                    targetProperty = ChooseRandomProperty();
 
-                    while (!TargetProperty.HasGarbagePoint)
+                    while (!targetProperty.HasGarbagePoint)
                     {
-                        TargetProperty = ChooseRandomProperty();
+                        targetProperty = ChooseRandomProperty();
                     }
 
-                    TargetProperty.GarbageBags = 5;
+                    targetProperty.GarbageBags = 5;
                 }
 
-                API.triggerClientEvent(player, "garbage_setwaypoint", TargetProperty.GarbagePoint);
+                API.triggerClientEvent(player, "garbage_setwaypoint", targetProperty.GarbagePoint);
                 player.sendChatMessage("A garbage waypoint has been set on your map.");
 
                 if (!character.IsOnGarbageRun)
@@ -298,6 +300,11 @@ namespace mtgvrp.job_manager.garbageman
                 return;
             }
 
+            if (API.isPlayerInAnyVehicle(player))
+            {
+                player.sendChatMessage("You cannot do this while in a vehicle.");
+                return;
+            }
             if (prop.GarbageBags == 0)
             {
                 player.sendChatMessage("There is no garbage to pick up.");

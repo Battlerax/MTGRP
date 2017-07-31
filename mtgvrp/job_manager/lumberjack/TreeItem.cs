@@ -173,6 +173,8 @@ namespace mtgvrp.job_manager.lumberjack
         {
             RespawnTimer.Stop();
             Stage = Stages.Cutting;
+            CutPercentage = 0;
+            ProcessPercentage = 0;
             UpdateAllTree();
         }
     }

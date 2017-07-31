@@ -394,32 +394,52 @@ namespace mtgvrp.job_manager.hunting
             Type = type;
             State = state;
 
-            /*StateTimer = new Timer()
+            StateTimer = new Timer()
             {
                 Interval = 1000,
                 AutoReset = true
             };
-            StateTimer.Elapsed += delegate { AnimalAI(this); };
-            StateTimer.Start();*/
+            StateTimer.Elapsed += delegate { AnimalAi(this); };
+            StateTimer.Start();
 
             HuntingManager.SpawnedAnimals.Add(this);
             API.shared.setEntitySyncedData(handle, "IS_ANIMAL", true);
             API.shared.setEntitySyncedData(handle, "ANIMAL_ID", HuntingManager.SpawnedAnimals.IndexOf(this));
         }
 
-        public void AnimalAI(HuntingAnimal animal)
+        public void AnimalAi(HuntingAnimal animal)
         {
-            /*API.shared.setEntityPositionFrozen(handle, false);
+            API.shared.setEntityPositionFrozen(handle, false);
 
             List<Client> playersInRadius = new List<Client>();
 
-            //playersInRadius = API.shared.getPlayersInRadiusOfPosition(500f, API.shared.getEntityPosition(handle));
+            foreach (var player in API.shared.getAllPlayers())
+            {
+                if (player == null)
+                    return;
+
+                if (player.position.DistanceTo(API.shared.getEntityPosition(handle)) <= 500f)
+                {
+                    playersInRadius.Add(player);
+                }
+            }
 
             if (playersInRadius.Count > 0)
             {
                 API.shared.triggerClientEvent(playersInRadius[0], "update_animal_position", handle);
 
-                var tooClosePlayers = API.shared.getPlayersInRadiusOfPosition(50f, API.shared.getEntityPosition(handle));
+                var tooClosePlayers = new List<Client>();
+                foreach (var player in API.shared.getAllPlayers())
+                {
+                    if (player == null)
+                        return;
+
+                    if (player.position.DistanceTo(API.shared.getEntityPosition(handle)) <= 50f)
+                    {
+                        tooClosePlayers.Add(player);
+                    }
+                }
+
                 if (tooClosePlayers.Count > 0 && State != HuntingManager.AnimalState.Fleeing)
                 {
                     State = HuntingManager.AnimalState.Fleeing;
@@ -472,19 +492,25 @@ namespace mtgvrp.job_manager.hunting
             switch (State)
             {
                 case HuntingManager.AnimalState.Fleeing:
-                    API.shared.sendNativeToAllPlayers(Hash.TASK_SMART_FLEE_PED, handle, FleeingPed.handle, 75f, 5000, 0, 0);
+                    foreach (var p in playersInRadius)
+                    {
+                        API.shared.sendNativeToPlayer(p, Hash.TASK_SMART_FLEE_PED, handle, FleeingPed.handle, 75f, 5000, 0, 0);
+                    }
                     break;
                 case HuntingManager.AnimalState.Grazing:
                     API.shared.playPedScenario(handle,
                         Type == HuntingManager.AnimalTypes.Deer ? "WORLD_DEER_GRAZING" : "WORLD_PIG_GRAZING");
                     break;
                 case HuntingManager.AnimalState.Wandering:
-                    API.shared.sendNativeToAllPlayers(Hash.TASK_WANDER_IN_AREA, handle, Destination.X,
-                        Destination.Y, Destination.Z, 25, 0, 0);
+                    foreach (var p in playersInRadius)
+                    {
+                        API.shared.sendNativeToPlayer(p, Hash.TASK_WANDER_IN_AREA, handle, Destination.X,
+                            Destination.Y, Destination.Z, 25, 0, 0);
+                    }
                     break;
 
             }
-            UpdateState = false;*/
+            UpdateState = false;
         }
 
         public void Respawn()

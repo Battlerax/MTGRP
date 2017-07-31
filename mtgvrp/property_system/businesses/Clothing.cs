@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using GrandTheftMultiplayer.Server.API;
 using GrandTheftMultiplayer.Server.Elements;
 using GrandTheftMultiplayer.Server.Managers;
+using GrandTheftMultiplayer.Server;
 using mtgvrp.component_manager;
 using mtgvrp.core;
 using mtgvrp.inventory;
@@ -16,7 +17,47 @@ namespace mtgvrp.property_system.businesses
     class Clothing : Script
     {
         Dictionary<string, string> _maleComponents = new Dictionary<string, string>();
+
         Dictionary<string, string> _femaleComponents = new Dictionary<string, string>();
+
+        GrandTheftMultiplayer.Server.Constant.PedHash[] illegalpeds = new GrandTheftMultiplayer.Server.Constant.PedHash[] {
+            GrandTheftMultiplayer.Server.Constant.PedHash.ChickenHawk,
+            GrandTheftMultiplayer.Server.Constant.PedHash.Boar,
+            GrandTheftMultiplayer.Server.Constant.PedHash.BradCadaverCutscene,
+            GrandTheftMultiplayer.Server.Constant.PedHash.Cat,
+            GrandTheftMultiplayer.Server.Constant.PedHash.Chimp,
+            GrandTheftMultiplayer.Server.Constant.PedHash.Chop,
+            GrandTheftMultiplayer.Server.Constant.PedHash.Cormorant,
+            GrandTheftMultiplayer.Server.Constant.PedHash.Cow,
+            GrandTheftMultiplayer.Server.Constant.PedHash.Coyote,
+            GrandTheftMultiplayer.Server.Constant.PedHash.Crow,
+            GrandTheftMultiplayer.Server.Constant.PedHash.Deer,
+            GrandTheftMultiplayer.Server.Constant.PedHash.Dolphin,
+            GrandTheftMultiplayer.Server.Constant.PedHash.Fish,
+            GrandTheftMultiplayer.Server.Constant.PedHash.HammerShark,
+            GrandTheftMultiplayer.Server.Constant.PedHash.Hen,
+            GrandTheftMultiplayer.Server.Constant.PedHash.Humpback,
+            GrandTheftMultiplayer.Server.Constant.PedHash.Husky,
+            GrandTheftMultiplayer.Server.Constant.PedHash.KillerWhale,
+            GrandTheftMultiplayer.Server.Constant.PedHash.MountainLion,
+            GrandTheftMultiplayer.Server.Constant.PedHash.MovAlien01,
+            GrandTheftMultiplayer.Server.Constant.PedHash.Niko01,
+            GrandTheftMultiplayer.Server.Constant.PedHash.Pig,
+            GrandTheftMultiplayer.Server.Constant.PedHash.Pigeon,
+            GrandTheftMultiplayer.Server.Constant.PedHash.Poodle,
+            GrandTheftMultiplayer.Server.Constant.PedHash.Pug,
+            GrandTheftMultiplayer.Server.Constant.PedHash.Rabbit,
+            GrandTheftMultiplayer.Server.Constant.PedHash.Rat,
+            GrandTheftMultiplayer.Server.Constant.PedHash.Retriever,
+            GrandTheftMultiplayer.Server.Constant.PedHash.Rhesus,
+            GrandTheftMultiplayer.Server.Constant.PedHash.Rottweiler,
+            GrandTheftMultiplayer.Server.Constant.PedHash.Seagull,
+            GrandTheftMultiplayer.Server.Constant.PedHash.Shepherd,
+            GrandTheftMultiplayer.Server.Constant.PedHash.Stingray,
+            GrandTheftMultiplayer.Server.Constant.PedHash.TigerShark,
+            GrandTheftMultiplayer.Server.Constant.PedHash.Westy
+        };
+
 
         public static string MaleComponents;
         public static string FemaleComponents;
@@ -439,6 +480,41 @@ namespace mtgvrp.property_system.businesses
 
             API.freezePlayer(player, true);
             API.triggerClientEvent(player, "properties_buybag", API.toJson(bagsList), biz.ItemPrices["8"]);
+        }
+
+        [Command("buyskin"), Help(HelpManager.CommandGroups.General, "Buy a pedestrian skin as a VIP.", new[] { "Item", "New name" })]
+        public void buyskin_cmd(Client player, GrandTheftMultiplayer.Server.Constant.PedHash hash)
+        {
+            Account account = API.getEntityData(player, "Account");
+            var biz = PropertyManager.IsAtPropertyInteraction(player);
+
+            if (biz?.Type != PropertyManager.PropertyTypes.Clothing)
+            {
+                API.sendChatMessageToPlayer(player, "You aren't at a clothing interaction point.");
+                return;
+            }
+
+            if (account.VipLevel < 1)
+            {
+                player.sendChatMessage("You must be a VIP to use this command.");
+                return;
+            }
+
+            if (Money.GetCharacterMoney(player.GetCharacter()) < 250)
+            {
+                API.sendChatMessageToPlayer(player, "Not Enough Money");
+                return;
+            }
+
+            if (illegalpeds.Contains(hash))
+            {
+                player.sendChatMessage("This skin is not allowed.");
+                return;
+            }
+
+            InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(Money), 250);
+            API.setPlayerSkin(player, hash);
+            player.sendChatMessage("Skin changed! You were charged $250.");
         }
     }
 }

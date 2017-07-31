@@ -68,7 +68,7 @@ namespace mtgvrp.speed_fuel_system
         {
             Account a = player.GetAccount();
             a.IsSpeedoOn = !a.IsSpeedoOn;
-            API.sendChatMessageToPlayer(player, a.IsSpeedoOn ? "You've sucessfully turned on the speedometer." : "You've sucessfully turned off the speedometer.");
+            API.sendChatMessageToPlayer(player, a.IsSpeedoOn ? "You've sucessfully turned off the speedometer." : "You've sucessfully turned on the speedometer.");
             a.Save();
 
             if (player.isInVehicle)
@@ -104,7 +104,7 @@ namespace mtgvrp.speed_fuel_system
                         API.sendChatMessageToPlayer(player, "Vehicle fuel can't be above 100 or negative.");
                     }
 
-                    if (Money.GetCharacterMoney(player.GetCharacter()) < pendingFuel * prop.ItemPrices["gas"])
+                    if (Money.GetCharacterMoney(player.GetCharacter()) < pendingFuel * prop.ItemPrices["gas"] && player.GetCharacter().Group.CommandType != group_manager.Group.CommandTypeLspd)
                     {
                         API.sendChatMessageToPlayer(player,
                             $"You don't have enough money to get ~r~{pendingFuel}~w~ units of fuel.~n~Its worth ~g~${pendingFuel * prop.ItemPrices["gas"]}~w~.");
@@ -154,10 +154,36 @@ namespace mtgvrp.speed_fuel_system
         private void FuelVeh(System.Object vars)
         {
             var handles = (NetHandle[])vars;
-            Client playerEntity = API.getPlayerFromHandle((NetHandle)handles[0]);
-            NetHandle vehEntity = (NetHandle)handles[1];
+            Client playerEntity = API.getPlayerFromHandle(handles[0]);
+            NetHandle vehEntity = handles[1];
+
+            if (vehEntity.IsNull)
+            {
+                return;
+            }
+
             Vehicle veh = API.getEntityData(vehEntity, "Vehicle");
+
+            if (veh == null)
+            {
+                return;
+            }
+
+            if (playerEntity == null)
+            {
+                veh.FuelingTimer?.Dispose();
+                API.resetEntityData(vehEntity, "PENDING_FUEL");
+                return;
+            }
+
             Character c = API.getEntityData(playerEntity, "Character");
+
+            if (c == null)
+            {
+                veh.FuelingTimer?.Dispose();
+                API.resetEntityData(vehEntity, "PENDING_FUEL");
+                return;
+            }
 
             if (API.getVehicleEngineStatus(vehEntity))
             {
@@ -188,14 +214,20 @@ namespace mtgvrp.speed_fuel_system
             {
                 veh.Fuel += pendingFuel;
                 pendingFuel -= pendingFuel;
-                InventoryManager.DeleteInventoryItem<Money>(c, pendingFuel * veh.RefuelProp.ItemPrices["gas"]);
+                if (c.Group.CommandType != group_manager.Group.CommandTypeLspd)
+                {
+                    InventoryManager.DeleteInventoryItem<Money>(c, pendingFuel * veh.RefuelProp.ItemPrices["gas"]);
+                }
                 veh.RefuelProp.Supplies--;
             }
             else
             {
                 veh.Fuel += 10;
                 pendingFuel -= 10;
-                InventoryManager.DeleteInventoryItem<Money>(c, 10 * veh.RefuelProp.ItemPrices["gas"]);
+                if (c.Group.CommandType != group_manager.Group.CommandTypeLspd)
+                {
+                    InventoryManager.DeleteInventoryItem<Money>(c, 10 * veh.RefuelProp.ItemPrices["gas"]);
+                }
                 veh.RefuelProp.Supplies--;
             }
 

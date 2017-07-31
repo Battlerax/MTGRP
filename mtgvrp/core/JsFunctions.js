@@ -12,7 +12,7 @@
 		screenX = idealBox;
 	}
 
-	return { Offset: offsetX, X: screenX, Y: screenY }
+    return { Offset: offsetX, X: screenX, Y: screenY };
 }
 
 function scaleCoordsToReal (point) {
@@ -22,7 +22,7 @@ function scaleCoordsToReal (point) {
 	var widthDivisor = realScreen.Width / ratioScreen.X;
 	var heightDivisor = realScreen.Height / ratioScreen.Y;
 
-	return { X: (point.X * widthDivisor) + ratioScreen.Offset, Y: point.Y * heightDivisor }
+    return { X: (point.X * widthDivisor) + ratioScreen.Offset, Y: point.Y * heightDivisor };
 }
 
 var lastObj;
@@ -61,5 +61,15 @@ API.onEntityStreamIn.connect((entity, entityType) => {
         var pos = API.getEntityPosition(entity);
         var rot = API.getEntityRotation(entity);
         API.triggerServerEvent(lastEvent, lastObj, pos, rot);
+        return;
     }
-})
+
+    if (entityType === 6) {
+        API.triggerServerEvent("PLAYER_STREAMED_IN", entity);
+    }
+});
+
+API.onPlayerEnterVehicle.connect((vehicle) => {
+    var seat = API.returnNative("GET_SEAT_PED_IS_TRYING_TO_ENTER", 0, API.getLocalPlayer());
+    API.triggerServerEvent("OnPlayerEnterVehicleEx", vehicle, seat);
+});

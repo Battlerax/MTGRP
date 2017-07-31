@@ -211,6 +211,17 @@ namespace mtgvrp.player_manager
                         API.setEntityDimension(player.handle, character.LastDimension);
                         API.setPlayerHealth(player, character.Health);
 
+                        if (account.AdminLevel > 0)
+                        {
+                            foreach(var p in PlayerManager.Players)
+                            {
+                                if (p.Client.GetAccount().AdminLevel > 0)
+                                {
+                                    p.Client.sendChatMessage($"Admin {account.AdminName} has signed in.");
+                                }
+                            }
+                        }
+
                         if (character.Group != Group.None)
                         {
                             GroupManager.SendGroupMessage(player,
@@ -282,8 +293,7 @@ namespace mtgvrp.player_manager
                     character.Model.Lipstick = (int)arguments[12];
                     character.Model.LipstickColor = (int)arguments[13];
                     character.Model.MolesFreckles = (int)arguments[14];
-                    character.update_ped();
-                    character.Save();
+                    character.update_ped(player);
                 }
                     break;
                 case "change_clothes":
@@ -399,12 +409,27 @@ namespace mtgvrp.player_manager
                         character.LastRot = new Vector3(0, 0, 90);
                     }*/
 
-                    character.LastPos = new Vector3(433.2354, -645.8408, 28.72639);
-                    character.LastRot = new Vector3(0, 0, 90);
-                    character.update_ped();
-                    character.update_nametag();
+                    if (!player.hasData("REDOING_CHAR"))
+                    {
+                        character.LastPos = new Vector3(433.2354, -645.8408, 28.72639);
+                        character.LastRot = new Vector3(0, 0, 90);
+                        character.update_ped();
+                        character.update_nametag();
+                        API.triggerClientEvent(player, "start_introduction");
+                    }
 
-                    API.triggerClientEvent(player, "start_introduction");
+                    else
+                    {
+                        character.LastPos = new Vector3(433.2354, -645.8408, 28.72639);
+                        character.LastRot = new Vector3(0, 0, 90);
+                        character.update_ped();
+                        character.update_nametag();
+                        API.setEntityPosition(player, character.LastPos);
+                        API.setEntityRotation(player, character.LastRot);
+                        API.setEntityDimension(player, 0);
+                        API.freezePlayer(player, false);
+                        player.resetData("REDOING_CHAR");
+                    }
                 }
                     break;
                 case "initialize_hair":

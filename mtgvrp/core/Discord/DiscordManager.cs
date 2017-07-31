@@ -297,12 +297,11 @@ namespace mtgvrp.core.Discord
                         continue;
 
                     var character = player.GetCharacter();
-                    if(character == null)
+                    if (character == null)
                         continue;
 
                     character.Save();
                     character.Client?.kick(ctx.RawArgumentString);
-                    Environment.Exit(0);
                 }
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(DiscordManager.Client, ":white_check_mark:"));
             }
