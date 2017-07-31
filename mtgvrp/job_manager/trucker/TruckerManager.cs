@@ -58,7 +58,7 @@ namespace mtgvrp.job_manager.trucker
             var player = API.getPlayerFromHandle(entity);
             var character = player.GetCharacter();
 
-            if (character.JobOne?.Type != JobManager.JobTypes.Trucker)
+            if (character?.JobOne?.Type != JobManager.JobTypes.Trucker)
                 return;
 
             if (player.isInVehicle && character.TruckingStage == Character.TruckingStages.HeadingForFuelSupplies)

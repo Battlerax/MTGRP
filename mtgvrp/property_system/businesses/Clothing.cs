@@ -76,7 +76,9 @@ namespace mtgvrp.property_system.businesses
                 API.freezePlayer(sender, false);
                 sender.position = API.getEntityData(sender, "clothing_lastpos");
                 sender.rotation = API.getEntityData(sender, "clothing_lastrot");
-                API.sendChatMessageToPlayer(sender, "You have exiting the clothing menu.");
+                API.setEntityDimension(sender, 0);
+                API.sendChatMessageToPlayer(sender, "You have exited the clothing menu.");
+
             }
             else if (eventName == "clothing_buyclothe")
             {
@@ -365,6 +367,7 @@ namespace mtgvrp.property_system.businesses
             API.setEntityData(player, "clothing_id", biz.Id);
 
             API.freezePlayer(player, true);
+            API.setEntityDimension(player, player.GetCharacter().Id + 1000);
 
             var character = player.GetCharacter();
 
