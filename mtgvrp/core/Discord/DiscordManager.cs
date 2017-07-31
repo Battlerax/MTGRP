@@ -185,7 +185,7 @@ namespace mtgvrp.core.Discord
             if (ctx.Channel.Name != DiscordManager.AdminChannel)
                 return;
 
-            if (ctx.Member.Roles.Any(x => x.Name == DiscordManager.AdminRole))
+            if (ctx.Member.Roles.Any(x => x.Name == DiscordManager.AdminRole || x.Name == "V-RP Developer"))
             {
                 foreach (var c in API.shared.getAllPlayers())
                 {
