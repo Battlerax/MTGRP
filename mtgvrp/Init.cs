@@ -94,7 +94,7 @@ namespace mtgvrp
             if (sender.GetType() == typeof(Character) && args.Item == typeof(Money))
             {
                 Character c = (Character) sender;
-                API.shared.triggerClientEvent(c.Client, "update_money_display", args.Amount);
+                Init.SendEvent(c.Client, "update_money_display", args.Amount);
             }
         }
 
@@ -136,6 +136,12 @@ namespace mtgvrp
         private void API_onResourceStop()
         {
             SettingsManager.Save();
+        }
+
+        public static void SendEvent(Client player, string eventName, params object[] args)
+        {
+            API.shared.triggerClientEvent(player, eventName, args);
+            LogManager.Log(LogManager.LogTypes.Events, $"[{player.socialClubName}] {eventName}]");
         }
     }
 }

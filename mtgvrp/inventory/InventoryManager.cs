@@ -438,7 +438,7 @@ namespace mtgvrp.inventory
             var rightJson = API.shared.toJson(rightItems);
             var usedLeft = GetInventoryFilledSlots(activeLeft) + "/" + activeLeft.MaxInvStorage;
             var usedRight = GetInventoryFilledSlots(activeRight) + "/" + activeRight.MaxInvStorage;
-            API.shared.triggerClientEvent(player, "invmanagement_showmanager", leftJson, rightJson, leftTitle, rightTitle, usedLeft, usedRight);
+            Init.SendEvent(player, "invmanagement_showmanager", leftJson, rightJson, leftTitle, rightTitle, usedLeft, usedRight);
             _activeInvsBeingManaged.Add(player, new KeyValuePair<IStorage, IStorage>(activeLeft, activeRight));
         }
 
@@ -509,7 +509,7 @@ namespace mtgvrp.inventory
                             //Send event done.
                             var usedLeft = GetInventoryFilledSlots(storages.Key) + "/" + storages.Key.MaxInvStorage;
                             var usedRight = GetInventoryFilledSlots(storages.Value) + "/" + storages.Value.MaxInvStorage;
-                            API.triggerClientEvent(sender, "moveItemFromLeftToRightSuccess", shortname, amount, usedLeft, usedRight); //Id should be same cause it was already set since it was in player inv.
+                            Init.SendEvent(sender, "moveItemFromLeftToRightSuccess", shortname, amount, usedLeft, usedRight); //Id should be same cause it was already set since it was in player inv.
                             API.sendNotificationToPlayer(sender, $"The item ~g~{shortname}~w~ was moved sucessfully.");
 
                             LogManager.Log(LogManager.LogTypes.Stats, $"[InventoryManagement] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] moved item '{playerItem.LongName}', Amount: '{playerItem.Amount}'. From {GetStorageInfo(storages.Key)} To {GetStorageInfo(storages.Value)}");
@@ -576,7 +576,7 @@ namespace mtgvrp.inventory
                             //Send event done.
                             var usedLeft = GetInventoryFilledSlots(rlstorages.Key) + "/" + rlstorages.Key.MaxInvStorage;
                             var usedRight = GetInventoryFilledSlots(rlstorages.Value) + "/" + rlstorages.Value.MaxInvStorage;
-                            API.triggerClientEvent(sender, "moveItemFromRightToLeftSuccess", rlshortname, rlamount, usedLeft, usedRight); //Id should be same cause it was already set since it was in player inv.
+                            Init.SendEvent(sender, "moveItemFromRightToLeftSuccess", rlshortname, rlamount, usedLeft, usedRight); //Id should be same cause it was already set since it was in player inv.
                             API.sendNotificationToPlayer(sender, $"The item ~g~{rlshortname}~w~ was moved sucessfully.");
 
                             LogManager.Log(LogManager.LogTypes.Stats, $"[InventoryManagement] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] moved item '{rlplayerItem.LongName}', Amount: '{rlplayerItem.Amount}'. From {GetStorageInfo(rlstorages.Value)} To {GetStorageInfo(rlstorages.Key)}");
@@ -732,7 +732,7 @@ namespace mtgvrp.inventory
             var rnd = new Random();
             var number = rnd.Next(0, 10000).ToString();
             API.setEntitySyncedData(droppedObject, "TargetObj", number);
-            API.triggerClientEvent(player, "PLACE_OBJECT_ON_GROUND_PROPERLY", number, "stash_setnewpos");
+            Init.SendEvent(player, "PLACE_OBJECT_ON_GROUND_PROPERLY", number, "stash_setnewpos");
 
             //Decrease.
             DeleteInventoryItem(character, sendersItem[0].GetType(), amount, x => x == sendersItem[0]);

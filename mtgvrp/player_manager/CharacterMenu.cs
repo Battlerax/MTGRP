@@ -194,7 +194,7 @@ namespace mtgvrp.player_manager
                         character.PaycheckTimer = new Timer { Interval = 1000 };
                         character.PaycheckTimer.Elapsed += delegate { PlayerManager.SendPaycheckToPlayer(player); };
                         character.PaycheckTimer.Start();
-                        API.shared.triggerClientEvent(player, "update_money_display", Money.GetCharacterMoney(character));
+                        Init.SendEvent(player, "update_money_display", Money.GetCharacterMoney(character));
 
                         character.JobOne = JobManager.GetJobById(character.JobOneId);
                         character.Group = GroupManager.GetGroupById(character.GroupId);
@@ -435,11 +435,11 @@ namespace mtgvrp.player_manager
                 case "initialize_hair":
                     var maxHairStyles = (int)arguments[0] == Character.GenderMale ? ComponentManager.ValidMaleHair.Count : ComponentManager.ValidFemaleHair.Count;
 
-                    API.triggerClientEvent(player, "initialize_hair", maxHairStyles);
+                    Init.SendEvent(player, "initialize_hair", maxHairStyles);
                     break;
                 case "initiate_style_limits":
                     Character cha = API.getEntityData(player.handle, "Character");
-                    API.triggerClientEvent(player, "initialize_components", (cha.Model.Gender == Character.GenderMale ? Clothing.MaleComponents : Clothing.FemaleComponents));
+                    Init.SendEvent(player, "initialize_components", (cha.Model.Gender == Character.GenderMale ? Clothing.MaleComponents : Clothing.FemaleComponents));
                     break;
 /*
                 case "bus_driving_bridge":

@@ -140,7 +140,7 @@ namespace mtgvrp.vehicle_dealership
             var currentPos = API.getEntityPosition(player);
             if (_dealershipsLocations.Any(dealer => currentPos.DistanceTo(dealer) < 5F))
             {
-                API.triggerClientEvent(player, "chopperdealership_showbuyvehiclemenu", API.toJson(_helicopters));
+                Init.SendEvent(player, "chopperdealership_showbuyvehiclemenu", API.toJson(_helicopters));
             }
             else
                 API.sendChatMessageToPlayer(player, "You aren't near any dealership.");

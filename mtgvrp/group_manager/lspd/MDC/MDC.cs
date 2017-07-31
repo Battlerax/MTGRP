@@ -172,7 +172,7 @@ namespace mtgvrp.group_manager.lspd.MDC
                     //If still NULL
                     if (foundPlayer == null)
                     {
-                        API.triggerClientEvent(player, "MDC_SHOW_CITIZEN_INFO", "", "", "", "", "");
+                        Init.SendEvent(player, "MDC_SHOW_CITIZEN_INFO", "", "", "", "", "");
                         return;
                     }
 
@@ -203,7 +203,7 @@ namespace mtgvrp.group_manager.lspd.MDC
 
                     if (veh == null)
                     {
-                        API.triggerClientEvent(player, "MDC_SHOW_VEHICLE_INFO", "", "");
+                        Init.SendEvent(player, "MDC_SHOW_VEHICLE_INFO", "", "");
                         return;
                     }
 
@@ -220,7 +220,7 @@ namespace mtgvrp.group_manager.lspd.MDC
                     var next = Convert.ToInt32(arguments[0]);
                     var crimes = GetCrimeArray(p, next);
 
-                        API.triggerClientEvent(player, "MDC_UPDATE_CRIMES", API.toJson(crimes));
+                        Init.SendEvent(player, "MDC_UPDATE_CRIMES", API.toJson(crimes));
                     break;
                 }
             }
@@ -246,7 +246,7 @@ namespace mtgvrp.group_manager.lspd.MDC
 
         public void Send911ToClient(Client player, EmergencyCall call)
         {
-            API.triggerClientEvent(player, "add911", call.PhoneNumber, call.Time.ToString(), call.Info, call.Location);
+            Init.SendEvent(player, "add911", call.PhoneNumber, call.Time.ToString(), call.Info, call.Location);
         }
 
         public static void Add911Call(string phoneNumber, string info, string location)

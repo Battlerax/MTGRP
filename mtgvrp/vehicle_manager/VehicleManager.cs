@@ -477,7 +477,7 @@ namespace mtgvrp.vehicle_manager
 
             var veh = GetVehFromNetHandle(API.getPlayerVehicle(player));
 
-            if (veh.Group != Group.None || veh.OwnerId != 0)
+            if (veh.Group != Group.None || veh.OwnerId != 0 || veh.Job != Job.None || veh.JobId != 0)
             {
                 API.sendChatMessageToPlayer(player, "This is an owned vehicle.");
                 return;
@@ -485,7 +485,7 @@ namespace mtgvrp.vehicle_manager
 
             character.DropcarReset = DateTime.Now.AddMinutes(15);
             character.IsOnDropcar = true;
-            API.triggerClientEvent(player, "dropcar_setwaypoint", new Vector3(487.0575, -1334.377, 29.30219) - new Vector3(0, 0, 1));
+            Init.SendEvent(player, "dropcar_setwaypoint", new Vector3(487.0575, -1334.377, 29.30219) - new Vector3(0, 0, 1));
             player.sendChatMessage("A waypoint has been set. Take this vehicle to the waypoint to earn money.");
         }
 
@@ -628,7 +628,7 @@ namespace mtgvrp.vehicle_manager
             Account account = API.getEntityData(player.handle, "Account");
 
             //IS A GROUP VEHICLE
-            if (veh.Group != null || character.Group != veh.Group || veh.Group != Group.None && API.getPlayerVehicleSeat(player) == -1)
+            if (veh.Group != null && character.Group != veh.Group && veh.Group != Group.None && API.getPlayerVehicleSeat(player) == -1)
             {
                 {
                     API.sendChatMessageToPlayer(player, "You must be a member of " + veh.Group.Name + " to use this vehicle.");

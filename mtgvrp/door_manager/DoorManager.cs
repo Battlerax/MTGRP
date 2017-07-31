@@ -216,7 +216,7 @@ namespace mtgvrp.door_manager
             if (player.GetAccount().AdminLevel >= 5)
             {
                 var doors = Door.Doors.Where(x => x.DoesShowInAdmin == true).Select(x => new[] {x.Description, x.Id.ToString()}).ToArray();
-                API.triggerClientEvent(player, "doormanager_managedoors", API.toJson(doors));
+                Init.SendEvent(player, "doormanager_managedoors", API.toJson(doors));
             }
         }
 
@@ -231,7 +231,7 @@ namespace mtgvrp.door_manager
                     API.sendChatMessageToPlayer(player, "[Door Manager] That ID doesn't exist.");
                     return;
                 }
-                API.triggerClientEvent(player, "doormanager_editdoor", id);
+                Init.SendEvent(player, "doormanager_editdoor", id);
             }
         }
 

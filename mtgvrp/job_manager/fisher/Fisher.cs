@@ -32,7 +32,7 @@ namespace mtgvrp.job_manager.fisher
                 new Fish("Marlin", 100, 75, 150, true, 30),
                 new Fish("Shortfin Mako Shark", 110, 125, 200, true, 15),
                 new Fish("Dungeness Crab", 120, 1, 3, true, 10),
-                new Fish("Great White Shark", 200, 1500, 1500, true, 5),
+                new Fish("Great White Shark", 200, 1500, 1501, true, 5),
             };
 
             API.onClientEventTrigger += API_onClientEventTrigger;
@@ -215,7 +215,7 @@ namespace mtgvrp.job_manager.fisher
 
             API.sendChatMessageToPlayer(c.Client, Color.AdminOrange,
                 "* You begin to feel a fish tugging at your line! Control your reeling strength by tapping space bar.");
-            API.triggerClientEvent(c.Client, "start_fishing", c.PerfectCatchStrength);
+            Init.SendEvent(c.Client, "start_fishing", c.PerfectCatchStrength);
         }
 
         public Fish random_catch(bool inBoat)

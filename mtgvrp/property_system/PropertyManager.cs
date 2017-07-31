@@ -540,7 +540,7 @@ namespace mtgvrp.property_system
                         prop.Save();
                         API.sendChatMessageToPlayer(sender,
                             $"[Property Manager] Added IPL {arguments[1]} to property #{id}.");
-                        API.triggerClientEvent(sender, "editproperty_showmenu", prop.Id, API.toJson(prop.IPLs.ToArray()));
+                        Init.SendEvent(sender, "editproperty_showmenu", prop.Id, API.toJson(prop.IPLs.ToArray()));
                     }
                     break;
 
@@ -561,7 +561,7 @@ namespace mtgvrp.property_system
                             prop.Save();
                             API.sendChatMessageToPlayer(sender,
                                 $"[Property Manager] Removed IPL {ipl} from property #{id}.");
-                            API.triggerClientEvent(sender, "editproperty_showmenu", prop.Id, API.toJson(prop.IPLs.ToArray()));
+                            Init.SendEvent(sender, "editproperty_showmenu", prop.Id, API.toJson(prop.IPLs.ToArray()));
                         }
                     }
                     break;
@@ -976,7 +976,7 @@ namespace mtgvrp.property_system
                 if(prop.IPLs == null)
                     prop.IPLs = new List<string>();
 
-                API.triggerClientEvent(player, "editproperty_showmenu", prop.Id, API.toJson(prop.IPLs.ToArray()));
+                Init.SendEvent(player, "editproperty_showmenu", prop.Id, API.toJson(prop.IPLs.ToArray()));
             }
         }
 

@@ -53,7 +53,7 @@ namespace mtgvrp.phone_manager
                     var phone = (Phone) items[0];
 
                     string[][] contacts = phone.Contacts.Select(x => new[] { x.Name, x.Number.ToString()}).ToArray();
-                    API.triggerClientEvent(sender, "phone_showContacts", API.toJson(contacts));
+                    Init.SendEvent(sender, "phone_showContacts", API.toJson(contacts));
                     break;
 
                 case "phone_saveContact":
@@ -100,7 +100,7 @@ namespace mtgvrp.phone_manager
                     
                     //Now loop through them, substituting with name.
                     var newContacts = cntcs.Select(x => new[] { lmcphone.Contacts.SingleOrDefault(y => y.Number.ToString() == x[0])?.Name ?? x[0], x[1], x[2], x[3]}).ToArray();
-                    API.triggerClientEvent(sender, "phone_messageContactsLoaded", API.toJson(newContacts));
+                    Init.SendEvent(sender, "phone_messageContactsLoaded", API.toJson(newContacts));
                     break;
 
                 case "phone_sendMessage":
@@ -143,7 +143,7 @@ namespace mtgvrp.phone_manager
                     var unreadMessages =
                         DatabaseManager.MessagesTable.Count(x => x.ToNumber == gnphone.PhoneNumber && x.IsRead == false).ToString();
                     
-                    API.triggerClientEvent(sender, "phone_showNotifications", unreadMessages);
+                    Init.SendEvent(sender, "phone_showNotifications", unreadMessages);
                     break;
 
                 case "phone_markMessagesRead":
@@ -167,7 +167,7 @@ namespace mtgvrp.phone_manager
                         return;
                     }
                     var ssphone = (Phone)ssitems[0];
-                    API.triggerClientEvent(sender, "phone_showSettings", ssphone.PhoneNumber, ssphone.IsOn.ToString());
+                    Init.SendEvent(sender, "phone_showSettings", ssphone.PhoneNumber, ssphone.IsOn.ToString());
                     break;
 
                 case "settings_togPhone":
@@ -221,7 +221,7 @@ namespace mtgvrp.phone_manager
             var targetphone = (Phone)targetitems[0];
 
             var contact = targetphone.Contacts.Find(pc => pc.Number == targetphone.PhoneNumber);
-            API.triggerClientEvent(player, "phone_calling", contact?.Name ?? "Unknown", targetphone.PhoneNumber);
+            Init.SendEvent(player, "phone_calling", contact?.Name ?? "Unknown", targetphone.PhoneNumber);
         }
 
         [Command("h"), Help(HelpManager.CommandGroups.General, "Hangup.", null)]
@@ -340,7 +340,7 @@ namespace mtgvrp.phone_manager
                     ChatManager.AmeLabelMessage(player, "takes out their phone and presses a few numbers..", 4000);
                     sender.Calling911 = true;
                     API.sendChatMessageToPlayer(player, Color.Grey, "911 Operator says: Los Santos Police Department, what is the nature of your emergency?");
-                    API.triggerClientEvent(player, "phone_calling", "LSPD", input);
+                    Init.SendEvent(player, "phone_calling", "LSPD", input);
                     return;
                 }
 
@@ -383,8 +383,8 @@ namespace mtgvrp.phone_manager
                 var contact = senderphone.Contacts.Find(pc => pc.Number == input);
                 var targetContact = charphone.Contacts.Find(pc => pc.Number == charphone.PhoneNumber);
 
-                API.triggerClientEvent(player, "phone_calling", contact?.Name ?? "Unknown", input);
-                API.triggerClientEvent(character.Client, "phone_incoming-call", targetContact?.Name ?? "Unknown", senderphone.PhoneNumber);
+                Init.SendEvent(player, "phone_calling", contact?.Name ?? "Unknown", input);
+                Init.SendEvent(character.Client, "phone_incoming-call", targetContact?.Name ?? "Unknown", senderphone.PhoneNumber);
 
 
                 sender.CallingTimer = new System.Threading.Timer(OnCallSemiEnd, new[] {character, sender}, 30000, -1);
@@ -426,9 +426,9 @@ namespace mtgvrp.phone_manager
                 ChatManager.RoleplayMessage(character, "'s phone starts to ring...", ChatManager.RoleplayMe);
                 sender.CallingPlayer = character;
                 character.BeingCalledBy = sender;
-                API.triggerClientEvent(player, "phone_calling", contact.Name, contact.Number);
+                Init.SendEvent(player, "phone_calling", contact.Name, contact.Number);
                 var targetContact = charphone.Contacts.Find(pc => pc.Number == charphone.PhoneNumber);
-                API.triggerClientEvent(character.Client, "phone_incoming-call", targetContact?.Name ?? "Unknown", senderphone.PhoneNumber);
+                Init.SendEvent(character.Client, "phone_incoming-call", targetContact?.Name ?? "Unknown", senderphone.PhoneNumber);
 
                 //Function to hangup after 30 seconds with no answer.
                 sender.CallingTimer = new System.Threading.Timer(OnCallSemiEnd, new[] { character, sender }, 30000, -1);
@@ -453,7 +453,7 @@ namespace mtgvrp.phone_manager
                 contact.Name = newname;
                 contact.Number = number;
                 API.sendChatMessageToPlayer(player, Color.White, "You have edited the contact " + oldname + "  to " + newname + " (" + number + ").");
-                API.triggerClientEvent(player, "phone_contactEdited", oldname, newname, number);
+                Init.SendEvent(player, "phone_contactEdited", oldname, newname, number);
             }
             else
             {
@@ -481,7 +481,7 @@ namespace mtgvrp.phone_manager
 
             senderphone.InsertContact(name, number);
             API.sendChatMessageToPlayer(player, Color.White, "You have added the contact " + name + " (" + number + ") to your phone.");
-            API.triggerClientEvent(player, "phone_contactAdded", name, number);
+            Init.SendEvent(player, "phone_contactAdded", name, number);
         }
 
         public void removecontact_cmd(Client player, string name)
@@ -511,7 +511,7 @@ namespace mtgvrp.phone_manager
                 var contact = senderphone.Contacts.First(pc => string.Equals(pc.Name, name, StringComparison.OrdinalIgnoreCase));
                 API.sendChatMessageToPlayer(player, Color.White, "You have deleted " + name + " (" + contact.Number + ") from your contacts.");
                 senderphone.DeleteContact(contact);
-                API.triggerClientEvent(player, "phone_contactRemoved", name);
+                Init.SendEvent(player, "phone_contactRemoved", name);
             }
         }
 
@@ -624,7 +624,7 @@ namespace mtgvrp.phone_manager
 
             API.sendChatMessageToPlayer(player, "~y~* Press ~h~F2~h~ to show the cursor.");
             var curTime = TimeWeatherManager.CurrentTime;
-            API.triggerClientEvent(player, "phone_showphone", curTime.Hour, curTime.Minute);
+            Init.SendEvent(player, "phone_showphone", curTime.Hour, curTime.Minute);
         }
 
         public static bool DoesNumberExist(string num)
