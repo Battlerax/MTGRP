@@ -424,6 +424,12 @@ namespace mtgvrp.group_manager.lspd
                 return;
             }
 
+            if (character.GroupRank < 5)
+            {
+                player.sendChatMessage("You must be rank 5+ to use this command.");
+                return;
+            }
+
             if (receiver == null)
             {
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
@@ -454,7 +460,7 @@ namespace mtgvrp.group_manager.lspd
             var receiver = PlayerManager.ParseClient(id);
 
             Character character = API.getEntityData(player.handle, "Character");
-            Character receivercharacter = API.getEntityData(player, "Character");
+            Character receivercharacter = API.getEntityData(receiver, "Character");
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {

@@ -628,7 +628,7 @@ namespace mtgvrp.vehicle_manager
             Account account = API.getEntityData(player.handle, "Account");
 
             //IS A GROUP VEHICLE
-            if (veh.Group != null && character.Group != veh.Group && veh.Group != Group.None && API.getPlayerVehicleSeat(player) == -1)
+            if (veh.Group != null || character.Group != veh.Group || veh.Group != Group.None && API.getPlayerVehicleSeat(player) == -1)
             {
                 {
                     API.sendChatMessageToPlayer(player, "You must be a member of " + veh.Group.Name + " to use this vehicle.");

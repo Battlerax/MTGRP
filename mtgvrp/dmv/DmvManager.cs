@@ -435,7 +435,7 @@ namespace mtgvrp.dmv
             API.sendChatMessageToPlayer(targetPlayer, $" [************** Vehicles Of {c.rp_name()} **************]");
             foreach (var veh in VehicleManager.Vehicles.Where(x => c.OwnedVehicles.Contains(x.Id)).Where(x => x.IsRegistered))
             {
-                API.sendChatMessageToPlayer(player, $"* Model: {API.getVehicleDisplayName(veh.VehModel)} | Registeration: {veh.LicensePlate}");
+                API.sendChatMessageToPlayer(targetPlayer, $"* Model: {API.getVehicleDisplayName(veh.VehModel)} | Registration: {veh.LicensePlate}");
             }
             API.sendChatMessageToPlayer(targetPlayer, " [**********************************************************]");
 
