@@ -192,7 +192,7 @@ namespace mtgvrp.dmv
             if (c.NextDmvCheckpointColShape != null)
                 API.deleteColShape(c.NextDmvCheckpointColShape);
 
-            API.triggerClientEvent(player, "DMV_UPDATE_MARKER", new Vector3(), new Vector3());
+            Init.SendEvent(player, "DMV_UPDATE_MARKER", new Vector3(), new Vector3());
 
             API.sendChatMessageToPlayer(player, "Test Cancelled.");
         }
@@ -317,7 +317,7 @@ namespace mtgvrp.dmv
             }
             else
             {
-                API.triggerClientEvent(player, "DMV_UPDATE_MARKER", new Vector3(), new Vector3());
+                Init.SendEvent(player, "DMV_UPDATE_MARKER", new Vector3(), new Vector3());
 
                 var isOnTime = DateTime.Now.Subtract(c.TimeStartedDmvTest) <= TimeSpan.FromMinutes(2).Add(TimeSpan.FromSeconds(6));
                 var isOnHealth = player.vehicle.health >= 995;
@@ -373,7 +373,7 @@ namespace mtgvrp.dmv
             }
 
             string[][] vehList = VehicleManager.Vehicles.Where(x => c.OwnedVehicles.Exists(y => x.Id == y) && x.IsRegistered == false).Select(x => new[] {API.getVehicleDisplayName(x.VehModel), x.Id.ToString() }).ToArray();
-            API.triggerClientEvent(player, "DMV_SELECTVEHICLE", API.toJson(vehList));
+            Init.SendEvent(player, "DMV_SELECTVEHICLE", API.toJson(vehList));
         }
 
         [Command("showlicense"), Help(HelpManager.CommandGroups.Vehicles, "Show your driving license to someone.", "Id of target.")]

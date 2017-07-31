@@ -132,7 +132,7 @@ namespace mtgvrp.core.Help
                     isGov = true;
             }
 
-            API.triggerClientEvent(player, "help_showMenu", CommandStuff, player.GetAccount().AdminLevel, isPD, isLSNN, isGov);
+            Init.SendEvent(player, "help_showMenu", CommandStuff, player.GetAccount().AdminLevel, isPD, isLSNN, isGov);
         }
     }
 }

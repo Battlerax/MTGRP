@@ -257,7 +257,7 @@ namespace mtgvrp.property_system.businesses
                 character.Save();
 
                 API.sendChatMessageToPlayer(sender, "You've successfully bought this.");
-                API.triggerClientEvent(sender, "clothing_boughtsucess", arguments[0], arguments[1], arguments[2]);
+                Init.SendEvent(sender, "clothing_boughtsucess", arguments[0], arguments[1], arguments[2]);
                 LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought some clothing for {price} from property ID {prop.Id}.");
             }
             else if (eventName == "clothing_bag_preview")
@@ -458,7 +458,7 @@ namespace mtgvrp.property_system.businesses
             }
 
             var prices = biz.ItemPrices.Select(x => x.Value).ToArray();
-            API.triggerClientEvent(player, "properties_buyclothes", (character.Model.Gender == Character.GenderMale ? MaleComponents : FemaleComponents), API.toJson(oldClothes), API.toJson(prices));
+            Init.SendEvent(player, "properties_buyclothes", (character.Model.Gender == Character.GenderMale ? MaleComponents : FemaleComponents), API.toJson(oldClothes), API.toJson(prices));
         }
 
         [Command("buybag"), Help(HelpManager.CommandGroups.General, "Used inside a clothing store to buy a bag.", null)]
@@ -479,7 +479,7 @@ namespace mtgvrp.property_system.businesses
             var bagsList = ComponentManager.ValidBags.Select(x => new[] {x.Name, x.Variations.Count.ToString()}).ToArray();
 
             API.freezePlayer(player, true);
-            API.triggerClientEvent(player, "properties_buybag", API.toJson(bagsList), biz.ItemPrices["8"]);
+            Init.SendEvent(player, "properties_buybag", API.toJson(bagsList), biz.ItemPrices["8"]);
         }
 
         [Command("buyskin"), Help(HelpManager.CommandGroups.General, "Buy a pedestrian skin as a VIP.", new[] { "Item", "New name" })]

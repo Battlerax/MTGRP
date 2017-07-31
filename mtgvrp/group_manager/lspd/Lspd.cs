@@ -651,7 +651,7 @@ namespace mtgvrp.group_manager.lspd
                 {
                     beaconCreator = c.Client;
                     API.sendNotificationToPlayer(player, "~b~Beacon accepted~w~. A waypoint has been added to your map.");
-                    API.triggerClientEvent(player, "update_beacon", API.getEntityPosition(beaconCreator));
+                    Init.SendEvent(player, "update_beacon", API.getEntityPosition(beaconCreator));
                     return;
                 }
                 i++;

@@ -68,25 +68,25 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
 
                 if(modelHash == 0)
                 {
-                    API.triggerClientEvent(player, "send_veh_edit_error", "Invalid vehicle model entered!");
+                    Init.SendEvent(player, "send_veh_edit_error", "Invalid vehicle model entered!");
                     return;
                 }
 
                 if (!Character.IsCharacterRegistered(owner) && owner != "NONE")
                 {
-                    API.triggerClientEvent(player, "send_veh_edit_error", "Invalid owner entered. (Character name does not exist.)");
+                    Init.SendEvent(player, "send_veh_edit_error", "Invalid owner entered. (Character name does not exist.)");
                     return;
                 }
                  
                 if (JobManager.GetJobById(jobId) == null && jobId != 0)
                 {
-                    API.triggerClientEvent(player, "send_veh_edit_error", "Invalid job ID entered!");
+                    Init.SendEvent(player, "send_veh_edit_error", "Invalid job ID entered!");
                     return;
                 }
 
                 if (GroupManager.GetGroupById(groupId) == null && groupId != 0)
                 {
-                    API.triggerClientEvent(player, "send_veh_edit_error", "Invalid group ID entered!");
+                    Init.SendEvent(player, "send_veh_edit_error", "Invalid group ID entered!");
                     return;
                 }
 
@@ -166,7 +166,7 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
             }
 
             API.setEntityData(player.handle, "EDIT_VEH", veh);
-            API.triggerClientEvent(player, "show_vehicle_edit_menu", veh.Id, API.getVehicleDisplayName(veh.VehModel), (veh.OwnerId == 0 ? "NONE" : PlayerManager.Players.Single(x => x.Id == veh.OwnerId).CharacterName), veh.LicensePlate, veh.SpawnColors[0], veh.SpawnColors[1], veh.RespawnDelay.TotalMinutes.ToString("G"), veh.JobId, veh.GroupId);
+            Init.SendEvent(player, "show_vehicle_edit_menu", veh.Id, API.getVehicleDisplayName(veh.VehModel), (veh.OwnerId == 0 ? "NONE" : PlayerManager.Players.Single(x => x.Id == veh.OwnerId).CharacterName), veh.LicensePlate, veh.SpawnColors[0], veh.SpawnColors[1], veh.RespawnDelay.TotalMinutes.ToString("G"), veh.JobId, veh.GroupId);
         }
     }
 }

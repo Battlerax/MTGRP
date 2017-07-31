@@ -128,7 +128,7 @@ namespace mtgvrp.player_manager
             set
             {
                 if (Client != null)
-                    API.shared.triggerClientEvent(Client, "update_garbage_time", value / 1000);
+                    Init.SendEvent(Client, "update_garbage_time", value / 1000);
 
                 _garbagetime = value;
             }
@@ -228,7 +228,7 @@ namespace mtgvrp.player_manager
             set
             {
                 if (Client != null)
-                    API.shared.triggerClientEvent(Client, "update_jail_time", value/1000);
+                    Init.SendEvent(Client, "update_jail_time", value/1000);
 
                 _time = value;
             }

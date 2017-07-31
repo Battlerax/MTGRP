@@ -33,7 +33,7 @@ namespace mtgvrp.speed_fuel_system
                 API.getPlayerVehicleSeat(sender) == -1)
             {
                 Vehicle veh = API.getEntityData(API.getPlayerVehicle(sender), "Vehicle");
-                API.triggerClientEvent(sender, "fuel_updatevalue", veh.Fuel);
+                Init.SendEvent(sender, "fuel_updatevalue", veh.Fuel);
             }
         }
 
@@ -58,7 +58,7 @@ namespace mtgvrp.speed_fuel_system
                 //Notify driver with loss of fuel.
                 if (ocups.Length > 0)
                 {
-                    API.triggerClientEvent(ocups[0], "fuel_updatevalue", veh.Fuel);
+                    Init.SendEvent(ocups[0], "fuel_updatevalue", veh.Fuel);
                 }
             }
         }
@@ -200,7 +200,7 @@ namespace mtgvrp.speed_fuel_system
 
             if (pendingFuel <= 0 || veh.RefuelProp.Supplies <= 0)
             {
-                API.triggerClientEvent(playerEntity, "fuel_updatevalue", veh.Fuel);
+                Init.SendEvent(playerEntity, "fuel_updatevalue", veh.Fuel);
                 veh.FuelingTimer?.Dispose();
                 API.resetEntityData(vehEntity, "PENDING_FUEL");
                 API.resetEntityData(playerEntity, "FUELING_VEHICLE");
@@ -231,7 +231,7 @@ namespace mtgvrp.speed_fuel_system
                 veh.RefuelProp.Supplies--;
             }
 
-            API.triggerClientEvent(playerEntity, "fuel_updatevalue", veh.Fuel);
+            Init.SendEvent(playerEntity, "fuel_updatevalue", veh.Fuel);
             API.setEntityData(vehEntity, "PENDING_FUEL", pendingFuel);
         }
     }
