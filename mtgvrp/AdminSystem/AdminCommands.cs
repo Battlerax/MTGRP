@@ -799,7 +799,7 @@ namespace mtgvrp.AdminSystem
 
                 Account receiverAccount = API.getEntityData(c.handle, "Account");
 
-                if (receiverAccount.AdminLevel > 0)
+                if (receiverAccount?.AdminLevel > 0)
                 {
                     if (receiverAccount.AdminDuty)
                     {
