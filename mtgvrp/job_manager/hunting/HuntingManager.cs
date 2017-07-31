@@ -79,12 +79,12 @@ namespace mtgvrp.job_manager.hunting
 
         public void OnHuntingManagerStart()
         {
-            foreach (var spawn in AnimalSpawns)
+            /*foreach (var spawn in AnimalSpawns)
             {
                 new HuntingAnimal(spawn, AnimalTypes.Deer, AnimalState.Wandering).UpdateState = true;
                 new HuntingAnimal(spawn, AnimalTypes.Boar, AnimalState.Wandering).UpdateState = true;
             }
-            API.consoleOutput("[HuntingManager] Created " + SpawnedAnimals.Count + " animals.");
+            API.consoleOutput("[HuntingManager] Created " + SpawnedAnimals.Count + " animals.");*/
         }
 
         public void OnPlayerWeaponSwitch(Client player, WeaponHash oldWeapon)
