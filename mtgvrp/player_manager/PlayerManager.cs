@@ -89,7 +89,14 @@ namespace mtgvrp.player_manager
 
             if (API.getPlayerHealth(player) < oldValue && account.AdminDuty)
             {
-                API.setPlayerHealth(player, 100); 
+                if (account.AdminDuty)
+                {
+                    API.setPlayerHealth(player, 100);
+                }
+                else if (oldValue - API.getPlayerHealth(player) > 25 )
+                {
+                    API.setPlayerHealth(player, API.getPlayerHealth(player) + 10);
+                }
             }
         }
 

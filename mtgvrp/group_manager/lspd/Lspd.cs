@@ -123,6 +123,32 @@ namespace mtgvrp.group_manager.lspd
             }
         }
         [Command("recordcrime", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Record a player's crime, adding them to the wanted list.", new[] { "The target player ID.", "The crime ID" })]
+        public void recordcrimes_cmd(Client player, string id, string type, string crimename, string jailTime, string fine)
+        {
+            var receiver = PlayerManager.ParseClient(id);
+
+            if (receiver == null)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
+            }
+
+            Character character = API.getEntityData(player.handle, "Character");
+            Character receiverCharacter = API.getEntityData(receiver.handle, "Character");
+
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                return;
+            }
+
+            receiverCharacter.RecordCrime(character.CharacterName, new Crime(type, crimename, int.Parse(jailTime), int.Parse(fine)));
+            API.sendNotificationToPlayer(player, "You have recorded " + receiverCharacter.CharacterName + " for committing: " + crimename);
+            API.sendNotificationToPlayer(receiver, character.CharacterName + " has recorded a crime you committed: ~r~" + crimename + "~w~.");
+        }
+
+        /*
+        [Command("recordcrime", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Record a player's crime, adding them to the wanted list.", new[] { "The target player ID.", "The crime ID" })]
         public void recordcrimes_cmd(Client player, string id, string crimeid)
         {
             var receiver = PlayerManager.ParseClient(id);
@@ -154,6 +180,7 @@ namespace mtgvrp.group_manager.lspd
             API.sendNotificationToPlayer(player, "You have recorded " + receiverCharacter.CharacterName + " for committing: " + crime.Name);
             API.sendNotificationToPlayer(receiver, character.CharacterName + " has recorded a crime you committed: ~r~" + crime.Name + "~w~.");
         }
+        */
 
         [Command("showcriminalrecord", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Show the criminal record of a player.", new[] { "The target player ID." })]
         public void criminalrecord_cmd(Client player, string id)
