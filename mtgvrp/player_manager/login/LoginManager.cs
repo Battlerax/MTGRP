@@ -90,7 +90,7 @@ namespace mtgvrp.player_manager.login
 
                     if (inputPass.Length < 8)
                     {
-                        Init.SendEvent(player, "login_error", "Password entered is too short.");
+                        API.triggerClientEvent(player, "login_error", "Password entered is too short.");
                         return;
                     }
 
@@ -100,7 +100,7 @@ namespace mtgvrp.player_manager.login
                     {
                         if (account.IsLoggedIn)
                         {
-                            Init.SendEvent(player, "login_error", "You are already logged in.");
+                            API.triggerClientEvent(player, "login_error", "You are already logged in.");
                             return;
                         }
 
@@ -167,7 +167,7 @@ namespace mtgvrp.player_manager.login
                         }
                         else
                         {
-                            Init.SendEvent(player, "login_error", "Incorrect password");
+                            API.triggerClientEvent(player, "login_error", "Incorrect password");
                         }
                     }
                     else
@@ -233,7 +233,7 @@ namespace mtgvrp.player_manager.login
             }
 
             API.sendChatMessageToPlayer(player, "Press ~g~F12~w~ to disable CEF and login manually.");
-            Init.SendEvent(player, "onPlayerConnectedEx", account.is_registered());
+            API.triggerClientEvent(player, "onPlayerConnectedEx", account.is_registered());
         }
 
        

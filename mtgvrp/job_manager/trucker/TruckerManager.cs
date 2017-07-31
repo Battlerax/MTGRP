@@ -77,7 +77,7 @@ namespace mtgvrp.job_manager.trucker
                         return;
                     }
 
-                    Init.SendEvent(player, "update_beacon", new Vector3());
+                    API.triggerClientEvent(player, "update_beacon", new Vector3());
 
                     Property needsGasProp = null;
                     foreach (var prop in PropertyManager.Properties.Where(x => x.Type == PropertyManager.PropertyTypes.GasStation))
@@ -105,7 +105,7 @@ namespace mtgvrp.job_manager.trucker
                         character.TruckingStage = Character.TruckingStages.DeliveringFuel;
                         player.freeze(false);
 
-                        Init.SendEvent(player, "update_beacon", needsGasProp.EntranceMarker.Location);
+                        API.triggerClientEvent(player, "update_beacon", needsGasProp.EntranceMarker.Location);
                         
                         API.setEntityData(player, "TRUCKING_TARGETGAS", needsGasProp);
 
@@ -133,7 +133,7 @@ namespace mtgvrp.job_manager.trucker
                         return;
                     }
 
-                    Init.SendEvent(player, "update_beacon", new Vector3());
+                    API.triggerClientEvent(player, "update_beacon", new Vector3());
 
                     if (SettingsManager.Settings.WoodSupplies < 50)
                     {
@@ -150,7 +150,7 @@ namespace mtgvrp.job_manager.trucker
                         character.TruckingStage = Character.TruckingStages.DeliveringWood;
                         player.freeze(false);
 
-                        Init.SendEvent(player, "update_beacon", character.JobOne.MiscTwo.Location);
+                        API.triggerClientEvent(player, "update_beacon", character.JobOne.MiscTwo.Location);
                         
                         API.sendChatMessageToPlayer(player,
                             "~r~[Trucking]~w~ Your truck have been loaded, head to the checkpoint to deliver them.");
@@ -177,7 +177,7 @@ namespace mtgvrp.job_manager.trucker
                         return;
                     }
 
-                    Init.SendEvent(player, "update_beacon", new Vector3());
+                    API.triggerClientEvent(player, "update_beacon", new Vector3());
 
                     player.freeze(true);
                     API.sendChatMessageToPlayer(player,
@@ -188,7 +188,7 @@ namespace mtgvrp.job_manager.trucker
                         character.TruckingStage = Character.TruckingStages.HeadingBack;
                         player.freeze(false);
 
-                        Init.SendEvent(player, "update_beacon", character.JobOne.JoinPos.Location);
+                        API.triggerClientEvent(player, "update_beacon", character.JobOne.JoinPos.Location);
                         
                         API.sendChatMessageToPlayer(player,
                             "~r~[Trucking]~w~ Your truck have been unloaded, head to the checkpoint finish your run.");
@@ -219,7 +219,7 @@ namespace mtgvrp.job_manager.trucker
                         return;
                     }
 
-                    Init.SendEvent(player, "update_beacon", new Vector3());
+                    API.triggerClientEvent(player, "update_beacon", new Vector3());
 
                     player.freeze(true);
                     API.sendChatMessageToPlayer(player,
@@ -230,7 +230,7 @@ namespace mtgvrp.job_manager.trucker
                         character.TruckingStage = Character.TruckingStages.HeadingBack;
                         player.freeze(false);
 
-                        Init.SendEvent(player, "update_beacon", character.JobOne.JoinPos.Location);
+                        API.triggerClientEvent(player, "update_beacon", character.JobOne.JoinPos.Location);
                         
 
                         API.sendChatMessageToPlayer(player,
@@ -268,7 +268,7 @@ namespace mtgvrp.job_manager.trucker
                     LogManager.Log(LogManager.LogTypes.Stats, $"[Job] {player.GetCharacter().CharacterName}[{player.GetAccount().AccountName}] has earned $1500 from a trucking run.");
                 }
 
-                Init.SendEvent(player, "update_beacon", new Vector3());
+                API.triggerClientEvent(player, "update_beacon", new Vector3());
                 CancelRun(player);
             }
 
@@ -299,7 +299,7 @@ namespace mtgvrp.job_manager.trucker
                         return;
                     }
 
-                    Init.SendEvent(player, "update_beacon", character.JobOne.MiscOne.Location);
+                    API.triggerClientEvent(player, "update_beacon", character.JobOne.MiscOne.Location);
                     
                     API.sendChatMessageToPlayer(player,
                         "~r~[Trucking]~w~ Head to the checkpoint to load your truck with fuel.");
@@ -312,7 +312,7 @@ namespace mtgvrp.job_manager.trucker
                     if (job == null)
                         return;
 
-                    Init.SendEvent(player, "update_beacon", job.MiscTwo.Location);
+                    API.triggerClientEvent(player, "update_beacon", job.MiscTwo.Location);
                     
                     API.sendChatMessageToPlayer(player,
                         "~r~[Trucking]~w~ Head to the checkpoint to load your truck with supplies.");

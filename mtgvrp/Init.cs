@@ -26,7 +26,7 @@ namespace mtgvrp
     public class Init : Script
     {
         public static string SERVER_NAME = "[EN] Moving Target Gaming Roleplay";
-        public static string SERVER_VERSION = "v0.0.1408";
+        public static string SERVER_VERSION = "v0.0.1445";
         public static string SERVER_WEBSITE = "www.mt-gaming.com";
         public static Random Random = new Random();
 
@@ -94,7 +94,7 @@ namespace mtgvrp
             if (sender.GetType() == typeof(Character) && args.Item == typeof(Money))
             {
                 Character c = (Character) sender;
-                Init.SendEvent(c.Client, "update_money_display", args.Amount);
+                API.shared.triggerClientEvent(c.Client, "update_money_display", args.Amount);
             }
         }
 
@@ -136,12 +136,6 @@ namespace mtgvrp
         private void API_onResourceStop()
         {
             SettingsManager.Save();
-        }
-
-        public static void SendEvent(Client player, string eventName, params object[] args)
-        {
-            API.shared.triggerClientEvent(player, eventName, args);
-            LogManager.Log(LogManager.LogTypes.Events, $"[{player.socialClubName}] {eventName}]");
         }
     }
 }

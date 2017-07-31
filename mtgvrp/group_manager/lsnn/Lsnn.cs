@@ -371,14 +371,14 @@ namespace mtgvrp.group_manager.lsnn
 
             if (character.Group.CommandType == Group.CommandTypeLsnn && ChopperCamToggle == true)
             {
-                Init.SendEvent(player, "watch_chopper_broadcast", CameraPosition, CameraRotation, Headline, Chopper, OffSet, focusX, focusY, focusZ);
+                API.triggerClientEvent(player, "watch_chopper_broadcast", CameraPosition, CameraRotation, Headline, Chopper, OffSet, focusX, focusY, focusZ);
                 character.IsWatchingBroadcast = true;
                 return;
             }
 
             if (character.Group.CommandType == Group.CommandTypeLsnn && CameraSet == true)
             {
-                Init.SendEvent(player, "watch_broadcast", camPos, camRot, Headline);
+                API.triggerClientEvent(player, "watch_broadcast", camPos, camRot, Headline);
                 character.IsWatchingBroadcast = true;
                 return;
             }
@@ -386,7 +386,7 @@ namespace mtgvrp.group_manager.lsnn
             if (ChopperCamToggle == true)
             {
                 
-                Init.SendEvent(player, "watch_chopper_broadcast", CameraPosition, CameraRotation, Headline, Chopper, OffSet, focusX, focusY, focusZ);
+                API.triggerClientEvent(player, "watch_chopper_broadcast", CameraPosition, CameraRotation, Headline, Chopper, OffSet, focusX, focusY, focusZ);
                 API.freezePlayer(player, true);
                 character.IsWatchingBroadcast = true;
                 return;
@@ -394,7 +394,7 @@ namespace mtgvrp.group_manager.lsnn
 
             API.setEntityDimension(player, CameraDimension);
             API.sendChatMessageToPlayer(player, "You are watching the broadcast. Use /stopwatching to stop watching .");
-            Init.SendEvent(player, "watch_broadcast", camPos, camRot, Headline, focusX, focusY, focusZ);
+            API.triggerClientEvent(player, "watch_broadcast", camPos, camRot, Headline, focusX, focusY, focusZ);
             API.freezePlayer(player, true);
             character.IsWatchingBroadcast = true;
         }
@@ -526,7 +526,7 @@ namespace mtgvrp.group_manager.lsnn
 
                 if (character.IsWatchingBroadcast)
                 {
-                    Init.SendEvent(p, "update_chopper_cam", CameraPosition, CameraRotation, Headline, Chopper, OffSet, focusX, focusY, focusZ);
+                    API.triggerClientEvent(p, "update_chopper_cam", CameraPosition, CameraRotation, Headline, Chopper, OffSet, focusX, focusY, focusZ);
                 }
             }
         }

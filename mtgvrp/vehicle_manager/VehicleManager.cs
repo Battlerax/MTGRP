@@ -485,7 +485,7 @@ namespace mtgvrp.vehicle_manager
 
             character.DropcarReset = DateTime.Now.AddMinutes(15);
             character.IsOnDropcar = true;
-            Init.SendEvent(player, "dropcar_setwaypoint", new Vector3(487.0575, -1334.377, 29.30219) - new Vector3(0, 0, 1));
+            API.triggerClientEvent(player, "dropcar_setwaypoint", new Vector3(487.0575, -1334.377, 29.30219) - new Vector3(0, 0, 1));
             player.sendChatMessage("A waypoint has been set. Take this vehicle to the waypoint to earn money.");
         }
 
@@ -682,6 +682,22 @@ namespace mtgvrp.vehicle_manager
                 API.triggerClientEvent(player, "speedo_showcef");
 
             veh.LastOccupied = DateTime.Now;
+
+
+            foreach (var p in API.getAllPlayers())
+            {
+                if (p == null)
+                    continue;
+
+                if (p.position.DistanceTo(API.getEntityPosition(vehicleHandle)) <= 250.0f)
+                {
+                    API.sendNativeToPlayer(player, Hash.SET_ENTITY_INVINCIBLE, vehicleHandle, false);
+                    API.sendNativeToPlayer(player, Hash.SET_ENTITY_PROOFS, vehicleHandle, 0, 0, 0, 0, 0, 0, 0, 0);
+                    API.sendNativeToPlayer(player, Hash.SET_VEHICLE_TYRES_CAN_BURST, vehicleHandle, 1);
+                    API.sendNativeToPlayer(player, Hash.SET_VEHICLE_WHEELS_CAN_BREAK, vehicleHandle, 1);
+                    API.sendNativeToPlayer(player, Hash.SET_VEHICLE_CAN_BE_VISIBLY_DAMAGED, vehicleHandle, 1);
+                }
+            }
         }
 
         public void OnPlayerExitVehicle(Client player, NetHandle vehicleHandle)
@@ -690,7 +706,6 @@ namespace mtgvrp.vehicle_manager
 
             if (veh == null)
             {
-                DebugManager.DebugMessage("[VehicleVM] OnPlayerExitVehicle received null Vehicle.");
                 return;
             }
 
@@ -715,6 +730,24 @@ namespace mtgvrp.vehicle_manager
                 character.IsOnDropcar = false;
                 API.triggerClientEvent(player, "dropcar_removewaypoint");
                 player.sendChatMessage("You exited the vehicle. The dropcar has ended.");
+            }
+
+            if (API.getVehicleOccupants(vehicleHandle).Length == 0)
+            {
+                foreach (var p in API.getAllPlayers())
+                {
+                    if (p == null)
+                        continue;
+
+                    if (p.position.DistanceTo(API.getEntityPosition(vehicleHandle)) <= 250.0f)
+                    {
+                        API.sendNativeToPlayer(player, Hash.SET_ENTITY_INVINCIBLE, vehicleHandle, true);
+                        API.sendNativeToPlayer(player, Hash.SET_ENTITY_PROOFS, vehicleHandle, 1, 1, 1, 1, 1, 1, 1, 1);
+                        API.sendNativeToPlayer(player, Hash.SET_VEHICLE_TYRES_CAN_BURST, vehicleHandle, 0);
+                        API.sendNativeToPlayer(player, Hash.SET_VEHICLE_WHEELS_CAN_BREAK, vehicleHandle, 0);
+                        API.sendNativeToPlayer(player, Hash.SET_VEHICLE_CAN_BE_VISIBLY_DAMAGED, vehicleHandle, 0);
+                    }
+                }
             }
         }
 

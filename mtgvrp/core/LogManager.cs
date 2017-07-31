@@ -68,7 +68,6 @@ namespace mtgvrp.core
             Warns,          //Logged
             MappingRequests,
             Ads,            //Logged
-            Events,
         }
 
         public static void Log(LogTypes type, string log)

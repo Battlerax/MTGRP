@@ -128,7 +128,7 @@ namespace mtgvrp.player_manager
             set
             {
                 if (Client != null)
-                    Init.SendEvent(Client, "update_garbage_time", value / 1000);
+                    API.shared.triggerClientEvent(Client, "update_garbage_time", value / 1000);
 
                 _garbagetime = value;
             }
@@ -228,7 +228,7 @@ namespace mtgvrp.player_manager
             set
             {
                 if (Client != null)
-                    Init.SendEvent(Client, "update_jail_time", value/1000);
+                    API.shared.triggerClientEvent(Client, "update_jail_time", value/1000);
 
                 _time = value;
             }
@@ -366,13 +366,19 @@ namespace mtgvrp.player_manager
             });
         }
 
-        public void Save()
+        public async void Save()
         {
-            Task.Run(() =>
+            GetTimePlayed();
+            LastPos = API.shared.getEntityPosition(Client);
+            LastRot = API.shared.getEntityRotation(Client);
+
+            /*Task.Run(() =>
             {
                 var filter = Builders<Character>.Filter.Eq("_id", Id);
                 DatabaseManager.CharacterTable.ReplaceOne(filter, this);
-            });
+            });*/
+            var filter = Builders<Character>.Filter.Eq("_id", Id);
+            await DatabaseManager.CharacterTable.ReplaceOneAsync(filter, this).ConfigureAwait(false);
         }
 
         public static bool IsCharacterRegistered(string name)

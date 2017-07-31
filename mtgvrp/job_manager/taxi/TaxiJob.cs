@@ -42,7 +42,7 @@ namespace mtgvrp.job_manager.taxi
             {
                 case "update_taxi_destination":
                     Character character = API.getEntityData(player.handle, "Character");
-                    Init.SendEvent(character.TaxiDriver.Client, "set_taxi_waypoint", (Vector3)arguments[0]);
+                    API.triggerClientEvent(character.TaxiDriver.Client, "set_taxi_waypoint", (Vector3)arguments[0]);
 
                     API.sendChatMessageToPlayer(player, Color.Yellow, "[TAXI] You have successfully set your destination.");
                     API.sendChatMessageToPlayer(character.TaxiDriver.Client, "[TAXI] " + character.rp_name() + " has set the destination.");
@@ -79,8 +79,8 @@ namespace mtgvrp.job_manager.taxi
                         API.sendChatMessageToPlayer(player, "~y~[TAXI] You have been charged $" + character.TotalFare + " for your taxi ride.");
                         API.sendChatMessageToPlayer(veh.Driver.Client, "~y~[TAXI] You have been paid $" + character.TotalFare + " for your services.");
 
-                        Init.SendEvent(player, "update_fare_display", 0, 0, "");
-                        Init.SendEvent(veh.Driver.Client, "update_fare_display", 0, 0, "");
+                        API.triggerClientEvent(player, "update_fare_display", 0, 0, "");
+                        API.triggerClientEvent(veh.Driver.Client, "update_fare_display", 0, 0, "");
 
                         LogManager.Log(LogManager.LogTypes.Stats, $"[Job] {veh.Driver.CharacterName}[{veh.Driver.Client.GetAccount().AccountName}] has earned ${character.TotalFare} from a taxi fare. (Fare: {character.CharacterName})");
                         LogManager.Log(LogManager.LogTypes.Stats, $"[Job] {character.CharacterName}[{player.GetAccount().AccountName}] has paided ${character.TotalFare} for a taxi fare. (Driver: {veh.Driver.CharacterName})");
@@ -148,13 +148,13 @@ namespace mtgvrp.job_manager.taxi
                         SendMessageToOnDutyDrivers(veh.Driver.rp_name() + " has accepted " + character.rp_name() + "'s taxi request.");
                         API.sendChatMessageToPlayer(player, "[TAXI] Please set a destination on your map and then type: /setdestination");
 
-                        Init.SendEvent(player, "update_fare_display", veh.Driver.TaxiFare, 0, "");
-                        Init.SendEvent(veh.Driver.Client, "update_fare_display", veh.Driver.TaxiFare, 0, "");
+                        API.triggerClientEvent(player, "update_fare_display", veh.Driver.TaxiFare, 0, "");
+                        API.triggerClientEvent(veh.Driver.Client, "update_fare_display", veh.Driver.TaxiFare, 0, "");
                     }
                     else if(veh.Driver.TaxiPassenger == character)
                     {
-                        Init.SendEvent(player, "update_fare_display", veh.Driver.TaxiFare, 0, "");
-                        Init.SendEvent(veh.Driver.Client, "update_fare_display", veh.Driver.TaxiFare, 0, "");
+                        API.triggerClientEvent(player, "update_fare_display", veh.Driver.TaxiFare, 0, "");
+                        API.triggerClientEvent(veh.Driver.Client, "update_fare_display", veh.Driver.TaxiFare, 0, "");
 
                         API.sendChatMessageToPlayer(player, "[TAXI] Please set a destination on your map and then type: /setdestination");
                     }
@@ -329,8 +329,8 @@ namespace mtgvrp.job_manager.taxi
                 fareMsg = "(Client money maxed out)";
             }
 
-            Init.SendEvent(c.Client, "update_fare_display", c.TaxiDriver.TaxiFare, c.TotalFare, fareMsg);
-            Init.SendEvent(c.TaxiDriver.Client, "update_fare_display", c.TaxiDriver.TaxiFare, c.TotalFare, fareMsg);
+            API.triggerClientEvent(c.Client, "update_fare_display", c.TaxiDriver.TaxiFare, c.TotalFare, fareMsg);
+            API.triggerClientEvent(c.TaxiDriver.Client, "update_fare_display", c.TaxiDriver.TaxiFare, c.TotalFare, fareMsg);
         }
 
         [Command("acceptfare"), Help(HelpManager.CommandGroups.TaxiJob, "Accepts a taxi fare.", "Id of the player you'd like to accept.")]
@@ -366,7 +366,7 @@ namespace mtgvrp.job_manager.taxi
             TaxiPictureNotification(passenger.Client, character.rp_name() + " has accepted your taxi request. Please stay at your current location.");
             TaxiPictureNotification(player, "You have accepted " + passenger.rp_name() + "'s taxi request. Follow your waypoint to their location.");
 
-            Init.SendEvent(player, "set_taxi_waypoint", passenger.Client.position);
+            API.triggerClientEvent(player, "set_taxi_waypoint", passenger.Client.position);
         }
 
         public static bool IsOnTaxiDuty(Character c)
