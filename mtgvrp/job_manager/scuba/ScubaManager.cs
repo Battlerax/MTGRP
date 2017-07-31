@@ -216,7 +216,7 @@ namespace mtgvrp.job_manager.scuba
             }
 
             var rnd = new Random();
-            int amnt = rnd.Next(1000, 5000);
+            int amnt = rnd.Next(4000, 10000);
             InventoryManager.GiveInventoryItem(character, new Money(), amnt, true);
             API.sendChatMessageToPlayer(player, "You have found a treasure worth ~g~$" + amnt);
             LogManager.Log(LogManager.LogTypes.Stats, $"[Minigame] {character.CharacterName}[{player.GetAccount().AccountName}] has earned ${amnt} from a scuba treasure.");
