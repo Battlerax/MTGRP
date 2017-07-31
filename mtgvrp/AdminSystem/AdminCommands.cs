@@ -25,8 +25,6 @@ using static mtgvrp.core.LogManager;
 using Color = mtgvrp.core.Color;
 using Vehicle = mtgvrp.vehicle_manager.Vehicle;
 
-//test
-
 namespace mtgvrp.AdminSystem
 {
     public class AdminCommands : Script
