@@ -26,7 +26,7 @@ namespace mtgvrp
     public class Init : Script
     {
         public static string SERVER_NAME = "[EN] Moving Target Gaming Roleplay";
-        public static string SERVER_VERSION = "v0.0.1379";
+        public static string SERVER_VERSION = "v0.0.1408";
         public static string SERVER_WEBSITE = "www.mt-gaming.com";
         public static Random Random = new Random();
 

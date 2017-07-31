@@ -172,7 +172,7 @@ namespace mtgvrp.vehicle_dealership
                         (VehicleHash)Convert.ToInt32(selectedCar[1]),
                         spawnPoss[randomPos],
                         new Vector3(0.1917319, 0.1198539, -177.1394),
-                        " ",
+                        "...",
                         character.Id,
                         vehicle_manager.Vehicle.VehTypePerm
                     );

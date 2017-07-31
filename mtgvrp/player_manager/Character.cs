@@ -409,7 +409,8 @@ namespace mtgvrp.player_manager
             API.shared.sendNativeToPlayer(player, Hash.SET_PED_HEAD_BLEND_DATA, Client.handle, Model.FatherId,
                 Model.MotherId, 0, Model.FatherId, Model.MotherId, 0, Model.ParentLean, Model.ParentLean, 0, false);
 
-            API.shared.setPlayerClothes(Client, 2, Model.HairStyle, 0);
+            API.shared.sendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client.handle, 2, Model.HairStyle, 0, 0);
+            API.shared.sendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client.handle, 2, Model.HairStyle, 0, 0);
             API.shared.sendNativeToPlayer(player, Hash._SET_PED_HAIR_COLOR, Client.handle, Model.HairColor);
 
             //API.shared.sendNativeToPlayer(player, Hash._SET_PED_EYE_COLOR, client.handle, this.model.eye_color);
@@ -446,13 +447,13 @@ namespace mtgvrp.player_manager
 
             if (IsOnGarbageRun == true)
             {
-                API.shared.setPlayerClothes(Client, 4, Model.Gender == GenderMale ? 36 : 35, 0); //Garbage pants
-                API.shared.setPlayerClothes(Client, 8, Model.Gender == GenderMale ? 59 : 36, 0); //Garbage vest
-                API.shared.setPlayerClothes(Client, 11, Model.Gender == GenderMale ? 56 : 49, 0); //Garbage shirt
+                API.shared.sendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client.handle, 4, Model.Gender == GenderMale ? 36 : 35, 0, 0); //Garbage pants
+                API.shared.sendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client.handle, 8, Model.Gender == GenderMale ? 59 : 36, 0, 0); //Garbage vest
+                API.shared.sendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client.handle, 11, Model.Gender == GenderMale ? 56 : 49, 0, 0); //Garbage shirt
 
-                API.shared.setPlayerClothes(Client, 6, Model.ShoeStyle, Model.ShoeVar - 1); // Shoes
-                API.shared.setPlayerClothes(Client, 7, Model.AccessoryStyle, Model.AccessoryVar - 1); // Accessories
-                API.shared.setPlayerClothes(Client, 3, 0, 0); //Torso
+                API.shared.sendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client.handle, 6, Model.ShoeStyle, Model.ShoeVar - 1, 0); // Shoes
+                API.shared.sendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client.handle, 7, Model.AccessoryStyle, Model.AccessoryVar - 1, 0); // Accessories
+                API.shared.sendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client.handle, 3, 0, 0, 0); //Torso
 
 
                 API.shared.sendNativeToPlayer(player, Hash.SET_PED_PROP_INDEX, Client.handle, 1, 0, 0, true);
@@ -461,12 +462,12 @@ namespace mtgvrp.player_manager
             }
             else if(IsInPoliceUniform == true)
             {
-                API.shared.setPlayerClothes(Client, 4, Model.Gender == GenderMale ? 35 : 34, 0); // Pants
-                API.shared.setPlayerClothes(Client, 6, 24, 0); // Shoes
-                API.shared.setPlayerClothes(Client, 7, 0, 0); // Accessories
-                API.shared.setPlayerClothes(Client, 8, Model.Gender == GenderMale ? 58 : 35, 0); //undershirt
-                API.shared.setPlayerClothes(Client, 11, Model.Gender == GenderMale ? 55 : 48, 0); //top
-                API.shared.setPlayerClothes(Client, 3, 0, 0); //Torso
+                API.shared.sendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client.handle, 4, Model.Gender == GenderMale ? 35 : 34, 0, 0); // Pants
+                API.shared.sendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client.handle, 6, 24, 0, 0); // Shoes
+                API.shared.sendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client.handle, 7, 0, 0, 0); // Accessories
+                API.shared.sendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client.handle, 8, Model.Gender == GenderMale ? 58 : 35, 0, 0); //undershirt
+                API.shared.sendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client.handle, 11, Model.Gender == GenderMale ? 55 : 48, 0, 0); //top
+                API.shared.sendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client.handle, 3, 0, 0, 0); //Torso
 
                 //API.shared.setPlayerAccessory(client, 0, this.model.hat_style, this.model.hat_var - 1); // hats
                 //API.shared.setPlayerAccessory(client, 1, this.model.glasses_style, this.model.glasses_var - 1); // glasses
@@ -481,12 +482,12 @@ namespace mtgvrp.player_manager
             }
             else
             {
-                API.shared.setPlayerClothes(Client, 4, Model.PantsStyle, Model.PantsVar - 1); // Pants
-                API.shared.setPlayerClothes(Client, 6, Model.ShoeStyle, Model.ShoeVar - 1); // Shoes
-                API.shared.setPlayerClothes(Client, 7, Model.AccessoryStyle, Model.AccessoryVar - 1); // Accessories
-                API.shared.setPlayerClothes(Client, 8, Model.UndershirtStyle, Model.UndershirtVar - 1); //undershirt
-                API.shared.setPlayerClothes(Client, 11, Model.TopStyle, Model.TopVar - 1); //top
-                API.shared.setPlayerClothes(Client, 3, Model.TorsoStyle, Model.TorsoVar); //Torso
+                API.shared.sendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client.handle, 4, Model.PantsStyle, Model.PantsVar - 1, 0); // Pants
+                API.shared.sendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client.handle, 6, Model.ShoeStyle, Model.ShoeVar - 1, 0); // Shoes
+                API.shared.sendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client.handle, 7, Model.AccessoryStyle, Model.AccessoryVar - 1, 0); // Accessories
+                API.shared.sendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client.handle, 8, Model.UndershirtStyle, Model.UndershirtVar - 1, 0); //undershirt
+                API.shared.sendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client.handle, 11, Model.TopStyle, Model.TopVar - 1, 0); //top
+                API.shared.sendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client.handle, 3, Model.TorsoStyle, Model.TorsoVar, 0); //Torso
 
                 //API.shared.setPlayerAccessory(client, 0, this.model.hat_style, this.model.hat_var - 1); // hats
                 //API.shared.setPlayerAccessory(client, 1, this.model.glasses_style, this.model.glasses_var - 1); // glasses
