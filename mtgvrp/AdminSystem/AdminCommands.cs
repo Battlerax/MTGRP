@@ -1813,6 +1813,9 @@ namespace mtgvrp.AdminSystem
 
                 Account receiverAccount = API.shared.getEntityData(c.handle, "Account");
 
+                if (receiverAccount == null)
+                    return;
+
                 if (receiverAccount.AdminLevel > 0)
                 {
                     API.shared.sendChatMessageToPlayer(c, Color.AdminChat, text);
