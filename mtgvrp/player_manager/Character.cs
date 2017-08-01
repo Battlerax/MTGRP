@@ -365,19 +365,17 @@ namespace mtgvrp.player_manager
             });
         }
 
-        public async void Save()
+        public void Save()
         {
             GetTimePlayed();
             LastPos = API.shared.getEntityPosition(Client);
             LastRot = API.shared.getEntityRotation(Client);
 
-            /*Task.Run(() =>
+            Task.Run(() =>
             {
                 var filter = Builders<Character>.Filter.Eq("_id", Id);
                 DatabaseManager.CharacterTable.ReplaceOne(filter, this);
-            });*/
-            var filter = Builders<Character>.Filter.Eq("_id", Id);
-            await DatabaseManager.CharacterTable.ReplaceOneAsync(filter, this).ConfigureAwait(false);
+            });
         }
 
         public static bool IsCharacterRegistered(string name)
