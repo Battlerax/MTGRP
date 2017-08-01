@@ -26,6 +26,9 @@ namespace mtgvrp.player_manager.player_list
                     var playerList = new List<string[]>();
                     var type = Convert.ToInt32(arguments[0]);
 
+                    if (character == null || account == null)
+                        return;
+
                     if (character.GroupId == 0 && type == 2)
                     {
                         API.sendNotificationToPlayer(player, "You aren't in any group");
