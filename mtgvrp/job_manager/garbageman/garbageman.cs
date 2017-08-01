@@ -46,7 +46,7 @@ namespace mtgvrp.job_manager.garbageman
                             player.sendChatMessage("~r~You must throw the garbage bag into the back of the garbage truck!");
                             return;
                         }
-                        if (player.rotation.Z > API.getEntityRotation(closestVeh.NetHandle).Z + 15 || player.rotation.Z < API.getEntityRotation(closestVeh.NetHandle).Z - 15)
+                        if (player.rotation.Z > API.getEntityRotation(closestVeh.NetHandle).Z + 30 || player.rotation.Z < API.getEntityRotation(closestVeh.NetHandle).Z - 30)
                         {
                             ChatManager.RoleplayMessage(character, "throws the garbage bag at the garbage truck and misses.", ChatManager.RoleplayMe);
                             player.sendChatMessage("~r~You failed to throw the garbage bag into the back of the garbage truck!");
