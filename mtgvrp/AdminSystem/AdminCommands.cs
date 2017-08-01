@@ -1502,6 +1502,40 @@ namespace mtgvrp.AdminSystem
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has removed all warns of {GetLogName(receiver)}");
         }
 
+        [Command("remotesetadminlevel"), Help(HelpManager.CommandGroups.AdminLevel2, "View an offline player's warnings", new[] { "Account name of the player" })]
+        public void remotesetadminlevel_cmd(Client player, string accountname, int level)
+        {
+            Account account = API.shared.getEntityData(player.handle, "Account");
+
+            if (account.AdminLevel < 7)
+                return;
+
+            var filter = Builders<Account>.Filter.Eq("AccountName", accountname);
+            var foundAccount = DatabaseManager.AccountTable.Find(filter).ToList();
+
+            foreach (var c in foundAccount)
+            {
+                if (c.AccountName == accountname)
+                {
+                    if (account.AdminLevel >= c.AdminLevel && c.AdminLevel > level)
+                    {
+                        var oldLevel = c.AdminLevel;
+                        API.sendChatMessageToPlayer(player, "You have changed " + c.AccountName + "'s admin level to " + level + " (was " + oldLevel + ").");
+                        c.AdminLevel = level;
+                        c.Save();
+                        Log(LogTypes.AdminActions,
+                            $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has set {GetLogName(receiver)}'s Admin Level to {level}.");
+                    }
+                    else
+                    {
+                        API.sendChatMessageToPlayer(player, Color.White, "You cannot set a higher admin level than yours or set someone to a level above yours.");
+                    }
+
+                }
+                break;
+            }
+        }
+
         [Command("remoteplayerwarns"), Help(HelpManager.CommandGroups.AdminLevel2, "View an offline player's warnings", new[] { "Account name of the player" })]
         public static void remoteplayerwarns_cmd(Client player, string accountname)
         {

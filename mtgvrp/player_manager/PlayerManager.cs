@@ -385,6 +385,13 @@ namespace mtgvrp.player_manager
             API.sendChatMessageToPlayer(player, Color.White, "__________________ TIME __________________");
         }
 
+        [Command("dimreset")]
+        public void dimreset_cmd(Client player)
+        {
+            API.setEntityDimension(player, 0);
+            player.sendChatMessage("Dimension reset.");
+        }
+
         [Command("attempt", GreedyArg = true), Help(HelpManager.CommandGroups.Roleplay, "Attempt to do something with a 50% chance of either success or fail.", "The attempt message")]
         public void attempt_cmd(Client player, string message)
         {
@@ -408,7 +415,7 @@ namespace mtgvrp.player_manager
         {
             Character character = API.getEntityData(receiver.handle, "Character");
             Account account = API.shared.getEntityData(receiver.handle, "Account");
-            Account senderAccount = API.shared.getEntityData(receiver.handle, "Account");
+            Account senderAccount = API.shared.getEntityData(sender, "Account");
 
             API.sendChatMessageToPlayer(sender, "==============================================");
             API.sendChatMessageToPlayer(sender, "Player statistics for " + character.CharacterName);
