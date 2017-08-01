@@ -54,7 +54,6 @@ namespace mtgvrp.player_manager
         public List<int> OutfitVariation = new List<int>();
         
         public int Age { get; set; }
-        public int AdminActions { get; set; }
         public string Birthday { get; set; }
         public string Birthplace { get; set; }
 

@@ -20,6 +20,7 @@ namespace mtgvrp.player_manager
         public int AdminLevel { get; set; }
         public string AdminName { get; set; }
 
+        public int AdminActions { get; set; }
         public bool AdminDuty { get; set; }
         public string AdminPin { get; set; }
         public int DevLevel { get; set; }

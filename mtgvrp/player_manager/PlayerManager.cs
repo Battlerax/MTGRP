@@ -385,7 +385,7 @@ namespace mtgvrp.player_manager
             API.sendChatMessageToPlayer(player, Color.White, "__________________ TIME __________________");
         }
 
-        [Command("dimreset")]
+        [Command("dimreset"), Help(HelpManager.CommandGroups.General, "Reset your dimension.", null)]
         public void dimreset_cmd(Client player)
         {
             API.setEntityDimension(player, 0);
@@ -440,7 +440,7 @@ namespace mtgvrp.player_manager
                 API.sendChatMessageToPlayer(sender,
                     $"~h~Admin level:~h~ {account.AdminLevel} ~h~Admin name:~h~ {account.AdminName} ~h~Last vehicle:~h~ {character?.LastVehicle?.Id} ~h~Dimension:~h~ {character?.LastDimension} ~h~Last IP:~h~ {account.LastIp}");
                 API.sendChatMessageToPlayer(sender,
-                    $"~h~Social Club Name:~h~ {account.AccountName}");
+                    $"~h~Social Club Name:~h~ {account.AccountName} ~h~Admin actions: {account.AdminActions}");
             }
         }
     }
