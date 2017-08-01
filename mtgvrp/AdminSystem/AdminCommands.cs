@@ -739,7 +739,34 @@ namespace mtgvrp.AdminSystem
             API.sendChatMessageToPlayer(player, "----------------------------------------------");
         }
 
-        [Command("getvehicle"), Help(HelpManager.CommandGroups.AdminLevel2, "Teleports a vehicle to you.", new[] { "Vehicle ID" })]
+        [Command("gotocar"), Help(HelpManager.CommandGroups.AdminLevel2, "Teleport to a vehicle.", new[] { "Vehicle ID" })]
+        public void gotocar_cmd(Client player, int vID)
+        {
+            Account account = API.getEntityData(player.handle, "Account");
+            if (account.AdminLevel < 2)
+                return;
+
+            var veh = VehicleManager.GetVehicleById(vID);
+
+            if (veh == null)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "That vehicle ID does not exist.");
+                return;
+            }
+
+            if (veh.IsSpawned == false)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "That vehicle is not spawned.");
+                return;
+            }
+
+            API.setEntityPosition(player, API.getEntityPosition(veh.NetHandle));
+            API.sendChatMessageToPlayer(player, "Sucessfully teleported to a vehicle.");
+            Log(LogTypes.AdminActions,
+                $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has teleported vehicle #{vID} to the Admin's position.");
+        }
+
+        [Command("getcar"), Help(HelpManager.CommandGroups.AdminLevel2, "Teleports a vehicle to you.", new[] { "Vehicle ID" })]
         public void getplayercar_cmd(Client player, int vID)
         {
             Account account = API.getEntityData(player.handle, "Account");
@@ -952,7 +979,7 @@ namespace mtgvrp.AdminSystem
             API.sendChatMessageToPlayer(player, "Report accepted.");
             API.sendChatMessageToPlayer(receiver, "Your report has been taken by ~b~" + player.nametag + ".");
             SendtoAllAdmins("[REPORT] " + player.nametag + " has taken " + receiver.nametag + "'s report.");
-            character.AdminActions++;
+            account.AdminActions++;
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has accepted report made by {GetLogName(receiver)}");
         }
@@ -991,6 +1018,7 @@ namespace mtgvrp.AdminSystem
             API.sendChatMessageToPlayer(player, "Request trashed.");
             API.sendChatMessageToPlayer(receiver, "Your admin/moderator request was trashed.");
             SendtoAllAdmins("[TRASHED] " + player.nametag + " trashed " + receiver.nametag + "'s report.");
+            account.AdminActions++;
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has trashed report by {GetLogName(receiver)}");
         }
@@ -1040,7 +1068,7 @@ namespace mtgvrp.AdminSystem
             SendtoAllAdmins("[REPORT] " + player.nametag + " has taken " + receiver.nametag + "'s ask request.");
             API.setEntityPosition(player, API.getEntityPosition(receiver));
             API.setPlayerNametagColor(player, 51, 102, 255);
-            character.AdminActions++;
+            account.AdminActions++;
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has accepted {GetLogName(receiver)}'s /ask.");
         }
@@ -1122,6 +1150,7 @@ namespace mtgvrp.AdminSystem
                 API.sendChatMessageToPlayer(player, "You have unmuted ~b~" + receiver.nametag + "~w~ from newbie chat.");
                 receivercharacter.NMutedExpiration = DateTime.Now;
             }
+            account.AdminActions++;
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has nmuted {GetLogName(receiver)}");
         }
@@ -1156,6 +1185,7 @@ namespace mtgvrp.AdminSystem
                 API.sendChatMessageToPlayer(player, "You have unmuted ~b~" + receiver.nametag + "~w~ from VIP chat.");
                 receivercharacter.VMutedExpiration = DateTime.Now;
             }
+            account.AdminActions++;
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has vmuted {GetLogName(receiver)}");
         }
@@ -1190,9 +1220,11 @@ namespace mtgvrp.AdminSystem
                 API.sendChatMessageToPlayer(player, "You have unmuted ~b~" + receiver.nametag + "~w~from creating reports.");
                 receivercharacter.ReportMuteExpires = DateTime.Now;
             }
+            account.AdminActions++;
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has reportmuted {GetLogName(receiver)}");
         }
+
         //here toro
         [Command("mlist", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel1, "Used to list the active moderator reques.", null)]
         public void asklist_cmd(Client player)
@@ -1241,6 +1273,7 @@ namespace mtgvrp.AdminSystem
             Lspd.JailControl(receiver, int.Parse(time));
             API.sendChatMessageToPlayer(player, "You have jailed " + receiver.nametag + " for " + time + " minutes.");
             API.sendChatMessageToPlayer(receiver, "You have been jailed by " + player.nametag + " for " + time + " minutes.");
+            account.AdminActions++;
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has jailed {GetLogName(receiver)} for {time} second(s).");
         }
@@ -1254,6 +1287,7 @@ namespace mtgvrp.AdminSystem
             if (account.AdminLevel < 2)
                 return;
 
+            account.AdminActions++;
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has kicked {GetLogName(receiver)}.");
             KickPlayer(receiver, reason);
@@ -1282,7 +1316,7 @@ namespace mtgvrp.AdminSystem
                     }
                     var playerWarn = new PlayerWarns(c.AccountName, account.AccountName, reason);
                     c.PlayerWarns.Add(playerWarn);
-                    character.AdminActions++;
+                    account.AdminActions++;
 
                     if (c.PlayerWarns.Count() >= 3)
                     {
@@ -1339,6 +1373,7 @@ namespace mtgvrp.AdminSystem
                     c.Save();
                 }
                 API.shared.sendChatMessageToPlayer(player, "You have remote-banned " + c.AccountName+ " from the server.");
+                account.AdminActions++;
                 Log(LogTypes.Bans, $"Admin {account.AdminName}[{player.socialClubName}] has remotebanned the player [{c.AccountName}]. Reason: '{reason}'");
                 Log(LogTypes.AdminActions,
                     $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has remotebanned the player [{c.AccountName}]. Reason: '{reason}'");
@@ -1367,6 +1402,7 @@ namespace mtgvrp.AdminSystem
                     API.sendChatMessageToPlayer(player, charactername + "'s account name is '" + j.AccountName + "'.");
                 }
             }
+
         }
 
         [Command("unban", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel3, "Unbans an account from the server", new[] { "Account name of the target player" })]
@@ -1387,6 +1423,7 @@ namespace mtgvrp.AdminSystem
                     c.BanReason = "";
                     c.Save();
                 }
+                account.AdminActions++;
                 API.shared.sendChatMessageToPlayer(player, "You have unbanned " + c.AccountName + " from the server.");
                 Log(LogTypes.Unbans, $"Admin {account.AdminName}[{player.socialClubName}] has unbanned the player [{c.AccountName}].");
                 Log(LogTypes.AdminActions,
@@ -1429,6 +1466,7 @@ namespace mtgvrp.AdminSystem
             if (account.AdminLevel < 2)
                 return;
 
+            account.AdminActions++;
             var receiver = PlayerManager.ParseClient(id);
             BanPlayer(receiver, reason);
             Log(LogTypes.Bans, $"Admin {account.AdminName}[{player.socialClubName}] has banned the player {receiver.GetCharacter().CharacterName}[{receiver.socialClubName}]. Reason: '{reason}'");
@@ -1458,7 +1496,7 @@ namespace mtgvrp.AdminSystem
 
             var playerWarn = new PlayerWarns(receiverAccount.AccountName, account.AccountName, reason);
             receiverAccount.PlayerWarns.Add(playerWarn);
-            character.AdminActions++;
+            account.AdminActions++;
 
             API.shared.sendChatMessageToPlayer(player, "You warned ~r~" + receiverCharacter.CharacterName + "~w~ for '~r~" + reason + "~w~'.");
             API.shared.sendChatMessageToPlayer(receiver, "You were warned by ~r~" + character.CharacterName + "~w~ for '~r~" + reason + "~w~'.");
@@ -1495,11 +1533,45 @@ namespace mtgvrp.AdminSystem
                 receiverAccount.PlayerWarns.Remove(w);
             }
 
+            account.AdminActions++;
             API.shared.sendChatMessageToPlayer(player, "You removed all warns from ~r~" + receiverCharacter.CharacterName + "~w~.");
             API.shared.sendChatMessageToPlayer(receiver, "Your warns were removed by ~r~" + character.CharacterName + "~w~.");
             Log(LogTypes.Bans, $"Admin {account.AdminName}[{player.socialClubName}] has removed all the warns of the player {receiver.GetCharacter().CharacterName}[{receiver.socialClubName}]. Reason: '{reason}'");
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has removed all warns of {GetLogName(receiver)}");
+        }
+
+        [Command("remotesetadminlevel"), Help(HelpManager.CommandGroups.AdminLevel2, "Change an offline player's admin level.", new[] { "Account name of the player" })]
+        public void remotesetadminlevel_cmd(Client player, string accountname, int level)
+        {
+            Account account = API.shared.getEntityData(player.handle, "Account");
+
+            if (account.AdminLevel < 7)
+                return;
+
+            var filter = Builders<Account>.Filter.Eq("AccountName", accountname);
+            var foundAccount = DatabaseManager.AccountTable.Find(filter).ToList();
+
+            foreach (var c in foundAccount)
+            {
+                if (c.AccountName == accountname)
+                {
+                    if (account.AdminLevel >= c.AdminLevel && c.AdminLevel > level)
+                    {
+                        var oldLevel = c.AdminLevel;
+                        API.sendChatMessageToPlayer(player, "You have changed " + c.AccountName + "'s admin level to " + level + " (was " + oldLevel + ").");
+                        c.AdminLevel = level;
+                        c.Save();
+
+                    }
+                    else
+                    {
+                        API.sendChatMessageToPlayer(player, Color.White, "You cannot set a higher admin level than yours or set someone to a level above yours.");
+                    }
+
+                }
+                break;
+            }
         }
 
         [Command("remoteplayerwarns"), Help(HelpManager.CommandGroups.AdminLevel2, "View an offline player's warnings", new[] { "Account name of the player" })]
@@ -1739,6 +1811,7 @@ namespace mtgvrp.AdminSystem
             receiverAccount.VipExpirationDate = DateTime.Now.AddDays(days);
             receiverAccount.Save();
 
+            account.AdminActions++;
             receiver.sendChatMessage("Your ~y~VIP~y~ level was set to " + level + " by " + account.AdminName + ".");
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has set {GetLogName(receiver)} VIP level to {level} for {days} days.");
@@ -1778,7 +1851,7 @@ namespace mtgvrp.AdminSystem
 
             account.VipExpirationDate = account.VipExpirationDate.AddDays(int.Parse(days));
             account.Save();
-
+            account.AdminActions++;
             receiver.sendChatMessage("Your ~y~VIP~y~ days were increased by " + int.Parse(days) + " days by " + account.AdminName + "!");
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has increased {GetLogName(receiver)} VIP time by {days} days.");

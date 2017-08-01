@@ -263,9 +263,9 @@ namespace mtgvrp.job_manager.trucker
                 }
                 else if (player.getData("TRUCKING_TYPE") == "gas")
                 {
-                    player.sendChatMessage("You have been paid ~g~$1500.");
-                    InventoryManager.GiveInventoryItem(character, new Money(), 1500, true);
-                    LogManager.Log(LogManager.LogTypes.Stats, $"[Job] {player.GetCharacter().CharacterName}[{player.GetAccount().AccountName}] has earned $1500 from a trucking run.");
+                    player.sendChatMessage("You have been paid ~g~$900.");
+                    InventoryManager.GiveInventoryItem(character, new Money(), 900, true);
+                    LogManager.Log(LogManager.LogTypes.Stats, $"[Job] {player.GetCharacter().CharacterName}[{player.GetAccount().AccountName}] has earned $900 from a trucking run.");
                 }
 
                 API.triggerClientEvent(player, "update_beacon", new Vector3());
@@ -278,6 +278,13 @@ namespace mtgvrp.job_manager.trucker
         public void StartRun(Client player, string type)
         {
             var character = player.GetCharacter();
+            
+            if (API.getPlayerVehicleSeat(player) != -1)
+            {
+                player.sendChatMessage("You must be the driver of the truck to start the truck run.");
+                return;
+            }
+
             if (character.TruckingStage == Character.TruckingStages.GettingTrailer)
             {
                 if (type == "gas")

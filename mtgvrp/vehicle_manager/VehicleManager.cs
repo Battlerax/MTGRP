@@ -367,6 +367,12 @@ namespace mtgvrp.vehicle_manager
             var vehicleHandle = API.shared.getPlayerVehicle(player);
             Vehicle vehicle = API.shared.getEntityData(vehicleHandle, "Vehicle");
 
+            if (API.shared.getPlayerVehicleSeat(player) != -1)
+            {
+                player.sendChatMessage("You must be the driver of a vehicle to do this.");
+                return;
+            }
+
             var engineState = API.shared.getVehicleEngineStatus(vehicleHandle);
             var vehAccess = DoesPlayerHaveVehicleAccess(player, vehicle);
             if (!engineState)
@@ -681,8 +687,9 @@ namespace mtgvrp.vehicle_manager
             if(account.IsSpeedoOn)
                 API.triggerClientEvent(player, "speedo_showcef");
 
+            veh.Driver = player.GetCharacter();
             veh.LastOccupied = DateTime.Now;
-
+            API.setPlayerSeatbelt(player, true);
 
             foreach (var p in API.getAllPlayers())
             {

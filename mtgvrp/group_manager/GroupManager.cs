@@ -410,7 +410,7 @@ namespace mtgvrp.group_manager
             if (GroupCommandPermCheck(API.getEntityData(player.handle, "Character"), 1)){
 
                 Character character = player.GetCharacter();
-                SendGroupMessage(player, "[G][" + character.GroupRank + "] " + GetRankName(character) + " " + character.CharacterName + " : #" + character.BadgeNumber + " ~w~" + message);
+                SendGroupMessage(player, "[G][" + character.GroupRank + "] " + GetRankName(character) + " #" + character.BadgeNumber + " " + character.CharacterName + " : " + " ~w~" + message);
                 LogManager.Log(LogManager.LogTypes.GroupChat, $"[Group {character.Group.Name}][" + character.GroupRank + "] " + GetRankName(character) + " " + character.CharacterName + $"[{player.socialClubName}]" + " : " + message);
             }
         }
@@ -430,8 +430,8 @@ namespace mtgvrp.group_manager
                     return;
                 }
 
-                var radioMsg = "~b~[RADIO][" + character.GroupRank + "] " + GetRankName(character) + " " +
-                               character.CharacterName + " : #" + character.BadgeNumber + "~w~" + message;
+                var radioMsg = "~b~[RADIO][" + character.GroupRank + "] " + GetRankName(character) + " #" + character.BadgeNumber + " " +
+                               character.CharacterName + " : " + "~w~" + message;
 
                 SendRadioMessage(player, radioMsg);
 
