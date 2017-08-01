@@ -1,6 +1,7 @@
 using System;
 using System.Data.SqlTypes;
 using System.Linq;
+using System.Xaml;
 using GrandTheftMultiplayer.Server.API;
 using GrandTheftMultiplayer.Server.Elements;
 using mtgvrp.core;
@@ -12,6 +13,7 @@ using MongoDB.Bson.Serialization.Attributes;
 using GrandTheftMultiplayer.Server.Managers;
 using MongoDB.Driver;
 using mtgvrp.core.Help;
+using mtgvrp.property_system;
 
 namespace mtgvrp.phone_manager
 {
@@ -22,8 +24,35 @@ namespace mtgvrp.phone_manager
             DebugManager.DebugMessage("[PhoneM] Initalizing Phone Manager...");
 
             API.onClientEventTrigger += API_onClientEventTrigger;
+            CharacterMenu.OnCharacterLogin += CharacterMenu_OnCharacterLogin;
 
             DebugManager.DebugMessage("[PhoneM] Phone Manager initalized.");
+        }
+
+        private void CharacterMenu_OnCharacterLogin(object sender, CharacterMenu.CharacterLoginEventArgs e)
+        {
+            var item = InventoryManager.DoesInventoryHaveItem<Phone>(e.Character);
+            if (item.Length > 0)
+            {
+                //Check if in DB.
+                var dbNumber = DatabaseManager.PhoneNumbersTable.Find(x => x.Number == item[0].PhoneNumber);
+                if (dbNumber.Count() > 0)
+                {
+                    //Check if id isn't same.
+                    if (dbNumber.First().PhoneId != item[0].Id)
+                    {
+                        InventoryManager.DeleteInventoryItem<Phone>(e.Character);
+                        API.sendChatMessageToPlayer(e.Character.Client, "Your phone has been removed due to the number being used already, you've been refunded.");
+                        InventoryManager.GiveInventoryItem(e.Character, new Money(), 500);
+                        e.Character.Save();
+                        return;
+                    }
+                }
+                else
+                {
+                    item[0].InsertNumber();
+                }
+            }
         }
 
         private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
