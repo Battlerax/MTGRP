@@ -278,6 +278,13 @@ namespace mtgvrp.job_manager.trucker
         public void StartRun(Client player, string type)
         {
             var character = player.GetCharacter();
+            
+            if (API.getPlayerVehicleSeat(player) != -1)
+            {
+                player.sendChatMessage("You must be the driver of the truck to start the truck run.");
+                return;
+            }
+
             if (character.TruckingStage == Character.TruckingStages.GettingTrailer)
             {
                 if (type == "gas")
