@@ -681,6 +681,7 @@ namespace mtgvrp.vehicle_manager
             if(account.IsSpeedoOn)
                 API.triggerClientEvent(player, "speedo_showcef");
 
+            veh.Driver = player.GetCharacter();
             veh.LastOccupied = DateTime.Now;
 
 
