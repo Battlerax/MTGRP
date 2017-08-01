@@ -20,6 +20,8 @@ API.onServerEventTrigger.connect(function (eventName, args) {
         case "watch_broadcast":
 			var wbcamView = API.createCamera(args[0], args[1]);
 			API.setActiveCamera(wbcamView);
+			var campos = args[0]
+			API.callNative("0xBB7454BAFF08FE25", campos.X, campos.Y, campos.Z, 0.0, 0.0, 0.0); 
 			var wbres = API.getScreenResolutionMaintainRatio();
 			lowerthird = API.createCefBrowser(800, 700);
 			API.waitUntilCefBrowserInit(lowerthird);
@@ -34,7 +36,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 			var wcCamView = API.createCamera(args[0], args[1]);
 			API.attachCameraToEntity(wcCamView, args[3], args[4]);
 			API.setActiveCamera(wcCamView);
-		    API.callNative("0xBB7454BAFF08FE25", args[5], args[6], args[7], 0.0, 0.0, 0.0); 
+		    API.callNative("0xBB7454BAFF08FE25", args[3], args[4], args[5], 0.0, 0.0, 0.0); 
 			var resolution = API.getScreenResolutionMaintainRatio();
 			lowerthird = API.createCefBrowser(800, 700);
 			API.waitUntilCefBrowserInit(lowerthird);
