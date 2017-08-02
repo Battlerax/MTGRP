@@ -238,6 +238,7 @@ namespace mtgvrp.player_manager
                             Lspd.JailControl(player, character.JailTimeLeft);
                         }
 
+                        API.setPlayerHealth(player, character.Health);
                         API.sendChatMessageToPlayer(player, "You have successfully loaded your character: " + charName);
                         LogManager.Log(LogManager.LogTypes.Connection, player.socialClubName + $" has loaded the character {character.CharacterName}. (IP: " + player.address + ")");
 

@@ -56,6 +56,7 @@ namespace mtgvrp.inventory
             BsonClassMap.RegisterClassMap<SupplyItem>();
             BsonClassMap.RegisterClassMap<IdentificationItem>();
             BsonClassMap.RegisterClassMap<DrivingLicenseItem>();
+            BsonClassMap.RegisterClassMap<FishingRod>();
 
             BsonClassMap.RegisterClassMap<Weapon>();
             #endregion

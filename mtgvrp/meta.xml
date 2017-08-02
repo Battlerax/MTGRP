@@ -41,6 +41,7 @@
   <script src="vehicle_dealership/vipdealership.js" type="client" lang="javascript"/>
   <script src="vehicle_dealership/chopperdealership.js" type="client" lang="javascript"/>
 	<script src="vehicle_manager/VehicleOwnership.js" type="client" lang="javascript"/>
+  <script src="vehicle_dealership/boatdealer.js" type="client" lang="javascript"/>
 
   <!-- Bag System-->
   <script src="inventory/InventoryManager.js" type="client" lang="javascript"/>
