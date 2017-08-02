@@ -135,8 +135,8 @@ namespace mtgvrp.player_manager
             if(eventName == "update_ped_for_client")
             {
                 var player = (NetHandle)arguments[0];
-                Character c = API.shared.getPlayerFromHandle(player).GetCharacter();
-                c?.update_ped();
+                Character c = API.getEntityData(player, "Character");
+                c?.update_ped(sender);
             }
         }
 

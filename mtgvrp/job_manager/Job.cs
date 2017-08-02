@@ -54,7 +54,7 @@ namespace mtgvrp.job_manager
             {
                 if (Type == JobManager.JobTypes.Fisher)
                 {
-                    var c = API.shared.getPlayerFromHandle(entity).GetCharacter();
+                    var c = API.shared.getEntityData(entity, "Character");
                     if (c == null)
                         return;
 
@@ -67,7 +67,7 @@ namespace mtgvrp.job_manager
             {
                 if (Type == JobManager.JobTypes.Fisher)
                 {
-                    var c = API.shared.getPlayerFromHandle(entity).GetCharacter();
+                    var c = API.shared.getEntityData(entity, "Character");
                     if (c == null)
                         return;
 
@@ -87,7 +87,7 @@ namespace mtgvrp.job_manager
             {
                 if (API.shared.getEntityType(entity) == EntityType.Player)
                 {
-                    var c = API.shared.getPlayerFromHandle(entity).GetCharacter();
+                    var c = API.shared.getEntityData(entity, "Character");
                     c.JobZone = Id;
 
                     if(shape == JoinPos.ColZone)
