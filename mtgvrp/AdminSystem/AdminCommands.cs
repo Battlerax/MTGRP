@@ -727,13 +727,12 @@ namespace mtgvrp.AdminSystem
             API.sendChatMessageToPlayer(player, $"Vehicles Owned By {character.CharacterName}");
             foreach (var carid in character.OwnedVehicles)
             {
-                var car = VehicleManager.Vehicles.SingleOrDefault(x => x.Id == carid);
-                if (car == null)
+                if (carid == null)
                 {
                     API.sendChatMessageToPlayer(player, $"(UNKNOWN VEHICLE) | ID ~r~{carid}~w~.");
                     continue;
                 }
-                API.sendChatMessageToPlayer(player, $"({API.getVehicleDisplayName(car.VehModel)}) | NetHandle ~r~{car.NetHandle.Value}~w~ | ID ~r~{car.Id}~w~.");
+                API.sendChatMessageToPlayer(player, $"({API.getVehicleDisplayName(carid.VehModel)}) | NetHandle ~r~{carid.NetHandle.Value}~w~ | ID ~r~{carid.Id}~w~.");
             }
             API.sendChatMessageToPlayer(player, "----------------------------------------------");
         }
