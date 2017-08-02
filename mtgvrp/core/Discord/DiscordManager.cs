@@ -240,7 +240,7 @@ namespace mtgvrp.core.Discord
                 if(receiverAccount == null)
                     continue;
 
-                if (receiverAccount.AdminLevel <= 1) continue;
+                if (receiverAccount.AdminLevel < 1) continue;
 
                 msg += receiverAccount.AdminName + " | LEVEL " + receiverAccount.AdminLevel + " | " +
                        (receiverAccount.AdminDuty ? "**On Duty**" : "Off Duty") + "\n";
