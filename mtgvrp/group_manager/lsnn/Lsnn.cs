@@ -378,7 +378,7 @@ namespace mtgvrp.group_manager.lsnn
 
             if (character.Group.CommandType == Group.CommandTypeLsnn && CameraSet == true)
             {
-                API.triggerClientEvent(player, "watch_broadcast", camPos, camRot, Headline);
+                API.triggerClientEvent(player, "watch_broadcast", camPos, camRot, Headline, focusX, focusY, focusZ);
                 character.IsWatchingBroadcast = true;
                 return;
             }

@@ -570,7 +570,6 @@ namespace mtgvrp.AdminSystem
                 return;
             }
             account.IsSpectating = true;
-            API.shared.setEntityTransparency(player, 0);
             player.GetCharacter().LastPos = player.position;
             API.shared.setEntityPosition(player, target.position);
             API.shared.setPlayerToSpectatePlayer(player, target);
@@ -595,7 +594,6 @@ namespace mtgvrp.AdminSystem
                 return;
             }
             account.IsSpectating = false;
-            API.shared.setEntityTransparency(player, 255);
             API.unspectatePlayer(player);
             API.shared.setEntityPosition(player, player.GetCharacter().LastPos);
             API.shared.setPlayerNametagVisible(player, true);
@@ -622,6 +620,7 @@ namespace mtgvrp.AdminSystem
             var playerPos = API.getEntityPosition(receiver);
             API.setEntityPosition(receiver, new Vector3(playerPos.X, playerPos.Y, playerPos.Z + 5));
             API.sendChatMessageToPlayer(receiver, "You have been slapped by an admin");
+            ChatManager.NearbyMessage(receiver, 10f, $"{receiver.GetCharacter().CharacterName} has been slapped by an admin.");
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has slapped {GetLogName(receiver)}");
         }
@@ -737,6 +736,25 @@ namespace mtgvrp.AdminSystem
                 API.sendChatMessageToPlayer(player, $"({API.getVehicleDisplayName(car.VehModel)}) | NetHandle ~r~{car.NetHandle.Value}~w~ | ID ~r~{car.Id}~w~.");
             }
             API.sendChatMessageToPlayer(player, "----------------------------------------------");
+        }
+
+        [Command("noobs"), Help(HelpManager.CommandGroups.AdminLevel2, "List of players with less than 4 playing hours.", null)]
+        public void noobs_cmd(Client player)
+        {
+            Account account = API.getEntityData(player.handle, "Account");
+            if (account.AdminLevel < 2)
+                return;
+
+            player.sendChatMessage("==============================");
+            player.sendChatMessage("NOOB PLAYERS");
+            player.sendChatMessage("==============================");
+            foreach (var p in PlayerManager.Players)
+            {
+                if (p.GetPlayingHours() < 4)
+                {
+                    player.sendChatMessage($"Name: {p.CharacterName} | Id: {p.Id} | Hours: {p.GetPlayingHours()}");
+                }
+            }
         }
 
         [Command("gotocar"), Help(HelpManager.CommandGroups.AdminLevel2, "Teleport to a vehicle.", new[] { "Vehicle ID" })]
@@ -1392,17 +1410,53 @@ namespace mtgvrp.AdminSystem
             var filter = Builders<Character>.Filter.Eq("CharacterName", charactername);
             var foundCharacter = DatabaseManager.CharacterTable.Find(filter).ToList();
 
+            if (foundCharacter == null)
+            {
+                player.sendChatMessage("Character not found.");
+                return;
+            }
+
             foreach (var p in foundCharacter)
             {
                 var accountFilter = Builders<Account>.Filter.Eq("Id", p.AccountId);
-                var foundAccount = DatabaseManager.AccountTable.Find(accountFilter).ToList();
+                var foundAccount = DatabaseManager.AccountTable.Find(accountFilter).FirstOrDefault();
 
-                foreach (var j in foundAccount)
+                if (foundAccount == null)
                 {
-                    API.sendChatMessageToPlayer(player, charactername + "'s account name is '" + j.AccountName + "'.");
+                    player.sendChatMessage("Account not found.");
+                    return;
                 }
+
+                API.sendChatMessageToPlayer(player, charactername + "'s account name is '" + foundAccount?.AccountName + "'.");
             }
 
+        }
+
+        [Command("forcechangename", GreedyArg = false), Help(HelpManager.CommandGroups.AdminLevel2, "Applies a player warning to a player", new[] { "ID of the target player" })]
+        public static void forcechangename_cmd(Client player, string id)
+        {
+            Account account = API.shared.getEntityData(player.handle, "Account");
+
+            if (account.AdminLevel < 2)
+                return;
+
+            var receiver = PlayerManager.ParseClient(id);
+
+            if (receiver == null)
+            {
+                API.shared.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid target.");
+                return;
+            }
+
+            Account receiverAccount = API.shared.getEntityData(receiver, "Account");
+            Character character = API.shared.getEntityData(player.handle, "Character");
+            Character receiverCharacter = API.shared.getEntityData(receiver, "Character");
+
+            receiver.GetCharacter().JailTimeLeft = 9999 * 1000 * 60;
+            Lspd.JailControl(receiver, 999999);
+            API.shared.sendChatMessageToPlayer(player, "You have changed" + receiver.nametag + "'s name");
+            API.shared.sendChatMessageToPlayer(receiver, "You have been jailed by " + player.nametag + " and are forced to change your character name.");
+            account.AdminActions++;
         }
 
         [Command("unban", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel3, "Unbans an account from the server", new[] { "Account name of the target player" })]

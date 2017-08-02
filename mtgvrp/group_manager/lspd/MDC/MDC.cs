@@ -149,16 +149,31 @@ namespace mtgvrp.group_manager.lspd.MDC
                     var phone = (string) arguments[1];
 
                     //First if online.
-                    Character foundPlayer =
-                        PlayerManager.Players.SingleOrDefault(x => x.CharacterName == name ||
-                                                                   (x.Inventory.Any(y => y.GetType() ==
-                                                                                         typeof(Phone)) &&
-                                                                    x.Inventory.Where(y => y.GetType() == typeof(Phone))
-                                                                        .Cast<Phone>().First().PhoneNumber == phone));
+
+
+                    Character foundPlayer = null;
+
+                    foreach(var playerfound in PlayerManager.Players)
+                        {
+                            if (playerfound == null)
+                            {
+                                continue;
+                            }
+                            if (playerfound.CharacterName == name)
+                            {
+                                foundPlayer = playerfound;
+                                break;
+                            }
+                        }
+
+                    if(foundPlayer == null)
+                        {
+                            foundPlayer = PhoneManager.GetPlayerWithNumber(phone);
+                        }
 
                     if (foundPlayer == null)
                     {
-                        var filter = Builders<Character>.Filter.Eq(x => x.CharacterName, name) |
+                            var filter = Builders<Character>.Filter.Eq(x => x.CharacterName, name) |
                                      (Builders<Character>.Filter.Eq("Inventory.PhoneNumber", phone));
 
                         //Not online.. check DB.
