@@ -63,6 +63,7 @@ namespace mtgvrp.player_manager
         [BsonIgnore]
         public Client Client { get; set; }
 
+        [BsonIgnore]
         public Vehicle LastVehicle { get; set; }
 
         //Reports
@@ -377,7 +378,12 @@ namespace mtgvrp.player_manager
             var task = Task.Run(() =>
             {
                 var filter = Builders<Character>.Filter.Eq("_id", Id);
-                DatabaseManager.CharacterTable.ReplaceOne(filter, this);
+                var res = DatabaseManager.CharacterTable.ReplaceOne(filter, this);
+                if (!res.IsAcknowledged || (res.IsModifiedCountAvailable && res.ModifiedCount == 0))
+                {
+                    LogManager.Log(LogManager.LogTypes.Connection,
+                        $"Character {this.CharacterName} ERRORED while saving.");
+                }
             });
 
             task.ContinueWith(

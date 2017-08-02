@@ -13,6 +13,7 @@
 using System;
 using GrandTheftMultiplayer.Server.API;
 using GrandTheftMultiplayer.Server.Elements;
+using GrandTheftMultiplayer.Server.Managers;
 using GrandTheftMultiplayer.Shared;
 using mtgvrp.core;
 using mtgvrp.core.Discord;
@@ -108,15 +109,6 @@ namespace mtgvrp
             //For Dealership.
             API.removeIpl("fakeint"); // remove the IPL "fakeint"
             API.requestIpl("shr_int"); // Request the IPL "shr_int"
-            API.requestIpl("ex_dt1_02_office_02b"); //Office.
-            API.requestIpl("ex_dt1_02_office_02c"); //Office.
-            API.requestIpl("ex_dt1_02_office_02a"); //Office.
-            API.requestIpl("ex_dt1_02_office_01a"); //Office.
-            API.requestIpl("ex_dt1_02_office_01b"); //Office.
-            API.requestIpl("ex_dt1_02_office_01c"); //Office.
-            API.requestIpl("ex_dt1_02_office_03b"); //Office.
-            API.requestIpl("ex_dt1_02_office_03a"); //Office.
-            API.requestIpl("ex_dt1_02_office_03c"); //Office.
 
             API.consoleOutput("[INIT] Unloaded fakeint IPL and loaded shr_int IPL.!");
 
@@ -131,6 +123,13 @@ namespace mtgvrp
                 API.consoleOutput("[INIT] Starting Discord Bot!");
                 DiscordManager.StartBot();
             }
+        }
+
+        [Command("save")]
+        public void Save(Client player)
+        {
+            player?.GetCharacter()?.Save();
+            API.sendChatMessageToPlayer(player, "Your character has been saved successfully.");
         }
 
         private void API_onResourceStop()
