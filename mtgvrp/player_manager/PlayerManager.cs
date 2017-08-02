@@ -414,7 +414,7 @@ namespace mtgvrp.player_manager
             Character character = API.getEntityData(receiver.handle, "Character");
             Account account = API.shared.getEntityData(receiver.handle, "Account");
             Account senderAccount = API.shared.getEntityData(sender, "Account");
-            var playerveh = VehicleManager.GetVehFromNetHandle(API.getPlayerVehicle(receiver)).Id;
+            var playerveh = VehicleManager.GetVehFromNetHandle(API.getPlayerVehicle(receiver))?.Id.ToString() ?? "None";
 
             API.sendChatMessageToPlayer(sender, "==============================================");
             API.sendChatMessageToPlayer(sender, "Player statistics for " + character.CharacterName);
