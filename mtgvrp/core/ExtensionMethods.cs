@@ -16,13 +16,13 @@ namespace mtgvrp.core
         {
             if (!API.shared.hasEntityData(player, "Character")) return null;
 
-            return (Character)player.GetCharacter();
+            return (Character) player.getData("Character");
         }
         public static Account GetAccount(this Client player)
         {
             if (!API.shared.hasEntityData(player, "Account")) return null;
 
-            return (Account)player.GetAccount();
+            return (Account)player.getData("Account");
         }
 
         public static vehicle_manager.Vehicle GetVehicle(this NetHandle veh)
