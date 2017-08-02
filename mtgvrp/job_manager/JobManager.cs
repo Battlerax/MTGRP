@@ -51,7 +51,7 @@ namespace mtgvrp.job_manager
         {
             if (eventName == "finish_job_zone_create")
             {
-                Account account = API.getEntityData(player.handle, "Account");
+                Account account = player.GetAccount();
                 if(account.AdminLevel < 4) { return;}
 
                 Job job = API.getEntityData(player.handle, "JOB_ZONE_CREATE");
@@ -144,7 +144,7 @@ namespace mtgvrp.job_manager
         [Command("jobtypes"), Help(HelpManager.CommandGroups.AdminLevel5, "View all available jobs.")]
         public void jobtypes_cmd(Client player)
         {
-            Account account = API.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
             if (account.AdminLevel < 4)
                 return;
 
@@ -159,7 +159,7 @@ namespace mtgvrp.job_manager
         [Command("createjob", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel5, "Creates a job in your position.", "The job type", "Name of the job")]
         public void createjob_cmd(Client player, JobTypes type, string name)
         {
-            Account account = API.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
             if (account.AdminLevel < 4)
                 return;
 

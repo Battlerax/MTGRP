@@ -12,6 +12,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Timers;
 using GrandTheftMultiplayer.Server.API;
 using GrandTheftMultiplayer.Server.Elements;
@@ -170,7 +171,7 @@ namespace mtgvrp.vehicle_manager
             API.shared.setBlipTransparency(Blip, 100);
 
             //Set owner detials.
-            OwnerClient = PlayerManager.ParseClient(OwnerId.ToString());
+            OwnerClient = PlayerManager.Players.SingleOrDefault(x => x.Id == OwnerId)?.Client;
             IsSpawned = true;
 
             if (OwnerId == 0 && GroupId == 0)

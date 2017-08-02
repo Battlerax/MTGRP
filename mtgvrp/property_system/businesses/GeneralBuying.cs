@@ -31,7 +31,7 @@ namespace mtgvrp.property_system.businesses
         private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
         {
 
-            Character character = API.getEntityData(sender, "Character");
+            Character character = sender.GetCharacter();
             if (eventName == "property_exitbuy")
             {
                 API.freezePlayer(sender, false);

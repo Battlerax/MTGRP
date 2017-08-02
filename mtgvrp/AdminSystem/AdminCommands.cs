@@ -41,7 +41,7 @@ namespace mtgvrp.AdminSystem
             switch (eventId)
             {
                 case "OnRequestSubmitted":
-                    Character character = API.getEntityData(player.handle, "Character");
+                    Character character = player.GetCharacter();
                     int playerid = PlayerManager.GetPlayerId(character);
                     AdminReports.InsertReport(3, player.nametag, (string)arguments[0]);
                     SendtoAllAdmins("~g~[REPORT]~w~ " + PlayerManager.GetName(player) + " (ID:" + playerid + "): " + (string)arguments[0]);
@@ -51,7 +51,7 @@ namespace mtgvrp.AdminSystem
                     break;
 
                 case "OnReportMade":
-                    Character senderchar = API.getEntityData(player.handle, "Character");
+                    Character senderchar = player.GetCharacter();
                     int senderid = PlayerManager.GetPlayerId(senderchar);
                     string id = (string)arguments[1];
                     var receiver = PlayerManager.ParseClient(id);
@@ -105,7 +105,7 @@ namespace mtgvrp.AdminSystem
              new[] { "The player", "The new passsword."})]
         public void resetpassword_cmd(Client player, string accountname, string newpass)
         {
-            Account account = API.getEntityData(player, "Account");
+            Account account = player.GetAccount();
 
             if (account.AdminLevel < 4)
                 return;
@@ -148,7 +148,7 @@ namespace mtgvrp.AdminSystem
                 return;
             }
 
-            Account account = API.getEntityData(player, "Account");
+            Account account = player.GetAccount();
 
             var salt = new byte[32];
             LoginManager.Randomizer.GetBytes(salt);
@@ -199,7 +199,7 @@ namespace mtgvrp.AdminSystem
         [Command("resetcharacterjob"), Help(HelpManager.CommandGroups.AdminLevel5, "Used to reset a player's job.", new[] { "The target player"})]
         public void resetcharacterjob_cmd(Client player, string target)
         {
-            Account account = API.getEntityData(player, "Account");
+            Account account = player.GetAccount();
 
             if (account.AdminLevel < 5)
                 return;
@@ -283,10 +283,10 @@ namespace mtgvrp.AdminSystem
         public void setrank_cmd(Client player, string id, int level)
         {
             var receiver = PlayerManager.ParseClient(id);
-            Account account = API.shared.getEntityData(player.handle, "Account");
-            Account receiverAccount = API.shared.getEntityData(receiver.handle, "Account");
-            Character character = API.shared.getEntityData(player.handle, "Character");
-            Character receiverCharacter = API.shared.getEntityData(receiver.handle, "Character");
+            Account account = player.GetAccount();
+            Account receiverAccount = receiver.GetAccount();
+            Character character = player.GetCharacter();
+            Character receiverCharacter = receiver.GetCharacter();
 
             if (account.AdminLevel < 7)
                 return;
@@ -363,7 +363,7 @@ namespace mtgvrp.AdminSystem
         [Command("gotopos"), Help(HelpManager.CommandGroups.AdminLevel2, "Teleports you to the given coordinates", new[] { "X coordinate", "Y coordinate", "Z coordinate" })]
         public void gotopos_cmd(Client player, double x, double y, double z)
         {
-            Account account = API.shared.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
             if (account.AdminLevel < 2)
                 return;
 
@@ -378,8 +378,8 @@ namespace mtgvrp.AdminSystem
         public static void sendback_cmd(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
-            Account account = API.shared.getEntityData(player.handle, "Account");
-            Character receiverCharacter = API.shared.getEntityData(receiver.handle, "Character");
+            Account account = player.GetAccount();
+            Character receiverCharacter = receiver.GetCharacter();
 
             if (account.AdminLevel < 2)
                 return;
@@ -402,8 +402,8 @@ namespace mtgvrp.AdminSystem
         public static void get_cmd(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
-            Account account = API.shared.getEntityData(player.handle, "Account");
-            Character receiverCharacter = API.shared.getEntityData(receiver.handle, "Character");
+            Account account = player.GetAccount();
+            Character receiverCharacter = receiver.GetCharacter();
 
             if (account.AdminLevel < 2)
                 return;
@@ -427,7 +427,7 @@ namespace mtgvrp.AdminSystem
         public void adminwarp_cmd(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
-            Account account = API.shared.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
 
             if (account.AdminLevel < 2)
                 return;
@@ -449,7 +449,7 @@ namespace mtgvrp.AdminSystem
         public static void goto_cmd(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
-            Account account = API.shared.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
 
             if (account.AdminLevel < 2)
                 return;
@@ -470,7 +470,7 @@ namespace mtgvrp.AdminSystem
         public void agiveweapon_cmd(Client player, string id, WeaponHash weaponHash)
         {
             var receiver = PlayerManager.ParseClient(id);
-            Account account = API.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
 
             if (account.AdminLevel < 3)
                 return;
@@ -491,7 +491,7 @@ namespace mtgvrp.AdminSystem
         public void sethealth_cmd(Client player, string id, int health)
         {
             var receiver = PlayerManager.ParseClient(id);
-            Account account = API.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
 
             if (account.AdminLevel < 3)
                 return;
@@ -511,7 +511,7 @@ namespace mtgvrp.AdminSystem
         public void setarmour_cmd(Client player, string id, int armour)
         {
             var receiver = PlayerManager.ParseClient(id);
-            Account account = API.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
 
             if (account.AdminLevel < 3)
                 return;
@@ -559,7 +559,7 @@ namespace mtgvrp.AdminSystem
         public static void spec_cmd(Client player, string id)
         {
             var target = PlayerManager.ParseClient(id);
-            Account account = API.shared.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
 
             if (account.AdminLevel < 2)
                 return;
@@ -583,7 +583,7 @@ namespace mtgvrp.AdminSystem
         [Command("specoff"), Help(HelpManager.CommandGroups.AdminLevel2, "Stop spectating.", null)]
         public void specoff_cmd(Client player)
         {
-            Account account = API.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
 
             if (account.AdminLevel < 2)
                 return;
@@ -607,7 +607,7 @@ namespace mtgvrp.AdminSystem
         public void slap_cmd(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
-            Account account = API.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
 
             if (account.AdminLevel < 2)
                 return;
@@ -629,7 +629,7 @@ namespace mtgvrp.AdminSystem
         public void freeze_cmd(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
-            Account account = API.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
 
             if (account.AdminLevel < 2)
                 return;
@@ -648,7 +648,7 @@ namespace mtgvrp.AdminSystem
         [Command("gotowaypoint"), Help(HelpManager.CommandGroups.AdminLevel2, "Teleports you to your waypoint.", null)]
         public void gotowaypoint_cmd(Client player)
         {
-            Account account = API.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
 
             if (account.AdminLevel < 2)
                 return;
@@ -662,7 +662,7 @@ namespace mtgvrp.AdminSystem
         public void unfreeze_cmd(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
-            Account account = API.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
 
             if (account.AdminLevel < 2)
                 return;
@@ -681,7 +681,7 @@ namespace mtgvrp.AdminSystem
         [Command("quitadmin"), Help(HelpManager.CommandGroups.AdminLevel1, "This will remove you from the team, thank you for helping out the team. o7", null)]
         public void QuitAdmin_cmd(Client player)
         {
-            Account account = API.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
 
             if (account.AdminLevel < 0)
                 return;
@@ -696,8 +696,8 @@ namespace mtgvrp.AdminSystem
         [Command("setmymoney"), Help(HelpManager.CommandGroups.AdminLevel7, "Sets your money to the specificed amount.", new[] { "The amount of money you want." })]
         public void setmymoney_cmd(Client player, int money)
         {
-            Account account = API.getEntityData(player.handle, "Account");
-            Character character = API.getEntityData(player.handle, "Character");
+            Account account = player.GetAccount();
+            Character character = player.GetCharacter();
 
             if (account.AdminLevel <= 6)
                 return;
@@ -711,7 +711,7 @@ namespace mtgvrp.AdminSystem
         [Command("showplayercars"), Help(HelpManager.CommandGroups.AdminLevel2, "Give you a list of the vehicles a player owns.", new[] { "Id: The id of player." })]
         public void showplayercars_cmd(Client player, string id)
         {
-            Account account = API.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
             if (account.AdminLevel < 2)
                 return;
 
@@ -722,7 +722,7 @@ namespace mtgvrp.AdminSystem
                 return;
             }
 
-            Character character = API.getEntityData(receiver.handle, "Character");
+            Character character = receiver.GetCharacter();
             API.sendChatMessageToPlayer(player, "----------------------------------------------");
             API.sendChatMessageToPlayer(player, $"Vehicles Owned By {character.CharacterName}");
             foreach (var carid in character.OwnedVehicles)
@@ -740,7 +740,7 @@ namespace mtgvrp.AdminSystem
         [Command("noobs"), Help(HelpManager.CommandGroups.AdminLevel2, "List of players with less than 4 playing hours.", null)]
         public void noobs_cmd(Client player)
         {
-            Account account = API.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
             if (account.AdminLevel < 2)
                 return;
 
@@ -759,7 +759,7 @@ namespace mtgvrp.AdminSystem
         [Command("gotocar"), Help(HelpManager.CommandGroups.AdminLevel2, "Teleport to a vehicle.", new[] { "Vehicle ID" })]
         public void gotocar_cmd(Client player, int vID)
         {
-            Account account = API.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
             if (account.AdminLevel < 2)
                 return;
 
@@ -786,7 +786,7 @@ namespace mtgvrp.AdminSystem
         [Command("getcar"), Help(HelpManager.CommandGroups.AdminLevel2, "Teleports a vehicle to you.", new[] { "Vehicle ID" })]
         public void getplayercar_cmd(Client player, int vID)
         {
-            Account account = API.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
             if (account.AdminLevel < 2)
                 return;
 
@@ -814,8 +814,8 @@ namespace mtgvrp.AdminSystem
         public void setadminname_cmd(Client player, string id, string name)
         {
             var receiver = PlayerManager.ParseClient(id);
-            Account account = API.getEntityData(player.handle, "Account");
-            Account receiverAccount = API.getEntityData(receiver.handle, "Account");
+            Account account = player.GetAccount();
+            Account receiverAccount = receiver.GetAccount();
             if (account.AdminLevel < 6)
                 return;
 
@@ -841,7 +841,7 @@ namespace mtgvrp.AdminSystem
                 if (c == null)
                     continue;
 
-                Account receiverAccount = API.getEntityData(c.handle, "Account");
+                Account receiverAccount = c.GetAccount();
 
                 if (receiverAccount?.AdminLevel > 0)
                 {
@@ -860,12 +860,12 @@ namespace mtgvrp.AdminSystem
         [Command("adminduty"), Help(HelpManager.CommandGroups.AdminLevel1, "Can go on and off of admin duty with this.", null)]
         public void adminduty_cmd(Client player)
         {
-            Account account = API.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
 
             if (account.AdminLevel < 1)
                 return;
 
-            Character character = API.getEntityData(player, "Character");
+            Character character = player.GetCharacter();
 
             if (account.AdminDuty == false)
             {
@@ -889,7 +889,7 @@ namespace mtgvrp.AdminSystem
         [Command("whereami"), Help(HelpManager.CommandGroups.General, "Give you your current location in X,Y,Z format.", null)]
         public void GetPlayerLocation(Client player)
         {
-            Account account = API.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
             if (account.AdminLevel == 0)
             {
             }
@@ -916,7 +916,7 @@ namespace mtgvrp.AdminSystem
         [Command("report", Alias = "re", GreedyArg = true), Help(HelpManager.CommandGroups.General, "Use this to make an ingame report for an admin to sort or to speak to an admin about an issue.", null)]
         public void report_cmd(Client player)
         {
-            Character character = API.getEntityData(player, "Character");
+            Character character = player.GetCharacter();
 
             if (character.ReportMuteExpires > DateTime.Now)
             {
@@ -940,7 +940,7 @@ namespace mtgvrp.AdminSystem
         [Command("reports", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel2, "View all current ingame reports made.", null)]
         public void reports_cmd(Client player)
         {
-            Account account = API.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
             if (account.AdminLevel < 2)
                 return;
 
@@ -966,9 +966,9 @@ namespace mtgvrp.AdminSystem
         public void acceptreport_cmd(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
-            Account account = API.getEntityData(player.handle, "Account");
-            Character character = API.getEntityData(player.handle, "Character");
-            Character receivercharacter = API.getEntityData(receiver, "Character");
+            Account account = player.GetAccount();
+            Character character = player.GetCharacter();
+            Character receivercharacter = receiver.GetCharacter();
 
             if (account.AdminLevel < 2)
                 return;
@@ -1007,8 +1007,8 @@ namespace mtgvrp.AdminSystem
         public void trashreport_cmd(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
-            Account account = API.getEntityData(player.handle, "Account");
-            Character receivercharacter = API.getEntityData(receiver, "Character");
+            Account account = player.GetAccount();
+            Character receivercharacter = receiver.GetCharacter();
 
             if (account.AdminLevel < 1)
                 return;
@@ -1046,9 +1046,9 @@ namespace mtgvrp.AdminSystem
         public void maccept_cmd(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
-            Account account = API.getEntityData(player.handle, "Account");
-            Character character = API.getEntityData(player.handle, "Character");
-            Character receivercharacter = API.getEntityData(receiver, "Character");
+            Account account = player.GetAccount();
+            Character character = player.GetCharacter();
+            Character receivercharacter = receiver.GetCharacter();
 
             if (account.AdminLevel < 1)
                 return;
@@ -1097,8 +1097,8 @@ namespace mtgvrp.AdminSystem
         [Command("mfinish", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel1, "When you're done with the player hit em with this.", null)]
         public void mfinish_cmd(Client player)
         {
-            Account account = API.getEntityData(player.handle, "Account");
-            Character character = API.getEntityData(player.handle, "Character");
+            Account account = player.GetAccount();
+            Character character = player.GetCharacter();
 
             if (account.AdminLevel < 1)
                 return;
@@ -1121,7 +1121,7 @@ namespace mtgvrp.AdminSystem
         [Command("ask", GreedyArg = true), Help(HelpManager.CommandGroups.General, "To ask a mod/admin a question. Also useful for a checkpoint.", new[] { "Question for moderators" })]
         public void ask_cmd(Client player, string message)
         {
-            Character character = API.getEntityData(player, "Character");
+            Character character = player.GetCharacter();
 
             if (character.ReportMuteExpires > DateTime.Now)
             {
@@ -1146,8 +1146,8 @@ namespace mtgvrp.AdminSystem
         public void nmute_cmd(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
-            Account account = API.getEntityData(player.handle, "Account");
-            Character receivercharacter = API.getEntityData(receiver, "Character");
+            Account account = player.GetAccount();
+            Character receivercharacter = receiver.GetCharacter();
 
             if (account.AdminLevel < 1)
                 return;
@@ -1183,8 +1183,8 @@ namespace mtgvrp.AdminSystem
         public void vmute_cmd(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
-            Account account = API.getEntityData(player.handle, "Account");
-            Character receivercharacter = API.getEntityData(receiver, "Character");
+            Account account = player.GetAccount();
+            Character receivercharacter = receiver.GetCharacter();
 
             if (account.AdminLevel < 1)
                 return;
@@ -1220,8 +1220,8 @@ namespace mtgvrp.AdminSystem
         public void reportmute_cmd(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
-            Account account = API.getEntityData(player.handle, "Account");
-            Character receivercharacter = API.getEntityData(receiver, "Character");
+            Account account = player.GetAccount();
+            Character receivercharacter = receiver.GetCharacter();
 
             if (account.AdminLevel < 1)
                 return;
@@ -1257,7 +1257,7 @@ namespace mtgvrp.AdminSystem
         [Command("mlist", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel1, "Used to list the active moderator reques.", null)]
         public void asklist_cmd(Client player)
         {
-            Account account = API.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
             if (account.AdminLevel < 1)
                 return;
 
@@ -1276,7 +1276,7 @@ namespace mtgvrp.AdminSystem
         [Command("clearreports", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel3, "Clears all of the curren reports and asks", null)]
         public void clearreports_cmd(Client player)
         {
-            Account account = API.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
             if (account.AdminLevel < 3)
                 return;
 
@@ -1291,7 +1291,7 @@ namespace mtgvrp.AdminSystem
         [Command("prison", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel2, "Places a player into prison for the specificed amount of time.", new [] {"ID of the target player", "Time in minutes.", "Reason for prison"})]
         public void prison_cmd(Client player, string id, string time, string reason)
         {
-            Account account = API.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
             if (account.AdminLevel < 2)
                 return;
 
@@ -1312,7 +1312,7 @@ namespace mtgvrp.AdminSystem
         {
             var receiver = PlayerManager.ParseClient(id);
 
-            Account account = API.shared.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
             if (account.AdminLevel < 2)
                 return;
 
@@ -1326,8 +1326,8 @@ namespace mtgvrp.AdminSystem
         [Command("remotewarn", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel3, "Applies a player warning to an offline player", new[] { "Account name of the target player", "The warning reason" })]
         public static void remotewarn_cmd(Client player, string accountname, string reason)
         {
-            Account account = API.shared.getEntityData(player.handle, "Account");
-            Character character = API.shared.getEntityData(player.handle, "Character");
+            Account account = player.GetAccount();
+            Character character = player.GetCharacter();
 
             if (account.AdminLevel < 3)
                 return;
@@ -1389,7 +1389,7 @@ namespace mtgvrp.AdminSystem
         {
             var filter = Builders<Account>.Filter.Eq("AccountName", accountname);
             var foundAccount = DatabaseManager.AccountTable.Find(filter).ToList();
-            Account account = API.shared.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
 
             if (account.AdminLevel < 3)
                 return;
@@ -1414,7 +1414,7 @@ namespace mtgvrp.AdminSystem
         [Command("getaccountname", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel2, "Gets the account name of a character", new[] { "Character name for the account" })]
         public void getaccountname_cmd(Client player, string charactername)
         {
-            Account account = API.shared.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
 
             if (account.AdminLevel < 3)
                 return;
@@ -1447,7 +1447,7 @@ namespace mtgvrp.AdminSystem
         [Command("changename", GreedyArg = false), Help(HelpManager.CommandGroups.AdminLevel2, "Change a player's character name.", new[] { "ID of the target player", "New name" })]
         public static void forcechangename_cmd(Client player, string id, string name)
         {
-            Account account = API.shared.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
 
             if (account.AdminLevel < 2)
                 return;
@@ -1460,7 +1460,7 @@ namespace mtgvrp.AdminSystem
                 return;
             }
 
-            Character receiverCharacter = API.shared.getEntityData(receiver, "Character");
+            Character receiverCharacter = receiver.GetCharacter();
 
             receiverCharacter.CharacterName = name;
             receiverCharacter.Save();
@@ -1472,7 +1472,7 @@ namespace mtgvrp.AdminSystem
         {
             var filter = Builders<Account>.Filter.Eq("AccountName", accountname);
             var foundAccount = DatabaseManager.AccountTable.Find(filter).ToList();
-            Account account = API.shared.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
 
             if (account.AdminLevel < 3)
                 return;
@@ -1500,7 +1500,7 @@ namespace mtgvrp.AdminSystem
         {
             var filter = Builders<Account>.Filter.Eq("AccountName", accountname);
             var foundAccount = DatabaseManager.AccountTable.Find(filter).ToList();
-            Account account = API.shared.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
 
             if (account.AdminLevel < 3)
                 return;
@@ -1524,7 +1524,7 @@ namespace mtgvrp.AdminSystem
         [Command("banplayer", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel2, "Bans a player from the server", new[] { "ID of the target player", "Ban reason" })]
         public static void ban_cmd(Client player, string id, string reason)
         {
-            Account account = API.shared.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
 
             if (account.AdminLevel < 2)
                 return;
@@ -1542,7 +1542,7 @@ namespace mtgvrp.AdminSystem
         [Command("warn", GreedyArg = false), Help(HelpManager.CommandGroups.AdminLevel2, "Applies a player warning to a player", new[] { "ID of the target player", "The reason for the warning"})]
         public static void warn_cmd(Client player, string id, string reason)
         {
-            Account account = API.shared.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
 
             if (account.AdminLevel < 2)
                 return;
@@ -1554,9 +1554,9 @@ namespace mtgvrp.AdminSystem
                 API.shared.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid target.");
                 return;
             }
-            Account receiverAccount = API.shared.getEntityData(receiver, "Account");
-            Character character = API.shared.getEntityData(player.handle, "Character");
-            Character receiverCharacter = API.shared.getEntityData(receiver, "Character");
+            Account receiverAccount = receiver.GetAccount();
+            Character character = player.GetCharacter();
+            Character receiverCharacter = receiver.GetCharacter();
 
             var playerWarn = new PlayerWarns(receiverAccount.AccountName, account.AccountName, reason);
             receiverAccount.PlayerWarns.Add(playerWarn);
@@ -1584,14 +1584,14 @@ namespace mtgvrp.AdminSystem
         {
             var receiver = PlayerManager.ParseClient(id);
 
-            Account account = API.shared.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
 
             if (account.AdminLevel < 3)
                 return;
 
-            Account receiverAccount = API.shared.getEntityData(receiver.handle, "Account");
-            Character character = API.shared.getEntityData(player.handle, "Character");
-            Character receiverCharacter = API.shared.getEntityData(receiver.handle, "Character");
+            Account receiverAccount = receiver.GetAccount();
+            Character character = player.GetCharacter();
+            Character receiverCharacter = receiver.GetCharacter();
 
             foreach (var w in receiverAccount.PlayerWarns)
             {
@@ -1609,7 +1609,7 @@ namespace mtgvrp.AdminSystem
         [Command("remotesetadminlevel"), Help(HelpManager.CommandGroups.AdminLevel2, "Change an offline player's admin level.", new[] { "Account name of the player" })]
         public void remotesetadminlevel_cmd(Client player, string accountname, int level)
         {
-            Account account = API.shared.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
 
             if (account.AdminLevel < 7)
                 return;
@@ -1642,7 +1642,7 @@ namespace mtgvrp.AdminSystem
         [Command("remoteplayerwarns"), Help(HelpManager.CommandGroups.AdminLevel2, "View an offline player's warnings", new[] { "Account name of the player" })]
         public static void remoteplayerwarns_cmd(Client player, string accountname)
         {
-            Account account = API.shared.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
 
             if (account.AdminLevel < 2)
                 return;
@@ -1677,7 +1677,7 @@ namespace mtgvrp.AdminSystem
         {
             var receiver = PlayerManager.ParseClient(id);
 
-            Account account = API.shared.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
 
             if (account.AdminLevel < 2 && id != null)
             {
@@ -1697,7 +1697,7 @@ namespace mtgvrp.AdminSystem
         [Command("respawnveh", GreedyArg = false), Help(HelpManager.CommandGroups.AdminLevel4, "Respawns a vehicle.", "Id of vehicle to respawn. (OPTIONAL)")]
         public void respawnveh_cmd(Client player, int id = 0)
         {
-            Account account = API.shared.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
 
             if (account.AdminLevel < 3)
             {
@@ -1737,10 +1737,10 @@ namespace mtgvrp.AdminSystem
         public static void ShowWarns(Client player, Client receiver = null)
         {
 
-            Account account = API.shared.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
             if (receiver != null)
             {
-                account = API.shared.getEntityData(receiver.handle, "Account");
+                account = receiver.GetAccount();
             }
 
 
@@ -1759,8 +1759,8 @@ namespace mtgvrp.AdminSystem
 
         public static void AddTempBanLevel(Client player)
         {
-            Character character = API.shared.getEntityData(player.handle, "Character");
-            Account account = API.shared.getEntityData(player.handle, "Account");
+            Character character = player.GetCharacter();
+            Account account = player.GetAccount();
 
             account.TempbanLevel += 1;
             if (account.TempbanLevel >= 3)
@@ -1771,8 +1771,8 @@ namespace mtgvrp.AdminSystem
 
         public static void TempBanPlayer(Client player)
         {
-            Character character = API.shared.getEntityData(player.handle, "Character");
-            Account account = API.shared.getEntityData(player.handle, "Account");
+            Character character = player.GetCharacter();
+            Account account = player.GetAccount();
 
             if(account.TempbanLevel == 1)
             {
@@ -1798,7 +1798,7 @@ namespace mtgvrp.AdminSystem
 
         public static void BanPlayer(Client player, string reason)
         {
-            Account account = API.shared.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
 
             account.BanReason = reason;
             account.IsBanned = true;
@@ -1809,7 +1809,7 @@ namespace mtgvrp.AdminSystem
 
         public static void UnbanPlayer(Client player)
         {
-            Account account = API.shared.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
 
             account.IsBanned = false;
         }
@@ -1824,8 +1824,8 @@ namespace mtgvrp.AdminSystem
                 return;
             }
 
-            Account account = API.getEntityData(player.handle, "Account");
-            Account receiverAccount = API.getEntityData(receiver.handle, "Account");
+            Account account = player.GetAccount();
+            Account receiverAccount = receiver.GetAccount();
 
             if (account.AdminLevel < 3)
             {
@@ -1849,8 +1849,8 @@ namespace mtgvrp.AdminSystem
                 return;
             }
 
-            Account account = API.getEntityData(player.handle, "Account");
-            Account receiverAccount = API.getEntityData(receiver.handle, "Account");
+            Account account = player.GetAccount();
+            Account receiverAccount = receiver.GetAccount();
 
             if (account.AdminLevel < 3)
             {
@@ -1888,7 +1888,7 @@ namespace mtgvrp.AdminSystem
                     if (p == null)
                         continue;
 
-                    Account paccount = API.getEntityData(p.handle, "Account");
+                    Account paccount = p.GetAccount();
 
                     if (paccount.VipLevel > 0) { p.sendChatMessage(receiver.GetCharacter().CharacterName + " has become a level " + level + " ~y~VIP~y~!"); }
                 }
@@ -1905,8 +1905,8 @@ namespace mtgvrp.AdminSystem
                 return;
             }
 
-            Account account = API.getEntityData(player.handle, "Account");
-            Account receiverAccount = API.getEntityData(receiver.handle, "Account");
+            Account account = player.GetAccount();
+            Account receiverAccount = receiver.GetAccount();
 
             if (account.AdminLevel < 3)
             {
@@ -1925,7 +1925,7 @@ namespace mtgvrp.AdminSystem
         [Command("closestveh"), Help(HelpManager.CommandGroups.AdminLevel3, "Sets you into the closest vehicle.")]
         public void closestveh_cmd(Client player)
         {
-            Account account = API.shared.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
 
             if (account.AdminLevel < 2)
                 return;
@@ -1942,7 +1942,7 @@ namespace mtgvrp.AdminSystem
 
         public void startReportTimer(Client player)
         {
-            Character senderchar = API.getEntityData(player.handle, "Character");
+            Character senderchar = player.GetCharacter();
             senderchar.ReportCreated = true;
             senderchar.ReportTimer = new Timer { Interval = 15000 };
             senderchar.ReportTimer.Elapsed += delegate { ReportTimer(player); };
@@ -1956,7 +1956,7 @@ namespace mtgvrp.AdminSystem
                 if (c == null)
                     continue;
 
-                Account receiverAccount = API.shared.getEntityData(c.handle, "Account");
+                Account receiverAccount = c.GetAccount();
 
                 if (receiverAccount == null)
                     return;
@@ -1970,7 +1970,7 @@ namespace mtgvrp.AdminSystem
 
         public void ReportTimer(Client player)
         {
-            Character character = API.getEntityData(player, "Character");
+            Character character = player.GetCharacter();
 
             character.ReportCreated = false;
             character.ReportTimer.Stop();

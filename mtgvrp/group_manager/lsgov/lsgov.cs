@@ -20,8 +20,8 @@ namespace mtgvrp.group_manager.lsgov
         [Command("setvipbonus"), Help(HelpManager.CommandGroups.Gov, "Set the VIP bonus for paychecks.", new[] { "The VIP level being changed.", "VIP bonus percentage"})]
         public void setvipbonus_cmd(Client player, string viplevel, string percentage)
         {
-            Account account = API.shared.getEntityData(player.handle, "Account");
-            Character character = API.shared.getEntityData(player, "Character");
+            Account account = player.GetAccount();
+            Character character = player.GetCharacter();
 
             if (account.AdminLevel < 6) { return; }
 
@@ -47,7 +47,7 @@ namespace mtgvrp.group_manager.lsgov
         public void settax_cmd(Client player, string percentage)
         {
 
-            Character character = API.shared.getEntityData(player, "Character");
+            Character character = player.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov && character.GroupRank < 7) { return; }
             Settings.Default.taxationamount = int.Parse(percentage);
@@ -57,7 +57,7 @@ namespace mtgvrp.group_manager.lsgov
         [Command("setbasepaycheck", GreedyArg = true), Help(HelpManager.CommandGroups.Gov, "Set the base paycheck.", new[] { "Base paycheck amount." })]
         public void setbasepaycheck_cmd(Client player, string amount)
         {
-            Character character = API.shared.getEntityData(player, "Character");
+            Character character = player.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov && character.GroupRank < 7) { return; }
             Settings.Default.basepaycheck = int.Parse(amount);
@@ -68,7 +68,7 @@ namespace mtgvrp.group_manager.lsgov
         [Command("gov", GreedyArg = true), Help(HelpManager.CommandGroups.Gov, "Speak publically to everyone as the government.", new[] { "Message to be sent" })]
         public void gov_cmd(Client player, string text)
         {
-            Character character = API.shared.getEntityData(player, "Character");
+            Character character = player.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov && character.Group.CommandType != Group.CommandTypeLspd || character.GroupRank < 7) { return; }
 
@@ -81,7 +81,7 @@ namespace mtgvrp.group_manager.lsgov
         [Command("managebudget"), Help(HelpManager.CommandGroups.Gov, "Manage the government budget (factions, stores, etc.)", null)]
         public void managebudget_cmd(Client player)
         {
-            Character character = API.getEntityData(player, "Character");
+            Character character = player.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov || character.GroupRank < 7) { return; }
 
@@ -103,8 +103,8 @@ namespace mtgvrp.group_manager.lsgov
         [Command("setfunding"), Help(HelpManager.CommandGroups.Gov, "Set the funding for a specific group.", new[] { "Target group ID", "Percentage of funds being given." })]
         public void setfunding_cmd(Client player, string groupid, string percentage)
         {
-            Character character = API.getEntityData(player, "Character");
-            Account account = API.getEntityData(player, "Account");
+            Character character = player.GetCharacter();
+            Account account = player.GetAccount();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov || character.GroupRank < 7) { return; }
 
@@ -132,7 +132,7 @@ namespace mtgvrp.group_manager.lsgov
         [Command("setgovbalance"), Help(HelpManager.CommandGroups.Gov, "Set the government balance (Admin only)", new[] { "The amount being set." })]
         public void setgovbalance_cmd(Client player, string amount)
         {
-            Account account = API.getEntityData(player, "Account");
+            Account account = player.GetAccount();
 
             if (account.AdminLevel < 6) { return; }
 
@@ -144,7 +144,7 @@ namespace mtgvrp.group_manager.lsgov
         [Command("deploypodium"), Help(HelpManager.CommandGroups.Gov, "Deploy a podium outside the city hall.", null)]
         public void deploypodium_cmd(Client player)
         {
-            Character character = API.shared.getEntityData(player, "Character");
+            Character character = player.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov && character.Group.CommandType != Group.CommandTypeLspd || character.GroupRank < 7) { return; }
 
@@ -154,7 +154,7 @@ namespace mtgvrp.group_manager.lsgov
         [Command("pickuppodium"), Help(HelpManager.CommandGroups.Gov, "Remove the podium from outside the city hall.", null)]
         public void pickuppodium_cmd(Client player)
         {
-            Character character = API.shared.getEntityData(player, "Character");
+            Character character = player.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov && character.Group.CommandType != Group.CommandTypeLspd || character.GroupRank < 7) { return; }
 

@@ -62,7 +62,7 @@ namespace mtgvrp.group_manager.lspd
             {
                 case "LSPD_Menu_Change_Clothes":
                     {
-                        Character c = API.getEntityData(player.handle, "Character");
+                        Character c = player.GetCharacter();
                         
                         if (c.Group.CommandType != Group.CommandTypeLspd)
                         {
@@ -79,7 +79,7 @@ namespace mtgvrp.group_manager.lspd
                     }
                 case "LSPD_Menu_Toggle_Duty":
                     {
-                        Character c = API.getEntityData(player.handle, "Character");
+                        Character c = player.GetCharacter();
 
                         if (c.Group.CommandType != Group.CommandTypeLspd)
                         {
@@ -95,7 +95,7 @@ namespace mtgvrp.group_manager.lspd
                     }
                 case "LSPD_Menu_Equip_Standard_Equipment":
                     {
-                        Character c = API.getEntityData(player.handle, "Character");
+                        Character c = player.GetCharacter();
 
                         if (c.Group.CommandType != Group.CommandTypeLspd)
                         {
@@ -109,7 +109,7 @@ namespace mtgvrp.group_manager.lspd
                     }
                 case "LSPD_Menu_Equip_SWAT_Equipment":
                     {
-                        Character c = API.getEntityData(player.handle, "Character");
+                        Character c = player.GetCharacter();
 
                         if (c.Group.CommandType != Group.CommandTypeLspd)
                         {
@@ -133,8 +133,8 @@ namespace mtgvrp.group_manager.lspd
                 return;
             }
 
-            Character character = API.getEntityData(player.handle, "Character");
-            Character receiverCharacter = API.getEntityData(receiver.handle, "Character");
+            Character character = player.GetCharacter();
+            Character receiverCharacter = receiver.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
@@ -159,8 +159,8 @@ namespace mtgvrp.group_manager.lspd
                 return;
             }
 
-            Character character = API.getEntityData(player.handle, "Character");
-            Character receiverCharacter = API.getEntityData(receiver.handle, "Character");
+            Character character = player.GetCharacter();
+            Character receiverCharacter = receiver.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
@@ -192,8 +192,8 @@ namespace mtgvrp.group_manager.lspd
                 return;
             }
 
-            Character character = API.getEntityData(player.handle, "Character");
-            Character receiverCharacter = API.getEntityData(receiver.handle, "Character");
+            Character character = player.GetCharacter();
+            Character receiverCharacter = receiver.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
@@ -219,7 +219,7 @@ namespace mtgvrp.group_manager.lspd
         [Command("listcrimes"), Help(HelpManager.CommandGroups.LSPD, "List the available crimes and their crime ID", null)]
         public void listcrimes_cmd(Client player)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
@@ -241,7 +241,7 @@ namespace mtgvrp.group_manager.lspd
         [Command("createcrime", GreedyArg=true), Help(HelpManager.CommandGroups.LSPD, "Create a crime and add it to the crime list.", "The type of the crime", "The jail time in seconds", "The fine amount", "Crime name")]
         public void createcrime_cmd(Client player, string type, int jailTime, int fine, string crimeName)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
@@ -263,7 +263,7 @@ namespace mtgvrp.group_manager.lspd
         [Command("editcrime"), Help(HelpManager.CommandGroups.LSPD, "Edit a crime.", new[] { "Crime ID", "The crime type", "The crime name", "The jail time", "The fine for this crime" })]
         public void editcrime_cmd(Client player, int id, string type, string crimeName, int jailTime, int fine)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
@@ -286,7 +286,7 @@ namespace mtgvrp.group_manager.lspd
         [Command("deletecrime"), Help(HelpManager.CommandGroups.LSPD, "Delete a crime by its ID.", new[] { "The target crime ID." })]
         public void deletecrime_cmd(Client player, int id)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
@@ -310,7 +310,7 @@ namespace mtgvrp.group_manager.lspd
         [Command("wanted", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Show the wanted list.", null)]
         public void wanted_cmd(Client player)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
                 API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
@@ -343,8 +343,8 @@ namespace mtgvrp.group_manager.lspd
                 return;
             }
 
-            Character character = API.getEntityData(player.handle, "Character");
-            Character receiverCharacter = API.getEntityData(receiver.handle, "Character");
+            Character character = player.GetCharacter();
+            Character receiverCharacter = receiver.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
@@ -414,8 +414,8 @@ namespace mtgvrp.group_manager.lspd
                 return;
             }
 
-            Character character = API.getEntityData(player.handle, "Character");
-            Character receiverCharacter = API.getEntityData(receiver.handle, "Character");
+            Character character = player.GetCharacter();
+            Character receiverCharacter = receiver.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd && player.GetAccount().AdminLevel < 2)
             {
@@ -442,8 +442,8 @@ namespace mtgvrp.group_manager.lspd
         {
             var receiver = PlayerManager.ParseClient(id);
 
-            Character character = API.getEntityData(player.handle, "Character");
-            Character receivercharacter = API.getEntityData(receiver, "Character");
+            Character character = player.GetCharacter();
+            Character receivercharacter = receiver.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
@@ -486,8 +486,8 @@ namespace mtgvrp.group_manager.lspd
         {
             var receiver = PlayerManager.ParseClient(id);
 
-            Character character = API.getEntityData(player.handle, "Character");
-            Character receivercharacter = API.getEntityData(receiver, "Character");
+            Character character = player.GetCharacter();
+            Character receivercharacter = receiver.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
@@ -516,8 +516,8 @@ namespace mtgvrp.group_manager.lspd
         {
             var receiver = PlayerManager.ParseClient(id);
 
-            Character character = API.getEntityData(player.handle, "Character");
-            Character receivercharacter = API.getEntityData(receiver, "Character");
+            Character character = player.GetCharacter();
+            Character receivercharacter = receiver.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
@@ -565,8 +565,8 @@ namespace mtgvrp.group_manager.lspd
         {
             var receiver = PlayerManager.ParseClient(id);
 
-            Character character = API.getEntityData(player.handle, "Character");
-            Character receivercharacter = API.getEntityData(receiver, "Character");
+            Character character = player.GetCharacter();
+            Character receivercharacter = receiver.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
@@ -608,8 +608,8 @@ namespace mtgvrp.group_manager.lspd
                 return;
             }
 
-            Character character = API.getEntityData(player.handle, "Character");
-            Character receivercharacter = API.getEntityData(receiver, "Character");
+            Character character = player.GetCharacter();
+            Character receivercharacter = receiver.GetCharacter();
                        
             if (receiver == player)
             {
@@ -640,7 +640,7 @@ namespace mtgvrp.group_manager.lspd
         [Command("beacon", Alias = "bc", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Deploy a backup beacon.", null)]
         public void backupbeacon_cmd(Client player)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
@@ -662,7 +662,7 @@ namespace mtgvrp.group_manager.lspd
         [Command("acceptbeacon", Alias = "ab", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Accept the recent backup beacon.", null)]
         public void acceptbeacon_cmd(Client player)
         {
-            Character character = API.shared.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
             var beaconCreator = player;
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
@@ -694,7 +694,7 @@ namespace mtgvrp.group_manager.lspd
         public void megaphonetog_cmd(Client player)
         {
             var playerPos = API.getEntityPosition(player);
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (character?.Group == Group.None || character?.Group.CommandType != Group.CommandTypeLspd)
             {
@@ -720,7 +720,7 @@ namespace mtgvrp.group_manager.lspd
         [Command("locker"), Help(HelpManager.CommandGroups.LSPD, "View the locker menu.", null)]
         public void locker_cmd(Client player)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
@@ -748,8 +748,8 @@ namespace mtgvrp.group_manager.lspd
                 return;
             }
 
-            Character character = API.getEntityData(player.handle, "Character");
-            Character receiverCharacter = API.getEntityData(target, "Character");
+            Character character = player.GetCharacter();
+            Character receiverCharacter = target.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
@@ -777,7 +777,7 @@ namespace mtgvrp.group_manager.lspd
         public void unpaidtickets_cmd(Client player, string id = null)
         {
             var target = PlayerManager.ParseClient(id);
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (target == null)
             {
@@ -785,7 +785,7 @@ namespace mtgvrp.group_manager.lspd
                 return;
             }
 
-            Character receiverCharacter = API.getEntityData(target, "Character");
+            Character receiverCharacter = target.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
@@ -799,7 +799,7 @@ namespace mtgvrp.group_manager.lspd
         [Command("acceptcopticket", GreedyArg = true), Help(HelpManager.CommandGroups.General, "Accept the cop ticket.", null)]
         public void ticketaccept_cmd(Client player)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (character.SentTicket == true)
             {
@@ -821,7 +821,7 @@ namespace mtgvrp.group_manager.lspd
         [Command("paycoptickets", GreedyArg = true), Help(HelpManager.CommandGroups.General, "Pay all current cop tickets.", null)]
         public void paytickets_cmd(Client player)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             foreach (Group group in GroupManager.Groups)
             {
@@ -856,7 +856,7 @@ namespace mtgvrp.group_manager.lspd
         [Command("deploy", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Deploy an LSPD object.", new[] { "The target object ID" })]
         public void deploy_cmd(Client player, string objectid)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
@@ -915,7 +915,7 @@ namespace mtgvrp.group_manager.lspd
         [Command("removelastobject", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Remove the last placed object.", null)]
         public void removeobject_cmd(Client player)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
@@ -937,7 +937,7 @@ namespace mtgvrp.group_manager.lspd
         [Command("removeallobjects", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Remove all placed LSPD objects.", null)]
         public void removeallobjects_cmd(Client player)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
@@ -1077,7 +1077,7 @@ namespace mtgvrp.group_manager.lspd
         public void GiveLspdEquipment(Client player, int type = 0)
         {
             WeaponManager.RemoveAllPlayerWeapons(player);
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
             switch (type)
             {
                 case 0:
@@ -1099,7 +1099,7 @@ namespace mtgvrp.group_manager.lspd
 
         public void ResetTicket(Client player)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
             character.SentTicket = false;
             character.TicketTimer.Stop();
         }
@@ -1107,7 +1107,7 @@ namespace mtgvrp.group_manager.lspd
 
         public void ResetBeacon(Client player)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
             character.BeaconSet = false;
             character.BeaconResetTimer.Stop();
         }
@@ -1124,7 +1124,7 @@ namespace mtgvrp.group_manager.lspd
         }
         public static void JailControl(Client player, int seconds)
         {
-            Character character = API.shared.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             int jailOnePlayers = API.shared.getPlayersInRadiusOfPosition(3.7f, JailOne).Count;
             int jailTwoPlayers = API.shared.getPlayersInRadiusOfPosition(3.7f, JailTwo).Count;
@@ -1166,13 +1166,13 @@ namespace mtgvrp.group_manager.lspd
 
         public static void UpdateTimer(Client player)
         {
-            Character character = API.shared.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
             character.JailTimeLeft -= 1000;
         }
 
         public static void SetFree(Client player)
         {
-            Character character = API.shared.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
             if (character.IsJailed == false)
             {
                 return;

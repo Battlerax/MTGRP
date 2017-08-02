@@ -210,7 +210,7 @@ namespace mtgvrp.phone_manager
         [Command("setphonename"), Help(HelpManager.CommandGroups.General, "To change your phone's name from being boring.", new[] { "Name of phone" })]
         public void setphonename_cmd(Client player, string name)
         {
-            Character character = API.shared.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
             var targetitems = InventoryManager.DoesInventoryHaveItem(character, typeof(Phone));
             if (targetitems.Length == 0)
             {
@@ -226,7 +226,7 @@ namespace mtgvrp.phone_manager
         [Command("pickup"), Help(HelpManager.CommandGroups.General, "To answer a call.", null)]
         public void pickup_cmd(Client player)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
             if (character.InCallWith != Character.None)
             {
                 API.sendChatMessageToPlayer(player, "You are already on a phone call.");
@@ -296,7 +296,7 @@ namespace mtgvrp.phone_manager
 
         public void togphone_cmd(Client player)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             var targetitems = InventoryManager.DoesInventoryHaveItem(character, typeof(Phone));
             if (targetitems.Length == 0)
@@ -347,7 +347,7 @@ namespace mtgvrp.phone_manager
         }
         public void call_cmd(Client player, string input)
         {
-            Character sender = API.shared.getEntityData(player.handle, "Character");
+            Character sender = player.GetCharacter();
 
             var targetitems = InventoryManager.DoesInventoryHaveItem(sender, typeof(Phone));
             if (targetitems.Length == 0)
@@ -467,7 +467,7 @@ namespace mtgvrp.phone_manager
 
         public void editcontact_cmd(Client player, string oldname, string newname, string number)
         {
-            Character c = API.getEntityData(player.handle, "Character");
+            Character c = player.GetCharacter();
 
             var targetitems = InventoryManager.DoesInventoryHaveItem(c, typeof(Phone));
             if (targetitems.Length == 0)
@@ -493,7 +493,7 @@ namespace mtgvrp.phone_manager
 
         public void addcontact_cmd(Client player, string number, string name)
         {
-            Character c = API.getEntityData(player.handle, "Character");
+            Character c = player.GetCharacter();
             var targetitems = InventoryManager.DoesInventoryHaveItem(c, typeof(Phone));
             if (targetitems.Length == 0)
             {
@@ -516,7 +516,7 @@ namespace mtgvrp.phone_manager
 
         public void removecontact_cmd(Client player, string name)
         {
-            Character c = API.getEntityData(player.handle, "Character");
+            Character c = player.GetCharacter();
             var targetitems = InventoryManager.DoesInventoryHaveItem(c, typeof(Phone));
             if (targetitems.Length == 0)
             {
@@ -655,7 +655,7 @@ namespace mtgvrp.phone_manager
         [Command("phone"), Help(HelpManager.CommandGroups.General, "How to view your phone.", null)]
         public void ShowPhone(Client player)
         {
-            Character character = API.shared.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
             var targetitems = InventoryManager.DoesInventoryHaveItem(character, typeof(Phone));
             if (targetitems.Length == 0)
             {

@@ -20,7 +20,7 @@ namespace mtgvrp.player_manager.player_list
             {
                 case "fetch_player_list":
 
-                    Account account = API.getEntityData(player.handle, "Account");
+                    Account account = player.GetAccount();
                     Character character = player.GetCharacter();
 
                     var playerList = new List<string[]>();
@@ -39,7 +39,7 @@ namespace mtgvrp.player_manager.player_list
                     {
                         if(type == 1)
                         {
-                            Account a = API.getEntityData(c.Client.handle, "Account");
+                            Account a = c.Client.GetAccount();
                             if (a.AdminDuty == false)
                                 continue;
                         }

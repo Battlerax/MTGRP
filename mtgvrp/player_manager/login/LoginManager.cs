@@ -42,7 +42,7 @@ namespace mtgvrp.player_manager.login
                         API.triggerClientEvent(player, "create_admin_pin");
                     }
 
-                    Account account = API.getEntityData(player.handle, "Account");
+                    Account account = player.GetAccount();
 
                     if (account.AdminLevel < 1)
                     {
@@ -61,7 +61,7 @@ namespace mtgvrp.player_manager.login
                 {
                     var adminPin = Convert.ToString(arguments[0]);
 
-                    Account account = API.getEntityData(player, "Account");
+                    Account account = player.GetAccount();
 
                     if (account.AdminLevel == 0)
                     {
@@ -94,7 +94,7 @@ namespace mtgvrp.player_manager.login
                         return;
                     }
 
-                    Account account = API.getEntityData(player.handle, "Account");
+                    Account account = player.GetAccount();
 
                     if (account.is_registered())
                     {
@@ -219,7 +219,7 @@ namespace mtgvrp.player_manager.login
 
         public void OnPlayerFinishedDownload(Client player)
         {
-            Account account = API.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
             API.setEntitySyncedData(player, "REG_DIMENSION",  1000);
             API.setEntityDimension(player, 1000);
 
@@ -246,7 +246,7 @@ namespace mtgvrp.player_manager.login
                 return;
             }
 
-            Account account = API.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
 
             if (!account.is_registered())
             {
@@ -338,7 +338,7 @@ namespace mtgvrp.player_manager.login
                 return;
             }
 
-            Account account = API.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
 
             if (account.is_registered())
             {
@@ -377,7 +377,7 @@ namespace mtgvrp.player_manager.login
         {
             API.shared.triggerClientEvent(player, "hide_login_browser");
 
-            Account account = API.shared.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
 
             var filter = Builders<Character>.Filter.Eq("AccountId", account.Id.ToString());
             var charactersFound = DatabaseManager.CharacterTable.Find(filter).ToList();

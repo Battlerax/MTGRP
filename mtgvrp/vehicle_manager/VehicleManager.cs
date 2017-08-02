@@ -238,7 +238,7 @@ namespace mtgvrp.vehicle_manager
                 Client player;
                 if ((player = API.getPlayerFromHandle(entity)) != null)
                 {
-                    Character character = API.getEntityData(player.handle, "Character");
+                    Character character = player.GetCharacter();
 
                     if (!character.IsOnDropcar)
                     {
@@ -363,7 +363,7 @@ namespace mtgvrp.vehicle_manager
         [Command("engine", Alias = "e"), Help(HelpManager.CommandGroups.Vehicles, "Turning on and off your vehicle.", null)]
         public static void engine_cmd(Client player)
         {
-            Character character = API.shared.getEntityData(player, "Character");
+            Character character = player.GetCharacter();
             var vehicleHandle = API.shared.getPlayerVehicle(player);
             Vehicle vehicle = API.shared.getEntityData(vehicleHandle, "Vehicle");
 
@@ -413,7 +413,7 @@ namespace mtgvrp.vehicle_manager
                 return;
             }
 
-            Character character = API.shared.getEntityData(player, "Character");
+            Character character = player.GetCharacter();
             var veh = API.shared.getPlayerVehicle(player);
             Vehicle vehicle = API.shared.getEntityData(veh, "Vehicle");
 
@@ -465,7 +465,7 @@ namespace mtgvrp.vehicle_manager
         [Command("dropcar"), Help(HelpManager.CommandGroups.Vehicles, "Use this to sell a vehicle that is unowned by a player for some quick cash.", null)]
         public void dropcar_cmd(Client player)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (player.isInVehicle == false)
             {
@@ -592,7 +592,7 @@ namespace mtgvrp.vehicle_manager
         private void API_onPlayerDisconnected(Client player, string reason)
         {
             //DeSpawn his cars.
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
             if (character == null)
                 return;
             var maxVehs = GetMaxOwnedVehicles(character.Client);
@@ -626,8 +626,8 @@ namespace mtgvrp.vehicle_manager
 
             API.setBlipTransparency(veh.Blip, 0);
 
-            Character character = API.getEntityData(player.handle, "Character");
-            Account account = API.getEntityData(player.handle, "Account");
+            Character character = player.GetCharacter();
+            Account account = player.GetAccount();
 
             //IS A GROUP VEHICLE
             if (veh.Group != null && character.Group != veh.Group && veh.Group != Group.None && API.getPlayerVehicleSeat(player) == -1)
@@ -709,7 +709,7 @@ namespace mtgvrp.vehicle_manager
             if (veh.Driver == player.GetCharacter())
                 veh.Driver = null;
 
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (character == null)
                 return;
@@ -788,7 +788,7 @@ namespace mtgvrp.vehicle_manager
 
         public static int GetMaxOwnedVehicles(Client chr)
         {
-            Account acc = API.shared.getEntityData(chr, "Account");
+            Account acc = chr.GetAccount();
             switch (acc.VipLevel)
             {
                 case 0:
@@ -888,8 +888,8 @@ namespace mtgvrp.vehicle_manager
 
         public static bool DoesPlayerHaveVehicleAccess(Client player, Vehicle vehicle)
         {
-            Account account = API.shared.getEntityData(player.handle, "Account");
-            Character character = API.shared.getEntityData(player.handle, "Character");
+            Account account = player.GetAccount();
+            Character character = player.GetCharacter();
 
             if (vehicle == null)
                 return false;
@@ -903,8 +903,8 @@ namespace mtgvrp.vehicle_manager
 
         public static bool DoesPlayerHaveVehicleParkLockAccess(Client player, Vehicle vehicle)
         {
-            Account account = API.shared.getEntityData(player.handle, "Account");
-            Character character = API.shared.getEntityData(player.handle, "Character");
+            Account account = player.GetAccount();
+            Character character = player.GetCharacter();
 
             if (account.AdminLevel >= 3) { return true; }
             if (character.Id == vehicle.OwnerId) { return true; }

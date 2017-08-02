@@ -494,7 +494,7 @@ namespace mtgvrp.property_system.businesses
         [Command("buyskin"), Help(HelpManager.CommandGroups.General, "Buy a pedestrian skin as a VIP.", new[] { "Item", "New name" })]
         public void buyskin_cmd(Client player, GrandTheftMultiplayer.Server.Constant.PedHash hash)
         {
-            Account account = API.getEntityData(player, "Account");
+            Account account = player.GetAccount();
             var biz = PropertyManager.IsAtPropertyInteraction(player);
 
             if (biz?.Type != PropertyManager.PropertyTypes.Clothing)

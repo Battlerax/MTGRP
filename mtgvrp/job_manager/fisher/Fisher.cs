@@ -45,7 +45,7 @@ namespace mtgvrp.job_manager.fisher
             {
                 case "caught_fish":
 
-                    Character c = API.getEntityData(player.handle, "Character");
+                    Character c = player.GetCharacter();
 
                     var catchStrength = (int) arguments[0];
 
@@ -104,7 +104,7 @@ namespace mtgvrp.job_manager.fisher
         [Command("fish"), Help(HelpManager.CommandGroups.FisherJob, "Pretty obvious, its to fish!")]
         public void fish_cmd(Client player)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (character.JobOne.Type != JobManager.JobTypes.Fisher)
             {
@@ -159,7 +159,7 @@ namespace mtgvrp.job_manager.fisher
         [Command("viewfish"), Help(HelpManager.CommandGroups.FisherJob, "View the fish in your inventory")]
         public void viewfish_cmd(Client player)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             API.sendChatMessageToPlayer(player, Color.White, "----------------------------------------------");
             foreach (var f in character.Inventory)
@@ -176,7 +176,7 @@ namespace mtgvrp.job_manager.fisher
         [Command("sellfish"), Help(HelpManager.CommandGroups.FisherJob, "Sell the fish you currently have.")]
         public void sellfish_cmd(Client player)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (character.JobZoneType != 2)
             {

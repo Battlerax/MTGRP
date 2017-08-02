@@ -18,7 +18,7 @@ namespace mtgvrp.player_manager
 {
     class PlayerManager : Script
     {
-        private static Dictionary<int, Character> _players = new Dictionary<int, Character>();
+        private static readonly Dictionary<int, Character> _players = new Dictionary<int, Character>();
 
         public static List<Character> Players => _players.Values.ToList();
 
@@ -85,7 +85,7 @@ namespace mtgvrp.player_manager
         private void API_onPlayerHealthChange(Client player, int oldValue)
         {
             var character = player.GetCharacter();
-            Account account = API.getEntityData(player, "Account");
+            Account account = player.GetAccount();
             if (account == null)
                 return;
 
@@ -136,7 +136,7 @@ namespace mtgvrp.player_manager
             {
                 var player = (NetHandle)arguments[0];
                 Character c = API.getEntityData(player, "Character");
-                c?.update_ped();
+                c?.update_ped(sender);
             }
         }
 
@@ -145,13 +145,13 @@ namespace mtgvrp.player_manager
             var account = new Account();
             account.AccountName = player.socialClubName;
 
-            API.setEntityData(player.handle, "Account", account);
+            API.setEntityData(player, "Account", account);
         }
 
         public void OnPlayerDisconnected(Client player, string reason)
         {
             //Save data
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (character != null)
             {
@@ -173,7 +173,7 @@ namespace mtgvrp.player_manager
                     GroupManager.SendGroupMessage(player,
                         character.CharacterName + " from your group has left the server. (" + reason + ")");
                 }
-
+                
                 account.Save();
                 character.Save();
                 RemovePlayer(character);
@@ -253,19 +253,19 @@ namespace mtgvrp.player_manager
 
         public static string GetName(Client player)
         {
-            Character c = API.shared.getEntityData(player.handle, "Character");
+            Character c = player.GetCharacter();
             return c.CharacterName;
         }
 
         public static string GetAdminName(Client player)
         {
-            Account account = API.shared.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
             return account.AdminName;
         }
 
         public static int getVIPPaycheckBonus(Client player)
         {
-            Account account = API.shared.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
 
             if (account.VipLevel == 1) { return Properties.Settings.Default.vipbonuslevelone; }
             if (account.VipLevel == 2) { return Properties.Settings.Default.vipbonusleveltwo; }
@@ -275,7 +275,7 @@ namespace mtgvrp.player_manager
 
         public static int getFactionBonus(Client player)
         {
-            Character character = API.shared.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (character.Group == Group.None) { return 0; }
 
@@ -290,14 +290,14 @@ namespace mtgvrp.player_manager
 
         public static int CalculatePaycheck(Client player)
         {
-            Character character = API.shared.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
             return basepaycheck - (Properties.Settings.Default.basepaycheck * Properties.Settings.Default.taxationamount/100) + /*(Properties.Settings.Default.basepaycheck * getVIPPaycheckBonus(player)/100) +*/ getFactionBonus(player) + character.BankBalance/1000;
         }
 
         public static void SendPaycheckToPlayer(Client player)
         {
-            Account account = API.shared.getEntityData(player.handle, "Account");
-            Character character = API.shared.getEntityData(player.handle, "Character");
+            Account account = player.GetAccount();
+            Character character = player.GetCharacter();
             if(character != null)
                 if (character.GetTimePlayed() % 3600 == 0)
                 {
@@ -349,8 +349,8 @@ namespace mtgvrp.player_manager
         public void GetStatistics(Client sender, string id = null)
         {
             var receiver = PlayerManager.ParseClient(id);
-            Character character = API.getEntityData(sender.handle, "Character");
-            Account account = API.shared.getEntityData(sender.handle, "Account");
+            Character character = sender.GetCharacter();
+            Account account = sender.GetAccount();
 
             if (receiver == null)
             {
@@ -372,7 +372,7 @@ namespace mtgvrp.player_manager
         [Command("time"), Help(HelpManager.CommandGroups.General, "Used to find the server time, in-game time, various cooldowns, etc.", null)]
         public void CheckTime(Client player)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             API.sendChatMessageToPlayer(player, Color.White, "__________________ TIME __________________");
             API.sendChatMessageToPlayer(player, Color.Grey, "The current server time is: " + DateTime.Now.ToString("h:mm:ss tt"));
@@ -392,7 +392,7 @@ namespace mtgvrp.player_manager
         [Command("attempt", GreedyArg = true), Help(HelpManager.CommandGroups.Roleplay, "Attempt to do something with a 50% chance of either success or fail.", "The attempt message")]
         public void attempt_cmd(Client player, string message)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             Random ran = new Random();
             var chance = ran.Next(100);
@@ -410,9 +410,9 @@ namespace mtgvrp.player_manager
  
         public void ShowStats(Client sender, Client receiver)
         {
-            Character character = API.getEntityData(receiver.handle, "Character");
-            Account account = API.shared.getEntityData(receiver.handle, "Account");
-            Account senderAccount = API.shared.getEntityData(sender, "Account");
+            Character character = receiver.GetCharacter();
+            Account account = receiver.GetAccount();
+            Account senderAccount = sender.GetAccount();
             var playerveh = VehicleManager.GetVehFromNetHandle(API.getPlayerVehicle(receiver))?.Id.ToString() ?? "None";
 
             API.sendChatMessageToPlayer(sender, "==============================================");

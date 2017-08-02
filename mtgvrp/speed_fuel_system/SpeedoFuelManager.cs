@@ -176,7 +176,7 @@ namespace mtgvrp.speed_fuel_system
                 return;
             }
 
-            Character c = API.getEntityData(playerEntity, "Character");
+            Character c = playerEntity.GetCharacter();
 
             if (c == null)
             {

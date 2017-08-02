@@ -41,7 +41,7 @@ namespace mtgvrp.job_manager.taxi
             switch (eventName)
             {
                 case "update_taxi_destination":
-                    Character character = API.getEntityData(player.handle, "Character");
+                    Character character = player.GetCharacter();
                     API.triggerClientEvent(character.TaxiDriver.Client, "set_taxi_waypoint", (Vector3)arguments[0]);
 
                     API.sendChatMessageToPlayer(player, Color.Yellow, "[TAXI] You have successfully set your destination.");
@@ -52,7 +52,7 @@ namespace mtgvrp.job_manager.taxi
 
         private void API_onPlayerExitVehicle(Client player, NetHandle vehicle)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
             var veh = VehicleManager.GetVehFromNetHandle(vehicle);
 
             if (character == null)
@@ -99,7 +99,7 @@ namespace mtgvrp.job_manager.taxi
 
         private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle, int seat)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
             var veh = VehicleManager.GetVehFromNetHandle(vehicle);
 
             if(veh == null)
@@ -186,7 +186,7 @@ namespace mtgvrp.job_manager.taxi
         [Command("taxiduty"), Help(HelpManager.CommandGroups.TaxiJob, "Toggle taxi duty.")]
         public void taxiduty_cmd(Client player)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (character.JobOne.Type != JobManager.JobTypes.Taxi)
             {
@@ -237,7 +237,7 @@ namespace mtgvrp.job_manager.taxi
         [Command("setfare"), Help(HelpManager.CommandGroups.TaxiJob, "Sets your taxi fare.", "The price you'd like to set as the fare.")]
         public void setfare_cmd(Client player, int farePrice)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if(character.JobOne.Type != JobManager.JobTypes.Taxi)
             {
@@ -265,7 +265,7 @@ namespace mtgvrp.job_manager.taxi
         [Command("requesttaxi"), Help(HelpManager.CommandGroups.TaxiJob, "Request a taxi.")]
         public void requesttaxi_cmd(Client player)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (TaxiRequests.Contains(character))
             {
@@ -303,7 +303,7 @@ namespace mtgvrp.job_manager.taxi
                 return;
             }
 
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
             var veh = VehicleManager.GetVehFromNetHandle(API.getPlayerVehicle(player));
 
             if(veh.Driver.TaxiPassenger != character)
@@ -339,7 +339,7 @@ namespace mtgvrp.job_manager.taxi
         [Command("acceptfare"), Help(HelpManager.CommandGroups.TaxiJob, "Accepts a taxi fare.", "Id of the player you'd like to accept.")]
         public void acceptfare_cmd(Client player, string id)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
             if(character.JobOne.Type != JobManager.JobTypes.Taxi)
             {
                 API.sendPictureNotificationToPlayer(player, "You must be a taxi driver to use this command.", "CHAR_BLOCKED", 0, 1, "Server", "~r~Command Error");
@@ -354,7 +354,7 @@ namespace mtgvrp.job_manager.taxi
                 return;
             }
 
-            Character passenger = API.getEntityData(passengerClient.handle, "Character");
+            Character passenger = passengerClient.GetCharacter();
 
             if (!TaxiRequests.Contains(passenger))
             {
