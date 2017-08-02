@@ -52,27 +52,26 @@ namespace mtgvrp.job_manager
         {
             JobZones[index].onEntityEnterColShape += (shape, entity) =>
             {
-                foreach (var c in PlayerManager.Players)
+                if (Type == JobManager.JobTypes.Fisher)
                 {
-                    if (c.Client.handle != entity) continue;
+                    var c = API.shared.getEntityData(entity, "Character");
+                    if (c == null)
+                        return;
 
-                    if (Type == JobManager.JobTypes.Fisher)
-                    {
-                        c.IsInFishingZone = true;
-                    }
+                    c.IsInFishingZone = true;
                 }
+
             };
 
             JobZones[index].onEntityExitColShape += (shape, entity) =>
             {
-                foreach (var c in PlayerManager.Players)
+                if (Type == JobManager.JobTypes.Fisher)
                 {
-                    if (c.Client.handle != entity) continue;
+                    var c = API.shared.getEntityData(entity, "Character");
+                    if (c == null)
+                        return;
 
-                    if (Type == JobManager.JobTypes.Fisher)
-                    {
-                        c.IsInFishingZone = false;
-                    }
+                    c.IsInFishingZone = false;
                 }
             };
         }
