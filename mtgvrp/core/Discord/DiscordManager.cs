@@ -226,6 +226,17 @@ namespace mtgvrp.core.Discord
             await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(DiscordManager.Client, ":white_check_mark:"));
         }
 
+        [DSharpPlus.CommandsNext.Attributes.Command("players")] // let's define this method as a command
+        [Description(
+            "Views players online.")] // this will be displayed to tell users what this command does when they invoke help
+        public async Task PlayersCount(CommandContext ctx) // this command takes no arguments
+        {
+            await ctx.TriggerTypingAsync();
+            int count = PlayerManager.Players.SkipWhile(x => x == null).Count();
+            var msg = "Players Online: " + count;
+            await ctx.RespondAsync(msg);
+        }
+
         [DSharpPlus.CommandsNext.Attributes.Command("admins")] // let's define this method as a command
         [Description(
             "Views admins online.")] // this will be displayed to tell users what this command does when they invoke help
@@ -253,6 +264,7 @@ namespace mtgvrp.core.Discord
             };
             await ctx.RespondAsync("", embed: embed);
         }
+
 
         [DSharpPlus.CommandsNext.Attributes.Command("setgame")] // let's define this method as a command
         [Description("Set the game status..")] // this will be displayed to tell users what this command does when they invoke help
