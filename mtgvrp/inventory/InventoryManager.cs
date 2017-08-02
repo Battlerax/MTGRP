@@ -146,7 +146,7 @@ namespace mtgvrp.inventory
 
             if (storage.Inventory == null) storage.Inventory = new List<IInventoryItem>();
             //Make sure he doesn't have blocking item.
-            if(storage.GetType() == typeof(Character) && storage.Inventory.FirstOrDefault(x => x.IsBlocking == true) != null && ignoreBlocking == false)
+            if(storage.GetType() == typeof(Character) && item.GetType() != typeof(Money) && storage.Inventory.FirstOrDefault(x => x.IsBlocking == true) != null && ignoreBlocking == false)
                 return GiveItemErrors.HasBlockingItem;
 
             int maxAmount = -1;
