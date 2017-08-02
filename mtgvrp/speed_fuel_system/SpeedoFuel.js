@@ -1,25 +1,35 @@
-﻿API.onServerEventTrigger.connect((eventName, args) => {
+﻿var myBrowser = null;
+var vehicleHandle = null;
+
+API.onServerEventTrigger.connect((eventName, args) => {
 	switch (eventName) {
 	case "fuel_updatevalue":
-		if(myBrowser !== null)
-			myBrowser.call("setFuel", args[0]);
-        break;
-    case "speedo_showcef":
+	    if (myBrowser !== null) {
+            myBrowser.call("setFuel", args[0]);
+	    } else {
+            lastFuel = "~r~Fuel: ~w~" + args[0] + "%";
+	    }
+
+	    break;
+    case "speedo_entervehicle":
         if (API.getPlayerVehicleSeat(API.getLocalPlayer()) !== -1) return;
 
-        if (resource.Introduction.isonintro) return;
+        if (args[0] === true) {
+            if (resource.Introduction.isonintro) return;
 
-        var res = API.getScreenResolutionMaintainRatio();
-        var width = 450;
-        var height = 200;
-        var size = resource.JsFunctions.scaleCoordsToReal({ X: width, Y: height });
-        var pos = resource.JsFunctions.scaleCoordsToReal({ X: 310, Y: res.Height - height - 5 });
-        myBrowser = API.createCefBrowser(size.X, size.Y);
-        API.waitUntilCefBrowserInit(myBrowser);
-        API.setCefBrowserPosition(myBrowser, pos.X, pos.Y);
-        API.loadPageCefBrowser(myBrowser, "speed_fuel_system/SpeedoFuel.html");
-        API.waitUntilCefBrowserLoaded(myBrowser);
+            var res = API.getScreenResolutionMaintainRatio();
+            var width = 450;
+            var height = 200;
+            var size = resource.JsFunctions.scaleCoordsToReal({ X: width, Y: height });
+            var pos = resource.JsFunctions.scaleCoordsToReal({ X: 310, Y: res.Height - height - 5 });
+            myBrowser = API.createCefBrowser(size.X, size.Y);
+            API.waitUntilCefBrowserInit(myBrowser);
+            API.setCefBrowserPosition(myBrowser, pos.X, pos.Y);
+            API.loadPageCefBrowser(myBrowser, "speed_fuel_system/SpeedoFuel.html");
+            API.waitUntilCefBrowserLoaded(myBrowser);
+        }
         vehicleHandle = API.getPlayerVehicle(API.getLocalPlayer());
+        API.triggerServerEvent("fuel_getvehiclefuel");
         break;
 
     case "TOGGLE_SPEEDO":
@@ -40,12 +50,10 @@
                 API.destroyCefBrowser(myBrowser);
                 myBrowser = null;
             }
+        vehicleHandle = API.getPlayerVehicle(API.getLocalPlayer());
         break;
 	}
 });
-
-var myBrowser = null;
-var vehicleHandle = null;
 
 function loaded() {
 	var vehicle = API.getPlayerVehicle(API.getLocalPlayer());
@@ -56,10 +64,12 @@ function loaded() {
 }
 
 API.onPlayerExitVehicle.connect((vehicle) => {
-	if(myBrowser === null) return;
+    vehicleHandle = null;
+
+    if (myBrowser === null) return;
 
 	API.destroyCefBrowser(myBrowser);
-	myBrowser = null;
+    myBrowser = null;
 });
 
 var posUpdateTick = Date.now();
@@ -91,6 +101,10 @@ var lastZone = "";
 var lastStreet = "";
 var lastDirection = "";
 
+var lastHealth = "";
+var lastSpeed = "";
+var lastFuel = "";
+
 var screenRes = null;
 
 API.onUpdate.connect(() => {
@@ -102,20 +116,26 @@ API.onUpdate.connect(() => {
         lastStreet = API.getStreetName(pos);
         lastZone = API.getZoneName(pos);
 
+        //Health update.
+        if (vehicleHandle !== null && API.doesEntityExist(vehicleHandle)) {
+            lastHealth = "~r~Health: ~w~" + Math.round(API.getVehicleHealth(vehicleHandle));
+        }
+
         if (myBrowser !== null)
             myBrowser.call("setZoneStreet", lastStreet, lastZone);
     }
 
-    //Direction
+    //Direction update every 100ms
     if (Date.now() >= speedUpdateTick) {
-
         var rot = API.getEntityRotation(API.getLocalPlayer());
         lastDirection = getDirectionName(rot);
     }
 
-    if (myBrowser !== null && vehicleHandle !== null) {
+
+    if (vehicleHandle !== null) {
         if (Date.now() >= speedUpdateTick) {
             speedUpdateTick = Date.now() + 100;
+
             var velocity = API.getEntityVelocity(vehicleHandle);
             var speed = Math.sqrt(
                 velocity.X * velocity.X +
@@ -123,13 +143,19 @@ API.onUpdate.connect(() => {
                 velocity.Z * velocity.Z
             );
             speed = Math.floor(speed * 3.6);
-            myBrowser.call("setSpeed", speed);
 
-            //Set dir.
-            myBrowser.call("setDirection", lastDirection);
+            if (myBrowser !== null) {
+                myBrowser.call("setSpeed", speed);
+                myBrowser.call("setDirection", lastDirection);
+            } else {
+                lastSpeed = "~r~Speed: ~w~" + speed + " KMH";
+            }
         }
 
-    } else {
+    }
+
+    if(myBrowser === null)
+    {
         if (resource.Introduction.isonintro == true) {
             return;
         }
@@ -145,5 +171,19 @@ API.onUpdate.connect(() => {
 
         if (lastZone !== "")
             API.drawText(lastZone, 365, screenRes.Height - 50, 0.5, 225, 225, 225, 255, 4, 0, false, true, 0);
+    }
+
+    if (vehicleHandle !== null && API.doesEntityExist(vehicleHandle)) {
+        if (lastHealth !== "")
+            API.drawText(lastHealth, 40, screenRes.Height - 290, 0.5, 225, 225, 225, 255, 4, 0, false, true, 0);
+
+        if (myBrowser == null) {
+
+            if (lastFuel !== "")
+                API.drawText(lastFuel, 40, screenRes.Height - 315, 0.5, 225, 225, 225, 255, 4, 0, false, true, 0);
+
+            if (lastSpeed !== "")
+                API.drawText(lastSpeed, 40, screenRes.Height - 340, 0.5, 225, 225, 225, 255, 4, 0, false, true, 0);
+        }
     }
 });
