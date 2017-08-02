@@ -179,6 +179,9 @@ namespace mtgvrp.dmv
         {
             var c = player.GetCharacter();
 
+            if (c == null)
+                return;
+
             if (!c.IsInDmvTest)
                 return;
 

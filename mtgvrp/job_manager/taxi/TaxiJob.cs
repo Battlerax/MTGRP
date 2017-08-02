@@ -55,6 +55,9 @@ namespace mtgvrp.job_manager.taxi
             Character character = API.getEntityData(player.handle, "Character");
             var veh = VehicleManager.GetVehFromNetHandle(vehicle);
 
+            if (character == null)
+                return;
+
             if(veh != null)
             {
                 if (OnDutyDrivers.Contains(character) && veh.Job.Type == JobManager.JobTypes.Taxi)

@@ -42,6 +42,9 @@ namespace mtgvrp.job_manager.trucker
         private void API_onPlayerExitVehicle(Client player, NetHandle vehicle)
         {
             Character c = player.GetCharacter();
+            if (c == null)
+                return;
+
             if (c.TruckingStage != Character.TruckingStages.None && API.getEntityData(vehicle, "TRUCKER_DRIVER") == player)
             {
                 API.sendChatMessageToPlayer(player, "You have a minute to get back into the truck before its cancelled.");
