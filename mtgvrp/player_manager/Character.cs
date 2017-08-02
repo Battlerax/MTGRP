@@ -397,7 +397,7 @@ namespace mtgvrp.player_manager
 
             task.ContinueWith(
                 a => LogManager.Log(LogManager.LogTypes.Connection,
-                    $"The character {CharacterName} was NOT saved sucessfully. {a.Exception?.ToString()}"),
+                    $"The character {CharacterName} was NOT saved sucessfully. {a.Exception?.Flatten().ToString()}"),
                 TaskContinuationOptions.OnlyOnFaulted);
         }
 
