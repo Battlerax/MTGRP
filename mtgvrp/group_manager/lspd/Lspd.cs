@@ -1112,6 +1112,16 @@ namespace mtgvrp.group_manager.lspd
             character.BeaconResetTimer.Stop();
         }
 
+        public static void SendToCops(Client player, string message)
+        {
+            foreach(var p in PlayerManager.Players)
+            {
+                if (p.Group.CommandType == Group.CommandTypeLspd)
+                {
+                    p.Client.sendChatMessage(message);
+                }
+            }
+        }
         public static void JailControl(Client player, int seconds)
         {
             Character character = API.shared.getEntityData(player.handle, "Character");

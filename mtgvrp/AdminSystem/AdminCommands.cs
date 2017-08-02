@@ -1444,7 +1444,7 @@ namespace mtgvrp.AdminSystem
 
         }
 
-        [Command("changename", GreedyArg = false), Help(HelpManager.CommandGroups.AdminLevel2, "Change a player's character name.", new[] { "ID of the target player" })]
+        [Command("changename", GreedyArg = false), Help(HelpManager.CommandGroups.AdminLevel2, "Change a player's character name.", new[] { "ID of the target player", "New name" })]
         public static void forcechangename_cmd(Client player, string id, string name)
         {
             Account account = API.shared.getEntityData(player.handle, "Account");
