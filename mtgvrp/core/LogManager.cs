@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using System.Timers;
 using GrandTheftMultiplayer.Server.Elements;
+using Timer = System.Timers.Timer;
 
 namespace mtgvrp.core
 {
@@ -79,7 +81,22 @@ namespace mtgvrp.core
             Directory.CreateDirectory("Logs");
 
             //Append
-            File.AppendAllText("Logs/" + file, $"[{DateTime.UtcNow:R}] " + log + "\r\n");
+            ThreadPool.QueueUserWorkItem(WriteToFile, new [] { "Logs/" + file, $"[{DateTime.UtcNow:R}] " + log });
+        }
+
+        // the lock
+        private static object writeLock = new object();
+        public static void WriteToFile(object msg)
+        {
+            lock (writeLock)
+            {
+                var pars = (string[]) msg;
+
+                using (var writer = File.AppendText(pars[0]))
+                {
+                    writer.WriteLine(pars[1]);
+                }
+            }
         }
 
         public static string GetLogName(Client player) => $"{player.GetCharacter().CharacterName}[{player.GetAccount().AccountName}]";
