@@ -21,8 +21,8 @@ namespace mtgvrp.vehicle_dealership
         //Could be changed to dynamic later on.
         private readonly string[][] _helicopters =
         {
-            new[] {"Frogger", "744705981", "120000"},
-            new[] {"Maverick", "-1660661558", "200000"},
+            new[] {"Frogger", "744705981", "240000"},
+            new[] {"Maverick", "-1660661558", "400000"},
         };
         #endregion
 
