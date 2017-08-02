@@ -7,6 +7,7 @@ using GrandTheftMultiplayer.Server.API;
 using GrandTheftMultiplayer.Server.Elements;
 using GrandTheftMultiplayer.Server.Managers;
 using GrandTheftMultiplayer.Shared;
+using mtgvrp.vehicle_manager;
 using mtgvrp.weapon_manager;
 using mtgvrp.inventory;
 using mtgvrp.core;
@@ -89,22 +90,19 @@ namespace mtgvrp.player_manager
 
             if (API.getPlayerHealth(player) < oldValue && account.AdminDuty)
             {
-                if (account.AdminDuty)
-                {
-                    API.setPlayerHealth(player, 100);
-                }
-                else if (oldValue - API.getPlayerHealth(player) > 25 )
-                {
-                    API.setPlayerHealth(player, API.getPlayerHealth(player) + 10);
-                }
+                API.setPlayerHealth(player, 100);
             }
         }
 
 
         private void API_onPlayerRespawn(Client player)
         {
-            var character = player.GetCharacter();
+            if (player.GetAccount().AdminDuty)
+            {
+                return;
+            }
 
+            var character = player.GetCharacter();
             player.sendChatMessage("You were revived by the ~b~Los Santos Medical Department ~w~ and were charged $200 for hospital fees.");
             WeaponManager.RemoveAllPlayerWeapons(player);
             int amount = -200;
@@ -116,7 +114,7 @@ namespace mtgvrp.player_manager
 
             if (Money.GetCharacterMoney(character) < 200)
             {
-                character.BankBalance += amount;
+                character.BankBalance -= amount;
             }
 
             else
@@ -416,6 +414,7 @@ namespace mtgvrp.player_manager
             Character character = API.getEntityData(receiver.handle, "Character");
             Account account = API.shared.getEntityData(receiver.handle, "Account");
             Account senderAccount = API.shared.getEntityData(sender, "Account");
+            var playerveh = VehicleManager.GetVehFromNetHandle(API.getPlayerVehicle(receiver)).Id;
 
             API.sendChatMessageToPlayer(sender, "==============================================");
             API.sendChatMessageToPlayer(sender, "Player statistics for " + character.CharacterName);
@@ -438,7 +437,8 @@ namespace mtgvrp.player_manager
             {
                 API.sendChatMessageToPlayer(sender, "~y~Admin:~y~");
                 API.sendChatMessageToPlayer(sender,
-                    $"~h~Admin level:~h~ {account.AdminLevel} ~h~Admin name:~h~ {account.AdminName} ~h~Last vehicle:~h~ {character?.LastVehicle?.Id} ~h~Dimension:~h~ {character?.LastDimension} ~h~Last IP:~h~ {account.LastIp}");
+                    $"~h~Admin level:~h~ {account.AdminLevel} ~h~Admin name:~h~ {account.AdminName} ~h~Dimension:~h~ {character?.LastDimension} ~h~Last IP:~h~ {account.LastIp}");
+                API.sendChatMessageToPlayer(sender, $"~h~Current vehicle:~h~{playerveh} ~h~Last vehicle: ~h~ { character?.LastVehicle?.Id}");
                 API.sendChatMessageToPlayer(sender,
                     $"~h~Social Club Name:~h~ {account.AccountName} ~h~Admin actions: {account.AdminActions}");
             }
