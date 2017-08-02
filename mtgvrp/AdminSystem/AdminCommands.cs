@@ -1532,7 +1532,7 @@ namespace mtgvrp.AdminSystem
             account.AdminActions++;
             var receiver = PlayerManager.ParseClient(id);
             BanPlayer(receiver, reason);
-            SendtoAllAdmins(account.AdminName + " has banned " + c.AccountName + " from the server. Reason: " + reason);
+            SendtoAllAdmins(account.AdminName + " has banned " + account.AccountName + " from the server. Reason: " + reason);
             Log(LogTypes.Bans, $"Admin {account.AdminName}[{player.socialClubName}] has banned the player {receiver.GetCharacter().CharacterName}[{receiver.socialClubName}]. Reason: '{reason}'");
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has banned {GetLogName(receiver)} for <{reason}>");
