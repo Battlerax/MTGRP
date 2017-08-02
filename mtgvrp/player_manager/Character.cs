@@ -48,11 +48,12 @@ namespace mtgvrp.player_manager
         public int BankBalance { get; set; }
 
         public PedHash Skin { get; set; }
+        public bool HasSkin { get; set; }
         public int Health { get; set; }
 
         public List<int> Outfit = new List<int>();
         public List<int> OutfitVariation = new List<int>();
-        
+
         public int Age { get; set; }
         public string Birthday { get; set; }
         public string Birthplace { get; set; }
@@ -169,6 +170,8 @@ namespace mtgvrp.player_manager
 
         public Dictionary<Fish, int> FishOnHand = new Dictionary<Fish, int>();
 
+        public int TrasureFound { get; set; }
+        public DateTime CanScuba { get; set; }
         //Mechanic related
         public DateTime FixcarPrevention { get; set; }
 
@@ -494,6 +497,10 @@ namespace mtgvrp.player_manager
                 API.shared.sendNativeToPlayer(player, Hash.SET_PED_PROP_INDEX, Client.handle, 1, 0, 0, true);
                 API.shared.sendNativeToPlayer(player, Hash.SET_PED_PROP_INDEX, Client.handle, 2, Model.EarStyle,
                     Model.Gender == GenderMale ? 33 : 0, 0, true);
+            }
+            else if (HasSkin)
+            {
+                API.shared.setPlayerSkin(player, Skin);
             }
             else
             {

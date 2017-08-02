@@ -373,6 +373,12 @@ namespace mtgvrp.property_system.businesses
 
             var oldClothes = new List<int[]>();
 
+            if (character.HasSkin)
+            {
+                character.HasSkin = false;
+                character.update_ped();
+            }
+
             if (character.Model.Gender == Character.GenderMale)
             {
                 var pantsStyle = ComponentManager.ValidMaleLegs.SingleOrDefault(x => x.ComponentId == character.Model.PantsStyle);
@@ -517,6 +523,7 @@ namespace mtgvrp.property_system.businesses
 
             InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(Money), 250);
             API.setPlayerSkin(player, hash);
+            player.GetCharacter().Skin = hash;
             player.sendChatMessage("Skin changed! You were charged $250.");
         }
     }
