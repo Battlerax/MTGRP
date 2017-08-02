@@ -215,6 +215,23 @@ namespace mtgvrp.job_manager.scuba
                 return;
             }
 
+            int result = DateTime.Compare(character.CanScuba, DateTime.Now);
+
+            if (result == 1)
+            {
+                player.sendChatMessage($"Please wait {character.CanScuba.Subtract(DateTime.Now).Minutes} more minutes before picking up more treasure.");
+                return;
+            }
+
+            if (character.TrasureFound > 5)
+            {
+                character.TrasureFound = 0;
+                player.sendChatMessage("You have found 5 trasure today. You may continue finding treasure tomorrow.");
+                character.CanScuba = DateTime.Now.AddDays(1);
+                return;
+            }
+
+            character.TrasureFound++;
             var rnd = new Random();
             int amnt = rnd.Next(2000, 5000);
             InventoryManager.GiveInventoryItem(character, new Money(), amnt, true);
