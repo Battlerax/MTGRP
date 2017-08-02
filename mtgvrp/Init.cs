@@ -27,7 +27,7 @@ namespace mtgvrp
     public class Init : Script
     {
         public static string SERVER_NAME = "[EN] Moving Target Gaming Roleplay";
-        public static string SERVER_VERSION = "v0.0.1457";
+        public static string SERVER_VERSION = "v0.0.1485";
         public static string SERVER_WEBSITE = "www.mt-gaming.com";
         public static Random Random = new Random();
 
@@ -36,7 +36,8 @@ namespace mtgvrp
 
             DebugManager.DebugMessage("[INIT] Initalizing script...");
 
-            API.setServerName(SERVER_NAME + " ~r~[" + SERVER_VERSION + "] ~b~| ~g~" + SERVER_WEBSITE);
+            API.setServerName(SERVER_NAME + " ~b~| ~g~" + SERVER_WEBSITE);
+            API.setGamemodeName("MTG V-RP " + SERVER_VERSION);
 
             API.onResourceStart += OnResourceStartHandler;
             API.onResourceStop += API_onResourceStop;
