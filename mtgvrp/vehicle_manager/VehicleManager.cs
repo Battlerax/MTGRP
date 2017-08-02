@@ -710,6 +710,10 @@ namespace mtgvrp.vehicle_manager
                 veh.Driver = null;
 
             Character character = API.getEntityData(player.handle, "Character");
+
+            if (character == null)
+                return;
+
             character.LastVehicle = veh;
 
             if (character.IsOnDropcar)

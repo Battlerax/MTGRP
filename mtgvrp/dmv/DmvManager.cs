@@ -159,7 +159,7 @@ namespace mtgvrp.dmv
 
             RestartProcess:
 
-            var plate = $"{GetRandomCharacter()}{GetRandomCharacter()}{GetRandomCharacter()} {GetRandomNumber()}{GetRandomNumber()}{GetRandomNumber()}";
+            var plate = $"{GetRandomCharacter()}{GetRandomCharacter()}{GetRandomCharacter()}{GetRandomNumber()}{GetRandomNumber()}{GetRandomNumber()}";
             
             //Make sure plate doesn't exist.
             var filter = MongoDB.Driver.Builders<LicensePlate>.Filter.Eq(x => x.Plate, plate);
@@ -178,6 +178,9 @@ namespace mtgvrp.dmv
         private void API_onPlayerExitVehicle(Client player, NetHandle vehicle)
         {
             var c = player.GetCharacter();
+
+            if (c == null)
+                return;
 
             if (!c.IsInDmvTest)
                 return;

@@ -175,10 +175,6 @@ namespace mtgvrp.player_manager
                 }
 
                 account.Save();
-                character.Health = API.getPlayerHealth(player);
-                character.LastPos = player.position;
-                character.LastRot = player.rotation;
-                character.GetTimePlayed(); //Update time played before save.
                 character.Save();
                 RemovePlayer(character);
                 LogManager.Log(LogManager.LogTypes.Connection, $"{character.CharacterName}[{player.socialClubName}] has left the server.");
@@ -417,7 +413,7 @@ namespace mtgvrp.player_manager
             Character character = API.getEntityData(receiver.handle, "Character");
             Account account = API.shared.getEntityData(receiver.handle, "Account");
             Account senderAccount = API.shared.getEntityData(sender, "Account");
-            var playerveh = VehicleManager.GetVehFromNetHandle(API.getPlayerVehicle(receiver)).Id;
+            var playerveh = VehicleManager.GetVehFromNetHandle(API.getPlayerVehicle(receiver))?.Id.ToString() ?? "None";
 
             API.sendChatMessageToPlayer(sender, "==============================================");
             API.sendChatMessageToPlayer(sender, "Player statistics for " + character.CharacterName);
