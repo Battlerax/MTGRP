@@ -52,7 +52,7 @@ namespace mtgvrp.property_system.businesses
             if (character.BankBalance >= amount && amount > 0)
             {
                 character.BankBalance -= amount;
-                InventoryManager.GiveInventoryItem(character, new Money(), amount);
+                InventoryManager.GiveInventoryItem(character, new Money(), amount, true);
                 ChatManager.RoleplayMessage(player, "withdraws some money from their bank account.",
                     ChatManager.RoleplayMe);
                 LogManager.Log(LogManager.LogTypes.Stats, $"[Bank] {player.GetCharacter().CharacterName}[{player.GetAccount().AccountName}] has withdrawn ${amount} from their bank account. CharacterMoney: ${Money.GetCharacterMoney(character)} | BankMoney: ${character.BankBalance}");

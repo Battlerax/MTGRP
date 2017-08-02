@@ -84,6 +84,7 @@ namespace mtgvrp.player_manager
 
         private void API_onPlayerHealthChange(Client player, int oldValue)
         {
+            var character = player.GetCharacter();
             Account account = API.getEntityData(player, "Account");
             if (account == null)
                 return;
@@ -92,6 +93,8 @@ namespace mtgvrp.player_manager
             {
                 API.setPlayerHealth(player, 100);
             }
+
+            character.Health = API.getPlayerHealth(player);
         }
 
 

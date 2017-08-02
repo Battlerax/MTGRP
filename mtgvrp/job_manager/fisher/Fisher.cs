@@ -6,6 +6,7 @@ using GrandTheftMultiplayer.Server.Constant;
 using GrandTheftMultiplayer.Server.Elements;
 using GrandTheftMultiplayer.Server.Managers;
 using mtgvrp.core;
+using mtgvrp.core.Items;
 using mtgvrp.core.Help;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;
@@ -94,6 +95,7 @@ namespace mtgvrp.job_manager.fisher
 
                 case "snapped_rod":
                     API.sendChatMessageToPlayer(player, "You snapped your fishing rod!");
+                    InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(FishingRod), 1);
                     API.stopPlayerAnimation(player);
                     break;
             }
@@ -113,6 +115,12 @@ namespace mtgvrp.job_manager.fisher
 
             var isOnLastBoat = false;
             var isLastVehicleBoat = false;
+
+            if (InventoryManager.DoesInventoryHaveItem<FishingRod>(character).Length < 1)
+            {
+                player.sendChatMessage("You don't own a fishing rod. Buy one from the boat shop.");
+                return;
+            }
 
             if (DateTime.Now < character.NextFishTime)
             {
