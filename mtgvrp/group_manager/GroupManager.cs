@@ -231,7 +231,7 @@ namespace mtgvrp.group_manager
                 return;
             }
 
-            Character member = API.getEntityData(receiver.handle, "Character");
+            Character member = receiver.GetCharacter();
             if (sender.GroupRank >= member.GroupRank && sender.GroupRank > rank)
             {
                 var oldRank = member.GroupRank;
@@ -324,7 +324,7 @@ namespace mtgvrp.group_manager
                 return;
             }
 
-            Character receiverChar = API.getEntityData(receiver.handle, "Character");
+            Character receiverChar = receiver.GetCharacter();
 
             receiverChar.Division = divId;
             receiverChar.DivisionRank = 1;
@@ -372,7 +372,7 @@ namespace mtgvrp.group_manager
                 return;
             }
 
-            Character receiverChar = API.getEntityData(receiver.handle, "Character");
+            Character receiverChar = receiver.GetCharacter();
 
             if (receiverChar.DivisionRank <= character.DivisionRank && character.DivisionRank > rank || character.GroupRank > 6)
             {
@@ -545,7 +545,7 @@ namespace mtgvrp.group_manager
             }
 
 
-            Character invitedchar = API.getEntityData(invited.handle, "Character");
+            Character invitedchar = invited.GetCharacter();
             API.setEntityData(invited.handle, "GroupInvitation", sender);
 
             API.sendChatMessageToPlayer(invited, Color.Pm, "You have been invited to " + sender.Group.Name + ". Type /accept groupinvitation.");
@@ -663,7 +663,7 @@ namespace mtgvrp.group_manager
         public void setpaycheckbonus_cmd(Client player, string amount)
         {
 
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (character.Group == Group.None || character.GroupRank < 8)
             {
@@ -677,7 +677,7 @@ namespace mtgvrp.group_manager
         [Command("groupbalance"), Help(HelpManager.CommandGroups.GroupGeneral, "Checks the balance of the group.")]
         public void groupbalance_cmd(Client player)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (character.Group == Group.None || character.GroupRank < 8)
             {

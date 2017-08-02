@@ -57,7 +57,7 @@ namespace mtgvrp.group_manager.lsnn
         [Command("broadcast"), Help(HelpManager.CommandGroups.LSNN, "Start a broadcast.", null)]
         public void broadcast_cmd(Client player)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLsnn)
             {
@@ -111,7 +111,7 @@ namespace mtgvrp.group_manager.lsnn
         [Command("editheadline", GreedyArg = true), Help(HelpManager.CommandGroups.LSNN, "Edit the broadcast headline text.", new[] { "Text being displayed on the broadcast." })]
         public void editbanner_cmd(Client player, string text)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLsnn)
             {
@@ -126,7 +126,7 @@ namespace mtgvrp.group_manager.lsnn
         [Command("setcamera"), Help(HelpManager.CommandGroups.LSNN, "Set down a camera for broadcasting.", null)]
         public void setcamera_cmd(Client player)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLsnn)
             {
@@ -161,7 +161,7 @@ namespace mtgvrp.group_manager.lsnn
         [Command("choppercam"), Help(HelpManager.CommandGroups.LSNN, "Toggle the chopper cam on/off", null )]
         public void choppercam_cmd(Client player)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLsnn)
             {
@@ -233,7 +233,7 @@ namespace mtgvrp.group_manager.lsnn
         [Command("pickupcamera"), Help(HelpManager.CommandGroups.LSNN, "Pick up the a broadcast camera.", null)]
         public void pickupcamera_cmd(Client player)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLsnn)
             {
@@ -313,7 +313,7 @@ namespace mtgvrp.group_manager.lsnn
         [Command("lotto"), Help(HelpManager.CommandGroups.LSNN, "Throw a lotto and show the winner. Players must buy lotto tickets.", null)]
         public void lotto_cmd(Client player)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLsnn)
             {
@@ -348,7 +348,7 @@ namespace mtgvrp.group_manager.lsnn
         [Command("watchbroadcast"), Help(HelpManager.CommandGroups.LSNN | HelpManager.CommandGroups.General, "Start watching the broadcast.", null)]
         public void watchbroadcast_cmd(Client player)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (CameraPosition == null || CameraRotation == null || IsBroadcasting == false && character.Group.CommandType != Group.CommandTypeLsnn)
             {
@@ -402,7 +402,7 @@ namespace mtgvrp.group_manager.lsnn
         [Command("stopwatching"), Help(HelpManager.CommandGroups.LSNN | HelpManager.CommandGroups.General, "Stop watching the broadcast.", null)]
         public void stopwatching_cmd(Client player)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if(character.IsWatchingBroadcast == false)
             {
@@ -417,7 +417,7 @@ namespace mtgvrp.group_manager.lsnn
         public void mictoggle_cmd(Client player)
         {
             var playerPos = API.getEntityPosition(player);
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (character.HasMic == false && character.Group.CommandType != Group.CommandTypeLsnn)
             {
@@ -445,8 +445,8 @@ namespace mtgvrp.group_manager.lsnn
         {
             var target = PlayerManager.ParseClient(id);
 
-            Character sendercharacter = API.getEntityData(player.handle, "Character");
-            Character character = API.getEntityData(target.handle, "Character");
+            Character sendercharacter = player.GetCharacter();
+            Character character = target.GetCharacter();
 
             if (sendercharacter.Group == Group.None || sendercharacter.Group.CommandType != Group.CommandTypeLsnn)
             {
@@ -476,7 +476,7 @@ namespace mtgvrp.group_manager.lsnn
         [Command("createarticle"), Help(HelpManager.CommandGroups.LSNN, "Start making an article.", null)]
         public void createarticle_cmd(Client player)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLsnn)
             {

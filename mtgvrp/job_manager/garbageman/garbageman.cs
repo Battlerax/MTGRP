@@ -29,7 +29,7 @@ namespace mtgvrp.job_manager.garbageman
             {
                 case "garbage_throwbag":
                     {
-                        Character character = API.getEntityData(player.handle, "Character");
+                        Character character = player.GetCharacter();
                         API.deleteEntity(character.GarbageBag);
                         character.GarbageBag = null;
 
@@ -67,7 +67,7 @@ namespace mtgvrp.job_manager.garbageman
                     }
                 case "garbage_pickupbag":
                     {
-                        Character character = API.getEntityData(player.handle, "Character");
+                        Character character = player.GetCharacter();
 
                         if (character == null)
                             return;

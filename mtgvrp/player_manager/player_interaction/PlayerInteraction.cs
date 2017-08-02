@@ -26,9 +26,9 @@ namespace mtgvrp.player_manager.player_interaction
                         var interactHandle = (NetHandle) arguments[1];
 
                         Client interactClient = API.getPlayerFromHandle(interactHandle);
-                        Character interactCharacter = API.getEntityData(interactClient.handle, "Character");
+                        Character interactCharacter = interactClient.GetCharacter();
 
-                        Character character = API.getEntityData(player.handle, "Character");
+                        Character character = player.GetCharacter();
 
                         switch (option)
                         {
@@ -139,7 +139,7 @@ namespace mtgvrp.player_manager.player_interaction
                     }
                     case "cancel_following":
                     {
-                        Character character = API.getEntityData(player.handle, "Character");
+                        Character character = player.GetCharacter();
 
                             if (character == null)
                             return;
@@ -162,7 +162,7 @@ namespace mtgvrp.player_manager.player_interaction
         {
 
             var receiver = PlayerManager.ParseClient(id);
-            Character character = API.getEntityData(receiver.handle, "Character");
+            Character character = receiver.GetCharacter();
     
             if (receiver == null)
             {

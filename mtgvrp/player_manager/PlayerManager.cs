@@ -18,7 +18,7 @@ namespace mtgvrp.player_manager
 {
     class PlayerManager : Script
     {
-        private static Dictionary<int, Character> _players = new Dictionary<int, Character>();
+        private static readonly Dictionary<int, Character> _players = new Dictionary<int, Character>();
 
         public static List<Character> Players => _players.Values.ToList();
 
@@ -151,7 +151,7 @@ namespace mtgvrp.player_manager
         public void OnPlayerDisconnected(Client player, string reason)
         {
             //Save data
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (character != null)
             {
@@ -173,7 +173,7 @@ namespace mtgvrp.player_manager
                     GroupManager.SendGroupMessage(player,
                         character.CharacterName + " from your group has left the server. (" + reason + ")");
                 }
-
+                
                 account.Save();
                 character.Save();
                 RemovePlayer(character);
@@ -349,7 +349,7 @@ namespace mtgvrp.player_manager
         public void GetStatistics(Client sender, string id = null)
         {
             var receiver = PlayerManager.ParseClient(id);
-            Character character = API.getEntityData(sender.handle, "Character");
+            Character character = sender.GetCharacter();
             Account account = API.shared.getEntityData(sender.handle, "Account");
 
             if (receiver == null)
@@ -372,7 +372,7 @@ namespace mtgvrp.player_manager
         [Command("time"), Help(HelpManager.CommandGroups.General, "Used to find the server time, in-game time, various cooldowns, etc.", null)]
         public void CheckTime(Client player)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             API.sendChatMessageToPlayer(player, Color.White, "__________________ TIME __________________");
             API.sendChatMessageToPlayer(player, Color.Grey, "The current server time is: " + DateTime.Now.ToString("h:mm:ss tt"));
@@ -392,7 +392,7 @@ namespace mtgvrp.player_manager
         [Command("attempt", GreedyArg = true), Help(HelpManager.CommandGroups.Roleplay, "Attempt to do something with a 50% chance of either success or fail.", "The attempt message")]
         public void attempt_cmd(Client player, string message)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             Random ran = new Random();
             var chance = ran.Next(100);
@@ -410,7 +410,7 @@ namespace mtgvrp.player_manager
  
         public void ShowStats(Client sender, Client receiver)
         {
-            Character character = API.getEntityData(receiver.handle, "Character");
+            Character character = receiver.GetCharacter();
             Account account = API.shared.getEntityData(receiver.handle, "Account");
             Account senderAccount = API.shared.getEntityData(sender, "Account");
             var playerveh = VehicleManager.GetVehFromNetHandle(API.getPlayerVehicle(receiver))?.Id.ToString() ?? "None";

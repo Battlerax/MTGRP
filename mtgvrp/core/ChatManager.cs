@@ -42,7 +42,7 @@ namespace mtgvrp.core
         public void OnChatMessage(Client player, string msg, CancelEventArgs e)
         {
             Account account = API.getEntityData(player.handle, "Account");
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (account == null || character == null || account.IsLoggedIn == false)
             {
@@ -207,7 +207,7 @@ namespace mtgvrp.core
         public void newbie_cmd(Client player, string message)
         {
             Account account = API.getEntityData(player.handle, "Account");
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (NewbieStatus == false && account.AdminLevel == 0)
             {
@@ -221,7 +221,7 @@ namespace mtgvrp.core
                 return;
             }
 
-            Character c = API.getEntityData(player.handle, "Character");
+            Character c = player.GetCharacter();
 
             if (c.NewbieCooldown > new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds())
             {
@@ -264,7 +264,7 @@ namespace mtgvrp.core
                 return;
             }
 
-            Character c = API.getEntityData(player.handle, "Character");
+            Character c = player.GetCharacter();
 
             if (c.OocCooldown > new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds())
             {
@@ -284,7 +284,7 @@ namespace mtgvrp.core
         public void vip_chat(Client player, string message)
         {
             Account account = API.getEntityData(player.handle, "Account");
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (VipStatus == false && account.AdminLevel == 0)
             {
@@ -304,7 +304,7 @@ namespace mtgvrp.core
                 return;
             }
 
-            Character c = API.getEntityData(player.handle, "Character");
+            Character c = player.GetCharacter();
 
             var players = API.getAllPlayers();
             foreach(var p in players)
@@ -377,7 +377,7 @@ namespace mtgvrp.core
         [Command("ame", GreedyArg = true), Help.Help(HelpManager.CommandGroups.Roleplay, "Describe an action you're doing, shows on top of your head.", "The action")]
         public void ame_cmd(Client player, string action)
         {
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
             AmeLabelMessage(player, action, 8000);
         }
 

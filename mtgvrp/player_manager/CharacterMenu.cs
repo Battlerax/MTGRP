@@ -161,7 +161,7 @@ namespace mtgvrp.player_manager
                             break;
                         }
 
-                        Character character = API.getEntityData(player.handle, "Character");
+                        Character character = player.GetCharacter();
                         character.Client = player;
 
                         if (character.AccountId != account.Id.ToString())
@@ -258,7 +258,7 @@ namespace mtgvrp.player_manager
                     API.sendNativeToPlayer(player, Hash.SET_PED_HEAD_BLEND_DATA, fatherPed, fatherIntId, fatherIntId, 0, fatherIntId, fatherIntId, 0, 1.0, 1.0, 0, false);
                     API.sendNativeToPlayer(player, Hash.SET_PED_HEAD_BLEND_DATA, motherPed, motherIntId, motherIntId, 0, motherIntId, motherIntId, 0, 1.0, 1.0, 0, false);
 
-                    Character character = API.getEntityData(player.handle, "Character");
+                    Character character = player.GetCharacter();
 
                     character.Model.FatherId = fatherIntId;
                     character.Model.MotherId = motherIntId;
@@ -276,7 +276,7 @@ namespace mtgvrp.player_manager
                     break;
                 case "change_facial_features":
                 {
-                    Character character = API.getEntityData(player.handle, "Character");
+                    Character character = player.GetCharacter();
                 
                     character.Model.HairStyle = character.Model.Gender == Character.GenderMale ? ComponentManager.ValidMaleHair[(int)arguments[0]].ComponentId : ComponentManager.ValidFemaleHair[(int)arguments[0]].ComponentId;
 
@@ -300,7 +300,7 @@ namespace mtgvrp.player_manager
                 case "change_clothes":
                     {
 
-                        Character character = API.getEntityData(player.handle, "Character");
+                        Character character = player.GetCharacter();
 
                         if (character.Model.Gender == Character.GenderMale)
                         {
@@ -393,7 +393,7 @@ namespace mtgvrp.player_manager
                     break;
                 case "finish_character_creation":
                 {
-                    Character character = API.getEntityData(player.handle, "Character");
+                    Character character = player.GetCharacter();
                     Account acc = player.GetAccount();
                     character.Age = (int) arguments[0];
                     character.Birthday = (string) arguments[1];
@@ -439,7 +439,7 @@ namespace mtgvrp.player_manager
                     API.triggerClientEvent(player, "initialize_hair", maxHairStyles);
                     break;
                 case "initiate_style_limits":
-                    Character cha = API.getEntityData(player.handle, "Character");
+                    Character cha = player.GetCharacter();
                     API.triggerClientEvent(player, "initialize_components", (cha.Model.Gender == Character.GenderMale ? Clothing.MaleComponents : Clothing.FemaleComponents));
                     break;
 /*

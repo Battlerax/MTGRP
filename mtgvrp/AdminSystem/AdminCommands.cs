@@ -41,7 +41,7 @@ namespace mtgvrp.AdminSystem
             switch (eventId)
             {
                 case "OnRequestSubmitted":
-                    Character character = API.getEntityData(player.handle, "Character");
+                    Character character = player.GetCharacter();
                     int playerid = PlayerManager.GetPlayerId(character);
                     AdminReports.InsertReport(3, player.nametag, (string)arguments[0]);
                     SendtoAllAdmins("~g~[REPORT]~w~ " + PlayerManager.GetName(player) + " (ID:" + playerid + "): " + (string)arguments[0]);
@@ -51,7 +51,7 @@ namespace mtgvrp.AdminSystem
                     break;
 
                 case "OnReportMade":
-                    Character senderchar = API.getEntityData(player.handle, "Character");
+                    Character senderchar = player.GetCharacter();
                     int senderid = PlayerManager.GetPlayerId(senderchar);
                     string id = (string)arguments[1];
                     var receiver = PlayerManager.ParseClient(id);
@@ -697,7 +697,7 @@ namespace mtgvrp.AdminSystem
         public void setmymoney_cmd(Client player, int money)
         {
             Account account = API.getEntityData(player.handle, "Account");
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (account.AdminLevel <= 6)
                 return;
@@ -722,7 +722,7 @@ namespace mtgvrp.AdminSystem
                 return;
             }
 
-            Character character = API.getEntityData(receiver.handle, "Character");
+            Character character = receiver.GetCharacter();
             API.sendChatMessageToPlayer(player, "----------------------------------------------");
             API.sendChatMessageToPlayer(player, $"Vehicles Owned By {character.CharacterName}");
             foreach (var carid in character.OwnedVehicles)
@@ -967,7 +967,7 @@ namespace mtgvrp.AdminSystem
         {
             var receiver = PlayerManager.ParseClient(id);
             Account account = API.getEntityData(player.handle, "Account");
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
             Character receivercharacter = API.getEntityData(receiver, "Character");
 
             if (account.AdminLevel < 2)
@@ -1047,7 +1047,7 @@ namespace mtgvrp.AdminSystem
         {
             var receiver = PlayerManager.ParseClient(id);
             Account account = API.getEntityData(player.handle, "Account");
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
             Character receivercharacter = API.getEntityData(receiver, "Character");
 
             if (account.AdminLevel < 1)
@@ -1098,7 +1098,7 @@ namespace mtgvrp.AdminSystem
         public void mfinish_cmd(Client player)
         {
             Account account = API.getEntityData(player.handle, "Account");
-            Character character = API.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (account.AdminLevel < 1)
                 return;
@@ -1942,7 +1942,7 @@ namespace mtgvrp.AdminSystem
 
         public void startReportTimer(Client player)
         {
-            Character senderchar = API.getEntityData(player.handle, "Character");
+            Character senderchar = player.GetCharacter();
             senderchar.ReportCreated = true;
             senderchar.ReportTimer = new Timer { Interval = 15000 };
             senderchar.ReportTimer.Elapsed += delegate { ReportTimer(player); };
