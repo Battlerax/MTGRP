@@ -32,7 +32,7 @@ namespace mtgvrp.property_system.businesses
                 return;
             }
 
-            Character character = API.getEntityData(player, "Character");
+            Character character = player.GetCharacter();
 
             var phone = InventoryManager.DoesInventoryHaveItem(character, typeof(Phone));
 

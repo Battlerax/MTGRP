@@ -112,7 +112,7 @@ namespace mtgvrp.group_manager.lspd.MDC
                 }
                 case "server_createBolo":
                 {
-                    Character character = API.getEntityData(player, "Character");
+                    Character character = player.GetCharacter();
                     var newBolo = new Bolo(character.CharacterName, Convert.ToInt32(arguments[1]),
                         Convert.ToString(arguments[0]));
 

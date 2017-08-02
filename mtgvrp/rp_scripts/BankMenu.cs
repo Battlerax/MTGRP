@@ -110,7 +110,7 @@ namespace mtgvrp.rp_scripts
         {
             if (Atms.Any(x=> x.DistanceTo(player.position) <= 5.0))
             {
-                Character character = API.shared.getEntityData(player.handle, "Character");
+                Character character = player.GetCharacter();
                 ChatManager.RoleplayMessage(character, "slides in their card and inputs their PIN number.", ChatManager.RoleplayMe);
                 API.sendChatMessageToPlayer(player, "~y~[Bank of Los Santos]~w~ Account balance: ~g~$" + character.BankBalance + "~w~.");
                 API.triggerClientEvent(player, "openATM");
@@ -131,7 +131,7 @@ namespace mtgvrp.rp_scripts
                         }
                         var option = (string)arguments[0];
                       
-                        Character character = API.shared.getEntityData(player.handle, "Character");
+                        Character character = player.GetCharacter();
                         switch (option)
                         {
                             case "Withdraw cash":

@@ -80,8 +80,8 @@ namespace mtgvrp.weapon_manager
 
         private void API_onPlayerWeaponSwitch(Client player, WeaponHash weapon)
         {
-            Character character = API.shared.getEntityData(player.handle, "Character");
-            Account playerAccount = API.shared.getEntityData(player.handle, "Account");
+            Character character = player.GetCharacter();
+            Account playerAccount = player.GetAccount();
 
             WeaponHash currentPlayerWeapon = API.getPlayerCurrentWeapon(player);
 
@@ -96,7 +96,7 @@ namespace mtgvrp.weapon_manager
                     if (p == null)
                         continue;
 
-                    Account account = API.shared.getEntityData(p, "Account");
+                    Account account = p.GetAccount();
                     if (account.AdminLevel > 1) { p.sendChatMessage("~r~ [WARNING]: " + player.nametag + " HAS A WEAPON THEY SHOULD NOT HAVE. TAKE ACTION."); }
                 }
                 return;
@@ -127,7 +127,7 @@ namespace mtgvrp.weapon_manager
 
         public static bool DoesPlayerHaveAWeapon(Client player)
         {
-            Character character = API.shared.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             if (InventoryManager.DoesInventoryHaveItem<Weapon>(character).Length > 0) { return true; }
             else { return false; }
@@ -136,7 +136,7 @@ namespace mtgvrp.weapon_manager
 
         public static bool DoesPlayerHaveWeapon(Client player, WeaponHash weapon)
         {
-            Character character = API.shared.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             foreach (Weapon i in InventoryManager.DoesInventoryHaveItem<Weapon>(character))
             {
@@ -152,7 +152,7 @@ namespace mtgvrp.weapon_manager
         public static void CreateWeapon(Client player, WeaponHash weaponhash, WeaponTint weapontint = WeaponTint.Normal, 
             bool isplayerweapon = false, bool isadminweapon = false, bool isgroupweapon = false)
         {
-            Character character = API.shared.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             Weapon weapon = new Weapon(weaponhash, weapontint, isplayerweapon, 
                 isadminweapon, isgroupweapon, character.Group);
@@ -163,7 +163,7 @@ namespace mtgvrp.weapon_manager
 
         public static void SetWeaponTint(Client player, WeaponHash weaponhash, WeaponTint weapontint)
         {
-            Character character = API.shared.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             foreach(Weapon weapon in InventoryManager.DoesInventoryHaveItem<Weapon>(character))
             {
@@ -177,7 +177,7 @@ namespace mtgvrp.weapon_manager
 
         public static void SetWeaponComponent(Client player, WeaponHash weaponhash, WeaponComponent weaponcomponent)
         {
-            Character character = API.shared.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             foreach (Weapon weapon in InventoryManager.DoesInventoryHaveItem<Weapon>(character))
             {
@@ -191,7 +191,7 @@ namespace mtgvrp.weapon_manager
 
         public static void RemoveAllPlayerWeapons(Client player)
         {
-            Character character = API.shared.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             InventoryManager.DeleteInventoryItem(character, typeof(Weapon), -1);
             API.shared.removeAllPlayerWeapons(player);
@@ -199,8 +199,8 @@ namespace mtgvrp.weapon_manager
 
         public static void GivePlayerWeapon(Client player, Weapon weapon)
         {
-            Account account = API.shared.getEntityData(player, "Account");
-            Character character = API.shared.getEntityData(player.handle, "Character");
+            Account account = player.GetAccount();
+            Character character = player.GetCharacter();
 
             if (DoesPlayerHaveWeapon(player, weapon.WeaponHash)) { return; }
 
@@ -213,7 +213,7 @@ namespace mtgvrp.weapon_manager
 
         public static Weapon GetCurrentWeapon(Client player)
         {
-            Character character = API.shared.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             WeaponHash currentWeapon = API.shared.getPlayerCurrentWeapon(player);
 
@@ -230,8 +230,8 @@ namespace mtgvrp.weapon_manager
         public void listweapons_cmd(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
-            Account account = API.shared.getEntityData(player.handle, "Account");
-            Character receiverid = API.shared.getEntityData(receiver.handle, "Character");
+            Account account = player.GetAccount();
+            Character receiverid = receiver.GetCharacter();
 
             if (account.AdminLevel < 3)
             {
@@ -253,8 +253,8 @@ namespace mtgvrp.weapon_manager
         public void removeallweapons_cmd(Client player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
-            Account account = API.shared.getEntityData(player.handle, "Account");
-            Character receiverid = API.shared.getEntityData(receiver.handle, "Character");
+            Account account = player.GetAccount();
+            Character receiverid = receiver.GetCharacter();
 
             if (account.AdminLevel < 3)
             {

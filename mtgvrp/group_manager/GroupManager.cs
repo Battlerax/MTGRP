@@ -698,7 +698,7 @@ namespace mtgvrp.group_manager
 
         public static void SendGroupMessage(Client player, string message, string color = Color.GroupChat)
         {
-            Character sender = API.shared.getEntityData(player.handle, "Character");
+            Character sender = player.GetCharacter();
             foreach (var c in PlayerManager.Players)
             {
                 if(c.GroupId == sender.GroupId)
@@ -710,7 +710,7 @@ namespace mtgvrp.group_manager
 
         public static void SendRadioMessage(Client player, string message, string color = Color.GroupChat)
         {
-            Character sender = API.shared.getEntityData(player.handle, "Character");
+            Character sender = player.GetCharacter();
             foreach (var c in PlayerManager.Players)
             {
                 if (c.GroupId == sender.GroupId && c.RadioToggle == true)

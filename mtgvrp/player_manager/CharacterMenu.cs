@@ -45,8 +45,8 @@ namespace mtgvrp.player_manager
 
         public void SpawnCharacter(Client player)
         {
-            Account acc = API.getEntityData(player, "Account");
-            Character character = API.getEntityData(player, "Character");
+            Account acc = player.GetAccount();
+            Character character = player.GetCharacter();
             character.LastPos = new Vector3(433.2354, -645.8408, 28.72639);
             character.LastRot = new Vector3(0, 0, 90);
             character.update_ped();

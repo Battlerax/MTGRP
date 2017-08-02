@@ -85,7 +85,7 @@ namespace mtgvrp.job_manager.garbageman
 
         private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle, int seat)
         {
-            Character character = API.getEntityData(player, "Character");
+            Character character = player.GetCharacter();
             var veh = VehicleManager.GetVehFromNetHandle(vehicle);
 
             if (veh?.Job?.Type == JobManager.JobTypes.Garbageman && character.JobOne?.Type == JobManager.JobTypes.Garbageman)
@@ -161,7 +161,7 @@ namespace mtgvrp.job_manager.garbageman
 
         public static void UpdateTimer(Client player)
         {
-            Character character = API.shared.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
             character.GarbageTimeLeft -= 1000;
         }
 
@@ -196,7 +196,7 @@ namespace mtgvrp.job_manager.garbageman
         [Command("unloadtrash"), Help(HelpManager.CommandGroups.GarbageJob, "Unloads your truck's garabge and get your payment!")]
         public void unloadtrash_cmd(Client player)
         {
-            Character character = API.getEntityData(player, "Character");
+            Character character = player.GetCharacter();
 
             if (character.JobOne.Type != JobManager.JobTypes.Garbageman)
             {
@@ -248,7 +248,7 @@ namespace mtgvrp.job_manager.garbageman
         [Command("endtrash"), Help(HelpManager.CommandGroups.GarbageJob, "Ends your current trash job.")]
         public void endtrash_cmd(Client player)
         {
-            Character character = API.getEntityData(player, "Character");
+            Character character = player.GetCharacter();
 
             if (character.JobOne.Type != JobManager.JobTypes.Garbageman)
             {
@@ -279,7 +279,7 @@ namespace mtgvrp.job_manager.garbageman
         [Command("pickuptrash"), Help(HelpManager.CommandGroups.GarbageJob, "Picks up trash from a garbage bin.")]
         public void pickuptrash_cmd(Client player)
         {
-            Character character = API.getEntityData(player, "Character");
+            Character character = player.GetCharacter();
 
             if (character.JobOne.Type != JobManager.JobTypes.Garbageman)
             {

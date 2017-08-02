@@ -24,7 +24,7 @@ namespace mtgvrp.vehicle_manager
                     var vehicleHandle = (NetHandle)arguments[0];
                     var option = (string)arguments[1];
 
-                    Character character = API.shared.getEntityData(player.handle, "Character");
+                    Character character = player.GetCharacter();
                     Vehicle vehicle = API.shared.getEntityData(vehicleHandle, "Vehicle");
 
                     var playerSeat = API.shared.getPlayerVehicleSeat(player);

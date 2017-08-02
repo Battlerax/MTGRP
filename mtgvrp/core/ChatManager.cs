@@ -41,7 +41,7 @@ namespace mtgvrp.core
 
         public void OnChatMessage(Client player, string msg, CancelEventArgs e)
         {
-            Account account = API.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
             Character character = player.GetCharacter();
 
             if (account == null || character == null || account.IsLoggedIn == false)
@@ -206,7 +206,7 @@ namespace mtgvrp.core
         [Command("newbiechat", Alias = "n", GreedyArg = true), Help.Help(HelpManager.CommandGroups.Chat, "Talk in the newbie chat to get help.", "Your question")]
         public void newbie_cmd(Client player, string message)
         {
-            Account account = API.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
             Character character = player.GetCharacter();
 
             if (NewbieStatus == false && account.AdminLevel == 0)
@@ -256,7 +256,7 @@ namespace mtgvrp.core
         [Command("ooc", Alias = "o", GreedyArg = true), Help.Help(HelpManager.CommandGroups.Chat, "Talk on the global OOC channel.", "The message")]
         public void ooc_cmd(Client player, string message)
         {
-            Account account = API.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
 
             if (OocStatus == false && account.AdminLevel == 0)
             {
@@ -283,7 +283,7 @@ namespace mtgvrp.core
         [Command("vip", Alias ="v", GreedyArg =true), Help.Help(HelpManager.CommandGroups.Chat, "Talk in the VIP channel.", "The message")]
         public void vip_chat(Client player, string message)
         {
-            Account account = API.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
             Character character = player.GetCharacter();
 
             if (VipStatus == false && account.AdminLevel == 0)
@@ -312,7 +312,7 @@ namespace mtgvrp.core
                 if (p == null)
                     continue;
 
-                Account pAccount = API.getEntityData(p.handle, "Account");
+                Account pAccount = p.GetAccount();
 
                 if(pAccount?.VipLevel > 0)
                 {
@@ -370,7 +370,7 @@ namespace mtgvrp.core
         [Command("me", GreedyArg = true), Help.Help(HelpManager.CommandGroups.Roleplay, "Descrive an action you're doing.", "The action")]
         public void me_cmd(Client player, string action)
         {
-            Character playerchar = API.shared.getEntityData(player.handle, "Character");
+            Character playerchar = player.GetCharacter();
             RoleplayMessage(playerchar, action, RoleplayMe, 10, 0);
         }
 
@@ -385,7 +385,7 @@ namespace mtgvrp.core
         [Command("do", GreedyArg = true), Help.Help(HelpManager.CommandGroups.Roleplay, "Describe an event that's occuring near you.", "The action")]
         public void do_cmd(Client player, string action)
         {
-            Character playerchar = API.shared.getEntityData(player.handle, "Character");
+            Character playerchar = player.GetCharacter();
             RoleplayMessage(playerchar, action, RoleplayDo, 10, 0);
         }
 
@@ -414,7 +414,7 @@ namespace mtgvrp.core
         [Command("b", GreedyArg = true), Help.Help(HelpManager.CommandGroups.Chat, "Sends a local OOC chat.", "The message")]
         public void b_cmd(Client player, string text)
         {
-            Account account = API.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
             if(account.AdminDuty == false)
             {
                 NearbyMessage(player, 10, "(( " + PlayerManager.GetName(player) + ": " + text + " ))", Color.Ooc);
@@ -431,7 +431,7 @@ namespace mtgvrp.core
         [Command("admin", Alias = "a", GreedyArg = true), Help.Help(HelpManager.CommandGroups.AdminLevel1, "Talk in admin channel.", "The message")]
         public void admin_cmd(Client player,  string text)
         {
-            Account account = API.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
 
             if(account.AdminLevel > 0)
             {
@@ -440,7 +440,7 @@ namespace mtgvrp.core
                     if (c == null)
                         continue;
 
-                    Account receiverAccount = API.getEntityData(c, "Account");
+                    Account receiverAccount = c.GetAccount();
 
                     if (receiverAccount?.AdminLevel > 0)
                     {
@@ -553,7 +553,7 @@ namespace mtgvrp.core
 
         public static void AmeLabelMessage(Client player, string action, int time)
         {
-            Character character = API.shared.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
             if (API.shared.doesEntityExist(character.AmeText))
             {
                 API.shared.deleteEntity(character.AmeText);

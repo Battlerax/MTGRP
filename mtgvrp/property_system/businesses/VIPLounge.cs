@@ -5,6 +5,7 @@ using mtgvrp.core.Help;
 using GrandTheftMultiplayer.Server.API;
 using GrandTheftMultiplayer.Server.Managers;
 using GrandTheftMultiplayer.Server.Elements;
+using mtgvrp.core;
 
 namespace mtgvrp.property_system.businesses
 {
@@ -14,7 +15,7 @@ namespace mtgvrp.property_system.businesses
         [Command("buyweapontint"), Help(HelpManager.CommandGroups.General, "Used to buy a weapon tint as a VIP", null)]
         public void buyweapontint_cmd(Client player)
         {
-            Account account = API.getEntityData(player, "Account");
+            Account account = player.GetAccount();
 
             if (account.VipLevel < 1)
             {
@@ -29,8 +30,6 @@ namespace mtgvrp.property_system.businesses
                 API.sendChatMessageToPlayer(player, "You aren't at the VIP interaction point.");
                 return;
             }
-
-            Character character = API.getEntityData(player, "Character");
 
             API.freezePlayer(player, true);
             List<string[]> itemsWithPrices = new List<string[]>();

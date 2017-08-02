@@ -181,7 +181,7 @@ namespace mtgvrp.vehicle_dealership
         {
             //Check if can buy more cars.
             Character character = player.GetCharacter();
-            Account account = API.getEntityData(player, "Account");
+            Account account = player.GetAccount();
 
             if (account.VipLevel < 1)
             {

@@ -443,7 +443,7 @@ namespace mtgvrp.group_manager.lspd
             var receiver = PlayerManager.ParseClient(id);
 
             Character character = player.GetCharacter();
-            Character receivercharacter = API.getEntityData(receiver, "Character");
+            Character receivercharacter = receiver.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
@@ -487,7 +487,7 @@ namespace mtgvrp.group_manager.lspd
             var receiver = PlayerManager.ParseClient(id);
 
             Character character = player.GetCharacter();
-            Character receivercharacter = API.getEntityData(receiver, "Character");
+            Character receivercharacter = receiver.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
@@ -517,7 +517,7 @@ namespace mtgvrp.group_manager.lspd
             var receiver = PlayerManager.ParseClient(id);
 
             Character character = player.GetCharacter();
-            Character receivercharacter = API.getEntityData(receiver, "Character");
+            Character receivercharacter = receiver.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
@@ -566,7 +566,7 @@ namespace mtgvrp.group_manager.lspd
             var receiver = PlayerManager.ParseClient(id);
 
             Character character = player.GetCharacter();
-            Character receivercharacter = API.getEntityData(receiver, "Character");
+            Character receivercharacter = receiver.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
@@ -609,7 +609,7 @@ namespace mtgvrp.group_manager.lspd
             }
 
             Character character = player.GetCharacter();
-            Character receivercharacter = API.getEntityData(receiver, "Character");
+            Character receivercharacter = receiver.GetCharacter();
                        
             if (receiver == player)
             {
@@ -662,7 +662,7 @@ namespace mtgvrp.group_manager.lspd
         [Command("acceptbeacon", Alias = "ab", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Accept the recent backup beacon.", null)]
         public void acceptbeacon_cmd(Client player)
         {
-            Character character = API.shared.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
             var beaconCreator = player;
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
@@ -749,7 +749,7 @@ namespace mtgvrp.group_manager.lspd
             }
 
             Character character = player.GetCharacter();
-            Character receiverCharacter = API.getEntityData(target, "Character");
+            Character receiverCharacter = target.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
@@ -785,7 +785,7 @@ namespace mtgvrp.group_manager.lspd
                 return;
             }
 
-            Character receiverCharacter = API.getEntityData(target, "Character");
+            Character receiverCharacter = target.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
@@ -1114,7 +1114,7 @@ namespace mtgvrp.group_manager.lspd
 
         public static void JailControl(Client player, int seconds)
         {
-            Character character = API.shared.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
 
             int jailOnePlayers = API.shared.getPlayersInRadiusOfPosition(3.7f, JailOne).Count;
             int jailTwoPlayers = API.shared.getPlayersInRadiusOfPosition(3.7f, JailTwo).Count;
@@ -1156,13 +1156,13 @@ namespace mtgvrp.group_manager.lspd
 
         public static void UpdateTimer(Client player)
         {
-            Character character = API.shared.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
             character.JailTimeLeft -= 1000;
         }
 
         public static void SetFree(Client player)
         {
-            Character character = API.shared.getEntityData(player.handle, "Character");
+            Character character = player.GetCharacter();
             if (character.IsJailed == false)
             {
                 return;

@@ -217,7 +217,7 @@ namespace mtgvrp.core.Discord
                 if(p == null)
                     continue;
 
-                Account pAccount = API.shared.getEntityData(p.handle, "Account");
+                Account pAccount = p.GetAccount();
                 if (pAccount?.VipLevel > 0)
                 {
                     API.shared.sendChatMessageToPlayer(p, Color.VipChat, "[Discord V] " + ctx.Member.DisplayName + ": " + ctx.RawArgumentString);

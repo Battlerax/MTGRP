@@ -3,6 +3,7 @@ using System.Linq;
 using GrandTheftMultiplayer.Server.API;
 using GrandTheftMultiplayer.Server.Elements;
 using GrandTheftMultiplayer.Server.Managers;
+using mtgvrp.core;
 using mtgvrp.group_manager;
 using mtgvrp.job_manager;
 using mtgvrp.player_manager;
@@ -141,7 +142,7 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
         [Command("editvehicle"), Help(HelpManager.CommandGroups.AdminLevel4, "Editing different stats of a vehicle", null)]
         public void editvehicle_cmd(Client player)
         {
-            Account account = API.getEntityData(player.handle, "Account");
+            Account account = player.GetAccount();
             if (account.AdminLevel < 4)
                 return;
 
