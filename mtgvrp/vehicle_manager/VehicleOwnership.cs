@@ -37,7 +37,6 @@ namespace mtgvrp.vehicle_manager
                     VehicleManager.despawn_vehicle(acVeh);
                     VehicleManager.delete_vehicle(acVeh);
                     acVeh.Delete();
-                    character.OwnedVehicles.Remove(acVeh.Id);
                     API.sendChatMessageToPlayer(sender, $"You have sucessfully abandoned your ~r~{API.getVehicleDisplayName(acVeh.VehModel)}~w~");
                     break;
 
@@ -73,8 +72,7 @@ namespace mtgvrp.vehicle_manager
         {
             //Get all owned vehicles and send them.
             Character character = player.GetCharacter();
-            string[][] cars = VehicleManager.Vehicles
-                .Where(x => x.OwnerId == character.Id)
+            string[][] cars = character.OwnedVehicles
                 .Select(x => new [] { API.getVehicleDisplayName(x.VehModel), x.Id.ToString(), x.NetHandle.Value.ToString()}).ToArray();
 
             API.triggerClientEvent(player, "myvehicles_showmenu", API.toJson(cars));
@@ -122,8 +120,6 @@ namespace mtgvrp.vehicle_manager
                             InventoryManager.DeleteInventoryItem(character, typeof(Money), price);
                             veh.OwnerId = character.Id;
                             veh.OwnerName = character.CharacterName;
-                            buyingFrom.OwnedVehicles.Remove(veh.Id);
-                            character.OwnedVehicles.Add(veh.Id);
                             veh.Save();
 
                             //DONE, now spawn if hes vip.

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
 using GrandTheftMultiplayer.Server.API;
@@ -16,6 +17,7 @@ using mtgvrp.inventory;
 using mtgvrp.job_manager;
 using mtgvrp.job_manager.fisher;
 using mtgvrp.job_manager.taxi;
+using mtgvrp.vehicle_manager;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using Vehicle = mtgvrp.vehicle_manager.Vehicle;
@@ -47,8 +49,6 @@ namespace mtgvrp.player_manager
 
         public PedHash Skin { get; set; }
         public int Health { get; set; }
-
-        public List<int> OwnedVehicles = new List<int>();
 
         public List<int> Outfit = new List<int>();
         public List<int> OutfitVariation = new List<int>();
@@ -371,12 +371,24 @@ namespace mtgvrp.player_manager
             LastPos = API.shared.getEntityPosition(Client);
             LastRot = API.shared.getEntityRotation(Client);
 
-            Task.Run(() =>
+            var task = Task.Run(() =>
             {
                 var filter = Builders<Character>.Filter.Eq("_id", Id);
                 DatabaseManager.CharacterTable.ReplaceOne(filter, this);
             });
+
+            task.ContinueWith(
+                a => LogManager.Log(LogManager.LogTypes.Connection,
+                    $"The character {CharacterName} was saved sucessfully."),
+                TaskContinuationOptions.OnlyOnRanToCompletion);
+
+            task.ContinueWith(
+                a => LogManager.Log(LogManager.LogTypes.Connection,
+                    $"The character {CharacterName} was NOT saved sucessfully. {a.Exception?.Message}"),
+                TaskContinuationOptions.OnlyOnFaulted);
         }
+
+        public List<Vehicle> OwnedVehicles => VehicleManager.Vehicles.Where(x => x.OwnerId == Id).ToList();
 
         public static bool IsCharacterRegistered(string name)
         {

@@ -180,7 +180,6 @@ namespace mtgvrp.vehicle_dealership
 
                     //Add it to the players cars.
                     theVehicle.Insert();
-                    character.OwnedVehicles.Add(theVehicle.Id);
 
                     //Spawn it.
                     if (VehicleManager.spawn_vehicle(theVehicle) != 1)

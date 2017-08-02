@@ -580,9 +580,7 @@ namespace mtgvrp.vehicle_manager
             if (maxVehs > e.Character.OwnedVehicles.Count) maxVehs = e.Character.OwnedVehicles.Count;
             for (int i = 0; i < maxVehs; i++)
             {
-                var car =
-                    Vehicles.SingleOrDefault(
-                        x => x.Id == e.Character.OwnedVehicles[i] && x.OwnerId == e.Character.Id);
+                var car = e.Character.OwnedVehicles[i];
                 if (car == null)
                     continue;
 
@@ -601,9 +599,7 @@ namespace mtgvrp.vehicle_manager
             if (maxVehs > character.OwnedVehicles.Count) maxVehs = character.OwnedVehicles.Count;
             for (int i = 0; i < maxVehs; i++)
             {
-                var car =
-                    Vehicles.SingleOrDefault(
-                        x => x.Id == character.OwnedVehicles[i] && x.OwnerId == character.Id);
+                var car = character.OwnedVehicles[i];
                 if (car == null)
                     continue;
 
@@ -649,21 +645,6 @@ namespace mtgvrp.vehicle_manager
                 player.sendChatMessage("This is a ~y~VIP~y~ vehicle. You must be a VIP to drive it.");
                 API.delay(1000, true, () => API.warpPlayerOutOfVehicle(player));;
                 return;
-            }
-
-            foreach(var i in character.OwnedVehicles)
-            {
-                if (i == veh.Id)
-                {
-                    if (character.OwnedVehicles.IndexOf(i) > 1 && account.VipLevel == 0 ||
-                        character.OwnedVehicles.IndexOf(i) > 2 && account.VipLevel == 1 ||
-                        character.OwnedVehicles.IndexOf(i) > 3 && account.VipLevel == 2)
-                    {
-                        player.sendChatMessage("You do not have the sufficient VIP level to enter this vehicle.");
-                        API.delay(1000, true, () => API.warpPlayerOutOfVehicle(player));;
-                        return;
-                    }
-                }
             }
 
             if (account.AdminLevel > 1)

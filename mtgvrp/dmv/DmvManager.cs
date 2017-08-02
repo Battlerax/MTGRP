@@ -101,7 +101,7 @@ namespace mtgvrp.dmv
                 }
 
                 int vehid = Convert.ToInt32(arguments[0]);
-                if (!c.OwnedVehicles.Exists(x => x == vehid))
+                if (!c.OwnedVehicles.Exists(x => x.Id == vehid))
                 {
                     API.sendChatMessageToPlayer(player, "You don't own that vehicle!!!");
                     return;
@@ -372,7 +372,7 @@ namespace mtgvrp.dmv
                 return;
             }
 
-            string[][] vehList = VehicleManager.Vehicles.Where(x => c.OwnedVehicles.Exists(y => x.Id == y) && x.IsRegistered == false).Select(x => new[] {API.getVehicleDisplayName(x.VehModel), x.Id.ToString() }).ToArray();
+            string[][] vehList = c.OwnedVehicles.Where(x => x.IsRegistered == false).Select(x => new[] {API.getVehicleDisplayName(x.VehModel), x.Id.ToString() }).ToArray();
             API.triggerClientEvent(player, "DMV_SELECTVEHICLE", API.toJson(vehList));
         }
 
@@ -420,7 +420,7 @@ namespace mtgvrp.dmv
 
             var c = player.GetCharacter();
 
-            if (!VehicleManager.Vehicles.Where(x => c.OwnedVehicles.Contains(x.Id)).Any(x => x.IsRegistered))
+            if (!VehicleManager.Vehicles.Any(x => x.IsRegistered))
             {
                 API.sendChatMessageToPlayer(player, "You don't have any registered vehicles.");
                 return;
@@ -433,7 +433,7 @@ namespace mtgvrp.dmv
             }
 
             API.sendChatMessageToPlayer(targetPlayer, $" [************** Vehicles Of {c.rp_name()} **************]");
-            foreach (var veh in VehicleManager.Vehicles.Where(x => c.OwnedVehicles.Contains(x.Id)).Where(x => x.IsRegistered))
+            foreach (var veh in VehicleManager.Vehicles.Where(x => x.IsRegistered))
             {
                 API.sendChatMessageToPlayer(targetPlayer, $"* Model: {API.getVehicleDisplayName(veh.VehModel)} | Registration: {veh.LicensePlate}");
             }
