@@ -684,8 +684,7 @@ namespace mtgvrp.vehicle_manager
             API.setEntitySyncedData(player.handle, "OwnsVehicle", DoesPlayerHaveVehicleAccess(player, veh));
             API.setEntitySyncedData(player.handle, "CanParkCar", DoesPlayerHaveVehicleParkLockAccess(player, veh));
 
-            if(account.IsSpeedoOn)
-                API.triggerClientEvent(player, "speedo_showcef");
+           API.triggerClientEvent(player, "speedo_entervehicle", account.IsSpeedoOn);
 
             veh.Driver = player.GetCharacter();
             veh.LastOccupied = DateTime.Now;

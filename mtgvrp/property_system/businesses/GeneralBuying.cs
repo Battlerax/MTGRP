@@ -425,7 +425,7 @@ namespace mtgvrp.property_system.businesses
 
                         if (item.GetType() == typeof(Phone))
                         {
-                            ((Phone)item).SaveNumber();
+                            ((Phone)item).InsertNumber();
                             API.sendChatMessageToPlayer(sender, "Your phone number is: ~g~" + ((Phone)item).PhoneNumber);
                         }
                         prop.Supplies--;
