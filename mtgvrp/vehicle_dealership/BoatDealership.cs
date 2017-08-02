@@ -135,7 +135,7 @@ namespace mtgvrp.vehicle_dealership
             var currentPos = API.getEntityPosition(player);
             if (_dealershipsLocations.Any(dealer => currentPos.DistanceTo(dealer) < 5F))
             {
-                if (InventoryManager.DoesInventoryHaveItem<Money>(character).Length < 250)
+                if (Money.GetCharacterMoney(character) < 250)
                 {
                     player.sendChatMessage("You can't afford a fishing rod.");
                     return;
