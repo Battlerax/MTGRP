@@ -371,12 +371,16 @@ namespace mtgvrp.player_manager
 
         public void Save()
         {
-            GetTimePlayed();
-            LastPos = API.shared.getEntityPosition(Client);
-            LastRot = API.shared.getEntityRotation(Client);
+            Health = API.shared.getPlayerHealth(Client);
+            LastPos = Client.position;
+            LastRot = Client.rotation;
+            GetTimePlayed(); //Update time played before save.
 
             var task = Task.Run(() =>
             {
+                LogManager.Log(LogManager.LogTypes.Connection,
+                    $"Trying to save character {this.CharacterName} with ID {Id}.");
+
                 var filter = Builders<Character>.Filter.Eq("_id", Id);
                 var res = DatabaseManager.CharacterTable.ReplaceOne(filter, this);
                 if (!res.IsAcknowledged || (res.IsModifiedCountAvailable && res.ModifiedCount == 0))

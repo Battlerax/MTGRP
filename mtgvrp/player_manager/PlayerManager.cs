@@ -172,10 +172,6 @@ namespace mtgvrp.player_manager
                 }
 
                 account.Save();
-                character.Health = API.getPlayerHealth(player);
-                character.LastPos = player.position;
-                character.LastRot = player.rotation;
-                character.GetTimePlayed(); //Update time played before save.
                 character.Save();
                 RemovePlayer(character);
                 LogManager.Log(LogManager.LogTypes.Connection, $"{character.CharacterName}[{player.socialClubName}] has left the server.");
