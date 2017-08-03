@@ -70,8 +70,12 @@ API.onKeyDown.connect(function(Player, args){
                 vehicle_menu.AddItem(engine_state_item);
             }
 
-			if(lock_state_item !== null)
-				vehicle_menu.AddItem(lock_state_item);
+            if (lock_state_item !== null) {
+                vehicle_menu.AddItem(lock_state_item);
+                lock_state_item.Activated.connect(function (menu, item) {
+                    API.triggerServerEvent("OnVehicleMenuTrigger", player_veh, "lock");
+                });
+            }
 
             if (player_seat == -1 && player_owns_veh == true && park_car_item !== null) {
                 vehicle_menu.AddItem(park_car_item);
@@ -83,25 +87,21 @@ API.onKeyDown.connect(function(Player, args){
             vehicle_menu.Visible = true;
 
             //Send this shit to the server cause we can't trust client side for owner information... frickin cheaters
-            if (player_seat == -1) {
+            if (engine_state_item !== null) {
                 engine_state_item.Activated.connect(function (menu, item) {
                     API.triggerServerEvent("OnVehicleMenuTrigger", player_veh, "engine");
                 });
             }
 
-            lock_state_item.Activated.connect(function (menu, item) {
-                API.triggerServerEvent("OnVehicleMenuTrigger", player_veh, "lock");
-            });
-
-            if (player_seat == -1 && player_owns_veh == true) {
+            if (park_car_item !== null) {
                 park_car_item.Activated.connect(function (menu, item) {
                     API.triggerServerEvent("OnVehicleMenuTrigger", player_veh, "park");
                 });
             }
 
-            door_item.Activated.connect(function (menu, item) {
+            door_item.Activated.connect(function(menu, item) {
                 API.triggerServerEvent("OnVehicleMenuTrigger", player_veh, "door", door_index);
-            })
+            });
 
             door_item.OnListChanged.connect(function (sender, new_index) {
                 door_index = new_index;

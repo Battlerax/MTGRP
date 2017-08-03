@@ -93,6 +93,8 @@ namespace mtgvrp.player_manager
             Account account = player.GetAccount();
             if (account == null)
                 return;
+            if (character == null)
+                return;
 
             if (API.getPlayerHealth(player) < oldValue && account.AdminDuty)
             {

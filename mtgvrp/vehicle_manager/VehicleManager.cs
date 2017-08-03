@@ -897,7 +897,7 @@ namespace mtgvrp.vehicle_manager
             if (account.AdminLevel >= 3) { return true; }
             if (character.Id == vehicle.OwnerId) { return true; }
             if (vehicle.GroupId == character.GroupId && character.GroupId != 0) return true;
-            if (character.JobOne == vehicle.Job) { return true; }
+            if (character.JobOne == vehicle.Job && character.JobOne != Job.None) { return true; }
             return false;
         }
 
