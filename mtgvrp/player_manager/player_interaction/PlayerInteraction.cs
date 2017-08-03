@@ -230,8 +230,8 @@ namespace mtgvrp.player_manager.player_interaction
             }
 
             API.delay(1000, true, () => API.warpPlayerOutOfVehicle(receiver));;
-            API.sendChatMessageToPlayer(player, "You have ejected ~b~" + receiver.name + "~w~ from your vehicle.");
-            API.sendChatMessageToPlayer(receiver, "~b~" + player.name + "~w~ has ejected you from their vehicle.");
+            API.sendChatMessageToPlayer(player, "You have ejected ~b~" + receiver.GetCharacter().rp_name() + "~w~ from your vehicle.");
+            API.sendChatMessageToPlayer(receiver, "~b~" + player.GetCharacter().rp_name() + "~w~ has ejected you from their vehicle.");
         }
  
         public void FollowPlayer(Character c, bool isDrag)
