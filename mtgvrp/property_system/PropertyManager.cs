@@ -361,8 +361,8 @@ namespace mtgvrp.property_system
                             return;
                         }
                         prop.IsInteractable = !prop.IsInteractable;
+                        if (!prop.IsInteractable) { prop.UpdateMarkers(); }
                         prop.Save();
-                        prop.UpdateMarkers();
                         API.sendChatMessageToPlayer(sender,
                             $"[Property Manager] Property #{id} was made to be '" +
                             (prop.IsInteractable ? "Interactable" : "UnInteractable") + "'");
