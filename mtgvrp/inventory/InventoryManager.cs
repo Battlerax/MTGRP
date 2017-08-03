@@ -429,10 +429,10 @@ namespace mtgvrp.inventory
                 return;
             }
 
-            string[][] leftItems = activeLeft.Inventory.TakeWhile(x => x.CanBeStored).Select(x => new[] { x.LongName, x.CommandFriendlyName, x.Amount.ToString() }).ToArray();
+            string[][] leftItems = activeLeft.Inventory.Where(x => x.CanBeStored).Select(x => new[] { x.LongName, x.CommandFriendlyName, x.Amount.ToString() }).ToArray();
 
             string[][] rightItems =
-                activeRight.Inventory.TakeWhile(x => x.CanBeStored).Select(x => new[] { x.LongName, x.CommandFriendlyName, x.Amount.ToString() })
+                activeRight.Inventory.Where(x => x.CanBeStored).Select(x => new[] { x.LongName, x.CommandFriendlyName, x.Amount.ToString() })
                     .ToArray();
 
             var leftJson = API.shared.toJson(leftItems);
