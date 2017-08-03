@@ -38,7 +38,7 @@ namespace mtgvrp.vehicle_dealership
             new[] {"Blista", "1039032026", "40000"},
             new[] {"Rhapsody", "841808271", "14000"},
             new[] {"Prairie", "-1450650718", "15000"},
-            new[] {"Oracle", "-1348744438", "30000"}
+            new[] {"Oracle", "-1348744438", "30000"},
             new[] {"Zion", "-1122289213", "52000"},
         };
 

@@ -308,8 +308,8 @@ function next_character_creation_step(player, step) {
                     }
                 }
 
-                API.callNative("SET_PED_HEAD_BLEND_DATA", father_ped, father_int_id, father_int_id, 0, father_int_id, father_int_id, 0, 1.0, 1.0, 0, false);
-                API.callNative("SET_PED_HEAD_BLEND_DATA", mother_ped, mother_int_id, mother_int_id, 0, mother_int_id, mother_int_id, 0, 1.0, 1.0, 0, false);
+                API.callNative("SET_PED_HEAD_BLEND_DATA", father_ped, father_int_id, father_int_id, 0, father_int_id, father_int_id, 0, API.f(1.0), API.f(1.0), 0, false);
+                API.callNative("SET_PED_HEAD_BLEND_DATA", mother_ped, mother_int_id, mother_int_id, 0, mother_int_id, mother_int_id, 0, API.f(1.0), API.f(1.0), 0, false);
                 API.callNative("SET_PED_HEAD_BLEND_DATA", API.getLocalPlayer(), father_int_id,
                     mother_int_id, 0, father_int_id, mother_int_id, 0, parent_lean, parent_lean, 0, false);
             });
@@ -322,8 +322,8 @@ function next_character_creation_step(player, step) {
                     mother_int_id = 45;
                 }
 
-                API.callNative("SET_PED_HEAD_BLEND_DATA", father_ped, father_int_id, father_int_id, 0, father_int_id, father_int_id, 0, 1.0, 1.0, 0, false);
-                API.callNative("SET_PED_HEAD_BLEND_DATA", mother_ped, mother_int_id, mother_int_id, 0, mother_int_id, mother_int_id, 0, 1.0, 1.0, 0, false);
+                API.callNative("SET_PED_HEAD_BLEND_DATA", father_ped, father_int_id, father_int_id, 0, father_int_id, father_int_id, 0, API.f(1.0), API.f(1.0), 0, false);
+                API.callNative("SET_PED_HEAD_BLEND_DATA", mother_ped, mother_int_id, mother_int_id, 0, mother_int_id, mother_int_id, 0, API.f(1.0), API.f(1.0), 0, false);
                 API.callNative("SET_PED_HEAD_BLEND_DATA", API.getLocalPlayer(), father_int_id,
                     mother_int_id, 0, father_int_id, mother_int_id, 0, parent_lean, parent_lean, 0, false);
             });
@@ -365,8 +365,8 @@ function next_character_creation_step(player, step) {
                         break;
                 }
 
-                API.callNative("SET_PED_HEAD_BLEND_DATA", father_ped, father_int_id, father_int_id, 0, father_int_id, father_int_id, 0, 1.0, 1.0, 0, false);
-                API.callNative("SET_PED_HEAD_BLEND_DATA", mother_ped, mother_int_id, mother_int_id, 0, mother_int_id, mother_int_id, 0, 1.0, 1.0, 0, false);
+                API.callNative("SET_PED_HEAD_BLEND_DATA", father_ped, father_int_id, father_int_id, 0, father_int_id, father_int_id, 0, API.f(1.0), API.f(1.0), 0, false);
+                API.callNative("SET_PED_HEAD_BLEND_DATA", mother_ped, mother_int_id, mother_int_id, 0, mother_int_id, mother_int_id, 0, API.f(1.0), API.f(1.0), 0, false);
                 API.callNative("SET_PED_HEAD_BLEND_DATA", API.getLocalPlayer(), father_int_id,
                     mother_int_id, 0, father_int_id, mother_int_id, 0, parent_lean, parent_lean, 0, false);
             });
@@ -559,11 +559,11 @@ function next_character_creation_step(player, step) {
                         if (new_index == 0)
                             blemishes = 255;
                         else blemishes = new_index - 1;
-                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 0, blemishes, 1.0);
+                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 0, blemishes, API.f(1.0));
                         break;
                     case "Eyebrows":
                         eyebrows = new_index;
-                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 2, eyebrows, 1.0);
+                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 2, eyebrows, API.f(1.0));
                         API.callNative("_SET_PED_HEAD_OVERLAY_COLOR", playerHandle, 2, 1, hair_color,
                             hair_color);
                         break;
@@ -571,31 +571,31 @@ function next_character_creation_step(player, step) {
                         if (new_index == 0)
                             ageing = 255;
                         else ageing = new_index - 1;
-                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 3, ageing, 1.0);
+                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 3, ageing, API.f(1.0));
                         break;
                     case "Complexion":
                         if (new_index == 0)
                             complexion = 255;
                         else complexion = new_index - 1;
-                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 6, complexion, 1.0);
+                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 6, complexion, API.f(1.0));
                         break;
                     case "Sundamage":
                         if (new_index == 0)
                             sun_damage = 255;
                         else sun_damage = new_index - 1;
-                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 7, sun_damage, 1.0);
+                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 7, sun_damage, API.f(1.0));
                         break;
                     case "Moles & Freckles":
                         if (new_index == 0)
                             moles_freckles = 255;
                         else moles_freckles = new_index - 1;
-                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 9, moles_freckles, 1.0);
+                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 9, moles_freckles, API.f(1.0));
                         break;
                     case "Facial Hair":
                         if (new_index == 0)
                             facial_hair = 255;
                         else facial_hair = new_index - 1;
-                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 1, facial_hair, 1.0);
+                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 1, facial_hair, API.f(1.0));
                         API.callNative("_SET_PED_HEAD_OVERLAY_COLOR", playerHandle, 1, 1, hair_color,
                             hair_color);
                         break;
@@ -603,7 +603,7 @@ function next_character_creation_step(player, step) {
                         if (new_index == 0)
                             makeup = 255;
                         else makeup = new_index - 1;
-                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 4, makeup, 1.0);
+                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 4, makeup, API.f(1.0));
                         break;
                     case "Makeup Color":
                         if (new_index == 0)
@@ -616,7 +616,7 @@ function next_character_creation_step(player, step) {
                         if (new_index == 0)
                             blush = 255;
                         else blush = new_index - 1;
-                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 5, blush, 1.0);
+                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 5, blush, API.f(1.0));
                         break;
                     case "Blush Color":
                         if (new_index == 0)
@@ -629,7 +629,7 @@ function next_character_creation_step(player, step) {
                         if (new_index == 0)
                             lipstick = 255;
                         else lipstick = new_index - 1;
-                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 8, lipstick, 1.0);
+                        API.callNative("SET_PED_HEAD_OVERLAY", playerHandle, 8, lipstick, API.f(1.0));
                         break;
                     case "Lipstick Color":
                         if (new_index == 0)
