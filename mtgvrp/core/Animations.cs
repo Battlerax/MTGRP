@@ -11,13 +11,10 @@ using GrandTheftMultiplayer.Server.Elements;
 using GrandTheftMultiplayer.Server.Managers;
 using mtgvrp.player_manager;
 
-
-
 namespace mtgvrp.core
 {
     class Animations : Script
     {
-
         [Flags]
         public enum AnimationFlags
         {
@@ -40,11 +37,10 @@ namespace mtgvrp.core
 
         [Command("hide", "~y~Syntax /Hide 1 - 13")]
         public void hide(Client player, int number)
-        {
-            var veh = API.getPlayerVehicle(player);
-            if (veh != null)
+        {           
+            if (API.isPlayerInAnyVehicle(player))
             {
-                API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                player.sendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
             }
             Character character = player.GetCharacter();
@@ -104,10 +100,9 @@ namespace mtgvrp.core
         [Command("lookout", "~y~Syntax /lookout 1 - 4")]
         public void lookout(Client player, int number)
         {
-            var veh = API.getPlayerVehicle(player);
-            if (veh != null)
+            if (API.isPlayerInAnyVehicle(player))
             {
-                API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                player.sendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
             }
             Character character = player.GetCharacter();
@@ -141,10 +136,9 @@ namespace mtgvrp.core
         [Command("investigate", "~y~Syntax /investigate 1 - 9")]
         public void investigate(Client player, int number)
         {
-            var veh = API.getPlayerVehicle(player);
-            if (veh != null)
+            if (API.isPlayerInAnyVehicle(player))
             {
-                API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                player.sendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
             }
             Character character = player.GetCharacter();
@@ -192,10 +186,9 @@ namespace mtgvrp.core
         [Command("drink", "~y~Syntax /drink 1 - 12")]
         public void drink(Client player, int number)
         {
-            var veh = API.getPlayerVehicle(player);
-            if (veh != null)
+            if (API.isPlayerInAnyVehicle(player))
             {
-                API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                player.sendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
             }
             Character character = player.GetCharacter();
@@ -252,10 +245,9 @@ namespace mtgvrp.core
         [Command("crossarms", "~y~Syntax /crossarms 1 - 15")]
         public void crossarms(Client player, int number)
         {
-            var veh = API.getPlayerVehicle(player);
-            if (veh != null)
+            if (API.isPlayerInAnyVehicle(player))
             {
-                API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                player.sendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
             }
             Character character = player.GetCharacter();
@@ -315,10 +307,9 @@ namespace mtgvrp.core
         [Command("idle", "~y~Syntax /idle 1 - 28")]
         public void idle(Client player, int number)
         {
-            var veh = API.getPlayerVehicle(player);
-            if (veh != null)
+            if (API.isPlayerInAnyVehicle(player))
             {
-                API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                player.sendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
             }
             Character character = player.GetCharacter();
@@ -424,10 +415,9 @@ namespace mtgvrp.core
         [Command("lean", "~y~Syntax /lean 1 - 38")]
         public void lean(Client player, int number)
         {
-            var veh = API.getPlayerVehicle(player);
-            if (veh != null)
+            if (API.isPlayerInAnyVehicle(player))
             {
-                API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                player.sendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
             }
             Character character = player.GetCharacter();
@@ -562,10 +552,9 @@ namespace mtgvrp.core
         [Command("reach", "~y~Syntax /reach 1 - 2")]
         public void reach(Client player, int number)
         {
-            var veh = API.getPlayerVehicle(player);
-            if (veh != null)
+            if (API.isPlayerInAnyVehicle(player))
             {
-                API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                player.sendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
             }
             Character character = player.GetCharacter();
@@ -592,10 +581,9 @@ namespace mtgvrp.core
         [Command("workout", "~y~Syntax /workout 1 - 12")]
         public void workout(Client player, int number)
         {
-            var veh = API.getPlayerVehicle(player);
-            if (veh != null)
+            if (API.isPlayerInAnyVehicle(player))
             {
-                API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                player.sendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
             }
             Character character = player.GetCharacter();
@@ -652,10 +640,9 @@ namespace mtgvrp.core
         [Command("smoke", "~y~Syntax /smoke 1 - 13")]
         public void smoke(Client player, int number)
         {
-            var veh = API.getPlayerVehicle(player);
-            if (veh != null)
+            if (API.isPlayerInAnyVehicle(player))
             {
-                API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                player.sendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
             }
             Character character = player.GetCharacter();
@@ -715,10 +702,9 @@ namespace mtgvrp.core
         [Command("binoculars", "~y~Syntax /binoculars 1 - 6")]
         public void binoculars(Client player, int number)
         {
-            var veh = API.getPlayerVehicle(player);
-            if (veh != null)
+            if (API.isPlayerInAnyVehicle(player))
             {
-                API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                player.sendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
             }
             Character character = player.GetCharacter();
@@ -757,10 +743,9 @@ namespace mtgvrp.core
         [Command("hobo", "~y~Syntax /hobo 1 - 9")]
         public void hobo(Client player, int number)
         {
-            var veh = API.getPlayerVehicle(player);
-            if (veh != null)
+            if (API.isPlayerInAnyVehicle(player))
             {
-                API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                player.sendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
             }
             Character character = player.GetCharacter();
@@ -808,10 +793,9 @@ namespace mtgvrp.core
         [Command("fallover", "~y~Syntax /fallover 1 - 7")]
         public void fallover(Client player, int number)
         {
-            var veh = API.getPlayerVehicle(player);
-            if (veh != null)
+            if (API.isPlayerInAnyVehicle(player))
             {
-                API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                player.sendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
             }
             Character character = player.GetCharacter();
@@ -853,10 +837,9 @@ namespace mtgvrp.core
         [Command("laydown", "~y~Syntax /laydown 1 - 12")]
         public void laydown(Client player, int number)
         {
-            var veh = API.getPlayerVehicle(player);
-            if (veh != null)
+            if (API.isPlayerInAnyVehicle(player))
             {
-                API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                player.sendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
             }
             Character character = player.GetCharacter();
@@ -913,10 +896,9 @@ namespace mtgvrp.core
         [Command("drunk", "~y~Syntax /drunk 1 - 2")]
         public void drunk(Client player, int number)
         {
-            var veh = API.getPlayerVehicle(player);
-            if (veh != null)
+            if (API.isPlayerInAnyVehicle(player))
             {
-                API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                player.sendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
             }
             Character character = player.GetCharacter();
@@ -943,10 +925,9 @@ namespace mtgvrp.core
         [Command("twitchy", "~y~Syntax /twitchy 1 - 4")]
         public void twitchy(Client player, int number)
         {
-            var veh = API.getPlayerVehicle(player);
-            if (veh != null)
+            if (API.isPlayerInAnyVehicle(player))
             {
-                API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                player.sendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
             }
             Character character = player.GetCharacter();
@@ -979,10 +960,9 @@ namespace mtgvrp.core
         [Command("signal", "~y~Syntax /signal 1 - 3")]
         public void signal(Client player, int number)
         {
-            var veh = API.getPlayerVehicle(player);
-            if (veh != null)
+            if (API.isPlayerInAnyVehicle(player))
             {
-                API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                player.sendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
             }
             Character character = player.GetCharacter();
@@ -1012,10 +992,9 @@ namespace mtgvrp.core
         [Command("cheer", "~y~Syntax /cheer 1 - 8")]
         public void cheer(Client player, int number)
         {
-            var veh = API.getPlayerVehicle(player);
-            if (veh != null)
+            if (API.isPlayerInAnyVehicle(player))
             {
-                API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                player.sendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
             }
             Character character = player.GetCharacter();
@@ -1060,10 +1039,9 @@ namespace mtgvrp.core
         [Command("clipboard", "~y~Syntax /clipboard 1 - 3")]
         public void clipboard(Client player, int number)
         {
-            var veh = API.getPlayerVehicle(player);
-            if (veh != null)
+            if (API.isPlayerInAnyVehicle(player))
             {
-                API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                player.sendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
             }
             Character character = player.GetCharacter();
@@ -1093,10 +1071,9 @@ namespace mtgvrp.core
         [Command("drugdeal", "~y~Syntax /drugdeal 1 - 3")]
         public void drugdeal(Client player, int number)
         {
-            var veh = API.getPlayerVehicle(player);
-            if (veh != null)
+            if (API.isPlayerInAnyVehicle(player))
             {
-                API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                player.sendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
             }
             Character character = player.GetCharacter();
@@ -1126,10 +1103,9 @@ namespace mtgvrp.core
         [Command("gardening", "~y~Syntax /gardening 1 - 4")]
         public void gardening(Client player, int number)
         {
-            var veh = API.getPlayerVehicle(player);
-            if (veh != null)
+            if (API.isPlayerInAnyVehicle(player))
             {
-                API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                player.sendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
             }
             Character character = player.GetCharacter();
@@ -1162,10 +1138,9 @@ namespace mtgvrp.core
         [Command("guard", "~y~Syntax /guard 1 - 9")]
         public void guard(Client player, int number)
         {
-            var veh = API.getPlayerVehicle(player);
-            if (veh != null)
+            if (API.isPlayerInAnyVehicle(player))
             {
-                API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                player.sendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
             }
             Character character = player.GetCharacter();
@@ -1213,10 +1188,9 @@ namespace mtgvrp.core
         [Command("hammer", "~y~Syntax /hammer 1 - 2")]
         public void hammer(Client player, int number)
         {
-            var veh = API.getPlayerVehicle(player);
-            if (veh != null)
+            if (API.isPlayerInAnyVehicle(player))
             {
-                API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                player.sendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
             }
             Character character = player.GetCharacter();
@@ -1243,10 +1217,9 @@ namespace mtgvrp.core
         [Command("jog", "~y~Syntax /jog 1 - 6")]
         public void jog(Client player, int number)
         {
-            var veh = API.getPlayerVehicle(player);
-            if (veh != null)
+            if (API.isPlayerInAnyVehicle(player))
             {
-                API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                player.sendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
             }
             Character character = player.GetCharacter();
@@ -1285,10 +1258,9 @@ namespace mtgvrp.core
         [Command("guitar", "~y~Syntax /guitar 1 - 3")]
         public void guitar(Client player, int number)
         {
-            var veh = API.getPlayerVehicle(player);
-            if (veh != null)
+            if (API.isPlayerInAnyVehicle(player))
             {
-                API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                player.sendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
             }
             Character character = player.GetCharacter();
@@ -1318,10 +1290,9 @@ namespace mtgvrp.core
         [Command("getjiggy", "~y~Syntax /getjiggy 1 - 4")]
         public void getjiggy(Client player, int number)
         {
-            var veh = API.getPlayerVehicle(player);
-            if (veh != null)
+            if (API.isPlayerInAnyVehicle(player))
             {
-                API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                player.sendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
             }
             Character character = player.GetCharacter();
@@ -1354,10 +1325,9 @@ namespace mtgvrp.core
         [Command("sit", "~y~Syntax /sit 1 - 9")]
         public void sit(Client player, int number)
         {
-            var veh = API.getPlayerVehicle(player);
-            if (veh != null)
+            if (API.isPlayerInAnyVehicle(player))
             {
-                API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                player.sendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
             }
             Character character = player.GetCharacter();
@@ -1405,10 +1375,9 @@ namespace mtgvrp.core
         [Command("mech", "~y~Syntax /mech 1 - 5")]
         public void mech(Client player, int number)
         {
-            var veh = API.getPlayerVehicle(player);
-            if (veh != null)
+            if (API.isPlayerInAnyVehicle(player))
             {
-                API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                player.sendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
             }
             Character character = player.GetCharacter();
@@ -1444,10 +1413,9 @@ namespace mtgvrp.core
         [Command("yoga", "~y~Syntax /yoga 1 - 2")]
         public void yoga(Client player, int number)
         {
-            var veh = API.getPlayerVehicle(player);
-            if (veh != null)
+            if (API.isPlayerInAnyVehicle(player))
             {
-                API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                player.sendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
             }
             Character character = player.GetCharacter();
@@ -1474,10 +1442,9 @@ namespace mtgvrp.core
         [Command("bonghit", "~y~Syntax /bonghit 1 - 4")]
         public void bonghit(Client player, int number)
         {
-            var veh = API.getPlayerVehicle(player);
-            if (veh != null)
+            if (API.isPlayerInAnyVehicle(player))
             {
-                API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                player.sendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
             }
             Character character = player.GetCharacter();
@@ -1511,10 +1478,9 @@ namespace mtgvrp.core
         [Command("middlefinger")]
         public void middlefinger(Client player)
         {
-            var veh = API.getPlayerVehicle(player);
-            if (veh != null)
+            if (API.isPlayerInAnyVehicle(player))
             {
-                API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                player.sendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
             }
             Character character = player.GetCharacter();
@@ -1530,10 +1496,9 @@ namespace mtgvrp.core
         [Command("salute")]
         public void salute(Client player)
         {
-            var veh = API.getPlayerVehicle(player);
-            if (veh != null)
+            if (API.isPlayerInAnyVehicle(player))
             {
-                API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                player.sendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
             }
             Character character = player.GetCharacter();
@@ -1549,10 +1514,9 @@ namespace mtgvrp.core
         [Command("slowclap")]
         public void slowclap(Client player)
         {
-            var veh = API.getPlayerVehicle(player);
-            if (veh != null)
+            if (API.isPlayerInAnyVehicle(player))
             {
-                API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                player.sendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
             }
             Character character = player.GetCharacter();
@@ -1568,10 +1532,9 @@ namespace mtgvrp.core
         [Command("facepalm")]
         public void facepalm(Client player)
         {
-            var veh = API.getPlayerVehicle(player);
-            if (veh != null)
+            if (API.isPlayerInAnyVehicle(player))
             {
-                API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                player.sendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
             }
             Character character = player.GetCharacter();
@@ -1587,10 +1550,9 @@ namespace mtgvrp.core
         [Command("handsup")]// allowed tp be cuffed
         public void handsup(Client player)
         {
-            var veh = API.getPlayerVehicle(player);
-            if (veh != null)
+            if (API.isPlayerInAnyVehicle(player))
             {
-                API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                player.sendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
             }
             Character character = player.GetCharacter();
@@ -1607,10 +1569,9 @@ namespace mtgvrp.core
         [Command("restrained")]// allowed to be cuffed
         public void restrained(Client player)
         {
-            var veh = API.getPlayerVehicle(player);
-            if (veh != null)
+            if (API.isPlayerInAnyVehicle(player))
             {
-                API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                player.sendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
             }
             Character character = player.GetCharacter();
