@@ -298,37 +298,36 @@ namespace mtgvrp.player_manager
         {
             Account account = player.GetAccount();
             Character character = player.GetCharacter();
-            if(character != null)
-                if (character.GetTimePlayed() % 3600 == 0)
-                {
-                    int paycheckAmount = CalculatePaycheck(player);
-                    character.BankBalance += paycheckAmount;
-                    Properties.Settings.Default.governmentbalance += paycheckAmount * taxationAmount / 100;
-                    player.sendChatMessage("--------------PAYCHECK RECEIVED!--------------");
-                    player.sendChatMessage("Base paycheck: $" + basepaycheck + ".");
-                    player.sendChatMessage("Interest: $" + character.BankBalance / 1000 + ".");
-                    player.sendChatMessage("You were taxed at " + taxationAmount + "%.");
-                    //player.sendChatMessage("VIP bonus: " + getVIPPaycheckBonus(player) + "%.");
-                    player.sendChatMessage("Faction bonus: $" + getFactionBonus(player) + ".");
-                    player.sendChatMessage("----------------------------------------------");
-                    player.sendChatMessage("Total: ~g~$" + paycheckAmount + "~w~.");
+            if (character?.GetTimePlayed() % 3600 == 0)
+            {
+                int paycheckAmount = CalculatePaycheck(player);
+                character.BankBalance += paycheckAmount;
+                Properties.Settings.Default.governmentbalance += paycheckAmount * taxationAmount / 100;
+                player.sendChatMessage("--------------PAYCHECK RECEIVED!--------------");
+                player.sendChatMessage("Base paycheck: $" + basepaycheck + ".");
+                player.sendChatMessage("Interest: $" + character.BankBalance / 1000 + ".");
+                player.sendChatMessage("You were taxed at " + taxationAmount + "%.");
+                //player.sendChatMessage("VIP bonus: " + getVIPPaycheckBonus(player) + "%.");
+                player.sendChatMessage("Faction bonus: $" + getFactionBonus(player) + ".");
+                player.sendChatMessage("----------------------------------------------");
+                player.sendChatMessage("Total: ~g~$" + paycheckAmount + "~w~.");
 
                 player.sendPictureNotificationToPlayer("Your paycheck for ~g~$" + paycheckAmount + " ~w~has been added to your balance.", "CHAR_BANK_MAZE", 0, 0, "Maze Bank", "Paycheck Received!");
                 if (account.VipLevel > 0 && account.AdminLevel < 1)
+                {
+                    int result = DateTime.Compare(DateTime.Now, account.VipExpirationDate);
+                    if (result == 1)
                     {
-                        int result = DateTime.Compare(DateTime.Now, account.VipExpirationDate);
-                        if (result == 1)
-                        {
-                            player.sendChatMessage(
-                                "Your ~y~VIP~w~ subscription has ran out. Visit www.mt-gaming.com to renew your subscription.");
-                            account.VipLevel = 0;
-                        }
+                        player.sendChatMessage(
+                            "Your ~y~VIP~w~ subscription has ran out. Visit www.mt-gaming.com to renew your subscription.");
+                        account.VipLevel = 0;
                     }
-
-                    account.TotalPlayingHours++;
-                    account.Save();
-                    character.Save();
                 }
+
+                account.TotalPlayingHours++;
+                account.Save();
+                character.Save();
+            }
         }
 
         [Command("getid", GreedyArg = true, Alias = "id"), Help(HelpManager.CommandGroups.General, "Used to find the ID of specific player name.", new [] {"Name of the target character. (Partial name accepted)"})]

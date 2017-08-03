@@ -71,6 +71,8 @@ namespace mtgvrp.player_manager
         public bool HasActiveAsk { get; set; }
         public bool HasActiveReport { get; set; }
         public bool ReportCreated { get; set; }
+
+        [BsonIgnore]
         public Timer ReportTimer { get; set; }
         public DateTime ReportMuteExpires { get; set; }
 
@@ -85,6 +87,8 @@ namespace mtgvrp.player_manager
         private long TimeLoggedIn { get; set; }
 
         public long TimePlayed { get; set; }
+
+        [BsonIgnore]
         public Timer PaycheckTimer { get; set; }
 
         //AME 
@@ -104,8 +108,8 @@ namespace mtgvrp.player_manager
         //Chat mutes
         public DateTime NMutedExpiration { get; set; }
         public DateTime VMutedExpiration { get; set; }
-        public Timer NMutedTimer { get; set; }
-        public Timer VMutedTimer { get; set; }
+        [BsonIgnore] public Timer NMutedTimer { get; set; }
+        [BsonIgnore] public Timer VMutedTimer { get; set; }
 
         //Job zone related
         [BsonIgnore]
@@ -120,7 +124,7 @@ namespace mtgvrp.player_manager
         public DateTime CanPickupTrash { get; set; }
         [BsonIgnore]
         public bool IsOnGarbageRun { get; set; }
-        public Timer GarbageTimeLeftTimer { get; set; }
+        [BsonIgnore] public Timer GarbageTimeLeftTimer { get; set; }
         private int _garbagetime;
 
         public int GarbageTimeLeft
@@ -211,8 +215,8 @@ namespace mtgvrp.player_manager
         public string BadgeNumber { get; set; }
         public Vector3 BeaconPosition { get; set; }
         public bool BeaconSet { get; set; }
-        public Timer BeaconTimer { get; set; }
-        public Timer BeaconResetTimer { get; set; }
+        [BsonIgnore] public Timer BeaconTimer { get; set; }
+        [BsonIgnore] public Timer BeaconResetTimer { get; set; }
         public Client BeaconCreator{ get; set; }
 
         [BsonIgnore]
@@ -220,8 +224,8 @@ namespace mtgvrp.player_manager
 
         private int _time;
 
-        public Timer JailTimeLeftTimer { get; set; }
-        public Timer JailTimer { get; set; }
+        [BsonIgnore] public Timer JailTimeLeftTimer { get; set; }
+        [BsonIgnore] public Timer JailTimer { get; set; }
         public bool IsJailed { get; set; }
         public int SentTicketAmount { get; set; }
 
@@ -237,7 +241,7 @@ namespace mtgvrp.player_manager
             }
         }
 
-        public Timer TicketTimer { get; set; }
+        [BsonIgnore] public Timer TicketTimer { get; set; }
         public bool SentTicket { get; set; }
         public int TicketBalance { get; set; }
         public int UnpaidTickets { get; set; }
