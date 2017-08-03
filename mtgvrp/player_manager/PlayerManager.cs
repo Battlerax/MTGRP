@@ -117,7 +117,7 @@ namespace mtgvrp.player_manager
 
             if (Money.GetCharacterMoney(character) < 200)
             {
-                character.BankBalance -= amount;
+                character.BankBalance += amount;
             }
 
             else
