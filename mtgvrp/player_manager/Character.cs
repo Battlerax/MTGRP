@@ -88,9 +88,6 @@ namespace mtgvrp.player_manager
 
         public long TimePlayed { get; set; }
 
-        [BsonIgnore]
-        public Timer PaycheckTimer { get; set; }
-
         //AME 
         [BsonIgnore]
         public NetHandle AmeText { get; set; }
