@@ -25,6 +25,7 @@ using mtgvrp.player_manager;
 using mtgvrp.property_system;
 using mtgvrp.property_system.businesses;
 using mtgvrp.vehicle_manager;
+using mtgvrp.weapon_manager;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using Vehicle = GrandTheftMultiplayer.Server.Elements.Vehicle;
@@ -147,7 +148,7 @@ namespace mtgvrp.inventory
 
             if (storage.Inventory == null) storage.Inventory = new List<IInventoryItem>();
             //Make sure he doesn't have blocking item.
-            if(storage.GetType() == typeof(Character) && item.GetType() != typeof(Money) && storage.Inventory.FirstOrDefault(x => x.IsBlocking == true) != null && ignoreBlocking == false)
+            if(storage.GetType() == typeof(Character) && item.GetType() != typeof(Money) && item.GetType() != typeof(Weapon) && storage.Inventory.FirstOrDefault(x => x.IsBlocking == true) != null && ignoreBlocking == false)
                 return GiveItemErrors.HasBlockingItem;
 
             int maxAmount = -1;
