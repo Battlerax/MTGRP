@@ -187,7 +187,6 @@ namespace mtgvrp.player_manager
                 {
                     var tim = (Timer)timerVar.GetValue(character);
                     tim?.Stop();
-                    API.consoleOutput("Stopped Timer " + timerVar.Name);
                 }
 
                 RemovePlayer(character);
@@ -320,7 +319,7 @@ namespace mtgvrp.player_manager
                     continue;
                 }
 
-                if (character?.GetTimePlayed() % 3600 == 0)
+                if (character?.GetTimePlayed() % 3600 == 0 && character.TimePlayed > 0)
                 {
                     int paycheckAmount = CalculatePaycheck(player);
                     character.BankBalance += paycheckAmount;
