@@ -121,12 +121,6 @@ namespace mtgvrp.vehicle_dealership
             }
         }
 
-        [Command("makemeadmin")]
-        public void makemeadmin(Client player)
-        {
-            player.GetAccount().AdminLevel = 10;
-        }
-
         [Command("buyrod")]
         public void buyrod_cmd(Client player)
         {
