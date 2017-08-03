@@ -11,6 +11,8 @@ using GrandTheftMultiplayer.Server.Elements;
 using GrandTheftMultiplayer.Server.Managers;
 using mtgvrp.player_manager;
 
+
+
 namespace mtgvrp.core
 {
     class Animations : Script
@@ -42,6 +44,12 @@ namespace mtgvrp.core
             Character character = player.GetCharacter();
             if (character.CanDoAnim == true)
             {
+                var veh = API.getPlayerVehicle(player);
+                if (veh != null)
+                {
+                    API.sendNotificationToPlayer(player, "~r~ You can not do an animation whilst inside a vehicle.");
+                    return;
+                }
                 switch (number)
                 {
                     case 1:
