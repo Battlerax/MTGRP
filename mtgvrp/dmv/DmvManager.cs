@@ -423,7 +423,7 @@ namespace mtgvrp.dmv
 
             var c = player.GetCharacter();
 
-            if (!VehicleManager.Vehicles.Any(x => x.IsRegistered))
+            if (!c.OwnedVehicles.Any(x => x.IsRegistered))
             {
                 API.sendChatMessageToPlayer(player, "You don't have any registered vehicles.");
                 return;
@@ -436,7 +436,7 @@ namespace mtgvrp.dmv
             }
 
             API.sendChatMessageToPlayer(targetPlayer, $" [************** Vehicles Of {c.rp_name()} **************]");
-            foreach (var veh in VehicleManager.Vehicles.Where(x => x.IsRegistered))
+            foreach (var veh in c.OwnedVehicles.Where(x => x.IsRegistered))
             {
                 API.sendChatMessageToPlayer(targetPlayer, $"* Model: {API.getVehicleDisplayName(veh.VehModel)} | Registration: {veh.LicensePlate}");
             }
