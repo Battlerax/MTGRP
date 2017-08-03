@@ -411,7 +411,7 @@ namespace mtgvrp.phone_manager
                 character.BeingCalledBy = sender;
 
                 var contact = senderphone.Contacts.Find(pc => pc.Number == input);
-                var targetContact = charphone.Contacts.Find(pc => pc.Number == charphone.PhoneNumber);
+                var targetContact = charphone.Contacts.Find(pc => pc.Number == senderphone.PhoneNumber);
 
                 API.triggerClientEvent(player, "phone_calling", contact?.Name ?? "Unknown", input);
                 API.triggerClientEvent(character.Client, "phone_incoming-call", targetContact?.Name ?? "Unknown", senderphone.PhoneNumber);
@@ -457,7 +457,7 @@ namespace mtgvrp.phone_manager
                 sender.CallingPlayer = character;
                 character.BeingCalledBy = sender;
                 API.triggerClientEvent(player, "phone_calling", contact.Name, contact.Number);
-                var targetContact = charphone.Contacts.Find(pc => pc.Number == charphone.PhoneNumber);
+                var targetContact = charphone.Contacts.Find(pc => pc.Number == senderphone.PhoneNumber);
                 API.triggerClientEvent(character.Client, "phone_incoming-call", targetContact?.Name ?? "Unknown", senderphone.PhoneNumber);
 
                 //Function to hangup after 30 seconds with no answer.
