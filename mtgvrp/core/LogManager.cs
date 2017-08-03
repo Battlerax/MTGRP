@@ -81,7 +81,7 @@ namespace mtgvrp.core
             Directory.CreateDirectory("Logs");
 
             //Append
-            ThreadPool.QueueUserWorkItem(WriteToFile, new [] { "Logs/" + file, $"[{DateTime.UtcNow:R}] " + log });
+            ThreadPool.QueueUserWorkItem(WriteToFile, new [] { "Logs/" + file, $"[{DateTime.Now:R}] " + log });
         }
 
         // the lock

@@ -57,10 +57,15 @@ namespace mtgvrp.player_manager
             API.onPlayerRespawn += API_onPlayerRespawn;
             API.onPlayerHealthChange += API_onPlayerHealthChange;
 
-            //Setup respawn timer.
+            //Setup save timer.
             PlayerSaveTimer.Interval = 900000;
             PlayerSaveTimer.Elapsed += PlayerSaveTimer_Elapsed;
             PlayerSaveTimer.Start();
+
+            //setup paycheck timer
+            _payCheckTimer = new Timer {Interval = 1000, AutoReset = true };
+            _payCheckTimer.Elapsed += _payCheckTimer_Elapsed; ;
+            _payCheckTimer.Start();
 
             DebugManager.DebugMessage("[PlayerM] Player Manager initalized.");
         }
@@ -176,6 +181,15 @@ namespace mtgvrp.player_manager
                 
                 account.Save();
                 character.Save();
+
+                //Stop all timers
+                foreach (var timerVar in typeof(Character).GetProperties().Where(x => x.PropertyType == typeof(Timer)))
+                {
+                    var tim = (Timer)timerVar.GetValue(character);
+                    tim?.Stop();
+                    API.consoleOutput("Stopped Timer " + timerVar.Name);
+                }
+
                 RemovePlayer(character);
                 LogManager.Log(LogManager.LogTypes.Connection, $"{character.CharacterName}[{player.socialClubName}] has left the server.");
             }
@@ -294,12 +308,19 @@ namespace mtgvrp.player_manager
             return basepaycheck - (Properties.Settings.Default.basepaycheck * Properties.Settings.Default.taxationamount/100) + /*(Properties.Settings.Default.basepaycheck * getVIPPaycheckBonus(player)/100) +*/ getFactionBonus(player) + character.BankBalance/1000;
         }
 
-        public static void SendPaycheckToPlayer(Client player)
+        private Timer _payCheckTimer;
+        private void _payCheckTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            Account account = player.GetAccount();
-            Character character = player.GetCharacter();
-            if(character != null)
-                if (character.GetTimePlayed() % 3600 == 0)
+            foreach (var player in Players.Select(x => x.Client))
+            {
+                Character character = player.GetCharacter();
+                if (!API.shared.isPlayerConnected(player))
+                {
+                    LogManager.Log(LogManager.LogTypes.Connection, $"ERROR: PLAYER {character.CharacterName} IS NOT LOGGED IN WHILE IN LIST");
+                    continue;
+                }
+
+                if (character?.GetTimePlayed() % 3600 == 0)
                 {
                     int paycheckAmount = CalculatePaycheck(player);
                     character.BankBalance += paycheckAmount;
@@ -313,8 +334,9 @@ namespace mtgvrp.player_manager
                     player.sendChatMessage("----------------------------------------------");
                     player.sendChatMessage("Total: ~g~$" + paycheckAmount + "~w~.");
 
-                player.sendPictureNotificationToPlayer("Your paycheck for ~g~$" + paycheckAmount + " ~w~has been added to your balance.", "CHAR_BANK_MAZE", 0, 0, "Maze Bank", "Paycheck Received!");
-                if (account.VipLevel > 0 && account.AdminLevel < 1)
+                    player.sendPictureNotificationToPlayer("Your paycheck for ~g~$" + paycheckAmount + " ~w~has been added to your balance.", "CHAR_BANK_MAZE", 0, 0, "Maze Bank", "Paycheck Received!");
+                    Account account = player.GetAccount();
+                    if (account.VipLevel > 0 && account.AdminLevel < 1)
                     {
                         int result = DateTime.Compare(DateTime.Now, account.VipExpirationDate);
                         if (result == 1)
@@ -329,6 +351,7 @@ namespace mtgvrp.player_manager
                     account.Save();
                     character.Save();
                 }
+            }
         }
 
         [Command("getid", GreedyArg = true, Alias = "id"), Help(HelpManager.CommandGroups.General, "Used to find the ID of specific player name.", new [] {"Name of the target character. (Partial name accepted)"})]

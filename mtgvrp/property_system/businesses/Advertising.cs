@@ -10,6 +10,7 @@ using mtgvrp.phone_manager;
 using mtgvrp.player_manager;
 using mtgvrp.core.Help;
 
+
 namespace mtgvrp.property_system.businesses
 {
     public class Advertising : Script
@@ -18,6 +19,24 @@ namespace mtgvrp.property_system.businesses
         public bool CanAdvertise = true;
         public Timer AdvertTimer;
 
+        public static void SendtoAllAdmins(string text)
+        {
+            foreach (var c in API.shared.getAllPlayers())
+            {
+                if (c == null)
+                    continue;
+
+                Account receiverAccount = c.GetAccount();
+
+                if (receiverAccount == null)
+                    return;
+
+                if (receiverAccount.AdminLevel > 0)
+                {
+                    API.shared.sendChatMessageToPlayer(c, Color.AdminChat, text);
+                }
+            }
+        }
 
         // Commands
 
@@ -85,6 +104,9 @@ namespace mtgvrp.property_system.businesses
 
             player.sendChatMessage("Advertisement subimtted.");
             LogManager.Log(LogManager.LogTypes.Ads, $"{player.GetCharacter().CharacterName}[{player.GetAccount().AccountName}]: {text}");
+                       
+            var account = player.GetAccount();
+            SendtoAllAdmins($"{account.AccountName}  {character.CharacterName} has created an advertisment.");
         }
 
 

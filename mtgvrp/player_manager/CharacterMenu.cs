@@ -67,9 +67,6 @@ namespace mtgvrp.player_manager
             acc.IsLoggedIn = true;
             character.IsCreated = true;
             character.StartTrackingTimePlayed();
-            character.PaycheckTimer = new Timer { Interval = 1000 };
-            character.PaycheckTimer.Elapsed += delegate { PlayerManager.SendPaycheckToPlayer(player); };
-            character.PaycheckTimer.Start();
             character.Save();
 
             API.triggerClientEvent(player, "login_finished");
@@ -191,9 +188,6 @@ namespace mtgvrp.player_manager
                         character.update_ped();
                         character.update_nametag();
                         character.StartTrackingTimePlayed();
-                        character.PaycheckTimer = new Timer { Interval = 1000 };
-                        character.PaycheckTimer.Elapsed += delegate { PlayerManager.SendPaycheckToPlayer(player); };
-                        character.PaycheckTimer.Start();
                         API.shared.triggerClientEvent(player, "update_money_display", Money.GetCharacterMoney(character));
 
                         character.JobOne = JobManager.GetJobById(character.JobOneId);
