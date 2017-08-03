@@ -21,21 +21,25 @@ namespace mtgvrp.vehicle_dealership
         #region Vehicle Info [NAME/HASH/PRICE]
 
         //Could be changed to dynamic later on.
+
         private readonly string[][] _motorsycles =
         {
             new[] {"Faggio", "-1842748181", "5000"},
-            new[] {"Hexer", "301427732", "25000"},
-            new[] {"Sanchez", "788045382", "12000"},
-            new[] {"PCJ", "-909201658", "23000"},
-            new[] {"Bagger", "-2140431165", "14000"}
+            new[] {"Hexer", "301427732", "60000"},
+            new[] {"Sanchez", "788045382", "40000"},
+            new[] {"PCJ", "-909201658", "70000"},
+            new[] {"Bagger", "-2140431165", "30000"},
+            new[] {"Bati", "-891462355", "160000"}
         };
 
         private readonly string[][] _copues =
         {
-            new[] {"Mini", "-1177863319", "14000"},
-            new[] {"Blista", "1039032026", "28000"},
-            new[] {"Rhapsody", "841808271", "30000"},
-            new[] {"Prairie", "-1450650718", "25000"}
+            new[] {"Mini", "-1177863319", "45000"},
+            new[] {"Blista", "1039032026", "40000"},
+            new[] {"Rhapsody", "841808271", "14000"},
+            new[] {"Prairie", "-1450650718", "15000"},
+            new[] {"Oracle", "-1348744438", "30000"}
+            new[] {"Zion", "-1122289213", "52000"},
         };
 
         private readonly string[][] _trucksnvans =
@@ -47,43 +51,56 @@ namespace mtgvrp.vehicle_dealership
         private readonly string[][] _offroad =
         {
             new[] {"Bodhi", "-1435919434", "38000"},
-            new[] {"Sandking", "-1189015600", "53000"},
-            new[] {"Rebel", "-2045594037", "65000"},
+            new[] {"Sandking", "-1189015600", "90000"},
+            new[] {"Rebel", "-2045594037", "75000"},
             new[] {"Mesa", "914654722", "75000"},
             new[] {"RancherXL", "1645267888", "80000"},
         };
 
         private readonly string[][] _musclecars =
         {
-            new[] {"Dominator", "80636076", "55000"},
-            new[] {"Buccaneer", "-682211828", "40000"},
-            new[] {"Gauntlet", "-1800170043", "58000"},
-            new[] {"Tampa", "972671128", "34000"},
-            new[] {"Ruiner", "-227741703", "66000"},
-            new[] {"SabreGT", "-1685021548", "115000"},
-            new[] {"VooDoo", "2006667053", "15000"},
+            new[] {"Dominator", "80636076", "165000"},
+            new[] {"Buccaneer", "-682211828", "50000"},
+            new[] {"Gauntlet", "-1800170043", "120000"},
+            new[] {"Tampa", "972671128", "40000"},
+            new[] {"Ruiner", "-227741703", "95000"},
+            new[] {"SabreGT", "-1685021548", "80000"},
+            new[] {"VooDoo", "2006667053", "30000"},
             new[] {"Faction", "-2119578145", "35000"},
         };
 
         private readonly string[][] _suv =
         {
-            new[] {"Baller", "-808831384", "75000"},
-            new[] {"Cavalcade", "2006918058", "55000"},
-            new[] {"Gresley", "-1543762099", "48000"},
-            new[] {"Granger", "-1775728740", "70000"},
-            new[] {"Dubsta", "1177543287", "95000"},
-            new[] {"Huntley", "486987393", "65000"},
-            new[] {"XLS", "1203490606", "39000"},
+            new[] {"Baller", "-808831384", "95000"},
+            new[] {"Cavalcade", "2006918058", "80000"},
+            new[] {"Gresley", "-1543762099", "7500"},
+            new[] {"Granger", "-1775728740", "110000"},
+            new[] {"Dubsta", "1177543287", "60000"},
+            new[] {"Huntley", "486987393", "90000"},
+            new[] {"XLS", "1203490606", "80000"},
         };
 
         private readonly string[][] _supercars =
         {
-            new[] {"Elegy", "196747873", "85000"},
-            new[] {"Fusilade", "499169875", "120000"},
-            new[] {"Coquette", "108773431", "150000"},
-            new[] {"Lynx", "482197771", "165000"},
-            new[] { "Sultan", "970598228", "90000"},
+            new[] {"Elegy", "196747873", "185000"},
+            new[] {"Fusilade", "499169875", "160000"},
+            new[] {"Coquette", "108773431", "190000"},
+            new[] {"Lynx", "482197771", "170000"},
+            new[] { "Sultan", "970598228", "160000"},
+            new[] { "Turismo", "-982130927", "220000"},
+            new[] { "Tyrus", "2067820283", "290000"},
+            new[] { "Italigtb", "-2048333973", "310000"},
+            new[] { "Nero", "1034187331", "310000"},
         };
+
+        private readonly string[][] _cycles =
+{
+            new[] { "Bmx", "1131912276", "5000"},
+            new[] { "Cruiser", "448402357", "3000"},
+            new[] {"Fixter", "-836512833", "8000"},
+            new[] { "TriBike", "-400295096", "11000"},
+        };
+
 
         #endregion
 
@@ -141,6 +158,9 @@ namespace mtgvrp.vehicle_dealership
                         break;
                     case 6:
                         selectedCar = _supercars[(int) arguments[1]];
+                        break;
+                    case 7:
+                        selectedCar = _cycles[(int)arguments[1]];
                         break;
                 }
 
@@ -216,7 +236,7 @@ namespace mtgvrp.vehicle_dealership
             {
                 API.triggerClientEvent(player, "dealership_showbuyvehiclemenu", API.toJson(_motorsycles),
                     API.toJson(_copues), API.toJson(_trucksnvans), API.toJson(_offroad), API.toJson(_musclecars),
-                    API.toJson(_suv), API.toJson(_supercars));
+                    API.toJson(_suv), API.toJson(_supercars), API.toJson(_cycles));
             }
             else
                 API.sendChatMessageToPlayer(player, "You aren't near any dealership.");
