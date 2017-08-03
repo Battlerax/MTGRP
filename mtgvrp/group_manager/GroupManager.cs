@@ -671,6 +671,7 @@ namespace mtgvrp.group_manager
             }
 
             character.Group.FactionPaycheckBonus = int.Parse(amount);
+            character.Group.Save();
             API.sendChatMessageToPlayer(player, "You have set your faction's paycheck bonus to $" + amount + ".");
         }
 

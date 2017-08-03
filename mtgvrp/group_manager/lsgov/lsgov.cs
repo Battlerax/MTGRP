@@ -125,6 +125,7 @@ namespace mtgvrp.group_manager.lsgov
             }
 
             group.FundingPercentage = int.Parse(percentage);
+            group.Save();
             player.sendChatMessage($"You have set ~b~{group.Name}~w~'s funding to ~r~{percentage}%~w~.");
         }
 

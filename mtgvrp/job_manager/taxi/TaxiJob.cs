@@ -120,6 +120,12 @@ namespace mtgvrp.job_manager.taxi
             {
                 if (veh.Job?.Type == JobManager.JobTypes.Taxi)
                 {
+                    if (veh.Driver.Client == player)
+                    {
+                        player.sendChatMessage("You cannot enter your own taxi.");
+                        API.warpPlayerOutOfVehicle(player);
+                        return;
+                    }
                     if (veh.Driver == null)
                     {
                         API.sendChatMessageToPlayer(player, Color.Yellow, "[TAXI] This taxi currently has no driver.");
@@ -148,8 +154,10 @@ namespace mtgvrp.job_manager.taxi
                         TaxiRequests.Remove(character);
 
                         TaxiPictureNotification(player, veh.Driver.rp_name() + " has accepted your taxi request.", subject: "~y~Request Accepted");
+                        player.sendChatMessage(veh.Driver.rp_name() + " has accepted your taxi request.");
                         SendMessageToOnDutyDrivers(veh.Driver.rp_name() + " has accepted " + character.rp_name() + "'s taxi request.");
                         API.sendChatMessageToPlayer(player, "[TAXI] Please set a destination on your map and then type: /setdestination");
+                        player.sendChatMessage("[TAXI] Please set a destination on your map and then type: /setdestination");
 
                         API.triggerClientEvent(player, "update_fare_display", veh.Driver.TaxiFare, 0, "");
                         API.triggerClientEvent(veh.Driver.Client, "update_fare_display", veh.Driver.TaxiFare, 0, "");
@@ -267,6 +275,12 @@ namespace mtgvrp.job_manager.taxi
         {
             Character character = player.GetCharacter();
 
+            if (OnDutyDrivers.Contains(character))
+            {
+                player.sendChatMessage("You can't request a taxi while on taxi duty.");
+                return;
+            }
+
             if (TaxiRequests.Contains(character))
             {
                 TaxiPictureNotification(player, "Our system shows you already have a taxi request submitted. If this is incorrect, use /canceltaxi");
@@ -287,10 +301,12 @@ namespace mtgvrp.job_manager.taxi
 
             TaxiRequests.Add(character);
             TaxiPictureNotification(player, "Your taxi request has been submitted. Please wait patiently for a response.");
+            player.sendChatMessage("Taxi request submitted.");
             
             foreach(var c in OnDutyDrivers)
             {
                 TaxiPictureNotification(c.Client, character.rp_name() + " has requested a taxi. (" +  (c.Client.position.DistanceTo(character.Client.position) / 1000)+ "KM away) ((ID: " + PlayerManager.GetPlayerId(character) + "))");
+                player.sendChatMessage(character.rp_name() + " has requested a taxi. (" + (c.Client.position.DistanceTo(character.Client.position) / 1000) + "KM away. /acceptfare to accept.");
             }
         }
 
@@ -368,7 +384,9 @@ namespace mtgvrp.job_manager.taxi
 
             TaxiPictureNotification(passenger.Client, character.rp_name() + " has accepted your taxi request. Please stay at your current location.");
             TaxiPictureNotification(player, "You have accepted " + passenger.rp_name() + "'s taxi request. Follow your waypoint to their location.");
-
+            player.sendChatMessage("You have accepted " + passenger.rp_name() + "'s taxi request. Follow your waypoint to their location.");
+            passenger.Client.sendChatMessage(character.rp_name() + " has accepted your taxi request. Please stay at your current location.");
+            
             API.triggerClientEvent(player, "set_taxi_waypoint", passenger.Client.position);
         }
 

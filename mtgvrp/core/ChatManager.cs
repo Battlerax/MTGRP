@@ -123,7 +123,7 @@ namespace mtgvrp.core
 
                 API.sendChatMessageToPlayer(player, Color.Grey, "911 Operator says: Thank you for reporting your emergency, a unit will be dispatched shortly.");
                 PhoneManager.h_cmd(player);
-
+                group_manager.lspd.Lspd.SendToCops(player, $"~r~911: #{charphone.PhoneNumber} reported a crime: {msg}");
                 e.Cancel = true;
                 e.Reason = "Phone";
                 LogManager.Log(LogManager.LogTypes.Phone, $"[Phone] {character.CharacterName}[{account.AccountName}] To LSPD(911): {msg}");
