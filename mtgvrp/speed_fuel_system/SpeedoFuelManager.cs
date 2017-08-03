@@ -94,6 +94,12 @@ namespace mtgvrp.speed_fuel_system
                         return;
                     }
 
+                    if (player.hasData("FUELING_VEHICLE"))
+                    {
+                        API.sendChatMessageToPlayer(player, "You're already refueling a vehicle.");
+                        return;
+                    }
+
                     if (fuel == 0)
                         fuel = 100 - veh.Fuel;
 
@@ -206,7 +212,12 @@ namespace mtgvrp.speed_fuel_system
                 API.resetEntityData(vehEntity, "PENDING_FUEL");
                 API.resetEntityData(playerEntity, "FUELING_VEHICLE");
                 API.freezePlayer(playerEntity, false);
-                API.sendChatMessageToPlayer(playerEntity, "Refuel has been finished.");
+
+                if(veh.RefuelProp.Supplies <= 0)
+                    API.sendChatMessageToPlayer(playerEntity, "The gas station ran out of gas.");
+                else if (pendingFuel <= 0)
+                    API.sendChatMessageToPlayer(playerEntity, "Refueling finsihed.");
+
                 veh.Save();
                 return;
             }
