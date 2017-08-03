@@ -120,6 +120,12 @@ namespace mtgvrp.job_manager.taxi
             {
                 if (veh.Job?.Type == JobManager.JobTypes.Taxi)
                 {
+                    if (veh.Driver.Client == player)
+                    {
+                        player.sendChatMessage("You cannot enter your own taxi.");
+                        API.warpPlayerOutOfVehicle(player);
+                        return;
+                    }
                     if (veh.Driver == null)
                     {
                         API.sendChatMessageToPlayer(player, Color.Yellow, "[TAXI] This taxi currently has no driver.");
@@ -266,6 +272,12 @@ namespace mtgvrp.job_manager.taxi
         public void requesttaxi_cmd(Client player)
         {
             Character character = player.GetCharacter();
+
+            if (OnDutyDrivers.Contains(character))
+            {
+                player.sendChatMessage("You can't request a taxi while on taxi duty.");
+                return;
+            }
 
             if (TaxiRequests.Contains(character))
             {

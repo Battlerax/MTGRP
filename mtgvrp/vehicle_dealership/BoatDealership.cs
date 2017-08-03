@@ -147,9 +147,17 @@ namespace mtgvrp.vehicle_dealership
                     return;
                 }
 
-                InventoryManager.GiveInventoryItem(character, new FishingRod(), 1);
-                InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(Money), 250);
-                player.sendChatMessage("You have purchased a fishing rod. Use /fish to begin fishing!");
+                switch (InventoryManager.GiveInventoryItem(player.GetCharacter(), new FishingRod()))
+                {
+                    case InventoryManager.GiveItemErrors.Success:
+                        InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(Money), 250);
+                        player.sendChatMessage("You have purchased a fishing rod. Use /fish to begin fishing!"); break;
+
+                    case InventoryManager.GiveItemErrors.NotEnoughSpace:
+                        API.sendChatMessageToPlayer(player,
+                            $"[BUSINESS] You dont have enough space for that item. You need {new FishingRod().AmountOfSlots} Slots.");
+                        break;
+                }
             }
             else
                 API.sendChatMessageToPlayer(player, "You aren't near the boat dealership.");
