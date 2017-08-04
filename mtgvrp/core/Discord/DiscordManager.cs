@@ -203,6 +203,31 @@ namespace mtgvrp.core.Discord
             }
         }
 
+        [DSharpPlus.CommandsNext.Attributes.Command("igplayers")] // let's define this method as a command
+        [Description("Sends a message in admin channel.")] // this will be displayed to tell users what this command does when they invoke help
+        public async Task GetPlayers(CommandContext ctx) // this command takes no arguments
+        {
+            if (ctx.Channel.Name != DiscordManager.AdminChannel)
+                return;
+
+            var players = "";
+            if (ctx.Member.Roles.Any(x => x.Name == DiscordManager.AdminRole || x.Name == "V-RP Developer"))
+            {
+                foreach (var c in PlayerManager.Players)
+                {
+                    if (c == null)
+                        continue;
+
+                    Account receiverAccount = c.Client.GetAccount();
+
+                    players += $"[{PlayerManager.GetPlayerId(c)}] {c.rp_name()} - {receiverAccount.AccountName}" + "\n";
+                }
+                var interactivity = ctx.Client.GetInteractivityModule();
+                var playersPages = interactivity.GeneratePagesInEmbeds(players);
+                await interactivity.SendPaginatedMessage(ctx.Channel, ctx.User, playersPages, TimeSpan.FromMinutes(5), TimeoutBehaviour.Delete);
+            }
+        }
+
         [DSharpPlus.CommandsNext.Attributes.Command("v")] // let's define this method as a command
         [Description(
             "Sends a message in VIP channel.")] // this will be displayed to tell users what this command does when they invoke help
