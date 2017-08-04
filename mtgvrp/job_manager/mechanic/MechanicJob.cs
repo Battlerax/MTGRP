@@ -22,6 +22,8 @@ namespace mtgvrp.job_manager.taxi
             Character character = player.GetCharacter();
             var veh = VehicleManager.GetVehFromNetHandle(API.getPlayerVehicle(player));
 
+            if (veh == null)
+                return;
 
             if (character?.JobOne?.Type != JobManager.JobTypes.Mechanic)
             {
@@ -67,6 +69,9 @@ namespace mtgvrp.job_manager.taxi
         {
             Character character = player.GetCharacter();
             var veh = VehicleManager.GetVehFromNetHandle(API.getPlayerVehicle(player));
+
+            if (veh == null)
+                return;
 
             if (character?.JobOne?.Type != JobManager.JobTypes.Mechanic)
             {
