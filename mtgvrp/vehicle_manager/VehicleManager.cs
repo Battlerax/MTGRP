@@ -894,7 +894,7 @@ namespace mtgvrp.vehicle_manager
             if (vehicle == null)
                 return false;
 
-            if (account.AdminLevel >= 3 && account.AdminDuty) { return true; }
+            if (account.AdminLevel >= 3) { return true; }
             if (character.Id == vehicle.OwnerId) { return true; }
             if (vehicle.GroupId == character.GroupId && character.GroupId != 0) return true;
             if (character.JobOne == vehicle.Job && character.JobOne != Job.None) { return true; }
@@ -906,7 +906,7 @@ namespace mtgvrp.vehicle_manager
             Account account = player.GetAccount();
             Character character = player.GetCharacter();
 
-            if (account.AdminLevel >= 3 && account.AdminDuty) { return true; }
+            if (account.AdminLevel >= 3) { return true; }
             if (character.Id == vehicle.OwnerId) { return true; }
             if (vehicle.GroupId == character.GroupId && character.GroupId != 0) return true;
             return false;
