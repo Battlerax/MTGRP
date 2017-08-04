@@ -28,7 +28,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
             var musclecars = API.createMenuItem("Muscle Cars", "Powerful cars ?!.");
             var suv = API.createMenuItem("SUV", "SUV.");
             var supercars = API.createMenuItem("Supercars", "The best cars we have.");
-			var supercars = API.createMenuItem("Cycles", "Ride bikes in style.");
+			var cycles = API.createMenuItem("Cycles", "Ride bikes in style.");
             //NOTE: THE ARRENGNEMENT IS SOOO IMPORTANT CAUSE I USE INDEX FOR KNOWING THE CURRENT GROUP AND NOT NAME.
             vehDealerList.AddItem(motorsycles);
             vehDealerList.AddItem(coupes);
