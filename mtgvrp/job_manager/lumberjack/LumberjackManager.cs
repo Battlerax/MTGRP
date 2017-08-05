@@ -136,6 +136,8 @@ namespace mtgvrp.job_manager.lumberjack
                         API.sendChatMessageToPlayer(sender, "~r~* Your axe would break.");
                         InventoryManager.DeleteInventoryItem<Weapon>(character, 1,
                             x => x.CommandFriendlyName == "Hatchet");
+                        API.stopPlayerAnimation(sender);
+                        API.stopPedAnimation(sender);
                     }
                 }
                 else if (tree.Stage == Tree.Stages.Processing)
@@ -157,6 +159,8 @@ namespace mtgvrp.job_manager.lumberjack
                         API.sendChatMessageToPlayer(sender, "~r~* Your axe would break.");
                         InventoryManager.DeleteInventoryItem<Weapon>(character, 1,
                             x => x.CommandFriendlyName == "Hatchet");
+                        API.stopPlayerAnimation(sender);
+                        API.stopPedAnimation(sender);
                     }
                 }
 
