@@ -132,7 +132,7 @@ namespace mtgvrp.dmv
 
                 if (veh.IsSpawned)
                 {
-                    VehicleManager.respawn_vehicle(veh);
+                    API.setVehicleNumberPlate(veh.NetHandle, veh.LicensePlate);
                 }
 
                 //Remove money.
