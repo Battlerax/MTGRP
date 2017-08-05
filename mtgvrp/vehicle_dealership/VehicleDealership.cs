@@ -73,7 +73,7 @@ namespace mtgvrp.vehicle_dealership
         {
             new[] {"Baller", "-808831384", "95000"},
             new[] {"Cavalcade", "2006918058", "80000"},
-            new[] {"Gresley", "-1543762099", "7500"},
+            new[] {"Gresley", "-1543762099", "75000"},
             new[] {"Granger", "-1775728740", "110000"},
             new[] {"Dubsta", "1177543287", "60000"},
             new[] {"Huntley", "486987393", "90000"},
