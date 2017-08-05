@@ -371,7 +371,7 @@ namespace mtgvrp.job_manager.scuba
             character.IsScubaDiving = false;
 
             //Set normal underwater time.
-            API.sendNativeToPlayer(player, Hash.SET_PED_MAX_TIME_UNDERWATER, player.handle, 60);
+            API.sendNativeToPlayer(player, Hash.SET_PED_MAX_TIME_UNDERWATER, player.handle, 60.0f);
         }
     }
 }
