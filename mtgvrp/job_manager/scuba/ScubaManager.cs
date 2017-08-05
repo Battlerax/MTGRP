@@ -219,7 +219,7 @@ namespace mtgvrp.job_manager.scuba
 
             if (result < 0)
             {
-                API.sendChatMessageToPlayer(player, $@"Please wait {character.CanScuba.Subtract(DateTime.Now)::hh\:mm\:ss} more before picking up more treasure.");
+                API.sendChatMessageToPlayer(player, $@"Please wait {character.CanScuba.Subtract(DateTime.Now):hh\:mm\:ss} more before picking up more treasure.");
                 return;
             }
 
