@@ -217,9 +217,9 @@ namespace mtgvrp.job_manager.scuba
 
             int result = DateTime.Compare(character.CanScuba, DateTime.Now);
 
-            if (result == 1)
+            if (result < 0)
             {
-                API.sendChatMessageToPlayer(player, $"Please wait {character.CanScuba.Subtract(DateTime.Now).Minutes} more minutes before picking up more treasure.");
+                API.sendChatMessageToPlayer(player, $@"Please wait {character.CanScuba.Subtract(DateTime.Now)::hh\:mm\:ss} more before picking up more treasure.");
                 return;
             }
 

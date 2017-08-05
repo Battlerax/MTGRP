@@ -45,7 +45,7 @@ namespace mtgvrp.job_manager.taxi
 
             if (DateTime.Now < character.FixcarPrevention)
             {
-                API.sendChatMessageToPlayer(player, "You must wait 2 minutes before fixing another car.");
+                API.sendChatMessageToPlayer(player, $@"You must wait {(character.FixcarPrevention - DateTime.Now):hh\:mm\:ss} before fixing another car.");
                 return;
             }
 
@@ -100,8 +100,6 @@ namespace mtgvrp.job_manager.taxi
             player.sendChatMessage("Vehicle painted.");
 
             LogManager.Log(LogManager.LogTypes.Stats, $"[Vehicle] {character.CharacterName}[{player.GetAccount().AccountName}] has painted vehicle #{veh.Id}.");
-
-            var tst = Enum.GetValues(typeof(HelpManager.CommandGroups)).Cast<HelpManager.CommandGroups>().Where(x => x > HelpManager.CommandGroups.AdminLevel1);
         }
    
     }
