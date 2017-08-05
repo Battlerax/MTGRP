@@ -65,7 +65,9 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 				var res = false;
 				while (res === false) {
 					API.sendChatMessage("Character name must be similar to: ~g~John_Doe~w~.");
-					var desiredName = API.getUserInput("", 64);
+                    var desiredName = API.getUserInput("", 64);
+				    if (desiredName === "")
+				        return;
 					var patt = new RegExp("^[A-Z][a-zA-Z]+_[A-Z][a-zA-Z]+$");
 					res = patt.test(desiredName);
 				}
