@@ -1,6 +1,7 @@
 ﻿/// <reference path="../../types-gtanetwork/index.d.ts" />
 
 var myBrowser = null;
+var newArgs = null;
 API.onServerEventTrigger.connect((eventName, args) => {
     switch (eventName) {
         case 'invmanagement_showmanager':
@@ -12,10 +13,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
             API.loadPageCefBrowser(myBrowser, "inventory/ManageInv.html");
             //API.setCefDrawState(true);
             API.showCursor(true);
-
-            //Send to fill items.
-            API.sleep(500);
-            myBrowser.call("fillItems", args[0], args[1], args[2], args[3], args[4], args[5]);
+            newArgs = args;
             break;
 
         case 'moveItemFromLeftToRightSuccess': 
@@ -26,6 +24,10 @@ API.onServerEventTrigger.connect((eventName, args) => {
             break;
     }
 });
+
+function loaded() {
+    myBrowser.call("fillItems", newArgs[0], newArgs[1], newArgs[2], newArgs[3], newArgs[4], newArgs[5]);
+}
 
 function moveFromLeftToRight(shortname, amount) {
     API.triggerServerEvent("invmanagement_moveFromLeftToRight", shortname, amount);
