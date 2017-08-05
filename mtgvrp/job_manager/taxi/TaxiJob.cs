@@ -191,6 +191,21 @@ namespace mtgvrp.job_manager.taxi
             VehicleManager.respawn_vehicle(veh);
         }
 
+        [Command("canceltaxi"), Help(HelpManager.CommandGroups.TaxiJob, "Cancel your taxi request.")]
+        public void canceltaxi_cmd(Client player)
+        {
+            Character character = player.GetCharacter();
+
+            if (!TaxiRequests.Contains(character))
+            {
+                TaxiPictureNotification(player, "Our system shows you do not have a taxi request submitted.");
+                return;
+            }
+
+            TaxiRequests.Remove(character);
+            player.sendChatMessage("Taxi request cancelled.");
+        }
+
         [Command("taxiduty"), Help(HelpManager.CommandGroups.TaxiJob, "Toggle taxi duty.")]
         public void taxiduty_cmd(Client player)
         {

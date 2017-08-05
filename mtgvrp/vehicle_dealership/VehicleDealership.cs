@@ -67,6 +67,7 @@ namespace mtgvrp.vehicle_dealership
             new[] {"SabreGT", "-1685021548", "80000"},
             new[] {"VooDoo", "2006667053", "30000"},
             new[] {"Faction", "-2119578145", "35000"},
+            new[] {"Futo", "2016857647", "80000"},
         };
 
         private readonly string[][] _suv =
