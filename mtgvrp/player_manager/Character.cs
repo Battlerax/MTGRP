@@ -316,8 +316,6 @@ namespace mtgvrp.player_manager
         //DMV
         [BsonIgnore] public DateTime TimeStartedDmvTest;
         [BsonIgnore] public bool IsInDmvTest;
-        [BsonIgnore] public int DmvTestStep;
-        [BsonIgnore] public ColShape NextDmvCheckpointColShape;
 
         public Character()
         {

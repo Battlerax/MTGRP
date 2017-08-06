@@ -360,6 +360,9 @@ namespace mtgvrp.vehicle_manager
             InventoryManager.ShowInventoryManager(player, player.GetCharacter(), lastVeh, "Inventory: ", "Vehicle: ");
         }
 
+        public delegate void OnVehicleEngineToggleHandle(Client player, NetHandle vehicle, bool state);
+        public static event OnVehicleEngineToggleHandle OnVehicleEngineToggle;
+
         [Command("engine", Alias = "e"), Help(HelpManager.CommandGroups.Vehicles, "Turning on and off your vehicle.", null)]
         public static void engine_cmd(Client player)
         {
@@ -390,11 +393,13 @@ namespace mtgvrp.vehicle_manager
                 {
                     API.shared.setVehicleEngineStatus(vehicleHandle, false);
                     ChatManager.RoleplayMessage(character, "turns off the vehicle engine.", ChatManager.RoleplayMe);
+                    OnVehicleEngineToggle?.Invoke(player, vehicleHandle, false);
                 }
                 else
                 {
                     API.shared.setVehicleEngineStatus(vehicleHandle, true);
                     ChatManager.RoleplayMessage(character, "turns on the vehicle engine.", ChatManager.RoleplayMe);
+                    OnVehicleEngineToggle?.Invoke(player, vehicleHandle, true);
                 }
             }
             else
