@@ -24,6 +24,7 @@ using MongoDB.Driver;
 using static mtgvrp.core.LogManager;
 using Color = mtgvrp.core.Color;
 using Vehicle = mtgvrp.vehicle_manager.Vehicle;
+using MongoDB.Bson;
 
 namespace mtgvrp.AdminSystem
 {
@@ -1413,29 +1414,21 @@ namespace mtgvrp.AdminSystem
             if (account.AdminLevel < 3)
                 return;
 
-            var filter = Builders<Character>.Filter.Eq("CharacterName", charactername);
-            var foundCharacter = DatabaseManager.CharacterTable.Find(filter).ToList();
-
+            var foundCharacter = DatabaseManager.CharacterTable.Find(x => x.CharacterName == charactername).FirstOrDefault();
             if (foundCharacter == null)
             {
                 player.sendChatMessage("Character not found.");
                 return;
             }
 
-            foreach (var p in foundCharacter)
+            var foundAccount = DatabaseManager.AccountTable.Find(x => x.Id == ObjectId.Parse(foundCharacter.AccountId)).FirstOrDefault();
+            if (foundAccount == null)
             {
-                var accountFilter = Builders<Account>.Filter.Eq("Id", p.AccountId);
-                var foundAccount = DatabaseManager.AccountTable.Find(accountFilter).FirstOrDefault();
-
-                if (foundAccount == null)
-                {
-                    player.sendChatMessage("Account not found.");
-                    return;
-                }
-
-                API.sendChatMessageToPlayer(player, charactername + "'s account name is '" + foundAccount?.AccountName + "'.");
+                player.sendChatMessage("Account not found.");
+                return;
             }
 
+            API.sendChatMessageToPlayer(player, charactername + "'s account name is '" + foundAccount.AccountName + "'.");
         }
 
         [Command("changename", GreedyArg = false), Help(HelpManager.CommandGroups.AdminLevel2, "Change a player's character name.", new[] { "ID of the target player", "New name" })]
