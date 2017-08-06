@@ -1324,6 +1324,25 @@ namespace mtgvrp.AdminSystem
             SendtoAllAdmins(account.AdminName + " has kicked " + receiver.nametag + " from the server. Reason: " + reason);
         }
 
+        [Command("remoteprison", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel2, "Places a player into prison for the specificed amount of time.", new[] { "ID of the target player", "Time in minutes.", "Reason for prison" })]
+        public void remoteprison_cmd(Client player, string charactername, string time, string reason)
+        {
+            Account account = player.GetAccount();
+            if (account.AdminLevel < 2)
+                return;
+
+            var receiver = DatabaseManager.CharacterTable.Find(x => x.CharacterName == charactername).SingleOrDefault();
+            if(receiver == null)
+                return;
+
+            receiver.JailTimeLeft = int.Parse(time) * 1000 * 60;
+            API.sendChatMessageToPlayer(player, "You have remote jailed " + receiver.CharacterName + " for " + time + " minutes. Reason: " + reason);
+            SendtoAllAdmins(account.AdminName + " has remote jailed " + receiver.CharacterName + " for " + time + " minutes. Reason: " + reason);
+            account.AdminActions++;
+            Log(LogTypes.AdminActions,
+                $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has remote jailed {receiver.CharacterName} for {time} second(s).");
+        }
+
         [Command("remotewarn", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel3, "Applies a player warning to an offline player", new[] { "Account name of the target player", "The warning reason" })]
         public static void remotewarn_cmd(Client player, string accountname, string reason)
         {
