@@ -204,7 +204,7 @@ namespace mtgvrp.core.Discord
         }
 
         [DSharpPlus.CommandsNext.Attributes.Command("igplayers")] // let's define this method as a command
-        [Description("Sends a message in admin channel.")] // this will be displayed to tell users what this command does when they invoke help
+        [Description("Shgows list of IG players.")] // this will be displayed to tell users what this command does when they invoke help
         public async Task GetPlayers(CommandContext ctx) // this command takes no arguments
         {
             if (ctx.Channel.Name != DiscordManager.AdminChannel)
@@ -256,6 +256,9 @@ namespace mtgvrp.core.Discord
             "Views players online.")] // this will be displayed to tell users what this command does when they invoke help
         public async Task PlayersCount(CommandContext ctx) // this command takes no arguments
         {
+            if(!ctx.Channel.IsPrivate)
+                return;
+
             await ctx.TriggerTypingAsync();
             int count = PlayerManager.Players.SkipWhile(x => x == null).Count();
             var msg = "Players Online: " + count;
@@ -267,6 +270,9 @@ namespace mtgvrp.core.Discord
             "Views admins online.")] // this will be displayed to tell users what this command does when they invoke help
         public async Task AdminsList(CommandContext ctx) // this command takes no arguments
         {
+            if(!ctx.Channel.IsPrivate)
+                return;
+
             await ctx.TriggerTypingAsync();
 
             var msg = "";
