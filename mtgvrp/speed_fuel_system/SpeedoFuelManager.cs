@@ -96,7 +96,7 @@ namespace mtgvrp.speed_fuel_system
 
                     if (player.hasData("FUELING_VEHICLE"))
                     {
-                        API.sendChatMessageToPlayer(player, "You're already refueling a vehicle.");
+                        API.sendChatMessageToPlayer(player, "You're already refuelling a vehicle.");
                         return;
                     }
 
@@ -114,12 +114,12 @@ namespace mtgvrp.speed_fuel_system
                     if (Money.GetCharacterMoney(player.GetCharacter()) < pendingFuel * prop.ItemPrices["gas"] && player.GetCharacter().Group.CommandType != group_manager.Group.CommandTypeLspd)
                     {
                         API.sendChatMessageToPlayer(player,
-                            $"You don't have enough money to get ~r~{pendingFuel}~w~ units of fuel.~n~Its worth ~g~${pendingFuel * prop.ItemPrices["gas"]}~w~.");
+                            $"You don't have enough money to get ~r~{pendingFuel}~w~ units of fuel.~n~It's worth ~g~${pendingFuel * prop.ItemPrices["gas"]}~w~.");
                         return;
                     }
 
                     API.sendChatMessageToPlayer(player,
-                        $"You will be charged ~g~${pendingFuel * prop.ItemPrices["gas"]}~w~ to get ~r~{pendingFuel}~w~ units of fuel.");
+                        $"You will be charged ~g~${pendingFuel * prop.ItemPrices["gas"]}~w~ for ~r~{pendingFuel}~w~ units of fuel.");
                     API.freezePlayer(player, true);
                     API.setEntityData(vehEntity, "PENDING_FUEL", pendingFuel);
                     veh.RefuelProp = prop;
@@ -149,7 +149,7 @@ namespace mtgvrp.speed_fuel_system
                 var vehEntity = API.getEntityData(player, "FUELING_VEHICLE");
                 if (vehEntity == vehicle)
                 {
-                    API.sendChatMessageToPlayer(player, "Ended Refuel.");
+                    API.sendChatMessageToPlayer(player, "Refuel ended.");
                     Vehicle veh = API.getEntityData(vehicle, "Vehicle");
                     veh.FuelingTimer?.Dispose();
                     API.freezePlayer(player, false);
@@ -216,7 +216,7 @@ namespace mtgvrp.speed_fuel_system
                 if(veh.RefuelProp.Supplies <= 0)
                     API.sendChatMessageToPlayer(playerEntity, "The gas station ran out of gas.");
                 else if (pendingFuel <= 0)
-                    API.sendChatMessageToPlayer(playerEntity, "Refueling finsihed.");
+                    API.sendChatMessageToPlayer(playerEntity, "Refuelling finsihed.");
 
                 veh.Save();
                 return;
