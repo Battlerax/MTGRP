@@ -10,31 +10,35 @@
     <link href="../stylesheet/css/metro-icons.css" rel="stylesheet">
     
     <script>
+        $(document).ready(function() {
+            resourceCall("loaded");
+        });
+
         function fillItems(leftJson, rightJson, titleLeft, titleRight, usedLeft, usedRight) {
             var leftList = JSON.parse(leftJson);
             var rightList = JSON.parse(rightJson);
             //Loop in each.
             $.each(leftList,
-                    function (i, val) {
-                        $("#LeftItems").append(`<div class="list" shortname="${val[1]}">
+                function (i, val) {
+                    $("#LeftItems").append(`<div class="list" shortname="${val[1]}">
                     <div class="list-content">
                         <span class="list-title">${val[0]}</span>
                         <span class="list-subtitle">Short Name: ${val[1]}</span>
                         <span class="list-remark" amount="${val[2]}">Amount: ${val[2]}</span>
                     </div>
                 </div>`);
-                    });
+                });
 
             $.each(rightList,
-                    function (i, val) {
-                        $("#RightItems").append(`<div class="list" shortname="${val[1]}">
+                function (i, val) {
+                    $("#RightItems").append(`<div class="list" shortname="${val[1]}">
                     <div class="list-content">
                         <span class="list-title">${val[0]}</span>
                         <span class ="list-subtitle">Short Name: ${val[1]}</span>
                         <span class ="list-remark" amount="${val[2]}">Amount: ${val[2]}</span>
                     </div>
                 </div>`);
-                    });
+                });
 
             //Set titles.
             $('#TitleLeft').text(titleLeft);

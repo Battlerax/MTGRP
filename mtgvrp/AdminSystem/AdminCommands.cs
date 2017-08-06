@@ -1158,9 +1158,7 @@ namespace mtgvrp.AdminSystem
                 return;
             }
 
-            int result = DateTime.Compare(receivercharacter.NMutedExpiration, DateTime.Now);
-
-            if (result < 0)
+            if (receivercharacter.NMutedExpiration > DateTime.Now)
             {
                 API.sendChatMessageToPlayer(player, "You have muted ~b~" + receiver.nametag + "~w~ from newbie chat for 1 hour.");
                 API.sendChatMessageToPlayer(receiver, "You have been ~r~muted ~w~from newbie chat for 1 hour.");
@@ -1195,9 +1193,7 @@ namespace mtgvrp.AdminSystem
                 return;
             }
 
-            int result = DateTime.Compare(receivercharacter.VMutedExpiration, DateTime.Now);
-
-            if (result < 0)
+            if (receivercharacter.VMutedExpiration > DateTime.Now)
             {
                 API.sendChatMessageToPlayer(player, "You have muted ~b~" + receiver.nametag + "~w~ from VIP chat for 1 hour.");
                 API.sendChatMessageToPlayer(receiver, "You have been ~r~muted ~w~from VIP chat for 1 hour.");
@@ -1231,10 +1227,8 @@ namespace mtgvrp.AdminSystem
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
-
-            int result = DateTime.Compare(receivercharacter.ReportMuteExpires, DateTime.Now);
-
-            if (result < 0)
+            
+            if (receivercharacter.ReportMuteExpires > DateTime.Now)
             {
                 API.sendChatMessageToPlayer(player, "You have muted ~b~" + receiver.nametag + "~w~from creating reports.");
                 API.sendChatMessageToPlayer(receiver, "You have been ~r~muted ~w~from making reports.");

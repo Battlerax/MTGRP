@@ -339,8 +339,7 @@ namespace mtgvrp.player_manager
                     Account account = player.GetAccount();
                     if (account.VipLevel > 0 && account.AdminLevel < 1)
                     {
-                        int result = DateTime.Compare(DateTime.Now, account.VipExpirationDate);
-                        if (result > 0)
+                        if (account.VipExpirationDate < DateTime.Now)
                         {
                             player.sendChatMessage(
                                 "Your ~y~VIP~w~ subscription has ran out. Visit www.mt-gaming.com to renew your subscription.");

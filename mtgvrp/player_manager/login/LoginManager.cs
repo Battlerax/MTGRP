@@ -115,9 +115,7 @@ namespace mtgvrp.player_manager.login
 
                         if (hashedPass == account.Password)
                         {
-                            int result = DateTime.Compare(account.TempBanExpiration, DateTime.Now);
-
-                            if (account.IsTempbanned == true && result < 0)
+                            if (account.IsTempbanned == true && account.TempBanExpiration < DateTime.Now)
                             {
                                 API.sendChatMessageToPlayer(player, "~r~You are temp-banned from this server. You will be unbanned in " + (account.TempBanExpiration - DateTime.Now).TotalDays + " days.");
                                 API.sendNotificationToPlayer(player, "~r~You are temp-banned from this server. You will be unbanned in " + (account.TempBanExpiration - DateTime.Now).TotalDays + " days.");
@@ -271,9 +269,7 @@ namespace mtgvrp.player_manager.login
 
             if (hashedPass == account.Password)
             {
-                int result = DateTime.Compare(account.TempBanExpiration, DateTime.Now);
-
-                if (account.IsTempbanned == true && result < 0)
+                if (account.IsTempbanned == true && account.TempBanExpiration < DateTime.Now)
                 {
                     API.sendChatMessageToPlayer(player, "~r~You are temp-banned from this server. You will be unbanned in " + (account.TempBanExpiration - DateTime.Now).TotalDays + " days.");
                     API.sendNotificationToPlayer(player, "~r~You are temp-banned from this server. You will be unbanned in " + (account.TempBanExpiration - DateTime.Now).TotalDays + " days.");

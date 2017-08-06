@@ -473,9 +473,7 @@ namespace mtgvrp.vehicle_manager
                 return;
             }
 
-            int result = DateTime.Compare(character.DropcarReset, DateTime.Now);
-
-            if (result < 0)
+            if (character.DropcarReset < DateTime.Now)
             {
                 player.sendChatMessage($@"Please wait {character.DropcarReset.Subtract(DateTime.Now):hh\:mm\:ss} before dropping another car.");
                 return;

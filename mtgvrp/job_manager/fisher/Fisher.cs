@@ -128,6 +128,12 @@ namespace mtgvrp.job_manager.fisher
                 return;
             }
 
+            if (API.isPlayerInAnyVehicle(player))
+            {
+                API.sendChatMessageToPlayer(player, "You can't fish while driving a vehicle.");
+                return;
+            }
+
             if (character.LastVehicle != null)
             {
                 isOnLastBoat = API.fetchNativeFromPlayer<bool>(player, Hash.IS_PED_ON_SPECIFIC_VEHICLE, player,
