@@ -1406,7 +1406,7 @@ namespace mtgvrp.AdminSystem
             }
         }
 
-        [Command("getaccountname", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel2, "Gets the account name of a character", new[] { "Character name for the account" })]
+        [Command("getaccountname", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel4, "Gets the account name of a character", new[] { "Character name for the account" })]
         public void getaccountname_cmd(Client player, string charactername)
         {
             Account account = player.GetAccount();
@@ -1429,6 +1429,31 @@ namespace mtgvrp.AdminSystem
             }
 
             API.sendChatMessageToPlayer(player, charactername + "'s account name is '" + foundAccount.AccountName + "'.");
+        }
+
+        [Command("remotestats", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel3, "Gets the stats of a character", new[] { "Character name" })]
+        public void remotestats_cmd(Client player, string charactername)
+        {
+            Account account = player.GetAccount();
+
+            if (account.AdminLevel < 2)
+                return;
+
+            var foundCharacter = DatabaseManager.CharacterTable.Find(x => x.CharacterName == charactername).FirstOrDefault();
+            if (foundCharacter == null)
+            {
+                player.sendChatMessage("Character not found.");
+                return;
+            }
+
+            var foundAccount = DatabaseManager.AccountTable.Find(x => x.Id == ObjectId.Parse(foundCharacter.AccountId)).FirstOrDefault();
+            if (foundAccount == null)
+            {
+                player.sendChatMessage("Account not found.");
+                return;
+            }
+
+            PlayerManager.ShowStats(player, foundCharacter, foundAccount);
         }
 
         [Command("changename", GreedyArg = false), Help(HelpManager.CommandGroups.AdminLevel2, "Change a player's character name.", new[] { "ID of the target player", "New name" })]
