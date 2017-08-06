@@ -72,6 +72,10 @@ namespace mtgvrp.AdminSystem
                     Vector3 pos = (Vector3)arguments[0];
                     player.position = pos;
                     break;
+                case "SET_PLAYER_CP":
+                    var p = API.getPlayerFromHandle((NetHandle)arguments[0]);
+                    API.triggerClientEvent(p, "update_beacon", (Vector3)arguments[1]);
+                break;
 
             }
         }
@@ -1404,6 +1408,20 @@ namespace mtgvrp.AdminSystem
                     $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has remotebanned the player [{c.AccountName}]. Reason: '{reason}'");
                 break;
             }
+        }
+
+        [Command("setcp"), Help(HelpManager.CommandGroups.AdminLevel1, "Sends a checkpoint to a player.", "The target name or id")]
+        public void sendwaypoint_cmd(Client player, string target)
+        {
+            var targetClient = PlayerManager.ParseClient(target);
+            if(targetClient == null)
+            {
+                API.sendChatMessageToPlayer(player, "That player isn't online.");
+                return;
+            }
+
+            API.triggerClientEvent(player, "GET_CP_TO_SEND", targetClient.handle);
+            API.sendChatMessageToPlayer(player, "The checkpoint should be sent to " + targetClient.GetCharacter().CharacterName);
         }
 
         [Command("getaccountname", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel4, "Gets the account name of a character", new[] { "Character name for the account" })]
