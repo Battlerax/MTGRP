@@ -75,7 +75,7 @@ namespace mtgvrp.AdminSystem
                 case "SET_PLAYER_CP":
                     var p = API.getPlayerFromHandle((NetHandle)arguments[0]);
                     API.triggerClientEvent(p, "update_beacon", (Vector3)arguments[1]);
-                break;
+                    break;
 
             }
         }
@@ -90,7 +90,7 @@ namespace mtgvrp.AdminSystem
                 PropertyManager.Properties.Where(y => y.Type != PropertyManager.PropertyTypes.GasStation).AsParallel().ForAll(x => { x.Supplies = supply; x.Save(); });
                 API.sendChatMessageToPlayer(player, "Set all non gas station properties supplies to " + supply);
                 Log(LogTypes.AdminActions, $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {acc.AdminName} has set all non gas station properties supplies to {supply}");
-            }  
+            }
         }
 
         [Command("setgassupplies"), Help(HelpManager.CommandGroups.AdminLevel5, "Used to set all gas station properties' supplies.",
@@ -107,7 +107,7 @@ namespace mtgvrp.AdminSystem
         }
 
         [Command("resetpassword"), Help(HelpManager.CommandGroups.AdminLevel5, "Reset a player's password.",
-             new[] { "The player", "The new passsword."})]
+             new[] { "The player", "The new passsword." })]
         public void resetpassword_cmd(Client player, string accountname, string newpass)
         {
             Account account = player.GetAccount();
@@ -131,15 +131,17 @@ namespace mtgvrp.AdminSystem
             var password = System.Text.Encoding.UTF8.GetBytes(inputPass);
             password = new SHA256Managed().ComputeHash(password);
 
-            var filter = Builders<Account>.Filter.Eq("AccountName", accountname);
-            var foundAccount = DatabaseManager.AccountTable.Find(filter).ToList();
-
-            foreach (var c in foundAccount)
+            var foundAccount = DatabaseManager.AccountTable.Find(x => x.AccountName == accountname).SingleOrDefault();
+            if (foundAccount == null)
             {
-                c.Password = System.Text.Encoding.UTF8.GetString(password);
-                c.Salt = System.Text.Encoding.UTF8.GetString(salt);
+                API.sendChatMessageToPlayer(player, "No account with such name.");
+                return;
             }
 
+            foundAccount.Password = System.Text.Encoding.UTF8.GetString(password);
+            foundAccount.Salt = System.Text.Encoding.UTF8.GetString(salt);
+
+            foundAccount.Save();
             player.sendChatMessage("Account password set.");
         }
 
@@ -174,7 +176,7 @@ namespace mtgvrp.AdminSystem
 
         [Command("makedev"),
          Help(HelpManager.CommandGroups.AdminLevel6, "Used to set a player as a developer.",
-             new[] {"The id of target player.", "Dev level, 0 = none."})]
+             new[] { "The id of target player.", "Dev level, 0 = none." })]
         public void SetDevLevel(Client player, string target, int level)
         {
             var acc = player.GetAccount();
@@ -201,7 +203,7 @@ namespace mtgvrp.AdminSystem
             }
         }
 
-        [Command("resetcharacterjob"), Help(HelpManager.CommandGroups.AdminLevel5, "Used to reset a player's job.", new[] { "The target player"})]
+        [Command("resetcharacterjob"), Help(HelpManager.CommandGroups.AdminLevel5, "Used to reset a player's job.", new[] { "The target player" })]
         public void resetcharacterjob_cmd(Client player, string target)
         {
             Account account = player.GetAccount();
@@ -797,13 +799,13 @@ namespace mtgvrp.AdminSystem
 
             var veh = VehicleManager.GetVehicleById(vID);
 
-            if(veh == null)
+            if (veh == null)
             {
                 API.sendChatMessageToPlayer(player, Color.White, "That vehicle ID does not exist.");
                 return;
             }
 
-            if(veh.IsSpawned == false)
+            if (veh.IsSpawned == false)
             {
                 API.sendChatMessageToPlayer(player, Color.White, "That vehicle is not spawned.");
                 return;
@@ -1232,7 +1234,7 @@ namespace mtgvrp.AdminSystem
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
-            
+
             if (receivercharacter.ReportMuteExpires > DateTime.Now)
             {
                 API.sendChatMessageToPlayer(player, "You have muted ~b~" + receiver.nametag + "~w~from creating reports.");
@@ -1287,7 +1289,7 @@ namespace mtgvrp.AdminSystem
 
         //PLAYER-ADMIN STUFF
 
-        [Command("prison", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel2, "Places a player into prison for the specificed amount of time.", new [] {"ID of the target player", "Time in minutes.", "Reason for prison"})]
+        [Command("prison", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel2, "Places a player into prison for the specificed amount of time.", new[] { "ID of the target player", "Time in minutes.", "Reason for prison" })]
         public void prison_cmd(Client player, string id, string time, string reason)
         {
             Account account = player.GetAccount();
@@ -1306,7 +1308,7 @@ namespace mtgvrp.AdminSystem
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has jailed {GetLogName(receiver)} for {time} second(s).");
         }
 
-        [Command("kickplayer", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel2, "Kicks a player from the server", new [] {"ID of the target player", "The kick reason."})]
+        [Command("kickplayer", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel2, "Kicks a player from the server", new[] { "ID of the target player", "The kick reason." })]
         public static void kick_cmd(Client player, string id, string reason)
         {
             var receiver = PlayerManager.ParseClient(id);
@@ -1401,7 +1403,7 @@ namespace mtgvrp.AdminSystem
                     c.BanReason = reason;
                     c.Save();
                 }
-                API.shared.sendChatMessageToPlayer(player, "You have remote-banned " + c.AccountName+ " from the server.");
+                API.shared.sendChatMessageToPlayer(player, "You have remote-banned " + c.AccountName + " from the server.");
                 account.AdminActions++;
                 Log(LogTypes.Bans, $"Admin {account.AdminName}[{player.socialClubName}] has remotebanned the player [{c.AccountName}]. Reason: '{reason}'");
                 Log(LogTypes.AdminActions,
@@ -1414,7 +1416,7 @@ namespace mtgvrp.AdminSystem
         public void sendwaypoint_cmd(Client player, string target)
         {
             var targetClient = PlayerManager.ParseClient(target);
-            if(targetClient == null)
+            if (targetClient == null)
             {
                 API.sendChatMessageToPlayer(player, "That player isn't online.");
                 return;
@@ -1569,7 +1571,7 @@ namespace mtgvrp.AdminSystem
         }
 
 
-        [Command("warn", GreedyArg = false), Help(HelpManager.CommandGroups.AdminLevel2, "Applies a player warning to a player", new[] { "ID of the target player", "The reason for the warning"})]
+        [Command("warn", GreedyArg = false), Help(HelpManager.CommandGroups.AdminLevel2, "Applies a player warning to a player", new[] { "ID of the target player", "The reason for the warning" })]
         public static void warn_cmd(Client player, string id, string reason)
         {
             Account account = player.GetAccount();
@@ -1579,7 +1581,7 @@ namespace mtgvrp.AdminSystem
 
             var receiver = PlayerManager.ParseClient(id);
 
-            if(receiver == null)
+            if (receiver == null)
             {
                 API.shared.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid target.");
                 return;
@@ -1762,7 +1764,7 @@ namespace mtgvrp.AdminSystem
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has respawned vehicle id {veh.Id}");
         }
-    
+
 
         public static void ShowWarns(Client player, Client receiver = null)
         {
@@ -1778,9 +1780,9 @@ namespace mtgvrp.AdminSystem
             foreach (var warn in account.PlayerWarns)
             {
                 API.shared.sendChatMessageToPlayer(player, "Warning #" + j + " | ~r~Reason:~w~ " + warn.WarnReason + " | ~r~Given by:~w~ " + warn.WarnSender);
-                    j++;
+                j++;
             }
-            if(account.PlayerWarns.Count == 0)
+            if (account.PlayerWarns.Count == 0)
             {
                 API.shared.sendChatMessageToPlayer(player, "No warnings to show.");
             }
@@ -1804,14 +1806,14 @@ namespace mtgvrp.AdminSystem
             Character character = player.GetCharacter();
             Account account = player.GetAccount();
 
-            if(account.TempbanLevel == 1)
+            if (account.TempbanLevel == 1)
             {
                 API.shared.sendChatMessageToPlayer(player, "3 player warns reached. You have been temporarily banned for 3 days");
                 account.TempBanExpiration = DateTime.Now.AddDays(3);
                 account.IsTempbanned = true;
                 return;
             }
-            if(account.TempbanLevel == 2)
+            if (account.TempbanLevel == 2)
             {
                 API.shared.sendChatMessageToPlayer(player, "3 player warns reached. You have been temporarily banned for 7 days");
                 account.TempBanExpiration = DateTime.Now.AddDays(7);
