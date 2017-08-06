@@ -50,21 +50,6 @@ namespace mtgvrp
             DatabaseManager.DatabaseManagerInit();
         }
 
-        /*public class OnPlayerEnterVehicleExEventArgs : EventArgs
-        {
-            public OnPlayerEnterVehicleExEventArgs(Client player, NetHandle vehicle, int seat)
-            {
-                Vehicle = vehicle;
-                Player = player;
-                Seat = seat;
-            }
-
-            public NetHandle Vehicle { get; }
-
-            public Client Player { get; }
-
-            public int Seat { get; }
-        }*/
         public delegate void OnPlayerEnterVehicleExHandler(Client player, NetHandle vehicle, int seat);
         public static event OnPlayerEnterVehicleExHandler OnPlayerEnterVehicleEx;
 
