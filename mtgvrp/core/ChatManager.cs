@@ -352,7 +352,7 @@ namespace mtgvrp.core
                 if(i == null)
                     continue;
 
-                if(i.position.DistanceTo(player.position) > radius)
+                if(i.position.DistanceTo(player.position) > radius || i.dimension != player.dimension)
                     continue;
 
                 API.shared.sendChatMessageToPlayer(i, msg);
