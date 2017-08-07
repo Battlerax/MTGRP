@@ -852,6 +852,11 @@ namespace mtgvrp.vehicle_manager
             {
                 API.shared.setVehicleLocked(veh.NetHandle, true);
             }
+
+            if (veh.Group.CommandType == Group.CommandTypeLspd)
+            {
+                API.shared.setVehicleEnginePowerMultiplier(veh.NetHandle, 4);
+            }
             return returnCode;
         }
 
