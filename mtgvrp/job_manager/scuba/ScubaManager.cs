@@ -225,7 +225,7 @@ namespace mtgvrp.job_manager.scuba
             {
                 character.TrasureFound = 0;
                 API.sendChatMessageToPlayer(player, "You have found 5 trasure today. You may continue finding treasure tomorrow.");
-                character.CanScuba = DateTime.Now.AddDays(1);
+                character.CanScuba = DateTime.Now.AddHours(10);
                 return;
             }
 
