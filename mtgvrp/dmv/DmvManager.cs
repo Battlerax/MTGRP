@@ -17,12 +17,13 @@ using mtgvrp.player_manager;
 using mtgvrp.property_system;
 using mtgvrp.vehicle_manager;
 using MongoDB.Driver;
+using System.Collections.Generic;
 
 namespace mtgvrp.dmv
 {
     public class DmvManager : Script
     {
-        private readonly Vector3[] _testCheckpoints =
+        private readonly List<Vector3> _testCheckpoints = new List<Vector3>
         {
             new Vector3(275.7367, -381.1554, 44.43955),
             new Vector3(295.1309, -451.0204, 42.92255),
@@ -70,7 +71,7 @@ namespace mtgvrp.dmv
         public DmvManager()
         {
             API.onResourceStart += API_onResourceStart;
-            Init.OnPlayerEnterVehicleEx += API_onPlayerEnterVehicle;
+            VehicleManager.OnVehicleEngineToggle += OnVehicleEngineToggle;
             API.onPlayerExitVehicle += API_onPlayerExitVehicle;
             API.onClientEventTrigger += API_onClientEventTrigger;
         }
@@ -138,8 +139,37 @@ namespace mtgvrp.dmv
                 //Remove money.
                 InventoryManager.DeleteInventoryItem<Money>(c, 100);
 
-                API.sendChatMessageToPlayer(player, $"You've sucessfully registered your {API.getVehicleDisplayName(veh.VehModel)}. License: {veh.LicensePlate}");
+                API.sendChatMessageToPlayer(player, $"You've successfully registered your {API.getVehicleDisplayName(veh.VehModel)}. License: {veh.LicensePlate}");
                 veh.Save();
+            }
+            else if(eventName == "DMV_TEST_FINISH") {
+                var c = player.GetCharacter();
+                var isOnTime = DateTime.Now.Subtract(c.TimeStartedDmvTest) <= TimeSpan.FromMinutes(5);
+                var isOnHealth = player.vehicle.health >= 999;
+
+                if (isOnTime && isOnHealth)
+                {
+                    InventoryManager.GiveInventoryItem(c, new DrivingLicenseItem(), 1, true);
+                    API.sendChatMessageToPlayer(player, "You have ~g~COMPLETED~w~ your test.");
+                    LogManager.Log(LogManager.LogTypes.Stats, $"[DMV] {c.CharacterName}[{player.GetAccount().AccountName}] has got his driving license in {DateTime.Now.Subtract(c.TimeStartedDmvTest).Minutes:D2}:{DateTime.Now.Subtract(c.TimeStartedDmvTest).Seconds:D2}");
+                }
+                else
+                    API.sendChatMessageToPlayer(player, "You have ~r~FAILED~w~ your test.");
+
+                API.sendChatMessageToPlayer(player,
+                    isOnTime
+                        ? $"* Time: ~g~ {DateTime.Now.Subtract(c.TimeStartedDmvTest).Minutes:D2}:{DateTime.Now.Subtract(c.TimeStartedDmvTest).Seconds:D2} / 05:00"
+                        : $"* Time: ~r~ {DateTime.Now.Subtract(c.TimeStartedDmvTest).Minutes:D2}:{DateTime.Now.Subtract(c.TimeStartedDmvTest).Seconds:D2} / 05:00");
+
+                API.sendChatMessageToPlayer(player,
+                    isOnHealth
+                        ? $"* Vehicle Health: ~g~ {player.vehicle.health} / 999"
+                        : $"* Vehicle Health: ~r~ {player.vehicle.health} / 999");
+
+                VehicleManager.respawn_vehicle(player.vehicle.handle.GetVehicle());
+                API.delay(1000, true, () => API.warpPlayerOutOfVehicle(player));;
+
+                c.IsInDmvTest = false;
             }
         }
 
@@ -191,11 +221,7 @@ namespace mtgvrp.dmv
 
             player.resetData("DMV_VEHICLE");
             c.IsInDmvTest = false;
-
-            if (c.NextDmvCheckpointColShape != null)
-                API.deleteColShape(c.NextDmvCheckpointColShape);
-
-            API.triggerClientEvent(player, "DMV_UPDATE_MARKER", new Vector3(), new Vector3());
+            API.triggerClientEvent(player, "DMV_CANCEL_TEST");
 
             API.sendChatMessageToPlayer(player, "Test Cancelled.");
         }
@@ -217,32 +243,35 @@ namespace mtgvrp.dmv
             API.consoleOutput("Spawned DMV Vehicles.");
         }
 
-        private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle, int seat)
+        private void OnVehicleEngineToggle(Client player, NetHandle vehicle, bool state)
         {
-            if (vehicle.GetVehicle() == null)
-                return;
-
-            if (_testVehicles.Any(x => x[2] == vehicle.GetVehicle()))
+            if (state == true)
             {
-                var c = player.GetCharacter();
+                if (vehicle.GetVehicle() == null)
+                    return;
 
-                if (c.IsInDmvTest)
+                if (_testVehicles.Any(x => x[2] == vehicle.GetVehicle()))
                 {
-                    c.TimeStartedDmvTest = DateTime.Now;
-                    c.DmvTestStep = 0;
-                    NextCheckpoint(player);
-                    player.setData("DMV_VEHICLE", vehicle);
-                    API.setVehicleEngineStatus(API.getPlayerVehicle(player), true);
-                    API.sendChatMessageToPlayer(player, "~y~** GO! You'll have to finish in less than or equal to 2 minutes and with less than 995 damage to the vehicle.");
-                }
-                else
-                {
-                    if (!player.GetAccount().AdminDuty)
+                    var c = player.GetCharacter();
+
+                    if (c.IsInDmvTest)
                     {
-                        API.sendChatMessageToPlayer(player, "You haven't started the driving test.");
-                        API.delay(1000, true, () => API.warpPlayerOutOfVehicle(player));;
+                        c.TimeStartedDmvTest = DateTime.Now;
+                        player.setData("DMV_VEHICLE", vehicle);
+                        API.triggerClientEvent(player, "DMV_STARTTEST", _testCheckpoints, vehicle);
+                        API.sendChatMessageToPlayer(player, "~y~** GO! You'll have to finish in less than or equal to 5 minutes and with more than 999 damage to the vehicle.");
+                        API.sendChatMessageToPlayer(player, "~y~** You have plently of time so drive safe and make sure you don't break your vehicle.");
+                    }
+                    else
+                    {
+                        if (!player.GetAccount().AdminDuty)
+                        {
+                            API.sendChatMessageToPlayer(player, "You haven't started the driving test.");
+                            API.delay(1000, true, () => API.warpPlayerOutOfVehicle(player)); ;
+                        }
                     }
                 }
+
             }
         }
 
@@ -284,71 +313,10 @@ namespace mtgvrp.dmv
 
             InventoryManager.DeleteInventoryItem<Money>(c, prop.ItemPrices["drivingtest"]);
 
-
             c.IsInDmvTest = true;
 
             API.sendChatMessageToPlayer(player, "You've started the driving test, please head to a DMV vehicle to start.");
             API.sendChatMessageToPlayer(player, "~r~ The timer starts once you enter the vehicle. Remember to start your engine. Exit the vehicle to cancel the test.");
-        }
-
-        void NextCheckpoint(Client player)
-        {
-            var c = player.GetCharacter();
-
-            if (c.NextDmvCheckpointColShape != null)
-                API.deleteColShape(c.NextDmvCheckpointColShape);
-
-            //Check next.
-            if (c.DmvTestStep < _testCheckpoints.Length)
-            {
-                c.NextDmvCheckpointColShape = API.createSphereColShape(_testCheckpoints[c.DmvTestStep], 5.0f);
-                c.NextDmvCheckpointColShape.onEntityEnterColShape += (shape, entity) =>
-                {
-                    if (entity != player) return;
-
-                    if (player.getData("DMV_VEHICLE") != player.vehicle.handle)
-                    {
-                        API.sendChatMessageToPlayer(player, "This isn't your test vehicle.");
-                        return;
-                    }
-
-                    c.DmvTestStep += 1;
-                    NextCheckpoint(player);
-                };
-                API.triggerClientEvent(player, "DMV_UPDATE_MARKER",
-                    _testCheckpoints[c.DmvTestStep].Subtract(new Vector3(0, 0, 0.3)), c.DmvTestStep + 1 < _testCheckpoints.Length ? _testCheckpoints[c.DmvTestStep + 1].Subtract(new Vector3(0, 0, 0.3)) : new Vector3());
-            }
-            else
-            {
-                API.triggerClientEvent(player, "DMV_UPDATE_MARKER", new Vector3(), new Vector3());
-
-                var isOnTime = DateTime.Now.Subtract(c.TimeStartedDmvTest) <= TimeSpan.FromMinutes(2).Add(TimeSpan.FromSeconds(6));
-                var isOnHealth = player.vehicle.health >= 995;
-
-                if (isOnTime && isOnHealth)
-                {
-                    InventoryManager.GiveInventoryItem(c, new DrivingLicenseItem(), 1, true);
-                    API.sendChatMessageToPlayer(player, "You have ~g~COMPLETED~w~ your test.");
-                }
-                else
-                    API.sendChatMessageToPlayer(player, "You have ~r~FAILED~w~ your test.");
-
-                API.sendChatMessageToPlayer(player,
-                    isOnTime
-                        ? $"* Time: ~g~ {DateTime.Now.Subtract(c.TimeStartedDmvTest).Minutes:D2}:{DateTime.Now.Subtract(c.TimeStartedDmvTest).Seconds:D2} / 02:05"
-                        : $"* Time: ~r~ {DateTime.Now.Subtract(c.TimeStartedDmvTest).Minutes:D2}:{DateTime.Now.Subtract(c.TimeStartedDmvTest).Seconds:D2} / 02:05");
-
-                API.sendChatMessageToPlayer(player,
-                    isOnHealth
-                        ? $"* Vehicle Health: ~g~ {player.vehicle.health} / 995"
-                        : $"* Vehicle Health: ~r~ {player.vehicle.health} / 995");
-
-                VehicleManager.respawn_vehicle(player.vehicle.handle.GetVehicle());
-                API.delay(1000, true, () => API.warpPlayerOutOfVehicle(player));;
-
-                c.IsInDmvTest = false;
-            }
-
         }
 
         [Command("registervehicle"), Help(HelpManager.CommandGroups.Vehicles, "Register your vehicle. (At DMV)")]

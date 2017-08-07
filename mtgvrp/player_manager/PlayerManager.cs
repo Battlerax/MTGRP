@@ -465,5 +465,36 @@ namespace mtgvrp.player_manager
                     $"~h~Social Club Name:~h~ {account.AccountName} ~h~Admin actions: {account.AdminActions}");
             }
         }
+
+        public static void ShowStats(Client sender, Character receiver, Account receiverAcc)
+        {
+            Account senderAccount = sender.GetAccount();
+
+            API.shared.sendChatMessageToPlayer(sender, "==============================================");
+            API.shared.sendChatMessageToPlayer(sender, "Player statistics for " + receiver.CharacterName);
+            API.shared.sendChatMessageToPlayer(sender, "==============================================");
+            API.shared.sendChatMessageToPlayer(sender, "~g~General:~g~");
+            API.shared.sendChatMessageToPlayer(sender,
+                $"~h~receiver name:~h~ {receiver.CharacterName} | ~h~ID:~h~ {receiver.Id} | ~h~Money:~h~ {Money.GetCharacterMoney(receiver)} | ~h~Bank balance:~h~ {receiver.BankBalance} | ~h~Playing hours:~h~ {receiver.GetPlayingHours()}  | ~h~Total hours:~h~ {receiverAcc.TotalPlayingHours}");
+
+            API.shared.sendChatMessageToPlayer(sender,
+                $"~h~Age:~h~ {receiver.Age} ~h~Birthplace:~h~ {receiver.Birthplace} ~h~Birthday:~h~ {receiver.Birthday} ~h~VIP level:~h~ {receiverAcc.VipLevel} ~h~VIP expires:~h~ {receiverAcc.VipExpirationDate}");
+
+            API.shared.sendChatMessageToPlayer(sender, "~b~Faction/Jobs:~b~");
+            API.shared.sendChatMessageToPlayer(sender,
+                $"~h~Faction ID:~h~ {receiver.GroupId} ~h~Rank:~h~ {receiver.GroupRank} ~h~Group name:~h~ {receiver.Group.Name} ~h~Job 1:~h~ {receiver.JobOne.Name}");
+
+            API.shared.sendChatMessageToPlayer(sender, "~r~Property:~r~");
+            API.shared.sendChatMessageToPlayer(sender, $"~h~Owned vehicles:~h~ {receiver.OwnedVehicles.Count()}");
+
+            if (senderAccount.AdminLevel > 0)
+            {
+                API.shared.sendChatMessageToPlayer(sender, "~y~Admin:~y~");
+                API.shared.sendChatMessageToPlayer(sender,
+                    $"~h~Admin level:~h~ {receiverAcc.AdminLevel} ~h~Admin name:~h~ {receiverAcc.AdminName} ~h~Dimension:~h~ {receiver.LastDimension} ~h~Last IP:~h~ {receiverAcc.LastIp}");
+                API.shared.sendChatMessageToPlayer(sender,
+                    $"~h~Social Club Name:~h~ {receiverAcc.AccountName} ~h~Admin actions: {receiverAcc.AdminActions}");
+            }
+        }
     }
 }

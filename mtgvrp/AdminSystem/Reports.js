@@ -62,7 +62,11 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 
 	case "getwaypoint":
 		API.triggerServerEvent("teleport", API.getWaypointPosition());
-		break;
+        break;
+        
+    case "GET_CP_TO_SEND":
+API.triggerServerEvent("SET_PLAYER_CP", args[0], API.getWaypointPosition());
+    break;
   }
 });
 
