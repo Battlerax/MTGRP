@@ -67,6 +67,11 @@ namespace mtgvrp.property_system
             {
                 if (API.getEntityData(entity, "at_interance_property_id") == colshape.getData("property_entrance"))
                 {
+                    int id = colshape.getData("property_entrance");
+                    var property = Properties.SingleOrDefault(x => x.Id == id);
+                    if(property.EntranceDimension != API.getEntityDimension(entity))
+                        return;
+
                     API.resetEntityData(entity, "at_interance_property_id");
                 }
             }
@@ -75,6 +80,11 @@ namespace mtgvrp.property_system
             {
                 if (API.getEntityData(entity, "at_interaction_property_id") == colshape.getData("property_interaction"))
                 {
+                    int id = colshape.getData("property_interaction");
+                    var property = Properties.SingleOrDefault(x => x.Id == id);
+                    if(property.InteractionDimension != API.getEntityDimension(entity))
+                        return;
+
                     API.resetEntityData(entity, "at_interaction_property_id");
                 }
             }
@@ -83,6 +93,11 @@ namespace mtgvrp.property_system
             {
                 if (API.getEntityData(entity, "at_garbage_property_id") == colshape.getData("property_garbage"))
                 {
+                    int id = colshape.getData("property_garbage");
+                    var property = Properties.SingleOrDefault(x => x.Id == id);
+                    if(property.GarbageDimension != API.getEntityDimension(entity))
+                        return;
+
                     API.resetEntityData(entity, "at_garbage_property_id");
                 }
             }
@@ -91,6 +106,11 @@ namespace mtgvrp.property_system
             {
                 if (API.getEntityData(entity, "at_exit_property_id") == colshape.getData("property_exit"))
                 {
+                    int id = colshape.getData("property_exit");
+                    var property = Properties.SingleOrDefault(x => x.Id == id);
+                    if(property.TargetDimension != API.getEntityDimension(entity))
+                        return;
+
                     API.resetEntityData(entity, "at_exit_property_id");
                 }
             }
@@ -100,21 +120,41 @@ namespace mtgvrp.property_system
         {
             if (API.getEntityType(entity) == EntityType.Player && colshape.hasData("property_entrance"))
             {
+                int id = colshape.getData("property_entrance");
+                var property = Properties.SingleOrDefault(x => x.Id == id);
+                if(property.EntranceDimension != API.getEntityDimension(entity))
+                    return;
+
                 API.setEntityData(entity, "at_interance_property_id", colshape.getData("property_entrance"));
             }
 
             if (API.getEntityType(entity) == EntityType.Player && colshape.hasData("property_interaction"))
             {
+                int id = colshape.getData("property_interaction");
+                var property = Properties.SingleOrDefault(x => x.Id == id);
+                if(property.InteractionDimension != API.getEntityDimension(entity))
+                    return;
+
                 API.setEntityData(entity, "at_interaction_property_id", colshape.getData("property_interaction"));
             }
 
             if (API.getEntityType(entity) == EntityType.Player && colshape.hasData("property_garbage"))
             {
+                int id = colshape.getData("property_garbage");
+                var property = Properties.SingleOrDefault(x => x.Id == id);
+                if(property.GarbageDimension != API.getEntityDimension(entity))
+                    return;
+                
                 API.setEntityData(entity, "at_garbage_property_id", colshape.getData("property_garbage"));
             }
 
             if (API.getEntityType(entity) == EntityType.Player && colshape.hasData("property_exit"))
             {
+                int id = colshape.getData("property_exit");
+                var property = Properties.SingleOrDefault(x => x.Id == id);
+                if(property.TargetDimension != API.getEntityDimension(entity))
+                    return;
+
                 API.setEntityData(entity, "at_exit_property_id", colshape.getData("property_exit"));
             }
         }
