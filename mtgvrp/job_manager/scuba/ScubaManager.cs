@@ -204,7 +204,7 @@ namespace mtgvrp.job_manager.scuba
             var character = player.GetCharacter();
             if (!character.IsScubaDiving)
             {
-                API.sendChatMessageToPlayer(player, "You already have the kit on.");
+                API.sendChatMessageToPlayer(player, "You must have the scuba kit on.");
                 return;
             }
 
@@ -221,20 +221,20 @@ namespace mtgvrp.job_manager.scuba
                 return;
             }
 
-            if (character.TrasureFound > 5)
-            {
-                character.TrasureFound = 0;
-                API.sendChatMessageToPlayer(player, "You have found 5 trasure today. You may continue finding treasure tomorrow.");
-                character.CanScuba = DateTime.Now.AddHours(10);
-                return;
-            }
-
             character.TrasureFound++;
             var rnd = new Random();
             int amnt = rnd.Next(2000, 5000);
             InventoryManager.GiveInventoryItem(character, new Money(), amnt, true);
             API.sendChatMessageToPlayer(player, "You have found a treasure worth ~g~$" + amnt);
             LogManager.Log(LogManager.LogTypes.Stats, $"[Minigame] {character.CharacterName}[{player.GetAccount().AccountName}] has earned ${amnt} from a scuba treasure.");
+
+            if (character.TrasureFound >= 5)
+            {
+                character.TrasureFound = 0;
+                API.sendChatMessageToPlayer(player, "You have found 5 trasure today. You may continue finding treasure tomorrow.");
+                character.CanScuba = DateTime.Now.AddHours(10);
+                return;
+            }
 
             itm.delete();
             _treasureObjects.Remove(itm);
