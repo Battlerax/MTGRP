@@ -22,19 +22,6 @@ namespace mtgvrp.job_manager.scuba
             API.onPlayerDisconnected += API_onPlayerDisconnected;
             API.onResourceStart += API_onResourceStart;
             API.onClientEventTrigger += API_onClientEventTrigger;
-            InventoryManager.OnStorageLoseItem += InventoryManager_OnStorageLoseItem;
-        }
-
-        private void InventoryManager_OnStorageLoseItem(IStorage sender, InventoryManager.OnLoseItemEventArgs args)
-        {
-            if (sender.GetType() == typeof(Character) && args.Item.GetType() == typeof(ScubaItem))
-            {
-                var c = (Character)sender;
-                if (c.IsScubaDiving)
-                {
-                    CancelScuba(c.Client);
-                }
-            }
         }
 
         private void API_onClientEventTrigger(Client player, string eventName, params object[] arguments)
@@ -280,7 +267,6 @@ namespace mtgvrp.job_manager.scuba
             {
                 CancelScuba(player);
                 API.sendChatMessageToPlayer(player, "You have dequiped the scuba set.");
-                character.update_ped();
                 return;
             }
 
@@ -383,6 +369,9 @@ namespace mtgvrp.job_manager.scuba
 
             //Set the variable.
             character.IsScubaDiving = false;
+
+            //Set normal clothes
+            character.update_ped();
 
             //Set normal underwater time.
             API.sendNativeToPlayer(player, Hash.SET_PED_MAX_TIME_UNDERWATER, player.handle, 60.0f);
