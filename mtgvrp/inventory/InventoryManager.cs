@@ -440,6 +440,7 @@ namespace mtgvrp.inventory
             var rightJson = API.shared.toJson(rightItems);
             var usedLeft = GetInventoryFilledSlots(activeLeft) + "/" + activeLeft.MaxInvStorage;
             var usedRight = GetInventoryFilledSlots(activeRight) + "/" + activeRight.MaxInvStorage;
+            API.shared.freezePlayer(player, true);
             API.shared.triggerClientEvent(player, "invmanagement_showmanager", leftJson, rightJson, leftTitle, rightTitle, usedLeft, usedRight);
             _activeInvsBeingManaged.Add(player, new KeyValuePair<IStorage, IStorage>(activeLeft, activeRight));
         }
@@ -450,6 +451,7 @@ namespace mtgvrp.inventory
             {
                 case "invmanagement_cancelled":
                     _activeInvsBeingManaged.Remove(sender);
+                    API.shared.freezePlayer(sender, false);
                     API.sendNotificationToPlayer(sender, "Closed Inventory Management.");
                     break;
                    
