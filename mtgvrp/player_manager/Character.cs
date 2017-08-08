@@ -66,6 +66,9 @@ namespace mtgvrp.player_manager
         [BsonIgnore]
         public Vehicle LastVehicle { get; set; }
 
+        [BsonIgnore]
+        public bool TaxiDuty = false;
+
         //Reports
         public bool IsOnAsk { get; set; }
         public bool HasActiveAsk { get; set; }

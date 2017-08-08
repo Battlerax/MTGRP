@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Net.Http.Headers;
 using System.Timers;
 using GrandTheftMultiplayer.Server.API;
@@ -26,7 +27,7 @@ namespace mtgvrp.job_manager.taxi
         public const int MinFare = 5;
         public const int MaxFare = 50;
 
-        public static List<Character> OnDutyDrivers = new List<Character>();
+        public static List<Character> OnDutyDrivers => PlayerManager.Players.Where(x => x.TaxiDuty == true).ToList();
         public static List<Character> TaxiRequests = new List<Character>();
 
         public TaxiJob()
@@ -50,11 +51,6 @@ namespace mtgvrp.job_manager.taxi
                 c.TaxiTimer.Stop();
                 c.TotalFare = 0;
             }
-
-            if (OnDutyDrivers.Contains(c))
-                OnDutyDrivers.Remove(c);
-
-
         }
 
         private void API_onClientEventTrigger(Client player, string eventName, params object[] arguments)
@@ -202,7 +198,7 @@ namespace mtgvrp.job_manager.taxi
 
                 if (OnDutyDrivers.Contains(character))
                 {
-                    OnDutyDrivers.Remove(character);
+                    character.TaxiDuty = false;
                 }
                 SendMessageToOnDutyDrivers(character.rp_name() + " has gone off of taxi duty.");
             }
@@ -266,13 +262,13 @@ namespace mtgvrp.job_manager.taxi
 
             if (!OnDutyDrivers.Contains(character))
             {
-                OnDutyDrivers.Add(character);
+                character.TaxiDuty = true;
                 SendMessageToOnDutyDrivers(character.rp_name() + " is now on taxi duty.");
                 API.sendChatMessageToPlayer(player, Color.Yellow, "[TAXI] You are now on taxi duty. If you leave your vehicle you will be taken off duty automatically.");
             }
             else
             {
-                OnDutyDrivers.Remove(character);
+                character.TaxiDuty = false;
                 SendMessageToOnDutyDrivers(character.rp_name() + " has gone off of taxi duty.");
                 API.sendChatMessageToPlayer(player, Color.Yellow, "[TAXI] You have gone off of taxi duty.");
             }
