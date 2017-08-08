@@ -90,6 +90,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="afk_system\AfkManager.cs" />
     <Compile Include="core\Discord\DiscordManager.cs" />
     <Compile Include="core\Discord\PlayerDiscordCommands.cs" />
     <Compile Include="core\Discord\RandomFunCommands.cs" />

@@ -317,6 +317,9 @@ namespace mtgvrp.player_manager
         [BsonIgnore] public DateTime TimeStartedDmvTest;
         [BsonIgnore] public bool IsInDmvTest;
 
+        [BsonIgnore]
+        public int AfkTimer;
+
         public Character()
         {
             Id = 0;
