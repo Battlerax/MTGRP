@@ -80,6 +80,12 @@ namespace mtgvrp.property_system.businesses
                 return;
             }
 
+            if (target == player)
+            {
+                API.sendChatMessageToPlayer(player, "You cannot wire transfer to yourself.");
+                return;
+            }
+
             var character = player.GetCharacter();
             if (character.BankBalance >= amount && amount > 0)
             {
