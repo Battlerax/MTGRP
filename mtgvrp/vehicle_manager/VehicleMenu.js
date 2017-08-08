@@ -12,7 +12,7 @@ API.onPlayerExitVehicle.connect(function (player, vehicle) {
 });
 
 API.onKeyDown.connect(function(Player, args){
-    if (args.KeyCode == Keys.N && !API.isChatOpen() && resource.MDC.mdcBrowser == null) {
+    if (args.KeyCode == Keys.N && !API.isChatOpen() && resource.MDC.mdcBrowser == null && resource.PhoneManager.isMouseShown === false) {
         if (vehicle_menu == null || vehicle_menu.Visible == false) {
             
             var player = API.getLocalPlayer();

@@ -124,11 +124,18 @@ API.onKeyUp.connect(function(sender, e) {
         //API.setCefDrawState(false);
         API.showCursor(false);
         API.setCanOpenChat(true);
+        isMouseShown = false;
         myBrowser = null;
     } else if (myBrowser !== null && e.KeyCode === Keys.F2) {
         isMouseShown = !isMouseShown;
         API.showCursor(isMouseShown);
         API.setCanOpenChat(!isMouseShown);
+    }
+});
+
+API.onUpdate.connect(() => {
+    if (isMouseShown) {
+
     }
 });
 
