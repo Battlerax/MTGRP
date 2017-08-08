@@ -402,6 +402,12 @@ namespace mtgvrp.job_manager.taxi
                 return;
             }
 
+            if (passengerClient == player)
+            {
+                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ You cannot accept your own fare.");
+                return;
+            }
+
             Character passenger = passengerClient.GetCharacter();
 
             if (!TaxiRequests.Contains(passenger))
