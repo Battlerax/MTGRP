@@ -34,6 +34,27 @@ namespace mtgvrp.job_manager.taxi
             Init.OnPlayerEnterVehicleEx += API_onPlayerEnterVehicle;
             API.onPlayerExitVehicle += API_onPlayerExitVehicle;
             API.onClientEventTrigger += API_onClientEventTrigger;
+            API.onPlayerDisconnected += API_onPlayerDisconnected;
+        }
+
+        private void API_onPlayerDisconnected(Client player, string reason)
+        {
+            var c = player.GetCharacter();
+            if (c == null)
+                return;
+
+            if (TaxiRequests.Contains(c))
+            {
+                TaxiRequests.Remove(c);
+                c.TaxiDriver = null;
+                c.TaxiTimer.Stop();
+                c.TotalFare = 0;
+            }
+
+            if (OnDutyDrivers.Contains(c))
+                OnDutyDrivers.Remove(c);
+
+
         }
 
         private void API_onClientEventTrigger(Client player, string eventName, params object[] arguments)
