@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Threading;
 using GrandTheftMultiplayer.Server.API;
@@ -21,6 +22,19 @@ namespace mtgvrp.job_manager.scuba
             API.onPlayerDisconnected += API_onPlayerDisconnected;
             API.onResourceStart += API_onResourceStart;
             API.onClientEventTrigger += API_onClientEventTrigger;
+            InventoryManager.OnStorageLoseItem += InventoryManager_OnStorageLoseItem;
+        }
+
+        private void InventoryManager_OnStorageLoseItem(IStorage sender, InventoryManager.OnLoseItemEventArgs args)
+        {
+            if (sender.GetType() == typeof(Character) && args.Item.GetType() == typeof(ScubaItem))
+            {
+                var c = (Character)sender;
+                if (c.IsScubaDiving)
+                {
+                    CancelScuba(c.Client);
+                }
+            }
         }
 
         private void API_onClientEventTrigger(Client player, string eventName, params object[] arguments)
