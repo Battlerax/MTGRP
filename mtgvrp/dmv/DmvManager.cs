@@ -59,7 +59,7 @@ namespace mtgvrp.dmv
             new Vector3(290.8339, -339.3133, 44.36193),
         };
 
-        private readonly dynamic[][] _testVehicles =
+        public static readonly dynamic[][] _testVehicles =
         {
             new dynamic[] {new Vector3(266.3742, -332.2829, 44.48646), new Vector3(0.02338559, -0.0002331526, -109.5953), null},
             new dynamic[] {new Vector3(267.7154, -329.0442, 44.48596), new Vector3(0.02338559, -0.0002331526, -109.5953), null},
@@ -267,7 +267,8 @@ namespace mtgvrp.dmv
                         if (!player.GetAccount().AdminDuty)
                         {
                             API.sendChatMessageToPlayer(player, "You haven't started the driving test.");
-                            API.delay(1000, true, () => API.warpPlayerOutOfVehicle(player)); ;
+                            API.setVehicleEngineStatus(vehicle, false);
+                            API.delay(1000, true, () => API.warpPlayerOutOfVehicle(player));
                         }
                     }
                 }

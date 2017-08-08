@@ -29,6 +29,7 @@ using mtgvrp.job_manager;
 using mtgvrp.player_manager;
 using MongoDB.Driver;
 using mtgvrp.core.Help;
+using mtgvrp.dmv;
 using Color = mtgvrp.core.Color;
 
 namespace mtgvrp.vehicle_manager
@@ -902,10 +903,13 @@ namespace mtgvrp.vehicle_manager
             if (vehicle == null)
                 return false;
 
-            if (account.AdminLevel >= 3) { return true; }
+            if (account.AdminLevel >= 3 && account.AdminDuty) { return true; }
             if (character.Id == vehicle.OwnerId) { return true; }
             if (vehicle.GroupId == character.GroupId && character.GroupId != 0) return true;
             if (character.JobOne == vehicle.Job && character.JobOne != Job.None) { return true; }
+            if (DmvManager._testVehicles.Any(x => x[2] == vehicle))
+                return true;
+            
             return false;
         }
 
@@ -914,7 +918,7 @@ namespace mtgvrp.vehicle_manager
             Account account = player.GetAccount();
             Character character = player.GetCharacter();
 
-            if (account.AdminLevel >= 3) { return true; }
+            if (account.AdminLevel >= 3 && account.AdminDuty) { return true; }
             if (character.Id == vehicle.OwnerId) { return true; }
             if (vehicle.GroupId == character.GroupId && character.GroupId != 0) return true;
             return false;
