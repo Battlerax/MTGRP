@@ -41,7 +41,6 @@ namespace mtgvrp.afk_system
 
                 if (c.LastPos == p.position)
                 {
-                    API.sendChatMessageToPlayer(p, "In Same Position");
                     c.AfkTimer++;
                     if (c.AfkTimer >= KickInterval)
                     {
@@ -50,7 +49,6 @@ namespace mtgvrp.afk_system
                 }
                 else
                 {
-                    API.sendChatMessageToPlayer(p, "In Different Position");
                     c.LastPos = p.position;
                     c.AfkTimer = 0;
                 }
