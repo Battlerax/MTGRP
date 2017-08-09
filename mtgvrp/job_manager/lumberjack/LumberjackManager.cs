@@ -234,7 +234,7 @@ namespace mtgvrp.job_manager.lumberjack
 
                 if (API.hasEntityData(vehicle.NetHandle, "TREE_OBJ"))
                 {
-                    API.sendChatMessageToPlayer(player, "This forklift is already holding some logs.");
+                    API.sendChatMessageToPlayer(player, "This vehicle is already holding some logs.");
                     return;
                 }
 
@@ -249,7 +249,7 @@ namespace mtgvrp.job_manager.lumberjack
                 tree.UpdateTreeText();
                 API.attachEntityToEntity(tree.TreeObj, API.getPlayerVehicle(player), "bodyshell", new Vector3(0, -1.5, 0.3), new Vector3(0, 0, 0));
 
-                ChatManager.RoleplayMessage(player, "picks up the woods using the forklift.", ChatManager.RoleplayMe);
+                ChatManager.RoleplayMessage(player, "picks up the woods into the truck.", ChatManager.RoleplayMe);
 
                 API.triggerClientEvent(player, "update_beacon", character.JobOne.MiscOne.Location);
                 
@@ -259,7 +259,7 @@ namespace mtgvrp.job_manager.lumberjack
                 API.sendChatMessageToPlayer(player, "Go to the HQ to sell your wood.");
             }
             else
-                API.sendChatMessageToPlayer(player, "You have to be in a forklift to pickup the wood.");
+                API.sendChatMessageToPlayer(player, "You have to be in a truck to pickup the wood.");
         }
 
         [Command("sellwood"), Help(HelpManager.CommandGroups.LumberJob, "Sells the wood you currently have on the truck.")]
@@ -284,7 +284,7 @@ namespace mtgvrp.job_manager.lumberjack
                 Tree tree = API.getEntityData(API.getPlayerVehicle(player), "TREE_OBJ");
                 if (tree == null)
                 {
-                    API.sendChatMessageToPlayer(player, "You dont have any wood on your forklift.");
+                    API.sendChatMessageToPlayer(player, "You dont have any wood on your vehicle.");
                     return;
                 }
 
