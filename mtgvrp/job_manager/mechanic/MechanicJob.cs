@@ -87,7 +87,7 @@ namespace mtgvrp.job_manager.taxi
 
             if (API.getVehicleEngineStatus(veh.NetHandle) == true)
             {
-                player.sendChatMessage("You must turn the engine off before fixing it.");
+                player.sendChatMessage("You must turn the engine off before painting it.");
                 return;
             }
 
