@@ -96,7 +96,7 @@ namespace mtgvrp.speed_fuel_system
 
                     if (player.hasData("FUELING_VEHICLE"))
                     {
-                        API.sendChatMessageToPlayer(player, "You're already refuelling a vehicle.");
+                        API.sendChatMessageToPlayer(player, "You're already refueling a vehicle.");
                         return;
                     }
 
@@ -198,7 +198,7 @@ namespace mtgvrp.speed_fuel_system
                 API.resetEntityData(vehEntity, "PENDING_FUEL");
                 API.resetEntityData(playerEntity, "FUELING_VEHICLE");
                 API.freezePlayer(playerEntity, false);
-                API.sendChatMessageToPlayer(playerEntity, "Refuel has been cancelled cause the engine has been turned on.");
+                API.sendChatMessageToPlayer(playerEntity, "Refuel has been cancelled cause the engine has turned on.");
                 veh.Save();
                 return;
             }
@@ -216,7 +216,7 @@ namespace mtgvrp.speed_fuel_system
                 if(veh.RefuelProp.Supplies <= 0)
                     API.sendChatMessageToPlayer(playerEntity, "The gas station ran out of gas.");
                 else if (pendingFuel <= 0)
-                    API.sendChatMessageToPlayer(playerEntity, "Refuelling finsihed.");
+                    API.sendChatMessageToPlayer(playerEntity, "Refueling finished.");
 
                 veh.Save();
                 return;
