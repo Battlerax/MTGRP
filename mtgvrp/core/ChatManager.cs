@@ -165,7 +165,7 @@ namespace mtgvrp.core
         {
             Random rnd = new Random();
             int dice = rnd.Next(1, 7);
-            RoleplayMessage(player, player.name + " throws a dice and lands a " + dice, RoleplayMe);
+            RoleplayMessage(player,"throws a dice and lands a " + dice, RoleplayMe);
         }
 
         [Command("togglenewbie"), Help.Help(HelpManager.CommandGroups.AdminLevel2, "Used to toggle newbie chat on and off.", null)]
