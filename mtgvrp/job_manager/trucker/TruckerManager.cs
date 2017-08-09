@@ -99,14 +99,14 @@ namespace mtgvrp.job_manager.trucker
                         return;
                     }
 
-                    player.freeze(true);
+                    API.triggerClientEvent(player, "COMPLETE_FREEZE", true);
                     API.sendChatMessageToPlayer(player,
                         "~r~[Trucking]~w~ Please wait 10 seconds while your truck is loading fuel...");
 
                     API.setEntityData(player, "TRUCKING_LOAD_TIMER", new Timer(state =>
                     {
                         character.TruckingStage = Character.TruckingStages.DeliveringFuel;
-                        player.freeze(false);
+                        API.triggerClientEvent(player, "COMPLETE_FREEZE", false);
 
                         API.triggerClientEvent(player, "update_beacon", needsGasProp.EntranceMarker.Location);
                         
@@ -144,14 +144,14 @@ namespace mtgvrp.job_manager.trucker
                         return;
                     }
 
-                    player.freeze(true);
+                    API.triggerClientEvent(player, "COMPLETE_FREEZE", true);
                     API.sendChatMessageToPlayer(player,
                         "~r~[Trucking]~w~ Please wait 10 seconds while your truck is loading supplies...");
 
                     API.setEntityData(player, "TRUCKING_LOAD_TIMER", new Timer(state =>
                     {
                         character.TruckingStage = Character.TruckingStages.DeliveringWood;
-                        player.freeze(false);
+                        API.triggerClientEvent(player, "COMPLETE_FREEZE", false);
 
                         API.triggerClientEvent(player, "update_beacon", character.JobOne.MiscTwo.Location);
                         
@@ -182,14 +182,14 @@ namespace mtgvrp.job_manager.trucker
 
                     API.triggerClientEvent(player, "update_beacon", new Vector3());
 
-                    player.freeze(true);
+                    API.triggerClientEvent(player, "COMPLETE_FREEZE", true);
                     API.sendChatMessageToPlayer(player,
                         "~r~[Trucking]~w~ Please wait 10 seconds while your truck is unloading...");
 
                     API.setEntityData(player, "TRUCKING_UNLOAD_TIMER", new Timer(state =>
                     {
                         character.TruckingStage = Character.TruckingStages.HeadingBack;
-                        player.freeze(false);
+                        API.triggerClientEvent(player, "COMPLETE_FREEZE", false);
 
                         API.triggerClientEvent(player, "update_beacon", character.JobOne.JoinPos.Location);
                         
@@ -224,14 +224,14 @@ namespace mtgvrp.job_manager.trucker
 
                     API.triggerClientEvent(player, "update_beacon", new Vector3());
 
-                    player.freeze(true);
+                    API.triggerClientEvent(player, "COMPLETE_FREEZE", true);
                     API.sendChatMessageToPlayer(player,
                         "~r~[Trucking]~w~ Please wait 10 seconds while your truck is unloading...");
 
                     API.setEntityData(player, "TRUCKING_UNLOAD_TIMER", new Timer(state =>
                     {
                         character.TruckingStage = Character.TruckingStages.HeadingBack;
-                        player.freeze(false);
+                        API.triggerClientEvent(player, "COMPLETE_FREEZE", false);
 
                         API.triggerClientEvent(player, "update_beacon", character.JobOne.JoinPos.Location);
                         

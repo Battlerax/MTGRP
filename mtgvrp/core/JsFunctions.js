@@ -53,6 +53,19 @@ API.onServerEventTrigger.connect((event, args) => {
         var rot = API.getEntityRotation(obj);
         API.triggerServerEvent(args[1], args[0], pos, rot);
     }
+    else if (event === "COMPLETE_FREEZE") {
+        var state = args[0];
+        var p = API.getLocalPlayer();
+
+        API.callNative("FREEZE_ENTITY_POSITION", p, state);
+        if (API.isPlayerInAnyVehicle(p)) {
+            API.callNative("FREEZE_ENTITY_POSITION", API.getPlayerVehicle(p), state);
+            if (state === true)
+                API.callNative("SET_VEHICLE_DOORS_LOCKED", API.getPlayerVehicle(p), 4);
+            else
+                API.callNative("SET_VEHICLE_DOORS_LOCKED", API.getPlayerVehicle(p), 0);
+        }
+    }
 });
 
 API.onEntityStreamIn.connect((entity, entityType) => {
