@@ -468,6 +468,12 @@ namespace mtgvrp.property_system.businesses
                 return;
             }
 
+            if (player.isInVehicle)
+            {
+                API.sendChatMessageToPlayer(player, "You cannot /buy while in a vehicle.");
+                return;
+            }
+
             switch (prop.Type)
             {
                 case PropertyManager.PropertyTypes.Hardware:
