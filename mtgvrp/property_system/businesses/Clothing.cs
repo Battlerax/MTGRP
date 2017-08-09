@@ -5,6 +5,7 @@ using GrandTheftMultiplayer.Server.API;
 using GrandTheftMultiplayer.Server.Elements;
 using GrandTheftMultiplayer.Server.Managers;
 using GrandTheftMultiplayer.Server;
+using GrandTheftMultiplayer.Server.Constant;
 using mtgvrp.component_manager;
 using mtgvrp.core;
 using mtgvrp.inventory;
@@ -136,6 +137,7 @@ namespace mtgvrp.property_system.businesses
                     return;
                 }
 
+                API.consoleOutput(LogCat.Debug, $"CHARACTER BUY CLOTHES: {arguments[0]} | {arguments[1]} | {arguments[2]}");
                 if (character.Model.Gender == Character.GenderMale)
                 {
                     switch ((int)arguments[0])
