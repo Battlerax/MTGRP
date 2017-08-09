@@ -147,14 +147,11 @@ namespace mtgvrp.speed_fuel_system
             if (API.hasEntityData(player, "FUELING_VEHICLE"))
             {
                 var vehEntity = API.getEntityData(player, "FUELING_VEHICLE");
-                if (vehEntity == vehicle)
-                {
-                    API.sendChatMessageToPlayer(player, "Refuel ended.");
-                    Vehicle veh = API.getEntityData(vehicle, "Vehicle");
-                    veh.FuelingTimer?.Dispose();
-                    API.freezePlayer(player, false);
-                    veh.Save();
-                }
+                API.sendChatMessageToPlayer(player, "Refuel ended.");
+                Vehicle veh = API.getEntityData(vehEntity, "Vehicle");
+                veh.FuelingTimer?.Dispose();
+                API.freezePlayer(player, false);
+                veh.Save();
             }
         }
 
