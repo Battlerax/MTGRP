@@ -108,6 +108,8 @@ namespace mtgvrp.phone_manager
 
         public void LoadContacts()
         {
+            Contacts = new List<PhoneContact>();
+
             var filter = Builders<PhoneContact>.Filter.Eq("PhoneId", Id.ToString());
             Contacts = DatabaseManager.ContactTable.Find(filter).ToList();
         }

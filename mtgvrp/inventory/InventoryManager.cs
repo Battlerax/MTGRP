@@ -119,12 +119,16 @@ namespace mtgvrp.inventory
         private static IInventoryItem CloneItem(IInventoryItem item, int amount = -1)
         {
             var type = item.GetType();
-            var properties = type.GetProperties();
             var newObject = ItemTypeToNewObject(type);
-            foreach (var prop in properties)
+            foreach (var prop in type.GetProperties())
             {
                 if(prop.CanWrite)
                     prop.SetValue(newObject, prop.GetValue(item));
+            }
+            foreach (var field in type.GetFields())
+            {
+                if (field.IsPublic)
+                    field.SetValue(newObject, field.GetValue(item));
             }
             if (amount != -1) newObject.Amount = amount;
             return newObject;
