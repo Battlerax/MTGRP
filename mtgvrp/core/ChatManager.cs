@@ -160,6 +160,14 @@ namespace mtgvrp.core
             }
         }
 
+        [Command("dice"), Help.Help(HelpManager.CommandGroups.General, "Roll a dice.", null)]
+        public void Dice(Client player)
+        {
+            Random rnd = new Random();
+            int dice = rnd.Next(1, 7);
+            RoleplayMessage(player, player.name + " throws a dice and lands a " + dice, RoleplayMe);
+        }
+
         [Command("togglenewbie"), Help.Help(HelpManager.CommandGroups.AdminLevel2, "Used to toggle newbie chat on and off.", null)]
         public void togglenewbie_cmd(Client player)
         {
