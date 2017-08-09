@@ -316,8 +316,8 @@ namespace mtgvrp.dmv
 
             c.IsInDmvTest = true;
 
-            API.sendChatMessageToPlayer(player, "You've started the driving test, please head to a DMV vehicle to start.");
-            API.sendChatMessageToPlayer(player, "~r~ The timer starts once you enter the vehicle. Remember to start your engine. Exit the vehicle to cancel the test.");
+            API.sendChatMessageToPlayer(player, "You've started the driving test, please head to a DMV vehicle.");
+            API.sendChatMessageToPlayer(player, "~r~ The timer begins once you start the engine of the vehicle. Exit the vehicle to cancel the test.");
         }
 
         [Command("registervehicle"), Help(HelpManager.CommandGroups.Vehicles, "Register your vehicle. (At DMV)")]
