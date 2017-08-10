@@ -85,6 +85,10 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="VehicleInfo, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\VehicleInfo.dll</HintPath>
+    </Reference>
     <Reference Include="websocket-sharp, Version=1.0.2.32519, Culture=neutral, PublicKeyToken=5660b08a1845a91e, processorArchitecture=MSIL">
       <HintPath>..\packages\WebSocketSharp-NonPreRelease.1.0.0\lib\net35\websocket-sharp.dll</HintPath>
     </Reference>
@@ -193,6 +197,7 @@
     <Compile Include="vehicle_dealership\BoatDealership.cs" />
     <Compile Include="vehicle_dealership\VipDealership.cs" />
     <Compile Include="vehicle_dealership\VehicleDealership.cs" />
+    <Compile Include="vehicle_manager\modding\Test.cs" />
     <Compile Include="vehicle_manager\Vehicle.cs" />
     <Compile Include="vehicle_manager\VehicleManager.cs" />
     <Compile Include="vehicle_manager\VehicleMenu.cs" />
@@ -216,6 +221,7 @@
     <None Include="stylesheet\fonts\metro.woff" />
     <None Include="stylesheet\fonts\selection.json" />
     <None Include="tsconfig.json" />
+    <None Include="vehicle_manager\modding\modinfo\vehicleInfo-en.full.json" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="AdminSystem\Reports.js" />
@@ -293,6 +299,7 @@
     <Content Include="vehicle_dealership\boatdealer.js" />
     <Content Include="vehicle_dealership\vipdealership.js" />
     <Content Include="vehicle_dealership\vehicledealer.js" />
+    <Content Include="VehicleInfo.dll" />
     <Content Include="vehicle_manager\VehicleOwnership.js" />
     <Content Include="vehicle_manager\vehicle_editor\VehicleEdit.js" />
     <Content Include="vehicle_manager\vehicle_editor\VehicleEdit.html" />
