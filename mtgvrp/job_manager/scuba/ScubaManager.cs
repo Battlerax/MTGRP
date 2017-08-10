@@ -216,9 +216,9 @@ namespace mtgvrp.job_manager.scuba
                 return;
             }
 
-            if (character.CanScuba > DateTime.Now)
+            if (character.CanScuba > LogManager.GetTimeStamp)
             {
-                API.sendChatMessageToPlayer(player, $@"Please wait {character.CanScuba.Subtract(DateTime.Now):hh\:mm\:ss} more before picking up more treasure.");
+                API.sendChatMessageToPlayer(player, $@"Please wait {character.CanScuba - LogManager.GetTimeStamp} more seconds before picking up more treasure.");
                 return;
             }
 
@@ -233,7 +233,7 @@ namespace mtgvrp.job_manager.scuba
             {
                 character.TrasureFound = 0;
                 API.sendChatMessageToPlayer(player, "You have found 5 trasure today. You may continue finding treasure tomorrow.");
-                character.CanScuba = DateTime.Now.AddHours(10);
+                character.CanScuba = Init.GetTimeStampFromTimeSpan(TimeSpan.FromHours(10));
                 return;
             }
 

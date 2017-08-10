@@ -925,7 +925,7 @@ namespace mtgvrp.AdminSystem
         {
             Character character = player.GetCharacter();
 
-            if (character.ReportMuteExpires > DateTime.Now)
+            if (character.ReportMuteExpires > LogManager.GetTimeStamp)
             {
                 API.sendChatMessageToPlayer(player, "You are muted from creating reports/ask requests.");
                 return;
@@ -1130,7 +1130,7 @@ namespace mtgvrp.AdminSystem
         {
             Character character = player.GetCharacter();
 
-            if (character.ReportMuteExpires > DateTime.Now)
+            if (character.ReportMuteExpires > LogManager.GetTimeStamp)
             {
                 API.sendChatMessageToPlayer(player, "You are muted from creating reports/ask requests.");
                 return;
@@ -1165,19 +1165,19 @@ namespace mtgvrp.AdminSystem
                 return;
             }
 
-            if (receivercharacter.NMutedExpiration > DateTime.Now)
+            if (receivercharacter.NMutedExpiration < GetTimeStamp)
             {
                 API.sendChatMessageToPlayer(player, "You have muted ~b~" + receiver.nametag + "~w~ from newbie chat for 1 hour.");
                 API.sendChatMessageToPlayer(receiver, "You have been ~r~muted ~w~from newbie chat for 1 hour.");
                 SendtoAllAdmins($"{account.AdminName} has muted {receiver.nametag} from /n.");
-                receivercharacter.NMutedExpiration = DateTime.Now.AddHours(1);
+                receivercharacter.NMutedExpiration = Init.GetTimeStampFromTimeSpan(TimeSpan.FromHours(1));
             }
             else
             {
                 API.sendChatMessageToPlayer(receiver, "You have been ~r~unmmuted ~w~from newbie chat.");
                 API.sendChatMessageToPlayer(player, "You have unmuted ~b~" + receiver.nametag + "~w~ from newbie chat.");
                 SendtoAllAdmins($"{account.AdminName} has unmuted {receiver.nametag} from /n.");
-                receivercharacter.NMutedExpiration = DateTime.Now;
+                receivercharacter.NMutedExpiration = GetTimeStamp;
             }
             account.AdminActions++;
             Log(LogTypes.AdminActions,
@@ -1200,19 +1200,19 @@ namespace mtgvrp.AdminSystem
                 return;
             }
 
-            if (receivercharacter.VMutedExpiration > DateTime.Now)
+            if (receivercharacter.VMutedExpiration < GetTimeStamp)
             {
                 API.sendChatMessageToPlayer(player, "You have muted ~b~" + receiver.nametag + "~w~ from VIP chat for 1 hour.");
                 API.sendChatMessageToPlayer(receiver, "You have been ~r~muted ~w~from VIP chat for 1 hour.");
                 SendtoAllAdmins($"{account.AdminName} has muted {receiver.nametag} from VIP chat.");
-                receivercharacter.VMutedExpiration = DateTime.Now.AddHours(1);
+                receivercharacter.VMutedExpiration = Init.GetTimeStampFromTimeSpan(TimeSpan.FromHours(1));
             }
             else
             {
                 API.sendChatMessageToPlayer(receiver, "You have been ~r~unmmuted ~w~from VIP chat.");
                 API.sendChatMessageToPlayer(player, "You have unmuted ~b~" + receiver.nametag + "~w~ from VIP chat.");
                 SendtoAllAdmins($"{account.AdminName} has unmuted {receiver.nametag} from VIP chat.");
-                receivercharacter.VMutedExpiration = DateTime.Now;
+                receivercharacter.VMutedExpiration = GetTimeStamp;
             }
             account.AdminActions++;
             Log(LogTypes.AdminActions,
@@ -1235,19 +1235,19 @@ namespace mtgvrp.AdminSystem
                 return;
             }
 
-            if (receivercharacter.ReportMuteExpires > DateTime.Now)
+            if (receivercharacter.ReportMuteExpires < GetTimeStamp)
             {
                 API.sendChatMessageToPlayer(player, "You have muted ~b~" + receiver.nametag + "~w~from creating reports.");
                 API.sendChatMessageToPlayer(receiver, "You have been ~r~muted ~w~from making reports.");
                 SendtoAllAdmins($"{account.AdminName} has muted {receiver.nametag} from making reports.");
-                receivercharacter.ReportMuteExpires = DateTime.Now.AddHours(1);
+                receivercharacter.ReportMuteExpires = Init.GetTimeStampFromTimeSpan(TimeSpan.FromHours(1));
             }
             else
             {
                 API.sendChatMessageToPlayer(receiver, "You have been ~r~unmmuted ~w~from making reports.");
                 SendtoAllAdmins($"{account.AdminName} has unmuted {receiver.nametag} from making reports.");
                 API.sendChatMessageToPlayer(player, "You have unmuted ~b~" + receiver.nametag + "~w~from creating reports.");
-                receivercharacter.ReportMuteExpires = DateTime.Now;
+                receivercharacter.ReportMuteExpires = GetTimeStamp;
             }
             account.AdminActions++;
             Log(LogTypes.AdminActions,

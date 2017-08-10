@@ -223,7 +223,7 @@ namespace mtgvrp.core
                 return;
             }
 
-            if (character.NMutedExpiration > DateTime.Now)
+            if (character.NMutedExpiration > LogManager.GetTimeStamp)
             {
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~You are muted from newbie chat.");
                 return;
@@ -300,7 +300,7 @@ namespace mtgvrp.core
                 return;
             }
 
-            if (character.VMutedExpiration > DateTime.Now)
+            if (character.VMutedExpiration > LogManager.GetTimeStamp)
             {
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~You are muted from VIP chat.");
                 return;

@@ -77,7 +77,7 @@ namespace mtgvrp.player_manager
 
         [BsonIgnore]
         public Timer ReportTimer { get; set; }
-        public DateTime ReportMuteExpires { get; set; }
+        public double ReportMuteExpires { get; set; }
 
         //Jobs
         public int JobOneId { get; set; }
@@ -106,8 +106,8 @@ namespace mtgvrp.player_manager
         public long OocCooldown { get; set; }
 
         //Chat mutes
-        public DateTime NMutedExpiration { get; set; }
-        public DateTime VMutedExpiration { get; set; }
+        public double NMutedExpiration { get; set; }
+        public double VMutedExpiration { get; set; }
         [BsonIgnore] public Timer NMutedTimer { get; set; }
         [BsonIgnore] public Timer VMutedTimer { get; set; }
 
@@ -176,9 +176,9 @@ namespace mtgvrp.player_manager
         public Dictionary<Fish, int> FishOnHand = new Dictionary<Fish, int>();
 
         public int TrasureFound { get; set; }
-        public DateTime CanScuba { get; set; }
+        public double CanScuba { get; set; }
         //Mechanic related
-        public DateTime FixcarPrevention { get; set; }
+        public double FixcarPrevention { get; set; }
 
         //Phone
         [BsonIgnore]
@@ -192,7 +192,7 @@ namespace mtgvrp.player_manager
 
         //Dropcar
         public bool IsOnDropcar { get; set; }
-        public DateTime DropcarReset { get; set; }
+        public double DropcarReset { get; set; }
 
         [BsonIgnore]
         public bool Calling911 { get; set; }
