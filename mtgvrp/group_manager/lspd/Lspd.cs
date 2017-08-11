@@ -625,6 +625,8 @@ namespace mtgvrp.group_manager.lspd
             if (receivercharacter.AreHandsUp == true || receivercharacter.IsCuffed == true)
             {
             
+                ChatManager.RoleplayMessage(character, " pats down " + receivercharacter.rp_name() + " searching through their items.",0);
+
                 API.sendChatMessageToPlayer(player, "-------------PLAYER INVENTORY-------------");
                 foreach (var item in receivercharacter.Inventory)
                 {
