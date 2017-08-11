@@ -21,15 +21,17 @@ API.onServerEventTrigger.connect((eventName, args) => {
             //Create main list.
             //TODO: proabably change this descriptions xD
             vehDealerList = API.createMenu("Vehicle Dealership", "Welcome to the vehicle dealership.", 0, 0, 6);
-            var motorsycles = API.createMenuItem("Motorcycles", "All 2 wheel vehicles.");
+            var motorsycles = API.createMenuItem("Motorcycles", "Fast and nimble, ride with care.");
             var coupes = API.createMenuItem("Coupes", "Normal Class Vehicles.");
             var trucksnvans = API.createMenuItem("Trucks and Vans", "Big vehicles.");
-            var offroad = API.createMenuItem("Offroad", "Vehicles that can go offroard.");
-            var musclecars = API.createMenuItem("Muscle Cars", "Powerful cars ?!.");
-            var suv = API.createMenuItem("SUV", "SUV.");
+            var offroad = API.createMenuItem("Offroad", "Suited for an off-road situation.");
+            var musclecars = API.createMenuItem("Muscle Cars", "Powerful and fast. Take care on corners.");
+            var suv = API.createMenuItem("SUV", "Sports Utility Vehicles.");
             var supercars = API.createMenuItem("Supercars", "The best cars we have.");
-			var cycles = API.createMenuItem("Cycles", "Ride bikes in style.");
+            var cycles = API.createMenuItem("Cycles", "Ride bikes in style.");
+
             //NOTE: THE ARRENGNEMENT IS SOOO IMPORTANT CAUSE I USE INDEX FOR KNOWING THE CURRENT GROUP AND NOT NAME.
+
             vehDealerList.AddItem(motorsycles);
             vehDealerList.AddItem(coupes);
             vehDealerList.AddItem(trucksnvans);
