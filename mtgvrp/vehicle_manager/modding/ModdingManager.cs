@@ -35,7 +35,7 @@ namespace mtgvrp.vehicle_manager.modding
                     foreach (var modid in manifest.ModIds(modType))
                     {
                         var m = manifest.Mod(modType, modid);
-                        modsList.Add(new string[] {m.localizedName, modid.ToString()});
+                        modsList.Add(new string[] {m.localizedName, modType.ToString(), modid.ToString()});
                     }
                     API.triggerClientEvent(sender, "MODDING_EVENT", "showMods", API.toJson(modsList));
                     break;

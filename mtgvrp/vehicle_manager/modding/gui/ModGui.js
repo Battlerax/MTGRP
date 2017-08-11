@@ -22,7 +22,7 @@ function getModsList(type) {
 
 function showMods(mods) {
     var modsList = JSON.parse(types);
-    for (var i = 0; i < typesList.length; i++) {
-        $("#modtypeSelect").append(`<li><a href="#" onclick="getModsList('${typesList[i]}');">${typesList[i]}</a></li>`);
+    for (var i = 0; i < modsList.length; i++) {
+        $("#modsList").append(`<a href="#" class="list-group-item" data-type="${modsList[i][1]}" data-mod="${modsList[i][2]}">${modsList[i][0]}</a>`);
     }
 }
