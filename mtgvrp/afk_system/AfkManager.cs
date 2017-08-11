@@ -29,6 +29,10 @@ namespace mtgvrp.afk_system
         //10 Minutes
         private const int KickInterval = 60;
 
+        //9 Minute warning 
+        private const int WarningTimer = 54;
+
+
         private void _afkTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             foreach (var p in API.getAllPlayers())
@@ -42,7 +46,11 @@ namespace mtgvrp.afk_system
                 if (c.LastPos == p.position)
                 {
                     c.AfkTimer++;
-                    if (c.AfkTimer >= KickInterval)
+                    if (c.AfkTimer == WarningTimer)
+                    {
+                        API.sendChatMessageToPlayer(p,"~r~[AFK WARNING] You will be kicked in one minute for being AFK!");
+                    }
+                    else if (c.AfkTimer >= KickInterval)
                     {
                         API.kickPlayer(p, "AFK for longer than 10 minutes.");
                     }
