@@ -25,8 +25,6 @@ namespace mtgvrp.core
             ArchiveLogs();
         }
 
-        public static int GetTimeStamp => (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
-
         static void ArchiveLogs()
         {
             try
@@ -40,7 +38,7 @@ namespace mtgvrp.core
                 //Move the files.
                 foreach (var file in Directory.GetFiles("Logs", "*.log"))
                 {
-                    File.Move(file, path + "/" + Path.GetFileNameWithoutExtension(file) + "-" + GetTimeStamp + Path.GetExtension(file));
+                    File.Move(file, path + "/" + Path.GetFileNameWithoutExtension(file) + "-" + TimeManager.GetTimeStamp + Path.GetExtension(file));
                 }
                 DebugManager.DebugMessage("** Logs has been archived.");
             }

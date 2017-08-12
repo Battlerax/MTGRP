@@ -479,9 +479,9 @@ namespace mtgvrp.vehicle_manager
                 return;
             }
 
-            if (character.DropcarReset > LogManager.GetTimeStamp)
+            if (character.DropcarReset > TimeManager.GetTimeStamp)
             {
-                player.sendChatMessage($@"Please wait {character.DropcarReset - LogManager.GetTimeStamp} more seconds before dropping another car.");
+                player.sendChatMessage($@"Please wait {TimeManager.SecondsToMinutes(character.DropcarReset - TimeManager.GetTimeStamp)} more minutes before dropping another car.");
                 return;
             }
 
@@ -493,7 +493,7 @@ namespace mtgvrp.vehicle_manager
                 return;
             }
 
-            character.DropcarReset = LogManager.GetTimeStamp + Init.GetTimeStampFromTimeSpan(TimeSpan.FromMinutes(15));
+            character.DropcarReset = TimeManager.GetTimeStamp + TimeManager.TimeSpanToSeconds(TimeSpan.FromMinutes(15));
             character.IsOnDropcar = true;
             API.triggerClientEvent(player, "dropcar_setwaypoint", new Vector3(487.0575, -1334.377, 29.30219) - new Vector3(0, 0, 1));
             player.sendChatMessage("A waypoint has been set. Take this vehicle to the waypoint to earn money.");

@@ -100,6 +100,7 @@
     <Compile Include="core\LogManager.cs" />
     <Compile Include="core\ObjectRemoval.cs" />
     <Compile Include="core\SettingsManager.cs" />
+    <Compile Include="core\TimeManager.cs" />
     <Compile Include="dmv\DmvManager.cs" />
     <Compile Include="dmv\DrivingLicenseItem.cs" />
     <Compile Include="group_manager\lsgov\IdentificationItem.cs" />
