@@ -50,6 +50,7 @@ namespace mtgvrp.player_manager
         public PedHash Skin { get; set; }
         public bool HasSkin { get; set; }
         public int Health { get; set; }
+        public int Armor { get; set; }
 
         public List<int> Outfit = new List<int>();
         public List<int> OutfitVariation = new List<int>();
@@ -359,6 +360,7 @@ namespace mtgvrp.player_manager
             CallingPlayer = Character.None;
 
             Health = 100;
+            Armor = 0;
             RadioToggle = true;
             CanDoAnim = true;
 
@@ -377,6 +379,7 @@ namespace mtgvrp.player_manager
         public void Save()
         {
             Health = API.shared.getPlayerHealth(Client);
+            Armor = API.shared.getPlayerArmor(Client);
             LastPos = Client.position;
             LastRot = Client.rotation;
             GetTimePlayed(); //Update time played before save.

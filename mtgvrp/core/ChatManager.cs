@@ -192,7 +192,7 @@ namespace mtgvrp.core
             {
                 if (numOfDie > upperDiceLimit || numOfDie < 1)
                 {
-                    API.sendChatMessageToPlayer(player, "SYNTAX : /roll 1/2");
+                    API.sendChatMessageToPlayer(player, "~y~SYNTAX: ~s~/roll 1 to " + upperDiceLimit);
                     return;
                 }
 
@@ -202,8 +202,8 @@ namespace mtgvrp.core
                     diceRoll = roll.Next(1, 7);
                     diceArr[x] = diceRoll;
                 }
-                if(numOfDie == 1) RoleplayMessage(player, "has rolled a dice and it lands on " + diceArr[0],RoleplayMe);
-                else RoleplayMessage(player, "has rolled " + numOfDie + " die and they landed on " + string.Join(" and ",diceArr),RoleplayMe);
+                if(numOfDie == 1) RoleplayMessage(player, "has rolled a die and it lands on " + diceArr[0],RoleplayMe);
+                else RoleplayMessage(player, "has rolled " + numOfDie + " dice and they landed on " + string.Join(" and ",diceArr),RoleplayMe);
             }
 
         }
