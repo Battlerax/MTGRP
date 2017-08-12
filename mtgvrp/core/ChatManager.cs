@@ -529,10 +529,10 @@ namespace mtgvrp.core
             switch (type)
             {
                 case 0: //ME
-                    roleplayMsg = "* " + character.CharacterName + " " + action; 
+                    roleplayMsg = "* " + character.rp_name() + " " + action; 
                     break;
                 case 1: //DO
-                    roleplayMsg = "* " + action + " ((" + character.CharacterName + "))";
+                    roleplayMsg = "* " + action + " ((" + character.rp_name() + "))";
                     break;
             }
 
@@ -544,14 +544,20 @@ namespace mtgvrp.core
         public static void RoleplayMessage(Client player, string action, int type, float radius = 10, int auto = 1)
         {
             string roleplayMsg = null;
+            Character currChar = player.GetCharacter();
 
+            if (currChar == null)
+            {
+                return;
+            }
+            
             switch (type)
             { 
                 case 0: //ME
-                    roleplayMsg = "* " + PlayerManager.GetName(player) + " " + action;
+                    roleplayMsg = "* " + currChar.rp_name() + " " + action;
                     break;
                 case 1: //DO
-                    roleplayMsg = "* " + action + " ((" + PlayerManager.GetName(player) + "))";
+                    roleplayMsg = "* " + action + " ((" + currChar.rp_name() + "))";
                     break;
             }
 
@@ -568,7 +574,7 @@ namespace mtgvrp.core
                 character.AmeTimer.Stop();
             }
 
-            character.AmeText = API.shared.createTextLabel(Color.PlayerRoleplay + character.CharacterName + " " + action, player.position, 15, (float)(0.5), false, player.dimension);
+            character.AmeText = API.shared.createTextLabel(Color.PlayerRoleplay + character.rp_name() + " " + action, player.position, 15, (float)(0.5), false, player.dimension);
             API.shared.setTextLabelColor(character.AmeText, 194, 162, 218, 255);
             API.shared.attachEntityToEntity(character.AmeText, player.handle, "SKEL_Head", new Vector3(0.0, 0.0, 1.3), new Vector3(0, 0, 0));
 
