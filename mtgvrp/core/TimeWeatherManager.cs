@@ -34,7 +34,7 @@ namespace mtgvrp.core
         {
             API.consoleOutput("Loading Weather Module.");
 
-            _weatherTimeTimer = new Timer(30000);
+            _weatherTimeTimer = new Timer(60000);
             _weatherTimeTimer.Elapsed += WeatherTimeTimer_Elapsed;
             _weatherTimeTimer.AutoReset = true;
             _weatherTimeTimer.Start();
@@ -43,7 +43,7 @@ namespace mtgvrp.core
             API.consoleOutput("Weather Updated To LA.");
         }
 
-        private int _elapsedMinutes = 60; //To update weather on launch.
+        private int _elapsedMinutes = 30; //To update weather on launch.
         private void WeatherTimeTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             _elapsedMinutes += 1;
@@ -52,7 +52,7 @@ namespace mtgvrp.core
             API.setTime(curTime.Hour, curTime.Minute);
 
             //Update weather
-            if (_elapsedMinutes >= 60)
+            if (_elapsedMinutes >= 30)
             {
                 _elapsedMinutes = 0;
                 WebClient client = new WebClient();
