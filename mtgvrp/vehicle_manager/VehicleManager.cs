@@ -568,6 +568,30 @@ namespace mtgvrp.vehicle_manager
             API.sendChatMessageToPlayer(player, Color.White, "Respawned all unowned and unoccupied cars in a radius of " + radius);
         }
 
+        [Command("groupvehicles", Alias = "gvehicles"), Help(HelpManager.CommandGroups.Vehicles, "Used to locate vehicles owned by your group.", null)]
+        public void commandGroupVehicles(Client player)
+        {
+            Character character = player.GetCharacter();
+            Group group = character.Group;
+            if(group != null)
+            {
+                List<Vehicle> gCarsList = new List<Vehicle>();
+                foreach(var v in Vehicles)
+                {
+                    if(v.Group == group)
+                    {
+                        gCarsList.Add(v);
+                    }
+                }
+                if(gCarsList.Count > 0)
+                {
+                    string[][] cars = gCarsList
+                        .Select(x => new [] { API.getVehicleDisplayName(x.VehModel), x.Id.ToString(), x.NetHandle.Value.ToString()}).ToArray();
+                    API.triggerClientEvent(player, "groupvehicles_showmenu", API.toJson(cars));
+                }
+            }
+        }
+
         /*
         * 
         * ========== CALLBACKS =========
