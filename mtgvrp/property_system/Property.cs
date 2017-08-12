@@ -148,9 +148,6 @@ namespace mtgvrp.property_system
                     return 133;
                 case PropertyManager.PropertyTypes.HuntingStation:
                     return 463;
-                case PropertyManager.PropertyTypes.Housing:
-                    int value = (OwnerId == 0) ? 350 : 40;
-                    return value;
                 case PropertyManager.PropertyTypes.VIPLounge:
                     return 409;
                 case PropertyManager.PropertyTypes.DMV:
