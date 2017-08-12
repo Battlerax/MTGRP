@@ -26,6 +26,9 @@ namespace mtgvrp.job_manager.trucker
             API.onPlayerDisconnected += API_onPlayerDisconnected;
         }
 
+        private static readonly Vector3 TruckerLocationCheck = new Vector3(979.6286,-2532.368, 28.30198);
+        private const int PermittedDistance = 300;
+
         private void API_onPlayerDisconnected(Client player, string reason)
         {
             Character c = player.GetCharacter();
@@ -287,7 +290,11 @@ namespace mtgvrp.job_manager.trucker
                 player.sendChatMessage("You must be the driver of the truck to start the truck run.");
                 return;
             }
-
+            if (API.getEntityPosition(player).DistanceTo(TruckerLocationCheck) > PermittedDistance)
+            {
+                API.sendChatMessageToPlayer(player,"You need to be at the depot to start a supply run!");
+                return;
+            }
             if (character.TruckingStage == Character.TruckingStages.GettingTrailer)
             {
                 if (type == "gas")
