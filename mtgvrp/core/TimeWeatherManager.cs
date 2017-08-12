@@ -36,8 +36,8 @@ namespace mtgvrp.core
 
             //Set proper current time
             var time = CurrentTime;
-            _minutes = Math.Abs(time.Minute - 30);
-            _hours = Math.Abs(time.Hour - 12);
+            Minutes = Math.Abs(time.Minute - 30);
+            Hours = Math.Abs(time.Hour - 12);
 
             WeatherTimeTimer_Elapsed(this, null);
 
@@ -52,23 +52,23 @@ namespace mtgvrp.core
         
 
         private int _elapsedMinutes = 30; //To update weather on launch.
-        private int _minutes;
-        private int _hours;
+        public static int Minutes;
+        public static int Hours;
         private void WeatherTimeTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             _elapsedMinutes += 1;
 
             //Update time first.
-            _minutes += 2;
-            if (_minutes >= 60)
+            Minutes += 2;
+            if (Minutes >= 60)
             {
-                _hours++;
-                if (_hours >= 24)
+                Hours++;
+                if (Hours >= 24)
                 {
-                    _hours = 0;
+                    Hours = 0;
                 }
             }
-            API.setTime(_hours, _minutes);
+            API.setTime(Hours, Minutes);
 
             //Update weather
             if (_elapsedMinutes >= 30)
