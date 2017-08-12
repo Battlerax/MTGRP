@@ -3,7 +3,7 @@
 });
 
 $(document).ready(function () {
-    $(".list-group-item").click(function () {
+    $('#modsList').on('click', '.list-group-item', function () {
         $(".list-group-item").removeClass("active");
         $(this).addClass("active");
     });
@@ -21,8 +21,9 @@ function getModsList(type) {
 }
 
 function showMods(mods) {
-    var modsList = JSON.parse(types);
+    var modsList = JSON.parse(mods);
+    $("#modsList").empty();
     for (var i = 0; i < modsList.length; i++) {
-        $("#modsList").append(`<a href="#" class="list-group-item" data-type="${modsList[i][1]}" data-mod="${modsList[i][2]}">${modsList[i][0]}</a>`);
+        $("#modsList").append(`<a href="#" class="list-group-item" data-type="${modsList[i][1]}" data-mod="${modsList[i][2]}">${modsList[i][0]} - ${modsList[i][1]} - ${modsList[i][2]}</a>`);
     }
 }

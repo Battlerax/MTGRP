@@ -13,13 +13,11 @@ API.onServerEventTrigger.connect((event, args) => {
         API.showCursor(true);
         Args = args;
     }
-    else if (event === "MODDING_EVENT") {
+    else if (event === "MODDING_FILL_MODS") {
         if (myBrowser == null)
             return;
 
-        var eventName = args[0];
-        var restOfargs = Array.prototype.slice.call(args, 1);
-        myBrowser.call(eventName, ...restOfargs);
+        myBrowser.call("showMods", args[0]);
     }
 });
 
@@ -31,3 +29,12 @@ function callServerEvent(eventName /* Args */) {
     var args = Array.prototype.slice.call(arguments, 1);
     API.triggerServerEvent(eventName, ...args);
 }
+
+API.onKeyUp.connect((sender, e) => {
+    if (e.KeyCode == Keys.Escape && myBrowser != null) {
+        API.setHudVisible(true);
+        API.showCursor(false);
+        API.destroyCefBrowser(myBrowser);
+        myBrowser = null;
+    }
+});
