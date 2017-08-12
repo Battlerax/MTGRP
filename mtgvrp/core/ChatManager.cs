@@ -160,6 +160,26 @@ namespace mtgvrp.core
             }
         }
 
+        [Command("rand", GreedyArg = true), Help.Help(HelpManager.CommandGroups.General, "Generate a random number.", null)]
+        public void startRand(Client sender, String upperBoundary)
+        {
+            const int maxLimit = 100;
+            int upperlimit;
+            if (Int32.TryParse(upperBoundary, out upperlimit))
+            {
+                if (upperlimit <= maxLimit && upperlimit > 0)
+                {
+                    int outcome = new Random().Next(0, upperlimit + 1);
+                    
+                    NearbyMessage(sender, 10, " (( randomised number " + outcome + " out of " + upperlimit + " ))",Color.Ooc);
+                  
+                }
+                else
+                    API.sendChatMessageToPlayer(sender, "SYNTAX : /rand 1-" + maxLimit);
+
+            }
+        }
+
         [Command("dice", GreedyArg = true), Help.Help(HelpManager.CommandGroups.General, "Roll a dice.", null)]
         public void Dice(Client player, string diceNo)
         {
