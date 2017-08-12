@@ -160,7 +160,7 @@ namespace mtgvrp.core
             }
         }
 
-        [Command("rand", GreedyArg = true), Help.Help(HelpManager.CommandGroups.General, "Generate a random number.", null)]
+        [Command("rand", GreedyArg = true), Help.Help(HelpManager.CommandGroups.General, "Generate a random number.", "The upper limit")]
         public void startRand(Client sender, String upperBoundary)
         {
             const int maxLimit = 100;
@@ -180,7 +180,7 @@ namespace mtgvrp.core
 
         }
 
-        [Command("dice", GreedyArg = true), Help.Help(HelpManager.CommandGroups.General, "Roll a dice.", null)]
+        [Command("dice", GreedyArg = true), Help.Help(HelpManager.CommandGroups.General, "Roll multiple dice.", "The number of dice")]
         public void Dice(Client player, string diceNo)
         {
             const int upperDiceLimit = 2;
@@ -202,7 +202,7 @@ namespace mtgvrp.core
                     diceRoll = roll.Next(1, 7);
                     diceArr[x] = diceRoll;
                 }
-                if(numOfDie == 1) RoleplayMessage(player, " has rolled a dice and it lands on " + diceArr[0],RoleplayMe);
+                if(numOfDie == 1) RoleplayMessage(player, "has rolled a dice and it lands on " + diceArr[0],RoleplayMe);
                 else RoleplayMessage(player, "has rolled " + numOfDie + " die and they landed on " + string.Join(" and ",diceArr),RoleplayMe);
             }
 
