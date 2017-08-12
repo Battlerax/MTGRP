@@ -515,7 +515,7 @@ namespace mtgvrp.player_manager
             }
             else if (HasSkin)
             {
-                API.shared.setPlayerSkin(player, Skin);
+                API.shared.setPlayerSkin(Client, Skin);
             }
             else
             {

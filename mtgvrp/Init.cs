@@ -62,17 +62,6 @@ namespace mtgvrp
 
                 OnPlayerEnterVehicleEx?.Invoke(sender, veh, seat);
             }
-            else if (eventName == "PLAYER_STREAMED_IN")
-            {
-                var playerNet = (NetHandle) arguments[0];
-                var playerClient = (Client) API.getPlayerFromHandle(playerNet);
-                if (playerClient == null)
-                    return;
-                var playerChar = playerClient.GetCharacter();
-                if(playerChar == null)
-                    return;
-                playerChar.update_ped(sender);
-            }
         }
 
         private void InventoryManager_OnStorageItemUpdateAmount(IStorage sender,

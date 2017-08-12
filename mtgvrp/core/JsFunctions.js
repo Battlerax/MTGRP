@@ -76,10 +76,6 @@ API.onEntityStreamIn.connect((entity, entityType) => {
         API.triggerServerEvent(lastEvent, lastObj, pos, rot);
         return;
     }
-
-    if (entityType === 6) {
-        API.triggerServerEvent("PLAYER_STREAMED_IN", entity);
-    }
 });
 
 API.onPlayerEnterVehicle.connect((vehicle) => {
