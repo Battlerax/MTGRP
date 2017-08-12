@@ -614,6 +614,7 @@ namespace mtgvrp.group_manager.lspd
             if (receiver == player)
             {
                 API.sendNotificationToPlayer(player, "~r~You can't frisk yourself!");
+                return;
             }
 
             if (API.getEntityPosition(player).DistanceToSquared(API.getEntityPosition(receiver)) > 16f)
@@ -625,7 +626,7 @@ namespace mtgvrp.group_manager.lspd
             if (receivercharacter.AreHandsUp == true || receivercharacter.IsCuffed == true)
             {
             
-                ChatManager.RoleplayMessage(character, " pats down " + receivercharacter.rp_name() + " searching through their items.",ChatManager.RoleplayMe);
+                ChatManager.RoleplayMessage(character, "pats down " + receivercharacter.rp_name() + " searching through their items.",ChatManager.RoleplayMe);
 
                 API.sendChatMessageToPlayer(player, "-------------PLAYER INVENTORY-------------");
                 foreach (var item in receivercharacter.Inventory)
