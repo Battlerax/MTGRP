@@ -1170,7 +1170,7 @@ namespace mtgvrp.AdminSystem
                 API.sendChatMessageToPlayer(player, "You have muted ~b~" + receiver.nametag + "~w~ from newbie chat for 1 hour.");
                 API.sendChatMessageToPlayer(receiver, "You have been ~r~muted ~w~from newbie chat for 1 hour.");
                 SendtoAllAdmins($"{account.AdminName} has muted {receiver.nametag} from /n.");
-                receivercharacter.NMutedExpiration = TimeManager.TimeSpanToSeconds(TimeSpan.FromHours(1));
+                receivercharacter.NMutedExpiration = TimeManager.GetTimeStampPlus(TimeSpan.FromHours(1));
             }
             else
             {
@@ -1205,7 +1205,7 @@ namespace mtgvrp.AdminSystem
                 API.sendChatMessageToPlayer(player, "You have muted ~b~" + receiver.nametag + "~w~ from VIP chat for 1 hour.");
                 API.sendChatMessageToPlayer(receiver, "You have been ~r~muted ~w~from VIP chat for 1 hour.");
                 SendtoAllAdmins($"{account.AdminName} has muted {receiver.nametag} from VIP chat.");
-                receivercharacter.VMutedExpiration = TimeManager.TimeSpanToSeconds(TimeSpan.FromHours(1));
+                receivercharacter.VMutedExpiration = TimeManager.GetTimeStampPlus(TimeSpan.FromHours(1));
             }
             else
             {
@@ -1240,7 +1240,7 @@ namespace mtgvrp.AdminSystem
                 API.sendChatMessageToPlayer(player, "You have muted ~b~" + receiver.nametag + "~w~from creating reports.");
                 API.sendChatMessageToPlayer(receiver, "You have been ~r~muted ~w~from making reports.");
                 SendtoAllAdmins($"{account.AdminName} has muted {receiver.nametag} from making reports.");
-                receivercharacter.ReportMuteExpires = TimeManager.TimeSpanToSeconds(TimeSpan.FromHours(1));
+                receivercharacter.ReportMuteExpires = TimeManager.GetTimeStampPlus(TimeSpan.FromHours(1));
             }
             else
             {

@@ -18,9 +18,9 @@ namespace mtgvrp.core
             return dtDateTime;
         }
 
-        public static double TimeSpanToSeconds(TimeSpan span)
+        public static double GetTimeStampPlus(TimeSpan span)
         {
-            return span.TotalSeconds;
+            return GetTimeStamp + span.TotalSeconds;
         }
 
         public static double SecondsToMinutes(double x) => Math.Round(x / 60);
