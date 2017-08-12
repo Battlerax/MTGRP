@@ -128,7 +128,14 @@ namespace mtgvrp.inventory
             foreach (var field in type.GetFields())
             {
                 if (field.IsPublic)
-                    field.SetValue(newObject, field.GetValue(item));
+                    try
+                    {
+                        field.SetValue(newObject, field.GetValue(item));
+                    }
+                    catch (Exception e)
+                    {
+                        // ignored
+                    }
             }
             if (amount != -1) newObject.Amount = amount;
             return newObject;

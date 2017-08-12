@@ -43,9 +43,9 @@ namespace mtgvrp.job_manager.taxi
                 return;
             }
 
-            if (LogManager.GetTimeStamp < character.FixcarPrevention)
+            if (TimeManager.GetTimeStamp < character.FixcarPrevention)
             {
-                API.sendChatMessageToPlayer(player, $@"You must wait {character.FixcarPrevention - LogManager.GetTimeStamp} more seconds before fixing another car.");
+                API.sendChatMessageToPlayer(player, $@"You must wait {character.FixcarPrevention - TimeManager.GetTimeStamp} more seconds before fixing another car.");
                 return;
             }
 
@@ -61,7 +61,7 @@ namespace mtgvrp.job_manager.taxi
             InventoryManager.DeleteInventoryItem(character, typeof(EngineParts), 1);
             player.sendChatMessage("Vehicle repaired.");
             LogManager.Log(LogManager.LogTypes.Stats, $"[Vehicle] {character.CharacterName}[{player.GetAccount().AccountName}] has fixed vehicle #{veh.Id}.");
-            character.FixcarPrevention = Init.GetTimeStampFromTimeSpan(TimeSpan.FromSeconds(10));
+            character.FixcarPrevention = TimeManager.GetTimeStampPlus(TimeSpan.FromSeconds(10));
         }
 
         [Command("paintcar"), Help(HelpManager.CommandGroups.MechanicJob, "Used to paint the car you're inside. <br/> Use the wiki to get the color ids.", "The primary color.", "The secondary color.")]
