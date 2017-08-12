@@ -171,7 +171,7 @@ namespace mtgvrp.core
                 {
                     int outcome = new Random().Next(0, upperlimit + 1);
                     
-                    NearbyMessage(sender, 10, " (( "  + sender.GetCharacter().CharacterName +  " has randomised the number " + outcome + " out of " + upperlimit + " ))",Color.Ooc);
+                    NearbyMessage(sender, 10, " [RAND]: (( "  + sender.GetCharacter().CharacterName +  " has randomised the number " + outcome + " out of " + upperlimit + " ))",Color.Ooc);
                     return;
 
                 }

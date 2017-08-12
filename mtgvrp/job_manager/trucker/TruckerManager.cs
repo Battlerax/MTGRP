@@ -27,7 +27,7 @@ namespace mtgvrp.job_manager.trucker
         }
 
         private static readonly Vector3 TruckerLocationCheck = new Vector3(979.6286,-2532.368, 28.30198);
-        private const int PermittedDistance = 300;
+        private const int PermittedDistance = 150;
 
         private void API_onPlayerDisconnected(Client player, string reason)
         {
@@ -270,7 +270,7 @@ namespace mtgvrp.job_manager.trucker
                 else if (player.getData("TRUCKING_TYPE") == "gas")
                 {
                     player.sendChatMessage("You have been paid ~g~$900.");
-                    InventoryManager.GiveInventoryItem(character, new Money(), 1000, true);
+                    InventoryManager.GiveInventoryItem(character, new Money(), 900, true);
                     LogManager.Log(LogManager.LogTypes.Stats, $"[Job] {player.GetCharacter().CharacterName}[{player.GetAccount().AccountName}] has earned $900 from a trucking run.");
                 }
 
