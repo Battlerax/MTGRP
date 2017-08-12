@@ -160,12 +160,32 @@ namespace mtgvrp.core
             }
         }
 
-        [Command("dice"), Help.Help(HelpManager.CommandGroups.General, "Roll a dice.", null)]
-        public void Dice(Client player)
+        [Command("dice", GreedyArg = true), Help.Help(HelpManager.CommandGroups.General, "Roll a dice.", null)]
+        public void Dice(Client player, string diceNo)
         {
-            Random rnd = new Random();
-            int dice = rnd.Next(1, 7);
-            RoleplayMessage(player,"throws a dice and lands a " + dice, RoleplayMe);
+            const int upperDiceLimit = 2;
+            int numOfDie;
+            int diceRoll;
+            // Generate a random BEFORE the actual loop, same values are extremely likely when done inside of the loop, due to the seed being Sys time.
+            Random roll = new Random();
+            if (Int32.TryParse(diceNo, out numOfDie))
+            {
+                if (numOfDie > upperDiceLimit || numOfDie < 1)
+                {
+                    API.sendChatMessageToPlayer(player, "SYNTAX : /roll 1/2");
+                    return;
+                }
+
+                int[] diceArr = new int[numOfDie];
+                for (int x = 0; x <= numOfDie - 1; x++)
+                {
+                    diceRoll = roll.Next(1, 7);
+                    diceArr[x] = diceRoll;
+                }
+                if(numOfDie == 1) RoleplayMessage(player, " has rolled a dice and it lands on " + diceArr[0],RoleplayMe);
+                else RoleplayMessage(player, "has rolled " + numOfDie + " die and they landed on " + string.Join(" and ",diceArr),RoleplayMe);
+            }
+
         }
 
         [Command("togglenewbie"), Help.Help(HelpManager.CommandGroups.AdminLevel2, "Used to toggle newbie chat on and off.", null)]
