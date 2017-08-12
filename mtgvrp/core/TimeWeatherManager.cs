@@ -34,22 +34,41 @@ namespace mtgvrp.core
         {
             API.consoleOutput("Loading Weather Module.");
 
+            //Set proper current time
+            var time = CurrentTime;
+            _minutes = Math.Abs(time.Minute - 30);
+            _hours = Math.Abs(time.Hour - 12);
+
+            WeatherTimeTimer_Elapsed(this, null);
+
             _weatherTimeTimer = new Timer(60000);
             _weatherTimeTimer.Elapsed += WeatherTimeTimer_Elapsed;
             _weatherTimeTimer.AutoReset = true;
             _weatherTimeTimer.Start();
-            WeatherTimeTimer_Elapsed(this, null);
 
             API.consoleOutput("Weather Updated To LA.");
         }
 
+        
+
         private int _elapsedMinutes = 30; //To update weather on launch.
+        private int _minutes;
+        private int _hours;
         private void WeatherTimeTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             _elapsedMinutes += 1;
+
             //Update time first.
-            var curTime = CurrentTime;
-            API.setTime(curTime.Hour, curTime.Minute);
+            _minutes += 2;
+            if (_minutes >= 60)
+            {
+                _hours++;
+                if (_hours >= 24)
+                {
+                    _hours = 0;
+                }
+            }
+            API.setTime(_hours, _minutes);
 
             //Update weather
             if (_elapsedMinutes >= 30)
