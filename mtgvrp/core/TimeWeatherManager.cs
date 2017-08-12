@@ -62,6 +62,7 @@ namespace mtgvrp.core
             Minutes += 2;
             if (Minutes >= 60)
             {
+                Minutes = 0;
                 Hours++;
                 if (Hours >= 24)
                 {
