@@ -573,7 +573,7 @@ namespace mtgvrp.vehicle_manager
         {
             Character character = player.GetCharacter();
             Group group = character.Group;
-            if(group != null)
+            if(group != Group.None)
             {
                 List<Vehicle> gCarsList = new List<Vehicle>();
                 foreach(var v in Vehicles)
