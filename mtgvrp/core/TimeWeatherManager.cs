@@ -34,7 +34,7 @@ namespace mtgvrp.core
         {
             API.consoleOutput("Loading Weather Module.");
 
-            _weatherTimeTimer = new Timer(60000);
+            _weatherTimeTimer = new Timer(30000);
             _weatherTimeTimer.Elapsed += WeatherTimeTimer_Elapsed;
             _weatherTimeTimer.AutoReset = true;
             _weatherTimeTimer.Start();
