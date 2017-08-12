@@ -204,6 +204,7 @@ namespace mtgvrp.player_manager
                         API.setEntityRotation(player.handle, character.LastRot);
                         API.setEntityDimension(player.handle, character.LastDimension);
                         API.setPlayerHealth(player, character.Health);
+                        API.setPlayerArmor(player,character.Armor);
 
                         if (account.AdminLevel > 0)
                         {

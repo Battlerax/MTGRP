@@ -160,7 +160,7 @@ namespace mtgvrp.core
             }
         }
 
-        [Command("rand", GreedyArg = true), Help.Help(HelpManager.CommandGroups.General, "Generate a random number.", null)]
+        [Command("rand", GreedyArg = true), Help.Help(HelpManager.CommandGroups.General, "Generate a random number.", "The upper limit")]
         public void startRand(Client sender, String upperBoundary)
         {
             const int maxLimit = 100;
@@ -171,16 +171,16 @@ namespace mtgvrp.core
                 {
                     int outcome = new Random().Next(0, upperlimit + 1);
                     
-                    NearbyMessage(sender, 10, " (( randomised number " + outcome + " out of " + upperlimit + " ))",Color.Ooc);
-                  
-                }
-                else
-                    API.sendChatMessageToPlayer(sender, "SYNTAX : /rand 1-" + maxLimit);
+                    NearbyMessage(sender, 10, " [RAND]: (( "  + sender.GetCharacter().CharacterName +  " has randomised the number " + outcome + " out of " + upperlimit + " ))",Color.Ooc);
+                    return;
 
+                }
             }
+            API.sendChatMessageToPlayer(sender, "SYNTAX : /rand 1-" + maxLimit);
+
         }
 
-        [Command("dice", GreedyArg = true), Help.Help(HelpManager.CommandGroups.General, "Roll a dice.", null)]
+        [Command("dice", GreedyArg = true), Help.Help(HelpManager.CommandGroups.General, "Roll multiple dice.", "The number of dice")]
         public void Dice(Client player, string diceNo)
         {
             const int upperDiceLimit = 2;
@@ -192,7 +192,7 @@ namespace mtgvrp.core
             {
                 if (numOfDie > upperDiceLimit || numOfDie < 1)
                 {
-                    API.sendChatMessageToPlayer(player, "SYNTAX : /roll 1/2");
+                    API.sendChatMessageToPlayer(player, "~y~SYNTAX: ~s~/roll 1 to " + upperDiceLimit);
                     return;
                 }
 
@@ -202,8 +202,8 @@ namespace mtgvrp.core
                     diceRoll = roll.Next(1, 7);
                     diceArr[x] = diceRoll;
                 }
-                if(numOfDie == 1) RoleplayMessage(player, " has rolled a dice and it lands on " + diceArr[0],RoleplayMe);
-                else RoleplayMessage(player, "has rolled " + numOfDie + " die and they landed on " + string.Join(" and ",diceArr),RoleplayMe);
+                if(numOfDie == 1) RoleplayMessage(player, "has rolled a die and it lands on " + diceArr[0],RoleplayMe);
+                else RoleplayMessage(player, "has rolled " + numOfDie + " dice and they landed on " + string.Join(" and ",diceArr),RoleplayMe);
             }
 
         }
@@ -614,7 +614,7 @@ namespace mtgvrp.core
                 character.AmeTimer.Stop();
             }
 
-            character.AmeText = API.shared.createTextLabel(Color.PlayerRoleplay + character.rp_name() + " " + action, player.position, 15, (float)(0.5), false, player.dimension);
+            character.AmeText = API.shared.createTextLabel(Color.PlayerRoleplay + "* " + character.rp_name() + " " + action, player.position, 15, (float)(0.5), false, player.dimension);
             API.shared.setTextLabelColor(character.AmeText, 194, 162, 218, 255);
             API.shared.attachEntityToEntity(character.AmeText, player.handle, "SKEL_Head", new Vector3(0.0, 0.0, 1.3), new Vector3(0, 0, 0));
 
