@@ -218,7 +218,7 @@ namespace mtgvrp.job_manager.scuba
 
             if (character.CanScuba > TimeManager.GetTimeStamp)
             {
-                API.sendChatMessageToPlayer(player, $@"Please wait {character.CanScuba - TimeManager.GetTimeStamp} more seconds before picking up more treasure.");
+                API.sendChatMessageToPlayer(player, $@"Please wait {TimeManager.SecondsToHours(character.CanScuba - TimeManager.GetTimeStamp)} more hours before picking up more treasure.");
                 return;
             }
 

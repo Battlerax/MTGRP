@@ -24,5 +24,7 @@ namespace mtgvrp.core
         }
 
         public static double SecondsToMinutes(double x) => Math.Round(x / 60);
+        public static double MinutesToHours(double x) => Math.Round(x / 60);
+        public static double SecondsToHours(double x) => Math.Round(x / 60 / 60);
     }
 }
