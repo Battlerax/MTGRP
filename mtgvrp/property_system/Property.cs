@@ -148,9 +148,6 @@ namespace mtgvrp.property_system
                     return 133;
                 case PropertyManager.PropertyTypes.HuntingStation:
                     return 463;
-                case PropertyManager.PropertyTypes.Housing:
-                    int value = (OwnerId == 0) ? 350 : 40;
-                    return value;
                 case PropertyManager.PropertyTypes.VIPLounge:
                     return 409;
                 case PropertyManager.PropertyTypes.DMV:
@@ -182,18 +179,18 @@ namespace mtgvrp.property_system
                 API.shared.setBlipName(EntranceMarker.Blip, PropertyName);
             }
 
-            if (IsInteractable)
+            if (IsInteractable && InteractionPos != null && InteractionPos != new Vector3())
             {
                 if (Type != PropertyManager.PropertyTypes.GasStation)
                 {
-                    InteractionMarker = new MarkerZone(InteractionPos, InteractionRot, InteractionDimension)
+                    InteractionMarker = new MarkerZone(InteractionPos ?? new Vector3(), InteractionRot ?? new Vector3(), InteractionDimension)
                     {
                         TextLabelText = PropertyManager.GetInteractText(Type)
                     };
                 }
                 else
                 {
-                    InteractionMarker = new MarkerZone(InteractionPos, InteractionRot, InteractionDimension)
+                    InteractionMarker = new MarkerZone(InteractionPos ?? new Vector3(), InteractionRot ?? new Vector3(), InteractionDimension)
                     {
                         ColZoneSize = 10f,
                         TextLabelText = PropertyManager.GetInteractText(Type)
@@ -203,9 +200,9 @@ namespace mtgvrp.property_system
                 InteractionMarker.ColZone.setData("property_interaction", Id);
             }
 
-            if (IsTeleportable)
+            if (IsTeleportable && TargetPos != null && TargetPos != new Vector3())
             {
-                ExitMarker = new MarkerZone(TargetPos, TargetRot, TargetDimension) {TextLabelText = "/exit"};
+                ExitMarker = new MarkerZone(TargetPos ?? new Vector3(), TargetRot ?? new Vector3(), TargetDimension) {TextLabelText = "/exit"};
                 ExitMarker.Create();
                 ExitMarker.ColZone.setData("property_exit", Id);
             }

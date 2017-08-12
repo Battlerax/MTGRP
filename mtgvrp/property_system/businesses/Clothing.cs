@@ -364,6 +364,12 @@ namespace mtgvrp.property_system.businesses
                 return;
             }
 
+            if (player.isInVehicle)
+            {
+                API.sendChatMessageToPlayer(player, "You cannot buy new clothes while in a vehicle.");
+                return;
+            }
+
             API.setEntityData(player, "clothing_lastpos", player.position);
             API.setEntityData(player, "clothing_lastrot", player.rotation);
             API.setEntityData(player, "clothing_id", biz.Id);
@@ -479,6 +485,12 @@ namespace mtgvrp.property_system.businesses
             if (biz?.Type != PropertyManager.PropertyTypes.Clothing)
             {
                 API.sendChatMessageToPlayer(player, "You aren't at a clothing interaction point.");
+                return;
+            }
+
+            if (player.isInVehicle)
+            {
+                API.sendChatMessageToPlayer(player, "You cannot buy new clothes while in a vehicle.");
                 return;
             }
 
