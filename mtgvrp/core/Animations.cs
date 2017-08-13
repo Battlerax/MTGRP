@@ -15,6 +15,13 @@ namespace mtgvrp.core
 {
     class Animations : Script
     {
+
+
+        public Animations()
+        {
+            API.onClientEventTrigger += OnClientEventTrigger;
+        }
+
         [Flags]
         public enum AnimationFlags
         {
