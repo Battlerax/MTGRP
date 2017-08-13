@@ -572,13 +572,13 @@ namespace mtgvrp.vehicle_manager
         public void commandGroupVehicles(Client player)
         {
             Character character = player.GetCharacter();
-            Group group = character.Group;
+            var group = character.Group;
             if(group != Group.None)
             {
                 List<Vehicle> gCarsList = new List<Vehicle>();
                 foreach(var v in Vehicles)
                 {
-                    if(v.Group == group)
+                    if(v.GroupId == group.Id)
                     {
                         gCarsList.Add(v);
                     }
