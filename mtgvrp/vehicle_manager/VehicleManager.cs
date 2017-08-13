@@ -479,9 +479,9 @@ namespace mtgvrp.vehicle_manager
                 return;
             }
 
-            if (character.DropcarReset > DateTime.Now)
+            if (character.DropcarReset > TimeManager.GetTimeStamp)
             {
-                player.sendChatMessage($@"Please wait {character.DropcarReset.Subtract(DateTime.Now):hh\:mm\:ss} before dropping another car.");
+                player.sendChatMessage($@"Please wait {TimeManager.SecondsToMinutes(character.DropcarReset - TimeManager.GetTimeStamp)} more minutes before dropping another car.");
                 return;
             }
 
@@ -493,7 +493,7 @@ namespace mtgvrp.vehicle_manager
                 return;
             }
 
-            character.DropcarReset = DateTime.Now.AddMinutes(15);
+            character.DropcarReset = TimeManager.GetTimeStampPlus(TimeSpan.FromMinutes(15));
             character.IsOnDropcar = true;
             API.triggerClientEvent(player, "dropcar_setwaypoint", new Vector3(487.0575, -1334.377, 29.30219) - new Vector3(0, 0, 1));
             player.sendChatMessage("A waypoint has been set. Take this vehicle to the waypoint to earn money.");
@@ -566,6 +566,30 @@ namespace mtgvrp.vehicle_manager
                 }
             }
             API.sendChatMessageToPlayer(player, Color.White, "Respawned all unowned and unoccupied cars in a radius of " + radius);
+        }
+
+        [Command("groupvehicles", Alias = "gvehicles"), Help(HelpManager.CommandGroups.Vehicles, "Used to locate vehicles owned by your group.", null)]
+        public void commandGroupVehicles(Client player)
+        {
+            Character character = player.GetCharacter();
+            var group = character.Group;
+            if(group != Group.None)
+            {
+                List<Vehicle> gCarsList = new List<Vehicle>();
+                foreach(var v in Vehicles)
+                {
+                    if(v.GroupId == group.Id)
+                    {
+                        gCarsList.Add(v);
+                    }
+                }
+                if(gCarsList.Count > 0)
+                {
+                    string[][] cars = gCarsList
+                        .Select(x => new [] { API.getVehicleDisplayName(x.VehModel), x.Id.ToString(), x.NetHandle.Value.ToString()}).ToArray();
+                    API.triggerClientEvent(player, "groupvehicles_showmenu", API.toJson(cars.ToArray()));
+                }
+            }
         }
 
         /*

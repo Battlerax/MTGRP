@@ -81,6 +81,14 @@ namespace mtgvrp.vehicle_manager
                     API.sendChatMessageToPlayer(sender, "Use /confirmsellvehicle to sell.");
                     API.setEntityData(sender, "sellcar_selling", new dynamic[] {scVeh, targetChar, price});
                     break;
+                case "groupvehicles_locatecar":
+                    vehicle_manager.Vehicle gVeh =
+                        VehicleManager.Vehicles.Single(
+                            x => x.NetHandle.Value == Convert.ToInt32(arguments[0]) && x.GroupId == character.GroupId);
+                    Vector3 location = API.getEntityPosition(gVeh.NetHandle);
+                    API.triggerClientEvent(sender, "myvehicles_setCheckpointToCar", location.X, location.Y, location.Z);
+                    API.sendChatMessageToPlayer(sender, "A checkpoint has been set to the vehicle.");
+                    break;
             }
         }
 

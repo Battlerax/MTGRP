@@ -749,7 +749,14 @@ API.onServerEventTrigger.connect((eventName, args) => {
 					API.triggerServerEvent("clothing_buybag", bag_index, bag_variation);
 				}
 			});
-			break;
+            break;
+
+        case "checkPedGender":
+            var hash = JSON.parse(args[0]);
+            var ped = API.createPed(hash, new Vector3(0, 0, 0),5);
+            var pedNo = API.returnNative("GET_PED_TYPE", 0, ped);
+            API.deleteEntity(ped);
+            API.triggerServerEvent("returnPedGender",hash,pedNo);
 	}
 });
 

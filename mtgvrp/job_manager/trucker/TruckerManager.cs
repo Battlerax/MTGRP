@@ -26,6 +26,9 @@ namespace mtgvrp.job_manager.trucker
             API.onPlayerDisconnected += API_onPlayerDisconnected;
         }
 
+        private static readonly Vector3 TruckerLocationCheck = new Vector3(979.6286,-2532.368, 28.30198);
+        private const int PermittedDistance = 150;
+
         private void API_onPlayerDisconnected(Client player, string reason)
         {
             Character c = player.GetCharacter();
@@ -140,7 +143,7 @@ namespace mtgvrp.job_manager.trucker
 
                     if (SettingsManager.Settings.WoodSupplies < 50)
                     {
-                        API.sendChatMessageToPlayer(player, "There is no any wood to load.");
+                        API.sendChatMessageToPlayer(player, "There isn't any wood to load.");
                         return;
                     }
 
@@ -266,7 +269,7 @@ namespace mtgvrp.job_manager.trucker
                 }
                 else if (player.getData("TRUCKING_TYPE") == "gas")
                 {
-                    player.sendChatMessage("You have been paid ~g~$900.");
+                    player.sendChatMessage("You have been paid ~g~$1000.");
                     InventoryManager.GiveInventoryItem(character, new Money(), 1000, true);
                     LogManager.Log(LogManager.LogTypes.Stats, $"[Job] {player.GetCharacter().CharacterName}[{player.GetAccount().AccountName}] has earned $900 from a trucking run.");
                 }
@@ -287,7 +290,11 @@ namespace mtgvrp.job_manager.trucker
                 player.sendChatMessage("You must be the driver of the truck to start the truck run.");
                 return;
             }
-
+            if (API.getEntityPosition(player).DistanceTo(TruckerLocationCheck) > PermittedDistance)
+            {
+                API.sendChatMessageToPlayer(player,"You need to be at the depot to start a supply run!");
+                return;
+            }
             if (character.TruckingStage == Character.TruckingStages.GettingTrailer)
             {
                 if (type == "gas")

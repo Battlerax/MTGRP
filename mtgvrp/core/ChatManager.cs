@@ -160,12 +160,52 @@ namespace mtgvrp.core
             }
         }
 
-        [Command("dice"), Help.Help(HelpManager.CommandGroups.General, "Roll a dice.", null)]
-        public void Dice(Client player)
+        [Command("rand", GreedyArg = true), Help.Help(HelpManager.CommandGroups.General, "Generate a random number.", "The upper limit")]
+        public void startRand(Client sender, String upperBoundary)
         {
-            Random rnd = new Random();
-            int dice = rnd.Next(1, 7);
-            RoleplayMessage(player,"throws a dice and lands a " + dice, RoleplayMe);
+            const int maxLimit = 100;
+            int upperlimit;
+            if (Int32.TryParse(upperBoundary, out upperlimit))
+            {
+                if (upperlimit <= maxLimit && upperlimit > 0)
+                {
+                    int outcome = new Random().Next(0, upperlimit + 1);
+                    
+                    NearbyMessage(sender, 10, " [RAND]: (( "  + sender.GetCharacter().CharacterName +  " has randomised the number " + outcome + " out of " + upperlimit + " ))",Color.Ooc);
+                    return;
+
+                }
+            }
+            API.sendChatMessageToPlayer(sender, "SYNTAX : /rand 1-" + maxLimit);
+
+        }
+
+        [Command("dice", GreedyArg = true), Help.Help(HelpManager.CommandGroups.General, "Roll multiple dice.", "The number of dice")]
+        public void Dice(Client player, string diceNo)
+        {
+            const int upperDiceLimit = 2;
+            int numOfDie;
+            int diceRoll;
+            // Generate a random BEFORE the actual loop, same values are extremely likely when done inside of the loop, due to the seed being Sys time.
+            Random roll = new Random();
+            if (Int32.TryParse(diceNo, out numOfDie))
+            {
+                if (numOfDie > upperDiceLimit || numOfDie < 1)
+                {
+                    API.sendChatMessageToPlayer(player, "~y~SYNTAX: ~s~/roll 1 to " + upperDiceLimit);
+                    return;
+                }
+
+                int[] diceArr = new int[numOfDie];
+                for (int x = 0; x <= numOfDie - 1; x++)
+                {
+                    diceRoll = roll.Next(1, 7);
+                    diceArr[x] = diceRoll;
+                }
+                if(numOfDie == 1) RoleplayMessage(player, "has rolled a die and it lands on " + diceArr[0],RoleplayMe);
+                else RoleplayMessage(player, "has rolled " + numOfDie + " dice and they landed on " + string.Join(" and ",diceArr),RoleplayMe);
+            }
+
         }
 
         [Command("togglenewbie"), Help.Help(HelpManager.CommandGroups.AdminLevel2, "Used to toggle newbie chat on and off.", null)]
@@ -223,7 +263,7 @@ namespace mtgvrp.core
                 return;
             }
 
-            if (character.NMutedExpiration > DateTime.Now)
+            if (character.NMutedExpiration > TimeManager.GetTimeStamp)
             {
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~You are muted from newbie chat.");
                 return;
@@ -300,7 +340,7 @@ namespace mtgvrp.core
                 return;
             }
 
-            if (character.VMutedExpiration > DateTime.Now)
+            if (character.VMutedExpiration > TimeManager.GetTimeStamp)
             {
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~You are muted from VIP chat.");
                 return;
@@ -529,10 +569,10 @@ namespace mtgvrp.core
             switch (type)
             {
                 case 0: //ME
-                    roleplayMsg = "* " + character.CharacterName + " " + action; 
+                    roleplayMsg = "* " + character.rp_name() + " " + action; 
                     break;
                 case 1: //DO
-                    roleplayMsg = "* " + action + " ((" + character.CharacterName + "))";
+                    roleplayMsg = "* " + action + " ((" + character.rp_name() + "))";
                     break;
             }
 
@@ -544,14 +584,20 @@ namespace mtgvrp.core
         public static void RoleplayMessage(Client player, string action, int type, float radius = 10, int auto = 1)
         {
             string roleplayMsg = null;
+            Character currChar = player.GetCharacter();
 
+            if (currChar == null)
+            {
+                return;
+            }
+            
             switch (type)
             { 
                 case 0: //ME
-                    roleplayMsg = "* " + PlayerManager.GetName(player) + " " + action;
+                    roleplayMsg = "* " + currChar.rp_name() + " " + action;
                     break;
                 case 1: //DO
-                    roleplayMsg = "* " + action + " ((" + PlayerManager.GetName(player) + "))";
+                    roleplayMsg = "* " + action + " ((" + currChar.rp_name() + "))";
                     break;
             }
 
@@ -568,7 +614,7 @@ namespace mtgvrp.core
                 character.AmeTimer.Stop();
             }
 
-            character.AmeText = API.shared.createTextLabel(Color.PlayerRoleplay + character.CharacterName + " " + action, player.position, 15, (float)(0.5), false, player.dimension);
+            character.AmeText = API.shared.createTextLabel(Color.PlayerRoleplay + "* " + character.rp_name() + " " + action, player.position, 15, (float)(0.5), false, player.dimension);
             API.shared.setTextLabelColor(character.AmeText, 194, 162, 218, 255);
             API.shared.attachEntityToEntity(character.AmeText, player.handle, "SKEL_Head", new Vector3(0.0, 0.0, 1.3), new Vector3(0, 0, 0));
 

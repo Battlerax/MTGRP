@@ -27,7 +27,7 @@ namespace mtgvrp
     public class Init : Script
     {
         public static string SERVER_NAME = "[EN] Moving Target Gaming Roleplay";
-        public static string SERVER_VERSION = "v0.0.1599";
+        public static string SERVER_VERSION = "v0.0.1682";
         public static string SERVER_WEBSITE = "www.mt-gaming.com";
         public static Random Random = new Random();
 
@@ -61,17 +61,6 @@ namespace mtgvrp
                 int seat = (int) arguments[1];
 
                 OnPlayerEnterVehicleEx?.Invoke(sender, veh, seat);
-            }
-            else if (eventName == "PLAYER_STREAMED_IN")
-            {
-                var playerNet = (NetHandle) arguments[0];
-                var playerClient = (Client) API.getPlayerFromHandle(playerNet);
-                if (playerClient == null)
-                    return;
-                var playerChar = playerClient.GetCharacter();
-                if(playerChar == null)
-                    return;
-                playerChar.update_ped(sender);
             }
         }
 
@@ -109,13 +98,6 @@ namespace mtgvrp
                 API.consoleOutput("[INIT] Starting Discord Bot!");
                 DiscordManager.StartBot();
             }
-        }
-
-        [Command("save")]
-        public void Save(Client player)
-        {
-            player?.GetCharacter()?.Save();
-            API.sendChatMessageToPlayer(player, "Your character has been saved successfully.");
         }
 
         private void API_onResourceStop()

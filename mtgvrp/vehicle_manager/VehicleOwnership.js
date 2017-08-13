@@ -72,6 +72,51 @@ API.onServerEventTrigger.connect((eventName, args) => {
             });
             break;
 
+        case "groupvehicles_showmenu":
+            //carsList contents: 
+            //[i][0] = Name | [i][1] = ID | [i][2] = NetHandle
+            menuPool = API.getMenuPool();
+            var myCars = API.createMenu("Group Vehicles", "Select a vehicle to manage.", 0, 0, 4);
+            var carsList = JSON.parse(args[0]);
+            for (var i = 0; i < carsList.length; i++) {
+                var car = API.createMenuItem(carsList[i][0] + (carsList[i][2] == "0" ? " - Unspawned" : ""), `NetHandle: #${carsList[i][2]} | ID: #${carsList[i][1]}`);
+                myCars.AddItem(car);
+            }
+
+            menuPool.Add(myCars);
+            myCars.Visible = true;
+
+            //Setup submenu.
+            var actionsMenu = API.createMenu("Manage Vehicle", `Select an action to do to your group's vehicle.`, 0, 0, 4);
+            actionsMenu.AddItem(API.createMenuItem("Locate", "Set a checkpoint to the location of your car."));
+            menuPool.Add(actionsMenu);
+
+            actionsMenu.OnMenuClose.connect(function (closesender) {
+                myCars.Visible = true;
+            });
+
+            var currentSelectedCar = -1;
+            myCars.OnItemSelect.connect(function (csender, citem, cindex) {
+                myCars.Visible = false;
+                actionsMenu.Visible = true;
+                currentSelectedCar = cindex;
+                API.sendChatMessage(`You are managing your group's ~r~${carsList[cindex][0]}~w~.`);
+            });
+
+            actionsMenu.OnItemSelect.connect(function (osender, oitem, oindex) {
+                if (currentSelectedCar !== -1) {
+                    switch (oindex) {
+                        case 0:
+                            if (carsList[currentSelectedCar][2] !== "0") {
+                                API.triggerServerEvent("groupvehicles_locatecar", carsList[currentSelectedCar][2]);
+                            } else
+                                API.sendChatMessage("You can't locate an unspawned car.");
+                            break;
+                    }
+                }
+            });
+            break;
+
         case "myvehicles_setCheckpointToCar":
             API.setWaypoint(args[0], args[1]);
             break;

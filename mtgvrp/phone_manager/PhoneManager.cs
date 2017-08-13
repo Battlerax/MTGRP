@@ -576,6 +576,12 @@ namespace mtgvrp.phone_manager
                 if (character != null)
                 {
                     var charphone = InventoryManager.DoesInventoryHaveItem<Phone>(character)[0];
+                    if (!charphone.IsOn)
+                    {
+                        API.sendChatMessageToPlayer(player, Color.White,
+                            "The text message failed to send. That number is switched off. Please try again later.");
+                        return;
+                    }
                     API.triggerClientEvent(character.Client, "phone_incomingMessage",
                         charphone.HasContactWithNumber(senderphone.PhoneNumber)
                             ? charphone.Contacts.Find(pc => pc.Number == senderphone.PhoneNumber).Name
@@ -629,6 +635,12 @@ namespace mtgvrp.phone_manager
                 if (character != null)
                 {
                     var charphone = InventoryManager.DoesInventoryHaveItem<Phone>(character)[0];
+                    if (!charphone.IsOn)
+                    {
+                        API.sendChatMessageToPlayer(player, Color.White,
+                            "The text message failed to send. That number is switched off. Please try again later.");
+                        return;
+                    }
                     API.triggerClientEvent(character.Client, "phone_incomingMessage",
                         charphone.HasContactWithNumber(senderphone.PhoneNumber)
                             ? charphone.Contacts.Find(pc => pc.Number == senderphone.PhoneNumber).Name

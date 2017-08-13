@@ -56,7 +56,12 @@ namespace mtgvrp.property_system.businesses
             GrandTheftMultiplayer.Server.Constant.PedHash.Shepherd,
             GrandTheftMultiplayer.Server.Constant.PedHash.Stingray,
             GrandTheftMultiplayer.Server.Constant.PedHash.TigerShark,
-            GrandTheftMultiplayer.Server.Constant.PedHash.Westy
+            GrandTheftMultiplayer.Server.Constant.PedHash.Westy,
+            PedHash.FreemodeMale01,
+            PedHash.FreemodeFemale01
+
+
+           
         };
 
 
@@ -80,6 +85,11 @@ namespace mtgvrp.property_system.businesses
                 API.setEntityDimension(sender, 0);
                 API.sendChatMessageToPlayer(sender, "You have exited the clothing menu.");
 
+            }
+
+            else if (eventName == "returnPedGender")
+            {
+                setPlayerPedSkin(sender,(PedHash) arguments[0],(int) arguments[1]);
             }
             else if (eventName == "clothing_buyclothe")
             {
@@ -354,6 +364,16 @@ namespace mtgvrp.property_system.businesses
             API.consoleOutput("Finished loading componentes into array for clothes.");
         }
 
+        public void ResetSkin(Client player)
+        {
+            Character c = player.GetCharacter();
+            c.HasSkin = false;
+
+            API.setPlayerSkin(player, c.Model.Gender == Character.GenderFemale ? PedHash.FreemodeFemale01 : PedHash.FreemodeMale01);
+
+            player.GetCharacter().update_ped();
+        }
+
         [Command("buyclothes"), Help(HelpManager.CommandGroups.Bussiness, "Used inside a clothing store to buy clothes.", null)]
         public void BuyClothes(Client player)
         {
@@ -361,6 +381,12 @@ namespace mtgvrp.property_system.businesses
             if (biz?.Type != PropertyManager.PropertyTypes.Clothing)
             {
                 API.sendChatMessageToPlayer(player, "You aren't at a clothing interaction point.");
+                return;
+            }
+
+            if (player.isInVehicle)
+            {
+                API.sendChatMessageToPlayer(player, "You cannot buy new clothes while in a vehicle.");
                 return;
             }
 
@@ -377,8 +403,7 @@ namespace mtgvrp.property_system.businesses
 
             if (character.HasSkin)
             {
-                character.HasSkin = false;
-                character.update_ped();
+                ResetSkin(player);
             }
 
             if (character.Model.Gender == Character.GenderMale)
@@ -482,6 +507,12 @@ namespace mtgvrp.property_system.businesses
                 return;
             }
 
+            if (player.isInVehicle)
+            {
+                API.sendChatMessageToPlayer(player, "You cannot buy new clothes while in a vehicle.");
+                return;
+            }
+
             API.setEntityData(player, "clothing_lastpos", player.position);
             API.setEntityData(player, "clothing_lastrot", player.rotation);
             API.setEntityData(player, "clothing_id", biz.Id);
@@ -523,9 +554,36 @@ namespace mtgvrp.property_system.businesses
                 return;
             }
 
+            API.triggerClientEvent(player,"checkPedGender",API.toJson(hash));
+
+        }
+
+        public void setPlayerPedSkin(Client player, PedHash hash, int gender)
+        {
+            Character c = player.GetCharacter();
+            if (c.Model.Gender == Character.GenderMale)
+            {
+                if (gender != 4)
+                {
+                    API.sendChatMessageToPlayer(player,"You're unable to use this skin.");
+                    return;
+                }
+            }
+
+            else if (c.Model.Gender == Character.GenderFemale)
+            {
+                if (gender != 5)
+                {
+                    API.sendChatMessageToPlayer(player,"You're unable to use this skin.");
+                    return;
+                }
+            }
+
             InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(Money), 250);
             API.setPlayerSkin(player, hash);
             player.GetCharacter().Skin = hash;
+            player.GetCharacter().HasSkin = true;
+            player.GetCharacter().Save();
             player.sendChatMessage("Skin changed! You were charged $250.");
         }
     }
