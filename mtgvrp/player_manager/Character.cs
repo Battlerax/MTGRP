@@ -378,8 +378,10 @@ namespace mtgvrp.player_manager
 
         public void Save()
         {
+
             Health = API.shared.getPlayerHealth(Client);
             Armor = API.shared.getPlayerArmor(Client);
+            Skin = (PedHash) Client.model;
             LastPos = Client.position;
             LastRot = Client.rotation;
             GetTimePlayed(); //Update time played before save.
