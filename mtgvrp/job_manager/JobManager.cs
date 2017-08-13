@@ -487,7 +487,7 @@ namespace mtgvrp.job_manager
                     UseColZone = j.JoinPos.UseColZone,
                     BlipColor = j.JoinPos.BlipColor,
                     BlipSprite = j.sprite_type(),
-                    BlipName = j.JoinPos.BlipName,
+                    BlipName = j.Name,
                     BlipRange = j.JoinPos.BlipRange,
                     BlipTransparency = j.JoinPos.BlipTransparency,
                     BlipShortRange = j.JoinPos.BlipShortRange,
