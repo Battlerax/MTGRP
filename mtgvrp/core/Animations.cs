@@ -258,7 +258,7 @@ namespace mtgvrp.core
                 API.sendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
-        [Command("crossarms", "~y~Syntax /crossarms 1 - 15")]
+        [Command("crossarms", "~y~Syntax /crossarms 1 - 13")]
         public void crossarms(Client player, int number)
         {
             if (API.isPlayerInAnyVehicle(player))
