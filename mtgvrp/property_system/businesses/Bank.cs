@@ -144,12 +144,16 @@ namespace mtgvrp.property_system.businesses
                 API.sendChatMessageToPlayer(player, "You don't have that amount in your bank balance.");
                 return;
             }
-
-            //c.BankBalance -= amount;
+            
             var item = InventoryManager.DoesInventoryHaveItem<CheckItem>(target.GetCharacter());
             if (item.Length == 0)
             {
-                if(InventoryManager.GiveInventoryItem(target.GetCharacter(), new CheckItem() {CheckAmount = amount}) == InventoryManager.GiveItemErrors.Success)
+                if(InventoryManager.GiveInventoryItem(target.GetCharacter(), new CheckItem() {CheckAmount = amount}) == InventoryManager.GiveItemErrors.HasBlockingItem)
+                {
+                    API.sendChatMessageToPlayer(player, "The target has a blocking item preventing you from giving them a check.");
+                    API.sendChatMessageToPlayer(target, "You have a blocking item preventing you from receiving a check from " + player.GetCharacter().rp_name() + ".");
+                }
+                else
                 {
                     c.BankBalance -= amount;
                 }
