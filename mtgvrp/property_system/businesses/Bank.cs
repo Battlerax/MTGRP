@@ -145,11 +145,14 @@ namespace mtgvrp.property_system.businesses
                 return;
             }
 
-            c.BankBalance -= amount;
+            //c.BankBalance -= amount;
             var item = InventoryManager.DoesInventoryHaveItem<CheckItem>(target.GetCharacter());
             if (item.Length == 0)
             {
-                InventoryManager.GiveInventoryItem(target.GetCharacter(), new CheckItem() {CheckAmount = amount});
+                if(InventoryManager.GiveInventoryItem(target.GetCharacter(), new CheckItem() {CheckAmount = amount}) == InventoryManager.GiveItemErrors.Success)
+                {
+                    c.BankBalance -= amount;
+                }
             }
             else
             {
