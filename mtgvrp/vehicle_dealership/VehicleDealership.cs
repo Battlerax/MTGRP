@@ -84,14 +84,14 @@ namespace mtgvrp.vehicle_dealership
         private readonly string[][] _supercars =
         {
             new[] {"Elegy", "196747873", "125000"},
-            new[] {"Fusilade", "499169875", "160000"},
-            new[] {"Coquette", "108773431", "190000"},
-            new[] {"Lynx", "482197771", "170000"},
             new[] { "Sultan", "970598228", "135000"},
-            new[] { "Turismo", "-982130927", "220000"},
-            new[] { "Tyrus", "2067820283", "290000"},
-            new[] { "Italigtb", "-2048333973", "310000"},
-            new[] { "Nero", "1034187331", "310000"},
+            new[] {"Fusilade", "499169875", "200000"},
+            new[] {"Coquette", "108773431", "280000"},
+            new[] {"Lynx", "482197771", "340000"},
+            new[] { "Turismo", "-982130927", "506000"},
+            new[] { "Tyrus", "2067820283", "667000"},
+            new[] { "Italigtb", "-2048333973", "700000"},
+            new[] { "Nero", "1034187331", "750000"},
         };
 
         private readonly string[][] _cycles =
