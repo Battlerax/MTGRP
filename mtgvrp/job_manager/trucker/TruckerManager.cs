@@ -143,7 +143,7 @@ namespace mtgvrp.job_manager.trucker
 
                     if (SettingsManager.Settings.WoodSupplies < 50)
                     {
-                        API.sendChatMessageToPlayer(player, "There is no any wood to load.");
+                        API.sendChatMessageToPlayer(player, "There isn't any wood to load.");
                         return;
                     }
 
