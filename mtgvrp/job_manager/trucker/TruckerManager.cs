@@ -269,8 +269,8 @@ namespace mtgvrp.job_manager.trucker
                 }
                 else if (player.getData("TRUCKING_TYPE") == "gas")
                 {
-                    player.sendChatMessage("You have been paid ~g~$900.");
-                    InventoryManager.GiveInventoryItem(character, new Money(), 900, true);
+                    player.sendChatMessage("You have been paid ~g~$1000.");
+                    InventoryManager.GiveInventoryItem(character, new Money(), 1000, true);
                     LogManager.Log(LogManager.LogTypes.Stats, $"[Job] {player.GetCharacter().CharacterName}[{player.GetAccount().AccountName}] has earned $900 from a trucking run.");
                 }
 
