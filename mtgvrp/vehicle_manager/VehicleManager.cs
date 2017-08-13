@@ -587,7 +587,7 @@ namespace mtgvrp.vehicle_manager
                 {
                     string[][] cars = gCarsList
                         .Select(x => new [] { API.getVehicleDisplayName(x.VehModel), x.Id.ToString(), x.NetHandle.Value.ToString()}).ToArray();
-                    API.triggerClientEvent(player, "groupvehicles_showmenu", API.toJson(cars));
+                    API.triggerClientEvent(player, "groupvehicles_showmenu", API.toJson(cars.ToArray()));
                 }
             }
         }
