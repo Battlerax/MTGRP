@@ -1093,7 +1093,7 @@ namespace mtgvrp.AdminSystem
             API.sendChatMessageToPlayer(player, "Ask accepted.");
             API.sendChatMessageToPlayer(receiver, "Your help request has been taken by ~b~" + player.nametag + ".");
             SendtoAllAdmins("[REPORT] " + player.nametag + " has taken " + receiver.nametag + "'s ask request.");
-            player.sendChatMessage($"{receivercharacter.CharacterName}'s playing hours: ~g~{character.GetPlayingHours()}.");
+            player.sendChatMessage($"{receivercharacter.CharacterName}'s playing hours: ~g~{receivercharacter.GetPlayingHours()}.");
             API.setEntityPosition(player, API.getEntityPosition(receiver));
             API.setPlayerNametagColor(player, 51, 102, 255);
             account.AdminActions++;
