@@ -100,13 +100,6 @@ namespace mtgvrp
             }
         }
 
-        [Command("save")]
-        public void Save(Client player)
-        {
-            player?.GetCharacter()?.Save();
-            API.sendChatMessageToPlayer(player, "Your character has been saved successfully.");
-        }
-
         private void API_onResourceStop()
         {
             SettingsManager.Save();
