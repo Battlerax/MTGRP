@@ -24,6 +24,6 @@ function showMods(mods) {
     var modsList = JSON.parse(mods);
     $("#modsList").empty();
     for (var i = 0; i < modsList.length; i++) {
-        $("#modsList").append(`<a href="#" class="list-group-item" data-type="${modsList[i][1]}" data-mod="${modsList[i][2]}">${modsList[i][0]} - ${modsList[i][1]} - ${modsList[i][2]}</a>`);
+        $("#modsList").append(`<a href="#" class="list-group-item moditem" data-type="${modsList[i][1]}" data-mod="${modsList[i][2]}"><span class="float-left">${modsList[i][0]}</span><span class="float-right">$${modsList[i][3]}</span></a>`);
     }
 }

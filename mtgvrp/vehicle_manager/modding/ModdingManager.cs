@@ -35,7 +35,7 @@ namespace mtgvrp.vehicle_manager.modding
                     foreach (var modid in manifest.ModIds(modType))
                     {
                         var m = manifest.Mod(modType, modid);
-                        modsList.Add(new string[] {m.localizedName, modType.ToString(), modid.ToString()});
+                        modsList.Add(new string[] {m.localizedName, modType.ToString(), modid.ToString(), GetModPrice(modType, modid).ToString("C")});
                     }
                     API.triggerClientEvent(sender, "MODDING_FILL_MODS", API.toJson(modsList.ToArray()));
                     break;
@@ -46,6 +46,77 @@ namespace mtgvrp.vehicle_manager.modding
         private void API_onResourceStart()
         {
             VehicleInfo.Setup(Path.Combine(API.getResourceFolder(), @"vehicle_manager\modding\modinfo\"));
+        }
+
+        private static readonly Dictionary<int, int> _modTypePrices = new Dictionary<int, int>
+        {
+            {0, 1000},
+            {1, 1500},
+            {2, 1500},
+            {3, 750},
+            {4, 800},
+            {5, 0},
+            {6, 900},
+            {7, 1000},
+            {8, 0},
+            {9, 0},
+            {10, 1200},
+            {11, 0},
+            {12, 0},
+            {13, 0},
+            {14, 500}, //VIP
+            {15, 1000},
+            {16, -1},
+            {18, 0},
+            {22, 0},
+            {23, 600},
+            {24, 600},
+            {25, 0},
+            {27, 0},
+            {28, 0},
+            {30, 0},
+            {33, 0},
+            {34, 0},
+            {35, 0},
+            {38, 2000},
+            {48, 0},
+            {62, 0},
+            {66, 0},
+            {67, 0},
+            {69, 0},
+        };
+
+        private static readonly Dictionary<KeyValuePair<int, int>, int> _modPrices = new Dictionary<KeyValuePair<int, int>, int>
+        {
+            {new KeyValuePair<int, int>(11, 1), 4000},
+            {new KeyValuePair<int, int>(11, 2), 6000},
+            {new KeyValuePair<int, int>(11, 3), 8000},
+            {new KeyValuePair<int, int>(11, 4), 10000},
+
+            {new KeyValuePair<int, int>(12, 1), 4000},
+            {new KeyValuePair<int, int>(12, 2), 5000},
+            {new KeyValuePair<int, int>(12, 3), 6000},
+
+            {new KeyValuePair<int, int>(13, 1), 3000},
+            {new KeyValuePair<int, int>(13, 2), 5000},
+            {new KeyValuePair<int, int>(13, 3), 7000},
+        };
+
+        int GetModPrice(int type, int mod)
+        {
+            foreach (var itm in _modPrices)
+            {
+                if (itm.Key.Key == type && itm.Key.Value == mod)
+                    return itm.Value;
+            }
+
+            foreach (var itm in _modTypePrices)
+            {
+                if (itm.Key == type)
+                    return itm.Value;
+            }
+
+            return -1;
         }
 
         public Dictionary<int, string> ModTypes = new Dictionary<int, string>
