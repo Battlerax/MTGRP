@@ -27,7 +27,7 @@ namespace mtgvrp
     public class Init : Script
     {
         public static string SERVER_NAME = "[EN] Moving Target Gaming Roleplay";
-        public static string SERVER_VERSION = "v0.0.1599";
+        public static string SERVER_VERSION = "v0.0.1672";
         public static string SERVER_WEBSITE = "www.mt-gaming.com";
         public static Random Random = new Random();
 
@@ -98,13 +98,6 @@ namespace mtgvrp
                 API.consoleOutput("[INIT] Starting Discord Bot!");
                 DiscordManager.StartBot();
             }
-        }
-
-        [Command("save")]
-        public void Save(Client player)
-        {
-            player?.GetCharacter()?.Save();
-            API.sendChatMessageToPlayer(player, "Your character has been saved successfully.");
         }
 
         private void API_onResourceStop()
