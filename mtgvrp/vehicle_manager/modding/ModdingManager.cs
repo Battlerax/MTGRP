@@ -55,29 +55,29 @@ namespace mtgvrp.vehicle_manager.modding
             {2, 1500},
             {3, 750},
             {4, 800},
-            {5, 0},
+            {5, 500},
             {6, 900},
             {7, 1000},
-            {8, 0},
-            {9, 0},
+            {8, 600},
+            {9, 600},
             {10, 1200},
             {11, 0},
             {12, 0},
             {13, 0},
             {14, 500}, //VIP
-            {15, 1000},
+            {15, 0},
             {16, -1},
             {18, 0},
             {22, 0},
             {23, 600},
             {24, 600},
-            {25, 0},
-            {27, 0},
+            {25, 200},
+            {27, 200},
             {28, 0},
             {30, 0},
-            {33, 0},
-            {34, 0},
-            {35, 0},
+            {33, 100},
+            {34, 100},
+            {35, 100},
             {38, 2000},
             {48, 0},
             {62, 0},
@@ -88,18 +88,23 @@ namespace mtgvrp.vehicle_manager.modding
 
         private static readonly Dictionary<KeyValuePair<int, int>, int> _modPrices = new Dictionary<KeyValuePair<int, int>, int>
         {
-            {new KeyValuePair<int, int>(11, 1), 4000},
-            {new KeyValuePair<int, int>(11, 2), 6000},
-            {new KeyValuePair<int, int>(11, 3), 8000},
-            {new KeyValuePair<int, int>(11, 4), 10000},
+            {new KeyValuePair<int, int>(11, 0), 4000},
+            {new KeyValuePair<int, int>(11, 1), 6000},
+            {new KeyValuePair<int, int>(11, 2), 8000},
+            {new KeyValuePair<int, int>(11, 3), 10000},
 
-            {new KeyValuePair<int, int>(12, 1), 4000},
-            {new KeyValuePair<int, int>(12, 2), 5000},
-            {new KeyValuePair<int, int>(12, 3), 6000},
+            {new KeyValuePair<int, int>(12, 0), 4000},
+            {new KeyValuePair<int, int>(12, 1), 5000},
+            {new KeyValuePair<int, int>(12, 2), 6000},
 
-            {new KeyValuePair<int, int>(13, 1), 3000},
-            {new KeyValuePair<int, int>(13, 2), 5000},
-            {new KeyValuePair<int, int>(13, 3), 7000},
+            {new KeyValuePair<int, int>(13, 0), 3000},
+            {new KeyValuePair<int, int>(13, 1), 5000},
+            {new KeyValuePair<int, int>(13, 2), 7000},
+
+            {new KeyValuePair<int, int>(15, 0), 3000},
+            {new KeyValuePair<int, int>(15, 1), 5000},
+            {new KeyValuePair<int, int>(15, 2), 7000},
+            {new KeyValuePair<int, int>(15, 3), 9000},
         };
 
         int GetModPrice(int type, int mod)
@@ -164,7 +169,8 @@ namespace mtgvrp.vehicle_manager.modding
             var manifest = VehicleInfo.Get(player.vehicle);
             foreach (var i in manifest.ModTypes)
             {
-                modList.Add(ModTypes[i]);
+                if(ModTypes.ContainsKey(i))
+                    modList.Add(ModTypes[i]);
             }
 
             API.triggerClientEvent(player, "SHOW_MODDING_GUI", API.toJson(modList.ToArray()));
