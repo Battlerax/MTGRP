@@ -180,6 +180,15 @@ namespace mtgvrp.core
 
         }
 
+        [Command("char")]
+        public void checkSender(Client sender)
+        {
+            Character c = sender.GetCharacter();
+            API.sendChatMessageToAll(c.IsCreated.ToString());
+            API.sendChatMessageToAll(PlayerManager.GetPlayerId(c).ToString());
+            API.sendChatMessageToAll(c.Id.ToString());
+
+        }
         [Command("dice", GreedyArg = true), Help.Help(HelpManager.CommandGroups.General, "Roll multiple dice.", "The number of dice")]
         public void Dice(Client player, string diceNo)
         {
