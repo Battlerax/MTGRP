@@ -67,6 +67,7 @@
 	<file src="stylesheet/css/metro-icons.css"/>
 	<file src="stylesheet/css/bootstrap.min.css"/>
 	<file src="stylesheet/js/bootstrap.min.js"/>
+	<file src="stylesheet/js/jscolor.min.js"/>
  
   <!-- Phone Files -->
   <script src="phone_manager/PhoneManager.js" type="client" lang="javascript"/>

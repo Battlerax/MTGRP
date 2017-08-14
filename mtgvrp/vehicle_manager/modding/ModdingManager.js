@@ -30,6 +30,33 @@ function callServerEvent(eventName /* Args */) {
     API.triggerServerEvent(eventName, ...args);
 }
 
+function putmod(type, id) {
+    var veh = API.getPlayerVehicle(API.getLocalPlayer());
+    API.setVehicleMod(veh, parseInt(type), parseInt(id));
+}
+
+function updateColor(type, r, g, b) {
+
+    r = Math.round(r);
+    g = Math.round(g);
+    b = Math.round(b);
+
+    var veh = API.getPlayerVehicle(API.getLocalPlayer());
+    if (type === "primarycolor") {
+        API.setVehicleCustomPrimaryColor(veh, r, g, b);
+    } else if (type === "secondarycolor") {
+        API.setVehicleCustomSecondaryColor(veh, r, g, b);
+    } else if (type === "modcolor1") {
+        API.setVehicleModColor1(veh, r, g, b);
+    } else if (type === "modcolor2") {
+        API.setVehicleModColor2(veh, r, g, b);
+    } else if (type === "tyresmoke") {
+        API.setVehicleTyreSmokeColor(veh, r, g, b);
+    } else if (type === "neoncolor") {
+        API.setVehicleTyreSmokeColor(veh, r, g, b);
+    }
+}
+
 API.onKeyUp.connect((sender, e) => {
     if (e.KeyCode == Keys.Escape && myBrowser != null) {
         API.setHudVisible(true);

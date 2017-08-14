@@ -307,6 +307,7 @@
     <Content Include="stylesheet\fonts\metro.svg" />
     <Content Include="stylesheet\js\bootstrap.js" />
     <Content Include="stylesheet\js\bootstrap.min.js" />
+    <Content Include="stylesheet\js\jscolor.min.js" />
     <Content Include="stylesheet\js\justgage.js" />
     <Content Include="stylesheet\js\metro.js" />
     <Content Include="stylesheet\js\metro.min.js" />
