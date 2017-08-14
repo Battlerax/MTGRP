@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -124,7 +125,7 @@ namespace mtgvrp.vehicle_manager.modding
             return -1;
         }
 
-        public Dictionary<int, string> ModTypes = new Dictionary<int, string>
+        public static Dictionary<int, string> ModTypes = new Dictionary<int, string>
         { 
             {0, "Spoilers"},
             {1, "Front Bumper"},
@@ -161,6 +162,50 @@ namespace mtgvrp.vehicle_manager.modding
             {67, "Colour 2"},
             {69, "Window Tint"},
         };
+
+        public const int PrimaryColorId = 100;
+        public const int SecondryColorId = 101;
+        public const int TyresSmokeColorId = 103;
+        public const int NeonColorId = 104;
+
+        public static void ClearVehicleMods(Vehicle veh)
+        {
+            foreach (var type in ModTypes.Keys)
+            {
+                API.shared.removeVehicleMod(veh.NetHandle, type);
+            }
+        }
+
+        public static void ApplyVehicleMods(Vehicle veh)
+        {
+            foreach (var mod in veh.VehMods ?? new Dictionary<int, dynamic>())
+            {
+                if (mod.Key == PrimaryColorId)
+                {
+                    var clrs = (int[]) mod.Value;
+                    API.shared.setVehicleCustomPrimaryColor(veh.NetHandle, clrs[0], clrs[1], clrs[2]);
+                }
+                else if (mod.Key == SecondryColorId)
+                {
+                    var clrs = (int[])mod.Value;
+                    API.shared.setVehicleCustomSecondaryColor(veh.NetHandle, clrs[0], clrs[1], clrs[2]);
+                }
+                else if(mod.Key == TyresSmokeColorId)
+                {
+                    var clrs = (int[])mod.Value;
+                    API.shared.setVehicleTyreSmokeColor(veh.NetHandle, clrs[0], clrs[1], clrs[2]);
+                }
+                else if(mod.Key == NeonColorId)
+                {
+                    var clrs = (int[]) mod.Value;
+                    API.shared.setVehicleNeonColor(veh.NetHandle, clrs[0], clrs[1], clrs[2]);
+                }
+                else
+                {
+                    API.shared.setVehicleMod(veh.NetHandle, mod.Key, (int)mod.Value);
+                }
+            }
+        }
 
         [Command("openmod")]
         public void GetAvailableTypes(Client player)

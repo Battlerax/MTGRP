@@ -30,6 +30,7 @@ using mtgvrp.player_manager;
 using MongoDB.Driver;
 using mtgvrp.core.Help;
 using mtgvrp.dmv;
+using mtgvrp.vehicle_manager.modding;
 using Color = mtgvrp.core.Color;
 
 namespace mtgvrp.vehicle_manager
@@ -882,6 +883,9 @@ namespace mtgvrp.vehicle_manager
             {
                 API.shared.setVehicleEnginePowerMultiplier(veh.NetHandle, 4);
             }
+
+            //Install modifications.
+            ModdingManager.ApplyVehicleMods(veh);
             return returnCode;
         }
 

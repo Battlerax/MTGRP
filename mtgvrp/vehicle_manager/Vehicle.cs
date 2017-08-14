@@ -59,7 +59,9 @@ namespace mtgvrp.vehicle_manager
         public Timer CustomRespawnTimer { get; set; }
 
         public int VehType { get; set; }
-       
+
+        public Dictionary<int, dynamic> VehMods { get; set; } = new Dictionary<int, dynamic>();
+
         [BsonIgnore]
         public Job Job { get; set; }
         public int JobId { get; set; }

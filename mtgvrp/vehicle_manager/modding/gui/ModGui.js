@@ -20,8 +20,6 @@ function addTypes(types) {
     }
     $("#modtypeSelect").append(`<li><a href="#" onclick="getColor('primarycolor', 'Primary Color');">Primary Color</a></li>`);
     $("#modtypeSelect").append(`<li><a href="#" onclick="getColor('secondarycolor', 'Secondary Color');">Secondary Color</a></li>`);
-    $("#modtypeSelect").append(`<li><a href="#" onclick="getColor('modcolor1', 'Mod Color 1');">Mod Color 1</a></li>`);
-    $("#modtypeSelect").append(`<li><a href="#" onclick="getColor('modcolor2', 'Mod Color 2');">Mod Color 2</a></li>`);
     $("#modtypeSelect").append(`<li><a href="#" onclick="getColor('tyresmoke', 'Tyre Smoke');">Tyre Smoke (VIP)</a></li>`);
     $("#modtypeSelect").append(`<li><a href="#" onclick="getColor('neoncolor', 'Neon Color');">Neon Color (VIP)</a></li>`);
 }
