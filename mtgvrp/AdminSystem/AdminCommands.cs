@@ -758,7 +758,7 @@ namespace mtgvrp.AdminSystem
             {
                 if (p.GetPlayingHours() < 4)
                 {
-                    player.sendChatMessage($"Name: {p.CharacterName} | Id: {PlayerManager.GetPlayerId(p)} | Hours: {p.GetPlayingHours()}");
+                    player.sendChatMessage($"Name: {p.CharacterName} | Id: {p.Id} | Hours: {p.GetPlayingHours()}");
                 }
             }
         }
