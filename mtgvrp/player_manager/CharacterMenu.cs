@@ -220,7 +220,7 @@ namespace mtgvrp.player_manager
                         if (character.Group != Group.None)
                         {
                             GroupManager.SendGroupMessage(player,
-                                character.CharacterName + " from your group has logged in.");
+                                character.rp_name() + " from your group has logged in.");
 
                             if (character.Group.CommandType == Group.CommandTypeLspd)
                             {

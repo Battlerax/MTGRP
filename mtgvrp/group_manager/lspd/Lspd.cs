@@ -88,7 +88,7 @@ namespace mtgvrp.group_manager.lspd
 
                         c.IsOnPoliceDuty = !c.IsOnPoliceDuty;
                         GroupManager.SendGroupMessage(player,
-                            c.CharacterName + " is now " + (c.IsOnPoliceDuty ? "on" : "off") + " police duty.");
+                            c.rp_name() + " is now " + (c.IsOnPoliceDuty ? "on" : "off") + " police duty.");
                         c.Save();
 
                         break;
@@ -143,8 +143,8 @@ namespace mtgvrp.group_manager.lspd
             }
 
             receiverCharacter.RecordCrime(character.CharacterName, new Crime(type, crimename, int.Parse(jailTime), int.Parse(fine)));
-            API.sendNotificationToPlayer(player, "You have recorded " + receiverCharacter.CharacterName + " for committing: " + crimename);
-            API.sendNotificationToPlayer(receiver, character.CharacterName + " has recorded a crime you committed: ~r~" + crimename + "~w~.");
+            API.sendNotificationToPlayer(player, "You have recorded " + receiverCharacter.rp_name() + " for committing: " + crimename);
+            API.sendNotificationToPlayer(receiver, character.rp_name() + " has recorded a crime you committed: ~r~" + crimename + "~w~.");
         }
 
         /*
@@ -201,7 +201,7 @@ namespace mtgvrp.group_manager.lspd
                 return;
             }
 
-            API.sendChatMessageToPlayer(player, "=======CRIMIMNAL RECORD FOR " + receiverCharacter.CharacterName + "=======");
+            API.sendChatMessageToPlayer(player, "=======CRIMIMNAL RECORD FOR " + receiverCharacter.rp_name() + "=======");
             foreach (var i in receiverCharacter.GetCriminalRecord())
             {
                 if(i.ActiveCrime == true)
@@ -326,7 +326,7 @@ namespace mtgvrp.group_manager.lspd
             {
                 if (c.HasActiveCriminalRecord() > 0)
                 {
-                    API.sendChatMessageToPlayer(player, c.CharacterName + " is wanted with " + c.HasActiveCriminalRecord() + " crimes.");
+                    API.sendChatMessageToPlayer(player, c.rp_name() + " is wanted with " + c.HasActiveCriminalRecord() + " crimes.");
                 }
             }
         }
@@ -395,8 +395,8 @@ namespace mtgvrp.group_manager.lspd
             receiverCharacter.IsCuffed = false;
             API.stopPlayerAnimation(receiverCharacter.Client);
 
-            API.sendNotificationToPlayer(player, "You have arrested ~b~" + receiverCharacter.CharacterName + "~w~.");
-            API.sendNotificationToPlayer(receiver, "You have been arrested by ~b~" + character.CharacterName + "~w~.");
+            API.sendNotificationToPlayer(player, "You have arrested ~b~" + receiverCharacter.rp_name() + "~w~.");
+            API.sendNotificationToPlayer(receiver, "You have been arrested by ~b~" + character.rp_name() + "~w~.");
             InventoryManager.DeleteInventoryItem(receiverCharacter, typeof(Money), fine);
             receiverCharacter.JailTimeLeft = time * 1000;
             JailControl(receiver, time);
@@ -431,8 +431,8 @@ namespace mtgvrp.group_manager.lspd
                 return;
             }
 
-            API.sendNotificationToPlayer(player, "You have released ~b~" + receiverCharacter.CharacterName + "~w~ from prison.");
-            API.sendNotificationToPlayer(receiver, "You have been released from prison by ~b~" + character.CharacterName + "~w~.");
+            API.sendNotificationToPlayer(player, "You have released ~b~" + receiverCharacter.rp_name() + "~w~ from prison.");
+            API.sendNotificationToPlayer(receiver, "You have been released from prison by ~b~" + character.rp_name() + "~w~.");
             SetFree(receiver);
 
         }
@@ -476,8 +476,8 @@ namespace mtgvrp.group_manager.lspd
             }
 
             receivercharacter.BadgeNumber = number;
-            player.sendChatMessage($"You have handed badge #{number} to {receivercharacter.CharacterName}");
-            player.sendChatMessage($"You have received badge #{number} from {character.CharacterName}");
+            player.sendChatMessage($"You have handed badge #{number} to {receivercharacter.rp_name()}");
+            player.sendChatMessage($"You have received badge #{number} from {character.rp_name()}");
             receivercharacter.Save();
         }
 
@@ -507,8 +507,8 @@ namespace mtgvrp.group_manager.lspd
                 return;
             }
 
-            ChatManager.RoleplayMessage(character, $"shows their badge to {receivercharacter.CharacterName}", ChatManager.RoleplayMe);
-            receiver.sendChatMessage($"~h~Badge:~h~ #{character.BadgeNumber} | ~h~Officer:~h~ {character.CharacterName}");
+            ChatManager.RoleplayMessage(character, $"shows their badge to {receivercharacter.rp_name()}", ChatManager.RoleplayMe);
+            receiver.sendChatMessage($"~h~Badge:~h~ #{character.BadgeNumber} | ~h~Officer:~h~ {character.rp_name()}");
         }
 
         [Command("cuff", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Handcuff a player.", new[] { "The target player ID." })]
@@ -652,7 +652,7 @@ namespace mtgvrp.group_manager.lspd
             }
 
             API.sendNotificationToPlayer(player, "~b~Backup beacon deployed~w~. Available officers have been notified.");
-            GroupManager.SendGroupMessage(player, character.CharacterName + " has deployed a backup beacon. Use /acceptbeacon to accept.");
+            GroupManager.SendGroupMessage(player, character.rp_name() + " has deployed a backup beacon. Use /acceptbeacon to accept.");
 
             foreach(var c in PlayerManager.Players) { c.BeaconSet = false; }
             character.BeaconSet = true;
@@ -766,8 +766,8 @@ namespace mtgvrp.group_manager.lspd
                 return;
             }
 
-            API.sendChatMessageToPlayer(target, character.CharacterName + " is offering to hand you a ticket. Use /acceptcopticket to accept it.");
-            API.sendChatMessageToPlayer(player, "You offer to hand " + receiverCharacter.CharacterName + " a ticket.");
+            API.sendChatMessageToPlayer(target, character.rp_name() + " is offering to hand you a ticket. Use /acceptcopticket to accept it.");
+            API.sendChatMessageToPlayer(player, "You offer to hand " + receiverCharacter.rp_name() + " a ticket.");
             receiverCharacter.SentTicketAmount = amount;
             receiverCharacter.SentTicket = true;
             character.TicketTimer = new Timer { Interval = 10000 };
@@ -796,7 +796,7 @@ namespace mtgvrp.group_manager.lspd
                 return;
             }
 
-            API.sendChatMessageToPlayer(player, receiverCharacter.CharacterName + " has ~b~ " + receiverCharacter.UnpaidTickets + "~w~ unpaid tickets.");
+            API.sendChatMessageToPlayer(player, receiverCharacter.rp_name() + " has ~b~ " + receiverCharacter.UnpaidTickets + "~w~ unpaid tickets.");
         }
 
         [Command("acceptcopticket", GreedyArg = true), Help(HelpManager.CommandGroups.General, "Accept the cop ticket.", null)]

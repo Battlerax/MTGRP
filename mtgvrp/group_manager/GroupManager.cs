@@ -172,10 +172,10 @@ namespace mtgvrp.group_manager
                     c.Save();
 
                     API.sendChatMessageToPlayer(player, Color.White,
-                        "You have uninvited " + c.CharacterName + " from your group: " + character.Group.Name);
+                        "You have uninvited " + c.rp_name() + " from your group: " + character.Group.Name);
 
                     SendGroupMessage(player,
-                        c.CharacterName + " has left the group. (Remote-uninvited by " + character.CharacterName + ")");
+                        c.rp_name() + " has left the group. (Remote-uninvited by " + character.rp_name() + ")");
                 }
             }
             else
@@ -202,10 +202,10 @@ namespace mtgvrp.group_manager
                 charToUninvite.Save();
 
                 API.sendChatMessageToPlayer(player, Color.White,
-                    "You have uninvited " + charToUninvite.CharacterName + " from your group: " + character.Group.Name);
+                    "You have uninvited " + charToUninvite.rp_name() + " from your group: " + character.Group.Name);
 
                 SendGroupMessage(player,
-                    charToUninvite.CharacterName + " has left the group. (Uninvited by " + character.CharacterName + ")");
+                    charToUninvite.rp_name() + " has left the group. (Uninvited by " + character.rp_name() + ")");
             }
         }
 
@@ -238,16 +238,16 @@ namespace mtgvrp.group_manager
                 if (oldRank > rank)
                 {
                     API.sendChatMessageToPlayer(receiver,
-                        "You have been demoted to " + member.Group.RankNames[rank - 1] + " by " + sender.CharacterName + ".");
+                        "You have been demoted to " + member.Group.RankNames[rank - 1] + " by " + sender.rp_name() + ".");
                 }
                 else
                 {
                     API.sendChatMessageToPlayer(receiver,
-                        "You have been promoted to " + member.Group.RankNames[rank - 1] + " by " + sender.CharacterName +
+                        "You have been promoted to " + member.Group.RankNames[rank - 1] + " by " + sender.rp_name() +
                         ".");
                 }
                 API.sendChatMessageToPlayer(player,
-                    "You have changed " + member.CharacterName + "'s rank to " + (rank) + " (was " + (oldRank) + ").");
+                    "You have changed " + member.rp_name() + "'s rank to " + (rank) + " (was " + (oldRank) + ").");
                 member.GroupRank = rank;
                 member.Save();
             }
@@ -333,19 +333,19 @@ namespace mtgvrp.group_manager
             if (divId != 0)
             {
                 API.sendChatMessageToPlayer(receiver, Color.White,
-                    character.CharacterName + " has added you to the " + character.Group.Divisions[divId - 1] +
+                    character.rp_name() + " has added you to the " + character.Group.Divisions[divId - 1] +
                     " division.");
 
-                API.sendChatMessageToPlayer(player, Color.White, "You have added " + receiverChar.CharacterName + " to the " + character.Group.Divisions[divId - 1] + " division.");
+                API.sendChatMessageToPlayer(player, Color.White, "You have added " + receiverChar.rp_name() + " to the " + character.Group.Divisions[divId - 1] + " division.");
             }
             else
             {
                 receiverChar.DivisionRank = 0;
                 receiverChar.Save();
                 API.sendChatMessageToPlayer(receiver, Color.White,
-                    character.CharacterName + " has removed your position in a division.");
+                    character.rp_name() + " has removed your position in a division.");
 
-                API.sendChatMessageToPlayer(player, Color.White, "You have removed " + receiverChar.CharacterName + " from a division.");
+                API.sendChatMessageToPlayer(player, Color.White, "You have removed " + receiverChar.rp_name() + " from a division.");
             }
         }
 
@@ -380,18 +380,18 @@ namespace mtgvrp.group_manager
                 if (rank > receiverChar.DivisionRank)
                 {
                     API.sendChatMessageToPlayer(receiver, Color.White,
-                        "You have been promoted in your division to rank " + rank + " by " + character.CharacterName);
+                        "You have been promoted in your division to rank " + rank + " by " + character.rp_name());
 
                     API.sendChatMessageToPlayer(player, Color.White,
-                        "You have promoted " + receiverChar.CharacterName + " in their division to rank " + rank);
+                        "You have promoted " + receiverChar.rp_name() + " in their division to rank " + rank);
                 }
                 else if (rank <= receiverChar.DivisionRank)
                 {
                     API.sendChatMessageToPlayer(receiver, Color.White,
-                        "You have been demoted in your division to rank " + rank + " by " + character.CharacterName);
+                        "You have been demoted in your division to rank " + rank + " by " + character.rp_name());
 
                     API.sendChatMessageToPlayer(player, Color.White,
-                        "You have demoted " + receiverChar.CharacterName + " in their division to rank " + rank);
+                        "You have demoted " + receiverChar.rp_name() + " in their division to rank " + rank);
                 }
 
                 receiverChar.DivisionRank = rank;
@@ -410,7 +410,7 @@ namespace mtgvrp.group_manager
             if (GroupCommandPermCheck(API.getEntityData(player.handle, "Character"), 1)){
 
                 Character character = player.GetCharacter();
-                SendGroupMessage(player, "[G][" + character.GroupRank + "] " + GetRankName(character) + " #" + character.BadgeNumber + " " + character.CharacterName + " : " + " ~w~" + message);
+                SendGroupMessage(player, "[G][" + character.GroupRank + "] " + GetRankName(character) + " #" + character.BadgeNumber + " " + character.rp_name() + " : " + " ~w~" + message);
                 LogManager.Log(LogManager.LogTypes.GroupChat, $"[Group {character.Group.Name}][" + character.GroupRank + "] " + GetRankName(character) + " " + character.CharacterName + $"[{player.socialClubName}]" + " : " + message);
             }
         }
@@ -431,7 +431,7 @@ namespace mtgvrp.group_manager
                 }
 
                 var radioMsg = "~b~[RADIO][" + character.GroupRank + "] " + GetRankName(character) + " #" + character.BadgeNumber + " " +
-                               character.CharacterName + " : " + "~w~" + message;
+                               character.rp_name() + " : " + "~w~" + message;
 
                 SendRadioMessage(player, radioMsg);
 
@@ -479,7 +479,7 @@ namespace mtgvrp.group_manager
                 API.sendChatMessageToPlayer(player, "You have joined " + inviteSender.Group.Name + ".");
 
                 SendGroupMessage(player,
-                    character.CharacterName + " has joined the group. (Invited by: " + inviteSender.CharacterName +
+                    character.rp_name() + " has joined the group. (Invited by: " + inviteSender.rp_name() +
                     ")");
                 LogManager.Log(LogManager.LogTypes.GroupInvites, $"{character.CharacterName}[{player.GetAccount().AccountName}] has joined the group {character.Group.Name}. (Invited by: {inviteSender.CharacterName}[{inviteSender.Client.GetAccount().AccountName}])");
             }
@@ -517,7 +517,7 @@ namespace mtgvrp.group_manager
                 return;
             }
 
-            SendGroupMessage(player, sender.CharacterName + " has left the group. (Quit)");
+            SendGroupMessage(player, sender.rp_name() + " has left the group. (Quit)");
 
             sender.GroupId = 0;
             sender.Group = null;
@@ -549,7 +549,7 @@ namespace mtgvrp.group_manager
             API.setEntityData(invited.handle, "GroupInvitation", sender);
 
             API.sendChatMessageToPlayer(invited, Color.Pm, "You have been invited to " + sender.Group.Name + ". Type /accept groupinvitation.");
-            API.sendChatMessageToPlayer(player, "You sent a group invitation to " + invitedchar.CharacterName + ".");
+            API.sendChatMessageToPlayer(player, "You sent a group invitation to " + invitedchar.rp_name() + ".");
             LogManager.Log(LogManager.LogTypes.GroupInvites, $"{sender.CharacterName}[{player.GetAccount().AccountName}] has invited {invitedchar.CharacterName}[{invitedchar.Client.GetAccount().AccountName}] to their group. ({sender.Group.Name})");
         }
 

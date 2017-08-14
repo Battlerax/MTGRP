@@ -361,7 +361,7 @@ namespace mtgvrp.AdminSystem
             API.sendChatMessageToPlayer(player, Color.Grey, "You have made " + leaderChar.CharacterName + " the leader of " + group.Name);
 
             GroupManager.SendGroupMessage(player,
-                leaderChar.CharacterName + " has joined the group. (Made leader by " + player.GetCharacter().CharacterName + ")");
+                leaderChar.rp_name() + " has joined the group. (Made leader by " + player.GetCharacter().rp_name() + ")");
             Log(LogTypes.GroupInvites, $"{leaderChar.CharacterName}[{leaderChar.Client.GetAccount().AccountName}] has joined the group. (Made leader by {player.GetAccount().AdminName}[{player.GetAccount().AccountName}])");
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has set {GetLogName(leaderClient)} as group loader of Group {leaderChar.Group.Name}");
@@ -627,7 +627,7 @@ namespace mtgvrp.AdminSystem
             var playerPos = API.getEntityPosition(receiver);
             API.setEntityPosition(receiver, new Vector3(playerPos.X, playerPos.Y, playerPos.Z + 5));
             API.sendChatMessageToPlayer(receiver, "You have been slapped by an admin");
-            ChatManager.NearbyMessage(receiver, 10f, $"{receiver.GetCharacter().CharacterName} has been slapped by an admin.");
+            ChatManager.NearbyMessage(receiver, 10f, $"{receiver.GetCharacter().rp_name()} has been slapped by an admin.");
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has slapped {GetLogName(receiver)}");
         }
@@ -1941,7 +1941,7 @@ namespace mtgvrp.AdminSystem
 
                     Account paccount = p.GetAccount();
 
-                    if (paccount.VipLevel > 0) { p.sendChatMessage(receiver.GetCharacter().CharacterName + " has become a level " + level + " ~y~VIP~y~!"); }
+                    if (paccount.VipLevel > 0) { p.sendChatMessage(receiver.GetCharacter().rp_name() + " has become a level " + level + " ~y~VIP~y~!"); }
                 }
             }
         }

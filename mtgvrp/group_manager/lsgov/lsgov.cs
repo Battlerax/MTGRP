@@ -74,7 +74,7 @@ namespace mtgvrp.group_manager.lsgov
 
             foreach (var receiver in PlayerManager.Players)
             {
-                API.sendChatMessageToPlayer(receiver.Client, "[Government] " + character.CharacterName + " says: " + text);
+                API.sendChatMessageToPlayer(receiver.Client, "[Government] " + character.rp_name() + " says: " + text);
             }
         }
 
