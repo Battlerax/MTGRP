@@ -885,7 +885,7 @@ namespace mtgvrp.AdminSystem
             }
 
             account.AdminDuty = false;
-            API.setPlayerNametag(player, account.AdminName + " (" + PlayerManager.GetPlayerId(character) + ")");
+            API.setPlayerNametag(player, character.CharacterName + " (" + PlayerManager.GetPlayerId(character) + ")");
             API.resetPlayerNametagColor(player);
             API.sendChatMessageToPlayer(player, "You are no longer on admin duty.");
             SendtoAllAdmins($"{account.AdminName} has gone off admin duty.");

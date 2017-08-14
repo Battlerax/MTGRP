@@ -1086,7 +1086,7 @@ namespace mtgvrp.group_manager.lspd
                 case 0:
                     WeaponManager.CreateWeapon(player, WeaponHash.StunGun, WeaponTint.Normal, false, false, true);
                     WeaponManager.CreateWeapon(player, WeaponHash.Nightstick, WeaponTint.Normal, false, false, true);
-                    WeaponManager.CreateWeapon(player, WeaponHash.Pistol, WeaponTint.LSPD, false, false, true);
+                    WeaponManager.CreateWeapon(player, WeaponHash.CombatPistol, WeaponTint.LSPD, false, false, true);
                     WeaponManager.CreateWeapon(player, WeaponHash.Flashlight, WeaponTint.Normal, false, false, true);
                     break;
                 case 1:
