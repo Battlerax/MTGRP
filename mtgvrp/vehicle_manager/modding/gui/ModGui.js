@@ -44,6 +44,8 @@ function getColor(type, name) {
 function showMods(mods) {
     var modsList = JSON.parse(mods);
     $("#modsList").empty();
+    $("#modsListGroup").css("display", "block");
+    $("#modsSelectColor").css("display", "none");
     for (var i = 0; i < modsList.length; i++) {
         $("#modsList").append(`<a href="#" class="list-group-item moditem" data-type="${modsList[i][1]}" data-mod="${modsList[i][2]}"><span class="float-left">${modsList[i][0]}</span><span class="float-right">${modsList[i][3]}</span></a>`);
     }
