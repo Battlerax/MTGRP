@@ -35,8 +35,12 @@ namespace mtgvrp.vehicle_manager.modding
                     var manifest = VehicleInfo.Get(sender.vehicle);
                     foreach (var modid in manifest.ModIds(modType))
                     {
+                        var price = GetModPrice(modType, modid);
+                        if (price == -1)
+                            continue;
+
                         var m = manifest.Mod(modType, modid);
-                        modsList.Add(new string[] {m.localizedName, modType.ToString(), modid.ToString(), GetModPrice(modType, modid).ToString("C")});
+                        modsList.Add(new string[] {m.localizedName, modType.ToString(), modid.ToString(), price.ToString("C")});
                     }
                     API.triggerClientEvent(sender, "MODDING_FILL_MODS", API.toJson(modsList.ToArray()));
                     break;
@@ -214,7 +218,11 @@ namespace mtgvrp.vehicle_manager.modding
             var manifest = VehicleInfo.Get(player.vehicle);
             foreach (var i in manifest.ModTypes)
             {
-                if(ModTypes.ContainsKey(i))
+                var price = GetModPrice(i, 0);
+                if (price == -1)
+                    continue;
+
+                if (ModTypes.ContainsKey(i))
                     modList.Add(ModTypes[i]);
             }
 
