@@ -20,7 +20,7 @@ namespace mtgvrp.drugs_manager
         public DrugTypes DrugName { get; private set; }
         public TimeSpan TimeRem { get; private set; }
         public Guid id { get;}
-        public NetHandle prop { get; private set; }
+        public NetHandle prop { get; set; }
 
         // Inv for airdrops.
         public List<IInventoryItem> Inventory { get; set; }
