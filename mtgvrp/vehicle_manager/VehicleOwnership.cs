@@ -77,7 +77,7 @@ namespace mtgvrp.vehicle_manager
                     }
 
                     API.sendChatMessageToPlayer(sender,
-                        $"Are you sure you would like to sell the ~r~{API.getVehicleDisplayName(scVeh.VehModel)}~w~ for ~r~${price}~w~ to the player ~r~{targetChar.CharacterName}~w~");
+                        $"Are you sure you would like to sell the ~r~{API.getVehicleDisplayName(scVeh.VehModel)}~w~ for ~r~${price}~w~ to the player ~r~{targetChar.rp_name()}~w~?");
                     API.sendChatMessageToPlayer(sender, "Use /confirmsellvehicle to sell.");
                     API.setEntityData(sender, "sellcar_selling", new dynamic[] {scVeh, targetChar, price});
                     break;
@@ -113,7 +113,7 @@ namespace mtgvrp.vehicle_manager
                 Vehicle veh = data[0]; Character target = data[1]; int price = data[2];
                 API.setEntityData(target.Client, "sellcar_buying", new dynamic[] {character, veh, price});
                 API.setEntityData(player, "sellcar_selling", null);
-                API.sendChatMessageToPlayer(target.Client, $"~r~{character.CharacterName}~w~ has offered to sell you a ~r~{API.getVehicleDisplayName(veh.VehModel)}~w~ for ~r~${price}~w~.");
+                API.sendChatMessageToPlayer(target.Client, $"~r~{character.rp_name()}~w~ has offered to sell you a ~r~{API.getVehicleDisplayName(veh.VehModel)}~w~ for ~r~${price}~w~.");
                 API.sendChatMessageToPlayer(target.Client, "Use /confirmbuyvehicle to buy it.");
                 API.sendChatMessageToPlayer(player, "Request sent.");
             }

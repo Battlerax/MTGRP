@@ -91,7 +91,7 @@ namespace mtgvrp.group_manager.lsnn
 
                         API.triggerClientEvent(c, "unwatch_broadcast");
                         receivercharacter.IsWatchingBroadcast = false;
-                        API.sendChatMessageToPlayer(player, "~p~" + character.CharacterName + " has stopped the broadcast.");
+                        API.sendChatMessageToPlayer(player, "~p~" + character.rp_name() + " has stopped the broadcast.");
                     }
                     
                     if (receivercharacter.HasMic == true && receivercharacter.Group.CommandType != Group.CommandTypeLsnn)
@@ -103,7 +103,7 @@ namespace mtgvrp.group_manager.lsnn
                 return;
             }
             API.sendChatMessageToPlayer(player, "Broadcast started.");
-            API.sendChatMessageToAll("~p~" + character.CharacterName + " has started a broadcast. /watchbroadcast to tune in!");
+            API.sendChatMessageToAll("~p~" + character.rp_name() + " has started a broadcast. /watchbroadcast to tune in!");
             IsBroadcasting = true;
 
         }
@@ -152,7 +152,7 @@ namespace mtgvrp.group_manager.lsnn
             CameraRotation = API.getEntityRotation(player.handle) + new Vector3(0, 0, 180);
             CameraDimension = API.getEntityDimension(player);
             API.sendNotificationToPlayer(player, "A camera has been placed on your position.");
-            ChatManager.NearbyMessage(player, 10, "~p~" + character.CharacterName + " sets down a news camera");
+            ChatManager.NearbyMessage(player, 10, "~p~" + character.rp_name() + " sets down a news camera");
             API.createObject(API.getHashKey("p_tv_cam_02_s"), CameraPosition, CameraRotation);
             character.HasCamera = false;
             CameraSet = true;
@@ -208,7 +208,7 @@ namespace mtgvrp.group_manager.lsnn
                 }
 
                 API.sendNotificationToPlayer(player, "The chopper camera has been turned ~r~off~w~.");
-                ChatManager.NearbyMessage(player, 10, "~p~" + character.CharacterName + " has turned off the chopper cam.");
+                ChatManager.NearbyMessage(player, 10, "~p~" + character.rp_name() + " has turned off the chopper cam.");
                 CameraPosition = null;
                 CameraRotation = null;
                 CameraSet = false;
@@ -223,7 +223,7 @@ namespace mtgvrp.group_manager.lsnn
             CameraPosition = API.getEntityPosition(Chopper) - new Vector3(0, 0, 3);
             CameraRotation = API.getEntityRotation(Chopper);
             API.sendNotificationToPlayer(player, "The chopper camera has been turned ~b~on~w~.");
-            ChatManager.NearbyMessage(player, 10, "~p~" + character.CharacterName + " has turned on the chopper cam.");
+            ChatManager.NearbyMessage(player, 10, "~p~" + character.rp_name() + " has turned on the chopper cam.");
             ChopperRotation = new Timer { Interval = 3000 };
             ChopperRotation.Elapsed += delegate { UpdateChopperRotation(player); };
             ChopperRotation.Start();
@@ -274,7 +274,7 @@ namespace mtgvrp.group_manager.lsnn
                         if (player.position.DistanceTo(API.getEntityPosition(v.NetHandle)) < 3f)
                         {
                             API.sendChatMessageToPlayer(player, "You grabbed a camera from the news vehicle.");
-                            ChatManager.NearbyMessage(player, 10, "~p~" + character.CharacterName + " reaches into the news vehicle, pulling out a camera.");
+                            ChatManager.NearbyMessage(player, 10, "~p~" + character.rp_name() + " reaches into the news vehicle, pulling out a camera.");
                             character.HasCamera = true;
                             return;
                         }
@@ -286,7 +286,7 @@ namespace mtgvrp.group_manager.lsnn
 
             var playerPos = API.getEntityPosition(player);
             API.sendNotificationToPlayer(player, "You are carrying a camera.", true);
-            ChatManager.NearbyMessage(player, 10, "~p~" + character.CharacterName + " picks up the news camera.");
+            ChatManager.NearbyMessage(player, 10, "~p~" + character.rp_name() + " picks up the news camera.");
             API.deleteObject(player, playerPos, API.getHashKey("p_tv_cam_02_s"));
             character.HasCamera = true;
             CameraPosition = null;
@@ -341,7 +341,7 @@ namespace mtgvrp.group_manager.lsnn
 
             InventoryManager.GiveInventoryItem(haveLottoTickets[index], new Money(), character.Group.LottoSafe);
             API.sendChatMessageToPlayer(player, "~p~ You pick a random name from the list of ticket owners..");
-            API.sendChatMessageToAll("~p~The winner of the lotto is ~y~" + haveLottoTickets[index].CharacterName + "~p~. They won " + character.Group.LottoSafe + "!");
+            API.sendChatMessageToAll("~p~The winner of the lotto is ~y~" + haveLottoTickets[index].rp_name() + "~p~. They won " + character.Group.LottoSafe + "!");
 
         }
 

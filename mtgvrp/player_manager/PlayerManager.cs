@@ -178,7 +178,7 @@ namespace mtgvrp.player_manager
                 if (character.Group != Group.None)
                 {
                     GroupManager.SendGroupMessage(player,
-                        character.CharacterName + " from your group has left the server. (" + reason + ")");
+                        character.rp_name() + " from your group has left the server. (" + reason + ")");
                 }
                 
                 account.Save();

@@ -74,7 +74,7 @@ namespace mtgvrp.core
             {
                 if (API.getEntityData(player, "MicStatus") == true)
                 {
-                    msg = "~p~ [BROADCAST] " + character.CharacterName + " : " + msg;
+                    msg = "~p~ [BROADCAST] " + character.rp_name() + " : " + msg;
                     BroadcastMessage(msg);
                     NearbyMessage(player, 30, msg);
                     e.Cancel = true;
@@ -292,7 +292,7 @@ namespace mtgvrp.core
             else if (account.TotalPlayingHours >= 1250 && account.TotalPlayingHours < 2000) rank = "MTG-Legend";
             else if (account.TotalPlayingHours >= 2000) rank = "MTG-Icon";
 
-            API.sendChatMessageToAll(Color.NewbieChat, $"[N] {rank} " + c.CharacterName + ": " + message);
+            API.sendChatMessageToAll(Color.NewbieChat, $"[N] {rank} " + c.rp_name() + ": " + message);
             if (account.AdminLevel == 0 && account.DevLevel == 0)
             {
                 c.NewbieCooldown = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds() + 60;
@@ -320,7 +320,7 @@ namespace mtgvrp.core
                 return;
             }
 
-            API.sendChatMessageToAll(Color.GlobalOoc, "[OOC] " + c.CharacterName + ": " + message);
+            API.sendChatMessageToAll(Color.GlobalOoc, "[OOC] " + c.rp_name() + ": " + message);
             LogManager.Log(LogManager.LogTypes.OOCchat, "[OOC] " + c.CharacterName +$"[{account.AccountName}]" + ": " + message);
             if (account.AdminLevel == 0)
             {
@@ -364,10 +364,10 @@ namespace mtgvrp.core
 
                 if(pAccount?.VipLevel > 0)
                 {
-                    API.sendChatMessageToPlayer(p, Color.VipChat, "[V] " + c.CharacterName + ": " + message);
+                    API.sendChatMessageToPlayer(p, Color.VipChat, "[V] " + c.rp_name() + ": " + message);
                 }
             }
-            DiscordManager.SendVIPMessage("[V] " + c.CharacterName + $"[{account.AccountName}]" + ": " + message);
+            DiscordManager.SendVIPMessage("[V] " + c.rp_name() + $"[{account.AccountName}]" + ": " + message);
         }
 
         public void OnClientEventTrigger(Client player, string eventName, params object[] arguments)

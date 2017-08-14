@@ -658,9 +658,9 @@ namespace mtgvrp.inventory
 
                 case GiveItemErrors.Success:
                     API.sendNotificationToPlayer(player,
-                        $"You have sucessfully given ~g~{amount}~w~ ~g~{sendersItem[0].LongName}~w~ to ~g~{target.CharacterName}~w~.");
+                        $"You have sucessfully given ~g~{amount}~w~ ~g~{sendersItem[0].LongName}~w~ to ~g~{target.rp_name()}~w~.");
                     API.sendNotificationToPlayer(targetClient,
-                        $"You have receieved ~g~{amount}~w~ ~g~{sendersItem[0].LongName}~w~ from ~g~{sender.CharacterName}~w~.");
+                        $"You have receieved ~g~{amount}~w~ ~g~{sendersItem[0].LongName}~w~ from ~g~{sender.rp_name()}~w~.");
 
                     //Remove from their inv.
                     DeleteInventoryItem(sender, sendersItem[0].GetType(), amount, x => x == sendersItem[0]);
