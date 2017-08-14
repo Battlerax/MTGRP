@@ -26,7 +26,7 @@ namespace mtgvrp.drugs_manager
         }
 
         public bool CanBeStored => true;
-        public int AmountOfSlots => 5;
+        public int AmountOfSlots => 1;
         public string CommandFriendlyName => "cocaine";
         public string LongName => "Cocaine";
         public int Object => -982286887;

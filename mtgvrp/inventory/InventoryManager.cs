@@ -14,6 +14,7 @@ using mtgvrp.core;
 using mtgvrp.core.Help;
 using mtgvrp.core.Items;
 using mtgvrp.dmv;
+using mtgvrp.drugs_manager;
 using mtgvrp.group_manager.lsgov;
 using mtgvrp.inventory.bags;
 using mtgvrp.job_manager.delivery;
@@ -58,6 +59,11 @@ namespace mtgvrp.inventory
             BsonClassMap.RegisterClassMap<IdentificationItem>();
             BsonClassMap.RegisterClassMap<DrivingLicenseItem>();
             BsonClassMap.RegisterClassMap<FishingRod>();
+            BsonClassMap.RegisterClassMap<Cocaine>();
+            BsonClassMap.RegisterClassMap<Heroin>();
+            BsonClassMap.RegisterClassMap<Speed>();
+            BsonClassMap.RegisterClassMap<Weed>();
+            BsonClassMap.RegisterClassMap<Meth>();
 
             BsonClassMap.RegisterClassMap<Weapon>();
             #endregion
