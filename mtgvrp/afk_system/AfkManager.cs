@@ -42,6 +42,8 @@ namespace mtgvrp.afk_system
                 var c = p.GetCharacter();
                 if (c == null)
                     return;
+                if (!c.IsCreated)
+                    return;
 
                 if (c.LastPos == p.position)
                 {
