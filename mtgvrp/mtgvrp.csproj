@@ -103,6 +103,12 @@
     <Compile Include="core\TimeManager.cs" />
     <Compile Include="dmv\DmvManager.cs" />
     <Compile Include="dmv\DrivingLicenseItem.cs" />
+    <Compile Include="drugs_manager\Cocaine.cs" />
+    <Compile Include="drugs_manager\DrugsEffectsManager.cs" />
+    <Compile Include="drugs_manager\Heroin.cs" />
+    <Compile Include="drugs_manager\Meth.cs" />
+    <Compile Include="drugs_manager\Speed.cs" />
+    <Compile Include="drugs_manager\Weed.cs" />
     <Compile Include="group_manager\lsgov\IdentificationItem.cs" />
     <Compile Include="job_manager\delivery\DeliveryManager.cs" />
     <Compile Include="job_manager\delivery\SupplyItem.cs" />
