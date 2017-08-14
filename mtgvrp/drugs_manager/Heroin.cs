@@ -20,7 +20,7 @@ namespace mtgvrp.drugs_manager
         {
             get
             {
-                var maxVal = new Dictionary<Type, int> { { typeof(Character), 100 } };
+                var maxVal = new Dictionary<Type, int> {{typeof(Character), 100}};
                 return maxVal;
             }
         }
