@@ -213,7 +213,8 @@ namespace mtgvrp.core
         {
             if(player.GetAccount().AdminLevel < 2)
             {
-                return;
+                player.GetCharacter().NewbieToggled = !player.GetCharacter().NewbieToggled;
+                player.sendChatMessage("Nebie chat toggled.");
             }
 
             NewbieStatus = !NewbieStatus;
@@ -242,7 +243,8 @@ namespace mtgvrp.core
         {
             if (player.GetAccount().AdminLevel < 2)
             {
-                return;
+                player.GetCharacter().VIPToggled = !player.GetCharacter().VIPToggled;
+                player.sendChatMessage("VIP chat toggled.");
             }
 
             VipStatus = !VipStatus;
@@ -292,7 +294,14 @@ namespace mtgvrp.core
             else if (account.TotalPlayingHours >= 1250 && account.TotalPlayingHours < 2000) rank = "MTG-Legend";
             else if (account.TotalPlayingHours >= 2000) rank = "MTG-Icon";
 
-            API.sendChatMessageToAll(Color.NewbieChat, $"[N] {rank} " + c.rp_name() + ": " + message);
+            foreach (var p in PlayerManager.Players)
+            {
+                if (p.NewbieToggled == false)
+                {
+                    API.sendChatMessageToAll(Color.NewbieChat, $"[N] {rank} " + c.rp_name() + ": " + message);
+                }
+            }
+
             if (account.AdminLevel == 0 && account.DevLevel == 0)
             {
                 c.NewbieCooldown = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds() + 60;
@@ -362,7 +371,7 @@ namespace mtgvrp.core
 
                 Account pAccount = p.GetAccount();
 
-                if(pAccount?.VipLevel > 0)
+                if(pAccount?.VipLevel > 0 && character.VIPToggled == false)
                 {
                     API.sendChatMessageToPlayer(p, Color.VipChat, "[V] " + c.rp_name() + ": " + message);
                 }

@@ -102,6 +102,8 @@ namespace mtgvrp.player_manager
         //Chat cooldowns
         [BsonIgnore]
         public long NewbieCooldown { get; set; }
+        public bool NewbieToggled { get; set; }
+        public bool VIPToggled { get; set; }
 
         [BsonIgnore]
         public long OocCooldown { get; set; }
