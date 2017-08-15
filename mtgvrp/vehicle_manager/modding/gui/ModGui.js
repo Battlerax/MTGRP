@@ -20,6 +20,12 @@ $(document).ready(function () {
         //Add to cart.
         addToCart($(this).data("name"), modType, modId, $(this).data("price"));
     });
+
+    $("#clearCartButton").click(function() {
+        $(".shoppingitem").each(function (index) {
+            resetMod($(this).data("type"), $(this), true);
+        });
+    });
 });
 
 function showVIPError() {
@@ -53,8 +59,11 @@ function addToCart(name, type, id, price) {
     calculateTotal();
 }
 
-function resetMod(type, item) {
-    $(item).parent().parent().remove();
+function resetMod(type, item, isBase = false) {
+    if (isBase)
+        $(item).remove();
+    else
+        $(item).parent().parent().remove();
     resourceCall("resetModType", parseInt(type));
     calculateTotal();
 }
