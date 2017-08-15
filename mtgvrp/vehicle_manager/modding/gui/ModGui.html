@@ -4,7 +4,6 @@
         <link href="../../../stylesheet/css/bootstrap.min.css" rel="stylesheet">
         <script src="../../../jquery.js"></script>
         <script src="../../../stylesheet/js/bootstrap.min.js"></script>
-
         <script src="../../../stylesheet/js/jscolor.min.js"></script>
         
         <script src="ModGui.js"></script>
@@ -89,6 +88,10 @@
     </div>
 
     <div id="left-gui">
+        <div class="alert alert-danger" role="alert" id="vipNeededMsg" style="position: fixed; top: 1%; right: 1%; display: none;">
+            This modification is restricated to VIP only.
+        </div>
+
         <h3>Mod Type</h3>
         <div class="dropdown">
             <button class="btn btn-default dropdown-toggle" type="button" id="modType" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -99,9 +102,10 @@
                 
             </ul>
         </div>
-        <br/>
-        <br/>
         
+        <br/>
+        <br/>
+
         <div id="modsListGroup" style="display: block;">
             <h3>Mods List: </h3>
             <div class="list-group" id="modsList">
@@ -113,7 +117,6 @@
             <h4 id="colorTitle">Test</h4>
             <input class="jscolor {onFineChange:'updateColor(this)'}" id="colorTool">
         </div>
-        
     </div>
         
     <div id="right-gui">

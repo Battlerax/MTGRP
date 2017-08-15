@@ -41,7 +41,9 @@ namespace mtgvrp.vehicle_manager.modding
                             continue;
 
                         var m = manifest.Mod(modType, modid);
-                        modsList.Add(new string[] {m.localizedName, modType.ToString(), modid.ToString(), price.ToString()});
+                            bool isVip = _vipMods.ContainsKey(modType) && (_vipMods[modType] == -1 || _vipMods[modType] == modid);
+
+                        modsList.Add(new string[] {m.localizedName, modType.ToString(), modid.ToString(), price.ToString(), isVip == true ? "true" : "false"});
                     }
                     API.triggerClientEvent(sender, "MODDING_FILL_MODS", API.toJson(modsList.ToArray()));
                     break;
@@ -119,6 +121,11 @@ namespace mtgvrp.vehicle_manager.modding
             {new KeyValuePair<int, int>(15, 1), 5000},
             {new KeyValuePair<int, int>(15, 2), 7000},
             {new KeyValuePair<int, int>(15, 3), 9000},
+        };
+
+        private static readonly Dictionary<int, int> _vipMods = new Dictionary<int, int>
+        {
+            {14, -1},
         };
 
         int GetModPrice(int type, int mod)
@@ -223,7 +230,7 @@ namespace mtgvrp.vehicle_manager.modding
         [Command("openmod")]
         public void GetAvailableTypes(Client player)
         {
-            List<string> modList = new List<string>();
+            List<string[]> modList = new List<string[]>();
             var manifest = VehicleInfo.Get(player.vehicle);
             foreach (var i in manifest.ModTypes)
             {
@@ -232,7 +239,11 @@ namespace mtgvrp.vehicle_manager.modding
                     continue;
 
                 if (ModTypes.ContainsKey(i))
-                    modList.Add(ModTypes[i]);
+                    modList.Add(new String[]
+                    {
+                        ModTypes[i],
+                        _vipMods.ContainsKey(i) ? "true" : "false"
+                    });
             }
 
             API.triggerClientEvent(player, "SHOW_MODDING_GUI", API.toJson(modList.ToArray()));

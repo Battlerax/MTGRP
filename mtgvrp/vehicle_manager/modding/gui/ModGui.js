@@ -7,6 +7,12 @@ $(document).ready(function () {
         $(".list-group-item").removeClass("active");
         $(this).addClass("active");
 
+        var test = $(this).data("vip");
+        if (test === true) {
+            showVIPError();
+            return;
+        }
+
         var modType = $(this).data("type");
         var modId = $(this).data("mod");
         resourceCall("putmod", modType, modId);
@@ -15,6 +21,14 @@ $(document).ready(function () {
         addToCart($(this).data("name"), modType, modId, $(this).data("price"));
     });
 });
+
+function showVIPError() {
+    $("#vipNeededMsg").fadeIn();
+    setTimeout(function () {
+            $("#vipNeededMsg").fadeOut();
+        },
+        5000);
+}
 
 function addToCart(name, type, id, price) {
     //If existing, replace.
@@ -57,7 +71,11 @@ function calculateTotal() {
 function addTypes(types) {
     var typesList = JSON.parse(types);
     for (var i = 0; i < typesList.length; i++) {
-        $("#modtypeSelect").append(`<li><a href="#" onclick="getModsList('${typesList[i]}');">${typesList[i]}</a></li>`);
+        var vip = "";
+        if (typesList[i][1] === "true") {
+            vip = " (VIP)";
+        }
+        $("#modtypeSelect").append(`<li><a href="#" onclick="getModsList('${typesList[i][0]}');">${typesList[i][0]}${vip}</a></li>`);
     }
     $("#modtypeSelect").append(`<li><a href="#" onclick="getColor('primarycolor', 'Primary Color');">Primary Color</a></li>`);
     $("#modtypeSelect").append(`<li><a href="#" onclick="getColor('secondarycolor', 'Secondary Color');">Secondary Color</a></li>`);
@@ -88,6 +106,10 @@ function showMods(mods) {
     $("#modsListGroup").css("display", "block");
     $("#modsSelectColor").css("display", "none");
     for (var i = 0; i < modsList.length; i++) {
-        $("#modsList").append(`<a href="#" class="list-group-item moditem" data-name="${modsList[i][0]}" data-type="${modsList[i][1]}" data-mod="${modsList[i][2]}" data-price="${modsList[i][3]}"><span class="float-left">${modsList[i][0]}</span><span class="float-right">$${modsList[i][3]}</span></a>`);
+        var vip = "";
+        if (modsList[i][4] === "true") {
+            vip = " (VIP)";
+        }
+        $("#modsList").append(`<a href="#" class="list-group-item moditem" data-name="${modsList[i][0]}" data-type="${modsList[i][1]}" data-mod="${modsList[i][2]}" data-price="${modsList[i][3]}" data-vip="${modsList[i][4]}"><span class="float-left">${modsList[i][0]}${vip}</span><span class="float-right">$${modsList[i][3]}</span></a>`);
     }
 }
