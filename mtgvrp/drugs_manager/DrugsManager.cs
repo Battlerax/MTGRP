@@ -14,13 +14,24 @@ using Newtonsoft.Json;
 
 namespace mtgvrp.drugs_manager
 {
+
+
+    // TODO: Reduce the amount of code reusage.
+    // TODO: Add Effects. (Added to Coke + Weed) Rem : Speed, Heroin and Meth.
+    // TODO: Make the whole crate thing a bit more exciting. 
+
     internal class DrugsManager : Script
     {
+
+       
         private const int ArmorMultipler = 10;
         private const int HealthMultipler = 10;
         private const int MaxArmor = 100;
         private const int MaxHealth = 100;
         public const int MaxAirDropSize = 1000;
+        private const int currentDrugSize = 1;
+
+        // Current list of all airdrops. All airdrops will be removed on server restart to prevent them clogging up.
         private List<Airdrop> _airdrops = new List<Airdrop>();
 
         public DrugsManager()
@@ -30,11 +41,14 @@ namespace mtgvrp.drugs_manager
             DebugManager.DebugMessage("[DrugsM]: Drugs have successfully booted up.");
         }
 
+
         private void DrugsManagerClient(Client sender, string eventName, params object[] arguments)
         {
             switch (eventName)
             {
                 case ("findGround"):
+
+                    // Pulls the unique ID of the airdrop, then sets it's prop to the ground.
 
                     Guid dropId = JsonConvert.DeserializeObject<Guid>((string) arguments[1]);
                     Airdrop a = FindCorrectAirdrop(dropId);
@@ -48,12 +62,12 @@ namespace mtgvrp.drugs_manager
 
         }
         
+        
 
-        // TODO: Reduce the amount of code reusage.
-        // TODO: Add Effects.
-        // TODO: Comment this code!
-        // TODO: Make the whole crate thing a bit more exciting. 
+        // All drugs and current effects. If a new drug is added, add the command here! 
 
+
+        // Process for a drug - Check their amount is a number, check they have the drug then pass it to CheckForCorrectAmount.
 
         [Command("sniffcoke", GreedyArg = true, Alias = "usecoke")]
         [Help(HelpManager.CommandGroups.General, "Sniff a line of coke.", "Amount of coke to sniff.")]
@@ -162,41 +176,12 @@ namespace mtgvrp.drugs_manager
             InventoryManager.DeleteInventoryItem(playerChar, typeof(Meth), methVal);
         }
 
-        [Command("giveAllDrug")]
-        public void giveDrug(Client sender)
-        {
-            var playerChar = sender.GetCharacter();
-            InventoryManager.GiveInventoryItem(playerChar, new Cocaine(), 10);
-            InventoryManager.GiveInventoryItem(playerChar, new Speed(), 10);
-            InventoryManager.GiveInventoryItem(playerChar, new Heroin(), 10);
-            InventoryManager.GiveInventoryItem(playerChar, new Weed(), 10);
-            InventoryManager.GiveInventoryItem(playerChar, new Meth(), 10);
 
 
-        }
+        // Used by LVL 4+ admins to drop drug crates. If a new drug is added, put it in the case list.
 
-        [Command("opencrate")]
-        public void openCrate(Client sender)
-        {
-            Airdrop closest = FindNearestAirdrop(sender);
-            if (closest != null)
-            {
-                API.sendChatMessageToAll("found crate");
-                InventoryManager.ShowInventoryManager(sender, sender.GetCharacter(), closest, "Inventory: ", "Crate: ");
-
-            }
-        }
-
-        [Command("giveAdmin")]
-        public void giveAdmin(Client sender)
-        {
-            Account a = sender.GetAccount();
-            a.AdminLevel = 8;
-        }
-
-
-        [Command("dropbox")]
-        [Help(HelpManager.CommandGroups.AdminLevel4, "Drop a box at your location.", "Type of Drug.","Amount of drug.")]
+        [Command("dropcrate")]
+        [Help(HelpManager.CommandGroups.AdminLevel4, "Drop a drug crate at your location.", "Type of Drug.","Amount of drug.")]
         public void cmd_dropbox(Client sender, String drug, String amount)
         {
             Account a = sender.GetAccount();
@@ -204,6 +189,18 @@ namespace mtgvrp.drugs_manager
 
             if (!int.TryParse(amount, out drugAmount)) return;
             if (a.AdminLevel < 4) return;
+
+            if (FindNearestAirdrop(sender, 20) != null)
+            {
+                API.sendChatMessageToPlayer(sender, "Another crate is too close.");
+                return;
+            }
+
+            if (drugAmount * currentDrugSize > MaxAirDropSize)
+            {
+                API.sendChatMessageToPlayer(sender,"You're only allowed up to " + MaxAirDropSize + " of a drug in one airdrop!");
+                return;
+            }
 
 
             switch (drug.ToLower())
@@ -249,6 +246,19 @@ namespace mtgvrp.drugs_manager
             }
         }
 
+
+        [Command("opencrate")]
+        public void openCrate(Client sender)
+        {
+            Airdrop closest = FindNearestAirdrop(sender);
+            if (closest != null)
+            {
+                InventoryManager.ShowInventoryManager(sender, sender.GetCharacter(), closest, "Inventory: ", "Crate: ");
+
+            }
+        }
+
+        // Creates the drop, adds it to the list and calls for the prop to be set on the floor.
         public void spawnDrop(Client sender, IInventoryItem drug)
         {
             Airdrop drop;
@@ -257,13 +267,16 @@ namespace mtgvrp.drugs_manager
             API.triggerClientEvent(sender, "getClientGround",API.toJson(drop.id));
         }
 
+
         public bool CheckForCorrectAmount(int value, IInventoryItem[] drug)
         {
+            // Person has the drug, and they have the correct amount.
             if (value < 1 || drug.Length < 1 || drug[0].Amount < value)
                 return false;
             return true;
         }
 
+        // DRUG EFFECTS - ADD ALL EFFECTS HERE!
 
         public void boostArmor(Client sender, int amount)
         {
@@ -280,6 +293,12 @@ namespace mtgvrp.drugs_manager
             else
                 API.setPlayerHealth(sender, API.getPlayerHealth(sender) + amount * HealthMultipler);
         }
+
+        // EFFECTS END HERE
+
+
+
+       // Airdrop helper methods.
 
         public void PlaceAirDropProp(Airdrop drop, Vector3 loc)
         {
@@ -298,6 +317,8 @@ namespace mtgvrp.drugs_manager
             return drop;
         }
 
+
+
         public Airdrop FindCorrectAirdrop(Guid id)
         {
             foreach (var a in _airdrops)
@@ -306,6 +327,29 @@ namespace mtgvrp.drugs_manager
             return null;
         }
 
+
+        // Debug commands.
+
+
+        [Command("giveAllDrug")]
+        public void giveDrug(Client sender)
+        {
+            var playerChar = sender.GetCharacter();
+            InventoryManager.GiveInventoryItem(playerChar, new Cocaine(), 10);
+            InventoryManager.GiveInventoryItem(playerChar, new Speed(), 10);
+            InventoryManager.GiveInventoryItem(playerChar, new Heroin(), 10);
+            InventoryManager.GiveInventoryItem(playerChar, new Weed(), 10);
+            InventoryManager.GiveInventoryItem(playerChar, new Meth(), 10);
+
+
+        }
+
+        [Command("giveAdmin")]
+        public void giveAdmin(Client sender)
+        {
+            Account a = sender.GetAccount();
+            a.AdminLevel = 8;
+        }
 
     }
 }
