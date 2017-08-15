@@ -1457,7 +1457,7 @@ namespace mtgvrp.AdminSystem
         }
 
         [Command("remoteaw", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel2, "Admin warps a player remotely", new[] { "Character name of player"})]
-        public void remoteprison_cmd(Client player, string charactername)
+        public void remoteaw_cmd(Client player, string charactername)
         {
             Account account = player.GetAccount();
             if (account.AdminLevel < 2)

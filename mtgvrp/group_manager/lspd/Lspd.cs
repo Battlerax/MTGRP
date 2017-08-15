@@ -417,13 +417,11 @@ namespace mtgvrp.group_manager.lspd
             Character character = player.GetCharacter();
             Character receiverCharacter = receiver.GetCharacter();
 
-            if ((character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd) && player.GetAccount().AdminLevel < 2)
+            if ((character.GroupRank < 4 || character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd) && player.GetAccount().AdminLevel < 2)
             {
-                API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                API.sendChatMessageToPlayer(player, Color.White, "You don't have permission to use this command.");
                 return;
             }
-
-            GroupManager.GroupCommandPermCheck(character, 3);
 
             if (receiverCharacter.IsJailed == false)
             {
@@ -433,6 +431,11 @@ namespace mtgvrp.group_manager.lspd
 
             API.sendNotificationToPlayer(player, "You have released ~b~" + receiverCharacter.rp_name() + "~w~ from prison.");
             API.sendNotificationToPlayer(receiver, "You have been released from prison by ~b~" + character.rp_name() + "~w~.");
+
+            if (player.GetAccount().AdminLevel >= 2)
+            {
+                AdminSystem.AdminCommands.SendtoAllAdmins($"{player.GetAccount().AdminName} has relased {receiverCharacter.CharacterName} from prison.");
+            }
             SetFree(receiver);
 
         }
