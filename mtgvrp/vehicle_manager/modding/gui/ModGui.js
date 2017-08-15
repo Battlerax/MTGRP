@@ -42,6 +42,7 @@ function addToCart(name, type, id, price) {
 function resetMod(type, item) {
     $(item).parent().parent().remove();
     resourceCall("resetModType", parseInt(type));
+    calculateTotal();
 }
 
 function calculateTotal() {
