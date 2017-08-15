@@ -22,18 +22,27 @@ namespace mtgvrp.vehicle_dealership
 
         //Could be changed to dynamic later on.
 
+        // Several vehicles are bugged - https://bug.gt-mp.net/view.php?id=230 
+        // Known bugged - Faggio, Ratbike, Chimera, Zombie Bikes + Anything in the Bikers DLC
         private readonly string[][] _motorsycles =
         {
             new[] {"Faggio", "-1842748181", "5000"},
-            new[] {"Hexer", "301427732", "30000"},
+            new[] {"Hexer", "301427732", "27500"},
             new[] {"Sanchez", "788045382", "25000"},
             new[] {"PCJ", "-909201658", "40000"},
             new[] {"Bagger", "-2140431165", "17500"},
-            new[] {"Bati", "-891462355", "160000"}  
+            new[] {"Bati", "-891462355", "160000"},
+            new[] {"Gargoyle", "741090084","65000" },
+            new[] { "Daemon", "2006142190", "60000" },
+            new[] {"Innovation", "-159126838", "45000"},
+            new[] {"Akuma", "1672195559","160000" },
+
         };
 
         private readonly string[][] _copues =
         {
+            new[] {"Panto", "-431692672", "17500" },
+            new[] {"Brioso", "1549126457","35000" },
             new[] {"Mini", "-1177863319", "35000"},
             new[] {"Blista", "1039032026", "25000"},
             new[] {"Rhapsody", "841808271", "14000"},
@@ -46,6 +55,9 @@ namespace mtgvrp.vehicle_dealership
         {
             new[] {"Benson", "2053223216", "50000"},
             new[] {"Mule", "904750859", "60000"},
+            new[] {"Speedo", "-810318068", "40000" },
+            new[] {"Burrito", "-1743316013","40000" },
+            new[] {"Surfer", "-1311240698","25000" }
         };
 
         private readonly string[][] _offroad =
@@ -55,6 +67,7 @@ namespace mtgvrp.vehicle_dealership
             new[] {"Rebel", "-2045594037", "50000"},
             new[] {"Mesa", "914654722", "45000"},
             new[] {"RancherXL", "1645267888", "55000"},
+            new[] {"DuneLoader", "1770332643","25000" }
         };
 
         private readonly string[][] _musclecars =
@@ -68,6 +81,8 @@ namespace mtgvrp.vehicle_dealership
             new[] {"VooDoo", "2006667053", "15000"},
             new[] {"Faction", "-2119578145", "35000"},
             new[] {"Futo", "2016857647", "25000"},
+            new [] { "Phoenix", "-2095439403","60000" },
+            new [] { "Rat-Loader", "-667151410","20000" }
         };
 
         private readonly string[][] _suv =
@@ -92,6 +107,8 @@ namespace mtgvrp.vehicle_dealership
             new[] { "Tyrus", "2067820283", "667000"},
             new[] { "Italigtb", "-2048333973", "700000"},
             new[] { "Nero", "1034187331", "750000"},
+            new []{ "Kuruma", "-1372848492","250000" },
+            new[] { "Penumbra", "-377465520","225000" }
         };
 
         private readonly string[][] _cycles =
@@ -100,6 +117,17 @@ namespace mtgvrp.vehicle_dealership
             new[] { "Cruiser", "448402357", "900"},
             new[] {"Fixter", "-836512833", "1000"},
             new[] { "TriBike", "-400295096", "2000"},
+        };
+
+        private readonly string[][] _sedans =
+        {
+            new[] {"Asea", "-1809822327", "30000"},
+            new[] {"Primo", "-1150599089", "35000"},
+            new[] {"Surge", "-1894894188", "45000"},
+            new[] {"Warrender", "1373123368", "45000"},
+            new[] {"Washington", "1777363799", "30000"},
+            new[] {"Stanier", "-1477580979", "60000"}
+
         };
 
 
@@ -163,6 +191,9 @@ namespace mtgvrp.vehicle_dealership
                     case 7:
                         selectedCar = _cycles[(int)arguments[1]];
                         break;
+                    case 8:
+                        selectedCar = _sedans[(int) arguments[1]];
+                        break;
                 }
 
                 #endregion
@@ -187,7 +218,6 @@ namespace mtgvrp.vehicle_dealership
                         new Vector3(-61.86055, -1117.122, 25.8629)
                     };
                     var randomPos = new Random().Next(1, spawnPoss.Length) - 1;
-
                     //Create the vehicle.
                     var theVehicle = VehicleManager.CreateVehicle(
                         (VehicleHash)Convert.ToInt32(selectedCar[1]),
@@ -220,6 +250,8 @@ namespace mtgvrp.vehicle_dealership
             }
         }
 
+   
+
         [Command("buyvehicle"), Help(HelpManager.CommandGroups.Vehicles, "Command used inside dealership to buy a vehicle.", null)]
         public void BuyVehicle(Client player)
         {
@@ -237,7 +269,7 @@ namespace mtgvrp.vehicle_dealership
             {
                 API.triggerClientEvent(player, "dealership_showbuyvehiclemenu", API.toJson(_motorsycles),
                     API.toJson(_copues), API.toJson(_trucksnvans), API.toJson(_offroad), API.toJson(_musclecars),
-                    API.toJson(_suv), API.toJson(_supercars), API.toJson(_cycles));
+                    API.toJson(_suv), API.toJson(_supercars), API.toJson(_cycles),API.toJson(_sedans));
             }
             else
                 API.sendChatMessageToPlayer(player, "You aren't near any dealership.");
