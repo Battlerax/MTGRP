@@ -28,7 +28,7 @@ namespace mtgvrp.drugs_manager
         private const int HealthMultipler = 10;
         private const int MaxArmor = 100;
         private const int MaxHealth = 100;
-        public const int MaxAirDropSize = 1000;
+        public const int MaxAirDropSize = 1000; 
         private const int currentDrugSize = 1;
 
         // Current list of all airdrops. All airdrops will be removed on server restart to prevent them clogging up.
@@ -178,7 +178,7 @@ namespace mtgvrp.drugs_manager
 
 
 
-        // Used by LVL 4+ admins to drop drug crates. If a new drug is added, put it in the case list.
+        // Used by LVL 5+ admins to drop drug crates. If a new drug is added, put it in the case list.
 
         [Command("dropcrate")]
         [Help(HelpManager.CommandGroups.AdminLevel4, "Drop a drug crate at your location.", "Type of Drug.","Amount of drug.")]
@@ -188,7 +188,7 @@ namespace mtgvrp.drugs_manager
             int drugAmount;
 
             if (!int.TryParse(amount, out drugAmount)) return;
-            if (a.AdminLevel < 4) return;
+            if (a.AdminLevel < 5) return;
 
             if (FindNearestAirdrop(sender, 20) != null)
             {
