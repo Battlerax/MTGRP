@@ -49,6 +49,21 @@ function putmod(type, id) {
     API.setVehicleMod(veh, parseInt(type), parseInt(id));
 }
 
+function updateCurrentColor(type) {
+    var clr;
+    var veh = API.getPlayerVehicle(API.getLocalPlayer());
+    if (type === "primarycolor") {
+        clr = API.getVehicleCustomPrimaryColor(veh);
+    } else if (type === "secondarycolor") {
+        clr = API.getVehicleCustomSecondaryColor(veh);
+    } else if (type === "tyresmoke") {
+        return;
+    } else if (type === "neoncolor") {
+        clr = API.getVehicleNeonColor(veh);
+    }
+    myBrowser.call("updateColorPicker", Math.round(clr.R), Math.round(clr.G), Math.round(clr.B));
+}
+
 function updateColor(type, r, g, b) {
 
     r = Math.round(r);
@@ -63,7 +78,7 @@ function updateColor(type, r, g, b) {
     } else if (type === "tyresmoke") {
         API.setVehicleTyreSmokeColor(veh, r, g, b);
     } else if (type === "neoncolor") {
-        API.setVehicleTyreSmokeColor(veh, r, g, b);
+        API.setVehicleNeonColor(veh, r, g, b);
     }
 }
 

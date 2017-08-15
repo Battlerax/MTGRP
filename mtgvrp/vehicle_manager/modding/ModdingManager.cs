@@ -193,6 +193,10 @@ namespace mtgvrp.vehicle_manager.modding
             foreach (var type in ModTypes.Keys)
             {
                 API.shared.removeVehicleMod(veh.NetHandle, type);
+                GrandTheftMultiplayer.Server.API.API.shared.setVehicleCustomPrimaryColor(veh.NetHandle, 0, 0, 0);
+                GrandTheftMultiplayer.Server.API.API.shared.setVehicleCustomSecondaryColor(veh.NetHandle, 0, 0, 0);
+                GrandTheftMultiplayer.Server.API.API.shared.setVehicleTyreSmokeColor(veh.NetHandle, 0, 0, 0);
+                GrandTheftMultiplayer.Server.API.API.shared.setVehicleNeonColor(veh.NetHandle, 0, 0, 0);
             }
         }
 

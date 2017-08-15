@@ -97,7 +97,12 @@ function getColor(type, name) {
     $("#modsListGroup").css("display", "none");
     $("#modsSelectColor").css("display", "block");
     $("#colorTitle").text(name);
+    resourceCall("updateCurrentColor", type);
     curColorType = type;
+}
+
+function updateColorPicker(r, g, b) {
+    document.getElementById('colorTool').jscolor.fromRGB(r, g, b);
 }
 
 function showMods(mods) {
