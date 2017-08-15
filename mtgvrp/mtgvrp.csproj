@@ -314,6 +314,7 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="inventory\InventoryManager.js" />
+    <TypeScriptCompile Include="drugs_manager\DrugsClient.ts" />
     <TypeScriptCompile Include="group_manager\lspd\LspdLocker.ts" />
     <TypeScriptCompile Include="job_manager\fisher\Fisher.ts" />
     <TypeScriptCompile Include="job_manager\JobManager.ts" />

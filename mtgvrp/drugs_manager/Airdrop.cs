@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using GrandTheftMultiplayer.Server.API;
 using GrandTheftMultiplayer.Server.Elements;
 using GrandTheftMultiplayer.Server.Managers;
@@ -21,20 +22,21 @@ namespace mtgvrp.drugs_manager
         public TimeSpan TimeRem { get; private set; }
         public Guid id { get;}
         public NetHandle prop { get; set; }
+        public Stopwatch timeSpent { get; set; }
 
         // Inv for airdrops.
         public List<IInventoryItem> Inventory { get; set; }
         public int MaxInvStorage => DrugsManager.MaxAirDropSize;
 
-        public Airdrop(DrugTypes drugName, int amount, Vector3 loc)
+        public Airdrop(IInventoryItem drug, Vector3 loc)
         {
-            this.Amount = amount;
             this.Loc = loc;
             IsOpen = false;
             id = Guid.NewGuid();
-            this.DrugName = drugName;
-
-
+            TimeRem = TimeSpan.FromMinutes(1.5);
+            timeSpent = new Stopwatch();
+            Inventory = new List<IInventoryItem>();
+            Inventory.Add(drug);
         }
 
     }

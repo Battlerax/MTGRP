@@ -33,6 +33,7 @@
 	
   
   <!-- DRUGS -->
+  <script src="drugs_manager/DrugsClient.js" type="client" lang="javascript"/>
   
 	<!-- MDC -->
 	<script src="group_manager/lspd/MDC/MDC.js" type="client" lang="javascript"/>

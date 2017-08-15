@@ -1,10 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using GrandTheftMultiplayer.Server.API;
+using GrandTheftMultiplayer.Server.Constant;
 using GrandTheftMultiplayer.Server.Elements;
 using GrandTheftMultiplayer.Server.Managers;
+using GrandTheftMultiplayer.Shared.Math;
 using mtgvrp.core;
 using mtgvrp.core.Help;
 using mtgvrp.inventory;
+using mtgvrp.player_manager;
+using Newtonsoft.Json;
 
 namespace mtgvrp.drugs_manager
 {
@@ -15,15 +21,38 @@ namespace mtgvrp.drugs_manager
         private const int MaxArmor = 100;
         private const int MaxHealth = 100;
         public const int MaxAirDropSize = 1000;
+        private List<Airdrop> _airdrops = new List<Airdrop>();
 
         public DrugsManager()
         {
             DebugManager.DebugMessage("[DrugsM]: Drugs are booting up.");
+            API.onClientEventTrigger += DrugsManagerClient;
             DebugManager.DebugMessage("[DrugsM]: Drugs have successfully booted up.");
         }
 
+        private void DrugsManagerClient(Client sender, string eventName, params object[] arguments)
+        {
+            switch (eventName)
+            {
+                case ("findGround"):
+
+                    Guid dropId = JsonConvert.DeserializeObject<Guid>((string) arguments[1]);
+                    Airdrop a = FindCorrectAirdrop(dropId);
+                    Vector3 corrPosition = API.getEntityPosition(sender);
+                    corrPosition.Z = (float) arguments[0];
+                    PlaceAirDropProp(a,corrPosition);
+                    
+
+                    break;
+            }
+
+        }
+        
+
         // TODO: Reduce the amount of code reusage.
         // TODO: Add Effects.
+        // TODO: Comment this code!
+        // TODO: Make the whole crate thing a bit more exciting. 
 
 
         [Command("sniffcoke", GreedyArg = true, Alias = "usecoke")]
@@ -146,6 +175,87 @@ namespace mtgvrp.drugs_manager
 
         }
 
+        [Command("opencrate")]
+        public void openCrate(Client sender)
+        {
+            Airdrop closest = FindNearestAirdrop(sender);
+            if (closest != null)
+            {
+                API.sendChatMessageToAll("found crate");
+                InventoryManager.ShowInventoryManager(sender, sender.GetCharacter(), closest, "Inventory: ", "Crate: ");
+
+            }
+        }
+
+        [Command("giveAdmin")]
+        public void giveAdmin(Client sender)
+        {
+            Account a = sender.GetAccount();
+            a.AdminLevel = 8;
+        }
+
+
+        [Command("dropbox")]
+        [Help(HelpManager.CommandGroups.AdminLevel4, "Drop a box at your location.", "Type of Drug.","Amount of drug.")]
+        public void cmd_dropbox(Client sender, String drug, String amount)
+        {
+            Account a = sender.GetAccount();
+            int drugAmount;
+
+            if (!int.TryParse(amount, out drugAmount)) return;
+            if (a.AdminLevel < 4) return;
+
+
+            switch (drug.ToLower())
+            {
+                case "weed":
+                    IInventoryItem weed = new Weed();
+                    weed.Amount = drugAmount;
+                    spawnDrop(sender, weed);
+                    break;
+
+                case "coke":
+                    IInventoryItem cocaine = new Cocaine();
+                    cocaine.Amount = drugAmount;
+                    spawnDrop(sender,cocaine);
+
+                    break;
+
+                case "meth":
+                    IInventoryItem meth = new Meth();
+                    meth.Amount = drugAmount;
+                    spawnDrop(sender,meth);
+                    break;
+
+                case "heroin":
+                    IInventoryItem heroin = new Heroin();
+                    heroin.Amount = drugAmount;
+                    spawnDrop(sender,heroin);
+          
+                    break;
+
+                case "speed":
+                    IInventoryItem speed = new Speed();
+                    speed.Amount = drugAmount;
+                    spawnDrop(sender,speed);
+
+                    break;
+
+                default:
+                    API.sendChatMessageToPlayer(sender,"That's an incorrect drug name.");
+                    return;
+
+                
+            }
+        }
+
+        public void spawnDrop(Client sender, IInventoryItem drug)
+        {
+            Airdrop drop;
+            drop = new Airdrop(drug, API.getEntityPosition(sender));
+            _airdrops.Add(drop);
+            API.triggerClientEvent(sender, "getClientGround",API.toJson(drop.id));
+        }
 
         public bool CheckForCorrectAmount(int value, IInventoryItem[] drug)
         {
@@ -166,9 +276,36 @@ namespace mtgvrp.drugs_manager
         public void boostHealth(Client sender, int amount)
         {
             if (API.getPlayerHealth(sender) + amount * HealthMultipler > MaxHealth)
-                API.setPlayerArmor(sender, MaxHealth);
+                API.setPlayerHealth(sender, MaxHealth);
             else
                 API.setPlayerHealth(sender, API.getPlayerHealth(sender) + amount * HealthMultipler);
         }
+
+        public void PlaceAirDropProp(Airdrop drop, Vector3 loc)
+        {
+            drop.prop = API.createObject(1885839156, drop.Loc, new Vector3());
+        }
+
+        private Airdrop FindNearestAirdrop(Client sender, float bound = 5)
+        {
+            Airdrop drop = null;
+            foreach (var a in _airdrops)
+            {
+                var dist = a.Loc.DistanceTo(API.getEntityPosition(sender));
+                if (dist < bound)
+                    drop = a;
+            }
+            return drop;
+        }
+
+        public Airdrop FindCorrectAirdrop(Guid id)
+        {
+            foreach (var a in _airdrops)
+                if (a.id == id)
+                    return a;
+            return null;
+        }
+
+
     }
 }
