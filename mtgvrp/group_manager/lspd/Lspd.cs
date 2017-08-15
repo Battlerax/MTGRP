@@ -398,7 +398,7 @@ namespace mtgvrp.group_manager.lspd
             API.sendNotificationToPlayer(player, "You have arrested ~b~" + receiverCharacter.rp_name() + "~w~.");
             API.sendNotificationToPlayer(receiver, "You have been arrested by ~b~" + character.rp_name() + "~w~.");
             InventoryManager.DeleteInventoryItem(receiverCharacter, typeof(Money), fine);
-            receiverCharacter.JailTimeLeft = time * 1000;
+            receiverCharacter.JailTimeLeft = time * 1000 * 60;
             JailControl(receiver, time);
 
         }
