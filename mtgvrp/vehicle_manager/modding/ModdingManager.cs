@@ -40,7 +40,7 @@ namespace mtgvrp.vehicle_manager.modding
                             continue;
 
                         var m = manifest.Mod(modType, modid);
-                        modsList.Add(new string[] {m.localizedName, modType.ToString(), modid.ToString(), price.ToString("C")});
+                        modsList.Add(new string[] {m.localizedName, modType.ToString(), modid.ToString(), price.ToString()});
                     }
                     API.triggerClientEvent(sender, "MODDING_FILL_MODS", API.toJson(modsList.ToArray()));
                     break;

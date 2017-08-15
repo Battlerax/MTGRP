@@ -99,15 +99,11 @@
             <div class="list-group" id="modsList">
 
             </div>
-            <button type="button" class="btn btn-primary" id="addModToCart">Add To Shopping Cart</button>
         </div>
         
         <div id="modsSelectColor" style="display: none">
             <h4 id="colorTitle">Test</h4>
             <input class="jscolor {onFineChange:'updateColor(this)'}" id="colorTool">
-            <br/>
-            <br/>
-            <button type="button" class="btn btn-primary">Add To Shopping Cart</button>
         </div>
         
     </div>
@@ -117,7 +113,7 @@
         <div class="list-group" id="shoppingCart">
 
         </div>
-        <h4>Total: <strong>$300</strong></h4>
+        <h4>Total: <strong id="totalPrice">$0</strong></h4>
         <button type="button" class="btn btn-primary">Purchase Items</button>
         <button type="button" class="btn btn-info">Reset Vehicle Mods To Cart</button>
         <button type="button" class="btn btn-danger" style="margin-top: 5px;">Clear Cart</button>
