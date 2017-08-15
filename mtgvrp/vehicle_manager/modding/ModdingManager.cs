@@ -12,6 +12,7 @@ using GrandTheftMultiplayer.Shared;
 using VehicleInfoLoader;
 using VehicleInfoLoader.Data;
 using GrandTheftMultiplayer.Server.Managers;
+using mtgvrp.core;
 
 namespace mtgvrp.vehicle_manager.modding
 {
@@ -45,6 +46,14 @@ namespace mtgvrp.vehicle_manager.modding
                     API.triggerClientEvent(sender, "MODDING_FILL_MODS", API.toJson(modsList.ToArray()));
                     break;
                 }
+
+                case "MODDING_EXITMENU":
+                {
+                    var vehicle = sender.vehicle;
+                    ClearVehicleMods(vehicle.handle.GetVehicle());
+                    ApplyVehicleMods(vehicle.handle.GetVehicle());
+                    break;
+                }
             }
         }
 
@@ -69,7 +78,7 @@ namespace mtgvrp.vehicle_manager.modding
             {11, 0},
             {12, 0},
             {13, 0},
-            {14, 500}, //VIP
+            {14, 500},
             {15, 0},
             {16, -1},
             {18, 0},

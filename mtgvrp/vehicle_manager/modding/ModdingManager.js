@@ -73,5 +73,6 @@ API.onKeyUp.connect((sender, e) => {
         API.showCursor(false);
         API.destroyCefBrowser(myBrowser);
         myBrowser = null;
+        API.triggerServerEvent("MODDING_EXITMENU");
     }
 });
