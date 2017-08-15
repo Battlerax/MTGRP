@@ -1,6 +1,8 @@
 ﻿var myBrowser = null;
 var Args = null;
 
+var curMods = [];
+
 API.onServerEventTrigger.connect((event, args) => {
     if (event === "SHOW_MODDING_GUI") {
         var res = API.getScreenResolution();
@@ -23,6 +25,18 @@ API.onServerEventTrigger.connect((event, args) => {
 
 function loaded() {
     myBrowser.call("addTypes", Args[0]);
+
+    //Save current mods.
+    var veh = API.getPlayerVehicle(API.getLocalPlayer());
+    for (var i = 0; i < 70; i++) {
+        curMods[i] = API.getVehicleMod(veh, i);
+    }
+}
+
+function resetModType(type) {
+    var veh = API.getPlayerVehicle(API.getLocalPlayer());
+    API.removeVehicleMod(veh, type);
+    API.setVehicleMod(veh, type, curMods[type]);
 }
 
 function callServerEvent(eventName /* Args */) {

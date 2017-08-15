@@ -31,9 +31,17 @@ function addToCart(name, type, id, price) {
     //Else add
     $("#shoppingCart").append(`<a href="#" class="list-group-item moditem shoppingitem" data-type="${type}" data-mod="${id}" data-price="${price}">
 <span class="float-left"><span class="shoppingName">${name}</span></span>
-<span class="float-right">$<span class="shoppingPrice">${price}</span><button type="button" class="btn btn-danger btn-xs" style="margin-left: 5px;">X</button></span>
+<span class="float-right">
+    $<span class="shoppingPrice">${price}</span>
+    <button type="button" class="btn btn-danger btn-xs" style="margin-left: 5px;" onclick="resetMod(${type}, this);">X</button>
+</span>
 </a>`);
     calculateTotal();
+}
+
+function resetMod(type, item) {
+    $(item).parent().parent().remove();
+    resourceCall("resetModType", parseInt(type));
 }
 
 function calculateTotal() {
