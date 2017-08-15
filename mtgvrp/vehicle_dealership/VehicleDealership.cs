@@ -211,6 +211,9 @@ namespace mtgvrp.vehicle_dealership
                         $"You have sucessfully bought the ~g~{selectedCar[0]}~w~ for ${selectedCar[2]}.");
                     API.sendChatMessageToPlayer(sender, "Use /myvehicles to manage it.");
 
+                    //Log it.
+                    LogManager.Log(LogManager.LogTypes.Stats, $"[Vehicle Dealership] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a(n) {API.getVehicleDisplayName(theVehicle.VehModel)} for ${selectedCar[2]}.");
+
                     //Exit.
                     API.triggerClientEvent(sender, "dealership_exitdealermenu");
                 }
