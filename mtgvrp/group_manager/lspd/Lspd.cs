@@ -1186,6 +1186,7 @@ namespace mtgvrp.group_manager.lspd
             API.shared.setEntityPosition(player, FreeJail);
             character.JailTimer.Stop();
             character.JailTimeLeftTimer.Stop();
+            API.shared.setEntityDimension(character.Client, 0);
 
         }
     }

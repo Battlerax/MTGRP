@@ -1424,6 +1424,7 @@ namespace mtgvrp.AdminSystem
             var receiver = PlayerManager.ParseClient(id);
 
             receiver.GetCharacter().JailTimeLeft = int.Parse(time) * 1000 * 60;
+            API.shared.setEntityDimension(receiver, receiver.GetCharacter().Id + 1000);
             Lspd.JailControl(receiver, int.Parse(time));
             API.sendChatMessageToPlayer(player,
                 "You have jailed " + receiver.nametag + " for " + time + " minutes. Reason: " + reason);
@@ -1453,6 +1454,24 @@ namespace mtgvrp.AdminSystem
             KickPlayer(receiver, reason);
             SendtoAllAdmins(account.AdminName + " has kicked " + receiver.nametag + " from the server. Reason: " +
                             reason);
+        }
+
+        [Command("remoteaw", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel2, "Admin warps a player remotely", new[] { "Character name of player"})]
+        public void remoteprison_cmd(Client player, string charactername)
+        {
+            Account account = player.GetAccount();
+            if (account.AdminLevel < 2)
+                return;
+
+            var receiver = DatabaseManager.CharacterTable.Find(x => x.CharacterName == charactername).SingleOrDefault();
+            if (receiver == null)
+                return;
+
+            receiver.LastPos = new Vector3(429.8345, -672.5932, 29.05217);
+            player.sendChatMessage("You have remote admin warped " + receiver.CharacterName + " to newbie spawn.");
+            account.AdminActions++;
+            Log(LogTypes.AdminActions,
+                $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has remote warped {receiver.CharacterName}.");
         }
 
         [Command("remoteprison", GreedyArg = true),
