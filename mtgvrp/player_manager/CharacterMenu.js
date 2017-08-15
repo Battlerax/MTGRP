@@ -25,6 +25,8 @@ var Component = (function () {
     return Component;
 }());
 
+var hair_list = new List(String);
+var hair_ids_list = new List(String);
 var legs_list = [];
 var shoes_list = [];
 var access_list = [];
@@ -89,6 +91,18 @@ API.onServerEventTrigger.connect(function (eventName, args) {
     }
     else if (eventName == "initialize_hair") {
         MAX_HAIR_STYLE = args[0];
+        hair_list = new List(String);
+        hair_ids_list = new List(String);
+        var hair_array = args[1].split(",");
+        var hair_ids_array = args[2].split(",");
+        for (var i = 0; i < hair_array.length; i++)
+        {
+            hair_list.Add(hair_array[i]);
+        }
+        for(var i = 0; i < hair_ids_array.length; i++)
+        {
+            hair_ids_list.Add(hair_ids_array[i]);
+        }
     }
     else if (eventName == "initialize_components") {
        
@@ -209,6 +223,7 @@ function next_character_creation_step(player, step) {
 
     switch (step) {
         case 0: {
+            gender = 0;
             menu_pool = API.getMenuPool();
 
 	        API.sendChatMessage("~g~Welcome to character creation! Let's begin by choosing your gender and your parents!");
@@ -442,9 +457,9 @@ function next_character_creation_step(player, step) {
             var sundamage_list = new List(String);
             var moles_freckles_list = new List(String);
 
-            for (var i = 0; i < MAX_HAIR_STYLE; i++) {
+            /*for (var i = 0; i < MAX_HAIR_STYLE; i++) {
                 hair_style_list.Add((i + 1).toString());
-            }
+            }*/
             for (var i = 0; i < MAX_HAIR_COLORS; i++) {
                 hair_color_list.Add((i + 1).toString());
             }
@@ -497,7 +512,7 @@ function next_character_creation_step(player, step) {
                 moles_freckles_list.Add((i + 1).toString());
             }
 
-            var hair_style_menu_item = API.createListItem("Hair Style", "Select a hair style.", hair_style_list, 0);
+            var hair_style_menu_item = API.createListItem("Hair Style", "Select a hair style.", hair_list, 0);
             var hair_color_menu_item = API.createListItem("Hair Color", "Select a hair color.", hair_color_list, 0);
             var blemishes_menu_item = API.createListItem("Blemishes", "Select any blemishes style.", blemishes_list, 0);
             var eyebrow_menu_item = API.createListItem("Eyebrows", "Select an eyebrow style", eyebrow_list, 0);
@@ -550,7 +565,7 @@ function next_character_creation_step(player, step) {
                 var playerHandle = API.getLocalPlayer();
                 switch (list.Text) {
                     case "Hair Style":
-                        hair_style = new_index;
+                        hair_style = parseInt(hair_ids_list[new_index]);
                         API.setPlayerClothes(playerHandle, 2, hair_style, 0);
                         break;
                     case "Hair Color":
