@@ -129,6 +129,7 @@
   <script src="vehicle_manager/modding/ModdingManager.js" type="client" lang="javascript"/>  
   <file src="vehicle_manager/modding/gui/ModGui.html"/>
   <file src="vehicle_manager/modding/gui/ModGui.js"/>
+  <file src="vehicle_manager/modding/gui/LSC.png"/>
   
   <file src="jquery.js" />
 </meta>

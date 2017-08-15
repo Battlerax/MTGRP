@@ -318,6 +318,7 @@
     <Content Include="vehicle_dealership\vipdealership.js" />
     <Content Include="vehicle_dealership\vehicledealer.js" />
     <Content Include="VehicleInfo.dll" />
+    <Content Include="vehicle_manager\modding\gui\LSC.png" />
     <Content Include="vehicle_manager\modding\gui\ModGui.html" />
     <Content Include="vehicle_manager\modding\gui\ModGui.js" />
     <Content Include="vehicle_manager\modding\ModdingManager.js" />
