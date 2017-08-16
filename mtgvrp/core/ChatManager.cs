@@ -208,13 +208,30 @@ namespace mtgvrp.core
 
         }
 
+        [Command("togn"), Help.Help(HelpManager.CommandGroups.General, "Used to toggle newbie chat on and off.", null)]
+        public void togn_cmd(Client player)
+        {
+            var character = player.GetCharacter();
+
+            character.NewbieToggled = !character.NewbieToggled;
+            player.sendChatMessage("Newbie chat turned " + ((character.NewbieToggled == true) ? ("on") : ("off")) + ".");
+        }
+
+        [Command("togv"), Help.Help(HelpManager.CommandGroups.General, "Used to toggle VIP chat on and off.", null)]
+        public void togv_cmd(Client player)
+        {
+            var character = player.GetCharacter();
+
+            character.VIPToggled = !character.VIPToggled;
+            player.sendChatMessage("VIP chat turned " + ((character.VIPToggled == true) ? ("on") : ("off")) + ".");
+        }
+
         [Command("togglenewbie"), Help.Help(HelpManager.CommandGroups.AdminLevel2, "Used to toggle newbie chat on and off.", null)]
         public void togglenewbie_cmd(Client player)
         {
             if(player.GetAccount().AdminLevel < 2)
             {
-                player.GetCharacter().NewbieToggled = !player.GetCharacter().NewbieToggled;
-                player.sendChatMessage("Nebie chat toggled.");
+                return;
             }
 
             NewbieStatus = !NewbieStatus;
@@ -243,8 +260,7 @@ namespace mtgvrp.core
         {
             if (player.GetAccount().AdminLevel < 2)
             {
-                player.GetCharacter().VIPToggled = !player.GetCharacter().VIPToggled;
-                player.sendChatMessage("VIP chat toggled.");
+                return;
             }
 
             VipStatus = !VipStatus;
