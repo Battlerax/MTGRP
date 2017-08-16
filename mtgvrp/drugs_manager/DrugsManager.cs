@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Timers;
 using GrandTheftMultiplayer.Server.API;
 using GrandTheftMultiplayer.Server.Constant;
 using GrandTheftMultiplayer.Server.Elements;
@@ -17,19 +18,28 @@ namespace mtgvrp.drugs_manager
 
 
     // TODO: Reduce the amount of code reusage.
-    // TODO: Add Effects. (Added to Coke + Weed) Rem : Speed, Heroin and Meth.
-    // TODO: Make the whole crate thing a bit more exciting. 
+    // TODO: Add Effects. (Added to Coke + Weed,Speed) Rem : Heroin and Meth.
+    // TODO: Make the whole crate thing a bit more exciting. (Added crowbar)
+    // TODO: Improve crowbar mechanics. (Cooldown if player is unable to crack open the crate.)
 
     internal class DrugsManager : Script
     {
 
        
-        private const int ArmorMultipler = 10;
-        private const int HealthMultipler = 10;
+        private const int ArmorMultipler = 5;
+        private const int HealthMultipler = 5;
+        private const int TempHealthMultipler = 25;
+
         private const int MaxArmor = 100;
         private const int MaxHealth = 100;
+
         public const int MaxAirDropSize = 1000; 
-        private const int currentDrugSize = 1;
+
+        private const int CurrentDrugSize = 1;
+        private const double TempTime = 0.5;
+
+        private readonly Timer lowerTempVals = new Timer(ConvertMinToMilli(TempTime));
+
 
         // Current list of all airdrops. All airdrops will be removed on server restart to prevent them clogging up.
         private List<Airdrop> _airdrops = new List<Airdrop>();
@@ -38,9 +48,48 @@ namespace mtgvrp.drugs_manager
         {
             DebugManager.DebugMessage("[DrugsM]: Drugs are booting up.");
             API.onClientEventTrigger += DrugsManagerClient;
+            API.onResourceStart += startTimer;
             DebugManager.DebugMessage("[DrugsM]: Drugs have successfully booted up.");
         }
 
+        private void startTimer()
+        {
+            lowerTempVals.Elapsed += reducePlayerTempValues;
+            lowerTempVals.Enabled = true;
+        }
+
+        private void reducePlayerTempValues(object sender, ElapsedEventArgs e)
+        {
+            foreach (Client c in API.getAllPlayers())
+            {
+                if(c == null) return;
+
+                Character playerChar = c.GetCharacter();
+                if (playerChar == null) return;
+
+               
+                if (playerChar.TempHealth > 0)
+                {
+                    if (playerChar.TempHealth < TempHealthMultipler)
+                    {
+                        int amountToTake = TempHealthMultipler - playerChar.TempHealth;
+                        int playerRemHealth = API.getPlayerHealth(c) - amountToTake;
+
+                        if (playerRemHealth <= 0)
+                        {
+                            API.setPlayerHealth(c, 1);
+                            playerChar.TempHealth = 0;
+                            return;
+                        }
+                        API.setPlayerHealth(c, API.getPlayerHealth(c) - amountToTake);
+                        playerChar.TempHealth = 0;
+                        return;
+                    }
+                    API.setPlayerHealth(c, API.getPlayerHealth(c) - TempHealthMultipler);
+                    playerChar.TempHealth = playerChar.TempHealth - TempHealthMultipler;
+                }
+            }
+        }
 
         private void DrugsManagerClient(Client sender, string eventName, params object[] arguments)
         {
@@ -55,6 +104,11 @@ namespace mtgvrp.drugs_manager
                     Vector3 corrPosition = API.getEntityPosition(sender);
                     corrPosition.Z = (float) arguments[0];
                     PlaceAirDropProp(a,corrPosition);
+                    // Just in case, API call appears not to work correctly from time to time...
+                    API.sendNativeToAllPlayers(Hash.PLACE_OBJECT_ON_GROUND_PROPERLY,a.prop);
+                    Vector3 markerPoint = API.getEntityPosition(sender);
+                    a.marker = new MarkerZone(new Vector3(markerPoint.X,markerPoint.Y,markerPoint.Z+1), new Vector3()) { TextLabelText = "Drugs Crate - Locked"  };
+                    a.marker.Create();
                     
 
                     break;
@@ -129,6 +183,7 @@ namespace mtgvrp.drugs_manager
                 return;
             }
 
+            tempBoostHealth(sender,speedVal);
             ChatManager.RoleplayMessage(playerChar, "has took some pills of speed.", ChatManager.RoleplayMe);
 
             API.sendChatMessageToPlayer(sender, "You took " + speedVal + " pills of speed.");
@@ -196,7 +251,7 @@ namespace mtgvrp.drugs_manager
                 return;
             }
 
-            if (drugAmount * currentDrugSize > MaxAirDropSize)
+            if (drugAmount * CurrentDrugSize > MaxAirDropSize)
             {
                 API.sendChatMessageToPlayer(sender,"You're only allowed up to " + MaxAirDropSize + " of a drug in one airdrop!");
                 return;
@@ -251,12 +306,53 @@ namespace mtgvrp.drugs_manager
         public void openCrate(Client sender)
         {
             Airdrop closest = FindNearestAirdrop(sender);
+            Character c = sender.GetCharacter();
             if (closest != null)
             {
+                if (!closest.IsOpen)
+                {
+                    ChatManager.RoleplayMessage(c,"attempts to open the crate, but was unable to open it.",ChatManager.RoleplayMe);
+                    API.sendChatMessageToPlayer(sender,"The crate is locked.");
+                    return;
+                }
+
+                ChatManager.RoleplayMessage(c, "attempts to open the crate, peering inside.", ChatManager.RoleplayMe);
+
                 InventoryManager.ShowInventoryManager(sender, sender.GetCharacter(), closest, "Inventory: ", "Crate: ");
 
             }
         }
+
+        [Command("prycrate")]
+        public void pryCrate(Client sender)
+        {
+            Character c = sender.GetCharacter();
+            Airdrop closest = FindNearestAirdrop(sender);
+
+            if (closest == null) return;
+
+            if (closest.IsOpen)
+            {
+                API.sendChatMessageToPlayer(sender,"This crate is already open!");
+                return;
+            }
+
+            if (!closest.IsOpen && InventoryManager.DoesInventoryHaveItem<Crowbar>(c).Length >= 1)
+            {
+                ChatManager.RoleplayMessage(c, "forces open the crate, using their crowbar to pry the lid off.",
+                    ChatManager.RoleplayMe);
+                closest.IsOpen = true;
+                closest.marker.Destroy();
+                closest.marker.TextLabelText = "Drugs Crate - Unlocked";
+                closest.marker.Create();
+                return;
+            }
+
+            ChatManager.RoleplayMessage(c,"attempts to pry open the crate lid with their hands, but is unable to.",ChatManager.RoleplayMe);
+            API.sendChatMessageToPlayer(sender,"You need a crowbar for this!");
+
+        }
+
 
         // Creates the drop, adds it to the list and calls for the prop to be set on the floor.
         public void spawnDrop(Client sender, IInventoryItem drug)
@@ -292,6 +388,21 @@ namespace mtgvrp.drugs_manager
                 API.setPlayerHealth(sender, MaxHealth);
             else
                 API.setPlayerHealth(sender, API.getPlayerHealth(sender) + amount * HealthMultipler);
+        }
+
+
+        public void tempBoostHealth(Client sender, int amount)
+        {
+            Character c = sender.GetCharacter();
+
+            if (API.getPlayerHealth(sender) + amount * TempHealthMultipler > MaxHealth)
+            {
+                c.TempHealth = MaxHealth - API.getPlayerHealth(sender);
+                return;
+            }
+
+            API.setPlayerHealth(sender,API.getPlayerHealth(sender) + amount * TempHealthMultipler);
+            c.TempHealth = amount * TempHealthMultipler;
         }
 
         // EFFECTS END HERE
@@ -344,12 +455,11 @@ namespace mtgvrp.drugs_manager
 
         }
 
-        [Command("giveAdmin")]
-        public void giveAdmin(Client sender)
+        public static double ConvertMinToMilli(double min)
         {
-            Account a = sender.GetAccount();
-            a.AdminLevel = 8;
+            return min * 60000;
         }
+
 
     }
 }

@@ -17,12 +17,13 @@ namespace mtgvrp.drugs_manager
 
         public int Amount { get; private set; }
         public Vector3 Loc { get; private set; }
-        public bool IsOpen { get; private set; }
+        public bool IsOpen { get; set; }
         public DrugTypes DrugName { get; private set; }
         public TimeSpan TimeRem { get; private set; }
         public Guid id { get;}
         public NetHandle prop { get; set; }
         public Stopwatch timeSpent { get; set; }
+        public MarkerZone marker { get; set; }
 
         // Inv for airdrops.
         public List<IInventoryItem> Inventory { get; set; }
@@ -37,6 +38,7 @@ namespace mtgvrp.drugs_manager
             timeSpent = new Stopwatch();
             Inventory = new List<IInventoryItem>();
             Inventory.Add(drug);
+            marker = new MarkerZone(new Vector3(),new Vector3());
         }
 
     }

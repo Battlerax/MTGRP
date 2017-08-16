@@ -64,6 +64,7 @@ namespace mtgvrp.inventory
             BsonClassMap.RegisterClassMap<Speed>();
             BsonClassMap.RegisterClassMap<Weed>();
             BsonClassMap.RegisterClassMap<Meth>();
+            BsonClassMap.RegisterClassMap<Crowbar>();
 
             BsonClassMap.RegisterClassMap<Weapon>();
             #endregion

@@ -51,6 +51,7 @@ namespace mtgvrp.player_manager
         public bool HasSkin { get; set; }
         public int Health { get; set; }
         public int Armor { get; set; }
+        public int TempHealth { get; set; }
 
         public List<int> Outfit = new List<int>();
         public List<int> OutfitVariation = new List<int>();
@@ -361,6 +362,7 @@ namespace mtgvrp.player_manager
 
             Health = 100;
             Armor = 0;
+            TempHealth = 0;
             RadioToggle = true;
             CanDoAnim = true;
 

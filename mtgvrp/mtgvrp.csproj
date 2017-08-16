@@ -94,6 +94,7 @@
     <Compile Include="core\Discord\DiscordManager.cs" />
     <Compile Include="core\Discord\PlayerDiscordCommands.cs" />
     <Compile Include="core\Discord\RandomFunCommands.cs" />
+    <Compile Include="core\Items\Crowbar.cs" />
     <Compile Include="core\Items\FishingRod.cs" />
     <Compile Include="core\Items\EngineParts.cs" />
     <Compile Include="core\Items\SprayPaint.cs" />

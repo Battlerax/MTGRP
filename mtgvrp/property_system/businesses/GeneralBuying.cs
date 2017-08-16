@@ -17,6 +17,7 @@ using mtgvrp.group_manager.lsgov;
 using mtgvrp.job_manager.hunting;
 using mtgvrp.job_manager.scuba;
 using mtgvrp.core.Help;
+using mtgvrp.drugs_manager;
 using Color = mtgvrp.core.Color;
 
 namespace mtgvrp.property_system.businesses
@@ -139,6 +140,9 @@ namespace mtgvrp.property_system.businesses
                             break;
                         case "spraypaint":
                             item = new SprayPaint();
+                            break;
+                        case "crowbar":
+                            item = new Crowbar();
                             break;
                     }
                 }
