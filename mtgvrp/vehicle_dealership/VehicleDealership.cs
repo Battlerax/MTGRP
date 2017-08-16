@@ -222,7 +222,6 @@ namespace mtgvrp.vehicle_dealership
                         new Vector3(-61.86055, -1117.122, 25.8629)
                     };
                     var randomPos = new Random().Next(1, spawnPoss.Length) - 1;
-                    API.sendChatMessageToAll(String.Join("and",selectedCar));
                     //Create the vehicle.
                     var theVehicle = VehicleManager.CreateVehicle(
                         (VehicleHash)Convert.ToInt32(selectedCar[1]),
@@ -255,12 +254,7 @@ namespace mtgvrp.vehicle_dealership
             }
         }
 
-        [Command("giveadmin")]
-        public void giveadmin(Client sender)
-        {
-            Account a = sender.GetAccount();
-            a.AdminLevel = 8;
-        }
+
 
         [Command("buyvehicle"), Help(HelpManager.CommandGroups.Vehicles, "Command used inside dealership to buy a vehicle.", null)]
         public void BuyVehicle(Client player)
