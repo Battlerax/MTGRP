@@ -15,6 +15,7 @@ using VehicleInfoLoader.Data;
 using GrandTheftMultiplayer.Server.Managers;
 using GrandTheftMultiplayer.Shared.Math;
 using mtgvrp.core;
+using mtgvrp.core.Help;
 using mtgvrp.inventory;
 using mtgvrp.property_system;
 using Newtonsoft.Json;
@@ -196,7 +197,7 @@ namespace mtgvrp.vehicle_manager.modding
             {new KeyValuePair<int, int>(15, 1), 5000},
             {new KeyValuePair<int, int>(15, 2), 7000},
             {new KeyValuePair<int, int>(15, 3), 9000},
-            {new KeyValuePair<int, int>(15, 3), 11000},
+            {new KeyValuePair<int, int>(15, 4), 11000},
         };
 
         private static readonly Dictionary<int, int> _vipMods = new Dictionary<int, int>
@@ -355,6 +356,38 @@ namespace mtgvrp.vehicle_manager.modding
             API.setEntityDimension(player.vehicle, player.GetCharacter().Id);
             
             API.triggerClientEvent(player, "SHOW_MODDING_GUI", API.toJson(modList.ToArray()), player.GetAccount().VipLevel > 0);
+        }
+
+
+        [Command("toggleneon"), Help(HelpManager.CommandGroups.Vehicles, "Toggles the neon of your vehicle on or off.")]
+        public void ToggleNeon(Client player, int slot = -1)
+        {
+
+            if (!player.isInVehicle)
+            {
+                API.sendChatMessageToPlayer(player, "You aren't in a a vehicle.");
+                return;
+            }
+
+            if (player.GetAccount().VipLevel == 0)
+            {
+                API.sendChatMessageToPlayer(player, "You must be VIP to use neons.");
+                return;
+            }
+
+            if (slot > 3 || slot < 0 || slot == -1)
+            {
+                API.sendChatMessageToPlayer(player, "USAGE: /toggleneon [0-3]");
+                API.sendChatMessageToPlayer(player, "* 0 -> Left Neon");
+                API.sendChatMessageToPlayer(player, "* 1 -> Right Neon");
+                API.sendChatMessageToPlayer(player, "* 2 -> Front Neon");
+                API.sendChatMessageToPlayer(player, "* 3 -> Back Neon");
+                return;
+            }
+
+            var newState = !API.getVehicleNeonState(player.vehicle, slot);
+            API.setVehicleNeonState(player.vehicle, slot, newState);
+            ChatManager.RoleplayMessage(player, newState ? "turns on the neon of his vehicle." : "turns off the neon of his vehicle.", ChatManager.RoleplayMe);
         }
     }
 }
