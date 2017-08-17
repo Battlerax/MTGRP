@@ -2,14 +2,16 @@
     resourceCall("loaded");
 });
 
+var isVIP = false;
+
 $(document).ready(function () {
     $('#modsList').on('click', '.list-group-item', function () {
         $(".list-group-item").removeClass("active");
         $(this).addClass("active");
 
         var test = $(this).data("vip");
-        if (test === true) {
-            showVIPError();
+        if (test === true && isVIP === false) {
+            showError("This modification is restricated to VIP only.");
             return;
         }
 
@@ -26,9 +28,18 @@ $(document).ready(function () {
             resetMod($(this).data("type"), $(this), true);
         });
     });
+
+    $("#purchaseButton").click(function() {
+        var items = [];
+        $(".shoppingitem").each(function (index) {
+            items.push([$(this).data("type"), $(this).data("mod")]);
+        });
+        resourceCall("callServerEvent", "MODDONG_PURCHASE_ITEMS", JSON.stringify(items));
+    });
 });
 
-function showVIPError() {
+function showError(string) {
+    $("#vipNeededMsg").text(string);
     $("#vipNeededMsg").fadeIn();
     setTimeout(function () {
             $("#vipNeededMsg").fadeOut();
@@ -77,7 +88,9 @@ function calculateTotal() {
     $("#totalPrice").text("$" + total);
 }
 
-function addTypes(types) {
+function addTypes(types, isvip) {
+    isVIP = isvip;
+
     var typesList = JSON.parse(types);
     for (var i = 0; i < typesList.length; i++) {
         var vip = "";
@@ -98,6 +111,27 @@ function getModsList(type) {
 }
 
 function updateColor(clr) {
+    if (curColorType === "primarycolor") {
+        addToCart("Primary Color", 100, Math.round(clr.rgb[0]) + "|" + Math.round(clr.rgb[1]) + "|" + Math.round(clr.rgb[2]), 100);
+    }
+    else if (curColorType === "secondarycolor") {
+        addToCart("Secondary Color", 101, Math.round(clr.rgb[0]) + "|" + Math.round(clr.rgb[1]) + "|" + Math.round(clr.rgb[2]), 100);
+    }
+    else if (curColorType === "tyresmoke") {
+        if (isVIP === false) {
+            showError("This modification is restricated to VIP only.");
+            return;
+        }
+        addToCart("Tyre Smoke Color", 102, Math.round(clr.rgb[0]) + "|" + Math.round(clr.rgb[1]) + "|" + Math.round(clr.rgb[2]), 500);
+    }
+    else if (curColorType === "neoncolor") {
+        if (isVIP === false) {
+            showError("This modification is restricated to VIP only.");
+            return;
+        }
+        addToCart("Neons", 103, Math.round(clr.rgb[0]) + "|" + Math.round(clr.rgb[1]) + "|" + Math.round(clr.rgb[2]), 300);
+    }
+
     resourceCall("updateColor", curColorType, clr.rgb[0], clr.rgb[1], clr.rgb[2]);
 }
 

@@ -21,10 +21,28 @@ API.onServerEventTrigger.connect((event, args) => {
 
         myBrowser.call("showMods", args[0]);
     }
+    else if (event === "MODDING_ERROR") {
+        if (myBrowser == null)
+            return;
+
+        myBrowser.call("showError", args[0]);
+    }
+    else if (event === "MODDING_CLOSE") {
+        if (myBrowser == null)
+            return;
+
+        API.setHudVisible(true);
+        API.showCursor(false);
+        API.destroyCefBrowser(myBrowser);
+        myBrowser = null;
+    }
 });
 
+var isVIP = false;
+
 function loaded() {
-    myBrowser.call("addTypes", Args[0]);
+    isVIP = Args[1];
+    myBrowser.call("addTypes", Args[0], Args[1]);
 
     //Save current mods.
     var veh = API.getPlayerVehicle(API.getLocalPlayer());

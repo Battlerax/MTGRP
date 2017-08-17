@@ -13,6 +13,8 @@ using VehicleInfoLoader;
 using VehicleInfoLoader.Data;
 using GrandTheftMultiplayer.Server.Managers;
 using mtgvrp.core;
+using mtgvrp.inventory;
+using Newtonsoft.Json;
 
 namespace mtgvrp.vehicle_manager.modding
 {
@@ -41,9 +43,14 @@ namespace mtgvrp.vehicle_manager.modding
                             continue;
 
                         var m = manifest.Mod(modType, modid);
-                            bool isVip = _vipMods.ContainsKey(modType) && (_vipMods[modType] == -1 || _vipMods[modType] == modid);
+                        bool isVip = _vipMods.ContainsKey(modType) &&
+                                     (_vipMods[modType] == -1 || _vipMods[modType] == modid);
 
-                        modsList.Add(new string[] {m.localizedName, modType.ToString(), modid.ToString(), price.ToString(), isVip == true ? "true" : "false"});
+                        modsList.Add(new string[]
+                        {
+                            m.localizedName, modType.ToString(), modid.ToString(), price.ToString(),
+                            isVip == true ? "true" : "false"
+                        });
                     }
                     API.triggerClientEvent(sender, "MODDING_FILL_MODS", API.toJson(modsList.ToArray()));
                     break;
@@ -56,12 +63,62 @@ namespace mtgvrp.vehicle_manager.modding
                     ApplyVehicleMods(vehicle.handle.GetVehicle());
                     break;
                 }
+
+                case "MODDONG_PURCHASE_ITEMS":
+                {
+                    dynamic items = JsonConvert.DeserializeObject((string) arguments[0]);
+                    int allPrices = 0;
+                    foreach (var itm in items)
+                    {
+                        var modType = int.Parse(itm[0].ToString().Trim());
+                        int modId;
+                        int.TryParse(itm[1].ToString().Trim(), out modId);
+
+                        var price = GetModPrice(modType, modId);
+                        allPrices += price;
+                    }
+                    var c = sender.GetCharacter();
+                    if (Money.GetCharacterMoney(c) < allPrices)
+                    {
+                        API.triggerClientEvent(sender, "MODDING_ERROR",
+                            "You don't have enough money to purchase these mods. Your balance: " +
+                            Money.GetCharacterMoney(c));
+                        return;
+                    }
+
+                    InventoryManager.DeleteInventoryItem<Money>(c, allPrices);
+
+                    var veh = sender.vehicle.handle.GetVehicle();
+                    foreach (var itm in items)
+                    {
+                        var modType = int.Parse(itm[0].ToString().Trim());
+                        AddVehicleMod(veh, modType, itm[1].ToString().Trim());
+                    }
+                    ClearVehicleMods(veh);
+                    ApplyVehicleMods(veh);
+                    veh.Save();
+                    API.triggerClientEvent(sender, "MODDING_CLOSE");
+                    API.sendChatMessageToPlayer(sender, "You have successfully purchased some vehicle mods for a total of ~g~" + allPrices.ToString("C"));
+                    break;
+                }
             }
         }
 
         private void API_onResourceStart()
         {
             VehicleInfo.Setup(Path.Combine(API.getResourceFolder(), @"vehicle_manager\modding\modinfo\"));
+        }
+
+        void AddVehicleMod(Vehicle veh, int type, string mod)
+        {
+            if (veh.VehMods.ContainsKey(type.ToString()))
+            {
+                veh.VehMods[type.ToString()] = mod;
+            }
+            else
+            {
+                veh.VehMods.Add(type.ToString(), mod);
+            }
         }
 
         private static readonly Dictionary<int, int> _modTypePrices = new Dictionary<int, int>
@@ -100,6 +157,10 @@ namespace mtgvrp.vehicle_manager.modding
             {66, 0},
             {67, 0},
             {69, 0},
+            {PrimaryColorId, 100},
+            {SecondryColorId, 100},
+            {TyresSmokeColorId, 500},
+            {NeonColorId, 300},
         };
 
         private static readonly Dictionary<KeyValuePair<int, int>, int> _modPrices = new Dictionary<KeyValuePair<int, int>, int>
@@ -126,6 +187,7 @@ namespace mtgvrp.vehicle_manager.modding
         private static readonly Dictionary<int, int> _vipMods = new Dictionary<int, int>
         {
             {14, -1},
+            {48, -1},
         };
 
         int GetModPrice(int type, int mod)
@@ -183,50 +245,53 @@ namespace mtgvrp.vehicle_manager.modding
             {69, "Window Tint"},
         };
 
+        //These values are the same in JS
+        //DO NOT CHANGE
         public const int PrimaryColorId = 100;
         public const int SecondryColorId = 101;
-        public const int TyresSmokeColorId = 103;
-        public const int NeonColorId = 104;
+        public const int TyresSmokeColorId = 102;
+        public const int NeonColorId = 103;
 
         public static void ClearVehicleMods(Vehicle veh)
         {
             foreach (var type in ModTypes.Keys)
             {
                 API.shared.removeVehicleMod(veh.NetHandle, type);
-                GrandTheftMultiplayer.Server.API.API.shared.setVehicleCustomPrimaryColor(veh.NetHandle, 0, 0, 0);
-                GrandTheftMultiplayer.Server.API.API.shared.setVehicleCustomSecondaryColor(veh.NetHandle, 0, 0, 0);
-                GrandTheftMultiplayer.Server.API.API.shared.setVehicleTyreSmokeColor(veh.NetHandle, 0, 0, 0);
-                GrandTheftMultiplayer.Server.API.API.shared.setVehicleNeonColor(veh.NetHandle, 0, 0, 0);
             }
+            GrandTheftMultiplayer.Server.API.API.shared.setVehicleCustomPrimaryColor(veh.NetHandle, 0, 0, 0);
+            GrandTheftMultiplayer.Server.API.API.shared.setVehicleCustomSecondaryColor(veh.NetHandle, 0, 0, 0);
+            GrandTheftMultiplayer.Server.API.API.shared.setVehicleTyreSmokeColor(veh.NetHandle, 0, 0, 0);
+            GrandTheftMultiplayer.Server.API.API.shared.setVehicleNeonColor(veh.NetHandle, 0, 0, 0);
         }
 
         public static void ApplyVehicleMods(Vehicle veh)
         {
-            foreach (var mod in veh.VehMods ?? new Dictionary<int, dynamic>())
+            foreach (var mod in veh.VehMods ?? new Dictionary<string, string>())
             {
-                if (mod.Key == PrimaryColorId)
+                var modid = Convert.ToInt32(mod.Key);
+                if (modid == PrimaryColorId)
                 {
-                    var clrs = (int[]) mod.Value;
-                    API.shared.setVehicleCustomPrimaryColor(veh.NetHandle, clrs[0], clrs[1], clrs[2]);
+                    var clrs = ((string) mod.Value).Split('|');
+                    API.shared.setVehicleCustomPrimaryColor(veh.NetHandle, Convert.ToInt32(clrs[0]), Convert.ToInt32(clrs[1]), Convert.ToInt32(clrs[2]));
                 }
-                else if (mod.Key == SecondryColorId)
+                else if (modid == SecondryColorId)
                 {
-                    var clrs = (int[])mod.Value;
-                    API.shared.setVehicleCustomSecondaryColor(veh.NetHandle, clrs[0], clrs[1], clrs[2]);
+                    var clrs = ((string)mod.Value).Split('|');
+                    API.shared.setVehicleCustomSecondaryColor(veh.NetHandle, Convert.ToInt32(clrs[0]), Convert.ToInt32(clrs[1]), Convert.ToInt32(clrs[2]));
                 }
-                else if(mod.Key == TyresSmokeColorId)
+                else if(modid == TyresSmokeColorId)
                 {
-                    var clrs = (int[])mod.Value;
-                    API.shared.setVehicleTyreSmokeColor(veh.NetHandle, clrs[0], clrs[1], clrs[2]);
+                    var clrs = ((string)mod.Value).Split('|');
+                    API.shared.setVehicleTyreSmokeColor(veh.NetHandle, Convert.ToInt32(clrs[0]), Convert.ToInt32(clrs[1]), Convert.ToInt32(clrs[2]));
                 }
-                else if(mod.Key == NeonColorId)
+                else if(modid == NeonColorId)
                 {
-                    var clrs = (int[]) mod.Value;
-                    API.shared.setVehicleNeonColor(veh.NetHandle, clrs[0], clrs[1], clrs[2]);
+                    var clrs = ((string) mod.Value).Split('|');
+                    API.shared.setVehicleNeonColor(veh.NetHandle, Convert.ToInt32(clrs[0]), Convert.ToInt32(clrs[1]), Convert.ToInt32(clrs[2]));
                 }
                 else
                 {
-                    API.shared.setVehicleMod(veh.NetHandle, mod.Key, (int)mod.Value);
+                    API.shared.setVehicleMod(veh.NetHandle, modid, Convert.ToInt32(mod.Value));
                 }
             }
         }
@@ -250,7 +315,7 @@ namespace mtgvrp.vehicle_manager.modding
                     });
             }
 
-            API.triggerClientEvent(player, "SHOW_MODDING_GUI", API.toJson(modList.ToArray()));
+            API.triggerClientEvent(player, "SHOW_MODDING_GUI", API.toJson(modList.ToArray()), player.GetAccount().VipLevel > 0);
         }
     }
 }

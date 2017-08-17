@@ -60,7 +60,7 @@ namespace mtgvrp.vehicle_manager
 
         public int VehType { get; set; }
 
-        public Dictionary<int, dynamic> VehMods { get; set; } = new Dictionary<int, dynamic>();
+        public Dictionary<string, string> VehMods { get; set; }
 
         [BsonIgnore]
         public Job Job { get; set; }
@@ -210,7 +210,7 @@ namespace mtgvrp.vehicle_manager
         public void Save()
         {
             var filter = Builders<Vehicle>.Filter.Eq("_id", Id);
-            DatabaseManager.VehicleTable.ReplaceOneAsync(filter, this);
+            DatabaseManager.VehicleTable.ReplaceOne(filter, this);
         }
 
         public void Delete()
