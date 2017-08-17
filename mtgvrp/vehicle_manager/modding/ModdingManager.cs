@@ -196,6 +196,7 @@ namespace mtgvrp.vehicle_manager.modding
             {new KeyValuePair<int, int>(15, 1), 5000},
             {new KeyValuePair<int, int>(15, 2), 7000},
             {new KeyValuePair<int, int>(15, 3), 9000},
+            {new KeyValuePair<int, int>(15, 3), 11000},
         };
 
         private static readonly Dictionary<int, int> _vipMods = new Dictionary<int, int>
