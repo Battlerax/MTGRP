@@ -1,6 +1,7 @@
 "use strict";
 var weedblip = null;
 var localPlayer = API.getLocalPlayer();
+var cam = API.getActiveCamera();
 API.onServerEventTrigger.connect(function (eventName, args) {
     if (eventName === "getClientGround") {
         var clientLoc = API.getEntityPosition(API.getLocalPlayer());
@@ -15,6 +16,10 @@ API.onServerEventTrigger.connect(function (eventName, args) {
         API.setBlipScale(weedblip, 20);
         API.setBlipColor(weedblip, 2);
     }
+    else if (eventName === "heroinVisual") {
+        var timer = args[0];
+        API.setCameraShake(cam, "DRUNK_SHAKE", 5);
+    }
     else if (eventName === "clearWeed") {
         if (weedblip != null) {
             API.deleteEntity(weedblip);
@@ -22,7 +27,11 @@ API.onServerEventTrigger.connect(function (eventName, args) {
             API.playScreenEffect("DrugsMichaelAliensFightOut", 1000, false);
         }
     }
+    else if (eventName === "clearHeroin") {
+        API.stopCameraShake(cam);
+    }
     else if (eventName === "clearAllEffects") {
         API.callNative("0x4E6D875B");
+        API.stopCameraShake(cam);
     }
 });

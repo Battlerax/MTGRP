@@ -27,7 +27,7 @@ namespace mtgvrp.drugs_manager
 
         private const int visualPerAmount = 5;
 
-        private const int HeroinDivider = 3;
+        private const int HeroinDivider = 2;
         private const int MaxPermittedToleranceLevel = 15;
        
         private const int ArmorMultipler = 5;
@@ -41,6 +41,10 @@ namespace mtgvrp.drugs_manager
 
         private const int CurrentDrugSize = 1;
         private const double TempTime = 0.5;
+
+
+        private const int LowerHeroinTripTime = 20;
+        private const int HigherHeroinTripTime = 30;
 
         private readonly Timer lowerTempVals = new Timer(ConvertMinToMilli(TempTime));
 
@@ -183,18 +187,28 @@ namespace mtgvrp.drugs_manager
             playerChar.WeedTimer = new Timer {Interval = (weedVal * visualPerAmount) * 1000};
             playerChar.WeedTimer.Elapsed += delegate { clearWeedEffect(sender); };
             playerChar.WeedTimer.Start();   
-            API.sendChatMessageToPlayer(sender,playerChar.WeedTimer.Interval.ToString());
 
             InventoryManager.DeleteInventoryItem(playerChar, typeof(Weed), weedVal);
         }
+
+
+        #region  Wipe Client Effects Calls
 
         private void clearWeedEffect(Client sender)
         {
             Character c = sender.GetCharacter();
             c.WeedTimer.Stop();
-            API.triggerClientEvent(sender,"clearWeed");
+            API.triggerClientEvent(sender, "clearWeed");
         }
 
+        private void clearHeroinEffect(Client sender)
+        {
+            Character c = sender.GetCharacter();
+            c.HeroinTimer.Stop();
+            API.triggerClientEvent(sender,"clearHeroin");
+        }
+
+        #endregion
         [Command("takespeed", GreedyArg = true, Alias = "usespeed")]
         [Help(HelpManager.CommandGroups.General, "Take a few pills of speed.", "Amount of speed to take.")]
         public void speed_cmd(Client sender, string amount)
@@ -222,11 +236,18 @@ namespace mtgvrp.drugs_manager
         {
             int heroinVal;
             var playerChar = sender.GetCharacter();
+          
             if (!int.TryParse(amount, out heroinVal)) return;
             var drugCheck = InventoryManager.DoesInventoryHaveItem(playerChar, typeof(Heroin));
             if (!CheckForCorrectAmount(heroinVal, drugCheck))
             {
                 API.sendChatMessageToPlayer(sender, "You don't have enough heroin to inject!");
+                return;
+            }
+
+            if (playerChar.HeroinTimer != null && playerChar.HeroinTimer.Enabled)
+            {
+                API.sendChatMessageToPlayer(sender,"You're in the middle of a horrible trip. You're unable to inject anymore heroin!");
                 return;
             }
 
@@ -438,8 +459,8 @@ namespace mtgvrp.drugs_manager
         public void MaxArmourAndHealth(Client sender, int amount)
         {
             Character c = sender.GetCharacter();
-
-            if (amount <  c.HeroinTolerance / HeroinDivider)
+            int tot = c.HeroinTolerance / HeroinDivider;
+            if (amount <  tot)
             {
                 API.sendChatMessageToPlayer(sender,"The heroin has no effect on you! You've built up too much of a tolerance!");
                 return;
@@ -454,7 +475,7 @@ namespace mtgvrp.drugs_manager
                 return;
             }
             API.sendChatMessageToPlayer(sender,"Your tolerance levels have gone up from this... You'll need more in the future to get the same buzz.");
-            c.HeroinTolerance = (c.HeroinTolerance + amount) / 2;
+            c.HeroinTolerance = (c.HeroinTolerance + 2);
 
         
 
@@ -485,6 +506,10 @@ namespace mtgvrp.drugs_manager
             {
                 API.sendChatMessageToPlayer(c.Client,"Your current usage limits are causing you serious pain.");
                 API.setPlayerHealth(c.Client,API.getPlayerHealth(c.Client) - 10);
+                c.HeroinTimer = new Timer { Interval = LowerHeroinTripTime * 1000 };
+                c.HeroinTimer.Elapsed += delegate { clearHeroinEffect(c.Client); };
+                c.HeroinTimer.Start();
+
                 // TODO: Add camera effects here!
                 return;
             }
@@ -493,6 +518,9 @@ namespace mtgvrp.drugs_manager
                 API.sendChatMessageToPlayer(c.Client,"Your body is unable to take the heroin anymore, and begins to breakdown.");
                 API.setPlayerHealth(c.Client,1);
                 API.setPlayerArmor(c.Client,0);
+                c.HeroinTimer = new Timer { Interval = HigherHeroinTripTime * 1000 };
+                c.HeroinTimer.Elapsed += delegate { clearHeroinEffect(c.Client); };
+                c.HeroinTimer.Start();
                // TODO: Add Camera Effects here!
             }
         }
@@ -544,6 +572,15 @@ namespace mtgvrp.drugs_manager
             InventoryManager.GiveInventoryItem(playerChar, new Weed(), 10);
             InventoryManager.GiveInventoryItem(playerChar, new Meth(), 10);
 
+
+        }
+
+        [Command("resetTol")]
+        public void tolreset(Client sender)
+        {
+            Character c = sender.GetCharacter();
+            c.HeroinTolerance = 0;
+            InventoryManager.GiveInventoryItem(c, new Heroin(), 20);
 
         }
 

@@ -1,5 +1,6 @@
 ﻿var weedblip = null;
 const localPlayer = API.getLocalPlayer();
+var cam = API.getActiveCamera();
 
 API.onServerEventTrigger.connect(function (eventName, args) {
 
@@ -21,6 +22,11 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 
     }
 
+     else if (eventName === "heroinVisual") {
+        var timer = args[0];
+        API.setCameraShake(cam,"DRUNK_SHAKE",5);
+    }
+
     else if (eventName === "clearWeed") {
         if (weedblip != null) {
             API.deleteEntity(weedblip);
@@ -29,8 +35,14 @@ API.onServerEventTrigger.connect(function (eventName, args) {
         }
     }
 
+    else if (eventName === "clearHeroin") {
+        API.stopCameraShake(cam);
+    }
+
     // Really don't want permanent effects. 
     else if (eventName === "clearAllEffects") {
         API.callNative("0x4E6D875B");
+        API.stopCameraShake(cam);
+
     }
 });
