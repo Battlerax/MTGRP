@@ -25,6 +25,8 @@ namespace mtgvrp.drugs_manager
     internal class DrugsManager : Script
     {
 
+        private const int HeroinDivider = 3;
+        private const int MaxPermittedToleranceLevel = 15;
        
         private const int ArmorMultipler = 5;
         private const int HealthMultipler = 5;
@@ -137,7 +139,7 @@ namespace mtgvrp.drugs_manager
                 return;
             }
 
-            boostArmor(sender, cokeVal);
+            BoostArmor(sender, cokeVal);
 
             ChatManager.RoleplayMessage(playerChar, "has sniffed some cocaine.", ChatManager.RoleplayMe);
             API.sendChatMessageToPlayer(sender, "You sniffed " + cokeVal + " grams of cocaine.");
@@ -183,7 +185,7 @@ namespace mtgvrp.drugs_manager
                 return;
             }
 
-            tempBoostHealth(sender,speedVal);
+            TempBoostHealth(sender,speedVal);
             ChatManager.RoleplayMessage(playerChar, "has took some pills of speed.", ChatManager.RoleplayMe);
 
             API.sendChatMessageToPlayer(sender, "You took " + speedVal + " pills of speed.");
@@ -208,6 +210,7 @@ namespace mtgvrp.drugs_manager
                 ChatManager.RoleplayMe);
 
             API.sendChatMessageToPlayer(sender, "You injected " + heroinVal + " mg of heroin.");
+            MaxArmourAndHealth(sender,heroinVal);
             InventoryManager.DeleteInventoryItem(playerChar, typeof(Heroin), heroinVal);
         }
 
@@ -263,33 +266,33 @@ namespace mtgvrp.drugs_manager
                 case "weed":
                     IInventoryItem weed = new Weed();
                     weed.Amount = drugAmount;
-                    spawnDrop(sender, weed);
+                    SpawnDrop(sender, weed);
                     break;
 
                 case "coke":
                     IInventoryItem cocaine = new Cocaine();
                     cocaine.Amount = drugAmount;
-                    spawnDrop(sender,cocaine);
+                    SpawnDrop(sender,cocaine);
 
                     break;
 
                 case "meth":
                     IInventoryItem meth = new Meth();
                     meth.Amount = drugAmount;
-                    spawnDrop(sender,meth);
+                    SpawnDrop(sender,meth);
                     break;
 
                 case "heroin":
                     IInventoryItem heroin = new Heroin();
                     heroin.Amount = drugAmount;
-                    spawnDrop(sender,heroin);
+                    SpawnDrop(sender,heroin);
           
                     break;
 
                 case "speed":
                     IInventoryItem speed = new Speed();
                     speed.Amount = drugAmount;
-                    spawnDrop(sender,speed);
+                    SpawnDrop(sender,speed);
 
                     break;
 
@@ -355,7 +358,7 @@ namespace mtgvrp.drugs_manager
 
 
         // Creates the drop, adds it to the list and calls for the prop to be set on the floor.
-        public void spawnDrop(Client sender, IInventoryItem drug)
+        public void SpawnDrop(Client sender, IInventoryItem drug)
         {
             Airdrop drop;
             drop = new Airdrop(drug, API.getEntityPosition(sender));
@@ -372,9 +375,11 @@ namespace mtgvrp.drugs_manager
             return true;
         }
 
-        // DRUG EFFECTS - ADD ALL EFFECTS HERE!
+        #region DrugEffects
 
-        public void boostArmor(Client sender, int amount)
+        
+
+        public void BoostArmor(Client sender, int amount)
         {
             if (API.getPlayerArmor(sender) + amount * ArmorMultipler > MaxArmor)
                 API.setPlayerArmor(sender, MaxArmor);
@@ -391,7 +396,7 @@ namespace mtgvrp.drugs_manager
         }
 
 
-        public void tempBoostHealth(Client sender, int amount)
+        public void TempBoostHealth(Client sender, int amount)
         {
             Character c = sender.GetCharacter();
 
@@ -405,11 +410,72 @@ namespace mtgvrp.drugs_manager
             c.TempHealth = amount * TempHealthMultipler;
         }
 
-        // EFFECTS END HERE
+
+        public void MaxArmourAndHealth(Client sender, int amount)
+        {
+            Character c = sender.GetCharacter();
+
+            if (amount <  c.HeroinTolerance / HeroinDivider)
+            {
+                API.sendChatMessageToPlayer(sender,"The heroin has no effect on you! You've built up too much of a tolerance!");
+                return;
+            }
+        
+            API.setPlayerArmor(sender,100);
+            API.setPlayerHealth(sender,100);
+
+            if (c.HeroinTolerance > MaxPermittedToleranceLevel)
+            {
+                ToleranceEffectRoll(c);
+                return;
+            }
+            API.sendChatMessageToPlayer(sender,"Your tolerance levels have gone up from this... You'll need more in the future to get the same buzz.");
+            c.HeroinTolerance = (c.HeroinTolerance + amount) / 2;
+
+        
+
+
+        }
+
+        public void ToleranceEffectRoll(Character c)
+        {
+            Random r = new Random();
 
 
 
-       // Airdrop helper methods.
+            int effectRoll = r.Next(1, 11);
+
+            if (effectRoll == 1)
+            {
+                API.sendChatMessageToPlayer(c.Client,"You manage to kick part of your tolerance. You should be more careful of heroin usage...");
+                c.HeroinTolerance = 2;
+                return;
+            }
+            if (effectRoll > 1 && effectRoll < 6)
+            {
+                API.sendChatMessageToPlayer(c.Client,"You're really not feeling the effects anymore. Might be a good time to cutdown.");
+                c.HeroinTolerance = c.HeroinTolerance - 5;
+                return;
+            }
+            if (effectRoll >= 6 && effectRoll < 10)
+            {
+                API.sendChatMessageToPlayer(c.Client,"Your current usage limits are causing you serious pain.");
+                API.setPlayerHealth(c.Client,API.getPlayerHealth(c.Client) - 10);
+                return;
+            }
+            if (effectRoll == 10)
+            {
+                API.sendChatMessageToPlayer(c.Client,"Your body is unable to take the heroin anymore, and begins to breakdown.");
+                API.setPlayerHealth(c.Client,1);
+                API.setPlayerArmor(c.Client,0);
+            }
+        }
+
+
+        #endregion
+
+
+        // Airdrop helper methods.
 
         public void PlaceAirDropProp(Airdrop drop, Vector3 loc)
         {

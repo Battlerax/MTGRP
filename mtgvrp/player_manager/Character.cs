@@ -129,6 +129,11 @@ namespace mtgvrp.player_manager
         [BsonIgnore] public Timer GarbageTimeLeftTimer { get; set; }
         private int _garbagetime;
 
+
+        //Drug levels
+
+         public int HeroinTolerance { get; set; }
+
         public int GarbageTimeLeft
         {
             get { return _garbagetime; }
@@ -363,6 +368,8 @@ namespace mtgvrp.player_manager
             Health = 100;
             Armor = 0;
             TempHealth = 0;
+            HeroinTolerance = 0;
+
             RadioToggle = true;
             CanDoAnim = true;
 
