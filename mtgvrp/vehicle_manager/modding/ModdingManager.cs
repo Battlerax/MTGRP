@@ -51,7 +51,7 @@ namespace mtgvrp.vehicle_manager.modding
 
                         modsList.Add(new string[]
                         {
-                            m.localizedName, modType.ToString(), modid.ToString(), price.ToString(),
+                            m.localizedName == "" ? "No Name" : m.localizedName , modType.ToString(), modid.ToString(), price.ToString(),
                             isVip == true ? "true" : "false"
                         });
                     }
