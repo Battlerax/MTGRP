@@ -624,28 +624,28 @@ namespace mtgvrp.component_manager
 
             //0 == none
             ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 0, new List<int>() { 1 }, "None"));
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 1, new List<int>() { 2 }, "Style 1"));
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 2, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Style 2"));
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 3, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Style 3"));
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 4, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Style 4"));
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 5, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Style 5"));
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 6, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8 }, "Style 6"));
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 7, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Style 7"));
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 8, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Style 8"));
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 9, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Style 9"));
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 10, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Style 10"));
+            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 1, new List<int>() { 2 }, "Wraparounds 1"));
+            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 2, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Broker/Stank Glasses"));
+            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 3, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Janitor Frames"));
+            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 4, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Enemas"));
+            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 5, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Aviators"));
+            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 7, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Fuques"));
+            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 8, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Cop Frames"));
+            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 9, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Hawaiian"));
+            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 10, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Bull Emic"));
             //11 == none
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 12, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Style 11"));
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 13, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Style 12"));
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 15, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Style 13"));
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 16, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, "Style 14"));
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 17, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Style 15"));
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 18, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Style 16"));
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 19, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Style 17"));
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 20, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Style 18"));
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 23, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, "Style 19"));
+            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 12, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Elvis"));
+            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 13, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Hipsters"));
+            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 15, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Guns 1"));
+            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 16, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, "Wraparounds 2"));
+            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 17, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Refined"));
+            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 18, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Superior"));
+            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 19, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Two-Tone"));
+            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 20, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Sunset"));
+            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 23, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, "Guns 2"));
 
-            ValidMaleSportsGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 0, new List<int>() { 1 }, "None"));
+            // maybe use this later
+            /*ValidMaleSportsGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 0, new List<int>() { 1 }, "None"));
             ValidMaleSportsGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 1, new List<int>() { 2 }, "Broker Black Wraparounds"));
 
             ValidMaleCasualGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 0, new List<int>() { 1 }, "None"));
@@ -659,7 +659,7 @@ namespace mtgvrp.component_manager
             ValidMaleCasualGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 2, new List<int>() { 8 }, "Stank Green Shades"));
             ValidMaleCasualGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 2, new List<int>() { 9 }, "Stank Tortoiseshell Glasses"));
             ValidMaleCasualGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 2, new List<int>() { 10 }, "Stank Black Glasses"));
-            ValidMaleCasualGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 2, new List<int>() { 11 }, "Stank White Glasses"));
+            ValidMaleCasualGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 2, new List<int>() { 11 }, "Stank White Glasses"));*/
 
 
             /* ================ MALE EARS ================ */
