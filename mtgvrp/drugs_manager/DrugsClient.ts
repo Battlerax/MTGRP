@@ -1,6 +1,7 @@
 ﻿var weedblip = null;
 const localPlayer = API.getLocalPlayer();
 var cam = API.getActiveCamera();
+var timer;
 
 API.onServerEventTrigger.connect(function (eventName, args) {
 
@@ -12,7 +13,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
     }
 
     else if (eventName === "weedVisual") {
-        var timer = args[0];
+        timer = args[0];
         API.playScreenEffect("DrugsMichaelAliensFight", timer, false);
         weedblip = API.createBlip(new Vector3(0, 0, 0));
         API.setBlipSprite(weedblip, 496);
@@ -22,8 +23,14 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 
     }
 
+    else if (eventName === "speedVisual") {
+        timer = args[0];
+        API.playScreenEffect("DrugsTrevorClownsFight", timer, false);
+        API.setHudVisible(false);
+
+    }
+
      else if (eventName === "heroinVisual") {
-        var timer = args[0];
         API.setCameraShake(cam,"DRUNK_SHAKE",5);
     }
 
@@ -31,7 +38,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
         if (weedblip != null) {
             API.deleteEntity(weedblip);
             weedblip = null;
-            API.playScreenEffect("DrugsMichaelAliensFightOut", 1000, false);
+            API.playScreenEffect("DrugsTrevorClownsFightOut", 1000, false);
         }
     }
 
@@ -39,9 +46,15 @@ API.onServerEventTrigger.connect(function (eventName, args) {
         API.stopCameraShake(cam);
     }
 
+    else if (eventName === "clearSpeed") {
+        API.setHudVisible(true);
+        API.playScreenEffect("RampageOut",1000,false);
+    }
     // Really don't want permanent effects. 
     else if (eventName === "clearAllEffects") {
         API.callNative("0x4E6D875B");
+        API.playScreenEffect("DrugsTrevorClownsFightOut", 1000, false);
+
         API.stopCameraShake(cam);
 
     }

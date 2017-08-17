@@ -25,7 +25,7 @@ namespace mtgvrp.drugs_manager
     internal class DrugsManager : Script
     {
 
-        private const int visualPerAmount = 5;
+        private const int VisualPerAmount = 10;
 
         private const int HeroinDivider = 2;
         private const int MaxPermittedToleranceLevel = 15;
@@ -46,7 +46,7 @@ namespace mtgvrp.drugs_manager
         private const int LowerHeroinTripTime = 20;
         private const int HigherHeroinTripTime = 30;
 
-        private readonly Timer lowerTempVals = new Timer(ConvertMinToMilli(TempTime));
+        private readonly Timer _lowerTempVals = new Timer(ConvertMinToMilli(TempTime));
 
 
         // Current list of all airdrops. All airdrops will be removed on server restart to prevent them clogging up.
@@ -56,23 +56,23 @@ namespace mtgvrp.drugs_manager
         {
             DebugManager.DebugMessage("[DrugsM]: Drugs are booting up.");
             API.onClientEventTrigger += DrugsManagerClient;
-            API.onResourceStart += startTimer;
-            API.onPlayerDisconnected += clearEffects;
+            API.onResourceStart += StartTimer;
+            API.onPlayerDisconnected += ClearEffects;
             DebugManager.DebugMessage("[DrugsM]: Drugs have successfully booted up.");
         }
 
-        private void clearEffects(Client player, string reason)
+        private void ClearEffects(Client player, string reason)
         {
             API.triggerClientEvent(player,"clearAllEffects");
         }
 
-        private void startTimer()
+        private void StartTimer()
         {
-            lowerTempVals.Elapsed += reducePlayerTempValues;
-            lowerTempVals.Enabled = true;
+            _lowerTempVals.Elapsed += ReducePlayerTempValues;
+            _lowerTempVals.Enabled = true;
         }
 
-        private void reducePlayerTempValues(object sender, ElapsedEventArgs e)
+        private void ReducePlayerTempValues(object sender, ElapsedEventArgs e)
         {
             foreach (Client c in API.getAllPlayers())
             {
@@ -129,10 +129,10 @@ namespace mtgvrp.drugs_manager
             }
 
         }
-        
-        
 
-        // All drugs and current effects. If a new drug is added, add the command here! 
+
+
+        #region  All drugs and current effects. If a new drug is added, add the command here! 
 
 
         // Process for a drug - Check their amount is a number, check they have the drug then pass it to CheckForCorrectAmount.
@@ -181,10 +181,10 @@ namespace mtgvrp.drugs_manager
 
             boostHealth(sender, weedVal);
 
-            API.triggerClientEvent(sender, "weedVisual",(visualPerAmount*weedVal) * 1000);
+            API.triggerClientEvent(sender, "weedVisual",(VisualPerAmount*weedVal) * 1000);
             ChatManager.RoleplayMessage(playerChar, "has smoked some weed.", ChatManager.RoleplayMe);
             API.sendChatMessageToPlayer(sender, "You smoked " + weedVal + " grams of weed.");
-            playerChar.WeedTimer = new Timer {Interval = (weedVal * visualPerAmount) * 1000};
+            playerChar.WeedTimer = new Timer {Interval = (weedVal * VisualPerAmount) * 1000};
             playerChar.WeedTimer.Elapsed += delegate { clearWeedEffect(sender); };
             playerChar.WeedTimer.Start();   
 
@@ -192,23 +192,6 @@ namespace mtgvrp.drugs_manager
         }
 
 
-        #region  Wipe Client Effects Calls
-
-        private void clearWeedEffect(Client sender)
-        {
-            Character c = sender.GetCharacter();
-            c.WeedTimer.Stop();
-            API.triggerClientEvent(sender, "clearWeed");
-        }
-
-        private void clearHeroinEffect(Client sender)
-        {
-            Character c = sender.GetCharacter();
-            c.HeroinTimer.Stop();
-            API.triggerClientEvent(sender,"clearHeroin");
-        }
-
-        #endregion
         [Command("takespeed", GreedyArg = true, Alias = "usespeed")]
         [Help(HelpManager.CommandGroups.General, "Take a few pills of speed.", "Amount of speed to take.")]
         public void speed_cmd(Client sender, string amount)
@@ -217,12 +200,21 @@ namespace mtgvrp.drugs_manager
             var playerChar = sender.GetCharacter();
             if (!int.TryParse(amount, out speedVal)) return;
             var drugCheck = InventoryManager.DoesInventoryHaveItem(playerChar, typeof(Speed));
+            if (playerChar.Speedtimer != null && playerChar.Speedtimer.Enabled)
+            {
+                API.sendChatMessageToPlayer(sender, "Taking more drugs in the middle of a trip is probably a bad idea. Wait it out.");
+                return;
+            }
             if (!CheckForCorrectAmount(speedVal, drugCheck))
             {
                 API.sendChatMessageToPlayer(sender, "You don't have enough speed to take!");
                 return;
             }
-
+            
+            API.triggerClientEvent(sender, "speedVisual",(VisualPerAmount*speedVal) * 1000);
+            playerChar.Speedtimer = new Timer{Interval = speedVal * VisualPerAmount * 1000};
+            playerChar.Speedtimer.Elapsed += delegate { ClearSpeedEffect(sender); };
+            playerChar.Speedtimer.Start();
             TempBoostHealth(sender,speedVal);
             ChatManager.RoleplayMessage(playerChar, "has took some pills of speed.", ChatManager.RoleplayMe);
 
@@ -269,7 +261,6 @@ namespace mtgvrp.drugs_manager
             var drugCheck = InventoryManager.DoesInventoryHaveItem(playerChar, typeof(Meth));
             if (!CheckForCorrectAmount(methVal, drugCheck))
             {
-                API.sendChatMessageToAll("debug : " + drugCheck.Length + drugCheck[0].Amount);
                 API.sendChatMessageToPlayer(sender, "You don't have enough meth to take!");
                 return;
             }
@@ -279,12 +270,40 @@ namespace mtgvrp.drugs_manager
             InventoryManager.DeleteInventoryItem(playerChar, typeof(Meth), methVal);
         }
 
+        #endregion
+
+
+
+        #region  Wipe Client Effects Calls
+
+        private void clearWeedEffect(Client sender)
+        {
+            Character c = sender.GetCharacter();
+            c.WeedTimer.Stop();
+            API.triggerClientEvent(sender, "clearWeed");
+        }
+
+        private void clearHeroinEffect(Client sender)
+        {
+            Character c = sender.GetCharacter();
+            c.HeroinTimer.Stop();
+            API.triggerClientEvent(sender, "clearHeroin");
+        }
+
+        private void ClearSpeedEffect(Client sender)
+        {
+            Character c = sender.GetCharacter();
+            c.Speedtimer.Stop();
+            API.triggerClientEvent(sender, "clearSpeed");
+        }
+
+        #endregion
 
 
         // Used by LVL 5+ admins to drop drug crates. If a new drug is added, put it in the case list.
 
         [Command("dropcrate")]
-        [Help(HelpManager.CommandGroups.AdminLevel4, "Drop a drug crate at your location.", "Type of Drug.","Amount of drug.")]
+        [Help(HelpManager.CommandGroups.AdminLevel5, "Drop a drug crate at your location.", "Type of Drug.","Amount of drug.")]
         public void cmd_dropbox(Client sender, String drug, String amount)
         {
             Account a = sender.GetAccount();
@@ -351,7 +370,7 @@ namespace mtgvrp.drugs_manager
 
 
         [Command("opencrate")]
-        public void openCrate(Client sender)
+        public void OpenCrate(Client sender)
         {
             Airdrop closest = FindNearestAirdrop(sender);
             Character c = sender.GetCharacter();
