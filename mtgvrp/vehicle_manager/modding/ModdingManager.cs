@@ -16,6 +16,7 @@ using GrandTheftMultiplayer.Server.Managers;
 using GrandTheftMultiplayer.Shared.Math;
 using mtgvrp.core;
 using mtgvrp.inventory;
+using mtgvrp.property_system;
 using Newtonsoft.Json;
 
 namespace mtgvrp.vehicle_manager.modding
@@ -153,23 +154,23 @@ namespace mtgvrp.vehicle_manager.modding
             {14, 500},
             {15, 0},
             {16, -1},
-            {18, 0},
-            {22, 0},
+            {18, -1},
+            {22, -1},
             {23, 600},
             {24, 600},
             {25, 200},
             {27, 200},
-            {28, 0},
-            {30, 0},
+            {28, -1},
+            {30, 100},
             {33, 100},
             {34, 100},
             {35, 100},
             {38, 2000},
             {48, 100},
-            {62, 0},
-            {66, 0},
-            {67, 0},
-            {69, 0},
+            {62, -1},
+            {66, -1},
+            {67, -1},
+            {69, -1},
             {PrimaryColorId, 100},
             {SecondryColorId, 100},
             {TyresSmokeColorId, 500},
@@ -309,9 +310,27 @@ namespace mtgvrp.vehicle_manager.modding
             }
         }
 
-        [Command("openmod")]
-        public void GetAvailableTypes(Client player)
+        [Command("modvehicle")]
+        public void ModVehicle(Client player)
         {
+            var prop = PropertyManager.IsAtPropertyEntrance(player);
+            if (prop?.Type != PropertyManager.PropertyTypes.ModdingShop)
+            {
+                API.sendChatMessageToPlayer(player, "You must be at a modding shop to modify your vehicle.");
+                return;
+            }
+
+            if (!player.isInVehicle)
+            {
+                API.sendChatMessageToPlayer(player, "You must be in a vehicle to modify it.");
+                return;
+            }
+
+            if (!player.GetCharacter().OwnedVehicles.Contains(player.vehicle.handle.GetVehicle()))
+            {
+                API.sendChatMessageToPlayer(player, "You must own the vehicle you're modifying");
+            }
+
             List<string[]> modList = new List<string[]>();
             var manifest = VehicleInfo.Get(player.vehicle);
             foreach (var i in manifest.ModTypes)
