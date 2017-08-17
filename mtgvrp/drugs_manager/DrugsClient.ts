@@ -48,7 +48,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 
     else if (eventName === "clearSpeed") {
         API.setHudVisible(true);
-        API.playScreenEffect("RampageOut",1000,false);
+        API.playScreenEffect("DrugsTrevorClownsFightOut", 1000, false);
     }
     // Really don't want permanent effects. 
     else if (eventName === "clearAllEffects") {

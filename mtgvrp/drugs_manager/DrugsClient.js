@@ -37,7 +37,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
     }
     else if (eventName === "clearSpeed") {
         API.setHudVisible(true);
-        API.playScreenEffect("RampageOut", 1000, false);
+        API.playScreenEffect("DrugsTrevorClownsFightOut", 1000, false);
     }
     else if (eventName === "clearAllEffects") {
         API.callNative("0x4E6D875B");
