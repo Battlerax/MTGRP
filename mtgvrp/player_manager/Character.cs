@@ -133,6 +133,16 @@ namespace mtgvrp.player_manager
         //Drug levels
 
          public int HeroinTolerance { get; set; }
+        [BsonIgnore]
+         public Timer WeedTimer { get; set; }
+        [BsonIgnore]
+        public Timer Speedtimer { get; set; }
+        [BsonIgnore]
+        public Timer HeroinTimer { get; set; }
+        [BsonIgnore]
+        public Timer CocaineTimer { get; set; }
+        [BsonIgnore]
+        public Timer MethTimer { get; set; }
 
         public int GarbageTimeLeft
         {

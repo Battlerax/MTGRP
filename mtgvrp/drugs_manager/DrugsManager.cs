@@ -18,12 +18,14 @@ namespace mtgvrp.drugs_manager
 
 
     // TODO: Reduce the amount of code reusage.
-    // TODO: Add Effects. (Added to Coke + Weed,Speed) Rem : Heroin and Meth.
+    // TODO: Add Effects. (Added to Coke + Weed,Speed,Heroin) Rem : Meth.
     // TODO: Make the whole crate thing a bit more exciting. (Added crowbar)
     // TODO: Improve crowbar mechanics. (Cooldown if player is unable to crack open the crate.)
 
     internal class DrugsManager : Script
     {
+
+        private const int visualPerAmount = 5;
 
         private const int HeroinDivider = 3;
         private const int MaxPermittedToleranceLevel = 15;
@@ -51,7 +53,13 @@ namespace mtgvrp.drugs_manager
             DebugManager.DebugMessage("[DrugsM]: Drugs are booting up.");
             API.onClientEventTrigger += DrugsManagerClient;
             API.onResourceStart += startTimer;
+            API.onPlayerDisconnected += clearEffects;
             DebugManager.DebugMessage("[DrugsM]: Drugs have successfully booted up.");
+        }
+
+        private void clearEffects(Client player, string reason)
+        {
+            API.triggerClientEvent(player,"clearAllEffects");
         }
 
         private void startTimer()
@@ -156,6 +164,11 @@ namespace mtgvrp.drugs_manager
             var playerChar = sender.GetCharacter();
             if (!int.TryParse(amount, out weedVal)) return;
             var drugCheck = InventoryManager.DoesInventoryHaveItem(playerChar, typeof(Weed));
+            if (playerChar.WeedTimer != null && playerChar.WeedTimer.Enabled)
+            {
+                API.sendChatMessageToPlayer(sender,"Taking more drugs in the middle of a trip is probably a bad idea. Wait it out.");
+                return;
+            }
             if (!CheckForCorrectAmount(weedVal, drugCheck))
             {
                 API.sendChatMessageToPlayer(sender, "You don't have enough weed to smoke!");
@@ -164,11 +177,22 @@ namespace mtgvrp.drugs_manager
 
             boostHealth(sender, weedVal);
 
+            API.triggerClientEvent(sender, "weedVisual",(visualPerAmount*weedVal) * 1000);
             ChatManager.RoleplayMessage(playerChar, "has smoked some weed.", ChatManager.RoleplayMe);
             API.sendChatMessageToPlayer(sender, "You smoked " + weedVal + " grams of weed.");
-
+            playerChar.WeedTimer = new Timer {Interval = (weedVal * visualPerAmount) * 1000};
+            playerChar.WeedTimer.Elapsed += delegate { clearWeedEffect(sender); };
+            playerChar.WeedTimer.Start();   
+            API.sendChatMessageToPlayer(sender,playerChar.WeedTimer.Interval.ToString());
 
             InventoryManager.DeleteInventoryItem(playerChar, typeof(Weed), weedVal);
+        }
+
+        private void clearWeedEffect(Client sender)
+        {
+            Character c = sender.GetCharacter();
+            c.WeedTimer.Stop();
+            API.triggerClientEvent(sender,"clearWeed");
         }
 
         [Command("takespeed", GreedyArg = true, Alias = "usespeed")]
@@ -461,6 +485,7 @@ namespace mtgvrp.drugs_manager
             {
                 API.sendChatMessageToPlayer(c.Client,"Your current usage limits are causing you serious pain.");
                 API.setPlayerHealth(c.Client,API.getPlayerHealth(c.Client) - 10);
+                // TODO: Add camera effects here!
                 return;
             }
             if (effectRoll == 10)
@@ -468,6 +493,7 @@ namespace mtgvrp.drugs_manager
                 API.sendChatMessageToPlayer(c.Client,"Your body is unable to take the heroin anymore, and begins to breakdown.");
                 API.setPlayerHealth(c.Client,1);
                 API.setPlayerArmor(c.Client,0);
+               // TODO: Add Camera Effects here!
             }
         }
 
