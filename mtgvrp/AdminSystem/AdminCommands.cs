@@ -739,7 +739,7 @@ namespace mtgvrp.AdminSystem
                     API.sendChatMessageToPlayer(player, $"(UNKNOWN VEHICLE) | ID ~r~{carid}~w~.");
                     continue;
                 }
-                API.sendChatMessageToPlayer(player, $"({API.getVehicleDisplayName(carid.VehModel)}) | NetHandle ~r~{carid.NetHandle.Value}~w~ | ID ~r~{carid.Id}~w~.");
+                API.sendChatMessageToPlayer(player, $"({VehicleOwnership.returnCorrDisplayName(carid.VehModel)}) | NetHandle ~r~{carid.NetHandle.Value}~w~ | ID ~r~{carid.Id}~w~.");
             }
             API.sendChatMessageToPlayer(player, "----------------------------------------------");
         }

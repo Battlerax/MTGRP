@@ -194,7 +194,7 @@ namespace mtgvrp.group_manager.lspd.MDC
                     //GET VEHICLES.
                     var vehicles = DatabaseManager.VehicleTable.Find(x => x.OwnerId == foundPlayer.Id).ToList();
                     var vehiclesList = vehicles.Where(x => x.IsRegistered).Select(x => new[]
-                        {API.getVehicleDisplayName(x.VehModel), x.LicensePlate}).ToArray();
+                        {VehicleOwnership.returnCorrDisplayName(x.VehModel), x.LicensePlate}).ToArray();
 
                     //Get amount of crimes.
                     var amountOfPages = Math.Floor((foundPlayer.GetCrimesNumber() + 9d) / 10d);
@@ -222,7 +222,7 @@ namespace mtgvrp.group_manager.lspd.MDC
                         return;
                     }
 
-                    API.triggerClientEvent(player, "MDC_SHOW_VEHICLE_INFO", API.getVehicleDisplayName(veh.VehModel),
+                    API.triggerClientEvent(player, "MDC_SHOW_VEHICLE_INFO", VehicleOwnership.returnCorrDisplayName(veh.VehModel),
                         veh.OwnerName, API.getVehicleClassName(API.getVehicleClass(veh.VehModel)));
                     break;
                 }
