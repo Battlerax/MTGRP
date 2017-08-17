@@ -154,6 +154,8 @@ namespace mtgvrp.property_system
                     return 355;
                 case PropertyManager.PropertyTypes.Government:
                     return 475;
+                case PropertyManager.PropertyTypes.ModdingShop:
+                    return 72;
                 default:
                     return -1;
             }

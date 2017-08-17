@@ -85,6 +85,10 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="VehicleInfo, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\VehicleInfo.dll</HintPath>
+    </Reference>
     <Reference Include="websocket-sharp, Version=1.0.2.32519, Culture=neutral, PublicKeyToken=5660b08a1845a91e, processorArchitecture=MSIL">
       <HintPath>..\packages\WebSocketSharp-NonPreRelease.1.0.0\lib\net35\websocket-sharp.dll</HintPath>
     </Reference>
@@ -194,6 +198,7 @@
     <Compile Include="vehicle_dealership\BoatDealership.cs" />
     <Compile Include="vehicle_dealership\VipDealership.cs" />
     <Compile Include="vehicle_dealership\VehicleDealership.cs" />
+    <Compile Include="vehicle_manager\modding\ModdingManager.cs" />
     <Compile Include="vehicle_manager\Vehicle.cs" />
     <Compile Include="vehicle_manager\VehicleManager.cs" />
     <Compile Include="vehicle_manager\VehicleMenu.cs" />
@@ -209,7 +214,15 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="stylesheet\css\bootstrap-theme.css.map" />
+    <None Include="stylesheet\css\bootstrap-theme.min.css.map" />
+    <None Include="stylesheet\css\bootstrap.css.map" />
+    <None Include="stylesheet\css\bootstrap.min.css.map" />
     <None Include="stylesheet\fonts\BebasKai-Regular.woff" />
+    <None Include="stylesheet\fonts\glyphicons-halflings-regular.eot" />
+    <None Include="stylesheet\fonts\glyphicons-halflings-regular.ttf" />
+    <None Include="stylesheet\fonts\glyphicons-halflings-regular.woff" />
+    <None Include="stylesheet\fonts\glyphicons-halflings-regular.woff2" />
     <None Include="stylesheet\fonts\housescript.woff" />
     <None Include="stylesheet\fonts\housescript.woff2" />
     <None Include="stylesheet\fonts\metro.eot" />
@@ -274,6 +287,10 @@
     <Content Include="rp_scripts\BankMenu.js" />
     <Content Include="speed_fuel_system\SpeedoFuel.html" />
     <Content Include="speed_fuel_system\SpeedoFuel.js" />
+    <Content Include="stylesheet\css\bootstrap-theme.css" />
+    <Content Include="stylesheet\css\bootstrap-theme.min.css" />
+    <Content Include="stylesheet\css\bootstrap.css" />
+    <Content Include="stylesheet\css\bootstrap.min.css" />
     <Content Include="stylesheet\css\metro-colors.css" />
     <Content Include="stylesheet\css\metro-colors.min.css" />
     <Content Include="stylesheet\css\metro-icons.css" />
@@ -286,15 +303,25 @@
     <Content Include="stylesheet\css\metro-schemes.min.css" />
     <Content Include="stylesheet\css\metro.css" />
     <Content Include="stylesheet\css\metro.min.css" />
+    <Content Include="stylesheet\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="stylesheet\fonts\metro.svg" />
+    <Content Include="stylesheet\js\bootstrap.js" />
+    <Content Include="stylesheet\js\bootstrap.min.js" />
+    <Content Include="stylesheet\js\jscolor.min.js" />
     <Content Include="stylesheet\js\justgage.js" />
     <Content Include="stylesheet\js\metro.js" />
     <Content Include="stylesheet\js\metro.min.js" />
+    <Content Include="stylesheet\js\npm.js" />
     <Content Include="stylesheet\js\raphael-2.1.4.min.js" />
     <Content Include="vehicle_dealership\chopperdealership.js" />
     <Content Include="vehicle_dealership\boatdealer.js" />
     <Content Include="vehicle_dealership\vipdealership.js" />
     <Content Include="vehicle_dealership\vehicledealer.js" />
+    <Content Include="VehicleInfo.dll" />
+    <Content Include="vehicle_manager\modding\gui\LSC.png" />
+    <Content Include="vehicle_manager\modding\gui\ModGui.html" />
+    <Content Include="vehicle_manager\modding\gui\ModGui.js" />
+    <Content Include="vehicle_manager\modding\ModdingManager.js" />
     <Content Include="vehicle_manager\VehicleOwnership.js" />
     <Content Include="vehicle_manager\vehicle_editor\VehicleEdit.js" />
     <Content Include="vehicle_manager\vehicle_editor\VehicleEdit.html" />

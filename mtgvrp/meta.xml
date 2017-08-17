@@ -65,6 +65,9 @@
 	<file src="stylesheet/fonts/housescript.woff2"/>
   <file src="stylesheet/fonts/BebasKai-Regular.woff"/>
 	<file src="stylesheet/css/metro-icons.css"/>
+	<file src="stylesheet/css/bootstrap.min.css"/>
+	<file src="stylesheet/js/bootstrap.min.js"/>
+	<file src="stylesheet/js/jscolor.min.js"/>
  
   <!-- Phone Files -->
   <script src="phone_manager/PhoneManager.js" type="client" lang="javascript"/>
@@ -121,6 +124,12 @@
   <!-- Mapping Manager -->
   <script src="mapping_manager/MappingManager.js" type="client" lang="javascript"/>
   <file src="mapping_manager/MappingManager.html"/>
+  
+  <!-- Modding Shop -->
+  <script src="vehicle_manager/modding/ModdingManager.js" type="client" lang="javascript"/>  
+  <file src="vehicle_manager/modding/gui/ModGui.html"/>
+  <file src="vehicle_manager/modding/gui/ModGui.js"/>
+  <file src="vehicle_manager/modding/gui/LSC.png"/>
   
   <file src="jquery.js" />
 </meta>
