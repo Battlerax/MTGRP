@@ -3,6 +3,9 @@ var Args = null;
 
 var curMods = [];
 
+var camera = API.createCamera(new Vector3(-331.7626, -135.005, 40.0), new Vector3(0, 0, 135.6836));
+var veh;
+
 API.onServerEventTrigger.connect((event, args) => {
     if (event === "SHOW_MODDING_GUI") {
         var res = API.getScreenResolution();
@@ -13,6 +16,12 @@ API.onServerEventTrigger.connect((event, args) => {
         API.waitUntilCefBrowserLoaded(myBrowser);
         API.setHudVisible(false);
         API.showCursor(true);
+        API.setChatVisible(false);
+
+        API.pointCameraAtEntity(camera, API.getPlayerVehicle(API.getLocalPlayer()), new Vector3());
+        API.setActiveCamera(camera);
+
+        veh = API.getPlayerVehicle(API.getLocalPlayer());
         Args = args;
     }
     else if (event === "MODDING_FILL_MODS") {
@@ -35,6 +44,8 @@ API.onServerEventTrigger.connect((event, args) => {
         API.showCursor(false);
         API.destroyCefBrowser(myBrowser);
         myBrowser = null;
+        API.setActiveCamera(null);
+        API.setChatVisible(true);
     }
 });
 
@@ -45,14 +56,12 @@ function loaded() {
     myBrowser.call("addTypes", Args[0], Args[1]);
 
     //Save current mods.
-    var veh = API.getPlayerVehicle(API.getLocalPlayer());
     for (var i = 0; i < 70; i++) {
         curMods[i] = API.getVehicleMod(veh, i);
     }
 }
 
 function resetModType(type) {
-    var veh = API.getPlayerVehicle(API.getLocalPlayer());
     API.removeVehicleMod(veh, type);
     API.setVehicleMod(veh, type, curMods[type]);
 }
@@ -63,13 +72,11 @@ function callServerEvent(eventName /* Args */) {
 }
 
 function putmod(type, id) {
-    var veh = API.getPlayerVehicle(API.getLocalPlayer());
     API.setVehicleMod(veh, parseInt(type), parseInt(id));
 }
 
 function updateCurrentColor(type) {
     var clr;
-    var veh = API.getPlayerVehicle(API.getLocalPlayer());
     if (type === "primarycolor") {
         clr = API.getVehicleCustomPrimaryColor(veh);
     } else if (type === "secondarycolor") {
@@ -88,7 +95,6 @@ function updateColor(type, r, g, b) {
     g = Math.round(g);
     b = Math.round(b);
 
-    var veh = API.getPlayerVehicle(API.getLocalPlayer());
     if (type === "primarycolor") {
         API.setVehicleCustomPrimaryColor(veh, r, g, b);
     } else if (type === "secondarycolor") {
@@ -106,6 +112,32 @@ API.onKeyUp.connect((sender, e) => {
         API.showCursor(false);
         API.destroyCefBrowser(myBrowser);
         myBrowser = null;
+        API.setActiveCamera(null);
+        API.setChatVisible(true);
         API.triggerServerEvent("MODDING_EXITMENU");
+    }
+});
+
+/* Vehicle Rotation */
+var rotating = 0;
+API.onKeyDown.connect(function (sender, e) {
+    if (e.KeyCode == Keys.Oemplus) {
+        rotating = 4;
+
+    } else if (e.KeyCode == Keys.OemMinus) {
+        rotating = -4;
+    }
+});
+
+API.onKeyUp.connect(function (sender, e) {
+    if (e.KeyCode == Keys.Oemplus || e.KeyCode == Keys.OemMinus) {
+        rotating = 0;
+    }
+});
+
+API.onUpdate.connect(function () {
+    if (rotating != 0 && myBrowser !== null) {
+        var new_rot = API.getEntityRotation(veh).Add(new Vector3(0, 0, rotating));
+        API.setEntityRotation(veh, new_rot);
     }
 });

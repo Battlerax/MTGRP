@@ -6,12 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
+using GrandTheftMultiplayer.Server;
 using GrandTheftMultiplayer.Server.API;
 using GrandTheftMultiplayer.Server.Elements;
 using GrandTheftMultiplayer.Shared;
 using VehicleInfoLoader;
 using VehicleInfoLoader.Data;
 using GrandTheftMultiplayer.Server.Managers;
+using GrandTheftMultiplayer.Shared.Math;
 using mtgvrp.core;
 using mtgvrp.inventory;
 using Newtonsoft.Json;
@@ -61,6 +63,9 @@ namespace mtgvrp.vehicle_manager.modding
                     var vehicle = sender.vehicle;
                     ClearVehicleMods(vehicle.handle.GetVehicle());
                     ApplyVehicleMods(vehicle.handle.GetVehicle());
+                    API.setEntityPosition(sender.vehicle, sender.getData("ModLastPos"));
+                    API.setEntityDimension(sender.vehicle, 0);
+                    API.setEntityDimension(sender, 0);
                     break;
                 }
 
@@ -98,7 +103,12 @@ namespace mtgvrp.vehicle_manager.modding
                     ApplyVehicleMods(veh);
                     veh.Save();
                     API.triggerClientEvent(sender, "MODDING_CLOSE");
-                    API.sendChatMessageToPlayer(sender, "You have successfully purchased some vehicle mods for a total of ~g~" + allPrices.ToString("C"));
+                    API.sendChatMessageToPlayer(sender,
+                        "You have successfully purchased some vehicle mods for a total of ~g~" +
+                        allPrices.ToString("C"));
+                    API.setEntityPosition(sender.vehicle, sender.getData("ModLastPos"));
+                    API.setEntityDimension(sender.vehicle, 0);
+                    API.setEntityDimension(sender, 0);
                     break;
                 }
             }
@@ -111,6 +121,9 @@ namespace mtgvrp.vehicle_manager.modding
 
         void AddVehicleMod(Vehicle veh, int type, string mod)
         {
+            if(veh.VehMods == null)
+                veh.VehMods = new Dictionary<string, string>();
+
             if (veh.VehMods.ContainsKey(type.ToString()))
             {
                 veh.VehMods[type.ToString()] = mod;
@@ -315,6 +328,12 @@ namespace mtgvrp.vehicle_manager.modding
                     });
             }
 
+            API.setEntityData(player, "ModLastPos", player.position.Copy());
+            API.setEntityPosition(player.vehicle, new Vector3(-335.8468, -138.2994, 38.43893));
+            API.setEntityRotation(player.vehicle, new Vector3(0.1579523, 0.0001232202, -84.06439));
+            API.setEntityDimension(player, player.GetCharacter().Id);
+            API.setEntityDimension(player.vehicle, player.GetCharacter().Id);
+            
             API.triggerClientEvent(player, "SHOW_MODDING_GUI", API.toJson(modList.ToArray()), player.GetAccount().VipLevel > 0);
         }
     }

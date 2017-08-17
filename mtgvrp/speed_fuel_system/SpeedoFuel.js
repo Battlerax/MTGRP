@@ -109,6 +109,9 @@ var screenRes = null;
 
 API.onUpdate.connect(() => {
 
+    if (resource.ModdingManager.myBrowser !== null)
+        return;
+
     //ZoneStreet name.
     if (Date.now() >= posUpdateTick) {
         posUpdateTick = Date.now() + 1000;
