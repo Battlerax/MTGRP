@@ -314,7 +314,7 @@ namespace mtgvrp.core
             {
                 if (p.NewbieToggled == false)
                 {
-                    API.sendChatMessageToAll(Color.NewbieChat, $"[N] {rank} " + c.rp_name() + ": " + message);
+                    API.sendChatMessageToPlayer(p.Client, Color.NewbieChat, $"[N] {rank} " + c.rp_name() + ": " + message);
                 }
             }
 
