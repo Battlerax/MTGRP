@@ -1626,7 +1626,7 @@ namespace mtgvrp.AdminSystem
                 return;
             }
 
-            var foundCharacters = DatabaseManager.CharacterTable.Find(x => ObjectId.Parse(x.AccountId) == foundAccount)
+            var foundCharacters = DatabaseManager.CharacterTable.Find(x => x.AccountId == foundAccount.ToString())
                 .Project(x => x.CharacterName).ToList();
             if (foundCharacters.Count == 0)
             {
