@@ -133,6 +133,9 @@ namespace mtgvrp.vehicle_dealership
                 return;
             }
             */
+
+        
+
             if (character.OwnedVehicles.Count >= VehicleManager.GetMaxOwnedVehicles(player))
             {
                 API.sendChatMessageToPlayer(player, "You can't own anymore vehicles.");
@@ -143,6 +146,12 @@ namespace mtgvrp.vehicle_dealership
             var currentPos = API.getEntityPosition(player);
             if (_dealershipsLocations.Any(dealer => currentPos.DistanceTo(dealer) < 5F))
             {
+                if (API.isPlayerInAnyVehicle(player))
+                {
+                    API.sendChatMessageToPlayer(player, "You're not able to buy a chopper while in a vehicle!");
+                    return;
+                }
+
                 API.triggerClientEvent(player, "chopperdealership_showbuyvehiclemenu", API.toJson(_helicopters));
             }
             else

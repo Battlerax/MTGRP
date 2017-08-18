@@ -228,6 +228,7 @@ namespace mtgvrp.vehicle_dealership
         {
             //Check if can buy more cars.
             Character character = player.GetCharacter();
+
             if (character.OwnedVehicles.Count >= VehicleManager.GetMaxOwnedVehicles(player))
             {
                 API.sendChatMessageToPlayer(player, "You can't own anymore vehicles.");
@@ -238,6 +239,12 @@ namespace mtgvrp.vehicle_dealership
             var currentPos = API.getEntityPosition(player);
             if (_dealershipsLocations.Any(dealer => currentPos.DistanceTo(dealer) < 5F))
             {
+                if (API.isPlayerInAnyVehicle(player))
+                {
+                    API.sendChatMessageToPlayer(player, "You're not able to buy a vehicle while in a vehicle!");
+                    return;
+                }
+
                 API.triggerClientEvent(player, "dealership_showbuyvehiclemenu", API.toJson(_motorsycles),
                     API.toJson(_copues), API.toJson(_trucksnvans), API.toJson(_offroad), API.toJson(_musclecars),
                     API.toJson(_suv), API.toJson(_supercars), API.toJson(_cycles));
