@@ -273,7 +273,8 @@ namespace mtgvrp.player_manager
                 {
                     Character character = player.GetCharacter();
                 
-                    character.Model.HairStyle = character.Model.Gender == Character.GenderMale ? ComponentManager.ValidMaleHair[(int)arguments[0]].ComponentId : ComponentManager.ValidFemaleHair[(int)arguments[0]].ComponentId;
+                    //character.Model.HairStyle = character.Model.Gender == Character.GenderMale ? ComponentManager.ValidMaleHair[(int)arguments[0]].ComponentId : ComponentManager.ValidFemaleHair[(int)arguments[0]].ComponentId;
+                    character.Model.HairStyle = (int)arguments[0];
 
                     character.Model.HairColor = (int)arguments[1];
                     character.Model.Blemishes = (int)arguments[2];
@@ -430,9 +431,29 @@ namespace mtgvrp.player_manager
                 }
                     break;
                 case "initialize_hair":
+                    List<string> hairstyleNames = new List<string>();
+                    List<int> hairstyleIds = new List<int>();
+                    if((int)arguments[0] == Character.GenderMale)
+                    {
+                        foreach(Component c in ComponentManager.ValidMaleHair)
+                        {
+                            hairstyleNames.Add(c.Name);
+                            hairstyleIds.Add(c.ComponentId);
+                        }
+                    }
+                    else
+                    {
+                        foreach(Component c in ComponentManager.ValidFemaleHair)
+                        {
+                            hairstyleNames.Add(c.Name);
+                            hairstyleIds.Add(c.ComponentId);
+                        }
+                    }
+                    var hairstyleNamesString = String.Join(",", hairstyleNames);
+                    var hairstyleIdsString = String.Join(",", hairstyleIds);
                     var maxHairStyles = (int)arguments[0] == Character.GenderMale ? ComponentManager.ValidMaleHair.Count : ComponentManager.ValidFemaleHair.Count;
 
-                    API.triggerClientEvent(player, "initialize_hair", maxHairStyles);
+                    API.triggerClientEvent(player, "initialize_hair", maxHairStyles, hairstyleNamesString, hairstyleIdsString);
                     break;
                 case "initiate_style_limits":
                     Character cha = player.GetCharacter();

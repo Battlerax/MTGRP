@@ -59,7 +59,9 @@ namespace mtgvrp.vehicle_manager
         public Timer CustomRespawnTimer { get; set; }
 
         public int VehType { get; set; }
-       
+
+        public Dictionary<string, string> VehMods { get; set; }
+
         [BsonIgnore]
         public Job Job { get; set; }
         public int JobId { get; set; }
@@ -208,7 +210,7 @@ namespace mtgvrp.vehicle_manager
         public void Save()
         {
             var filter = Builders<Vehicle>.Filter.Eq("_id", Id);
-            DatabaseManager.VehicleTable.ReplaceOneAsync(filter, this);
+            DatabaseManager.VehicleTable.ReplaceOne(filter, this);
         }
 
         public void Delete()

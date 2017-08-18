@@ -129,6 +129,13 @@ namespace mtgvrp.vehicle_dealership
             var currentPos = API.getEntityPosition(player);
             if (_dealershipsLocations.Any(dealer => currentPos.DistanceTo(dealer) < 5F))
             {
+
+                if (API.isPlayerInAnyVehicle(player))
+                {
+                    API.sendChatMessageToPlayer(player, "You're not able to buy a rod while in a vehicle!");
+                    return;
+                }
+
                 if (Money.GetCharacterMoney(character) < 250)
                 {
                     player.sendChatMessage("You can't afford a fishing rod.");
@@ -165,6 +172,12 @@ namespace mtgvrp.vehicle_dealership
         {
             //Check if can buy more cars.
             Character character = player.GetCharacter();
+            if (API.isPlayerInAnyVehicle(player))
+            {
+                API.sendChatMessageToPlayer(player,"You're not able to buy a boat while in a vehicle!");
+                return;
+            }
+
             if (character.OwnedVehicles.Count >= VehicleManager.GetMaxOwnedVehicles(player))
             {
                 API.sendChatMessageToPlayer(player, "You can't own anymore vehicles.");

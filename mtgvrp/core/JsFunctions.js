@@ -29,29 +29,14 @@ var lastObj;
 var lastEvent;
 API.onServerEventTrigger.connect((event, args) => {
     if (event === "PLACE_OBJECT_ON_GROUND_PROPERLY") {
-        //0: Object, 1: Eventname
+        //0: Object
 
         lastObj = args[0];
-        lastEvent = args[1];
 
-        var obj = null;
-        //Find object.
-        var objs = API.getStreamedObjects();
-        for (var i = 0; i < objs.Count(); i++) {
-            if (API.getEntitySyncedData(objs[i], "TargetObj") === args[0]) {
-                obj = objs[i];
-                break;
-            }
-        }
-
-        if (obj === null) {
-            return;
-        }
-
-        API.callNative("0x58A850EAEE20FAA3", obj);
-        var pos = API.getEntityPosition(obj);
-        var rot = API.getEntityRotation(obj);
-        API.triggerServerEvent(args[1], args[0], pos, rot);
+        API.callNative("PLACE_OBJECT_ON_GROUND_PROPERLY", lastObj);
+        var pos = API.getEntityPosition(lastObj);
+        var rot = API.getEntityRotation(lastObj);
+        API.triggerServerEvent("OBJECT_PLACED_PROPERLY",args[0], pos, rot);
     }
     else if (event === "COMPLETE_FREEZE") {
         var state = args[0];

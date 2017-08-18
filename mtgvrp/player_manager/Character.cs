@@ -51,6 +51,7 @@ namespace mtgvrp.player_manager
         public bool HasSkin { get; set; }
         public int Health { get; set; }
         public int Armor { get; set; }
+        public int TempHealth { get; set; }
 
         public List<int> Outfit = new List<int>();
         public List<int> OutfitVariation = new List<int>();
@@ -102,6 +103,8 @@ namespace mtgvrp.player_manager
         //Chat cooldowns
         [BsonIgnore]
         public long NewbieCooldown { get; set; }
+        public bool NewbieToggled { get; set; }
+        public bool VIPToggled { get; set; }
 
         [BsonIgnore]
         public long OocCooldown { get; set; }
@@ -127,6 +130,21 @@ namespace mtgvrp.player_manager
         public bool IsOnGarbageRun { get; set; }
         [BsonIgnore] public Timer GarbageTimeLeftTimer { get; set; }
         private int _garbagetime;
+
+
+        //Drug levels
+
+         public int HeroinTolerance { get; set; }
+        [BsonIgnore]
+         public Timer WeedTimer { get; set; }
+        [BsonIgnore]
+        public Timer Speedtimer { get; set; }
+        [BsonIgnore]
+        public Timer HeroinTimer { get; set; }
+        [BsonIgnore]
+        public Timer CocaineTimer { get; set; }
+        [BsonIgnore]
+        public Timer MethTimer { get; set; }
 
         public int GarbageTimeLeft
         {
@@ -361,6 +379,9 @@ namespace mtgvrp.player_manager
 
             Health = 100;
             Armor = 0;
+            TempHealth = 0;
+            HeroinTolerance = 0;
+
             RadioToggle = true;
             CanDoAnim = true;
 

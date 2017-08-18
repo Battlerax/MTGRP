@@ -16,6 +16,50 @@ namespace mtgvrp.component_manager
         public static List<Component> ValidFemaleLegs = new List<Component>();
         public static List<Component> ValidMaleLegs = new List<Component>();
 
+        // LISTS FOR CLOTHING CATEGORIES
+
+        // MALE TROUSERS
+
+        public static List<Component> ValidMaleJeans = new List<Component>();
+        public static List<Component> ValidMaleWorkPants = new List<Component>();
+        public static List<Component> ValidMaleShorts = new List<Component>();
+        public static List<Component> ValidMaleCargoPants = new List<Component>();
+        public static List<Component> ValidMaleSportsPants = new List<Component>();
+        public static List<Component> ValidMaleSuitPants = new List<Component>();
+        public static List<Component> ValidMaleChinos = new List<Component>();
+        public static List<Component> ValidMaleSportShorts = new List<Component>();
+
+        // MALE GLASSES
+
+        public static List<Component> ValidMaleProfessionalGlasses = new List<Component>();
+        public static List<Component> ValidMaleSportsGlasses = new List<Component>();
+        public static List<Component> ValidMaleCasualGlasses = new List<Component>();
+        public static List<Component> ValidMaleAviators = new List<Component>();
+        public static List<Component> ValidMaleHipsterGlasses = new List<Component>();
+        public static List<Component> ValidMaleHighEndGlasses = new List<Component>();
+        public static List<Component> ValidMaleGunRangeGlasses = new List<Component>();
+
+        // FEMALE TROUSERS
+
+        public static List<Component> ValidFemaleJeans = new List<Component>();
+        public static List<Component> ValidFemaleShorts = new List<Component>();
+        public static List<Component> ValidFemaleCargoPants = new List<Component>();
+        public static List<Component> ValidFemaleSportsPants = new List<Component>();
+        public static List<Component> ValidFemaleSuitPants = new List<Component>();
+        public static List<Component> ValidFemaleChinos = new List<Component>();
+        public static List<Component> ValidFemaleSkirts = new List<Component>();
+        public static List<Component> ValidFemaleBikiniBottoms = new List<Component>();
+        public static List<Component> ValidFemaleSportShorts = new List<Component>();
+
+        // FEMALE GLASSES
+
+        public static List<Component> ValidFemaleSportsGlasses = new List<Component>();
+        public static List<Component> ValidFemaleCasualGlasses = new List<Component>();
+        public static List<Component> ValidFemaleAviators = new List<Component>();
+        public static List<Component> ValidFemaleHipsterGlasses = new List<Component>();
+        public static List<Component> ValidFemaleHighEndGlasses = new List<Component>();
+        public static List<Component> ValidFemaleGunRangeGlasses = new List<Component>();
+
         public static List<Component> ValidBags = new List<Component>();
 
         public static List<Component> ValidFemaleShoes = new List<Component>();
@@ -51,42 +95,42 @@ namespace mtgvrp.component_manager
 
             /* ================ MALE HAIR ================ */
 
-            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 0, new List<int> { }, "Style 1"));
-            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 1, new List<int> { }, "Style 1"));
-            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 2, new List<int> { }, "Style 1"));
-            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 3, new List<int> { }, "Style 1"));
-            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 4, new List<int> { }, "Style 1"));
-            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 5, new List<int> { }, "Style 1"));
-            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 6, new List<int> { }, "Style 1"));
-            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 7, new List<int> { }, "Style 1"));
-            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 8, new List<int> { }, "Style 1"));
-            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 9, new List<int> { }, "Style 1"));
-            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 10, new List<int> { }, "Style 1"));
-            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 11, new List<int> { }, "Style 1"));
-            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 12, new List<int> { }, "Style 1"));
-            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 13, new List<int> { }, "Style 1"));
-            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 14, new List<int> { }, "Style 1"));
-            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 15, new List<int> { }, "Style 1"));
-            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 16, new List<int> { }, "Style 1"));
-            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 17, new List<int> { }, "Style 1"));
-            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 18, new List<int> { }, "Style 1"));
-            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 19, new List<int> { }, "Style 1"));
-            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 20, new List<int> { }, "Style 1"));
-            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 21, new List<int> { }, "Style 1"));
-            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 22, new List<int> { }, "Style 1"));
-            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 24, new List<int> { }, "Style 1"));
-            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 25, new List<int> { }, "Style 1"));
-            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 26, new List<int> { }, "Style 1"));
-            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 27, new List<int> { }, "Style 1"));
-            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 28, new List<int> { }, "Style 1"));
-            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 29, new List<int> { }, "Style 1"));
-            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 30, new List<int> { }, "Style 1"));
-            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 31, new List<int> { }, "Style 1"));
-            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 32, new List<int> { }, "Style 1"));
-            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 33, new List<int> { }, "Style 1"));
-            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 34, new List<int> { }, "Style 1"));
-            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 35, new List<int> { }, "Style 1"));
-            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 36, new List<int> { }, "Style 1"));
+            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 0, new List<int> { }, "Close Shave"));
+            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 1, new List<int> { }, "Buzzcut"));
+            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 2, new List<int> { }, "Faux Hawk"));
+            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 3, new List<int> { }, "Hipster"));
+            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 4, new List<int> { }, "Side Parting"));
+            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 5, new List<int> { }, "Shorter Cut"));
+            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 6, new List<int> { }, "Biker"));
+            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 7, new List<int> { }, "Ponytail"));
+            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 8, new List<int> { }, "Cornrows"));
+            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 9, new List<int> { }, "Slicked"));
+            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 10, new List<int> { }, "Short Brushed"));
+            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 11, new List<int> { }, "Spikey"));
+            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 12, new List<int> { }, "Caesar"));
+            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 13, new List<int> { }, "Chopped"));
+            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 14, new List<int> { }, "Dreads"));
+            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 15, new List<int> { }, "Long Hair"));
+            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 16, new List<int> { }, "Shaggy Curls"));
+            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 17, new List<int> { }, "Surfer Dude"));
+            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 18, new List<int> { }, "Short Side Part"));
+            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 19, new List<int> { }, "High Slicked Sides"));
+            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 20, new List<int> { }, "Long Slicked"));
+            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 21, new List<int> { }, "Hipster Youth"));
+            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 22, new List<int> { }, "Mullet"));
+            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 24, new List<int> { }, "Classic Cornrows"));
+            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 25, new List<int> { }, "Palm Cornrows"));
+            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 26, new List<int> { }, "Lightning Cornrows"));
+            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 27, new List<int> { }, "Whipped Cornrows"));
+            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 28, new List<int> { }, "Zig Zag Cornrows"));
+            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 29, new List<int> { }, "Snail Cornrows"));
+            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 30, new List<int> { }, "Hightop"));
+            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 31, new List<int> { }, "Loose Swept Back"));
+            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 32, new List<int> { }, "Undercut Swept Back"));
+            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 33, new List<int> { }, "Undercut Swept Side"));
+            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 34, new List<int> { }, "Spiked Mohawk"));
+            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 35, new List<int> { }, "Mod"));
+            ValidMaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 36, new List<int> { }, "Layered Mod"));
 
             /* ================ MALE PANTS ================ */
 
@@ -580,26 +624,43 @@ namespace mtgvrp.component_manager
 
             //0 == none
             ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 0, new List<int>() { 1 }, "None"));
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 1, new List<int>() { 2 }, "Style 1"));
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 2, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Style 2"));
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 3, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Style 3"));
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 4, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Style 4"));
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 5, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Style 5"));
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 6, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8 }, "Style 6"));
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 7, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Style 7"));
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 8, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Style 8"));
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 9, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Style 9"));
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 10, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Style 10"));
+            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 1, new List<int>() { 2 }, "Wraparounds 1"));
+            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 2, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Broker/Stank Glasses"));
+            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 3, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Janitor Frames"));
+            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 4, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Enemas"));
+            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 5, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Aviators"));
+            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 7, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Fuques"));
+            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 8, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Cop Frames"));
+            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 9, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Hawaiian"));
+            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 10, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Bull Emic"));
             //11 == none
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 12, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Style 11"));
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 13, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Style 12"));
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 15, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Style 13"));
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 16, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, "Style 14"));
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 17, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Style 15"));
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 18, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Style 16"));
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 19, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Style 17"));
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 20, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Style 18"));
-            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 23, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, "Style 19"));
+            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 12, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Elvis"));
+            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 13, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Hipsters"));
+            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 15, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Guns 1"));
+            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 16, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, "Wraparounds 2"));
+            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 17, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Refined"));
+            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 18, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Superior"));
+            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 19, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Two-Tone"));
+            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 20, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, "Sunset"));
+            ValidMaleGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 23, new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, "Guns 2"));
+
+            // maybe use this later
+            /*ValidMaleSportsGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 0, new List<int>() { 1 }, "None"));
+            ValidMaleSportsGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 1, new List<int>() { 2 }, "Broker Black Wraparounds"));
+
+            ValidMaleCasualGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 0, new List<int>() { 1 }, "None"));
+            ValidMaleCasualGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 2, new List<int>() { 1 }, "Stank Black Tint"));
+            ValidMaleCasualGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 2, new List<int>() { 2 }, "Broker Grey Tint"));
+            ValidMaleCasualGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 2, new List<int>() { 3 }, "Broker Brown Tint"));
+            ValidMaleCasualGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 2, new List<int>() { 4 }, "Stank Black Tint"));
+            ValidMaleCasualGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 2, new List<int>() { 5 }, "Broker Black Shades"));
+            ValidMaleCasualGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 2, new List<int>() { 6 }, "Stank White Tint"));
+            ValidMaleCasualGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 2, new List<int>() { 7 }, "Stank White Shades"));
+            ValidMaleCasualGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 2, new List<int>() { 8 }, "Stank Green Shades"));
+            ValidMaleCasualGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 2, new List<int>() { 9 }, "Stank Tortoiseshell Glasses"));
+            ValidMaleCasualGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 2, new List<int>() { 10 }, "Stank Black Glasses"));
+            ValidMaleCasualGlasses.Add(new Component(Component.ComponentTypeGlasses, Character.GenderMale, 2, new List<int>() { 11 }, "Stank White Glasses"));*/
+
 
             /* ================ MALE EARS ================ */
 
@@ -638,46 +699,46 @@ namespace mtgvrp.component_manager
             ValidMaleEars.Add(new Component(Component.ComponentTypeEars, Character.GenderMale, 35, new List<int>() { 1, 2 }, "Style 32"));
             ValidMaleEars.Add(new Component(Component.ComponentTypeEars, Character.GenderMale, 36, new List<int>() { 1, 2 }, "Style 33"));
 
-            /* ================ MALE HAIR ================ */
+            /* ================ FEMALE HAIR ================ */
 
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 0, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 1, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 2, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 3, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 4, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 5, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 6, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 7, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 8, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 9, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 10, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 11, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 12, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 13, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 14, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 15, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 16, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 17, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 18, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 19, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 20, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 21, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 22, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 23, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 25, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 26, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 27, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 28, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 29, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 30, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 31, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 32, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 33, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 34, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 35, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 36, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 37, new List<int> { }, "Style 1"));
-            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderMale, 38, new List<int> { }, "Style 1"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 0, new List<int> { }, "Close Shave"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 1, new List<int> { }, "Short"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 2, new List<int> { }, "Layered Bob"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 3, new List<int> { }, "Pigtails"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 4, new List<int> { }, "Ponytail"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 5, new List<int> { }, "Braided Mohawk"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 6, new List<int> { }, "Braids"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 7, new List<int> { }, "Bob"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 8, new List<int> { }, "Faux Hawk"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 9, new List<int> { }, "French Twist"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 10, new List<int> { }, "Long Bob"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 11, new List<int> { }, "Loose Tied"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 12, new List<int> { }, "Pixie"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 13, new List<int> { }, "Shaved Bangs"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 14, new List<int> { }, "Top Knot"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 15, new List<int> { }, "Wavy Bob"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 16, new List<int> { }, "Pin Up Girl"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 17, new List<int> { }, "Messy Bun"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 18, new List<int> { }, "Flapper Bob"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 19, new List<int> { }, "Tight Bun"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 20, new List<int> { }, "Twisted Bob"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 21, new List<int> { }, "Big Bangs"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 22, new List<int> { }, "Braided Top Knot"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 23, new List<int> { }, "Mullet"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 25, new List<int> { }, "Pinched Cornrows"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 26, new List<int> { }, "Leaf Cornrows"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 27, new List<int> { }, "Zig Zag Cornrows"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 28, new List<int> { }, "Pigtail Bangs"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 29, new List<int> { }, "Wave Braids"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 30, new List<int> { }, "Coil Braids"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 31, new List<int> { }, "Rolled Quiff"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 32, new List<int> { }, "Loose Swept Back"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 33, new List<int> { }, "Undercut Swept Back"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 34, new List<int> { }, "Undercut Swept Side"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 35, new List<int> { }, "Spiked Mohawk"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 36, new List<int> { }, "Bandana and Braid"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 37, new List<int> { }, "Skinbyrd"));
+            ValidFemaleHair.Add(new Component(Component.ComponentTypeHair, Character.GenderFemale, 38, new List<int> { }, "Layered Mod"));
 
             /* ================ FEMALE PANTS ================ */
 

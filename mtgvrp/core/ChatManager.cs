@@ -208,6 +208,24 @@ namespace mtgvrp.core
 
         }
 
+        [Command("togn"), Help.Help(HelpManager.CommandGroups.General, "Used to toggle newbie chat on and off.", null)]
+        public void togn_cmd(Client player)
+        {
+            var character = player.GetCharacter();
+
+            character.NewbieToggled = !character.NewbieToggled;
+            player.sendChatMessage("Newbie chat turned " + ((character.NewbieToggled == true) ? ("on") : ("off")) + ".");
+        }
+
+        [Command("togv"), Help.Help(HelpManager.CommandGroups.General, "Used to toggle VIP chat on and off.", null)]
+        public void togv_cmd(Client player)
+        {
+            var character = player.GetCharacter();
+
+            character.VIPToggled = !character.VIPToggled;
+            player.sendChatMessage("VIP chat turned " + ((character.VIPToggled == true) ? ("on") : ("off")) + ".");
+        }
+
         [Command("togglenewbie"), Help.Help(HelpManager.CommandGroups.AdminLevel2, "Used to toggle newbie chat on and off.", null)]
         public void togglenewbie_cmd(Client player)
         {
@@ -292,7 +310,14 @@ namespace mtgvrp.core
             else if (account.TotalPlayingHours >= 1250 && account.TotalPlayingHours < 2000) rank = "MTG-Legend";
             else if (account.TotalPlayingHours >= 2000) rank = "MTG-Icon";
 
-            API.sendChatMessageToAll(Color.NewbieChat, $"[N] {rank} " + c.rp_name() + ": " + message);
+            foreach (var p in PlayerManager.Players)
+            {
+                if (p.NewbieToggled == false)
+                {
+                    API.sendChatMessageToPlayer(p.Client, Color.NewbieChat, $"[N] {rank} " + c.rp_name() + ": " + message);
+                }
+            }
+
             if (account.AdminLevel == 0 && account.DevLevel == 0)
             {
                 c.NewbieCooldown = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds() + 60;
@@ -362,7 +387,7 @@ namespace mtgvrp.core
 
                 Account pAccount = p.GetAccount();
 
-                if(pAccount?.VipLevel > 0)
+                if(pAccount?.VipLevel > 0 && character.VIPToggled == false)
                 {
                     API.sendChatMessageToPlayer(p, Color.VipChat, "[V] " + c.rp_name() + ": " + message);
                 }

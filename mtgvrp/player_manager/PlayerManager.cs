@@ -54,7 +54,7 @@ namespace mtgvrp.player_manager
             API.onPlayerConnected += OnPlayerConnected;
             API.onPlayerDisconnected += OnPlayerDisconnected;
             API.onClientEventTrigger += API_onClientEventTrigger;
-            API.onPlayerRespawn += API_onPlayerRespawn;
+            API.onPlayerDeath += API_onPlayerDeath;
             API.onPlayerHealthChange += API_onPlayerHealthChange;
 
             //Setup save timer.
@@ -105,7 +105,7 @@ namespace mtgvrp.player_manager
         }
 
 
-        private void API_onPlayerRespawn(Client player)
+        private void API_onPlayerDeath(Client player, NetHandle entityKiller, int weapon)
         {
             if (player.GetAccount().AdminDuty)
             {
@@ -131,7 +131,17 @@ namespace mtgvrp.player_manager
             {
                 InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(Money), 200);
             }
-            LogManager.Log(LogManager.LogTypes.Death, $"{character.CharacterName}[{player.socialClubName}] has died.");
+
+            Client killer = API.getPlayerFromHandle(entityKiller);
+            if (killer != null)
+            {
+                LogManager.Log(LogManager.LogTypes.Death, $"{character.CharacterName}[{player.socialClubName}] has died. Killer: {killer.GetCharacter().rp_name()}[{killer.GetAccount().AccountName}]. Weapon: {((WeaponHash)weapon).ToString()}");
+            }
+            else
+            {
+                LogManager.Log(LogManager.LogTypes.Death, $"{character.CharacterName}[{player.socialClubName}] has died. Weapon: {((WeaponHash)weapon).ToString()}");
+            }
+            
         }
 
         public static int basepaycheck = Properties.Settings.Default.basepaycheck;

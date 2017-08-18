@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="basepaycheck" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">800</Value>
+      <Value Profile="(Default)">3000</Value>
     </Setting>
     <Setting Name="taxationamount" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">4</Value>

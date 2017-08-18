@@ -25,7 +25,7 @@ namespace mtgvrp.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("800")]
+        [global::System.Configuration.DefaultSettingValueAttribute("3000")]
         public int basepaycheck {
             get {
                 return ((int)(this["basepaycheck"]));

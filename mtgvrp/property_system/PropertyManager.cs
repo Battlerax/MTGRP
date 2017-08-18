@@ -57,6 +57,7 @@ namespace mtgvrp.property_system
             VIPLounge,
             Government,
             DMV,
+            ModdingShop,
         }
 
         #region ColShapeKnowing

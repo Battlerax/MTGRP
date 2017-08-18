@@ -268,6 +268,9 @@ namespace mtgvrp.vehicle_dealership
                         $"You have sucessfully bought the ~g~{selectedCar[0]}~w~ for ${selectedCar[2]}.");
                     API.sendChatMessageToPlayer(sender, "Use /myvehicles to manage it.");
 
+                    //Log it.
+                    LogManager.Log(LogManager.LogTypes.Stats, $"[Vehicle Dealership] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a(n) {API.getVehicleDisplayName(theVehicle.VehModel)} for ${selectedCar[2]}.");
+
                     //Exit.
                     API.triggerClientEvent(sender, "dealership_exitdealermenu");
                 }
@@ -284,6 +287,7 @@ namespace mtgvrp.vehicle_dealership
         {
             //Check if can buy more cars.
             Character character = player.GetCharacter();
+
             if (character.OwnedVehicles.Count >= VehicleManager.GetMaxOwnedVehicles(player))
             {
                 API.sendChatMessageToPlayer(player, "You can't own anymore vehicles.");
@@ -294,6 +298,12 @@ namespace mtgvrp.vehicle_dealership
             var currentPos = API.getEntityPosition(player);
             if (_dealershipsLocations.Any(dealer => currentPos.DistanceTo(dealer) < 5F))
             {
+                if (API.isPlayerInAnyVehicle(player))
+                {
+                    API.sendChatMessageToPlayer(player, "You're not able to buy a vehicle while in a vehicle!");
+                    return;
+                }
+
                 API.triggerClientEvent(player, "dealership_showbuyvehiclemenu", API.toJson(_motorsycles),
                     API.toJson(_copues), API.toJson(_trucksnvans), API.toJson(_offroad), API.toJson(_musclecars),
                     API.toJson(_suv), API.toJson(_supercars), API.toJson(_cycles),API.toJson(_sedans),API.toJson(_sportsCars),API.toJson(_compactCars));

@@ -108,6 +108,9 @@ namespace mtgvrp.vehicle_dealership
                         $"You have sucessfully bought the ~g~{selectedCar[0]}~w~ for ${selectedCar[2]}.");
                     API.sendChatMessageToPlayer(sender, "Use /myvehicles to manage it.");
 
+                    //Log it.
+                    LogManager.Log(LogManager.LogTypes.Stats, $"[Chopper Dealership] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a(n) {API.getVehicleDisplayName(theVehicle.VehModel)} for ${selectedCar[2]}.");
+
                     //Exit.
                     API.triggerClientEvent(sender, "chopperdealership_exitdealermenu");
                 }
@@ -130,6 +133,9 @@ namespace mtgvrp.vehicle_dealership
                 return;
             }
             */
+
+        
+
             if (character.OwnedVehicles.Count >= VehicleManager.GetMaxOwnedVehicles(player))
             {
                 API.sendChatMessageToPlayer(player, "You can't own anymore vehicles.");
@@ -140,6 +146,12 @@ namespace mtgvrp.vehicle_dealership
             var currentPos = API.getEntityPosition(player);
             if (_dealershipsLocations.Any(dealer => currentPos.DistanceTo(dealer) < 5F))
             {
+                if (API.isPlayerInAnyVehicle(player))
+                {
+                    API.sendChatMessageToPlayer(player, "You're not able to buy a chopper while in a vehicle!");
+                    return;
+                }
+
                 API.triggerClientEvent(player, "chopperdealership_showbuyvehiclemenu", API.toJson(_helicopters));
             }
             else
