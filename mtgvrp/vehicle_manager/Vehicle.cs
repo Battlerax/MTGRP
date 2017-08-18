@@ -58,7 +58,7 @@ namespace mtgvrp.vehicle_manager
                     case 15: return 300;
                     case 16: return 0;
                     case 17: return 0;
-                    case 18: return 0;
+                    case 18: return 300;
                     case 19: return 0;
                     case 20: return 0;
                     case 21: return 1000;
