@@ -108,15 +108,19 @@ function updateColor(type, r, g, b) {
 
 API.onKeyUp.connect((sender, e) => {
     if (e.KeyCode == Keys.Escape && myBrowser != null) {
-        API.setHudVisible(true);
-        API.showCursor(false);
-        API.destroyCefBrowser(myBrowser);
-        myBrowser = null;
-        API.setActiveCamera(null);
-        API.setChatVisible(true);
-        API.triggerServerEvent("MODDING_EXITMENU");
+        exitModShop();
     }
 });
+
+function exitModShop() {
+    API.setHudVisible(true);
+    API.showCursor(false);
+    API.destroyCefBrowser(myBrowser);
+    myBrowser = null;
+    API.setActiveCamera(null);
+    API.setChatVisible(true);
+    API.triggerServerEvent("MODDING_EXITMENU");
+}
 
 /* Vehicle Rotation */
 var rotating = 0;
