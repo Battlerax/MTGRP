@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Timers;
 using GrandTheftMultiplayer.Server.API;
 using GrandTheftMultiplayer.Server.Constant;
@@ -19,7 +20,6 @@ namespace mtgvrp.drugs_manager
 
     // TODO: Reduce the amount of code reusage.
     // TODO: Add Effects. (Added to Coke + Weed,Speed,Heroin) Rem : Meth.
-    // TODO: Make the whole crate thing a bit more exciting. (Added crowbar)
     // TODO: Improve crowbar mechanics. (Cooldown if player is unable to crack open the crate.)
 
     internal class DrugsManager : Script
@@ -30,8 +30,8 @@ namespace mtgvrp.drugs_manager
         private const int HeroinDivider = 2;
         private const int MaxPermittedToleranceLevel = 15;
        
-        private const int ArmorMultipler = 5;
-        private const int HealthMultipler = 5;
+        private const int ArmorMultipler = 10;
+        private const int HealthMultipler = 10;
         private const int TempHealthMultipler = 25;
 
         private const int MaxArmor = 100;
@@ -61,10 +61,13 @@ namespace mtgvrp.drugs_manager
             DebugManager.DebugMessage("[DrugsM]: Drugs have successfully booted up.");
         }
 
+
         private void ClearEffects(Client player, string reason)
         {
             API.triggerClientEvent(player,"clearAllEffects");
         }
+
+        // Ticks based on TempTime, reduces tempHealth of any player on server.
 
         private void StartTimer()
         {
@@ -72,6 +75,7 @@ namespace mtgvrp.drugs_manager
             _lowerTempVals.Enabled = true;
         }
 
+       
         private void ReducePlayerTempValues(object sender, ElapsedEventArgs e)
         {
             foreach (Client c in API.getAllPlayers())
@@ -81,27 +85,29 @@ namespace mtgvrp.drugs_manager
                 Character playerChar = c.GetCharacter();
                 if (playerChar == null) return;
 
-               
-                if (playerChar.TempHealth > 0)
-                {
-                    if (playerChar.TempHealth < TempHealthMultipler)
-                    {
-                        int amountToTake = TempHealthMultipler - playerChar.TempHealth;
-                        int playerRemHealth = API.getPlayerHealth(c) - amountToTake;
+            
+                if (playerChar.TempHealth <= 0) continue;
 
-                        if (playerRemHealth <= 0)
-                        {
-                            API.setPlayerHealth(c, 1);
-                            playerChar.TempHealth = 0;
-                            return;
-                        }
-                        API.setPlayerHealth(c, API.getPlayerHealth(c) - amountToTake);
+                if (playerChar.TempHealth < TempHealthMultipler)
+                {
+                    int amountToTake = TempHealthMultipler - playerChar.TempHealth;
+                    int playerRemHealth = API.getPlayerHealth(c) - amountToTake;
+
+                    // If a player is unable to "payback" their health, set them on 1 HP.
+                    if (playerRemHealth <= 0)
+                    {
+                        API.setPlayerHealth(c, 1);
                         playerChar.TempHealth = 0;
                         return;
                     }
-                    API.setPlayerHealth(c, API.getPlayerHealth(c) - TempHealthMultipler);
-                    playerChar.TempHealth = playerChar.TempHealth - TempHealthMultipler;
+                    // If there's less than the Multiplier remaining, take that and set temphealth to 0.
+                    API.setPlayerHealth(c, API.getPlayerHealth(c) - amountToTake);
+                    playerChar.TempHealth = 0;
+                    return;
                 }
+                // Else, just take the health and remove the multipler from temphealth.
+                API.setPlayerHealth(c, API.getPlayerHealth(c) - TempHealthMultipler);
+                playerChar.TempHealth = playerChar.TempHealth - TempHealthMultipler;
             }
         }
 
@@ -113,18 +119,19 @@ namespace mtgvrp.drugs_manager
 
                     // Pulls the unique ID of the airdrop, then sets it's prop to the ground.
 
-                    Guid dropId = JsonConvert.DeserializeObject<Guid>((string) arguments[1]);
+                    Guid dropId = JsonConvert.DeserializeObject<Guid>((string)arguments[1]);
                     Airdrop a = FindCorrectAirdrop(dropId);
                     Vector3 corrPosition = API.getEntityPosition(sender);
-                    corrPosition.Z = (float) arguments[0];
-                    PlaceAirDropProp(a,corrPosition);
+                    corrPosition.Z = (float)arguments[0];
+                    PlaceAirDropProp(a, corrPosition);
                     // Just in case, API call appears not to work correctly from time to time...
-                    API.sendNativeToAllPlayers(Hash.PLACE_OBJECT_ON_GROUND_PROPERLY,a.prop);
+                    API.sendNativeToAllPlayers(Hash.PLACE_OBJECT_ON_GROUND_PROPERLY, a.prop);
                     Vector3 markerPoint = API.getEntityPosition(sender);
-                    a.marker = new MarkerZone(new Vector3(markerPoint.X,markerPoint.Y,markerPoint.Z+1), new Vector3()) { TextLabelText = "Drugs Crate - Locked"  };
+                    a.marker = new MarkerZone(new Vector3(markerPoint.X, markerPoint.Y, markerPoint.Z + 1), new Vector3()) { TextLabelText = "Drugs Crate - Locked" };
                     a.marker.Create();
-                    
+                    break;
 
+                default:
                     break;
             }
 
@@ -153,10 +160,14 @@ namespace mtgvrp.drugs_manager
 
             BoostArmor(sender, cokeVal);
 
+            API.triggerClientEvent(sender, "cokeVisual", (cokeVal * VisualPerAmount) * 1000);
             ChatManager.RoleplayMessage(playerChar, "has sniffed some cocaine.", ChatManager.RoleplayMe);
             API.sendChatMessageToPlayer(sender, "You sniffed " + cokeVal + " grams of cocaine.");
 
             InventoryManager.DeleteInventoryItem(playerChar, typeof(Cocaine), cokeVal);
+            playerChar.CocaineTimer = new Timer { Interval = (cokeVal * VisualPerAmount) * 1000 };
+            playerChar.CocaineTimer.Elapsed += delegate { clearCocaineEffect(sender); };
+            playerChar.CocaineTimer.Start();
         }
 
 
@@ -179,7 +190,7 @@ namespace mtgvrp.drugs_manager
                 return;
             }
 
-            boostHealth(sender, weedVal);
+            BoostHealth(sender, weedVal);
 
             API.triggerClientEvent(sender, "weedVisual",(VisualPerAmount*weedVal) * 1000);
             ChatManager.RoleplayMessage(playerChar, "has smoked some weed.", ChatManager.RoleplayMe);
@@ -297,6 +308,12 @@ namespace mtgvrp.drugs_manager
             API.triggerClientEvent(sender, "clearSpeed");
         }
 
+        private void clearCocaineEffect(Client sender)
+        {
+            Character c = sender.GetCharacter();
+            c.CocaineTimer.Stop();
+            API.triggerClientEvent(sender,"clearCoke");
+        }
         #endregion
 
 
@@ -308,7 +325,7 @@ namespace mtgvrp.drugs_manager
         {
             Account a = sender.GetAccount();
             int drugAmount;
-
+       
             if (!int.TryParse(amount, out drugAmount)) return;
             if (a.AdminLevel < 5) return;
 
@@ -391,7 +408,7 @@ namespace mtgvrp.drugs_manager
         }
 
         [Command("prycrate")]
-        public void pryCrate(Client sender)
+        public void PryCrate(Client sender)
         {
             Character c = sender.GetCharacter();
             Airdrop closest = FindNearestAirdrop(sender);
@@ -424,8 +441,7 @@ namespace mtgvrp.drugs_manager
         // Creates the drop, adds it to the list and calls for the prop to be set on the floor.
         public void SpawnDrop(Client sender, IInventoryItem drug)
         {
-            Airdrop drop;
-            drop = new Airdrop(drug, API.getEntityPosition(sender));
+            var drop = new Airdrop(drug, API.getEntityPosition(sender));
             _airdrops.Add(drop);
             API.triggerClientEvent(sender, "getClientGround",API.toJson(drop.id));
         }
@@ -451,7 +467,7 @@ namespace mtgvrp.drugs_manager
                 API.setPlayerArmor(sender, API.getPlayerArmor(sender) + amount * ArmorMultipler);
         }
 
-        public void boostHealth(Client sender, int amount)
+        public void BoostHealth(Client sender, int amount)
         {
             if (API.getPlayerHealth(sender) + amount * HealthMultipler > MaxHealth)
                 API.setPlayerHealth(sender, MaxHealth);
@@ -467,6 +483,7 @@ namespace mtgvrp.drugs_manager
             if (API.getPlayerHealth(sender) + amount * TempHealthMultipler > MaxHealth)
             {
                 c.TempHealth = MaxHealth - API.getPlayerHealth(sender);
+                API.setPlayerHealth(sender,MaxHealth);
                 return;
             }
 
@@ -529,7 +546,6 @@ namespace mtgvrp.drugs_manager
                 c.HeroinTimer.Elapsed += delegate { clearHeroinEffect(c.Client); };
                 c.HeroinTimer.Start();
 
-                // TODO: Add camera effects here!
                 return;
             }
             if (effectRoll == 10)
@@ -540,7 +556,6 @@ namespace mtgvrp.drugs_manager
                 c.HeroinTimer = new Timer { Interval = HigherHeroinTripTime * 1000 };
                 c.HeroinTimer.Elapsed += delegate { clearHeroinEffect(c.Client); };
                 c.HeroinTimer.Start();
-               // TODO: Add Camera Effects here!
             }
         }
 
@@ -571,37 +586,12 @@ namespace mtgvrp.drugs_manager
 
         public Airdrop FindCorrectAirdrop(Guid id)
         {
-            foreach (var a in _airdrops)
-                if (a.id == id)
-                    return a;
-            return null;
+            return _airdrops.FirstOrDefault(a => a.id == id);
         }
 
 
-        // Debug commands.
 
 
-        [Command("giveAllDrug")]
-        public void giveDrug(Client sender)
-        {
-            var playerChar = sender.GetCharacter();
-            InventoryManager.GiveInventoryItem(playerChar, new Cocaine(), 10);
-            InventoryManager.GiveInventoryItem(playerChar, new Speed(), 10);
-            InventoryManager.GiveInventoryItem(playerChar, new Heroin(), 10);
-            InventoryManager.GiveInventoryItem(playerChar, new Weed(), 10);
-            InventoryManager.GiveInventoryItem(playerChar, new Meth(), 10);
-
-
-        }
-
-        [Command("resetTol")]
-        public void tolreset(Client sender)
-        {
-            Character c = sender.GetCharacter();
-            c.HeroinTolerance = 0;
-            InventoryManager.GiveInventoryItem(c, new Heroin(), 20);
-
-        }
 
         public static double ConvertMinToMilli(double min)
         {

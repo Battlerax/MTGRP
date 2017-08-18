@@ -20,10 +20,15 @@ API.onServerEventTrigger.connect(function (eventName, args) {
     else if (eventName === "speedVisual") {
         timer = args[0];
         API.playScreenEffect("DrugsTrevorClownsFight", timer, false);
-        API.setHudVisible(false);
     }
     else if (eventName === "heroinVisual") {
         API.setCameraShake(cam, "DRUNK_SHAKE", 5);
+    }
+    else if (eventName === "cokeVisual") {
+        timer = args[0];
+        API.playScreenEffect("DMT_flight_intro", timer, false);
+    }
+    else if (eventName === "methVisual") {
     }
     else if (eventName === "clearWeed") {
         if (weedblip != null) {
@@ -38,6 +43,9 @@ API.onServerEventTrigger.connect(function (eventName, args) {
     else if (eventName === "clearSpeed") {
         API.setHudVisible(true);
         API.playScreenEffect("DrugsTrevorClownsFightOut", 1000, false);
+    }
+    else if (eventName === "clearCoke") {
+        API.playScreenEffect("RampageOut", 1000, false);
     }
     else if (eventName === "clearAllEffects") {
         API.callNative("0x4E6D875B");
