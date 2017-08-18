@@ -8,5 +8,7 @@ namespace mtgvrp.inventory
         List<IInventoryItem> Inventory { get; set; }
         [BsonIgnore]
         int MaxInvStorage { get; }
+
+        void Save();
     }
 }

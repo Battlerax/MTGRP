@@ -69,5 +69,10 @@ namespace mtgvrp.inventory.bags
         public int BagDesign { get; set; }
 
         public string BagName { get; set; }
+
+        public void Save()
+        {
+            //Ignored
+        }
     }
 }

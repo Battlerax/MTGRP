@@ -27,6 +27,11 @@ namespace mtgvrp.drugs_manager
         public List<IInventoryItem> Inventory { get; set; }
         public int MaxInvStorage => DrugsManager.MaxAirDropSize;
 
+        public void Save()
+        {
+            //Ignored.
+        }
+
         public Airdrop(IInventoryItem drug, Vector3 loc)
         {
             this.Loc = loc;
