@@ -582,6 +582,12 @@ namespace mtgvrp.group_manager.lspd
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
+
+            if (receivercharacter == character)
+            {
+                API.sendChatMessageToPlayer(player,"You're not allowed to uncuff yourself.");
+                return;
+            }
            
             if (API.getEntityPosition(player).DistanceToSquared(API.getEntityPosition(receiver)) > 16f)
             {
