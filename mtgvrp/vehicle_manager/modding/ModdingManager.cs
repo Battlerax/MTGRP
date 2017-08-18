@@ -334,8 +334,16 @@ namespace mtgvrp.vehicle_manager.modding
                 return;
             }
 
+            //Boats, Helis, Planes, Trains
+            if (player.vehicle.Class == 14 || player.vehicle.Class == 15 || player.vehicle.Class == 16 || player.vehicle.Class == 21)
+            {
+                API.sendChatMessageToPlayer(player, "You cannot modify this vehicle.");
+                return;
+            }
+
             List<string[]> modList = new List<string[]>();
             var manifest = VehicleInfo.Get(player.vehicle);
+
             foreach (var i in manifest.ModTypes)
             {
                 var price = GetModPrice(i, 0);
