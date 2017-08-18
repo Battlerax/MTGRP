@@ -20,5 +20,13 @@
             API.callNative("SET_VEHICLE_WHEELS_CAN_BREAK", ent, 1);
             API.callNative("SET_VEHICLE_CAN_BE_VISIBLY_DAMAGED", ent, 1);
         }
+
+        API.triggerServerEvent("VehicleStreamedForPlayer", ent);
+    }
+});
+
+API.onServerEventTrigger.connect((event, args) => {
+    if (event === "ApplyVehicleMod") {
+        API.setVehicleMod(args[0], args[1], args[2]);
     }
 });

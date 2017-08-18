@@ -244,7 +244,7 @@ namespace mtgvrp.vehicle_manager.modding
             {16, "Armor"},
             {18, "Turbo"},
             {22, "Xenon"},
-            {23, "Front Wheels"},
+            {23, "Wheels"},
             {24, "Back Wheels"},
             {25, "Plate holders"},
             {27, "Trim Design"},

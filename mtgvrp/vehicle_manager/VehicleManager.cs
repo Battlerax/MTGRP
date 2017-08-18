@@ -222,6 +222,7 @@ namespace mtgvrp.vehicle_manager
             API.onVehicleDeath += OnVehicleDeath;
             API.onPlayerExitVehicle += OnPlayerExitVehicle;
             API.onPlayerDisconnected += API_onPlayerDisconnected;
+            API.onClientEventTrigger += API_onClientEventTrigger;
 
             //Setup respawn timer.
             VehicleRespawnTimer.Interval = 5000;
@@ -260,6 +261,18 @@ namespace mtgvrp.vehicle_manager
 
 
             DebugManager.DebugMessage("[VehicleM] Vehicle Manager initalized!");
+        }
+
+        private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
+        {
+            if (eventName == "VehicleStreamedForPlayer")
+            {
+                var veh = (NetHandle)arguments[0];
+                if (veh.GetVehicle()?.VehMods?.ContainsKey("14") ?? false)
+                {
+                    API.triggerClientEvent(sender, "ApplyVehicleMod", veh, 14, Convert.ToInt32(veh.GetVehicle().VehMods["14"]));
+                }
+            }
         }
 
         private void VehicleRespawnTimer_Elapsed(object sender, ElapsedEventArgs e)
