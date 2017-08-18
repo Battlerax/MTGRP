@@ -15,6 +15,7 @@ using GrandTheftMultiplayer.Server.API;
 using GrandTheftMultiplayer.Server.Elements;
 using GrandTheftMultiplayer.Server.Managers;
 using GrandTheftMultiplayer.Shared;
+using GrandTheftMultiplayer.Shared.Math;
 using mtgvrp.core;
 using mtgvrp.core.Discord;
 using mtgvrp.database_manager;
@@ -62,6 +63,16 @@ namespace mtgvrp
 
                 OnPlayerEnterVehicleEx?.Invoke(sender, veh, seat);
             }
+
+            else if (eventName == "OBJECT_PLACED_PROPERLY")
+            {
+                NetHandle obj = (NetHandle) arguments[0];
+                Vector3 pos = (Vector3) arguments[1];
+                Vector3 rot = (Vector3) arguments[2];
+                API.setEntityPosition(obj,pos);
+                API.setEntityRotation(obj,rot);
+            }
+
         }
 
         private void InventoryManager_OnStorageItemUpdateAmount(IStorage sender,

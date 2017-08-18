@@ -67,9 +67,8 @@ API.onServerEventTrigger.connect(function (eventName, args) {
     }
     // Really don't want permanent effects. 
     else if (eventName === "clearAllEffects") {
-        API.callNative("0x4E6D875B");
         API.playScreenEffect("DrugsTrevorClownsFightOut", 1000, false);
-
+        API.stopAllScreenEffects();
         API.stopCameraShake(cam);
 
     }

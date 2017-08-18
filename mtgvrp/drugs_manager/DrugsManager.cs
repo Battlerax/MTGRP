@@ -55,7 +55,6 @@ namespace mtgvrp.drugs_manager
         public DrugsManager()
         {
             DebugManager.DebugMessage("[DrugsM]: Drugs are booting up.");
-            API.onClientEventTrigger += DrugsManagerClient;
             API.onResourceStart += StartTimer;
             API.onPlayerDisconnected += ClearEffects;
             DebugManager.DebugMessage("[DrugsM]: Drugs have successfully booted up.");
@@ -110,33 +109,6 @@ namespace mtgvrp.drugs_manager
                 playerChar.TempHealth = playerChar.TempHealth - TempHealthMultipler;
             }
         }
-
-        private void DrugsManagerClient(Client sender, string eventName, params object[] arguments)
-        {
-            switch (eventName)
-            {
-                case ("findGround"):
-
-                    // Pulls the unique ID of the airdrop, then sets it's prop to the ground.
-
-                    Guid dropId = JsonConvert.DeserializeObject<Guid>((string)arguments[1]);
-                    Airdrop a = FindCorrectAirdrop(dropId);
-                    Vector3 corrPosition = API.getEntityPosition(sender);
-                    corrPosition.Z = (float)arguments[0];
-                    PlaceAirDropProp(a, corrPosition);
-                    // Just in case, API call appears not to work correctly from time to time...
-                    API.sendNativeToAllPlayers(Hash.PLACE_OBJECT_ON_GROUND_PROPERLY, a.prop);
-                    Vector3 markerPoint = API.getEntityPosition(sender);
-                    a.marker = new MarkerZone(new Vector3(markerPoint.X, markerPoint.Y, markerPoint.Z + 1), new Vector3()) { TextLabelText = "Drugs Crate - Locked" };
-                    a.marker.Create();
-                    break;
-
-                default:
-                    break;
-            }
-
-        }
-
 
 
         #region  All drugs and current effects. If a new drug is added, add the command here! 
@@ -443,7 +415,13 @@ namespace mtgvrp.drugs_manager
         {
             var drop = new Airdrop(drug, API.getEntityPosition(sender));
             _airdrops.Add(drop);
-            API.triggerClientEvent(sender, "getClientGround",API.toJson(drop.id));
+            PlaceAirDropProp(drop,API.getEntityPosition(sender));
+            API.triggerClientEvent(sender, "PLACE_OBJECT_ON_GROUND_PROPERLY", drop.prop);
+            Vector3 crateLoc = API.getEntityPosition(drop.prop);
+            drop.marker = new MarkerZone(crateLoc, new Vector3()) { TextLabelText = "Drugs Crate - Locked" };
+            drop.marker.Create();
+
+
         }
 
 
