@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using GrandTheftMultiplayer.Server;
 using GrandTheftMultiplayer.Server.API;
+using GrandTheftMultiplayer.Server.Constant;
 using GrandTheftMultiplayer.Server.Elements;
 using GrandTheftMultiplayer.Shared;
 using VehicleInfoLoader;
@@ -274,10 +275,10 @@ namespace mtgvrp.vehicle_manager.modding
             {
                 API.shared.removeVehicleMod(veh.NetHandle, type);
             }
-            GrandTheftMultiplayer.Server.API.API.shared.setVehicleCustomPrimaryColor(veh.NetHandle, 0, 0, 0);
-            GrandTheftMultiplayer.Server.API.API.shared.setVehicleCustomSecondaryColor(veh.NetHandle, 0, 0, 0);
-            GrandTheftMultiplayer.Server.API.API.shared.setVehicleTyreSmokeColor(veh.NetHandle, 0, 0, 0);
-            GrandTheftMultiplayer.Server.API.API.shared.setVehicleNeonColor(veh.NetHandle, 0, 0, 0);
+            API.shared.setVehicleCustomPrimaryColor(veh.NetHandle, 0, 0, 0);
+            API.shared.setVehicleCustomSecondaryColor(veh.NetHandle, 0, 0, 0);
+            API.shared.setVehicleTyreSmokeColor(veh.NetHandle, 0, 0, 0);
+            API.shared.setVehicleNeonColor(veh.NetHandle, 0, 0, 0);
         }
 
         public static void ApplyVehicleMods(Vehicle veh)
@@ -295,19 +296,59 @@ namespace mtgvrp.vehicle_manager.modding
                     var clrs = ((string)mod.Value).Split('|');
                     API.shared.setVehicleCustomSecondaryColor(veh.NetHandle, Convert.ToInt32(clrs[0]), Convert.ToInt32(clrs[1]), Convert.ToInt32(clrs[2]));
                 }
-                else if(modid == TyresSmokeColorId)
-                {
-                    var clrs = ((string)mod.Value).Split('|');
-                    API.shared.setVehicleTyreSmokeColor(veh.NetHandle, Convert.ToInt32(clrs[0]), Convert.ToInt32(clrs[1]), Convert.ToInt32(clrs[2]));
-                }
-                else if(modid == NeonColorId)
+                else if (modid == TyresSmokeColorId)
                 {
                     var clrs = ((string) mod.Value).Split('|');
-                    API.shared.setVehicleNeonColor(veh.NetHandle, Convert.ToInt32(clrs[0]), Convert.ToInt32(clrs[1]), Convert.ToInt32(clrs[2]));
+                    API.shared.setVehicleTyreSmokeColor(veh.NetHandle, Convert.ToInt32(clrs[0]),
+                        Convert.ToInt32(clrs[1]), Convert.ToInt32(clrs[2]));
+
+                    foreach (var p in API.shared.getAllPlayers())
+                    {
+                        if (p == null)
+                            continue;
+
+                        if (GrandTheftMultiplayer.Server.API.API.shared.getEntityPosition(veh.NetHandle)
+                                .DistanceTo(p.position) <= 500)
+                        {
+                            if (Convert.ToInt32(clrs[1]) == 0 && Convert.ToInt32(clrs[1]) == 0 &&
+                                Convert.ToInt32(clrs[1]) == 0)
+                            {
+                                GrandTheftMultiplayer.Server.API.API.shared.sendNativeToPlayer(p,
+                                    Hash.TOGGLE_VEHICLE_MOD, veh.NetHandle, 20, false);
+                            }
+                            else
+                            {
+                                GrandTheftMultiplayer.Server.API.API.shared.sendNativeToPlayer(p,
+                                    Hash.TOGGLE_VEHICLE_MOD, veh.NetHandle, 20, true);
+                            }
+                        }
+                    }
+                }
+                else if (modid == NeonColorId)
+                {
+                    var clrs = ((string) mod.Value).Split('|');
+                    API.shared.setVehicleNeonColor(veh.NetHandle, Convert.ToInt32(clrs[0]), Convert.ToInt32(clrs[1]),
+                        Convert.ToInt32(clrs[2]));
                 }
                 else
                 {
                     API.shared.setVehicleMod(veh.NetHandle, modid, Convert.ToInt32(mod.Value));
+
+                    if (modid == 14) //Horns
+                    {
+                        foreach (var p in API.shared.getAllPlayers())
+                        {
+                            if (p == null)
+                                continue;
+
+                            if (GrandTheftMultiplayer.Server.API.API.shared.getEntityPosition(veh.NetHandle)
+                                    .DistanceTo(p.position) <= 500)
+                            {
+                                GrandTheftMultiplayer.Server.API.API.shared.sendNativeToPlayer(p,
+                                    Hash.SET_VEHICLE_MOD, veh.NetHandle, 14, Convert.ToInt32(mod.Value));
+                            }
+                        }
+                    }
                 }
             }
         }

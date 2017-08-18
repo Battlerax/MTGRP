@@ -268,9 +268,22 @@ namespace mtgvrp.vehicle_manager
             if (eventName == "VehicleStreamedForPlayer")
             {
                 var veh = (NetHandle)arguments[0];
+
+                //Sync horns
                 if (veh.GetVehicle()?.VehMods?.ContainsKey("14") ?? false)
                 {
-                    API.triggerClientEvent(sender, "ApplyVehicleMod", veh, 14, Convert.ToInt32(veh.GetVehicle().VehMods["14"]));
+                    API.sendNativeToPlayer(sender, Hash.SET_VEHICLE_MOD, veh, 14,
+                        Convert.ToInt32(veh.GetVehicle().VehMods["14"]));
+                }
+
+                //Sync tyre smokes
+                if (veh.GetVehicle()?.VehMods?.ContainsKey(ModdingManager.TyresSmokeColorId.ToString()) ?? false)
+                {
+                    API.sendNativeToPlayer(sender, Hash.TOGGLE_VEHICLE_MOD, veh, 20, true);
+                }
+                else
+                {
+                    API.sendNativeToPlayer(sender, Hash.TOGGLE_VEHICLE_MOD, veh, 20, false);
                 }
             }
         }

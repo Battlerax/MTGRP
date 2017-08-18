@@ -2,7 +2,6 @@
     if (entType === 1) { // Vehicle
         API.callNative('SET_DISABLE_VEHICLE_PETROL_TANK_FIRES', ent, true);
         API.callNative('SET_DISABLE_VEHICLE_PETROL_TANK_DAMAGE', ent, true);
-        API.callNative('TOGGLE_VEHICLE_MOD', ent, 20, true);
 
         //if vehicle is empty set undamageable.
         if (API.returnNative("GET_VEHICLE_NUMBER_OF_PASSENGERS", 0, ent) === 0 ||
@@ -23,11 +22,5 @@
         }
 
         API.triggerServerEvent("VehicleStreamedForPlayer", ent);
-    }
-});
-
-API.onServerEventTrigger.connect((event, args) => {
-    if (event === "ApplyVehicleMod") {
-        API.setVehicleMod(args[0], args[1], args[2]);
     }
 });
