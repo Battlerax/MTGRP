@@ -467,13 +467,12 @@ namespace mtgvrp.inventory
             switch (eventName)
             {
                 case "invmanagement_cancelled":
-                    _activeInvsBeingManaged.Remove(sender);
-                    API.shared.freezePlayer(sender, false);
-
                     //Save
                     _activeInvsBeingManaged[sender].Key.Save();
                     _activeInvsBeingManaged[sender].Value.Save();
 
+                    _activeInvsBeingManaged.Remove(sender);
+                    API.shared.freezePlayer(sender, false);
                     API.sendNotificationToPlayer(sender, "Closed Inventory Management.");
                     break;
                    
