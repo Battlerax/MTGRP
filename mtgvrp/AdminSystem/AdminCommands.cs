@@ -1468,6 +1468,7 @@ namespace mtgvrp.AdminSystem
                 return;
 
             receiver.LastPos = new Vector3(429.8345, -672.5932, 29.05217);
+            receiver.Save();
             player.sendChatMessage("You have remote admin warped " + receiver.CharacterName + " to newbie spawn.");
             account.AdminActions++;
             Log(LogTypes.AdminActions,
