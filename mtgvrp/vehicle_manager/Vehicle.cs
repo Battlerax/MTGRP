@@ -34,7 +34,38 @@ namespace mtgvrp.vehicle_manager
 
         //Inventory System
         public List<IInventoryItem> Inventory { get; set; }
-        public int MaxInvStorage => 1000; //TODO: to be changed to be for each vehicle class
+        public int MaxInvStorage
+        {
+            get
+            {
+                switch (API.shared.getVehicleClass(VehModel))
+                {
+                    case 0: return 400;
+                    case 1: return 400;
+                    case 2: return 500;
+                    case 3: return 350;
+                    case 4: return 300;
+                    case 5: return 300;
+                    case 6: return 300;
+                    case 7: return 300;
+                    case 8: return 20;
+                    case 9: return 400;
+                    case 10: return 0;
+                    case 11: return 0;
+                    case 12: return 700;
+                    case 13: return 0;
+                    case 14: return 400;
+                    case 15: return 300;
+                    case 16: return 0;
+                    case 17: return 0;
+                    case 18: return 0;
+                    case 19: return 0;
+                    case 20: return 0;
+                    case 21: return 1000;
+                    default: return 0;
+                }
+            }
+        }
 
         [BsonIgnore]
         public const int VehTypeTemp = 0;
