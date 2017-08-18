@@ -220,6 +220,10 @@ namespace mtgvrp.vehicle_manager
                     return "Santus";
                 case VehicleHash.Elegy:
                     return "Elegy";
+                case VehicleHash.SultanRS:
+                    return "Sultan RS";
+                case VehicleHash.Zentorno:
+                    return "Zentorno";
                 default:
                     return "Vehicle";
             }

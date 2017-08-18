@@ -45,9 +45,6 @@ namespace mtgvrp.vehicle_dealership
 
         private readonly string[][] _copues =
         {
-            new[] {"Panto", "-431692672", "17500" },
-            new[] {"Brioso", "1549126457","35000" },
-            new[] {"Mini", "-1177863319", "35000"},
             new[] {"Blista", "1039032026", "25000"},
             new[] {"Rhapsody", "841808271", "14000"},
             new[] {"Prairie", "-1450650718", "15000"},
@@ -102,8 +99,7 @@ namespace mtgvrp.vehicle_dealership
 
         private readonly string[][] _supercars =
         {
-            new[] {"Elegy", "196747873", "125000"},
-            new[] { "Sultan", "970598228", "135000"},
+       
             new[] {"Fusilade", "499169875", "200000"},
             new[] {"Coquette", "108773431", "280000"},
             new[] {"Lynx", "482197771", "340000"},
@@ -111,8 +107,7 @@ namespace mtgvrp.vehicle_dealership
             new[] { "Tyrus", "2067820283", "667000"},
             new[] { "Italigtb", "-2048333973", "700000"},
             new[] { "Nero", "1034187331", "750000"},
-            new []{ "Kuruma", "-1372848492","250000" },
-            new[] { "Penumbra", "-377465520","225000" }
+            new[] { "Zentorno", "-1403128555","800000" }
         };
 
         private readonly string[][] _cycles =
@@ -125,15 +120,37 @@ namespace mtgvrp.vehicle_dealership
 
         private readonly string[][] _sedans =
         {
-            new[] {"Asea", "-1809822327", "30000"},
-            new[] {"Primo", "-1150599089", "35000"},
+            new[] {"Asea", "-1809822327", "55000"},
+            new[] {"Primo", "-1150599089", "45000"},
             new[] {"Surge", "-1894894188", "45000"},
             new[] {"Warrender", "1373123368", "45000"},
-            new[] {"Washington", "1777363799", "30000"},
-            new[] {"Stanier", "-1477580979", "60000"}
+            new[] {"Washington", "1777363799", "70000"},
+            new[] {"Stanier", "-1477580979", "60000"},
+            new[] { "Emperor", "-685276541","30000" },
+            new[] {"Stretch", "-1961627517","80000" },
+            new [] {"Tailgater", "-1008861746","85000" },
+            new[] { "Schafter", "-1255452397","125000" }
+
+
 
         };
 
+        private readonly string[][] _sportsCars =
+        {
+            new[] {"Elegy", "196747873", "195000"},
+            new[] {"Sultan", "970598228", "125000"},
+            new[] {"Kuruma", "-1372848492", "250000"},
+            new[] {"Penumbra", "-377465520", "150000"},
+            new[] {"Obey 9F", "1032823388","400000" },
+            new[] { "Feltzer", "-1995326987","125000" }
+        };
+
+        private readonly string[][] _compactCars =
+        {
+            new[] {"Panto", "-431692672", "17500"},
+            new[] {"Brioso", "1549126457", "35000"},
+            new[] {"Mini", "-1177863319", "35000"},
+        };
 
         #endregion
 
@@ -197,6 +214,12 @@ namespace mtgvrp.vehicle_dealership
                         break;
                     case 8:
                         selectedCar = _sedans[(int) arguments[1]];
+                        break;
+                    case 9:
+                        selectedCar = _sportsCars[(int) arguments[1]];
+                        break;
+                    case 10:
+                        selectedCar = _compactCars[(int) arguments[1]];
                         break;
                 }
 
@@ -273,7 +296,7 @@ namespace mtgvrp.vehicle_dealership
             {
                 API.triggerClientEvent(player, "dealership_showbuyvehiclemenu", API.toJson(_motorsycles),
                     API.toJson(_copues), API.toJson(_trucksnvans), API.toJson(_offroad), API.toJson(_musclecars),
-                    API.toJson(_suv), API.toJson(_supercars), API.toJson(_cycles),API.toJson(_sedans));
+                    API.toJson(_suv), API.toJson(_supercars), API.toJson(_cycles),API.toJson(_sedans),API.toJson(_sportsCars),API.toJson(_compactCars));
             }
             else
                 API.sendChatMessageToPlayer(player, "You aren't near any dealership.");
