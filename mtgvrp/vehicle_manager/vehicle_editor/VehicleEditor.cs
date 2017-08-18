@@ -167,7 +167,7 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
             }
 
             API.setEntityData(player.handle, "EDIT_VEH", veh);
-            API.triggerClientEvent(player, "show_vehicle_edit_menu", veh.Id, API.getVehicleDisplayName(veh.VehModel), (veh.OwnerId == 0 ? "NONE" : PlayerManager.Players.Single(x => x.Id == veh.OwnerId).CharacterName), veh.LicensePlate, veh.SpawnColors[0], veh.SpawnColors[1], veh.RespawnDelay.TotalMinutes.ToString("G"), veh.JobId, veh.GroupId);
+            API.triggerClientEvent(player, "show_vehicle_edit_menu", veh.Id, VehicleOwnership.returnCorrDisplayName(veh.VehModel), (veh.OwnerId == 0 ? "NONE" : PlayerManager.Players.Single(x => x.Id == veh.OwnerId).CharacterName), veh.LicensePlate, veh.SpawnColors[0], veh.SpawnColors[1], veh.RespawnDelay.TotalMinutes.ToString("G"), veh.JobId, veh.GroupId);
         }
     }
 }
