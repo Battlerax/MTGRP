@@ -434,7 +434,7 @@ namespace mtgvrp.group_manager.lspd
 
             if (player.GetAccount().AdminLevel >= 2)
             {
-                AdminSystem.AdminCommands.SendtoAllAdmins($"{player.GetAccount().AdminName} has relased {receiverCharacter.CharacterName} from prison.");
+                AdminSystem.AdminCommands.SendtoAllAdmins($"{player.GetAccount().AdminName} has released {receiverCharacter.CharacterName} from prison.");
             }
             SetFree(receiver);
 
