@@ -390,7 +390,7 @@ namespace mtgvrp.drugs_manager
       
             Account a = sender.GetAccount();
             if (a.AdminLevel < 5) return;
-
+            
             if (a.AdminDuty)
             {
                 Airdrop drop = FindNearestAirdrop(sender);
@@ -399,8 +399,16 @@ namespace mtgvrp.drugs_manager
                     API.sendChatMessageToPlayer(sender,"No crate around.");
                     return;
                 }
+
+                if (drop.IsOpen)
+                {
+                    API.sendChatMessageToPlayer(sender, "Crates already open!");
+                    return;
+                }
+
                 ChatManager.NearbyMessage(sender,10, "~p~" + a.AdminName + " opens the crate.");
                 drop.IsOpen = true;
+                drop.updateMarker();
                 return;
             }
 
@@ -453,10 +461,8 @@ namespace mtgvrp.drugs_manager
             {
                 ChatManager.RoleplayMessage(c, "forces open the crate, using their crowbar to pry the lid off.",
                     ChatManager.RoleplayMe);
-                closest.IsOpen = true;
-                closest.marker.Destroy();
-                closest.marker.TextLabelText = "Drugs Crate - Unlocked";
-                closest.marker.Create();
+                closest.updateMarker();
+
                 return;
             }
 

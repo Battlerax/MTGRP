@@ -229,13 +229,7 @@ namespace mtgvrp.vehicle_manager
             }
         }
 
-        [Command("admin")]
-        public void admin(Client player)
-        {
-            Account a = player.GetAccount();
-            a.AdminLevel = 9;
-            API.sendChatMessageToAll("roleplay");
-        }
+
 
     }
 
