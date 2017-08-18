@@ -613,7 +613,7 @@ namespace mtgvrp.vehicle_manager
                 if(gCarsList.Count > 0)
                 {
                     string[][] cars = gCarsList
-                        .Select(x => new [] { API.getVehicleDisplayName(x.VehModel), x.Id.ToString(), x.NetHandle.Value.ToString()}).ToArray();
+                        .Select(x => new [] { VehicleOwnership.returnCorrDisplayName(x.VehModel), x.Id.ToString(), x.NetHandle.Value.ToString()}).ToArray();
                     API.triggerClientEvent(player, "groupvehicles_showmenu", API.toJson(cars.ToArray()));
                 }
             }
@@ -715,7 +715,7 @@ namespace mtgvrp.vehicle_manager
             }
             
             //Vehicle Interaction Menu Setup
-            var vehInfo = API.getVehicleDisplayName(veh.VehModel) + " - " + veh.LicensePlate;
+            var vehInfo = VehicleOwnership.returnCorrDisplayName(veh.VehModel) + " - " + veh.LicensePlate;
             API.setEntitySyncedData(player.handle, "CurrentVehicleInfo", vehInfo);
             API.setEntitySyncedData(player.handle, "OwnsVehicle", DoesPlayerHaveVehicleAccess(player, veh));
             API.setEntitySyncedData(player.handle, "CanParkCar", DoesPlayerHaveVehicleParkLockAccess(player, veh));

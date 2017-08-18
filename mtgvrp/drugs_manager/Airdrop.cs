@@ -36,5 +36,22 @@ namespace mtgvrp.drugs_manager
             marker = new MarkerZone(new Vector3(),new Vector3());
         }
 
+
+        public void Delete()
+        {
+            this.Loc = null;
+            Inventory = null;
+            marker.Destroy();
+            marker = null;
+            API.shared.deleteEntity(prop);
+        }
+
+        public void updateMarker()
+        {
+            IsOpen = true;
+            marker.Destroy();
+            marker.TextLabelText = "Drugs Crate - Unlocked";
+            marker.Create();
+        }
     }
 }

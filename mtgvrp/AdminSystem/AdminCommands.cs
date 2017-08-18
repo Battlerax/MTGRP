@@ -694,6 +694,7 @@ namespace mtgvrp.AdminSystem
             var playerPos = API.getEntityPosition(receiver);
             API.setEntityPosition(receiver, new Vector3(playerPos.X, playerPos.Y, playerPos.Z + 5));
             API.sendChatMessageToPlayer(receiver, "You have been slapped by an admin");
+            API.sendChatMessageToPlayer(player,"You have slapped " + receiver.GetCharacter().rp_name());
             ChatManager.NearbyMessage(receiver, 10f,
                 $"{receiver.GetCharacter().rp_name()} has been slapped by an admin.");
             Log(LogTypes.AdminActions,
@@ -817,8 +818,7 @@ namespace mtgvrp.AdminSystem
                     API.sendChatMessageToPlayer(player, $"(UNKNOWN VEHICLE) | ID ~r~{carid}~w~.");
                     continue;
                 }
-                API.sendChatMessageToPlayer(player,
-                    $"({API.getVehicleDisplayName(carid.VehModel)}) | NetHandle ~r~{carid.NetHandle.Value}~w~ | ID ~r~{carid.Id}~w~.");
+                API.sendChatMessageToPlayer(player, $"({VehicleOwnership.returnCorrDisplayName(carid.VehModel)}) | NetHandle ~r~{carid.NetHandle.Value}~w~ | ID ~r~{carid.Id}~w~.");
             }
             API.sendChatMessageToPlayer(player, "----------------------------------------------");
         }
@@ -2170,7 +2170,13 @@ namespace mtgvrp.AdminSystem
                 return;
             }
 
+            if (level > 3)
+            {
+                player.sendChatMessage("Max VIP level is 3.");
+                return;
+            }
             receiverAccount.VipLevel = level;
+
             receiverAccount.VipExpirationDate = DateTime.Now.AddDays(days);
             receiverAccount.Save();
 
