@@ -292,7 +292,7 @@ namespace mtgvrp.player_manager
         public bool CanDoAnim { get; set; }
 
         [BsonIgnore]
-        public int MaxInvStorage => 100; //TODO: change this later on.
+        public int MaxInvStorage => 200;
 
         [BsonIgnore]
         public bool IsTied;

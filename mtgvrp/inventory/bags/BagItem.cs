@@ -62,8 +62,7 @@ namespace mtgvrp.inventory.bags
             set { _inventory = value; }
         }
 
-        //TODO: to be changed, not sure how much it should be.
-        public int MaxInvStorage => 500;
+        public int MaxInvStorage => 200;
 
         public int BagType { get; set; }
         public int BagDesign { get; set; }
