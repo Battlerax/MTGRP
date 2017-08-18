@@ -31,6 +31,10 @@
 	<script src="vehicle_manager/vehicle_editor/VehicleEdit.js" type="client" lang="javascript"/>
 	<file src="vehicle_manager/vehicle_editor/VehicleEdit.html"/>
 	
+  
+  <!-- DRUGS -->
+  <script src="drugs_manager/DrugsClient.js" type="client" lang="javascript"/>
+  
 	<!-- MDC -->
 	<script src="group_manager/lspd/MDC/MDC.js" type="client" lang="javascript"/>
 	<file src="group_manager/lspd/MDC/MDC.html"/>

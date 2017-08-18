@@ -98,6 +98,7 @@
     <Compile Include="core\Discord\DiscordManager.cs" />
     <Compile Include="core\Discord\PlayerDiscordCommands.cs" />
     <Compile Include="core\Discord\RandomFunCommands.cs" />
+    <Compile Include="core\Items\Crowbar.cs" />
     <Compile Include="core\Items\FishingRod.cs" />
     <Compile Include="core\Items\EngineParts.cs" />
     <Compile Include="core\Items\SprayPaint.cs" />
@@ -107,6 +108,14 @@
     <Compile Include="core\TimeManager.cs" />
     <Compile Include="dmv\DmvManager.cs" />
     <Compile Include="dmv\DrivingLicenseItem.cs" />
+    <Compile Include="drugs_manager\Airdrop.cs" />
+    <Compile Include="drugs_manager\drugEnums.cs" />
+    <Compile Include="drugs_manager\Cocaine.cs" />
+    <Compile Include="drugs_manager\DrugsManager.cs" />
+    <Compile Include="drugs_manager\Heroin.cs" />
+    <Compile Include="drugs_manager\Meth.cs" />
+    <Compile Include="drugs_manager\Speed.cs" />
+    <Compile Include="drugs_manager\Weed.cs" />
     <Compile Include="group_manager\lsgov\IdentificationItem.cs" />
     <Compile Include="job_manager\delivery\DeliveryManager.cs" />
     <Compile Include="job_manager\delivery\SupplyItem.cs" />
@@ -333,6 +342,7 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="inventory\InventoryManager.js" />
+    <TypeScriptCompile Include="drugs_manager\DrugsClient.ts" />
     <TypeScriptCompile Include="group_manager\lspd\LspdLocker.ts" />
     <TypeScriptCompile Include="job_manager\fisher\Fisher.ts" />
     <TypeScriptCompile Include="job_manager\JobManager.ts" />
