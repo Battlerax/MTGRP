@@ -70,7 +70,6 @@ namespace mtgvrp.inventory
             #endregion
 
             API.onClientEventTrigger += API_onClientEventTrigger;
-            API.onClientEventTrigger += API_onClientEventTrigger1;
         }
 
         #region Events
@@ -710,22 +709,6 @@ namespace mtgvrp.inventory
         }
 
         #region Stashing System: 
-        private void API_onClientEventTrigger1(Client sender, string eventName, params object[] arguments)
-        {
-            if (eventName == "stash_setnewpos")
-            {
-                string id = arguments[0].ToString();
-                Vector3 pos = (Vector3)arguments[1];
-                Vector3 rot = (Vector3)arguments[2];
-
-                var itm = _stashedItems.SingleOrDefault(x => API.getEntitySyncedData(x.Key, "TargetObj") == id);
-
-                API.resetEntitySyncedData(itm.Key, "TargetObj");
-                API.setEntityPosition(itm.Key, pos);
-                API.setEntityRotation(itm.Key, rot);
-            }
-        }
-
         private Dictionary<NetHandle, KeyValuePair<string[], IInventoryItem>> _stashedItems = new Dictionary<NetHandle, KeyValuePair<string[], IInventoryItem>>();
 
         [Command("stash"), Help(HelpManager.CommandGroups.Inventory, "Stashes an item on the ground for someone else to /pickupstash", "Name of the item", "Amount to stash.")]
@@ -751,10 +734,7 @@ namespace mtgvrp.inventory
             var droppedObject = API.createObject(sendersItem[0].Object, player.position, new Vector3());
             var itemaa = CloneItem(sendersItem[0], amount);
             _stashedItems.Add(droppedObject, new KeyValuePair<string[], IInventoryItem>(new []{character.CharacterName, player.GetAccount().AccountName}, itemaa));
-            var rnd = new Random();
-            var number = rnd.Next(0, 10000).ToString();
-            API.setEntitySyncedData(droppedObject, "TargetObj", number);
-            API.triggerClientEvent(player, "PLACE_OBJECT_ON_GROUND_PROPERLY", number, "stash_setnewpos");
+            API.triggerClientEvent(player, "PLACE_OBJECT_ON_GROUND_PROPERLY", droppedObject.handle);
 
             //Decrease.
             DeleteInventoryItem(character, sendersItem[0].GetType(), amount, x => x == sendersItem[0]);
