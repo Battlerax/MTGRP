@@ -358,6 +358,27 @@ namespace mtgvrp.drugs_manager
         }
 
 
+        [Command("deleteCrate")]
+        public void cmd_deleteCrate(Client sender)
+        {
+            Account a = sender.GetAccount();
+            if (a.AdminLevel < 5) return;
+
+            Airdrop dropToDelete = FindNearestAirdrop(sender);
+
+            if (dropToDelete == null)
+            {
+                API.sendChatMessageToPlayer(sender,"No airdrops nearby.");
+                return;
+            }
+
+            dropToDelete.Delete();
+            _airdrops.Remove(dropToDelete);
+            API.sendChatMessageToPlayer(sender,"Airdrop has been deleted.");
+
+        }
+
+
         [Command("opencrate")]
         public void OpenCrate(Client sender)
         {

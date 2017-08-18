@@ -694,6 +694,7 @@ namespace mtgvrp.AdminSystem
             var playerPos = API.getEntityPosition(receiver);
             API.setEntityPosition(receiver, new Vector3(playerPos.X, playerPos.Y, playerPos.Z + 5));
             API.sendChatMessageToPlayer(receiver, "You have been slapped by an admin");
+            API.sendChatMessageToPlayer(player,"You have slapped " + receiver.GetCharacter().rp_name());
             ChatManager.NearbyMessage(receiver, 10f,
                 $"{receiver.GetCharacter().rp_name()} has been slapped by an admin.");
             Log(LogTypes.AdminActions,
