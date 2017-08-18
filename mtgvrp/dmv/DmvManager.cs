@@ -139,7 +139,7 @@ namespace mtgvrp.dmv
                 //Remove money.
                 InventoryManager.DeleteInventoryItem<Money>(c, 100);
 
-                API.sendChatMessageToPlayer(player, $"You've successfully registered your {API.getVehicleDisplayName(veh.VehModel)}. License: {veh.LicensePlate}");
+                API.sendChatMessageToPlayer(player, $"You've successfully registered your {VehicleOwnership.returnCorrDisplayName(veh.VehModel)}. License: {veh.LicensePlate}");
                 veh.Save();
             }
             else if(eventName == "DMV_TEST_FINISH") {
@@ -344,7 +344,7 @@ namespace mtgvrp.dmv
                 return;
             }
 
-            string[][] vehList = c.OwnedVehicles.Where(x => x.IsRegistered == false).Select(x => new[] {API.getVehicleDisplayName(x.VehModel), x.Id.ToString() }).ToArray();
+            string[][] vehList = c.OwnedVehicles.Where(x => x.IsRegistered == false).Select(x => new[] {VehicleOwnership.returnCorrDisplayName(x.VehModel), x.Id.ToString() }).ToArray();
             API.triggerClientEvent(player, "DMV_SELECTVEHICLE", API.toJson(vehList));
         }
 
@@ -407,7 +407,7 @@ namespace mtgvrp.dmv
             API.sendChatMessageToPlayer(targetPlayer, $" [************** Vehicles Of {c.rp_name()} **************]");
             foreach (var veh in c.OwnedVehicles.Where(x => x.IsRegistered))
             {
-                API.sendChatMessageToPlayer(targetPlayer, $"* Model: {API.getVehicleDisplayName(veh.VehModel)} | Registration: {veh.LicensePlate}");
+                API.sendChatMessageToPlayer(targetPlayer, $"* Model: {VehicleOwnership.returnCorrDisplayName(veh.VehModel)} | Registration: {veh.LicensePlate}");
             }
             API.sendChatMessageToPlayer(targetPlayer, " [**********************************************************]");
 
