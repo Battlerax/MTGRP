@@ -59,11 +59,31 @@ function loaded() {
     for (var i = 0; i < 70; i++) {
         curMods[i] = API.getVehicleMod(veh, i);
     }
+
+    //Load colors.
+    curMods[100] = API.getVehicleCustomPrimaryColor(veh);
+    curMods[101] = API.getVehicleCustomSecondaryColor(veh);
+    curMods[102] = null; //todo: fix this next GTMP update.
+    curMods[103] = API.getVehicleNeonColor(veh);
+
 }
 
 function resetModType(type) {
-    API.removeVehicleMod(veh, type);
-    API.setVehicleMod(veh, type, curMods[type]);
+    if (type === 100) {
+        API.setVehicleCustomPrimaryColor(veh, curMods[100].R, curMods[100].G, curMods[100].B);
+    }
+    else if (type === 101) {
+        API.setVehicleCustomSecondaryColor(veh, curMods[101].R, curMods[101].G, curMods[101].B);
+    }
+    else if (type === 102) {
+        API.setVehicleTyreSmokeColor(veh, 0, 0, 0); //todo: fix this next GTMP update.
+    }
+    else if (type === 103) {
+        API.setVehicleNeonColor(veh, curMods[103].R, curMods[103].G, curMods[103].B);
+    } else {
+        API.removeVehicleMod(veh, type);
+        API.setVehicleMod(veh, type, curMods[type]);
+    }
 }
 
 function callServerEvent(eventName /* Args */) {
