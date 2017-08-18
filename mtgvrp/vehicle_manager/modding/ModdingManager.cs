@@ -328,9 +328,10 @@ namespace mtgvrp.vehicle_manager.modding
                 return;
             }
 
-            if (!player.GetCharacter().OwnedVehicles.Contains(player.vehicle.handle.GetVehicle()))
+            if (!player.GetCharacter().OwnedVehicles.Contains(player.vehicle.handle.GetVehicle()) && player.GetAccount().AdminLevel == 0)
             {
                 API.sendChatMessageToPlayer(player, "You must own the vehicle you're modifying");
+                return;
             }
 
             List<string[]> modList = new List<string[]>();
