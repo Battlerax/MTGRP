@@ -453,11 +453,6 @@ namespace mtgvrp.property_system.businesses
                        API.sendChatMessageToPlayer(sender,
                            $"[BUSINESS] You already have a similar item.");
                         break;
-
-                    case InventoryManager.GiveItemErrors.HasBlockingItem:
-                        API.sendChatMessageToPlayer(sender,
-                            $"[BUSINESS] You have a blocking item, please store it somewhere first.");
-                        break;
                 }
             }
         }

@@ -323,9 +323,6 @@ namespace mtgvrp.property_system.businesses
                         InventoryManager.GiveInventoryItem(prop, new Money(), price);
                         API.sendChatMessageToPlayer(sender, "You've successfully bought this.");
                         break;
-                    case InventoryManager.GiveItemErrors.HasBlockingItem:
-                        API.sendChatMessageToPlayer(sender, "You have a blocking item.");
-                        break;
                     case InventoryManager.GiveItemErrors.MaxAmountReached:
                         API.sendChatMessageToPlayer(sender, "You have reached the maximum amount.");
                         break;

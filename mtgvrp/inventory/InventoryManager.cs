@@ -67,12 +67,25 @@ namespace mtgvrp.inventory
             BsonClassMap.RegisterClassMap<Crowbar>();
 
             BsonClassMap.RegisterClassMap<Weapon>();
+
             #endregion
 
             API.onClientEventTrigger += API_onClientEventTrigger;
+            CharacterMenu.OnCharacterLogin += CharacterMenu_OnCharacterLogin;
         }
 
-        #region Events
+        private void CharacterMenu_OnCharacterLogin(object sender, CharacterMenu.CharacterLoginEventArgs e)
+        {
+            if (GetInventoryFilledSlots(e.Character) > e.Character.MaxInvStorage)
+            {
+                API.shared.sendChatMessageToPlayer(e.Character.Client,
+                    "You are overweight. You won't be able to sprint or jump.");
+                API.shared.setEntitySyncedData(e.Character.Client, "OVERWEIGHT", true);
+            }
+        }
+    
+
+    #region Events
 
         public class OnGetItemEventArgs : EventArgs
         {
@@ -117,7 +130,6 @@ namespace mtgvrp.inventory
         public enum GiveItemErrors
         {
             NotEnoughSpace,
-            HasBlockingItem,
             MaxAmountReached,
             Success,
             HasSimilarItem
@@ -164,9 +176,6 @@ namespace mtgvrp.inventory
             var item = CloneItem(sentitem, amount);
 
             if (storage.Inventory == null) storage.Inventory = new List<IInventoryItem>();
-            //Make sure he doesn't have blocking item.
-            if(storage.GetType() == typeof(Character) && item.GetType() != typeof(Money) && item.GetType() != typeof(Weapon) && storage.Inventory.FirstOrDefault(x => x.IsBlocking == true) != null && ignoreBlocking == false)
-                return GiveItemErrors.HasBlockingItem;
 
             int maxAmount = -1;
             foreach (var amnt in item.MaxAmount)
@@ -176,6 +185,12 @@ namespace mtgvrp.inventory
                     maxAmount = amnt.Value;
                     break;
                 }
+            }
+
+            int filled = GetInventoryFilledSlots(storage);
+            if (storage.GetType() != typeof(Character))
+            {
+                filled += item.Amount * item.AmountOfSlots;
             }
 
             //Check if player has simliar item.
@@ -192,7 +207,8 @@ namespace mtgvrp.inventory
                     return GiveItemErrors.HasSimilarItem;
                 }
                 //Check if has enough space.
-                if ((GetInventoryFilledSlots(storage) + item.Amount * item.AmountOfSlots) <= storage.MaxInvStorage)
+
+                if (filled <= storage.MaxInvStorage)
                 {
                     //Set an id.
                     if(item.Id == ObjectId.Empty) { item.Id = ObjectId.GenerateNewId(DateTime.Now); sentitem.Id = item.Id; }
@@ -202,6 +218,13 @@ namespace mtgvrp.inventory
                     OnStorageGetItem?.Invoke(storage, new OnGetItemEventArgs(sentitem, amount));
                     OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item.GetType(), item.Amount));
                     LogManager.Log(LogManager.LogTypes.Storage, $"[{GetStorageInfo(storage)}] Add Item '{item.LongName}', Amount: '{amount}'");
+
+                    if (GetInventoryFilledSlots(storage) > storage.MaxInvStorage && storage.GetType() == typeof(Character))
+                    {
+                        API.shared.sendChatMessageToPlayer(((Character)storage).Client, "You have gone overweight. You'll no longer be able to sprint or jump.");
+                        API.shared.setEntitySyncedData(((Character) storage).Client,
+                            "OVERWEIGHT", true);
+                    }
                     return GiveItemErrors.Success;
                 }
                 else
@@ -216,7 +239,7 @@ namespace mtgvrp.inventory
                 }
 
                 //Make sure there is space again.
-                if ((GetInventoryFilledSlots(storage) + item.Amount * item.AmountOfSlots) <= storage.MaxInvStorage)
+                if (filled <= storage.MaxInvStorage)
                 {
                     //Add.
                     oldItem.Amount += item.Amount;
@@ -227,6 +250,13 @@ namespace mtgvrp.inventory
                     OnStorageGetItem?.Invoke(storage, new OnGetItemEventArgs(sentitem, amount));
                     OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item.GetType(), oldItem.Amount));
                     LogManager.Log(LogManager.LogTypes.Storage, $"[{GetStorageInfo(storage)}] Add Item '{item.LongName}', Amount: '{amount}'");
+
+                    if (GetInventoryFilledSlots(storage) > storage.MaxInvStorage && storage.GetType() == typeof(Character))
+                    {
+                        API.shared.sendChatMessageToPlayer(((Character)storage).Client, "You have gone overweight. You'll no longer be able to sprint or jump.");
+                        API.shared.setEntitySyncedData(((Character)storage).Client,
+                            "OVERWEIGHT", true);
+                    }
                     return GiveItemErrors.Success;
                 }
                 else
@@ -339,6 +369,12 @@ namespace mtgvrp.inventory
                 }
                 OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item, 0));
                 LogManager.Log(LogManager.LogTypes.Storage, $"[{GetStorageInfo(storage)}] Removed Item '{ItemTypeToNewObject(item).LongName}', Amount: '{amount}'");
+
+                if (GetInventoryFilledSlots(storage) <= storage.MaxInvStorage && storage.GetType() == typeof(Character) && ((Character)storage).Client.hasSyncedData("OVERWEIGHT"))
+                {
+                    API.shared.resetEntitySyncedData(((Character)storage).Client,
+                        "OVERWEIGHT");
+                }
                 return true;
             }
 
@@ -352,6 +388,12 @@ namespace mtgvrp.inventory
             OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(itm, amount));
             OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item, itm.Amount));
             LogManager.Log(LogManager.LogTypes.Storage, $"[{GetStorageInfo(storage)}] Removed Item '{ItemTypeToNewObject(item).LongName}', Amount: '{amount}'");
+
+            if (GetInventoryFilledSlots(storage) <= storage.MaxInvStorage && storage.GetType() == typeof(Character) && ((Character)storage).Client.hasSyncedData("OVERWEIGHT"))
+            {
+                API.shared.resetEntitySyncedData(((Character)storage).Client,
+                    "OVERWEIGHT");
+            }
             return true;
         }
 
@@ -655,11 +697,6 @@ namespace mtgvrp.inventory
                         "Someone has tried to give you an item but failed due to insufficient inventory.");
                     break;
 
-                case GiveItemErrors.HasBlockingItem:
-                    API.sendNotificationToPlayer(player, "The target player has a blocking item in hand.");
-                    API.sendNotificationToPlayer(targetClient,
-                        "You have a blocking item in-hand, place it somewhere first. /inv to find out what it is.");
-                    break;
                 case GiveItemErrors.MaxAmountReached:
                     API.sendNotificationToPlayer(player, "The target player reach max amount of that item.");
                     API.sendNotificationToPlayer(targetClient,
@@ -781,12 +818,10 @@ namespace mtgvrp.inventory
                     API.sendNotificationToPlayer(player, "You don't have enough space in his inventory.");
                     break;
 
-                case GiveItemErrors.HasBlockingItem:
-                    API.sendNotificationToPlayer(player, "You have a blocking item in hand.");
-                    break;
                 case GiveItemErrors.MaxAmountReached:
                     API.sendNotificationToPlayer(player, "You have reached the max amount of that item.");
                     break;
+
                 case GiveItemErrors.Success:
                     API.sendNotificationToPlayer(player,
                         $"You have sucessfully taken ~g~{item.Amount}~w~ ~g~{item.LongName}~w~ from the stash.");
@@ -818,7 +853,7 @@ namespace mtgvrp.inventory
             //For Each item.
             foreach (var item in character.Inventory)
             {
-                API.sendChatMessageToPlayer(player, $"* ~r~{item.LongName}~w~ [{item.CommandFriendlyName}] ({item.Amount}) Weights {item.AmountOfSlots} Slots" + (item.IsBlocking ? " [BLOCKING]" : ""));
+                API.sendChatMessageToPlayer(player, $"* ~r~{item.LongName}~w~ [{item.CommandFriendlyName}] ({item.Amount}) Weights {item.AmountOfSlots} Slots");
             }
 
             //Ending
