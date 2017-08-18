@@ -2170,7 +2170,13 @@ namespace mtgvrp.AdminSystem
                 return;
             }
 
+            if (level > 3)
+            {
+                player.sendChatMessage("Max VIP level is 3.");
+                return;
+            }
             receiverAccount.VipLevel = level;
+
             receiverAccount.VipExpirationDate = DateTime.Now.AddDays(days);
             receiverAccount.Save();
 
