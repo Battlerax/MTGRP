@@ -287,6 +287,11 @@ namespace mtgvrp.core
                 return;
             }
 
+            if (character.NewbieToggled)
+            {
+                API.sendChatMessageToPlayer(player, "You have /n toggled off.");
+            }
+
             Character c = player.GetCharacter();
 
             if (c.NewbieCooldown > new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds())
@@ -363,6 +368,11 @@ namespace mtgvrp.core
             {
                 API.sendNotificationToPlayer(player, "~r~ERROR:~w~VIP chat is currently disabled.");
                 return;
+            }
+
+            if (character.VIPToggled)
+            {
+                API.sendChatMessageToPlayer(player, "You have /v toggled off.");
             }
 
             if (character.VMutedExpiration > TimeManager.GetTimeStamp)
