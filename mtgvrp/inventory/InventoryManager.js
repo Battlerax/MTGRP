@@ -45,3 +45,12 @@ function ExitWindow() {
     myBrowser = null;
     API.triggerServerEvent("invmanagement_cancelled");
 }
+
+API.onUpdate.connect(() => {
+    if (API.hasEntitySyncedData(API.getLocalPlayer(), "OVERWEIGHT")) {
+        API.disableControlThisFrame(25);
+        API.disableControlThisFrame(21);
+        API.disableControlThisFrame(24);
+        API.disableControlThisFrame(22);
+    }
+});

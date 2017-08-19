@@ -15,6 +15,9 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 			holdingbag = false;
 			break;
 
+            case "garbage_removewaypoint":
+            API.removeWaypoint();
+            break;
     }
 });
 

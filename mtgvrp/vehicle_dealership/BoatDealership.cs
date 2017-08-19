@@ -158,9 +158,6 @@ namespace mtgvrp.vehicle_dealership
                         API.sendChatMessageToPlayer(player,
                             $"[BUSINESS] You dont have enough space for that item. You need {new FishingRod().AmountOfSlots} Slots.");
                         break;
-                    case InventoryManager.GiveItemErrors.HasBlockingItem:
-                        API.sendChatMessageToPlayer(player,"[BUSINESS] You have a blocking item in your inventory!");
-                        break;
                 }
             }
             else

@@ -78,9 +78,6 @@ namespace mtgvrp.job_manager.fisher
                         var status = InventoryManager.GiveInventoryItem(c, fish);
                         switch (status)
                         {
-                            case InventoryManager.GiveItemErrors.HasBlockingItem:
-                                API.sendChatMessageToPlayer(player, Color.White, "An error occured while adding fish to inventory: HasBlockingItem");
-                                break;
                             case InventoryManager.GiveItemErrors.MaxAmountReached:
                                 API.sendChatMessageToPlayer(player, Color.White,
                                     "You have the max amount of this fish in your inventory.");

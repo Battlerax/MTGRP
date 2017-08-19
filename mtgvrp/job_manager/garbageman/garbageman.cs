@@ -77,7 +77,7 @@ namespace mtgvrp.job_manager.garbageman
                             return;
                         }
 
-                        pickuptrash_cmd(character.Client);
+                        pickuptrash_e(character.Client);
                         break;
                     }
             }
@@ -130,8 +130,16 @@ namespace mtgvrp.job_manager.garbageman
                     targetProperty.GarbageBags = 5;
                 }
 
-                API.triggerClientEvent(player, "garbage_setwaypoint", targetProperty.GarbagePoint);
-                player.sendChatMessage("A garbage waypoint has been set on your map.");
+                if(veh.GarbageBags == 10)
+                {
+                    API.triggerClientEvent(player, "garbage_setwaypoint", character.JobOne.MiscOne.Location);
+                    player.sendChatMessage("You've got 10 bags of garbage in this truck. Unload it at the waypoint on your map.");
+                }
+                else
+                {
+                    API.triggerClientEvent(player, "garbage_setwaypoint", targetProperty.GarbagePoint);
+                    player.sendChatMessage("A garbage waypoint has been set on your map.");
+                }
 
                 if (!character.IsOnGarbageRun)
                 {
@@ -176,6 +184,7 @@ namespace mtgvrp.job_manager.garbageman
             player.GetCharacter().IsOnGarbageRun = false;
             player.GetCharacter().update_ped();
             player.sendChatMessage("~r~The garbage run has ended. Your garbage truck was removed.");
+            API.triggerClientEvent(player, "garbage_removewaypoint");
         }
 
         public static void SendNotificationToGarbagemen(string message)
@@ -297,6 +306,53 @@ namespace mtgvrp.job_manager.garbageman
             if (prop == null)
             {
                 API.sendChatMessageToPlayer(player, "You aren't at a garbage point.");
+                return;
+            }
+
+            if (API.isPlayerInAnyVehicle(player))
+            {
+                player.sendChatMessage("You cannot do this while in a vehicle.");
+                return;
+            }
+            if (prop.GarbageBags == 0)
+            {
+                player.sendChatMessage("There is no garbage to pick up.");
+                return;
+            }
+
+            if (character.GarbageBag != null)
+            {
+                player.sendChatMessage("You are already carrying a garbage bag.");
+                return;
+            }
+
+            prop.GarbageBags -= 1;
+            prop.UpdateMarkers();
+            character.GarbageBag = API.createObject(API.getHashKey("hei_prop_heist_binbag"), player.position, new Vector3());
+            API.attachEntityToEntity(character.GarbageBag, player, "IK_R_Hand", new Vector3(0, 0, 0), new Vector3(360, 0, 0));
+            API.triggerClientEvent(player, "garbage_holdbag");
+            ChatManager.RoleplayMessage(character, "reaches into the trash and pulls out a garbage bag.", ChatManager.RoleplayMe);
+            player.sendChatMessage("You are holding a garbage bag. Press LMB to throw it into the back of the garbage truck");
+        }
+
+        public void pickuptrash_e(Client player)
+        {
+            Character character = player.GetCharacter();
+
+            if (character.JobOne.Type != JobManager.JobTypes.Garbageman)
+            {
+                return;
+            }
+
+            var prop = PropertyManager.IsAtPropertyGarbagePoint(player);
+            if (prop == null)
+            {
+                return;
+            }
+
+            if (!character.IsOnGarbageRun)
+            {
+                player.sendChatMessage("You must be on a garbage run to pick up trash.");
                 return;
             }
 

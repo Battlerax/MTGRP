@@ -34,9 +34,6 @@ namespace mtgvrp.job_manager.delivery
 
             switch (InventoryManager.GiveInventoryItem(c, new SupplyItem(), amount))
             {
-                case InventoryManager.GiveItemErrors.HasBlockingItem:
-                    API.sendChatMessageToPlayer(player, "You have a blocking item.");
-                    break;
                 case InventoryManager.GiveItemErrors.MaxAmountReached:
                     API.sendChatMessageToPlayer(player, "You have reached the max amount of that item.");
                     break;

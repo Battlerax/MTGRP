@@ -99,6 +99,7 @@ function addTypes(types, isvip) {
         }
         $("#modtypeSelect").append(`<li><a href="#" onclick="getModsList('${typesList[i][0]}');">${typesList[i][0]}${vip}</a></li>`);
     }
+    $("#modtypeSelect").append(`<li><a href="#" onclick="getModsList('windowtint');">Window Tint</a></li>`);
     $("#modtypeSelect").append(`<li><a href="#" onclick="getColor('primarycolor', 'Primary Color');">Primary Color</a></li>`);
     $("#modtypeSelect").append(`<li><a href="#" onclick="getColor('secondarycolor', 'Secondary Color');">Secondary Color</a></li>`);
     $("#modtypeSelect").append(`<li><a href="#" onclick="getColor('tyresmoke', 'Tyre Smoke');">Tyre Smoke (VIP)</a></li>`);
@@ -107,6 +108,55 @@ function addTypes(types, isvip) {
 
 
 function getModsList(type) {
+    if (type === "windowtint") {
+        $("#modsList").empty();
+        $("#modsListGroup").css("display", "block");
+        $("#modsSelectColor").css("display", "none");
+
+        $("#modsList").append(`
+<a href="#" class="list-group-item moditem" data-name="None Window Tint" data-type="104" data-mod="0" data-price="200" data-vip="false">
+    <span class="float-left">None</span>
+    <span class="float-right">$200</span>
+</a>`);
+
+        $("#modsList").append(`
+<a href="#" class="list-group-item moditem" data-name="Pure Black Window Tint" data-type="104" data-mod="1" data-price="200" data-vip="false">
+    <span class="float-left">Pure Black</span>
+    <span class="float-right">$200</span>
+</a>`);
+
+        $("#modsList").append(`
+<a href="#" class="list-group-item moditem" data-name="Dark Smoke Window Tint" data-type="104" data-mod="2" data-price="200" data-vip="false">
+    <span class="float-left">Dark Smoke</span>
+    <span class="float-right">$200</span>
+</a>`);
+
+        $("#modsList").append(`
+<a href="#" class="list-group-item moditem" data-name="Light Smoke Window Tint" data-type="104" data-mod="3" data-price="200" data-vip="false">
+    <span class="float-left">Light Smoke</span>
+    <span class="float-right">$200</span>
+</a>`);
+
+        $("#modsList").append(`
+<a href="#" class="list-group-item moditem" data-name="Stock Window Tint" data-type="104" data-mod="4" data-price="200" data-vip="false">
+    <span class="float-left">Stock</span>
+    <span class="float-right">$200</span>
+</a>`);
+
+        $("#modsList").append(`
+<a href="#" class="list-group-item moditem" data-name="Limo Window Tint" data-type="104" data-mod="5" data-price="200" data-vip="true">
+    <span class="float-left">Limo (VIP)</span>
+    <span class="float-right">$200</span>
+</a>`);
+
+        $("#modsList").append(`
+<a href="#" class="list-group-item moditem" data-name="Green Window Tint" data-type="104" data-mod="6" data-price="200" data-vip="true">
+    <span class="float-left">Green (VIP)</span>
+    <span class="float-right">$200</span>
+</a>`);
+        return;
+    }
+
     resourceCall("callServerEvent", "MODDING_GETMODS", type);
 }
 
