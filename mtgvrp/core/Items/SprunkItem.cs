@@ -5,7 +5,7 @@ using MongoDB.Bson;
 
 namespace mtgvrp.core.Items
 {
-    class SprunkItem : IInventoryItem
+    public class SprunkItem : IInventoryItem
     {
         public ObjectId Id { get; set; }
 
@@ -15,11 +15,9 @@ namespace mtgvrp.core.Items
         public bool CanBeStacked => true;
         public bool CanBeStored => true;
 
-        public bool IsBlocking => false;
-
         public Dictionary<Type, int> MaxAmount => new Dictionary<Type, int>();
 
-        public int AmountOfSlots => 25;
+        public int AmountOfSlots => 20;
 
         public string CommandFriendlyName => "sprunk";
 

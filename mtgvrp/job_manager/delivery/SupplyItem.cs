@@ -17,13 +17,12 @@ namespace mtgvrp.job_manager.delivery
 
         public int Amount { get; set; }
 
-        public int AmountOfSlots => 5;
+        public int AmountOfSlots => 20;
 
         public bool CanBeDropped => true;
         public bool CanBeGiven => false;
         public bool CanBeStacked => true;
         public bool CanBeStashed => false;
-        public bool IsBlocking => false;
         public bool CanBeStored => true;
 
         public Dictionary<Type, int> MaxAmount => new Dictionary<Type, int>()

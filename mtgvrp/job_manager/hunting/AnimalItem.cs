@@ -15,13 +15,12 @@ namespace mtgvrp.job_manager.hunting
 
         public int Amount { get; set; }
 
-        public int AmountOfSlots => 50;
+        public int AmountOfSlots => 150;
 
         public bool CanBeDropped => true;
         public bool CanBeGiven => true;
         public bool CanBeStacked => true;
         public bool CanBeStashed => true;
-        public bool IsBlocking => true;
         public bool CanBeStored => true;
 
         public Dictionary<Type, int> MaxAmount => new Dictionary<Type, int>()

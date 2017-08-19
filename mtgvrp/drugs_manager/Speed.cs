@@ -14,7 +14,6 @@ namespace mtgvrp.drugs_manager
         public bool CanBeDropped => true;
         public bool CanBeStashed => true;
         public bool CanBeStacked => true;
-        public bool IsBlocking => false;
 
         public Dictionary<Type, int> MaxAmount
         {

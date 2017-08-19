@@ -197,11 +197,10 @@ namespace mtgvrp.property_system.businesses
         public bool CanBeStashed => false;
         public bool CanBeStacked => false;
         public bool CanBeStored => false;
-        public bool IsBlocking => false;
 
         public Dictionary<Type, int> MaxAmount => new Dictionary<Type, int>();
 
-        public int AmountOfSlots => 0;
+        public int AmountOfSlots => 5;
 
         public string CommandFriendlyName => "check";
 

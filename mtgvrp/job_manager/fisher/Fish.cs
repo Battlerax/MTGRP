@@ -15,13 +15,12 @@ namespace mtgvrp.job_manager.fisher
 
         public int Amount { get; set; }
 
-        public int AmountOfSlots => 5;
+        public int AmountOfSlots => 20;
 
         public bool CanBeDropped => true;
         public bool CanBeGiven => true;
         public bool CanBeStacked => true;
         public bool CanBeStashed => true;
-        public bool IsBlocking => false;
         public bool CanBeStored => true;
 
         public Dictionary<Type, int> MaxAmount => new Dictionary<Type, int>();

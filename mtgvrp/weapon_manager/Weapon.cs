@@ -32,14 +32,13 @@ public class Weapon : IInventoryItem
         public bool CanBeDropped => true;
         public bool CanBeStashed => true;
         public bool CanBeStacked => false;
-        public bool IsBlocking => false;
         public bool CanBeStored => true;
 
         public Dictionary<Type, int> MaxAmount => new Dictionary<Type, int>()
         {
             {typeof(Character), 1},
         };
-        public int AmountOfSlots => 0;
+        public int AmountOfSlots => 10;
 
         public string CommandFriendlyName => WeaponHash.ToString();
         public string LongName => WeaponHash.ToString();

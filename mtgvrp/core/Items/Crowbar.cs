@@ -14,7 +14,6 @@ namespace mtgvrp.drugs_manager
         public bool CanBeDropped => true;
         public bool CanBeStashed => true;
         public bool CanBeStacked => false;
-        public bool IsBlocking => true;
 
         public Dictionary<Type, int> MaxAmount
         {
@@ -26,7 +25,7 @@ namespace mtgvrp.drugs_manager
         }
 
         public bool CanBeStored => true;
-        public int AmountOfSlots => 25;
+        public int AmountOfSlots => 30;
         public string CommandFriendlyName => "crowbar";
         public string LongName => "Crowbar";
         public int Object => -222444887;

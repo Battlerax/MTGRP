@@ -19,13 +19,12 @@ namespace mtgvrp.phone_manager
 
         public int Amount { get; set; }
 
-        public int AmountOfSlots => 25; //TODO: Change this to something apporpriate.
+        public int AmountOfSlots => 25;
 
         public bool CanBeDropped => true;
         public bool CanBeGiven => true;
         public bool CanBeStacked => false;
         public bool CanBeStashed => true;
-        public bool IsBlocking => false;
         public bool CanBeStored => true;
 
         public Dictionary<Type, int> MaxAmount

@@ -13,13 +13,12 @@ namespace mtgvrp.group_manager.lsgov
         public ObjectId Id { get; set; }
         public int Amount { get; set; }
 
-        public int AmountOfSlots => 0;
+        public int AmountOfSlots => 5;
 
         public bool CanBeDropped => true;
         public bool CanBeGiven => false;
         public bool CanBeStacked => false;
         public bool CanBeStashed => false;
-        public bool IsBlocking => false;
         public bool CanBeStored => false;
 
         [BsonIgnore]

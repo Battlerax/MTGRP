@@ -6,20 +6,19 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace mtgvrp.job_manager.scuba
 {
-    class ScubaItem : IInventoryItem
+    public class ScubaItem : IInventoryItem
     {
         [BsonId]
         public ObjectId Id { get; set; }
 
         public int Amount { get; set; }
 
-        public int AmountOfSlots => 50;
+        public int AmountOfSlots => 100;
 
         public bool CanBeDropped => true;
         public bool CanBeGiven => true;
         public bool CanBeStacked => false;
         public bool CanBeStashed => false;
-        public bool IsBlocking => true;
         public bool CanBeStored => true;
 
         public Dictionary<Type, int> MaxAmount => new Dictionary<Type, int>();
