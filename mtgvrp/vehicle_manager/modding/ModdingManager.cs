@@ -177,6 +177,7 @@ namespace mtgvrp.vehicle_manager.modding
             {SecondryColorId, 100},
             {TyresSmokeColorId, 500},
             {NeonColorId, 300},
+            {WindowTintId, 200},
         };
 
         private static readonly Dictionary<KeyValuePair<int, int>, int> _modPrices = new Dictionary<KeyValuePair<int, int>, int>
@@ -268,6 +269,7 @@ namespace mtgvrp.vehicle_manager.modding
         public const int SecondryColorId = 101;
         public const int TyresSmokeColorId = 102;
         public const int NeonColorId = 103;
+        public const int WindowTintId = 104;
 
         public static void ClearVehicleMods(Vehicle veh)
         {
@@ -279,6 +281,7 @@ namespace mtgvrp.vehicle_manager.modding
             API.shared.setVehicleCustomSecondaryColor(veh.NetHandle, 0, 0, 0);
             API.shared.setVehicleTyreSmokeColor(veh.NetHandle, 0, 0, 0);
             API.shared.setVehicleNeonColor(veh.NetHandle, 0, 0, 0);
+            API.shared.setVehicleWindowTint(veh.NetHandle, 0);
         }
 
         public static void ApplyVehicleMods(Vehicle veh)
@@ -329,6 +332,10 @@ namespace mtgvrp.vehicle_manager.modding
                     var clrs = ((string) mod.Value).Split('|');
                     API.shared.setVehicleNeonColor(veh.NetHandle, Convert.ToInt32(clrs[0]), Convert.ToInt32(clrs[1]),
                         Convert.ToInt32(clrs[2]));
+                }
+                else if (modid == WindowTintId)
+                {
+                    API.shared.setVehicleWindowTint(veh.NetHandle, Convert.ToInt32(mod.Value));
                 }
                 else
                 {

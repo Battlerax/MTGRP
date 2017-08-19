@@ -65,6 +65,7 @@ function loaded() {
     curMods[101] = API.getVehicleCustomSecondaryColor(veh);
     curMods[102] = null; //todo: fix this next GTMP update.
     curMods[103] = API.getVehicleNeonColor(veh);
+    curMods[104] = API.getVehicleWindowTint(veh);
 
 }
 
@@ -80,7 +81,10 @@ function resetModType(type) {
     }
     else if (type === 103) {
         API.setVehicleNeonColor(veh, curMods[103].R, curMods[103].G, curMods[103].B);
-    } else {
+    } else if (type === 104) {
+        API.setVehicleWindowTint(veh, curMods[104]);
+    }
+    else {
         API.removeVehicleMod(veh, type);
         API.setVehicleMod(veh, type, curMods[type]);
     }
@@ -92,7 +96,11 @@ function callServerEvent(eventName /* Args */) {
 }
 
 function putmod(type, id) {
-    API.setVehicleMod(veh, parseInt(type), parseInt(id));
+    if (type === 104) {
+        API.setVehicleWindowTint(veh, parseInt(id));
+    } else {
+        API.setVehicleMod(veh, parseInt(type), parseInt(id));
+    }
 }
 
 function updateCurrentColor(type) {
