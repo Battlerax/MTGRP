@@ -157,7 +157,7 @@ namespace mtgvrp.vehicle_manager.modding
             {15, 0},
             {16, -1},
             {18, -1},
-            {22, -1},
+            {22, 0},
             {23, 600},
             {24, 600},
             {25, 200},
@@ -200,6 +200,9 @@ namespace mtgvrp.vehicle_manager.modding
             {new KeyValuePair<int, int>(15, 2), 7000},
             {new KeyValuePair<int, int>(15, 3), 9000},
             {new KeyValuePair<int, int>(15, 4), 11000},
+
+            {new KeyValuePair<int, int>(22, 0), 100},
+            {new KeyValuePair<int, int>(22, 1), 300},
         };
 
         private static readonly Dictionary<int, int> _vipMods = new Dictionary<int, int>
@@ -245,7 +248,7 @@ namespace mtgvrp.vehicle_manager.modding
             {15, "Suspension"},
             {16, "Armor"},
             {18, "Turbo"},
-            {22, "Xenon"},
+            {22, "Headlights"},
             {23, "Wheels"},
             {24, "Back Wheels"},
             {25, "Plate holders"},
