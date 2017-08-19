@@ -110,6 +110,7 @@
                     <button class="button info" onclick="respawn_veh()" style="margin-top:10px" data-role="hint" data-hint-background="bg-green" data-hint-color="fg-white" data-hint-mode="2" data-hint="Respawn|Respawn the vehicle"><span class="mif-loop2"></span></button>
                     <button class="button success" data-hotkey="Ctrl+S" onclick="save_vehicle()" style="margin-top:10px" data-role="hint" data-hint-background="bg-green" data-hint-color="fg-white" data-hint-mode="2" data-hint="Save|Save changes"><span class="mif-floppy-disk"></span> </button>
                     <button class="button warning" onclick="cancel_veh_edit()" style="margin-top:10px"><span class="mif-cross" data-role="hint" data-hint-background="bg-red" data-hint-color="fg-white" data-hint-mode="2" data-hint="Cancel|Cancels changes"></span> </button>
+                    <button class="button alert" onclick="delete_veh()" style="margin-top:10px"><span class="mif-cross" data-role="hint" data-hint-background="bg-red" data-hint-color="fg-white" data-hint-mode="2" data-hint="Delete|Deletes vehicle"></span> </button>
 
                 </div>
 
@@ -166,6 +167,10 @@
     function send_error(error) {
         $('#error_box').css("display", "block");
         $('#error_msg').html(error);
+    }
+
+    function delete_veh() {
+        resourceCall("delete_veh");
     }
 
 </script>
