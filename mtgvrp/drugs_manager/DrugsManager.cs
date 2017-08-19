@@ -300,7 +300,14 @@ namespace mtgvrp.drugs_manager
             int drugAmount;
        
             if (!int.TryParse(amount, out drugAmount)) return;
-            if (a.AdminLevel < 5) return;
+            if (a.AdminLevel < 5 || drugAmount < 1) return;
+
+            if (API.isPlayerInAnyVehicle(sender))
+            {
+                API.sendChatMessageToPlayer(sender,"Get out of the vehicle, and try again.");
+                return;
+            }
+            
 
             if (FindNearestAirdrop(sender, 20) != null)
             {
@@ -408,7 +415,7 @@ namespace mtgvrp.drugs_manager
 
                 ChatManager.NearbyMessage(sender,10, "~p~" + a.AdminName + " opens the crate.");
                 drop.IsOpen = true;
-                drop.updateMarker();
+                drop.UpdateMarker();
                 return;
             }
 
@@ -461,7 +468,7 @@ namespace mtgvrp.drugs_manager
             {
                 ChatManager.RoleplayMessage(c, "forces open the crate, using their crowbar to pry the lid off.",
                     ChatManager.RoleplayMe);
-                closest.updateMarker();
+                closest.UpdateMarker();
 
                 return;
             }
@@ -480,6 +487,7 @@ namespace mtgvrp.drugs_manager
             PlaceAirDropProp(drop,API.getEntityPosition(sender));
             API.triggerClientEvent(sender, "PLACE_OBJECT_ON_GROUND_PROPERLY", drop.prop);
             Vector3 crateLoc = API.getEntityPosition(drop.prop);
+            drop.SetCorrectCrateLocation(crateLoc);
             drop.marker = new MarkerZone(crateLoc, new Vector3()) { TextLabelText = "Drugs Crate - Locked" };
             drop.marker.Create();
 
