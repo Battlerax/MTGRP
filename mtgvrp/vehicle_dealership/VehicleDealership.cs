@@ -50,6 +50,7 @@ namespace mtgvrp.vehicle_dealership
             new[] {"Prairie", "-1450650718", "15000"},
             new[] {"Oracle", "1348744438", "30000"},
             new[] {"Zion", "-1122289213", "40000"},
+            new[] {"Futo", "2016857647", "25000"}
         };
 
         private readonly string[][] _trucksnvans =
@@ -81,7 +82,6 @@ namespace mtgvrp.vehicle_dealership
             new[] {"SabreGT", "-1685021548", "70000"},
             new[] {"VooDoo", "2006667053", "15000"},
             new[] {"Faction", "-2119578145", "35000"},
-            new[] {"Futo", "2016857647", "25000"},
             new [] { "Phoenix", "-2095439403","60000" },
             new [] { "Rat-Loader", "-667151410","20000" }
         };
