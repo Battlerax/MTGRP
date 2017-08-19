@@ -321,6 +321,7 @@ namespace mtgvrp.drugs_manager
                 return;
             }
 
+            API.sendChatMessageToPlayer(sender,"Crate dropped.");
 
             switch (drug.ToLower())
             {
