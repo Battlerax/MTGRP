@@ -285,6 +285,7 @@ namespace mtgvrp.property_system.businesses
                 API.freezePlayer(sender, false);
                 sender.position = API.getEntityData(sender, "clothing_lastpos");
                 sender.rotation = API.getEntityData(sender, "clothing_lastrot");
+                API.setEntityDimension(sender, 0);
 
                 API.setPlayerClothes(sender, 5, 0, 0);
 
@@ -519,6 +520,7 @@ namespace mtgvrp.property_system.businesses
 
             API.freezePlayer(player, true);
             API.triggerClientEvent(player, "properties_buybag", API.toJson(bagsList), biz.ItemPrices["8"]);
+            API.setEntityDimension(player, player.GetCharacter().Id + 1000);
         }
 
         [Command("buyskin"), Help(HelpManager.CommandGroups.General, "Buy a pedestrian skin as a VIP.", new[] { "Item", "New name" })]
