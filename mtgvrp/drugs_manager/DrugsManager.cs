@@ -470,8 +470,11 @@ namespace mtgvrp.drugs_manager
                 ChatManager.RoleplayMessage(c, "forces open the crate, using their crowbar to pry the lid off.",
                     ChatManager.RoleplayMe);
                 closest.UpdateMarker();
+                LogManager.Log(LogManager.LogTypes.Commands,
+                    $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {c.CharacterName} has opened a crate.");
 
                 return;
+
             }
 
             ChatManager.RoleplayMessage(c,"attempts to pry open the crate lid with their hands, but is unable to.",ChatManager.RoleplayMe);
