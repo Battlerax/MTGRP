@@ -1,29 +1,36 @@
-﻿function getSafeResolution () {
-	var offsetX = 0;
-	var screen = API.getScreenResolutionMaintainRatio();
-	var screenX = screen.Width;
-	var screenY = screen.Height;
-	if (screenX / screenY > 1.7777) {
-		// aspect ratio is larger than 16:9
-		var idealBox = Math.ceil(screenY * 1.7777);
-		// ex: 2850 - 1920 == 660 / 2 == 330
-		offsetX = (screenX - idealBox) / 2;
-		// and gotta set the ideal box to make it work
-		screenX = idealBox;
-	}
+﻿function getSafeResolution() {
+    let offsetX = 0;
+    const screen = API.getScreenResolutionMaintainRatio();
+    let screenX = screen.Width;
+    const screenY = screen.Height;
+    if (screenX / screenY > 1.7777) {
+        // aspect ratio is larger than 16:9
+        const idealBox = Math.ceil(screenY * 1.7777);
+        // ex: 2850 - 1920 == 660 / 2 == 330
+        offsetX = (screenX - idealBox) / 2;
+        // and gotta set the ideal box to make it work
+        screenX = idealBox;
+    }
 
-    return { Offset: offsetX, X: screenX, Y: screenY };
+    return { offsetX, screenX, screenY }
 }
 
-function scaleCoordsToReal (point) {
-	var ratioScreen = getSafeResolution();
-	var realScreen = API.getScreenResolution();
+function scaleCoordsToReal(point) {
+    const ratioScreen = API.getScreenResolutionMaintainRatio();
+    const realScreen = API.getScreenResolution();
 
-	var widthDivisor = realScreen.Width / ratioScreen.X;
-	var heightDivisor = realScreen.Height / ratioScreen.Y;
+    const widthDivisor = realScreen.Width / ratioScreen.Width;
+    const heightDivisor = realScreen.Height / ratioScreen.Height;
 
-    return { X: (point.X * widthDivisor) + ratioScreen.Offset, Y: point.Y * heightDivisor };
+    return { X: point.X * widthDivisor, Y: point.Y * heightDivisor }
 }
+
+var mapMarginLeft = API.getScreenResolutionMaintainRatio().Width / 64;
+var mapMarginBottom = API.getScreenResolutionMaintainRatio().Height / 60;
+var mapWidth = API.getScreenResolutionMaintainRatio().Width / 7.11;
+var mapHeight = API.getScreenResolutionMaintainRatio().Height / 5.71;
+var mapX = mapMarginLeft + mapWidth + mapMarginLeft;
+var mapY = API.getScreenResolutionMaintainRatio().Height - mapHeight - mapMarginBottom;
 
 var lastObj;
 var lastEvent;

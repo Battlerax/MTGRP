@@ -21,8 +21,8 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
 
         private void OnClientEventTrigger(Client player, string eventName, params object[] arguments)
         {
-            
-            if(eventName == "vehicle_edit_change_spawn")
+
+            if (eventName == "vehicle_edit_change_spawn")
             {
                 Vehicle veh = API.getEntityData(player.handle, "EDIT_VEH");
 
@@ -39,7 +39,7 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
 
                 API.sendChatMessageToPlayer(player, "Vehicle position spawn saved to current location.");
             }
-            else if(eventName == "vehicle_edit_save")
+            else if (eventName == "vehicle_edit_save")
             {
                 Vehicle veh = API.getEntityData(player.handle, "EDIT_VEH");
 
@@ -67,7 +67,7 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
 
                 var modelHash = API.vehicleNameToModel(model);
 
-                if(modelHash == 0)
+                if (modelHash == 0)
                 {
                     API.triggerClientEvent(player, "send_veh_edit_error", "Invalid vehicle model entered!");
                     return;
@@ -75,10 +75,11 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
 
                 if (!Character.IsCharacterRegistered(owner) && owner != "NONE")
                 {
-                    API.triggerClientEvent(player, "send_veh_edit_error", "Invalid owner entered. (Character name does not exist.)");
+                    API.triggerClientEvent(player, "send_veh_edit_error",
+                        "Invalid owner entered. (Character name does not exist.)");
                     return;
                 }
-                 
+
                 if (JobManager.GetJobById(jobId) == null && jobId != 0)
                 {
                     API.triggerClientEvent(player, "send_veh_edit_error", "Invalid job ID entered!");
@@ -117,10 +118,26 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
                 API.sendChatMessageToPlayer(player, "Vehicle editor changes saved!");
                 API.triggerClientEvent(player, "finish_veh_edit");
             }
-            else if(eventName == "cancel_veh_edit")
+            else if (eventName == "cancel_veh_edit")
             {
                 API.resetEntityData(player, "EDIT_VEH");
                 API.sendChatMessageToPlayer(player, "~r~Vehicle editing canceled.");
+            }
+            else if (eventName == "edit_veh_delete")
+            {
+                Vehicle veh = API.getEntityData(player.handle, "EDIT_VEH");
+
+                if (veh == null)
+                {
+                    API.sendChatMessageToPlayer(player, "~r~Vehicle editor error. Null vehicle.");
+                    return;
+                }
+
+                VehicleManager.despawn_vehicle(veh);
+                veh.Delete();
+                API.sendChatMessageToPlayer(player, "Vehicle deleted successfully!");
+                API.triggerClientEvent(player, "finish_veh_edit");
+                API.resetEntityData(player, "EDIT_VEH");
             }
             else if(eventName == "vehicle_edit_respawn")
             {
@@ -167,7 +184,7 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
             }
 
             API.setEntityData(player.handle, "EDIT_VEH", veh);
-            API.triggerClientEvent(player, "show_vehicle_edit_menu", veh.Id, VehicleOwnership.returnCorrDisplayName(veh.VehModel), (veh.OwnerId == 0 ? "NONE" : PlayerManager.Players.Single(x => x.Id == veh.OwnerId).CharacterName), veh.LicensePlate, veh.SpawnColors[0], veh.SpawnColors[1], veh.RespawnDelay.TotalMinutes.ToString("G"), veh.JobId, veh.GroupId);
+            API.triggerClientEvent(player, "show_vehicle_edit_menu", veh.Id, veh.VehModel.ToString(), (veh.OwnerId == 0 ? "NONE" : PlayerManager.Players.Single(x => x.Id == veh.OwnerId).CharacterName), veh.LicensePlate, veh.SpawnColors[0], veh.SpawnColors[1], veh.RespawnDelay.TotalMinutes.ToString("G"), veh.JobId, veh.GroupId);
         }
     }
 }

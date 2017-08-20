@@ -59,3 +59,6 @@ function is_edit_vehicle_menu_open() {
     else return false;
 }
 
+function delete_veh() {
+    API.triggerServerEvent("edit_veh_delete");
+}
