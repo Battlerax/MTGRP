@@ -19,10 +19,11 @@ API.onServerEventTrigger.connect(function (eventName, args) {
     }
     else if (eventName === "speedVisual") {
         timer = args[0];
-        API.playScreenEffect("DrugsTrevorClownsFight", timer, false);
+        API.playScreenEffect("RaceTurbo", timer, false);
     }
     else if (eventName === "heroinVisual") {
-        API.setCameraShake(cam, "DRUNK_SHAKE", 5);
+        timer = args[0];
+        API.playScreenEffect("DrugsTrevorClownsFight", timer, false);
     }
     else if (eventName === "cokeVisual") {
         timer = args[0];
@@ -38,7 +39,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
         }
     }
     else if (eventName === "clearHeroin") {
-        API.stopCameraShake(cam);
+        API.playScreenEffect("DrugsTrevorClownsFightOut", 1000, false);
     }
     else if (eventName === "clearSpeed") {
         API.setHudVisible(true);
@@ -48,8 +49,6 @@ API.onServerEventTrigger.connect(function (eventName, args) {
         API.playScreenEffect("RampageOut", 1000, false);
     }
     else if (eventName === "clearAllEffects") {
-        API.callNative("0x4E6D875B");
         API.playScreenEffect("DrugsTrevorClownsFightOut", 1000, false);
-        API.stopCameraShake(cam);
     }
 });

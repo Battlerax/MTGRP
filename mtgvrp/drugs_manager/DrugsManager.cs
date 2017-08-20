@@ -41,11 +41,12 @@ namespace mtgvrp.drugs_manager
         public const int MaxAirDropSize = 1000; 
 
         private const int CurrentDrugSize = 1;
-        private const double TempTime = 0.5;
+        private const double TempTime = 1.5;
 
 
-        private const int LowerHeroinTripTime = 20;
-        private const int HigherHeroinTripTime = 30;
+
+        private const int LowerHeroinTripTime = 60;
+        private const int HigherHeroinTripTime = 120;
 
         private readonly Timer _lowerTempVals = new Timer(ConvertMinToMilli(TempTime));
 
@@ -572,6 +573,12 @@ namespace mtgvrp.drugs_manager
 
         }
 
+        [Command("tol")]
+        public void callTolRoll(Client sender)
+        {
+            Character c = sender.GetCharacter();
+            ToleranceEffectRoll(c);
+        }
         public void ToleranceEffectRoll(Character c)
         {
             Random r = new Random();
@@ -596,7 +603,11 @@ namespace mtgvrp.drugs_manager
             {
                 API.sendChatMessageToPlayer(c.Client,"Your current usage limits are causing you serious pain.");
                 API.setPlayerHealth(c.Client,API.getPlayerHealth(c.Client) - 10);
-                API.triggerClientEvent(c.Client, "heroinVisual");       
+                if (c.Client == null)
+                {
+                    API.sendChatMessageToAll("lol null");
+                }
+                API.triggerClientEvent(c.Client, "heroinVisual",LowerHeroinTripTime * 1000);       
                 c.HeroinTimer = new Timer { Interval = LowerHeroinTripTime * 1000 };
                 c.HeroinTimer.Elapsed += delegate { clearHeroinEffect(c.Client); };
                 c.HeroinTimer.Start();
@@ -608,7 +619,7 @@ namespace mtgvrp.drugs_manager
                 API.sendChatMessageToPlayer(c.Client,"Your body is unable to take the heroin anymore, and begins to breakdown.");
                 API.setPlayerHealth(c.Client,1);
                 API.setPlayerArmor(c.Client,0);
-                API.triggerClientEvent(c.Client, "heroinVisual");
+                API.triggerClientEvent(c.Client, "heroinVisual", HigherHeroinTripTime * 1000);
                 c.HeroinTimer = new Timer { Interval = HigherHeroinTripTime * 1000 };
                 c.HeroinTimer.Elapsed += delegate { clearHeroinEffect(c.Client); };
                 c.HeroinTimer.Start();

@@ -25,13 +25,14 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 
     else if (eventName === "speedVisual") {
         timer = args[0];
-        API.playScreenEffect("DrugsTrevorClownsFight", timer, false);
+        API.playScreenEffect("RaceTurbo", timer, false);
 
 
     }
 
-     else if (eventName === "heroinVisual") {
-        API.setCameraShake(cam,"DRUNK_SHAKE",5);
+    else if (eventName === "heroinVisual") {
+        timer = args[0];
+        API.playScreenEffect("DrugsTrevorClownsFight", timer, false);
     }
 
 
@@ -54,7 +55,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 
 
     else if (eventName === "clearHeroin") {
-        API.stopCameraShake(cam);
+        API.playScreenEffect("DrugsTrevorClownsFightOut", 1000, false);
     }
 
     else if (eventName === "clearSpeed") {
@@ -68,8 +69,6 @@ API.onServerEventTrigger.connect(function (eventName, args) {
     // Really don't want permanent effects. 
     else if (eventName === "clearAllEffects") {
         API.playScreenEffect("DrugsTrevorClownsFightOut", 1000, false);
-        API.stopAllScreenEffects();
-        API.stopCameraShake(cam);
 
     }
 });
