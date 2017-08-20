@@ -15,7 +15,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
     else if (eventName === "weedVisual") {
         timer = args[0];
         API.playScreenEffect("DrugsMichaelAliensFight", timer, false);
-        weedblip = API.createBlip(new Vector3(0, 0, 0));
+        weedblip = API.createBlip(new Vector3(-4583, 5638, -0.1));
         API.setBlipSprite(weedblip, 496);
         API.setBlipScale(weedblip, 20);
         API.setBlipColor(weedblip, 2);
