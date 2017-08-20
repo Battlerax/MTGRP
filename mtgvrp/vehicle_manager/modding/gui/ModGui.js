@@ -42,6 +42,9 @@ function showError(string) {
     $("#vipNeededMsg").text(string);
     $("#vipNeededMsg").fadeIn();
     setTimeout(function () {
+            if ($("#vipNeededMsg").text() !== string)
+            return;
+
             $("#vipNeededMsg").fadeOut();
         },
         5000);

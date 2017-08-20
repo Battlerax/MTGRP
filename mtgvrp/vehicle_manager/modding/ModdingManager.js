@@ -3,7 +3,8 @@ var Args = null;
 
 var curMods = [];
 
-var camera = API.createCamera(new Vector3(-331.7626, -135.005, 41.0), new Vector3(0, 0, 135.6836));
+var curCamPos = new Vector3(-331.7626, -135.005, 41.0);
+var camera = API.createCamera(curCamPos, new Vector3(0, 0, 135.6836));
 var veh;
 
 API.onServerEventTrigger.connect((event, args) => {
@@ -153,11 +154,36 @@ function exitModShop() {
 /* Vehicle Rotation */
 var rotating = 0;
 API.onKeyDown.connect(function (sender, e) {
+    if (myBrowser == null)
+        return;
+
     if (e.KeyCode == Keys.Oemplus) {
         rotating = 4;
 
     } else if (e.KeyCode == Keys.OemMinus) {
         rotating = -4;
+    }
+    else if (e.KeyCode == Keys.ShiftKey) {
+        if (Math.round(curCamPos.X) == -340) {
+            myBrowser.call("showError", "You cannot zoom any further.");
+            return;
+        }
+
+        curCamPos.X -= 1;
+        curCamPos.Y -= 1;
+        API.setCameraPosition(camera, curCamPos);
+        API.pointCameraAtEntity(camera, API.getPlayerVehicle(API.getLocalPlayer()), new Vector3());
+    }
+    else if (e.KeyCode == Keys.ControlKey) {
+        if (Math.round(curCamPos.X) == -330) {
+            myBrowser.call("showError", "You cannot zoom any further.");
+            return;
+        }
+
+        curCamPos.X += 1;
+        curCamPos.Y += 1;
+        API.setCameraPosition(camera, curCamPos);
+        API.pointCameraAtEntity(camera, API.getPlayerVehicle(API.getLocalPlayer()), new Vector3());
     }
 });
 
