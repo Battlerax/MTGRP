@@ -3,7 +3,7 @@ var Args = null;
 
 var curMods = [];
 
-var camera = API.createCamera(new Vector3(-331.7626, -135.005, 40.0), new Vector3(0, 0, 135.6836));
+var camera = API.createCamera(new Vector3(-331.7626, -135.005, 41.0), new Vector3(0, 0, 135.6836));
 var veh;
 
 API.onServerEventTrigger.connect((event, args) => {
