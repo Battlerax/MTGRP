@@ -2357,15 +2357,33 @@ namespace mtgvrp.AdminSystem
             var type = InventoryManager.ParseInventoryItem(item);
             if (type == null)
             {
-                API.sendChatMessageToPlayer(player, "Unexisting Item.");
+                API.sendChatMessageToPlayer(player, "This item doesn't exist. Ask a dev if you're stuck!");
                 return;
             }
 
             var itema = InventoryManager.ItemTypeToNewObject(type);
-            InventoryManager.GiveInventoryItem(targetPlayer.GetCharacter(), itema, amount);
-            API.sendChatMessageToPlayer(player, "Done.");
-            Log(LogTypes.AdminActions,
-                $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {player.GetAccount().AdminName} has given {GetLogName(targetPlayer)} an item {item}, amount: {amount}");
+            var x = InventoryManager.GiveInventoryItem(targetPlayer.GetCharacter(), itema, amount);
+            switch (x)
+            {
+                case InventoryManager.GiveItemErrors.NotEnoughSpace:
+                    API.sendChatMessageToPlayer(player,"Target player doesn't have space in their inventory for that.");
+                    return;
+                case InventoryManager.GiveItemErrors.MaxAmountReached:
+                    API.sendChatMessageToPlayer(player, "Target player will go past the max amount of " + item + "! Unable to give item.");
+                    return;
+                case InventoryManager.GiveItemErrors.HasSimilarItem:
+                    API.sendChatMessageToPlayer(player,"Target player alreadyy has one of these!");
+                    return;
+                case InventoryManager.GiveItemErrors.Success:
+                    API.sendChatMessageToPlayer(player, "Done.");
+                    Log(LogTypes.AdminActions,
+                        $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}]" +
+                        $" Admin {player.GetAccount().AdminName} has given {GetLogName(targetPlayer)} an item {item}, amount: {amount}");
+                    return;
+                default:
+                    API.sendChatMessageToPlayer(player,"An unknown error occured.");
+                    return;
+            }
         }
     }
 }
