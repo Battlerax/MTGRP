@@ -40,10 +40,10 @@ namespace mtgvrp.vehicle_manager
             {
                 switch (API.shared.getVehicleClass(VehModel))
                 {
-                    case 0: return 400;
-                    case 1: return 400;
+                    case 0: return 300;
+                    case 1: return 300;
                     case 2: return 500;
-                    case 3: return 350;
+                    case 3: return 300;
                     case 4: return 300;
                     case 5: return 300;
                     case 6: return 300;
@@ -54,7 +54,7 @@ namespace mtgvrp.vehicle_manager
                     case 11: return 0;
                     case 12: return 700;
                     case 13: return 0;
-                    case 14: return 400;
+                    case 14: return 500;
                     case 15: return 300;
                     case 16: return 0;
                     case 17: return 0;
