@@ -147,12 +147,6 @@ function getModsList(type) {
 </a>`);
 
         $("#modsList").append(`
-<a href="#" class="list-group-item moditem" data-name="Limo Window Tint" data-type="104" data-mod="5" data-price="200" data-vip="true">
-    <span class="float-left">Limo (VIP)</span>
-    <span class="float-right">$200</span>
-</a>`);
-
-        $("#modsList").append(`
 <a href="#" class="list-group-item moditem" data-name="Green Window Tint" data-type="104" data-mod="6" data-price="200" data-vip="true">
     <span class="float-left">Green (VIP)</span>
     <span class="float-right">$200</span>
