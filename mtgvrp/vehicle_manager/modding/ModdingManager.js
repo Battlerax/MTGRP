@@ -59,6 +59,9 @@ function loaded() {
     //Save current mods.
     for (var i = 0; i < 70; i++) {
         curMods[i] = API.getVehicleMod(veh, i);
+        if (i === 22 && curMods[i] === -1) {
+            curMods[i] = 0;
+        }
     }
 
     //Load colors.
