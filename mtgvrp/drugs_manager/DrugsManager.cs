@@ -594,6 +594,7 @@ namespace mtgvrp.drugs_manager
             {
                 API.sendChatMessageToPlayer(c.Client,"Your current usage limits are causing you serious pain.");
                 API.setPlayerHealth(c.Client,API.getPlayerHealth(c.Client) - 10);
+                API.triggerClientEvent(c.Client, "heroinVisual");       
                 c.HeroinTimer = new Timer { Interval = LowerHeroinTripTime * 1000 };
                 c.HeroinTimer.Elapsed += delegate { clearHeroinEffect(c.Client); };
                 c.HeroinTimer.Start();
@@ -605,6 +606,7 @@ namespace mtgvrp.drugs_manager
                 API.sendChatMessageToPlayer(c.Client,"Your body is unable to take the heroin anymore, and begins to breakdown.");
                 API.setPlayerHealth(c.Client,1);
                 API.setPlayerArmor(c.Client,0);
+                API.triggerClientEvent(c.Client, "heroinVisual");
                 c.HeroinTimer = new Timer { Interval = HigherHeroinTripTime * 1000 };
                 c.HeroinTimer.Elapsed += delegate { clearHeroinEffect(c.Client); };
                 c.HeroinTimer.Start();
