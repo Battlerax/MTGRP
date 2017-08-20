@@ -42,6 +42,9 @@ function showError(string) {
     $("#vipNeededMsg").text(string);
     $("#vipNeededMsg").fadeIn();
     setTimeout(function () {
+            if ($("#vipNeededMsg").text() !== string)
+            return;
+
             $("#vipNeededMsg").fadeOut();
         },
         5000);
@@ -140,12 +143,6 @@ function getModsList(type) {
         $("#modsList").append(`
 <a href="#" class="list-group-item moditem" data-name="Stock Window Tint" data-type="104" data-mod="4" data-price="200" data-vip="false">
     <span class="float-left">Stock</span>
-    <span class="float-right">$200</span>
-</a>`);
-
-        $("#modsList").append(`
-<a href="#" class="list-group-item moditem" data-name="Limo Window Tint" data-type="104" data-mod="5" data-price="200" data-vip="true">
-    <span class="float-left">Limo (VIP)</span>
     <span class="float-right">$200</span>
 </a>`);
 

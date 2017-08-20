@@ -69,7 +69,9 @@ namespace mtgvrp.vehicle_manager.modding
                     API.setEntityPosition(sender.vehicle, sender.getData("ModLastPos"));
                     API.setEntityDimension(sender.vehicle, 0);
                     API.setEntityDimension(sender, 0);
-                    break;
+                    if (sender.GetAccount().IsSpeedoOn)
+                        API.triggerClientEvent(sender, "TOGGLE_SPEEDO");
+                        break;
                 }
 
                 case "MODDONG_PURCHASE_ITEMS":
@@ -112,7 +114,9 @@ namespace mtgvrp.vehicle_manager.modding
                     API.setEntityPosition(sender.vehicle, sender.getData("ModLastPos"));
                     API.setEntityDimension(sender.vehicle, 0);
                     API.setEntityDimension(sender, 0);
-                    break;
+                    if (sender.GetAccount().IsSpeedoOn)
+                        API.triggerClientEvent(sender, "TOGGLE_SPEEDO");
+                        break;
                 }
             }
         }
@@ -416,6 +420,8 @@ namespace mtgvrp.vehicle_manager.modding
             API.setEntityDimension(player.vehicle, player.GetCharacter().Id);
             
             API.triggerClientEvent(player, "SHOW_MODDING_GUI", API.toJson(modList.ToArray()), player.GetAccount().VipLevel > 0);
+            if(player.GetAccount().IsSpeedoOn)
+                API.triggerClientEvent(player, "TOGGLE_SPEEDO");
         }
 
 

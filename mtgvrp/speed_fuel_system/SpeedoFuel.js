@@ -35,11 +35,10 @@ API.onServerEventTrigger.connect((eventName, args) => {
             if (myBrowser === null) {
                 if (API.getPlayerVehicleSeat(API.getLocalPlayer()) !== -1) return;
 
-                var res2 = API.getScreenResolutionMaintainRatio();
                 var width2 = 450;
                 var height2 = 200;
                 var size2 = resource.JsFunctions.scaleCoordsToReal({ X: width2, Y: height2 });
-                var pos2 = resource.JsFunctions.scaleCoordsToReal({ X: 310, Y: res2.Height - height2 - 5 });
+                var pos2 = resource.JsFunctions.scaleCoordsToReal({ X: resource.JsFunctions.mapX, Y: resource.JsFunctions.mapY });
                 myBrowser = API.createCefBrowser(size2.X, size2.Y);
                 API.waitUntilCefBrowserInit(myBrowser);
                 API.setCefBrowserPosition(myBrowser, pos2.X, pos2.Y);

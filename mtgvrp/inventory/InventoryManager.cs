@@ -419,6 +419,12 @@ namespace mtgvrp.inventory
                     OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(i, amount));
                 }
                 OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item, 0));
+
+                if (GetInventoryFilledSlots(storage) <= storage.MaxInvStorage && storage.GetType() == typeof(Character) && ((Character)storage).Client.hasSyncedData("OVERWEIGHT"))
+                {
+                    API.shared.resetEntitySyncedData(((Character)storage).Client,
+                        "OVERWEIGHT");
+                }
                 return true;
             }
 
@@ -431,6 +437,12 @@ namespace mtgvrp.inventory
 
             OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(itm, amount));
             OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item, itm.Amount));
+
+            if (GetInventoryFilledSlots(storage) <= storage.MaxInvStorage && storage.GetType() == typeof(Character) && ((Character)storage).Client.hasSyncedData("OVERWEIGHT"))
+            {
+                API.shared.resetEntitySyncedData(((Character)storage).Client,
+                    "OVERWEIGHT");
+            }
             return true;
         }
 
