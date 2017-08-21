@@ -214,7 +214,7 @@ namespace mtgvrp.core
             var character = player.GetCharacter();
 
             character.NewbieToggled = !character.NewbieToggled;
-            player.sendChatMessage("Newbie chat turned " + ((character.NewbieToggled == true) ? ("on") : ("off")) + ".");
+            player.sendChatMessage("Newbie chat turned " + ((character.NewbieToggled == false) ? ("on") : ("off")) + ".");
         }
 
         [Command("togv"), Help.Help(HelpManager.CommandGroups.General, "Used to toggle VIP chat on and off.", null)]
@@ -223,7 +223,7 @@ namespace mtgvrp.core
             var character = player.GetCharacter();
 
             character.VIPToggled = !character.VIPToggled;
-            player.sendChatMessage("VIP chat turned " + ((character.VIPToggled == true) ? ("on") : ("off")) + ".");
+            player.sendChatMessage("VIP chat turned " + ((character.VIPToggled == false) ? ("on") : ("off")) + ".");
         }
 
         [Command("togglenewbie"), Help.Help(HelpManager.CommandGroups.AdminLevel2, "Used to toggle newbie chat on and off.", null)]
@@ -317,7 +317,7 @@ namespace mtgvrp.core
 
             foreach (var p in PlayerManager.Players)
             {
-                if (p.NewbieToggled == false)
+                if (!p.NewbieToggled)
                 {
                     API.sendChatMessageToPlayer(p.Client, Color.NewbieChat, $"[N] {rank} " + c.rp_name() + ": " + message);
                 }

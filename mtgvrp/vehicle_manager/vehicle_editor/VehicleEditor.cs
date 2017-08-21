@@ -8,6 +8,7 @@ using mtgvrp.group_manager;
 using mtgvrp.job_manager;
 using mtgvrp.player_manager;
 using mtgvrp.core.Help;
+using mtgvrp.vehicle_manager.modding;
 
 namespace mtgvrp.vehicle_manager.vehicle_editor
 {
@@ -103,8 +104,8 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
 
                 veh.VehModel = modelHash;
                 veh.LicensePlate = licensePlate;
-                veh.SpawnColors[0] = color1;
-                veh.SpawnColors[1] = color2;
+                veh.VehMods[ModdingManager.PrimaryColorId.ToString()] = color1.ToString();
+                veh.VehMods[ModdingManager.PrimaryColorId.ToString()] = color2.ToString();
                 veh.RespawnDelay = TimeSpan.FromMinutes(respawnDelay);
                 veh.JobId = jobId;
                 veh.Job = JobManager.GetJobById(veh.JobId);
@@ -184,7 +185,7 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
             }
 
             API.setEntityData(player.handle, "EDIT_VEH", veh);
-            API.triggerClientEvent(player, "show_vehicle_edit_menu", veh.Id, veh.VehModel.ToString(), (veh.OwnerId == 0 ? "NONE" : PlayerManager.Players.Single(x => x.Id == veh.OwnerId).CharacterName), veh.LicensePlate, veh.SpawnColors[0], veh.SpawnColors[1], veh.RespawnDelay.TotalMinutes.ToString("G"), veh.JobId, veh.GroupId);
+            API.triggerClientEvent(player, "show_vehicle_edit_menu", veh.Id, veh.VehModel.ToString(), (veh.OwnerId == 0 ? "NONE" : PlayerManager.Players.Single(x => x.Id == veh.OwnerId).CharacterName), veh.LicensePlate, veh.VehMods[ModdingManager.PrimaryColorId.ToString()], veh.VehMods[ModdingManager.SecondryColorId.ToString()], veh.RespawnDelay.TotalMinutes.ToString("G"), veh.JobId, veh.GroupId);
         }
     }
 }

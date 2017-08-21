@@ -469,7 +469,7 @@ namespace mtgvrp.player_manager
             {
                 API.sendChatMessageToPlayer(sender, "~y~Admin:~y~");
                 API.sendChatMessageToPlayer(sender,
-                    $"~h~Admin level:~h~ {account.AdminLevel} ~h~Admin name:~h~ {account.AdminName} ~h~Dimension:~h~ {character?.LastDimension} ~h~Last IP:~h~ {account.LastIp}");
+                    $"~h~Admin level:~h~ {account.AdminLevel} ~h~Admin name:~h~ {account.AdminName} ~h~Dimension:~h~ {API.getEntityDimension(receiver)} ~h~Last IP:~h~ {account.LastIp}");
                 API.sendChatMessageToPlayer(sender, $"~h~Current vehicle:~h~{playerveh} ~h~Last vehicle: ~h~ { character?.LastVehicle?.Id}");
                 API.sendChatMessageToPlayer(sender,
                     $"~h~Social Club Name:~h~ {account.AccountName} ~h~Admin actions: {account.AdminActions}");

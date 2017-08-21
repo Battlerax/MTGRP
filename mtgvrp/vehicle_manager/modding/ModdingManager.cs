@@ -53,7 +53,7 @@ namespace mtgvrp.vehicle_manager.modding
 
                         modsList.Add(new string[]
                         {
-                            m.localizedName == "" ? "No Name" : m.localizedName , modType.ToString(), modid.ToString(), price.ToString(),
+                            m.localizedName == "" ? "No Name" : (m.HasFlag("chrome") ? "CHROME - " + m.localizedName : m.localizedName) , modType.ToString(), modid.ToString(), price.ToString(),
                             isVip == true ? "true" : "false"
                         });
                     }
@@ -299,12 +299,18 @@ namespace mtgvrp.vehicle_manager.modding
                 if (modid == PrimaryColorId)
                 {
                     var clrs = ((string) mod.Value).Split('|');
-                    API.shared.setVehicleCustomPrimaryColor(veh.NetHandle, Convert.ToInt32(clrs[0]), Convert.ToInt32(clrs[1]), Convert.ToInt32(clrs[2]));
+                    if(clrs.Length == 1)
+                        GrandTheftMultiplayer.Server.API.API.shared.setVehiclePrimaryColor(veh.NetHandle, Convert.ToInt32(clrs[0]));
+                    else
+                        API.shared.setVehicleCustomPrimaryColor(veh.NetHandle, Convert.ToInt32(clrs[0]), Convert.ToInt32(clrs[1]), Convert.ToInt32(clrs[2]));
                 }
                 else if (modid == SecondryColorId)
                 {
                     var clrs = ((string)mod.Value).Split('|');
-                    API.shared.setVehicleCustomSecondaryColor(veh.NetHandle, Convert.ToInt32(clrs[0]), Convert.ToInt32(clrs[1]), Convert.ToInt32(clrs[2]));
+                    if (clrs.Length == 1)
+                        GrandTheftMultiplayer.Server.API.API.shared.setVehicleSecondaryColor(veh.NetHandle, Convert.ToInt32(clrs[0]));
+                    else
+                        API.shared.setVehicleCustomSecondaryColor(veh.NetHandle, Convert.ToInt32(clrs[0]), Convert.ToInt32(clrs[1]), Convert.ToInt32(clrs[2]));
                 }
                 else if (modid == TyresSmokeColorId)
                 {

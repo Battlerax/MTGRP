@@ -31,6 +31,7 @@ using MongoDB.Driver;
 using mtgvrp.core.Help;
 using mtgvrp.dmv;
 using mtgvrp.vehicle_manager.modding;
+using VehicleInfoLoader;
 using Color = mtgvrp.core.Color;
 
 namespace mtgvrp.vehicle_manager
@@ -865,11 +866,7 @@ namespace mtgvrp.vehicle_manager
                 VehModel = model,
                 SpawnPos = pos,
                 SpawnRot = rot,
-                SpawnColors =
-                {
-                    [0] = color1,
-                    [1] = color2
-                },
+                VehMods = new Dictionary<string, string>() { [ModdingManager.PrimaryColorId.ToString()] = color1.ToString(), [ModdingManager.SecondryColorId.ToString()] = color2.ToString() },
                 SpawnDimension = dimension,
                 LicensePlate = license,
                 OwnerId = ownerid,
@@ -912,6 +909,9 @@ namespace mtgvrp.vehicle_manager
 
             //Install modifications.
             ModdingManager.ApplyVehicleMods(veh);
+
+            //Set wheel type.
+            GrandTheftMultiplayer.Server.API.API.shared.setVehicleWheelType(veh.NetHandle, VehicleInfo.Get(veh.VehModel).wheelType);
             return returnCode;
         }
 
