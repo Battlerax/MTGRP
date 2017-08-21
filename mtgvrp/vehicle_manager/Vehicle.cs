@@ -26,6 +26,7 @@ using mtgvrp.player_manager;
 using mtgvrp.property_system;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
+using VehicleInfoLoader;
 
 namespace mtgvrp.vehicle_manager
 {
@@ -38,7 +39,7 @@ namespace mtgvrp.vehicle_manager
         {
             get
             {
-                switch (API.shared.getVehicleClass(VehModel))
+                switch (VehicleInfo.Get(VehModel).vehicleClass)
                 {
                     case 0: return 300;
                     case 1: return 300;
