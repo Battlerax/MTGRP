@@ -48,7 +48,6 @@ namespace mtgvrp.vehicle_dealership
             new[] {"Blista", "1039032026", "25000"},
             new[] {"Rhapsody", "841808271", "14000"},
             new[] {"Prairie", "-1450650718", "15000"},
-            new[] {"Oracle", "1348744438", "30000"},
             new[] {"Zion", "-1122289213", "40000"},
             new[] {"Futo", "2016857647", "25000"}
         };
@@ -67,8 +66,6 @@ namespace mtgvrp.vehicle_dealership
             new[] {"Bodhi", "-1435919434", "38000"},
             new[] {"Sandking", "-1189015600", "70000"},
             new[] {"Rebel", "-2045594037", "50000"},
-            new[] {"Mesa", "914654722", "45000"},
-            new[] {"RancherXL", "1645267888", "55000"},
             new[] {"DuneLoader", "1770332643","25000" }
         };
 
@@ -95,14 +92,13 @@ namespace mtgvrp.vehicle_dealership
             new[] {"Dubsta", "1177543287", "55000"},
             new[] {"Huntley", "486987393", "75000"},
             new[] {"XLS", "1203490606", "80000"},
+            new[] {"Mesa", "914654722", "45000"},
+            new[] {"RancherXL", "1645267888", "55000"}
         };
 
         private readonly string[][] _supercars =
         {
        
-            new[] {"Fusilade", "499169875", "200000"},
-            new[] {"Coquette", "108773431", "280000"},
-            new[] {"Lynx", "482197771", "340000"},
             new[] { "Turismo", "-982130927", "506000"},
             new[] { "Tyrus", "2067820283", "667000"},
             new[] { "Italigtb", "-2048333973", "700000"},
@@ -129,7 +125,8 @@ namespace mtgvrp.vehicle_dealership
             new[] { "Emperor", "-685276541","30000" },
             new[] {"Stretch", "-1961627517","80000" },
             new [] {"Tailgater", "-1008861746","85000" },
-            new[] { "Schafter", "-1255452397","125000" }
+            new[] { "Schafter", "-1255452397","125000" },
+            new[] {"Oracle", "1348744438", "30000"}
 
 
 
@@ -142,7 +139,10 @@ namespace mtgvrp.vehicle_dealership
             new[] {"Kuruma", "-1372848492", "250000"},
             new[] {"Penumbra", "-377465520", "150000"},
             new[] {"Obey 9F", "1032823388","400000" },
-            new[] { "Feltzer", "-1995326987","125000" }
+            new[] { "Feltzer", "-1995326987","125000" },
+            new[] {"Fusilade", "499169875", "200000"},
+            new[] {"Coquette", "108773431", "280000"},
+            new[] {"Lynx", "482197771", "340000"},
         };
 
         private readonly string[][] _compactCars =
