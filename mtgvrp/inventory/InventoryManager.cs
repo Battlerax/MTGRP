@@ -768,13 +768,18 @@ namespace mtgvrp.inventory
                 return;
             }
 
-            WeaponCase weaponItem = (WeaponCase)sendersItem[0];
-
-            if (weaponItem.Owner == character && sendersItem[0].GetType() == typeof(WeaponCase))
+            if (sendersItem[0].GetType() == typeof(WeaponCase))
             {
-                player.sendChatMessage("You dropped a weapon case that you're supposed to sell. You've lost 10 renown.");
-                character.Renown -= 10;
-                return;
+                WeaponCase weaponItem = (WeaponCase) sendersItem[0];
+            
+                if (weaponItem.Owner == character)
+                {
+                    player.sendChatMessage("You dropped a weapon case that you're supposed to sell. You've lost 10 renown.");
+                    DeleteInventoryItem(character, sendersItem[0].GetType(), amount, x => x == sendersItem[0]);
+                    character.Renown -= 10;
+                    return;
+                }
+
             }
 
             if (DeleteInventoryItem(character, sendersItem[0].GetType(), amount, x => x == sendersItem[0]))
