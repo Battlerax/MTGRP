@@ -91,13 +91,6 @@ namespace mtgvrp
             return Type.GetType("Mono.Runtime") != null;
         }
 
-        [Command]
-        public void getcolors(Client player)
-        {
-            API.sendChatMessageToPlayer(player, "ColorID: " + API.shared.getVehiclePrimaryColor(player.vehicle));
-            API.sendChatMessageToPlayer(player, "Colors: " + API.shared.getVehicleCustomPrimaryColor(player.vehicle).red + "|" + API.shared.getVehicleCustomPrimaryColor(player.vehicle).green + "|" + API.shared.getVehicleCustomPrimaryColor(player.vehicle).blue);
-        }
-
         public void OnResourceStartHandler()
         {
             //For Dealership.
