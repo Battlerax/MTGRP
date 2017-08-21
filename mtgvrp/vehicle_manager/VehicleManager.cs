@@ -613,7 +613,7 @@ namespace mtgvrp.vehicle_manager
                 if(gCarsList.Count > 0)
                 {
                     string[][] cars = gCarsList
-                        .Select(x => new [] { VehicleOwnership.returnCorrDisplayName(x.VehModel), x.Id.ToString(), x.NetHandle.Value.ToString()}).ToArray();
+                        .Select(x => new [] { VehicleOwnership.returnCorrDisplayName(x.VehModel), x.Id.ToString(), x.NetHandle.Value.ToString(), x.LicensePlate}).ToArray();
                     API.triggerClientEvent(player, "groupvehicles_showmenu", API.toJson(cars.ToArray()));
                 }
             }

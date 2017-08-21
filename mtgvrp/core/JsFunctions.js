@@ -43,7 +43,9 @@ API.onServerEventTrigger.connect((event, args) => {
         API.callNative("PLACE_OBJECT_ON_GROUND_PROPERLY", lastObj);
         var pos = API.getEntityPosition(lastObj);
         var rot = API.getEntityRotation(lastObj);
-        API.triggerServerEvent("OBJECT_PLACED_PROPERLY",args[0], pos, rot);
+        API.triggerServerEvent("OBJECT_PLACED_PROPERLY", args[0], pos, rot);
+        if (args[1] !== "")
+            API.triggerServerEvent(args[1], lastObj);
     }
     else if (event === "COMPLETE_FREEZE") {
         var state = args[0];

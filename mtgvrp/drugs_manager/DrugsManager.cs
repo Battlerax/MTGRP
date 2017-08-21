@@ -293,6 +293,10 @@ namespace mtgvrp.drugs_manager
 
         // Used by LVL 5+ admins to drop drug crates. If a new drug is added, put it in the case list.
 
+
+        #region Crate Commands
+
+        
         [Command("dropcrate")]
         [Help(HelpManager.CommandGroups.AdminLevel5, "Drop a drug crate at your location.", "Type of Drug.","Amount of drug.")]
         public void cmd_dropbox(Client sender, String drug, String amount)
@@ -394,62 +398,32 @@ namespace mtgvrp.drugs_manager
 
         }
 
-        [Command("aopencrate")]
-        [Help(HelpManager.CommandGroups.AdminLevel5, "Force open a drug crate at your location.", null)]
-        public void cmd_aopencrate(Client sender)
-        {
-      
-            Account a = sender.GetAccount();
-            if (a.AdminLevel < 5) return;
-            
-            if (a.AdminDuty)
-            {
-                Airdrop drop = FindNearestAirdrop(sender);
-                if (drop == null)
-                {
-                    API.sendChatMessageToPlayer(sender,"No crate around.");
-                    return;
-                }
-
-                if (drop.IsOpen)
-                {
-                    API.sendChatMessageToPlayer(sender, "Crates already open!");
-                    return;
-                }
-
-                ChatManager.NearbyMessage(sender,10, "~p~" + a.AdminName + " opens the crate.");
-                drop.IsOpen = true;
-                drop.UpdateMarker();
-                return;
-            }
-
-            API.sendChatMessageToPlayer(sender,"You're not on admin duty!");
-            LogManager.Log(LogManager.LogTypes.AdminActions,
-            $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {a.AdminName} has admin opened a crate.");
-        }
-
-
         [Command("opencrate")]
         [Help(HelpManager.CommandGroups.General, "Open a drug crate at your location.", null)]
 
         public void OpenCrate(Client sender)
         {
+
+            if (API.isPlayerInAnyVehicle(sender))
+            {
+                API.sendChatMessageToPlayer(sender, "You can't open a crate while you're in a vehicle!");
+                return;
+            }
+
             Airdrop closest = FindNearestAirdrop(sender);
             Character c = sender.GetCharacter();
-            if (closest != null)
+            if (closest == null) return;
+
+            if (!closest.IsOpen)
             {
-                if (!closest.IsOpen)
-                {
-                    ChatManager.RoleplayMessage(c,"attempts to open the crate, but was unable to open it.",ChatManager.RoleplayMe);
-                    API.sendChatMessageToPlayer(sender,"The crate is locked.");
-                    return;
-                }
-
-                ChatManager.RoleplayMessage(c, "attempts to open the crate, peering inside.", ChatManager.RoleplayMe);
-
-                InventoryManager.ShowInventoryManager(sender, sender.GetCharacter(), closest, "Inventory: ", "Crate: ");
-
+                ChatManager.RoleplayMessage(c,"attempts to open the crate, but was unable to open it.",ChatManager.RoleplayMe);
+                API.sendChatMessageToPlayer(sender,"The crate is locked.");
+                return;
             }
+
+            ChatManager.RoleplayMessage(c, "attempts to open the crate, peering inside.", ChatManager.RoleplayMe);
+
+            InventoryManager.ShowInventoryManager(sender, sender.GetCharacter(), closest, "Inventory: ", "Crate: ");
         }
 
         [Command("prycrate")]
@@ -457,6 +431,13 @@ namespace mtgvrp.drugs_manager
 
         public void PryCrate(Client sender)
         {
+
+            if (API.isPlayerInAnyVehicle(sender))
+            {
+                API.sendChatMessageToPlayer(sender, "You can't pry a crate while you're in a vehicle!");
+                return;
+            }
+
             Character c = sender.GetCharacter();
             Airdrop closest = FindNearestAirdrop(sender);
 
@@ -472,9 +453,9 @@ namespace mtgvrp.drugs_manager
             {
                 ChatManager.RoleplayMessage(c, "forces open the crate, using their crowbar to pry the lid off.",
                     ChatManager.RoleplayMe);
-                closest.UpdateMarker();
+                closest.UpdateMarkerOpen();
                 LogManager.Log(LogManager.LogTypes.Commands,
-                    $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {c.CharacterName} has opened a crate.");
+                    $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] User {c.CharacterName} has opened a crate.");
 
                 return;
 
@@ -485,6 +466,62 @@ namespace mtgvrp.drugs_manager
 
         }
 
+        [Command("alockcrate")]
+        public void cmd_lockcrate(Client sender)
+        {
+            if (sender.GetAccount().AdminLevel < 5) return;
+
+            Airdrop a = FindNearestAirdrop(sender); 
+            if (a == null) return;
+            if (!a.IsOpen) return;
+
+            a.UpdateMarkerClose();
+            Account acc = sender.GetAccount();
+            ChatManager.NearbyMessage(sender, 10, "~p~" + acc.AdminName + " locks the crate.");
+
+
+
+            LogManager.Log(LogManager.LogTypes.AdminActions,
+                $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {acc.AdminName} has locked a crate.");
+
+        }
+
+
+        [Command("aopencrate")]
+        [Help(HelpManager.CommandGroups.AdminLevel5, "Force open a drug crate at your location.", null)]
+        public void cmd_aopencrate(Client sender)
+        {
+
+            Account a = sender.GetAccount();
+            if (a.AdminLevel < 5) return;
+
+            if (a.AdminDuty)
+            {
+                Airdrop drop = FindNearestAirdrop(sender);
+                if (drop == null)
+                {
+                    API.sendChatMessageToPlayer(sender, "No crate around.");
+                    return;
+                }
+
+                if (drop.IsOpen)
+                {
+                    API.sendChatMessageToPlayer(sender, "Crates already open!");
+                    return;
+                }
+
+                ChatManager.NearbyMessage(sender, 10, "~p~" + a.AdminName + " opens the crate.");
+                drop.IsOpen = true;
+                drop.UpdateMarkerOpen();
+                return;
+            }
+
+            API.sendChatMessageToPlayer(sender, "You're not on admin duty!");
+            LogManager.Log(LogManager.LogTypes.AdminActions,
+                $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {a.AdminName} has admin opened a crate.");
+        }
+
+
 
         // Creates the drop, adds it to the list and calls for the prop to be set on the floor.
         public void SpawnDrop(Client sender, IInventoryItem drug)
@@ -492,7 +529,7 @@ namespace mtgvrp.drugs_manager
             var drop = new Airdrop(drug, API.getEntityPosition(sender));
             _airdrops.Add(drop);
             PlaceAirDropProp(drop,API.getEntityPosition(sender));
-            API.triggerClientEvent(sender, "PLACE_OBJECT_ON_GROUND_PROPERLY", drop.prop);
+            API.triggerClientEvent(sender, "PLACE_OBJECT_ON_GROUND_PROPERLY", drop.prop, "");
             Vector3 crateLoc = API.getEntityPosition(drop.prop);
             drop.SetCorrectCrateLocation(crateLoc);
             drop.marker = new MarkerZone(crateLoc, new Vector3()) { TextLabelText = "Drugs Crate - Locked" };
@@ -502,6 +539,7 @@ namespace mtgvrp.drugs_manager
         }
 
 
+#endregion
         public bool CheckForCorrectAmount(int value, IInventoryItem[] drug)
         {
             // Person has the drug, and they have the correct amount.

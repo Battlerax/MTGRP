@@ -199,6 +199,17 @@ namespace mtgvrp.player_manager
         //Mechanic related
         public double FixcarPrevention { get; set; }
 
+        //Gunrunner Related
+
+        public bool IsGunrunner { get; set; }
+        public int Renown { get; set; }
+        [BsonIgnore]
+        public Container Container { get; set; }
+        public int WeaponsSold { get; set; }
+        public int WeaponsBought { get; set; }
+        public double WeaponSellTimeLimit { get; set; }
+        public int TotalWeaponsSold { get; set; }
+
         //Phone
         [BsonIgnore]
         public Character InCallWith { get; set; }
@@ -386,6 +397,8 @@ namespace mtgvrp.player_manager
             CanDoAnim = true;
 
             IsOnGarbageRun = false;
+
+            Container = null;
         }
 
         public void Insert()

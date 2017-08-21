@@ -152,3 +152,9 @@ API.onUpdate.connect(function () {
         lastDoor = null;
     }
 });
+
+API.onKeyDown.connect(function (sender, e) {
+    if(e.KeyCode === Keys.L && !API.isChatOpen()) {
+        API.triggerServerEvent("doormanager_locknearestdoor");
+    }
+});

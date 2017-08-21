@@ -51,11 +51,19 @@ namespace mtgvrp.drugs_manager
             API.shared.deleteEntity(prop);
         }
 
-        public void UpdateMarker()
+        public void UpdateMarkerOpen()
         {
             IsOpen = true;
             marker.Destroy();
             marker.TextLabelText = "Drugs Crate - Unlocked";
+            marker.Create();
+        }
+
+        public void UpdateMarkerClose()
+        {
+            IsOpen = false;
+            marker.Destroy();
+            marker.TextLabelText = "Drugs Crate - Locked";
             marker.Create();
         }
 

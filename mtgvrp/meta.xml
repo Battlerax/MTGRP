@@ -115,6 +115,10 @@
   
   <!-- Scubadiving -->
   <script src="job_manager/scuba/ScubaManager.js" type="client" lang="javascript"/>
+
+  <!-- Gunrunner -->
+  <script src="job_manager/gunrunner/GunrunnerManager.js" type="client" lang="javascript"/>
+  <file src="job_manager/gunrunner/gunrunnermenu.html" />
   
   <!-- ADMIN -->
   <script src="AdminSystem/Reports.js" type="client" lang="javascript"/>

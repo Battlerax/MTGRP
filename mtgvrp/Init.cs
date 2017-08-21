@@ -22,6 +22,7 @@ using mtgvrp.database_manager;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;
 using mtgvrp.vehicle_manager;
+using mtgvrp.job_manager.gunrunner;
 
 namespace mtgvrp
 {
@@ -105,6 +106,8 @@ namespace mtgvrp
             API.consoleOutput("[INIT] Unloaded fakeint IPL and loaded shr_int IPL.!");
 
             VehicleManager.load_all_unowned_vehicles();
+            GunrunnerManager.load_all_containers();
+            GunrunnerManager.MoveDealer();
             API.consoleOutput("[INIT] Script initalized!");
 
             LogManager.StartLogArchiveTimer();
