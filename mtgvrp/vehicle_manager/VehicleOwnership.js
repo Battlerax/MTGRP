@@ -79,7 +79,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
             var myCars = API.createMenu("Group Vehicles", "Select a vehicle to manage.", 0, 0, 4);
             var carsList = JSON.parse(args[0]);
             for (var i = 0; i < carsList.length; i++) {
-                var car = API.createMenuItem(carsList[i][0] + (carsList[i][2] == "0" ? " - Unspawned" : ""), `NetHandle: #${carsList[i][2]} | ID: #${carsList[i][1]}`);
+                var car = API.createMenuItem(carsList[i][0] + "[" + carsList[i][3] + "]" + (carsList[i][2] == "0" ? " - Unspawned" : ""), `NetHandle: #${carsList[i][2]} | ID: #${carsList[i][1]}`);
                 myCars.AddItem(car);
             }
 
