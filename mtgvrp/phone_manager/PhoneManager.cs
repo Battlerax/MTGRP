@@ -148,7 +148,7 @@ namespace mtgvrp.phone_manager
                         return;
                     }
                     var lmphone = (Phone)lmitems[0];
-                    string numbera = IsDigitsOnly(contact) ? contact : lmphone.Contacts.Find(x => x.Name == contact).Number;
+                    string numbera = IsDigitsOnly(contact) ? contact : lmphone.Contacts.FirstOrDefault(x => x.Name == contact)?.Number ?? contact;
 
                     var returnMsgs = Phone.GetMessageLog(lmphone.PhoneNumber, numbera, 10, toSkip);
                     var actualMsgs = returnMsgs.Select(x => new[] {x.SenderNumber, x.Message, x.DateSent.ToString(), x.IsRead.ToString()}).ToArray();

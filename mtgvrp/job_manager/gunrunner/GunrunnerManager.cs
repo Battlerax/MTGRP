@@ -356,10 +356,11 @@ namespace mtgvrp.job_manager.gunrunner
             var p = player.GetCharacter();
             var playerPhone = InventoryManager.DoesInventoryHaveItem<Phone>(p);
 
-            if (playerPhone.Count() == 0) { return; }
+            if (playerPhone.Length == 0) { return; }
             if (playerPhone[0].IsOn)
             {
-                PhoneManager.sms_cmd(p.Client, playerPhone[0].PhoneNumber, $"{message}");
+                Phone.LogMessage("ANONYMOUS", playerPhone[0].PhoneNumber, message);
+                API.shared.sendChatMessageToPlayer(player, core.Color.Sms, "You've received an SMS.");
             }
         }
 
@@ -369,17 +370,15 @@ namespace mtgvrp.job_manager.gunrunner
 
             API.shared.triggerClientEvent(player, "get_street_name", newLoc);
 
-            if (!p.IsGunrunner && p.GetPlayingHours() >= 4)
+            if (!p.IsGunrunner /*&& p.GetPlayingHours() >= 4*/)
             {
                 SendTextToRunner(player,
                 $"Interested in the weapon dealing business? Meet me at '{CurrentZone}, {CurrentStreet}' and we can get " +
                 $"started. There's big money to be made.. -Orlov'");
-                return;
             }
-
             else if (p.IsGunrunner)
             {
-                SendTextToAllRunners($"I have more weapons for you. Meet me at '{CurrentZone}, {CurrentStreet}'. -Orlov");
+                SendTextToRunner(player, $"I have more weapons for you. Meet me at '{CurrentZone}, {CurrentStreet}'. -Orlov");
             }
         }
 
