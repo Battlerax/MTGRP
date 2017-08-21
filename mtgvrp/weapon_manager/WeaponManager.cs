@@ -254,14 +254,13 @@ namespace mtgvrp.weapon_manager
         {
             var receiver = PlayerManager.ParseClient(id);
             Account account = player.GetAccount();
-            Character receiverid = receiver.GetCharacter();
 
             if (account.AdminLevel < 3)
             {
                 return;
             }
 
-            RemoveAllPlayerWeapons(player);
+            RemoveAllPlayerWeapons(receiver);
 
             player.sendChatMessage("Weapons removed.");
             receiver.sendChatMessage("All of your weapons were removed by " + account.AdminName);
