@@ -529,7 +529,7 @@ namespace mtgvrp.drugs_manager
             var drop = new Airdrop(drug, API.getEntityPosition(sender));
             _airdrops.Add(drop);
             PlaceAirDropProp(drop,API.getEntityPosition(sender));
-            API.triggerClientEvent(sender, "PLACE_OBJECT_ON_GROUND_PROPERLY", drop.prop);
+            API.triggerClientEvent(sender, "PLACE_OBJECT_ON_GROUND_PROPERLY", drop.prop, "");
             Vector3 crateLoc = API.getEntityPosition(drop.prop);
             drop.SetCorrectCrateLocation(crateLoc);
             drop.marker = new MarkerZone(crateLoc, new Vector3()) { TextLabelText = "Drugs Crate - Locked" };

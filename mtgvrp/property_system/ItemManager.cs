@@ -60,14 +60,6 @@ namespace mtgvrp.property_system
                     prop.ItemPrices.Add("gas", 3);
                     break;
 
-                case PropertyManager.PropertyTypes.Ammunation:
-                    prop.ItemPrices.Add("bat", 40);
-                    prop.ItemPrices.Add("pistol", 4000);
-                    prop.ItemPrices.Add("combat_pistol", 4700);
-                    prop.ItemPrices.Add("heavy_pistol", 6500);
-                    prop.ItemPrices.Add("revolver", 8000);
-                    break;
-
                 case PropertyManager.PropertyTypes.LSNN:
                     prop.ItemPrices.Add("lotto_ticket", 200);
                     break;

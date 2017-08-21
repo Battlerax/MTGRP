@@ -5,6 +5,7 @@ using GrandTheftMultiplayer.Server.API;
 using GrandTheftMultiplayer.Server.Elements;
 using GrandTheftMultiplayer.Server.Managers;
 using GrandTheftMultiplayer.Shared;
+using GrandTheftMultiplayer.Shared.Math;
 
 
 using mtgvrp.core;
@@ -50,7 +51,6 @@ namespace mtgvrp.property_system
             Restaurant,
             Advertising,
             GasStation,
-            Ammunation,
             LSNN,
             HuntingStation,
             Housing,
@@ -58,6 +58,7 @@ namespace mtgvrp.property_system
             Government,
             DMV,
             ModdingShop,
+            Container,
         }
 
         #region ColShapeKnowing
@@ -627,8 +628,6 @@ namespace mtgvrp.property_system
                     return "/advertise";
                 case PropertyTypes.GasStation:
                     return "/refuel /refillgascan";
-                case PropertyTypes.Ammunation:
-                    return "/buy";
                 case PropertyTypes.LSNN:
                     return "/buy";
                 case PropertyTypes.HuntingStation:
@@ -639,6 +638,8 @@ namespace mtgvrp.property_system
                     return "/starttest /registervehicle";
                 case PropertyTypes.VIPLounge:
                     return "/buyweapontint";
+                case PropertyTypes.Container:
+                    return "/upgradehq /trackdealer\n/propertystorage";
             }
             return "";
         }
@@ -658,7 +659,8 @@ namespace mtgvrp.property_system
                 prop.Type == PropertyTypes.Advertising ||
                 prop.Type == PropertyTypes.Housing ||
                 prop.Type == PropertyTypes.LSNN ||
-                prop.Type == PropertyTypes.VIPLounge
+                prop.Type == PropertyTypes.VIPLounge ||
+                prop.Type == PropertyTypes.Container
                 )
             {
                 API.sendChatMessageToPlayer(player, "You aren't the owner or the business doesnt support supplies.");
@@ -689,7 +691,8 @@ namespace mtgvrp.property_system
                 prop.Type == PropertyTypes.Advertising ||
                 prop.Type == PropertyTypes.Housing ||
                 prop.Type == PropertyTypes.LSNN ||
-                prop.Type == PropertyTypes.VIPLounge
+                prop.Type == PropertyTypes.VIPLounge ||
+                prop.Type == PropertyTypes.Container
             )
             {
                 API.sendChatMessageToPlayer(player, "You aren't the owner or the business doesnt support supplies.");
@@ -762,9 +765,17 @@ namespace mtgvrp.property_system
                        //TODO: remove ipl for player.
                     }
 
-                    player.position = prop.EntrancePos;
-                    player.rotation = prop.EntranceRot;
-                    player.dimension = prop.EntranceDimension;
+                    if (prop.Type == PropertyTypes.Container)
+                    {
+                        player.position = prop.EntrancePos + new Vector3(0, 0, 5f);
+                    }
+                    else
+                    {
+                        player.position = prop.EntrancePos;
+                    }
+                        player.rotation = prop.EntranceRot;
+                        player.dimension = prop.EntranceDimension;
+                    
                     ChatManager.RoleplayMessage(player, $"has exited the building.", ChatManager.RoleplayMe);
                 }
                 else

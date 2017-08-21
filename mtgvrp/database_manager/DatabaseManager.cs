@@ -36,6 +36,9 @@ namespace mtgvrp.database_manager
         public static IMongoCollection<Tree> TreesTable;
         public static IMongoCollection<Mapping> MappingTable;
         public static IMongoCollection<LicensePlate> NumberPlatesTable;
+        public static IMongoCollection<Container> ContainersTable;
+        public static IMongoCollection<ContainerZone> ContainerZonesTable;
+
 
         public static void DatabaseManagerInit()
         {
@@ -59,6 +62,8 @@ namespace mtgvrp.database_manager
             TreesTable = _database.GetCollection<Tree>("lumberjacktrees");
             MappingTable = _database.GetCollection<Mapping>("mapping");
             NumberPlatesTable = _database.GetCollection<LicensePlate>("numberplates");
+            ContainersTable = _database.GetCollection<Container>("containers");
+            ContainerZonesTable = _database.GetCollection<ContainerZone>("containerzones");
 
             DebugManager.DebugMessage("[DatabaseM] Database Manager initalized!");
         }

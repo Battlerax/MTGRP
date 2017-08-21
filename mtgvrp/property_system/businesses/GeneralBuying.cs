@@ -193,44 +193,6 @@ namespace mtgvrp.property_system.businesses
                             return;
                     }
                 }
-                else if (prop.Type == PropertyManager.PropertyTypes.Ammunation)
-                {
-                    if (character.GetPlayingHours() < 2)
-                    {
-                        sender.sendChatMessage("You must have more than 2 playing hours to buy a weapon.");
-                        return;
-                    }
-                    prop.Supplies--;
-                    switch (itemName)
-                    {
-                        case "bat":
-                            WeaponManager.CreateWeapon(sender, WeaponHash.Bat, WeaponTint.Normal, true);
-                            InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
-                            break;
-                        case "pistol":
-                            WeaponManager.CreateWeapon(sender, WeaponHash.Pistol, WeaponTint.Normal, true);
-                            InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
-                            break;
-                        case "combat_pistol":
-                            WeaponManager.CreateWeapon(sender, WeaponHash.CombatPistol, WeaponTint.Normal, true);
-                            InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
-                            break;
-                        case "heavy_pistol":
-                            WeaponManager.CreateWeapon(sender, WeaponHash.HeavyPistol, WeaponTint.Normal, true);
-                            InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
-                            break;
-                        case "revolver":
-                            WeaponManager.CreateWeapon(sender, WeaponHash.Revolver, WeaponTint.Normal, true);
-                            InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
-                            break;
-                    }
-                    name = ItemManager.AmmunationItems.Single(x => x[0] == itemName)[1];
-
-                    API.sendChatMessageToPlayer(sender, "[BUSINESSES] You have successfully bought a ~g~" + name + "~w~ for ~g~" + price + "~w~.");
-                    LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a {name} for {price} from property ID {prop.Id}.");
-                    return;
-
-                }
                 else if (prop.Type == PropertyManager.PropertyTypes.VIPLounge)
                 {
                     prop.Supplies--;
@@ -528,22 +490,6 @@ namespace mtgvrp.property_system.businesses
                         });
                     }
                     API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()), "Restaurant",
-                        prop.PropertyName);
-                }
-                    break;
-                case PropertyManager.PropertyTypes.Ammunation:
-                {
-                    API.freezePlayer(player, true);
-                    List<string[]> itemsWithPrices = new List<string[]>();
-                    foreach (var itm in ItemManager.AmmunationItems)
-                    {
-                        itemsWithPrices.Add(new[]
-                        {
-                            itm[0], itm[1], itm[2],
-                            prop.ItemPrices.SingleOrDefault(x => x.Key == itm[0]).Value.ToString()
-                        });
-                    }
-                    API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()), "Ammunation",
                         prop.PropertyName);
                 }
                     break;

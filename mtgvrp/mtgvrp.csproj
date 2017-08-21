@@ -37,23 +37,23 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DSharpPlus, Version=2.5.5.173, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DSharpPlus.2.5.5-beta-00173\lib\net46\DSharpPlus.dll</HintPath>
+    <Reference Include="DSharpPlus, Version=2.5.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DSharpPlus.2.5.4\lib\net46\DSharpPlus.dll</HintPath>
     </Reference>
-    <Reference Include="DSharpPlus.CommandsNext, Version=2.5.5.173, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DSharpPlus.CommandsNext.2.5.5-beta-00173\lib\net46\DSharpPlus.CommandsNext.dll</HintPath>
+    <Reference Include="DSharpPlus.CommandsNext, Version=2.5.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DSharpPlus.CommandsNext.2.5.4\lib\net46\DSharpPlus.CommandsNext.dll</HintPath>
     </Reference>
-    <Reference Include="DSharpPlus.Interactivity, Version=2.5.5.173, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DSharpPlus.Interactivity.2.5.5-beta-00173\lib\net46\DSharpPlus.Interactivity.dll</HintPath>
+    <Reference Include="DSharpPlus.Interactivity, Version=2.5.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DSharpPlus.Interactivity.2.5.4\lib\net46\DSharpPlus.Interactivity.dll</HintPath>
     </Reference>
-    <Reference Include="DSharpPlus.WebSocket.WebSocketSharp, Version=2.5.5.173, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DSharpPlus.WebSocket.WebSocketSharp.2.5.5-beta-00173\lib\net46\DSharpPlus.WebSocket.WebSocketSharp.dll</HintPath>
+    <Reference Include="DSharpPlus.WebSocket.WebSocketSharp, Version=2.5.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DSharpPlus.WebSocket.WebSocketSharp.2.5.4\lib\net46\DSharpPlus.WebSocket.WebSocketSharp.dll</HintPath>
     </Reference>
     <Reference Include="GrandTheftMultiplayer.Server">
-      <HintPath>..\Latest Server\GrandTheftMultiplayer.Server.exe</HintPath>
+      <HintPath>..\..\..\GrandTheftMultiplayer.Server.exe</HintPath>
     </Reference>
     <Reference Include="GrandTheftMultiplayer.Shared">
-      <HintPath>..\Latest Server\GrandTheftMultiplayer.Shared.dll</HintPath>
+      <HintPath>..\..\..\GrandTheftMultiplayer.Shared.dll</HintPath>
     </Reference>
     <Reference Include="MongoDB.Bson, Version=2.4.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MongoDB.Bson.2.4.4\lib\net45\MongoDB.Bson.dll</HintPath>
@@ -67,8 +67,8 @@
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="NodaTime, Version=2.2.0.0, Culture=neutral, PublicKeyToken=4226afe0d9b296d1, processorArchitecture=MSIL">
-      <HintPath>..\packages\NodaTime.2.2.0\lib\net45\NodaTime.dll</HintPath>
+    <Reference Include="NodaTime, Version=2.1.0.0, Culture=neutral, PublicKeyToken=4226afe0d9b296d1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NodaTime.2.1.0\lib\net45\NodaTime.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -78,7 +78,6 @@
     <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.4.0-preview2-25405-01\lib\net461\System.ValueTuple.dll</HintPath>
     </Reference>
-    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -119,6 +118,10 @@
     <Compile Include="group_manager\lsgov\IdentificationItem.cs" />
     <Compile Include="job_manager\delivery\DeliveryManager.cs" />
     <Compile Include="job_manager\delivery\SupplyItem.cs" />
+    <Compile Include="job_manager\gunrunner\ContainerZone.cs" />
+    <Compile Include="job_manager\gunrunner\GunrunnerManager.cs" />
+    <Compile Include="job_manager\gunrunner\Container.cs" />
+    <Compile Include="job_manager\gunrunner\WeaponCase.cs" />
     <Compile Include="job_manager\mechanic\MechanicJob.cs" />
     <Compile Include="core\Help\Help.cs" />
     <Compile Include="core\Help\HelpManager.cs" />
@@ -203,8 +206,8 @@
     <Compile Include="property_system\businesses\Advertising.cs" />
     <Compile Include="rp_scripts\BankMenu.cs" />
     <Compile Include="speed_fuel_system\SpeedoFuelManager.cs" />
-    <Compile Include="vehicle_dealership\ChopperDealership.cs" />
     <Compile Include="vehicle_dealership\BoatDealership.cs" />
+    <Compile Include="vehicle_dealership\ChopperDealership.cs" />
     <Compile Include="vehicle_dealership\VipDealership.cs" />
     <Compile Include="vehicle_dealership\VehicleDealership.cs" />
     <Compile Include="vehicle_manager\modding\ModdingManager.cs" />
@@ -260,10 +263,13 @@
     <Content Include="group_manager\lspd\MDC\LSPDMDC.png" />
     <Content Include="group_manager\lspd\MDC\MDC.html" />
     <Content Include="group_manager\lspd\MDC\MDC.js" />
+    <Content Include="group_manager\lspd\MDC\MDC.ts" />
     <Content Include="inventory\ManageInv.html" />
     <Content Include="group_manager\lspd\Lspd.js" />
     <Content Include="job_manager\fisher\Fisher.js" />
     <Content Include="job_manager\garbageman\Garbageman.js" />
+    <Content Include="job_manager\gunrunner\GunrunnerManager.js" />
+    <Content Include="job_manager\gunrunner\gunrunnermenu.html" />
     <Content Include="job_manager\hunting\HuntingManager.js" />
     <Content Include="job_manager\lumberjack\Lumberjack.js" />
     <Content Include="job_manager\scuba\ScubaManager.js" />
@@ -322,10 +328,39 @@
     <Content Include="stylesheet\js\metro.min.js" />
     <Content Include="stylesheet\js\npm.js" />
     <Content Include="stylesheet\js\raphael-2.1.4.min.js" />
-    <Content Include="vehicle_dealership\chopperdealership.js" />
+    <Content Include="types-gt-mp\Declarations.d.ts" />
+    <Content Include="types-gt-mp\GrandTheftMultiplayer.Client.GUI.d.ts" />
+    <Content Include="types-gt-mp\GrandTheftMultiplayer.Client.Javascript.d.ts" />
+    <Content Include="types-gt-mp\GrandTheftMultiplayer.Client.Javascript.ScriptContext.d.ts" />
+    <Content Include="types-gt-mp\GrandTheftMultiplayer.Client.Misc.d.ts" />
+    <Content Include="types-gt-mp\GrandTheftMultiplayer.Client.Sound.d.ts" />
+    <Content Include="types-gt-mp\GrandTheftMultiplayer.Client.Streamer.d.ts" />
+    <Content Include="types-gt-mp\GrandTheftMultiplayer.Client.Sync.d.ts" />
+    <Content Include="types-gt-mp\GrandTheftMultiplayer.Client.Util.d.ts" />
+    <Content Include="types-gt-mp\GrandTheftMultiplayer.Shared.d.ts" />
+    <Content Include="types-gt-mp\GrandTheftMultiplayer.Shared.Math.d.ts" />
+    <Content Include="types-gt-mp\GTA.d.ts" />
+    <Content Include="types-gt-mp\GTA.Math.d.ts" />
+    <Content Include="types-gt-mp\GTA.Native.d.ts" />
+    <Content Include="types-gt-mp\GTA.NaturalMotion.d.ts" />
+    <Content Include="types-gt-mp\GTA.UI.d.ts" />
+    <Content Include="types-gt-mp\index.d.ts" />
+    <Content Include="types-gt-mp\Microsoft.ClearScript.d.ts" />
+    <Content Include="types-gt-mp\NativeUI.d.ts" />
+    <Content Include="types-gt-mp\NativeUI.UIMenu.d.ts" />
+    <Content Include="types-gt-mp\NativeUI.UIMenuItem.d.ts" />
+    <Content Include="types-gt-mp\NativeUI.UIResText.d.ts" />
+    <Content Include="types-gt-mp\System.Collections.d.ts" />
+    <Content Include="types-gt-mp\System.Collections.Generic.d.ts" />
+    <Content Include="types-gt-mp\System.d.ts" />
+    <Content Include="types-gt-mp\System.Drawing.d.ts" />
+    <Content Include="types-gt-mp\System.Windows.Forms.d.ts" />
+    <Content Include="types-gtanetwork\Enums.js" />
     <Content Include="vehicle_dealership\boatdealer.js" />
+    <Content Include="vehicle_dealership\chopperdealership.js" />
     <Content Include="vehicle_dealership\vipdealership.js" />
     <Content Include="vehicle_dealership\vehicledealer.js" />
+    <Content Include="vehicle_manager\VehicleManager.js" />
     <Content Include="VehicleInfo.dll" />
     <Content Include="vehicle_manager\modding\gui\LSC.png" />
     <Content Include="vehicle_manager\modding\gui\ModGui.html" />
@@ -348,34 +383,16 @@
     <TypeScriptCompile Include="job_manager\JobManager.ts" />
     <Content Include="phone_manager\gui\apps\dialpad.html" />
     <TypeScriptCompile Include="player_manager\player_interaction\PlayerInteraction.ts" />
-    <Content Include="vehicle_manager\VehicleManager.js" />
-    <TypeScriptCompile Include="types-gt-mp\Declarations.d.ts" />
-    <TypeScriptCompile Include="types-gt-mp\GrandTheftMultiplayer.Client.GUI.d.ts" />
-    <TypeScriptCompile Include="types-gt-mp\GrandTheftMultiplayer.Client.Javascript.d.ts" />
-    <TypeScriptCompile Include="types-gt-mp\GrandTheftMultiplayer.Client.Javascript.ScriptContext.d.ts" />
-    <TypeScriptCompile Include="types-gt-mp\GrandTheftMultiplayer.Client.Misc.d.ts" />
-    <TypeScriptCompile Include="types-gt-mp\GrandTheftMultiplayer.Client.Sound.d.ts" />
-    <TypeScriptCompile Include="types-gt-mp\GrandTheftMultiplayer.Client.Streamer.d.ts" />
-    <TypeScriptCompile Include="types-gt-mp\GrandTheftMultiplayer.Client.Sync.d.ts" />
-    <TypeScriptCompile Include="types-gt-mp\GrandTheftMultiplayer.Client.Util.d.ts" />
-    <TypeScriptCompile Include="types-gt-mp\GrandTheftMultiplayer.Shared.d.ts" />
-    <TypeScriptCompile Include="types-gt-mp\GrandTheftMultiplayer.Shared.Math.d.ts" />
-    <TypeScriptCompile Include="types-gt-mp\GTA.d.ts" />
-    <TypeScriptCompile Include="types-gt-mp\GTA.Math.d.ts" />
-    <TypeScriptCompile Include="types-gt-mp\GTA.Native.d.ts" />
-    <TypeScriptCompile Include="types-gt-mp\GTA.NaturalMotion.d.ts" />
-    <TypeScriptCompile Include="types-gt-mp\GTA.UI.d.ts" />
-    <TypeScriptCompile Include="types-gt-mp\index.d.ts" />
-    <TypeScriptCompile Include="types-gt-mp\Microsoft.ClearScript.d.ts" />
-    <TypeScriptCompile Include="types-gt-mp\NativeUI.d.ts" />
-    <TypeScriptCompile Include="types-gt-mp\NativeUI.UIMenu.d.ts" />
-    <TypeScriptCompile Include="types-gt-mp\NativeUI.UIMenuItem.d.ts" />
-    <TypeScriptCompile Include="types-gt-mp\NativeUI.UIResText.d.ts" />
-    <TypeScriptCompile Include="types-gt-mp\System.Collections.d.ts" />
-    <TypeScriptCompile Include="types-gt-mp\System.Collections.Generic.d.ts" />
-    <TypeScriptCompile Include="types-gt-mp\System.d.ts" />
-    <TypeScriptCompile Include="types-gt-mp\System.Drawing.d.ts" />
-    <TypeScriptCompile Include="types-gt-mp\System.Windows.Forms.d.ts" />
+    <TypeScriptCompile Include="types-gtanetwork\Declarations.d.ts" />
+    <TypeScriptCompile Include="types-gtanetwork\Enums.ts" />
+    <TypeScriptCompile Include="types-gtanetwork\GTANetwork.dll.d.ts" />
+    <TypeScriptCompile Include="types-gtanetwork\GTANetworkShared.dll.d.ts" />
+    <TypeScriptCompile Include="types-gtanetwork\index.d.ts" />
+    <TypeScriptCompile Include="types-gtanetwork\NativeUI.dll.d.ts" />
+    <TypeScriptCompile Include="types-gtanetwork\ScriptHookVDotNet.dll.d.ts" />
+    <TypeScriptCompile Include="types-gtanetwork\System.d.ts" />
+    <TypeScriptCompile Include="types-gtanetwork\System.Drawing.dll.d.ts" />
+    <TypeScriptCompile Include="types-gtanetwork\Xilium.CefGlue.dll.d.ts" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

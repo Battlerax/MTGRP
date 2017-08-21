@@ -1,7 +1,6 @@
 using System;
 using System.Data.SqlTypes;
 using System.Linq;
-using System.Xaml;
 using GrandTheftMultiplayer.Server.API;
 using GrandTheftMultiplayer.Server.Elements;
 using mtgvrp.core;
@@ -318,7 +317,7 @@ namespace mtgvrp.phone_manager
             }
         }
 
-        bool IsDigitsOnly(string str)
+        static bool IsDigitsOnly(string str)
         {
             foreach (char c in str)
             {
@@ -545,21 +544,21 @@ namespace mtgvrp.phone_manager
             }
         }
 
-        public void sms_cmd(Client player, string input, string message)
+        public static void sms_cmd(Client player, string input, string message)
         {
             Character sender = player.GetCharacter();
 
             var targetitems = InventoryManager.DoesInventoryHaveItem(sender, typeof(Phone));
             if (targetitems.Length == 0)
             {
-                API.sendChatMessageToPlayer(player, "You don't have a phone.");
+                API.shared.sendChatMessageToPlayer(player, "You don't have a phone.");
                 return;
             }
             var senderphone = (Phone)targetitems[0];
 
             if (senderphone.IsOn == false)
             {
-                API.sendChatMessageToPlayer(player, "Your phone is turned off.");
+                API.shared.sendChatMessageToPlayer(player, "Your phone is turned off.");
                 return;
             }
 
@@ -567,7 +566,7 @@ namespace mtgvrp.phone_manager
             {
                 if (!DoesNumberExist(input))
                 {
-                    API.sendChatMessageToPlayer(player, Color.White,
+                    API.shared.sendChatMessageToPlayer(player, Color.White,
                         "The text message failed to send. (Phone number is not registered.)");
                     return;
                 }
@@ -578,20 +577,20 @@ namespace mtgvrp.phone_manager
                     var charphone = InventoryManager.DoesInventoryHaveItem<Phone>(character)[0];
                     if (!charphone.IsOn)
                     {
-                        API.sendChatMessageToPlayer(player, Color.White,
+                        API.shared.sendChatMessageToPlayer(player, Color.White,
                             "The text message failed to send. That number is switched off. Please try again later.");
                         return;
                     }
-                    API.triggerClientEvent(character.Client, "phone_incomingMessage",
+                    API.shared.triggerClientEvent(character.Client, "phone_incomingMessage",
                         charphone.HasContactWithNumber(senderphone.PhoneNumber)
                             ? charphone.Contacts.Find(pc => pc.Number == senderphone.PhoneNumber).Name
                             : senderphone.PhoneNumber, message);
-                    API.sendChatMessageToPlayer(character.Client, Color.Sms, "You've received an SMS.");
+                    API.shared.sendChatMessageToPlayer(character.Client, Color.Sms, "You've received an SMS.");
                     ChatManager.RoleplayMessage(character, "'s phone vibrates..", ChatManager.RoleplayMe);
                 }
                 else
                 {
-                    API.sendChatMessageToPlayer(player, Color.White,
+                    API.shared.sendChatMessageToPlayer(player, Color.White,
                         "The text message failed to send. (Phone number is not online.)");
                     return;
                 }
@@ -608,17 +607,17 @@ namespace mtgvrp.phone_manager
                     toMsg = "SMS to " + input + ": " +
                             message;
                 }
-                API.sendChatMessageToPlayer(sender.Client, Color.Sms, toMsg);
+                API.shared.sendChatMessageToPlayer(sender.Client, Color.Sms, toMsg);
                 ChatManager.AmeLabelMessage(player, "presses a few buttons on their phone, sending a message.", 4000);
 
                 Phone.LogMessage(senderphone.PhoneNumber, input, message);
-                API.triggerClientEvent(player, "phone_messageSent");
+                API.shared.triggerClientEvent(player, "phone_messageSent");
             }
             else
             {
                 if (!senderphone.HasContactWithName(input))
                 {
-                    API.sendChatMessageToPlayer(player, Color.White, "You do not have a contact with the name: " + input);
+                    API.shared.sendChatMessageToPlayer(player, Color.White, "You do not have a contact with the name: " + input);
                     return;
                 }
 
@@ -626,7 +625,7 @@ namespace mtgvrp.phone_manager
 
                 if (!DoesNumberExist(contact.Number))
                 {
-                    API.sendChatMessageToPlayer(player, Color.White,
+                    API.shared.sendChatMessageToPlayer(player, Color.White,
                         "The text message failed to send. (Phone number is not registered.)");
                     return;
                 }
@@ -637,28 +636,28 @@ namespace mtgvrp.phone_manager
                     var charphone = InventoryManager.DoesInventoryHaveItem<Phone>(character)[0];
                     if (!charphone.IsOn)
                     {
-                        API.sendChatMessageToPlayer(player, Color.White,
+                        API.shared.sendChatMessageToPlayer(player, Color.White,
                             "The text message failed to send. That number is switched off. Please try again later.");
                         return;
                     }
-                    API.triggerClientEvent(character.Client, "phone_incomingMessage",
+                    API.shared.triggerClientEvent(character.Client, "phone_incomingMessage",
                         charphone.HasContactWithNumber(senderphone.PhoneNumber)
                             ? charphone.Contacts.Find(pc => pc.Number == senderphone.PhoneNumber).Name
                             : senderphone.PhoneNumber, message);
-                    API.sendChatMessageToPlayer(character.Client, Color.Sms, "You've received an SMS.");
+                    API.shared.sendChatMessageToPlayer(character.Client, Color.Sms, "You've received an SMS.");
                     ChatManager.RoleplayMessage(character, "'s phone vibrates..", ChatManager.RoleplayMe);
 
                     var toMsg = "SMS to " + contact.Name + ": " + message;
-                    API.sendChatMessageToPlayer(sender.Client, Color.Sms, toMsg);
+                    API.shared.sendChatMessageToPlayer(sender.Client, Color.Sms, toMsg);
                     ChatManager.AmeLabelMessage(player, "presses a few buttons on their phone, sending a message.",
                         4000);
 
                     Phone.LogMessage(senderphone.PhoneNumber, contact.Number, message);
-                    API.triggerClientEvent(player, "phone_messageSent");
+                    API.shared.triggerClientEvent(player, "phone_messageSent");
                 }
                 else
                 {
-                    API.sendChatMessageToPlayer(player, Color.White,
+                    API.shared.sendChatMessageToPlayer(player, Color.White,
                         "The text message failed to send. ((Phone number is not online.))");
                 }
             }

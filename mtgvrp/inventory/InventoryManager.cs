@@ -27,6 +27,7 @@ using mtgvrp.property_system;
 using mtgvrp.property_system.businesses;
 using mtgvrp.vehicle_manager;
 using mtgvrp.weapon_manager;
+using mtgvrp.job_manager.gunrunner;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using Vehicle = GrandTheftMultiplayer.Server.Elements.Vehicle;
@@ -699,6 +700,14 @@ namespace mtgvrp.inventory
                 return;
             }
 
+            WeaponCase weaponItem = (WeaponCase)sendersItem[0];
+
+            if (weaponItem.Owner == target && sendersItem[0].GetType() == typeof(WeaponCase))
+            {
+                player.sendChatMessage("You can't give a weapon case back to the gun dealer.");
+                return;
+            }
+
 
             //Give.
             switch (GiveInventoryItem(target, sendersItem[0], amount))
@@ -720,6 +729,14 @@ namespace mtgvrp.inventory
                         $"You have sucessfully given ~g~{amount}~w~ ~g~{sendersItem[0].LongName}~w~ to ~g~{target.rp_name()}~w~.");
                     API.sendNotificationToPlayer(targetClient,
                         $"You have receieved ~g~{amount}~w~ ~g~{sendersItem[0].LongName}~w~ from ~g~{sender.rp_name()}~w~.");
+
+                    if (sender.IsGunrunner && sendersItem[0].GetType() == typeof(WeaponCase) && weaponItem.Owner == sender)
+                    {
+                        player.sendChatMessage("You have sold a weapon and earned 5 renown.");
+                        sender.Renown += 5;
+                        sender.WeaponsSold++;
+                        sender.TotalWeaponsSold++;
+                    }
 
                     //Remove from their inv.
                     DeleteInventoryItem(sender, sendersItem[0].GetType(), amount, x => x == sendersItem[0]);
@@ -748,6 +765,15 @@ namespace mtgvrp.inventory
             if (sendersItem[0].CanBeDropped == false)
             {
                 API.sendNotificationToPlayer(player, "That item cannot be dropped.");
+                return;
+            }
+
+            WeaponCase weaponItem = (WeaponCase)sendersItem[0];
+
+            if (weaponItem.Owner == character && sendersItem[0].GetType() == typeof(WeaponCase))
+            {
+                player.sendChatMessage("You dropped a weapon case that you're supposed to sell. You've lost 10 renown.");
+                character.Renown -= 10;
                 return;
             }
 
@@ -787,7 +813,7 @@ namespace mtgvrp.inventory
             var droppedObject = API.createObject(sendersItem[0].Object, player.position, new Vector3());
             var itemaa = CloneItem(sendersItem[0], amount);
             _stashedItems.Add(droppedObject, new KeyValuePair<string[], IInventoryItem>(new []{character.CharacterName, player.GetAccount().AccountName}, itemaa));
-            API.triggerClientEvent(player, "PLACE_OBJECT_ON_GROUND_PROPERLY", droppedObject.handle);
+            API.triggerClientEvent(player, "PLACE_OBJECT_ON_GROUND_PROPERLY", droppedObject.handle, "");
 
             //Decrease.
             DeleteInventoryItem(character, sendersItem[0].GetType(), amount, x => x == sendersItem[0]);

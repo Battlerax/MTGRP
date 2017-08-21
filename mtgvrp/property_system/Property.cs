@@ -140,8 +140,6 @@ namespace mtgvrp.property_system
                     return 93;
                 case PropertyManager.PropertyTypes.GasStation:
                     return 361;
-                case PropertyManager.PropertyTypes.Ammunation:
-                    return 110;
                 case PropertyManager.PropertyTypes.LSNN:
                     return 184;
                 case PropertyManager.PropertyTypes.Advertising:

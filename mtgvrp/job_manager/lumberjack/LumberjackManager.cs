@@ -165,6 +165,12 @@ namespace mtgvrp.job_manager.lumberjack
                 }
 
             }
+            else if (eventName == "TreePlaced")
+            {
+                var tree = Tree.Trees.First(x => x.TreeObj == (NetHandle) arguments[0]);
+                tree.TreePos = tree.TreeObj.position;
+                tree.TreePos = tree.TreeObj.position;
+            }
         }
 
         [Command("createtree"), Help(HelpManager.CommandGroups.LumberJob, "Creates a tree for lumberjack under you.")]
@@ -177,7 +183,7 @@ namespace mtgvrp.job_manager.lumberjack
             tree.CreateTree();
             tree.Insert();
             API.setEntitySyncedData(tree.TreeObj, "TargetObj", tree.Id.ToString());
-            API.triggerClientEvent(player, "PLACE_OBJECT_ON_GROUND_PROPERLY", tree.TreeObj.handle);
+            API.triggerClientEvent(player, "PLACE_OBJECT_ON_GROUND_PROPERLY", tree.TreeObj.handle, "TreePlaced");
         }
 
         [Command("deletetree"), Help(HelpManager.CommandGroups.LumberJob, "Delete the nearest lumberjack tree to you.")]
