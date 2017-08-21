@@ -276,17 +276,26 @@ namespace mtgvrp.door_manager
                     return;
                 }
 
-                door.Locked = true;
+                if(door.Locked)
+                {
+                    door.Locked = false;
+                    API.sendChatMessageToPlayer(player, "Door ~g~Unlocked!");
+                }
+                else
+                {
+                    door.Locked = true;
+                    API.sendChatMessageToPlayer(player, "Door ~r~Locked!");
+                }
+                
                 door.RefreshDoor();
                 door.Save();
-                API.sendChatMessageToPlayer(player, "Door ~r~Locked!");
             }
             else
                 API.sendChatMessageToPlayer(player, "Insufficient permissions.");
         }
 
-        [Command("unlockdoor"), Help(HelpManager.CommandGroups.AdminLevel5 | HelpManager.CommandGroups.GroupGeneral, "Unlocks a door.", "Door id")]
-        public void Unlockdoor(Client player, int id)
+        /*[Command("unlockdoor"), Help(HelpManager.CommandGroups.AdminLevel5 | HelpManager.CommandGroups.GroupGeneral, "Unlocks a door.", "Door id")]
+        private void Unlockdoor(Client player, int id)
         {
             var door = Door.Doors.SingleOrDefault(x => x.Id == id);
             if (door == null)
@@ -309,6 +318,6 @@ namespace mtgvrp.door_manager
             }
             else
                 API.sendChatMessageToPlayer(player, "Insufficient permissions.");
-        }
+        }*/
     }
 }
