@@ -946,6 +946,59 @@ namespace mtgvrp.group_manager.lspd
             API.sendNotificationToPlayer(player, "Object removed. There are now ~r~" + Objects.Count + "~w~ placed.");
         }
 
+        [Command("removenearestobject")]
+        public void command_removenearestobject(Client player)
+        {
+            Character character = player.GetCharacter();
+
+            if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
+            {
+                API.sendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                return;
+            }
+
+            if (Objects.Count() == 0)
+            {
+                API.sendChatMessageToPlayer(player, "There are no more objects to remove.");
+                return;
+            }
+
+            int id = -1;
+            float distance = -1.0f;
+            Vector3 playerPos = API.getEntityPosition(player.handle);
+            Object currentObject = null;
+            int cid = 0;
+
+            foreach(Object o in Objects)
+            {
+                Vector3 objectPos = API.getEntityPosition(o.handle);
+                if(objectPos.DistanceTo(playerPos) < distance || distance == -1.0f)
+                {
+                    id = cid;
+                    distance = objectPos.DistanceTo(playerPos);
+                    currentObject = o;
+                }
+                cid++;
+            }
+            if(id != -1)
+            {
+                if(API.getEntityPosition(currentObject).DistanceTo(playerPos) <= 3.0f)
+                {
+                    API.deleteEntity(currentObject.handle);
+                    Objects.Remove(currentObject);
+                    API.sendNotificationToPlayer(player, "Object removed. There are now ~r~" + Objects.Count + "~w~ placed.");
+                }
+                else
+                {
+                    API.sendChatMessageToPlayer(player, "You aren't in range of any deployed objects.");
+                }
+            }
+            else
+            {
+                API.sendChatMessageToPlayer(player, "There aren't any objects for you to remove.");
+            }
+        }
+
         [Command("removeallobjects", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Remove all placed LSPD objects.", null)]
         public void removeallobjects_cmd(Client player)
         {
