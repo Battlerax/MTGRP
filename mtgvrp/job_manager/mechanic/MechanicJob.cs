@@ -10,6 +10,8 @@ using mtgvrp.core.Help;
 using mtgvrp.core.Items;
 using System.Linq;
 using GrandTheftMultiplayer.Server;
+using mtgvrp.vehicle_manager.modding;
+using WebSocketSharp;
 
 namespace mtgvrp.job_manager.taxi
 {
@@ -93,8 +95,8 @@ namespace mtgvrp.job_manager.taxi
 
             API.setVehiclePrimaryColor(API.getPlayerVehicle(player), col1);
             API.setVehicleSecondaryColor(API.getPlayerVehicle(player), col2);
-            veh.SpawnColors[0] = col1;
-            veh.SpawnColors[1] = col2;
+            veh.VehMods[ModdingManager.PrimaryColorId.ToString()] = col1.ToString();
+            veh.VehMods[ModdingManager.SecondryColorId.ToString()] = col2.ToString();
             veh.Save();
             InventoryManager.DeleteInventoryItem(character, typeof(SprayPaint), 1);
             player.sendChatMessage("Vehicle painted.");

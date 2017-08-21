@@ -866,11 +866,7 @@ namespace mtgvrp.vehicle_manager
                 VehModel = model,
                 SpawnPos = pos,
                 SpawnRot = rot,
-                SpawnColors =
-                {
-                    [0] = color1,
-                    [1] = color2
-                },
+                VehMods = new Dictionary<string, string>() { [ModdingManager.PrimaryColorId.ToString()] = color1.ToString(), [ModdingManager.SecondryColorId.ToString()] = color2.ToString() },
                 SpawnDimension = dimension,
                 LicensePlate = license,
                 OwnerId = ownerid,

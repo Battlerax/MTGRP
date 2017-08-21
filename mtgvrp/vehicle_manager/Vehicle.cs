@@ -24,6 +24,7 @@ using mtgvrp.inventory;
 using mtgvrp.job_manager;
 using mtgvrp.player_manager;
 using mtgvrp.property_system;
+using mtgvrp.vehicle_manager.modding;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using VehicleInfoLoader;
@@ -80,7 +81,6 @@ namespace mtgvrp.vehicle_manager
         public VehicleHash VehModel { get; set; }
         public Vector3 SpawnPos { get; set; }
         public Vector3 SpawnRot { get; set; }
-        public int[] SpawnColors = new int[2];
         public int SpawnDimension { get; set; }
         public int OwnerId { get; set; }
         public string OwnerName { get; set; }
@@ -140,7 +140,6 @@ namespace mtgvrp.vehicle_manager
 
             SpawnPos = new Vector3(0.0, 0.0, 0.0);
             SpawnRot = new Vector3(0.0, 0.0, 0.0);
-            SpawnColors = new int[2];
             SpawnDimension = 0;
             LicensePlate = "DEFAULT";
             Fuel = 100;
@@ -193,8 +192,16 @@ namespace mtgvrp.vehicle_manager
             if (IsSpawned)
                 return 0; // Vehicle is already spawned
 
-           
-            NetHandle = API.shared.createVehicle(VehModel, pos, SpawnRot, SpawnColors[0], SpawnColors[1], SpawnDimension);
+            if(VehMods == null)
+                VehMods= new Dictionary<string, string>();
+
+           if (!VehMods.ContainsKey(ModdingManager.PrimaryColorId.ToString()))
+                VehMods.Add(ModdingManager.PrimaryColorId.ToString(), "0");
+
+            if (!VehMods.ContainsKey(ModdingManager.SecondryColorId.ToString()))
+                VehMods.Add(ModdingManager.SecondryColorId.ToString(), "0");
+
+            NetHandle = API.shared.createVehicle(VehModel, pos, SpawnRot,Convert.ToInt32(VehMods[ModdingManager.PrimaryColorId.ToString()]), Convert.ToInt32(VehMods[ModdingManager.PrimaryColorId.ToString()]), SpawnDimension);
             API.shared.setVehicleNumberPlate(NetHandle, LicensePlate);
 
             Blip = API.shared.createBlip(NetHandle);
