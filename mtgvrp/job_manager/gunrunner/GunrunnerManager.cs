@@ -372,14 +372,14 @@ namespace mtgvrp.job_manager.gunrunner
             if (!p.IsGunrunner && p.GetPlayingHours() >= 4)
             {
                 SendTextToRunner(player,
-                $"Interested in the weapon dealing business? Meet me at '{CurrentZone}, {CurrentStreet}' and we can get" +
+                $"Interested in the weapon dealing business? Meet me at '{CurrentZone}, {CurrentStreet}' and we can get " +
                 $"started. There's big money to be made.. -Orlov'");
                 return;
             }
 
             else if (p.IsGunrunner)
             {
-                SendTextToAllRunners($"I have more weapons for you. Meet me at '{CurrentZone}, {CurrentStreet}. -Orlov");
+                SendTextToAllRunners($"I have more weapons for you. Meet me at '{CurrentZone}, {CurrentStreet}'. -Orlov");
             }
         }
 
