@@ -102,7 +102,6 @@ namespace mtgvrp.job_manager.gunrunner
 
         public static List<Vector3> DealerLocations = new List<Vector3>()
         {
-            new Vector3(-1.499723, 19.25075, 71.11021),
             new Vector3(1663.895, 1.549166, 173.7752),
             new Vector3(-1629.355, -1083.561, 4.258381),
             new Vector3(652.1113, -1082.595, 22.389),
@@ -378,7 +377,10 @@ namespace mtgvrp.job_manager.gunrunner
                 return;
             }
 
-            SendTextToAllRunners($"I have more weapons for you. Meet me at '{CurrentZone}, {CurrentStreet}. -Orlov");
+            else if (p.IsGunrunner)
+            {
+                SendTextToAllRunners($"I have more weapons for you. Meet me at '{CurrentZone}, {CurrentStreet}. -Orlov");
+            }
         }
 
         public static void MoveDealer()
