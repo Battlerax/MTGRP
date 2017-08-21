@@ -92,9 +92,10 @@ namespace mtgvrp
         }
 
         [Command]
-        public void getclass(Client player)
+        public void getcolors(Client player)
         {
-            API.sendChatMessageToPlayer(player, "Class: " + API.shared.getVehicleClass(player.vehicle.handle.GetVehicle().VehModel));
+            API.sendChatMessageToPlayer(player, "ColorID: " + API.shared.getVehiclePrimaryColor(player.vehicle));
+            API.sendChatMessageToPlayer(player, "Colors: " + API.shared.getVehicleCustomPrimaryColor(player.vehicle).red + "|" + API.shared.getVehicleCustomPrimaryColor(player.vehicle).green + "|" + API.shared.getVehicleCustomPrimaryColor(player.vehicle).blue);
         }
 
         public void OnResourceStartHandler()
