@@ -64,9 +64,16 @@ function loaded() {
         }
     }
 
-    //Load colors.
-    curMods[100] = API.getVehicleCustomPrimaryColor(veh);
-    curMods[101] = API.getVehicleCustomSecondaryColor(veh);
+    if (API.getVehiclePrimaryColor(veh) > 159) {
+        //Load custom colors.
+        curMods[100] = API.getVehicleCustomPrimaryColor(veh);
+        curMods[101] = API.getVehicleCustomSecondaryColor(veh);
+    } else {
+        curMods[100] = API.getVehiclePrimaryColor(veh);
+        curMods[101] = API.getVehicleSecondaryColor(veh);
+    }
+
+
     curMods[102] = null; //todo: fix this next GTMP update.
     curMods[103] = API.getVehicleNeonColor(veh);
     curMods[104] = API.getVehicleWindowTint(veh);
@@ -75,10 +82,16 @@ function loaded() {
 
 function resetModType(type) {
     if (type === 100) {
-        API.setVehicleCustomPrimaryColor(veh, curMods[100].R, curMods[100].G, curMods[100].B);
+        if (curMods[100].hasOwnProperty("R"))
+            API.setVehicleCustomPrimaryColor(veh, curMods[100].R, curMods[100].G, curMods[100].B);
+        else
+            API.setVehiclePrimaryColor(veh, curMods[100]);
     }
     else if (type === 101) {
-        API.setVehicleCustomSecondaryColor(veh, curMods[101].R, curMods[101].G, curMods[101].B);
+        if (curMods[101].hasOwnProperty("R"))
+            API.setVehicleCustomSecondaryColor(veh, curMods[101].R, curMods[101].G, curMods[101].B);
+        else
+            API.setVehicleSecondaryColor(veh, curMods[101]);
     }
     else if (type === 102) {
         API.setVehicleTyreSmokeColor(veh, 0, 0, 0); //todo: fix this next GTMP update.
@@ -116,15 +129,6 @@ function updateCurrentColor(type) {
     } else if (type === "tyresmoke") {
         return;
     } else if (type === "neoncolor") {
-        if (!API.getVehicleNeonState(veh, 0) === false)
-            API.setVehicleNeonState(veh, 0, true);
-        if (!API.getVehicleNeonState(veh, 1) === false)
-            API.setVehicleNeonState(veh, 1, true);
-        if (!API.getVehicleNeonState(veh, 2) === false)
-            API.setVehicleNeonState(veh, 2, true);
-        if (!API.getVehicleNeonState(veh, 3) === false)
-            API.setVehicleNeonState(veh, 3, true);
-
         clr = API.getVehicleNeonColor(veh);
     }
     myBrowser.call("updateColorPicker", Math.round(clr.R), Math.round(clr.G), Math.round(clr.B));
@@ -137,13 +141,28 @@ function updateColor(type, r, g, b) {
     b = Math.round(b);
 
     if (type === "primarycolor") {
+        if (!curMods[100].hasOwnProperty("R"))
+            API.setVehiclePrimaryColor(veh, 0);
+
         API.setVehicleCustomPrimaryColor(veh, r, g, b);
     } else if (type === "secondarycolor") {
+        if (!curMods[101].hasOwnProperty("R"))
+            API.setVehicleSecondaryColor(veh, 0);
+
         API.setVehicleCustomSecondaryColor(veh, r, g, b);
     } else if (type === "tyresmoke") {
         API.setVehicleTyreSmokeColor(veh, r, g, b);
     } else if (type === "neoncolor") {
         API.setVehicleNeonColor(veh, r, g, b);
+
+        if (!API.getVehicleNeonState(veh, 0) === false)
+            API.setVehicleNeonState(veh, 0, true);
+        if (!API.getVehicleNeonState(veh, 1) === false)
+            API.setVehicleNeonState(veh, 1, true);
+        if (!API.getVehicleNeonState(veh, 2) === false)
+            API.setVehicleNeonState(veh, 2, true);
+        if (!API.getVehicleNeonState(veh, 3) === false)
+            API.setVehicleNeonState(veh, 3, true);
     }
 }
 

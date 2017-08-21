@@ -42,6 +42,8 @@ namespace mtgvrp.property_system
             API.consoleOutput("Created Properties.");
         }
 
+        //NEVER DELETE ANY PROPERTY TYPE FROM HERE, OR THE ONES UNDER WILL FUCK UP!!!!!!
+        //IF YOU DELETE ONE, REPLACE IT
         public enum PropertyTypes
         {
             Clothing,
@@ -51,13 +53,13 @@ namespace mtgvrp.property_system
             Restaurant,
             Advertising,
             GasStation,
+            ModdingShop,
             LSNN,
             HuntingStation,
             Housing,
             VIPLounge,
             Government,
             DMV,
-            ModdingShop,
             Container,
         }
 

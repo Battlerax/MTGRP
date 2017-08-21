@@ -18,6 +18,7 @@ using GrandTheftMultiplayer.Server.API;
 using GrandTheftMultiplayer.Server.Elements;
 using GrandTheftMultiplayer.Shared;
 using GrandTheftMultiplayer.Shared.Math;
+using mtgvrp.core;
 using mtgvrp.database_manager;
 using mtgvrp.group_manager;
 using mtgvrp.inventory;
@@ -192,22 +193,29 @@ namespace mtgvrp.vehicle_manager
             if (IsSpawned)
                 return 0; // Vehicle is already spawned
 
-            if(VehMods == null)
-                VehMods= new Dictionary<string, string>();
+            if (VehMods == null)
+                VehMods = new Dictionary<string, string>();
 
-           if (!VehMods.ContainsKey(ModdingManager.PrimaryColorId.ToString()))
+            if (!VehMods.ContainsKey(ModdingManager.PrimaryColorId.ToString()))
                 VehMods.Add(ModdingManager.PrimaryColorId.ToString(), "0");
 
             if (!VehMods.ContainsKey(ModdingManager.SecondryColorId.ToString()))
                 VehMods.Add(ModdingManager.SecondryColorId.ToString(), "0");
 
-            NetHandle = API.shared.createVehicle(VehModel, pos, SpawnRot,Convert.ToInt32(VehMods[ModdingManager.PrimaryColorId.ToString()]), Convert.ToInt32(VehMods[ModdingManager.PrimaryColorId.ToString()]), SpawnDimension);
+            NetHandle = API.shared.createVehicle(VehModel, pos, SpawnRot,
+                VehMods[ModdingManager.PrimaryColorId.ToString()].IsInteger()
+                    ? Convert.ToInt32(VehMods[ModdingManager.PrimaryColorId.ToString()])
+                    : 0,
+                VehMods[ModdingManager.SecondryColorId.ToString()].IsInteger()
+                    ? Convert.ToInt32(VehMods[ModdingManager.SecondryColorId.ToString()])
+                    : 0, SpawnDimension);
+
             API.shared.setVehicleNumberPlate(NetHandle, LicensePlate);
 
             Blip = API.shared.createBlip(NetHandle);
             API.shared.setBlipColor(Blip, 40);
             API.shared.setBlipSprite(Blip, API.shared.getVehicleClass(VehModel) == 14 ? 410 : 225);
-            API.shared.setBlipScale(Blip, (float)0.7);
+            API.shared.setBlipScale(Blip, (float) 0.7);
             API.shared.setBlipShortRange(Blip, true);
             API.shared.setBlipTransparency(Blip, 100);
 

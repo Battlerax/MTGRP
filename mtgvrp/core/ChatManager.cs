@@ -27,8 +27,19 @@ namespace mtgvrp.core
             API.onChatMessage += OnChatMessage;
             API.onChatCommand += API_onChatCommand;
             API.onClientEventTrigger += OnClientEventTrigger;
+            API.onPlayerDisconnected += API_onPlayerDisconnected;
 
             DebugManager.DebugMessage("[ChatM] Chat Manager initalized.");
+        }
+
+        private void API_onPlayerDisconnected(Client player, string reason)
+        {
+            var c = player.GetCharacter();
+            if (c != null)
+            {
+                //Remove AME if exists
+                RemoveAmeText(c);
+            }
         }
 
         private void API_onChatCommand(Client sender, string command, CancelEventArgs cancel)

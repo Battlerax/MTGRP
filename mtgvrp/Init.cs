@@ -91,12 +91,6 @@ namespace mtgvrp
             return Type.GetType("Mono.Runtime") != null;
         }
 
-        [Command]
-        public void getclass(Client player)
-        {
-            API.sendChatMessageToPlayer(player, "Class: " + API.shared.getVehicleClass(player.vehicle.handle.GetVehicle().VehModel));
-        }
-
         public void OnResourceStartHandler()
         {
             //For Dealership.

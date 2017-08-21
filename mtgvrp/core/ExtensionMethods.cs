@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using GrandTheftMultiplayer.Server.API;
 using GrandTheftMultiplayer.Server.Elements;
 using GrandTheftMultiplayer.Shared;
@@ -35,6 +36,12 @@ namespace mtgvrp.core
         public static T CastTo<T>(this object obj)
         {
             return (T) obj;
+        }
+
+        public static bool IsInteger(this string i)
+        {
+            int t;
+            return int.TryParse(i, out t);
         }
     }
 
