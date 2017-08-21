@@ -78,6 +78,7 @@ function finish_menu(totalPrice = 0, totalWeapons = null){
     if (weaponmenu != null) {
         API.destroyCefBrowser(weaponmenu);
     }
+	API.showCursor(false);
     API.triggerServerEvent("gunrun_menu_closed", totalPrice, totalWeapons)
 }
 
