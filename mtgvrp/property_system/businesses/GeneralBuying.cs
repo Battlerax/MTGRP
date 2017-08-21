@@ -160,8 +160,8 @@ namespace mtgvrp.property_system.businesses
                             InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
                             sender.health += 15;
                             if (sender.health > 100) sender.health = 100;
-                            API.sendChatMessageToPlayer(sender,
-                                $"[BUSINESS] You have sucessfully bought a ~g~{prop.RestaurantItems[0]}~w~ for ~g~${price}.");
+                            API.sendChatMessageToPlayer(sender,$"[BUSINESS] You have sucessfully bought a ~g~{prop.RestaurantItems[0]}~w~ for ~g~${price}.");
+                            InventoryManager.GiveInventoryItem(prop, new Money(), price);
                             LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a {prop.RestaurantItems[0]} for {price} from property ID {prop.Id}.");
                             return;
 
@@ -169,8 +169,8 @@ namespace mtgvrp.property_system.businesses
                             InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
                             sender.health += 25;
                             if (sender.health > 100) sender.health = 100;
-                            API.sendChatMessageToPlayer(sender,
-                                $"[BUSINESS] You have sucessfully bought a ~g~{prop.RestaurantItems[1]}~w~ for ~g~${price}.");
+                            API.sendChatMessageToPlayer(sender,$"[BUSINESS] You have sucessfully bought a ~g~{prop.RestaurantItems[1]}~w~ for ~g~${price}.");
+                            InventoryManager.GiveInventoryItem(prop, new Money(), price);
                             LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a {prop.RestaurantItems[1]} for {price} from property ID {prop.Id}.");
                             return;
 
@@ -178,8 +178,8 @@ namespace mtgvrp.property_system.businesses
                             InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
                             sender.health += 25;
                             if (sender.health > 100) sender.health = 100;
-                            API.sendChatMessageToPlayer(sender,
-                                $"[BUSINESS] You have sucessfully bought a ~g~{prop.RestaurantItems[2]}~w~ for ~g~${price}.");
+                            API.sendChatMessageToPlayer(sender,$"[BUSINESS] You have sucessfully bought a ~g~{prop.RestaurantItems[2]}~w~ for ~g~${price}.");
+                            InventoryManager.GiveInventoryItem(prop, new Money(), price);
                             LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a {prop.RestaurantItems[2]} for {price} from property ID {prop.Id}.");
                             return;
 
@@ -187,8 +187,8 @@ namespace mtgvrp.property_system.businesses
                             InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
                             sender.health += 25;
                             if (sender.health > 100) sender.health = 100;
-                            API.sendChatMessageToPlayer(sender,
-                                $"[BUSINESS] You have sucessfully bought a ~g~{prop.RestaurantItems[3]}~w~ for ~g~${price}.");
+                            API.sendChatMessageToPlayer(sender,$"[BUSINESS] You have sucessfully bought a ~g~{prop.RestaurantItems[3]}~w~ for ~g~${price}.");
+                            InventoryManager.GiveInventoryItem(prop, new Money(), price);
                             LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a {prop.RestaurantItems[3]} for {price} from property ID {prop.Id}.");
                             return;
                     }
@@ -244,6 +244,7 @@ namespace mtgvrp.property_system.businesses
                                 if (i.CommandType == Group.CommandTypeLsnn) { i.LottoSafe += price; }
                             }
                             InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
+                            InventoryManager.GiveInventoryItem(prop, new Money(), price);
                             character.HasLottoTicket = true;
                             API.sendChatMessageToPlayer(sender, "You purchased a lottery ticket. Good luck!");
                             LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a lottery ticket for {price} from property ID {prop.Id}.");
