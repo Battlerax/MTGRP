@@ -116,6 +116,15 @@ function updateCurrentColor(type) {
     } else if (type === "tyresmoke") {
         return;
     } else if (type === "neoncolor") {
+        if (!API.getVehicleNeonState(veh, 0) === false)
+            API.setVehicleNeonState(veh, 0, true);
+        if (!API.getVehicleNeonState(veh, 1) === false)
+            API.setVehicleNeonState(veh, 1, true);
+        if (!API.getVehicleNeonState(veh, 2) === false)
+            API.setVehicleNeonState(veh, 2, true);
+        if (!API.getVehicleNeonState(veh, 3) === false)
+            API.setVehicleNeonState(veh, 3, true);
+
         clr = API.getVehicleNeonColor(veh);
     }
     myBrowser.call("updateColorPicker", Math.round(clr.R), Math.round(clr.G), Math.round(clr.B));
