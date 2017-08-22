@@ -732,12 +732,18 @@ namespace mtgvrp.inventory
                     API.sendNotificationToPlayer(targetClient,
                         $"You have receieved ~g~{amount}~w~ ~g~{sendersItem[0].LongName}~w~ from ~g~{sender.rp_name()}~w~.");
 
-                    if (sender.IsGunrunner && sendersItem[0].GetType() == typeof(WeaponCase) && weaponItem.Owner == sender)
+                    if (sendersItem[0].GetType() == typeof(WeaponCase))
                     {
-                        player.sendChatMessage("You have sold a weapon and earned 5 renown.");
-                        sender.Renown += 5;
-                        sender.WeaponsSold++;
-                        sender.TotalWeaponsSold++;
+                        WeaponCase weaponItem = (WeaponCase) sendersItem[0];
+
+                        if (sender.IsGunrunner && sendersItem[0].GetType() == typeof(WeaponCase) &&
+                            weaponItem.Owner == sender)
+                        {
+                            player.sendChatMessage("You have sold a weapon and earned 5 renown.");
+                            sender.Renown += 5;
+                            sender.WeaponsSold++;
+                            sender.TotalWeaponsSold++;
+                        }
                     }
 
                     //Remove from their inv.
