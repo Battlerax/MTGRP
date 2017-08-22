@@ -108,6 +108,8 @@ namespace mtgvrp.vehicle_manager.modding
 
                     InventoryManager.DeleteInventoryItem<Money>(c, allPrices);
                     InventoryManager.GiveInventoryItem(prop, new Money(), allPrices);
+
+                    if (prop.Supplies != -1)
                         prop.Supplies -= itemCount * 5;
 
                     var veh = sender.vehicle.handle.GetVehicle();
@@ -128,7 +130,7 @@ namespace mtgvrp.vehicle_manager.modding
                     API.setEntityDimension(sender, 0);
                     if (sender.GetAccount().IsSpeedoOn)
                         API.triggerClientEvent(sender, "TOGGLE_SPEEDO");
-                        break;
+                    break;
                 }
             }
         }
