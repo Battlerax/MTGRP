@@ -6,6 +6,7 @@ using GrandTheftMultiplayer.Server.Constant;
 using GrandTheftMultiplayer.Server.Elements;
 using GrandTheftMultiplayer.Shared;
 using GrandTheftMultiplayer.Shared.Math;
+using mtgvrp.AdminSystem;
 using mtgvrp.component_manager;
 using mtgvrp.core;
 using mtgvrp.database_manager;
@@ -231,6 +232,11 @@ namespace mtgvrp.player_manager
                         if (character.IsJailed)
                         {
                             Lspd.JailControl(player, character.JailTimeLeft);
+                        }
+
+                        if (character.isAJailed)
+                        {
+                            AdminCommands.aJailControl(player,character.aJailTimeLeft);
                         }
 
                         API.setPlayerHealth(player, character.Health);
