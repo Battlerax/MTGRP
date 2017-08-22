@@ -1463,7 +1463,7 @@ namespace mtgvrp.AdminSystem
             if (account.AdminLevel < 2)
                 return;
 
-            var receiver = DatabaseManager.CharacterTable.Find(x => x.CharacterName == charactername).SingleOrDefault();
+            var receiver = DatabaseManager.CharacterTable.Find(x => x.CharacterName == charactername).FirstOrDefault();
             if (receiver == null)
                 return;
 
