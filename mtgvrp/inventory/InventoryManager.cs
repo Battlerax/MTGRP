@@ -700,14 +700,16 @@ namespace mtgvrp.inventory
                 return;
             }
 
-            WeaponCase weaponItem = (WeaponCase)sendersItem[0];
+            if(sendersItem[0].GetType() == typeof(WeaponCase)) {
 
-            if (weaponItem.Owner == target && sendersItem[0].GetType() == typeof(WeaponCase))
-            {
-                player.sendChatMessage("You can't give a weapon case back to the gun dealer.");
-                return;
+                WeaponCase weaponItem = (WeaponCase)sendersItem[0];
+
+                if (weaponItem.Owner == target)
+                {
+                    player.sendChatMessage("You can't give a weapon case back to the gun dealer.");
+                    return;
+                }
             }
-
 
             //Give.
             switch (GiveInventoryItem(target, sendersItem[0], amount))
@@ -730,12 +732,18 @@ namespace mtgvrp.inventory
                     API.sendNotificationToPlayer(targetClient,
                         $"You have receieved ~g~{amount}~w~ ~g~{sendersItem[0].LongName}~w~ from ~g~{sender.rp_name()}~w~.");
 
-                    if (sender.IsGunrunner && sendersItem[0].GetType() == typeof(WeaponCase) && weaponItem.Owner == sender)
+                    if (sendersItem[0].GetType() == typeof(WeaponCase))
                     {
-                        player.sendChatMessage("You have sold a weapon and earned 5 renown.");
-                        sender.Renown += 5;
-                        sender.WeaponsSold++;
-                        sender.TotalWeaponsSold++;
+                        WeaponCase weaponItem = (WeaponCase) sendersItem[0];
+
+                        if (sender.IsGunrunner && sendersItem[0].GetType() == typeof(WeaponCase) &&
+                            weaponItem.Owner == sender)
+                        {
+                            player.sendChatMessage("You have sold a weapon and earned 5 renown.");
+                            sender.Renown += 5;
+                            sender.WeaponsSold++;
+                            sender.TotalWeaponsSold++;
+                        }
                     }
 
                     //Remove from their inv.

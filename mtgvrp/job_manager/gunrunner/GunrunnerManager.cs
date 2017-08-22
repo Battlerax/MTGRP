@@ -142,7 +142,7 @@ namespace mtgvrp.job_manager.gunrunner
             Containers = DatabaseManager.ContainersTable.Find(FilterDefinition<Container>.Empty).ToList(); 
 
             //Move the dealer every 10 hours
-            MoveDealerTimer.Interval = TimeSpan.FromMinutes(1).TotalMilliseconds;
+            MoveDealerTimer.Interval = TimeSpan.FromHours(10).TotalMilliseconds;
             MoveDealerTimer.Elapsed += MoveDealerTimer_Elapsed;
             MoveDealerTimer.Start();
         }
