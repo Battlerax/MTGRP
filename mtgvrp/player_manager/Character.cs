@@ -428,14 +428,16 @@ namespace mtgvrp.player_manager
 
         public void Save()
         {
+            if (Client != null)
+            {
+                Health = API.shared.getPlayerHealth(Client);
+                Armor = API.shared.getPlayerArmor(Client);
+                Skin = (PedHash) Client.model;
+                LastPos = Client.position;
+                LastRot = Client.rotation;
 
-            Health = API.shared.getPlayerHealth(Client);
-            Armor = API.shared.getPlayerArmor(Client);
-            Skin = (PedHash) Client.model;
-            LastPos = Client.position;
-            LastRot = Client.rotation;
-            GetTimePlayed(); //Update time played before save.
-
+                GetTimePlayed(); //Update time played before save.
+            }
             var task = Task.Run(() =>
             {
                 LogManager.Log(LogManager.LogTypes.Connection,
