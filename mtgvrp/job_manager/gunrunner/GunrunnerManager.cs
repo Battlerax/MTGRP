@@ -721,6 +721,7 @@ namespace mtgvrp.job_manager.gunrunner
             var character = player.GetCharacter();
             WeaponCase item;
             var sendersItem = InventoryManager.DoesInventoryHaveItem(character, weaponcase);
+            if (sendersItem.GetType() != typeof(WeaponCase)) return;
             item = (WeaponCase)sendersItem[0];
             if (character.IsGunrunner && item.Owner.CharacterName == character.CharacterName)
             {
