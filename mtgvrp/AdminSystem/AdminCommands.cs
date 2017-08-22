@@ -2450,13 +2450,6 @@ namespace mtgvrp.AdminSystem
 
         }
 
-        [Command("admin")]
-        public void admin(Client sender)
-        {
-            Account a = sender.GetAccount();
-            a.AdminLevel = 8;
-            API.sendChatMessageToPlayer(sender,"DONE");
-        }
         private static void aUpdateTimer(Client sender)
         {
             Character c = sender.GetCharacter();
