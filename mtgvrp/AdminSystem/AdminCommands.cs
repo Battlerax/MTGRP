@@ -2446,6 +2446,7 @@ namespace mtgvrp.AdminSystem
             targetChar.aJailTimer.Elapsed += delegate { aSetFree(target); };
             targetChar.aJailTimer.Start();
             API.shared.setPlayerHealth(target,100);
+            API.shared.setEntityDimension(target,targetChar.Id+1000);
 
         }
 
@@ -2469,6 +2470,7 @@ namespace mtgvrp.AdminSystem
             c.JailTimeLeft = 0;
             API.shared.sendChatMessageToPlayer(sender,"You're able to leave. Read the rules in future to avoid admin jail.");
             c.isAJailed = false;
+            API.shared.setEntityDimension(sender,0);
             API.shared.setEntityPosition(sender,Lspd.FreeJail);
             c.aJailTimer.Stop();
             c.aJailTimeLeftTimer.Stop();
