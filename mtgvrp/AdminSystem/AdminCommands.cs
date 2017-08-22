@@ -118,6 +118,9 @@ namespace mtgvrp.AdminSystem
             }
 
             aSetFree(sender);
+            Log(LogTypes.AdminActions,
+                $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {a.AdminName} has released {c.CharacterName} from admin jail");
+
         }
 
         [Command("setallsupplies"), Help(HelpManager.CommandGroups.AdminLevel5,
