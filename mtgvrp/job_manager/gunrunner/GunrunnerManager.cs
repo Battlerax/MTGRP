@@ -102,7 +102,7 @@ namespace mtgvrp.job_manager.gunrunner
 
         public static List<Vector3> DealerLocations = new List<Vector3>()
         {
-            new Vector3(0, 0, 0),
+            new Vector3(413.1686, -980.6628, 29.43213),
         };
 
         #endregion
