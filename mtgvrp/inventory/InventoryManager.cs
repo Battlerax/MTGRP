@@ -700,14 +700,16 @@ namespace mtgvrp.inventory
                 return;
             }
 
-            WeaponCase weaponItem = (WeaponCase)sendersItem[0];
+            if(sendersItem[0].GetType() == typeof(WeaponCase)) {
 
-            if (weaponItem.Owner == target && sendersItem[0].GetType() == typeof(WeaponCase))
-            {
-                player.sendChatMessage("You can't give a weapon case back to the gun dealer.");
-                return;
+                WeaponCase weaponItem = (WeaponCase)sendersItem[0];
+
+                if (weaponItem.Owner == target)
+                {
+                    player.sendChatMessage("You can't give a weapon case back to the gun dealer.");
+                    return;
+                }
             }
-
 
             //Give.
             switch (GiveInventoryItem(target, sendersItem[0], amount))
