@@ -611,11 +611,20 @@ namespace mtgvrp.vehicle_manager
                         gCarsList.Add(v);
                     }
                 }
-                if(gCarsList.Count > 0)
+                if (gCarsList.Count > 0)
                 {
                     string[][] cars = gCarsList
-                        .Select(x => new [] { VehicleOwnership.returnCorrDisplayName(x.VehModel), x.Id.ToString(), x.NetHandle.Value.ToString(), x.LicensePlate}).ToArray();
+                        .Select(x => new[]
+                        {
+                            VehicleOwnership.returnCorrDisplayName(x.VehModel), x.Id.ToString(),
+                            x.NetHandle.Value.ToString(), x.LicensePlate
+                        })
+                        .ToArray();
                     API.triggerClientEvent(player, "groupvehicles_showmenu", API.toJson(cars.ToArray()));
+                }
+                else
+                {
+                    API.sendChatMessageToPlayer(player,"Your group has no vehicles!");
                 }
             }
         }

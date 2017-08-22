@@ -64,14 +64,15 @@ function loaded() {
         }
     }
 
-    if (API.getVehiclePrimaryColor(veh) > 159) {
-        //Load custom colors.
+    if (API.getVehiclePrimaryColor(veh) > 159)
         curMods[100] = API.getVehicleCustomPrimaryColor(veh);
-        curMods[101] = API.getVehicleCustomSecondaryColor(veh);
-    } else {
+    else
         curMods[100] = API.getVehiclePrimaryColor(veh);
+
+    if (API.getVehicleSecondaryColor(veh) > 159)
+        curMods[101] = API.getVehicleCustomSecondaryColor(veh);
+    else
         curMods[101] = API.getVehicleSecondaryColor(veh);
-    }
 
 
     curMods[102] = null; //todo: fix this next GTMP update.
@@ -82,26 +83,28 @@ function loaded() {
 
 function resetModType(type) {
     if (type === 100) {
-        if (curMods[100].hasOwnProperty("R"))
+        if (curMods[100].hasOwnProperty("R")) {
+            API.setVehiclePrimaryColor(veh, 0);
             API.setVehicleCustomPrimaryColor(veh, curMods[100].R, curMods[100].G, curMods[100].B);
-        else
+        } else {
+            API.setVehicleCustomPrimaryColor(veh, 0, 0, 0);
             API.setVehiclePrimaryColor(veh, curMods[100]);
-    }
-    else if (type === 101) {
-        if (curMods[101].hasOwnProperty("R"))
+        }
+    } else if (type === 101) {
+        if (curMods[101].hasOwnProperty("R")) {
+            API.setVehicleSecondaryColor(veh, 0);
             API.setVehicleCustomSecondaryColor(veh, curMods[101].R, curMods[101].G, curMods[101].B);
-        else
+        } else {
+            API.setVehicleCustomSecondaryColor(veh, 0, 0, 0);
             API.setVehicleSecondaryColor(veh, curMods[101]);
-    }
-    else if (type === 102) {
+        }
+    } else if (type === 102) {
         API.setVehicleTyreSmokeColor(veh, 0, 0, 0); //todo: fix this next GTMP update.
-    }
-    else if (type === 103) {
+    } else if (type === 103) {
         API.setVehicleNeonColor(veh, curMods[103].R, curMods[103].G, curMods[103].B);
     } else if (type === 104) {
         API.setVehicleWindowTint(veh, curMods[104]);
-    }
-    else {
+    } else {
         API.removeVehicleMod(veh, type);
         API.setVehicleMod(veh, type, curMods[type]);
     }

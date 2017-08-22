@@ -249,6 +249,22 @@ namespace mtgvrp.player_manager
         [BsonIgnore] public Timer BeaconResetTimer { get; set; }
         public Client BeaconCreator{ get; set; }
 
+
+        [BsonIgnore] public Timer aJailTimeLeftTimer { get; set; }
+        [BsonIgnore] public Timer aJailTimer { get; set; }
+        public bool isAJailed { get; set; }
+        public int _atime;
+        public int aJailTimeLeft
+        {
+            get => _time;
+            set
+            {
+                if(Client != null)
+                    API.shared.triggerClientEvent(Client,"update_jail_time",value/1000);
+                _time = value;
+            }
+        }
+
         [BsonIgnore]
         public bool IsViewingMdc { get; set; }
 
@@ -412,14 +428,16 @@ namespace mtgvrp.player_manager
 
         public void Save()
         {
+            if (Client != null)
+            {
+                Health = API.shared.getPlayerHealth(Client);
+                Armor = API.shared.getPlayerArmor(Client);
+                Skin = (PedHash) Client.model;
+                LastPos = Client.position;
+                LastRot = Client.rotation;
 
-            Health = API.shared.getPlayerHealth(Client);
-            Armor = API.shared.getPlayerArmor(Client);
-            Skin = (PedHash) Client.model;
-            LastPos = Client.position;
-            LastRot = Client.rotation;
-            GetTimePlayed(); //Update time played before save.
-
+                GetTimePlayed(); //Update time played before save.
+            }
             var task = Task.Run(() =>
             {
                 LogManager.Log(LogManager.LogTypes.Connection,

@@ -78,6 +78,7 @@ namespace mtgvrp.vehicle_manager.modding
                 {
                     dynamic items = JsonConvert.DeserializeObject((string) arguments[0]);
                     int allPrices = 0;
+                    int itemCount = 0;
                     foreach (var itm in items)
                     {
                         var modType = int.Parse(itm[0].ToString().Trim());
@@ -86,7 +87,16 @@ namespace mtgvrp.vehicle_manager.modding
 
                         var price = GetModPrice(modType, modId);
                         allPrices += price;
+                        itemCount++;
                     }
+                    var prop = PropertyManager.Properties.First(x => x.Id == API.getEntityData(sender, "MOD_ID"));
+                    if (prop.Supplies != -1 && prop.Supplies < itemCount * 5)
+                    {
+                        API.triggerClientEvent(sender, "MODDING_ERROR",
+                            "This modshop doesn't have enough supplies.");
+                        return;
+                    }
+
                     var c = sender.GetCharacter();
                     if (Money.GetCharacterMoney(c) < allPrices)
                     {
@@ -97,6 +107,10 @@ namespace mtgvrp.vehicle_manager.modding
                     }
 
                     InventoryManager.DeleteInventoryItem<Money>(c, allPrices);
+                    InventoryManager.GiveInventoryItem(prop, new Money(), allPrices);
+
+                    if (prop.Supplies != -1)
+                        prop.Supplies -= itemCount * 5;
 
                     var veh = sender.vehicle.handle.GetVehicle();
                     foreach (var itm in items)
@@ -116,7 +130,7 @@ namespace mtgvrp.vehicle_manager.modding
                     API.setEntityDimension(sender, 0);
                     if (sender.GetAccount().IsSpeedoOn)
                         API.triggerClientEvent(sender, "TOGGLE_SPEEDO");
-                        break;
+                    break;
                 }
             }
         }
@@ -377,9 +391,9 @@ namespace mtgvrp.vehicle_manager.modding
         public void ModVehicle(Client player)
         {
             var prop = PropertyManager.IsAtPropertyEntrance(player);
-            if (prop?.Type != PropertyManager.PropertyTypes.ModdingShop)
+            if (prop?.Type != PropertyManager.PropertyTypes.ModdingShop || prop.OwnerId == 0)
             {
-                API.sendChatMessageToPlayer(player, "You must be at a modding shop to modify your vehicle.");
+                API.sendChatMessageToPlayer(player, "You must be at an owned modding shop to modify your vehicle.");
                 return;
             }
 
@@ -420,6 +434,7 @@ namespace mtgvrp.vehicle_manager.modding
             }
 
             API.setEntityData(player, "ModLastPos", player.position.Copy());
+            API.setEntityData(player, "MOD_ID", prop.Id);
             API.setEntityPosition(player.vehicle, new Vector3(-335.8468, -138.2994, 38.43893));
             API.setEntityRotation(player.vehicle, new Vector3(0.1579523, 0.0001232202, -84.06439));
             API.setEntityDimension(player, player.GetCharacter().Id);

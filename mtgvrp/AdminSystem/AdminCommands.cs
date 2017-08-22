@@ -35,7 +35,24 @@ namespace mtgvrp.AdminSystem
             DebugManager.DebugMessage("[AdminSys] Initalizing Admin System...");
             DebugManager.DebugMessage("[AdminSys] Admin System initalized.");
             API.onClientEventTrigger += OnClientEventTrigger;
+            API.onPlayerHealthChange += resetPlayerHealth;
+        
         }
+
+        private void resetPlayerHealth(Client player, int oldValue)
+        {
+            Character c = player.GetCharacter();
+            if (c.isAJailed || c.IsJailed)
+            {
+                API.setPlayerHealth(player, 100);
+            }
+        }
+
+
+        private static readonly Vector3 aJailLoc = new Vector3(136.5146, -2203.149, 7.30914);
+
+
+
 
         public void OnClientEventTrigger(Client player, string eventId, params object[] arguments)
         {
@@ -74,7 +91,7 @@ namespace mtgvrp.AdminSystem
 
                 case "teleport":
                     Vector3 pos = (Vector3) arguments[0];
-                    player.position = pos;
+                    player.position = new Vector3(pos.X, pos.Y, pos.Z);
                     break;
                 case "SET_PLAYER_CP":
                     var p = API.getPlayerFromHandle((NetHandle) arguments[0]);
@@ -82,6 +99,28 @@ namespace mtgvrp.AdminSystem
                     break;
 
             }
+        }
+
+        [Command("arelease")]
+        [Help(HelpManager.CommandGroups.AdminLevel2, "Release a player from admin prison.", "Player to free.")]
+        public void arelease_cmd(Client sender, string id)
+        {
+            Account a = sender.GetAccount();
+            if (a.AdminLevel < 2) return;
+            var player = PlayerManager.ParseClient(id);
+
+            Character c = player.GetCharacter();
+
+            if (!c.isAJailed)
+            {
+                API.sendChatMessageToPlayer(sender,"That player is not admin jailed!");
+                return;
+            }
+
+            aSetFree(sender);
+            Log(LogTypes.AdminActions,
+                $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {a.AdminName} has released {c.CharacterName} from admin jail");
+
         }
 
         [Command("setallsupplies"), Help(HelpManager.CommandGroups.AdminLevel5,
@@ -1423,9 +1462,15 @@ namespace mtgvrp.AdminSystem
 
             var receiver = PlayerManager.ParseClient(id);
 
+            if (receiver.GetCharacter().isAJailed)
+            {
+                API.sendChatMessageToPlayer(player,"That player is already in Admin Jail!");
+                return;
+            }
+
             receiver.GetCharacter().JailTimeLeft = int.Parse(time) * 1000 * 60;
             API.shared.setEntityDimension(receiver, receiver.GetCharacter().Id + 1000);
-            Lspd.JailControl(receiver, int.Parse(time));
+            aJailControl(receiver, int.Parse(time));
             API.sendChatMessageToPlayer(player,
                 "You have jailed " + receiver.nametag + " for " + time + " minutes. Reason: " + reason);
             API.sendChatMessageToPlayer(receiver,
@@ -1463,7 +1508,7 @@ namespace mtgvrp.AdminSystem
             if (account.AdminLevel < 2)
                 return;
 
-            var receiver = DatabaseManager.CharacterTable.Find(x => x.CharacterName == charactername).SingleOrDefault();
+            var receiver = DatabaseManager.CharacterTable.Find(x => x.CharacterName == charactername).FirstOrDefault();
             if (receiver == null)
                 return;
 
@@ -2385,5 +2430,46 @@ namespace mtgvrp.AdminSystem
                     return;
             }
         }
+
+
+        public static void aJailControl(Client target, int seconds)
+        {
+            Character targetChar = target.GetCharacter();
+            WeaponManager.RemoveAllPlayerWeapons(target);
+            API.shared.setEntityPosition(target,aJailLoc);
+            targetChar.isAJailed = true;
+            API.shared.sendChatMessageToPlayer(target,"You have been Admin Jailed for " + (targetChar.aJailTimeLeft / 1000 / 60) + " minutes ");
+            targetChar.aJailTimeLeftTimer = new Timer {Interval = 1000};
+            targetChar.aJailTimeLeftTimer.Elapsed += delegate { aUpdateTimer(target); };
+            targetChar.aJailTimeLeftTimer.Start();
+            targetChar.aJailTimer = new Timer { Interval = targetChar.aJailTimeLeft };
+            targetChar.aJailTimer.Elapsed += delegate { aSetFree(target); };
+            targetChar.aJailTimer.Start();
+            API.shared.setPlayerHealth(target,100);
+            API.shared.setEntityDimension(target,targetChar.Id+1000);
+
+        }
+
+        private static void aUpdateTimer(Client sender)
+        {
+            Character c = sender.GetCharacter();
+            c.aJailTimeLeft -= 1000;
+        }
+
+        private static void aSetFree(Client sender)
+        {
+            Character c = sender.GetCharacter();
+            if (!c.isAJailed) return;
+            c.JailTimeLeft = 0;
+            API.shared.sendChatMessageToPlayer(sender,"You're able to leave. Read the rules in future to avoid admin jail.");
+            c.isAJailed = false;
+            API.shared.setEntityDimension(sender,0);
+            API.shared.setEntityPosition(sender,Lspd.FreeJail);
+            c.aJailTimer.Stop();
+            c.aJailTimeLeftTimer.Stop();
+
+        }
+
+
     }
 }
