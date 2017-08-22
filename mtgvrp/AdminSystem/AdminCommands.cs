@@ -91,7 +91,7 @@ namespace mtgvrp.AdminSystem
 
                 case "teleport":
                     Vector3 pos = (Vector3) arguments[0];
-                    player.position = pos;
+                    player.position = new Vector3(pos.X, pos.Y, pos.Z);
                     break;
                 case "SET_PLAYER_CP":
                     var p = API.getPlayerFromHandle((NetHandle) arguments[0]);

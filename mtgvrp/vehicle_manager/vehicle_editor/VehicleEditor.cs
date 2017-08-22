@@ -54,8 +54,8 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
                 var model = Convert.ToString(arguments[1]);
                 var owner = Convert.ToString(arguments[2]);
                 var licensePlate = Convert.ToString(arguments[3]);
-                var color1 = Convert.ToInt32(arguments[4]);
-                var color2 = Convert.ToInt32(arguments[5]);
+                var color1 = (string)arguments[4];
+                var color2 = (string)arguments[5];
                 var respawnDelay = Convert.ToInt32(arguments[6]);
                 var jobId = Convert.ToInt32(arguments[7]);
                 var groupId = Convert.ToInt32(arguments[8]);
@@ -104,8 +104,8 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
 
                 veh.VehModel = modelHash;
                 veh.LicensePlate = licensePlate;
-                veh.VehMods[ModdingManager.PrimaryColorId.ToString()] = color1.ToString();
-                veh.VehMods[ModdingManager.PrimaryColorId.ToString()] = color2.ToString();
+                veh.VehMods[ModdingManager.PrimaryColorId.ToString()] = color1;
+                veh.VehMods[ModdingManager.SecondryColorId.ToString()] = color2;
                 veh.RespawnDelay = TimeSpan.FromMinutes(respawnDelay);
                 veh.JobId = jobId;
                 veh.Job = JobManager.GetJobById(veh.JobId);

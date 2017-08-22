@@ -675,7 +675,7 @@ namespace mtgvrp.core
             {
                 API.shared.deleteEntity(c.AmeText);
             }
-            c.AmeTimer.Stop();
+            c?.AmeTimer?.Stop();
         }
     }
 }
