@@ -46,17 +46,17 @@ public class ContainerZone
         Blip = API.shared.createBlip(Position, 0);
         API.shared.setBlipName(Blip, $"Container Zone {GetContainerId(this)}");
         API.shared.setBlipSprite(Blip, 357);
+        API.shared.setBlipShortRange(Blip, true);
         ColShape = API.shared.create2DColShape(Position.X, Position.Y, Radius, Radius);
     }
 
     public void Remove()
     {
-        var filter = Builders<ContainerZone>.Filter.Eq("_id", Id);
-        DatabaseManager.ContainerZonesTable.DeleteOne(filter);
         API.shared.deleteEntity(Blip);
         API.shared.deleteColShape(ColShape);
+        var filter = Builders<ContainerZone>.Filter.Eq("_id", Id);
+        DatabaseManager.ContainerZonesTable.DeleteOne(filter);
         ResetContainerZones();
-        Save();
     }
 
     public void ResetContainerZones()
