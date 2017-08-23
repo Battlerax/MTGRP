@@ -214,7 +214,7 @@ namespace mtgvrp.job_manager.gunrunner
                                     break;
                             }
                         }
-                        ChatManager.RoleplayMessage(player.GetCharacter(), "has bought some weapons from Simeon_Orlov.", ChatManager.RoleplayMe);
+                        ChatManager.RoleplayMessage(player.GetCharacter(), "has bought some weapons from Yuri_Orlov.", ChatManager.RoleplayMe);
                         player.sendChatMessage("~r~You have bought some weapons. Sell them within the next 24 hours or risk losing renown!");
                         player.sendChatMessage("Yuri Orlov says: Keep those safe, sell them soon and I'll have more for you when you're done.");
                         if (!player.GetCharacter().IsGunrunner)
@@ -245,7 +245,7 @@ namespace mtgvrp.job_manager.gunrunner
                     if (renown < 800 && renown >= 300) { API.triggerClientEvent(player, "send_shotgun_list", API.toJson(Weapon_Melee), API.toJson(Weapon_Pistols), API.toJson(Weapon_Shotguns)); }
                     if (renown < 1100 && renown >= 800) { API.triggerClientEvent(player, "send_machinegun_list", API.toJson(Weapon_Melee), API.toJson(Weapon_Pistols), API.toJson(Weapon_Shotguns), API.toJson(Weapon_Machineguns)); }
                     if (renown < 2000 && renown >= 1100) { API.triggerClientEvent(player, "send_assaultrifle_list", API.toJson(Weapon_Melee), API.toJson(Weapon_Pistols), API.toJson(Weapon_Shotguns), API.toJson(Weapon_Machineguns), API.toJson(Weapon_Assaultrifles)); }
-                    if (renown > 2000) { API.triggerClientEvent(player, "send_sniper_list", API.toJson(Weapon_Melee), API.toJson(Weapon_Pistols), API.toJson(Weapon_Shotguns), API.toJson(Weapon_Machineguns), API.toJson(Weapon_Assaultrifles), API.toJson(Weapon_Snipers)); }
+                    if (renown >= 2000) { API.triggerClientEvent(player, "send_sniper_list", API.toJson(Weapon_Melee), API.toJson(Weapon_Pistols), API.toJson(Weapon_Shotguns), API.toJson(Weapon_Machineguns), API.toJson(Weapon_Assaultrifles), API.toJson(Weapon_Snipers)); }
 
                     break;
 
@@ -583,7 +583,7 @@ namespace mtgvrp.job_manager.gunrunner
             }
         }
 
-        [Command("trackdealer"), Help(HelpManager.CommandGroups.JobsGeneral, "Track the current location of Simeon_Orlov, the gun dealer.", null)]
+        [Command("trackdealer"), Help(HelpManager.CommandGroups.JobsGeneral, "Track the current location of Yuri_Orlov, the gun dealer.", null)]
         public void trackdealer_cmd(Client player)
         {
             var character = player.GetCharacter();
