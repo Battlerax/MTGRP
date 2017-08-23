@@ -35,6 +35,18 @@ namespace mtgvrp.job_manager.gunrunner
     {
         #region Class Variables
 
+        private const int RenownForHQ = 500;
+        private const int RenownForUpgradeHQ = 800;
+        private const int RenownT1 = 100;
+        private const int RenownT2 = 300;
+        private const int RenownT3 = 800;
+        private const int RenownT4 = 1100;
+        private const int RenownT5 = 2000;
+        private const int RenownLossDrop = 10;
+        private const int RenownTimeLimitLoss = 5;
+        private const int RenownForgetLoss = 5;
+
+
         public static Ped CurrentDealer = null;
         public static TextLabel DealerLabel = null;
         public static TextLabel DealerNameLabel = null;
@@ -238,12 +250,12 @@ namespace mtgvrp.job_manager.gunrunner
                     
                     int renown = character.Renown;
                     API.triggerClientEvent(player, "send_renown", renown);
-                    if (renown < 100) { API.triggerClientEvent(player, "send_melee_list", API.toJson(Weapon_Melee)); }
-                    if (renown < 300 && renown >= 100) { API.triggerClientEvent(player, "send_pistol_list", API.toJson(Weapon_Melee), API.toJson(Weapon_Pistols)); }
-                    if (renown < 800 && renown >= 300) { API.triggerClientEvent(player, "send_shotgun_list", API.toJson(Weapon_Melee), API.toJson(Weapon_Pistols), API.toJson(Weapon_Shotguns)); }
-                    if (renown < 1100 && renown >= 800) { API.triggerClientEvent(player, "send_machinegun_list", API.toJson(Weapon_Melee), API.toJson(Weapon_Pistols), API.toJson(Weapon_Shotguns), API.toJson(Weapon_Machineguns)); }
-                    if (renown < 2000 && renown >= 1100) { API.triggerClientEvent(player, "send_assaultrifle_list", API.toJson(Weapon_Melee), API.toJson(Weapon_Pistols), API.toJson(Weapon_Shotguns), API.toJson(Weapon_Machineguns), API.toJson(Weapon_Assaultrifles)); }
-                    if (renown > 2000) { API.triggerClientEvent(player, "send_sniper_list", API.toJson(Weapon_Melee), API.toJson(Weapon_Pistols), API.toJson(Weapon_Shotguns), API.toJson(Weapon_Machineguns), API.toJson(Weapon_Assaultrifles), API.toJson(Weapon_Snipers)); }
+                    if (renown < RenownT1) { API.triggerClientEvent(player, "send_melee_list", API.toJson(Weapon_Melee)); }
+                    if (renown < RenownT2 && renown >= RenownT1) { API.triggerClientEvent(player, "send_pistol_list", API.toJson(Weapon_Melee), API.toJson(Weapon_Pistols)); }
+                    if (renown < RenownT3 && renown >= RenownT2) { API.triggerClientEvent(player, "send_shotgun_list", API.toJson(Weapon_Melee), API.toJson(Weapon_Pistols), API.toJson(Weapon_Shotguns)); }
+                    if (renown < RenownT4 && renown >= RenownT3) { API.triggerClientEvent(player, "send_machinegun_list", API.toJson(Weapon_Melee), API.toJson(Weapon_Pistols), API.toJson(Weapon_Shotguns), API.toJson(Weapon_Machineguns)); }
+                    if (renown < RenownT5 && renown >= RenownT4) { API.triggerClientEvent(player, "send_assaultrifle_list", API.toJson(Weapon_Melee), API.toJson(Weapon_Pistols), API.toJson(Weapon_Shotguns), API.toJson(Weapon_Machineguns), API.toJson(Weapon_Assaultrifles)); }
+                    if (renown > RenownT5) { API.triggerClientEvent(player, "send_sniper_list", API.toJson(Weapon_Melee), API.toJson(Weapon_Pistols), API.toJson(Weapon_Shotguns), API.toJson(Weapon_Machineguns), API.toJson(Weapon_Assaultrifles), API.toJson(Weapon_Snipers)); }
 
                     break;
 
@@ -421,7 +433,7 @@ namespace mtgvrp.job_manager.gunrunner
             {
                 player.sendChatMessage($"Yuri Orlov says: You're late! Late deliveries disrupt my business. Be quicker next time..");
                 player.sendChatMessage($"~r~You've lost 5 renown for not selling your weapons within 24 hours.");
-                character.Renown -= 5;
+                character.Renown -= RenownTimeLimitLoss;
             }
 
             player.sendChatMessage($"Buy weapons from Yuri to be sold on to other players using /give. ~r~You will be charged a flat rate of ${FlatRate}.");
@@ -475,7 +487,7 @@ namespace mtgvrp.job_manager.gunrunner
 
             player.sendChatMessage($"~r~You've lost {character.WeaponsBought - character.WeaponsSold * 3} renown for losing {character.WeaponsBought - character.WeaponsSold} weapons.");
             player.sendChatMessage("Yuri_Orlov says: You've lost me a lot of business!");
-            character.Renown -= character.WeaponsBought - character.WeaponsSold * 5;
+            character.Renown -= character.WeaponsBought - character.WeaponsSold * RenownForgetLoss;
             character.WeaponsSold = 0;
             character.WeaponsBought = 0;
         }
@@ -564,19 +576,19 @@ namespace mtgvrp.job_manager.gunrunner
                 case "dealertracker":
                     player.sendChatMessage("~g~You've upgraded your HQ!~w~ You can now find the exact location of the weapon dealer with /trackdealer.");
                     character.Container.CanTrackLocation = true;
-                    character.Container.RenownToNextUpgrade += 800;
+                    character.Container.RenownToNextUpgrade += RenownForUpgradeHQ;
                     break;
 
                 case "movelocation":
                     player.sendChatMessage("~g~You've upgraded your HQ!~w~ You can now move your HQ to a new location with /movehq.");
                     character.Container.CanBeMoved = true;
-                    character.Container.RenownToNextUpgrade += 800;
+                    character.Container.RenownToNextUpgrade += RenownForUpgradeHQ;
                     break;
 
                 case "intervene":
                     player.sendChatMessage("~g~You've upgraded your HQ!~w~ You can now speak to the gun dealer to gain information about other gunrunners.");
                     character.Container.CanIntervene = true;
-                    character.Container.RenownToNextUpgrade += 800;
+                    character.Container.RenownToNextUpgrade += RenownForUpgradeHQ;
                     break;
             }
         }
@@ -664,7 +676,7 @@ namespace mtgvrp.job_manager.gunrunner
                 return;
             }
 
-            if (character.Renown < 500)
+            if (character.Renown < RenownForHQ)
             {
                 player.sendChatMessage("You don't have enough renown to do this.");
                 return;
@@ -707,13 +719,13 @@ namespace mtgvrp.job_manager.gunrunner
                 if (item.WeaponHash == 0)
                 {
                     API.setPlayerArmor(player, 100);
-                    character.Renown -= 10;
+                    character.Renown -= RenownLossDrop;
                     character.WeaponsSold += 1;
                     player.sendChatMessage("You've opened your own weapon case as a gunrunner. You have lost some renown for doing so.");
                     return;
                 }
                 WeaponManager.CreateWeapon(player, item.WeaponHash, WeaponTint.Normal, true);
-                character.Renown -= 10;
+                character.Renown -= RenownLossDrop;
                 character.WeaponsSold += 1; 
                 player.sendChatMessage("You've opened your own weapon case as a gunrunner. You have lost some renown for doing so.");
                 return;
