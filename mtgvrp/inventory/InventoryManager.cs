@@ -740,9 +740,9 @@ namespace mtgvrp.inventory
                             weaponItem.Owner == sender)
                         {
                             player.sendChatMessage("You have sold a weapon and earned 5 renown.");
-                            sender.Renown += 5;
-                            sender.WeaponsSold++;
-                            sender.TotalWeaponsSold++;
+                            sender.Renown += 5 * amount;
+                            sender.WeaponsSold += sender.WeaponsSold * amount;
+                            sender.TotalWeaponsSold += amount;
                         }
                     }
 
@@ -784,7 +784,8 @@ namespace mtgvrp.inventory
                 {
                     player.sendChatMessage("You dropped a weapon case that you're supposed to sell. You've lost 10 renown.");
                     DeleteInventoryItem(character, sendersItem[0].GetType(), amount, x => x == sendersItem[0]);
-                    character.Renown -= 10;
+                    character.WeaponsSold += amount;
+                    character.Renown -= 10 * amount;
                     return;
                 }
 

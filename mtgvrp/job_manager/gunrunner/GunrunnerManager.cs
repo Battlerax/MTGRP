@@ -205,7 +205,7 @@ namespace mtgvrp.job_manager.gunrunner
                             switch (InventoryManager.GiveInventoryItem(player.GetCharacter(), new WeaponCase(API.weaponNameToModel(weapon), player.GetCharacter())))
                             {
                                 case InventoryManager.GiveItemErrors.Success:
-                                    player.GetCharacter().WeaponsBought += 1;
+                                    player.GetCharacter().WeaponsBought++;
                                     break;
 
                                 case InventoryManager.GiveItemErrors.NotEnoughSpace:
@@ -217,6 +217,7 @@ namespace mtgvrp.job_manager.gunrunner
                         ChatManager.RoleplayMessage(player.GetCharacter(), "has bought some weapons from Yuri_Orlov.", ChatManager.RoleplayMe);
                         player.sendChatMessage("~r~You have bought some weapons. Sell them within the next 24 hours or risk losing renown!");
                         player.sendChatMessage("Yuri Orlov says: Keep those safe, sell them soon and I'll have more for you when you're done.");
+                        player.GetCharacter().WeaponSellTimeLimit = TimeManager.GetTimeStampPlus(TimeSpan.FromHours(24));
                         if (!player.GetCharacter().IsGunrunner)
                         {
                             player.GetCharacter().IsGunrunner = true;
