@@ -511,6 +511,12 @@ namespace mtgvrp.job_manager.gunrunner
                 player.sendChatMessage("You must be at the gun dealer to use this ability.");
             }
 
+            if (character.InterveneTimeLimit > TimeManager.GetTimeStamp)
+            {
+                player.sendChatMessage($@"You can only do this every 12 hours. Please wait {TimeManager.SecondsToMinutes(character.InterveneTimeLimit - TimeManager.GetTimeStamp)} more minutes before doing this again.");
+                return;
+            }
+
             Character MostRenown = character;
             foreach (var p in PlayerManager.Players)
             {
@@ -529,6 +535,7 @@ namespace mtgvrp.job_manager.gunrunner
                 player.sendChatMessage($"Yuri_Orlov says: {MostRenown.CharacterName} is doing quite well for themselves. Here's where they are..");
                 player.sendChatMessage("A waypoint has been set to the position of the current gun dealer with the most renown.");
                 API.triggerClientEvent(player, "intervene_track_player", MostRenown.Client.position.X, MostRenown.Client.position.Y);
+                character.InterveneTimeLimit = TimeManager.GetTimeStampPlus(TimeSpan.FromHours(12));
             }
         }
 

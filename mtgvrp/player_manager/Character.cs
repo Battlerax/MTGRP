@@ -208,6 +208,7 @@ namespace mtgvrp.player_manager
         public int WeaponsSold { get; set; }
         public int WeaponsBought { get; set; }
         public double WeaponSellTimeLimit { get; set; }
+        public double InterveneTimeLimit { get; set; }
         public int TotalWeaponsSold { get; set; }
 
         //Phone
