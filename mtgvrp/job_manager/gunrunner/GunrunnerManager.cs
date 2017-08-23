@@ -164,8 +164,6 @@ namespace mtgvrp.job_manager.gunrunner
             API.createObject(-1543942490, new Vector3(-194.8968f, -734.1437f, 15.72411f), new Vector3(0f, 0f, -158.0002f));
             API.createObject(1915724430, new Vector3(-193.52f, -744.9f, 14.81151f), new Vector3(1.001791E-05f, 5.008956E-06f, -89.99963f));
             #endregion
-            load_all_container_zones();
-            load_all_containers();
         }
 
         private void CharacterMenu_OnCharacterLogin(object sender, CharacterMenu.CharacterLoginEventArgs e)
@@ -534,7 +532,7 @@ namespace mtgvrp.job_manager.gunrunner
             {
                 player.sendChatMessage($"Yuri_Orlov says: {MostRenown.CharacterName} is doing quite well for themselves. Here's where they are..");
                 player.sendChatMessage("A waypoint has been set to the position of the current gun dealer with the most renown.");
-                API.triggerClientEvent(player, "intervene_track_player", MostRenown.Client.position.X, MostRenown.Client.position.Y);
+                API.triggerClientEvent(player, "intervene_track_player", MostRenown.Client.position);
                 character.InterveneTimeLimit = TimeManager.GetTimeStampPlus(TimeSpan.FromHours(12));
             }
         }

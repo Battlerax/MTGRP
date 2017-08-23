@@ -100,8 +100,12 @@ namespace mtgvrp
             API.consoleOutput("[INIT] Unloaded fakeint IPL and loaded shr_int IPL.!");
 
             VehicleManager.load_all_unowned_vehicles();
+
+            //Gunrunning
             GunrunnerManager.load_all_containers();
+            GunrunnerManager.load_all_container_zones();
             GunrunnerManager.MoveDealer();
+
             API.consoleOutput("[INIT] Script initalized!");
 
             LogManager.StartLogArchiveTimer();

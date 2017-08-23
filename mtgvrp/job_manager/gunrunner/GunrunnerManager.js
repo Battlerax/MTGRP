@@ -42,7 +42,10 @@ API.onServerEventTrigger.connect((event, args) => {
             break;
 
         case "intervene_track_player":
-            API.setWaypoint(args[0], args[1]);
+		    var pos = args[0];
+            lastStreet = API.getStreetName(pos);
+            lastZone = API.getZoneName(pos);
+			API.sendChatMessage("Yuri Orlov says: The player with the most renown is located at '" + lastStreet + ", " + lastZone + "'. That's all I can give you right now.")
             break;
 
         case "close_gunrun_menu":
