@@ -436,6 +436,12 @@ namespace mtgvrp.property_system.businesses
                 return;
             }
 
+            if (player.GetCharacter().IsOnGarbageRun)
+            {
+                player.sendChatMessage("You can't do this while on a garbage run.");
+                return;
+            }
+
             switch (prop.Type)
             {
                 case PropertyManager.PropertyTypes.Hardware:
