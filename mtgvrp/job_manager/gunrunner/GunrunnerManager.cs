@@ -128,7 +128,7 @@ namespace mtgvrp.job_manager.gunrunner
             CharacterMenu.OnCharacterLogin += CharacterMenu_OnCharacterLogin;
 
             //Load all containers.
-            Containers = DatabaseManager.ContainersTable.Find(FilterDefinition<Container>.Empty).ToList(); 
+            Containers = DatabaseManager.ContainersTable.Find(FilterDefinition<Container>.Empty).ToList();
 
             //Move the dealer every 10 hours
             MoveDealerTimer.Interval = TimeSpan.FromHours(10).TotalMilliseconds;
@@ -176,6 +176,8 @@ namespace mtgvrp.job_manager.gunrunner
             API.createObject(-1543942490, new Vector3(-194.8968f, -734.1437f, 15.72411f), new Vector3(0f, 0f, -158.0002f));
             API.createObject(1915724430, new Vector3(-193.52f, -744.9f, 14.81151f), new Vector3(1.001791E-05f, 5.008956E-06f, -89.99963f));
             #endregion
+            load_all_container_zones();
+            load_all_containers();
         }
 
         private void CharacterMenu_OnCharacterLogin(object sender, CharacterMenu.CharacterLoginEventArgs e)
@@ -925,7 +927,6 @@ namespace mtgvrp.job_manager.gunrunner
 
             var containerZone = ContainerZone.GetAllContainerZones()[int.Parse(containerid)];
             containerZone.Remove();
-            containerZone.Save();
             player.sendChatMessage("Container zone removed.");
         }
 
