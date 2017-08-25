@@ -109,6 +109,8 @@ namespace mtgvrp.player_manager
         {
             if (player.GetAccount().AdminDuty)
             {
+                // Admins are losing weapons anyway, may as well remove the ghost weapons from inv.
+                WeaponManager.RemoveAllPlayerWeapons(player);
                 return;
             }
 
