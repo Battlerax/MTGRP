@@ -717,6 +717,13 @@ namespace mtgvrp.job_manager.gunrunner
         {
             var character = player.GetCharacter();
             WeaponCase item;
+
+            if (weaponcase.ToLower().Equals("armor") || weaponcase.ToLower().Equals("armour"))
+            {
+                // Needed to apply armour.
+                weaponcase = "0";
+            }
+
             var sendersItem = InventoryManager.DoesInventoryHaveItem(character, weaponcase);
             if (sendersItem.GetType() != typeof(WeaponCase)) return;
             item = (WeaponCase)sendersItem[0];
