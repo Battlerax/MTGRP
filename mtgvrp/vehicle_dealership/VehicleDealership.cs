@@ -30,9 +30,9 @@ namespace mtgvrp.vehicle_dealership
             new[] {"Faggio Classic", "55628203","4000" },
             new[] {"Hexer", "301427732", "27500"},
             new[] {"Sanchez", "788045382", "25000"},
-            new[] {"PCJ", "-909201658", "40000"},
+            new[] {"PCJ 600", "-909201658", "40000"},
             new[] {"Bagger", "-2140431165", "17500"},
-            new[] {"Bati", "-891462355", "160000"},
+            new[] {"Bati 801RR", "-891462355", "160000"},
             new[] {"Gargoyle", "741090084","65000" },
             new[] { "Daemon", "2006142190", "60000" },
             new[] {"Innovation", "-159126838", "45000"},
@@ -93,7 +93,7 @@ namespace mtgvrp.vehicle_dealership
             new[] {"Huntley", "486987393", "75000"},
             new[] {"XLS", "1203490606", "80000"},
             new[] {"Mesa", "914654722", "45000"},
-            new[] {"RancherXL", "1645267888", "55000"}
+            new[] {"Rancher XL", "1645267888", "55000"}
         };
 
         private readonly string[][] _supercars =
@@ -108,7 +108,7 @@ namespace mtgvrp.vehicle_dealership
 
         private readonly string[][] _cycles =
 {
-            new[] { "Bmx", "1131912276", "1500"},
+            new[] { "BMX", "1131912276", "1500"},
             new[] { "Cruiser", "448402357", "900"},
             new[] {"Fixter", "-836512833", "1000"},
             new[] { "TriBike", "-400295096", "2000"},
@@ -126,7 +126,7 @@ namespace mtgvrp.vehicle_dealership
             new[] {"Stretch", "-1961627517","80000" },
             new [] {"Tailgater", "-1008861746","85000" },
             new[] { "Schafter", "-1255452397","125000" },
-            new[] {"Oracle", "1348744438", "30000"}
+            new[] {"Oracle XS", "1348744438", "30000"}
 
 
 
@@ -148,8 +148,8 @@ namespace mtgvrp.vehicle_dealership
         private readonly string[][] _compactCars =
         {
             new[] {"Panto", "-431692672", "17500"},
-            new[] {"Brioso", "1549126457", "35000"},
-            new[] {"Mini", "-1177863319", "35000"},
+            new[] {"Brioso R/A", "1549126457", "35000"},
+            new[] {"Issi", "-1177863319", "35000"},
         };
 
         #endregion
