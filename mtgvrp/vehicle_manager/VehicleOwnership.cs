@@ -99,6 +99,11 @@ namespace mtgvrp.vehicle_manager
         {
             //Get all owned vehicles and send them.
             Character character = player.GetCharacter();
+            if (!character.OwnedVehicles.Any())
+            {
+                API.sendChatMessageToPlayer(player,"You don't have any vehicles to manage!");
+                return;
+            }
             string[][] cars = character.OwnedVehicles
                 .Select(x => new[]
                     {VehicleOwnership.returnCorrDisplayName(x.VehModel), x.Id.ToString(), x.NetHandle.Value.ToString()})
