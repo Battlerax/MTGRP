@@ -704,7 +704,7 @@ namespace mtgvrp.inventory
 
                 WeaponCase weaponItem = (WeaponCase)sendersItem[0];
 
-                if (weaponItem.Owner == target)
+                if (weaponItem.OwnerId == target.Id)
                 {
                     player.sendChatMessage("You can't give a weapon case back to the gun dealer.");
                     return;
@@ -737,7 +737,7 @@ namespace mtgvrp.inventory
                         WeaponCase weaponItem = (WeaponCase) sendersItem[0];
 
                         if (sender.IsGunrunner && sendersItem[0].GetType() == typeof(WeaponCase) &&
-                            weaponItem.Owner == sender)
+                            weaponItem.OwnerId == sender.Id)
                         {
                             player.sendChatMessage("You have sold a weapon and earned 5 renown.");
                             sender.Renown += 5 * amount;
@@ -780,7 +780,7 @@ namespace mtgvrp.inventory
             {
                 WeaponCase weaponItem = (WeaponCase) sendersItem[0];
             
-                if (weaponItem.Owner == character)
+                if (weaponItem.OwnerId == character.Id)
                 {
                     player.sendChatMessage("You dropped a weapon case that you're supposed to sell. You've lost 10 renown.");
                     DeleteInventoryItem(character, sendersItem[0].GetType(), amount, x => x == sendersItem[0]);

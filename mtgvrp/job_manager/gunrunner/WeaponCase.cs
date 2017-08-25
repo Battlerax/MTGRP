@@ -45,7 +45,7 @@ namespace mtgvrp.job_manager.gunrunner
 
         public WeaponHash WeaponHash { get; set; }
         public NetHandle WeaponObject { get; set; }
-        public Character Owner { get; set; }
+        public int OwnerId { get; set; }
 
         public WeaponCase()
         {
@@ -55,7 +55,7 @@ namespace mtgvrp.job_manager.gunrunner
         public WeaponCase(WeaponHash weapon, Character owner)
         {
             WeaponHash = weapon;
-            Owner = owner;
+            OwnerId = owner.Id;
         }
 
         public void CreateCase (Vector3 position, Vector3 rotation)

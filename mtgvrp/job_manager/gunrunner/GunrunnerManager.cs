@@ -720,7 +720,7 @@ namespace mtgvrp.job_manager.gunrunner
             var sendersItem = InventoryManager.DoesInventoryHaveItem(character, weaponcase);
             if (sendersItem.GetType() != typeof(WeaponCase)) return;
             item = (WeaponCase)sendersItem[0];
-            if (character.IsGunrunner && item.Owner.CharacterName == character.CharacterName)
+            if (character.IsGunrunner && item.OwnerId == character.Id)
             {
                 InventoryManager.DeleteInventoryItem<WeaponCase>(player.GetCharacter(), 1, x => x.CommandFriendlyName == weaponcase);
                 // TODO : VERY DIRTY FIX - PATCH THIS OUT LATER!
