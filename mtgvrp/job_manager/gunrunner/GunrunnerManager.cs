@@ -723,6 +723,15 @@ namespace mtgvrp.job_manager.gunrunner
             if (character.IsGunrunner && item.OwnerId == character.Id)
             {
                 InventoryManager.DeleteInventoryItem<WeaponCase>(player.GetCharacter(), 1, x => x.CommandFriendlyName == weaponcase);
+                // TODO : VERY DIRTY FIX - PATCH THIS OUT LATER!
+                if (item.WeaponHash == 0)
+                {
+                    API.setPlayerArmor(player, 100);
+                    character.Renown -= RenownLossDrop;
+                    character.WeaponsSold += 1;
+                    player.sendChatMessage("You've opened your own weapon case as a gunrunner. You have lost some renown for doing so.");
+                    return;
+                }
                 WeaponManager.CreateWeapon(player, item.WeaponHash, WeaponTint.Normal, true);
                 character.Renown -= RenownLossDrop;
                 character.WeaponsSold += 1; 
@@ -736,12 +745,6 @@ namespace mtgvrp.job_manager.gunrunner
                 API.setPlayerArmor(player, 100);
                 player.sendChatMessage($"Weapon case opened. The armour has been applied.");
 
-                return;
-            }
-
-            if (item.WeaponHash == 0)
-            {
-                API.setPlayerArmor(player, 100);
                 return;
             }
             WeaponManager.CreateWeapon(player, item.WeaponHash, WeaponTint.Normal, true);
