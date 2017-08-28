@@ -678,8 +678,13 @@ namespace mtgvrp.AdminSystem
                 API.shared.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
+
+            if (!account.IsSpectating)
+            {
+                player.GetCharacter().LastPos = player.position;
+            }
+
             account.IsSpectating = true;
-            player.GetCharacter().LastPos = player.position;
             API.shared.setEntityPosition(player, target.position);
             API.shared.setPlayerToSpectatePlayer(player, target);
             API.shared.setPlayerNametagVisible(player, false);
