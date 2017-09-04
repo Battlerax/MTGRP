@@ -2255,7 +2255,7 @@ namespace mtgvrp.AdminSystem
         }
 
         [Command("addviptime", GreedyArg = true),
-         Help(HelpManager.CommandGroups.AdminLevel2, "Adds VIP time to a specific players VIP", new[]
+         Help(HelpManager.CommandGroups.AdminLevel3, "Adds VIP time to a specific players VIP", new[]
              {"ID of the target player", "The amount to add in days"})]
         public void addviptime_cmd(Client player, string id, string days)
         {
