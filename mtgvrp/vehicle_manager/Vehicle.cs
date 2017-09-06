@@ -233,6 +233,11 @@ namespace mtgvrp.vehicle_manager
                 Fuel = 100;
             }
 
+            if (API.shared.getVehicleClass(VehModel) == 13) // Cycles
+            {
+                Fuel = 0;
+            }
+
             return 1; // Successful spawn
         }
 

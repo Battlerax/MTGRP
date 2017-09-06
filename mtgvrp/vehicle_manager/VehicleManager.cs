@@ -322,7 +322,9 @@ namespace mtgvrp.vehicle_manager
             spawn_vehicle(veh);
             
             API.setPlayerIntoVehicle(player, veh.NetHandle, -1);
-            API.setVehicleEngineStatus(veh.NetHandle, true);
+
+            if (API.shared.getVehicleClass(veh.VehModel) != 13) //If not cycle
+                API.setVehicleEngineStatus(veh.NetHandle, true);
 
             API.sendChatMessageToPlayer(player, "You have spawned a " + model);
             API.sendChatMessageToPlayer(player, "This vehicle is unsaved and may behave incorrectly.");
@@ -398,6 +400,7 @@ namespace mtgvrp.vehicle_manager
             Character character = player.GetCharacter();
             var vehicleHandle = API.shared.getPlayerVehicle(player);
             Vehicle vehicle = API.shared.getEntityData(vehicleHandle, "Vehicle");
+            if (vehicle == null) return;
 
             if (API.shared.getPlayerVehicleSeat(player) != -1)
             {
@@ -409,11 +412,17 @@ namespace mtgvrp.vehicle_manager
             var vehAccess = DoesPlayerHaveVehicleAccess(player, vehicle);
             if (!engineState)
             {
-                if (vehicle?.Fuel <= 0)
+                if (vehicle.Fuel <= 0)
                 {
                     API.shared.sendChatMessageToPlayer(player, "The vehicle has no fuel.");
                     return;
                 }
+            }
+
+            if (API.shared.getVehicleClass(vehicle.VehModel) == 13) // Cycles
+            {
+                API.shared.sendChatMessageToPlayer(player, "The vehicle has no engine.");
+                return;
             }
 
             if (vehAccess)
@@ -454,6 +463,12 @@ namespace mtgvrp.vehicle_manager
             if (API.shared.getVehicleEngineStatus(veh) == true)
             {
                 API.shared.sendChatMessageToPlayer(player, "This vehicle is already started.");
+                return;
+            }
+
+            if (API.shared.getVehicleClass(vehicle.VehModel) == 13) // Cycles
+            {
+                API.shared.sendChatMessageToPlayer(player, "The vehicle has no engine.");
                 return;
             }
 

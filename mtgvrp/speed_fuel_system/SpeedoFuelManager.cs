@@ -43,6 +43,7 @@ namespace mtgvrp.speed_fuel_system
             {
                 if (!veh.IsSpawned) continue;
                 if (API.getVehicleEngineStatus(veh.NetHandle) != true || veh.Fuel <= 0) continue;
+                if (API.shared.getVehicleClass(veh.VehModel) == 13) continue; //Skip cycles
 
                 var ocups = API.getVehicleOccupants(veh.NetHandle);
 
