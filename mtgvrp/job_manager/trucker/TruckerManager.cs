@@ -422,14 +422,14 @@ namespace mtgvrp.job_manager.trucker
                 .ForAll(x => fuel += x.Supplies);
 
             API.sendChatMessageToPlayer(player,
-                "The amount of supplies available at deliverymens: " +
+                "The amount of supplies stored: " +
                 SettingsManager.Settings.TruckerSupplies);
 
             if (maxfuel == 0)
-                API.sendChatMessageToPlayer(player, "The amount of fuel availale in gas stations: 100%");
+                API.sendChatMessageToPlayer(player, "The amount of fuel available in gas stations: 100%");
             else
                 API.sendChatMessageToPlayer(player,
-                    "The amount of fuel availale in gas stations: " + Math.Round((fuel / maxfuel) * 100) + "%");
+                    "The amount of fuel available in gas stations: " + Math.Round((fuel / maxfuel) * 100) + "%");
         }
     }
 }
