@@ -21,6 +21,16 @@ namespace mtgvrp.job_manager.garbageman
         {
             Init.OnPlayerEnterVehicleEx += API_onPlayerEnterVehicle;
             API.onClientEventTrigger += API_onClientEventTrigger;
+            API.onPlayerDisconnected += API_onPlayerDisconnected;
+        }
+
+        private void API_onPlayerDisconnected(Client player, string reason)
+        {
+            var c = player.GetCharacter();
+            if (c?.GarbageBag != null)
+            {
+                API.deleteEntity(c.GarbageBag);
+            }
         }
 
         private void API_onClientEventTrigger(Client player, string eventName, params object[] arguments)
