@@ -567,7 +567,7 @@ namespace mtgvrp.player_manager
                 //Work around until setPlayerAccessory is fixed.
                 API.shared.sendNativeToPlayer(player, Hash.SET_PED_PROP_INDEX, Client.handle, 0,
                     Model.Gender == GenderMale ? 46 : 45, 0, true);
-                API.shared.sendNativeToPlayer(player, Hash.SET_PED_PROP_INDEX, Client.handle, 1, 0, 0, true);
+                API.shared.sendNativeToPlayer(player, Hash.SET_PED_PROP_INDEX, Client.handle, 1, Model.Gender == GenderMale ? 0 : 12, 0, true);
                 API.shared.sendNativeToPlayer(player, Hash.SET_PED_PROP_INDEX, Client.handle, 2, Model.EarStyle,
                     Model.Gender == GenderMale ? 33 : 0, 0, true);
             }
