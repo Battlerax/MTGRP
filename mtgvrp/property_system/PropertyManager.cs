@@ -71,11 +71,6 @@ namespace mtgvrp.property_system
             {
                 if (API.getEntityData(entity, "at_interance_property_id") == colshape.getData("property_entrance"))
                 {
-                    int id = colshape.getData("property_entrance");
-                    var property = Properties.SingleOrDefault(x => x.Id == id);
-                    if(property.EntranceDimension != API.getEntityDimension(entity))
-                        return;
-
                     API.resetEntityData(entity, "at_interance_property_id");
                 }
             }
@@ -84,11 +79,6 @@ namespace mtgvrp.property_system
             {
                 if (API.getEntityData(entity, "at_interaction_property_id") == colshape.getData("property_interaction"))
                 {
-                    int id = colshape.getData("property_interaction");
-                    var property = Properties.SingleOrDefault(x => x.Id == id);
-                    if(property.InteractionDimension != API.getEntityDimension(entity))
-                        return;
-
                     API.resetEntityData(entity, "at_interaction_property_id");
                 }
             }
@@ -97,11 +87,6 @@ namespace mtgvrp.property_system
             {
                 if (API.getEntityData(entity, "at_garbage_property_id") == colshape.getData("property_garbage"))
                 {
-                    int id = colshape.getData("property_garbage");
-                    var property = Properties.SingleOrDefault(x => x.Id == id);
-                    if(property.GarbageDimension != API.getEntityDimension(entity))
-                        return;
-
                     API.resetEntityData(entity, "at_garbage_property_id");
                 }
             }
@@ -110,11 +95,6 @@ namespace mtgvrp.property_system
             {
                 if (API.getEntityData(entity, "at_exit_property_id") == colshape.getData("property_exit"))
                 {
-                    int id = colshape.getData("property_exit");
-                    var property = Properties.SingleOrDefault(x => x.Id == id);
-                    if(property.TargetDimension != API.getEntityDimension(entity))
-                        return;
-
                     API.resetEntityData(entity, "at_exit_property_id");
                 }
             }
@@ -567,7 +547,8 @@ namespace mtgvrp.property_system
 
 
                 case "attempt_enter_prop":
-                    Enterproperty(sender);
+                    if(Exitproperty(sender) == false)
+                        Enterproperty(sender);
                     break;
 
                 case "editproperty_addipl":
@@ -715,7 +696,7 @@ namespace mtgvrp.property_system
         }
 
         [Command("enter"), Help(HelpManager.CommandGroups.General, "How to enter buildings, there is marker on the door for ones that work.", null)]
-        public void Enterproperty(Client player)
+        public bool Enterproperty(Client player)
         {
             var prop = IsAtPropertyEntrance(player);
             if (prop != null)
@@ -723,7 +704,7 @@ namespace mtgvrp.property_system
                 if (prop.IsVIP && player.GetAccount().VipLevel < 1)
                 {
                     player.sendChatMessage("You cannot enter a VIP building. Visit www.mt-gaming.com to check out the available upgrades!");
-                    return;
+                    return false;
                 }
 
                 if (prop.IsTeleportable && (!prop.IsLocked || prop.OwnerId == player.GetCharacter().Id))
@@ -745,6 +726,7 @@ namespace mtgvrp.property_system
                     {
                         API.sendChatMessageToPlayer(player, "This business is selling supplies for $" + prop.SupplyPrice);
                     }
+                    return true;
                 }
                 else
                 {
@@ -752,10 +734,11 @@ namespace mtgvrp.property_system
                         prop.IsLocked ? "Property is locked." : "Property is not teleportable.");
                 }
             }
+            return false;
         }
 
         [Command("exit"), Help(HelpManager.CommandGroups.General, "How to exit buildings, there is marker on the door for ones that work.", null)]
-        public void Exitproperty(Client player)
+        public bool Exitproperty(Client player)
         {
             var prop = IsAtPropertyExit(player);
             if (prop != null)
@@ -779,6 +762,7 @@ namespace mtgvrp.property_system
                         player.dimension = prop.EntranceDimension;
                     
                     ChatManager.RoleplayMessage(player, $"has exited the building.", ChatManager.RoleplayMe);
+                    return true;
                 }
                 else
                 {
@@ -786,6 +770,7 @@ namespace mtgvrp.property_system
                         prop.IsLocked ? "Property is locked." : "Property is not teleportable.");
                 }
             }
+            return false;
         }
 
         [Command("changefoodname", GreedyArg = true), Help(HelpManager.CommandGroups.Bussiness, "Changing the name of items in your restaurant.", new[] { "Item", "New name"})]
