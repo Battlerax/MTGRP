@@ -47,7 +47,7 @@ namespace mtgvrp.player_manager.player_list
                         if (type == 2)
                         {
                             Character a = c.Client.GetCharacter();
-                            if (a.GroupId == character.GroupId && character.GroupId != 0)
+                            if (a.GroupId != character.GroupId)
                                 continue;
                         }
 
