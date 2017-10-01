@@ -67,7 +67,7 @@ namespace mtgvrp.job_manager.lumberjack
             }
         }
 
-        private void API_onPlayerExitVehicle(Client player, NetHandle vehicle)
+        private void API_onPlayerExitVehicle(Client player, NetHandle vehicle, int seat)
         {
             if (API.getEntityModel(vehicle) == (int) VehicleHash.Flatbed && player.GetCharacter().JobOne.Type == JobManager.JobTypes.Lumberjack)
             {

@@ -205,7 +205,7 @@ namespace mtgvrp.dmv
             return plate;
         }
 
-        private void API_onPlayerExitVehicle(Client player, NetHandle vehicle)
+        private void API_onPlayerExitVehicle(Client player, NetHandle vehicle, int seat)
         {
             var c = player.GetCharacter();
 
