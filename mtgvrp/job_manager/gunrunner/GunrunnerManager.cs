@@ -8,7 +8,6 @@ using GrandTheftMultiplayer.Shared.Math;
 using GrandTheftMultiplayer.Server.Constant;
 using GrandTheftMultiplayer.Server.Elements;
 using GrandTheftMultiplayer.Server.Managers;
-using GrandTheftMultiplayer.Server.ArrayExtensions;
 using GrandTheftMultiplayer.Shared;
 
 using mtgvrp.player_manager;

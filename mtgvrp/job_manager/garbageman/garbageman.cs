@@ -19,7 +19,7 @@ namespace mtgvrp.job_manager.garbageman
 
         public Garbageman()
         {
-            Init.OnPlayerEnterVehicleEx += API_onPlayerEnterVehicle;
+            API.onPlayerEnterVehicle += API_onPlayerEnterVehicle;
             API.onClientEventTrigger += API_onClientEventTrigger;
             API.onPlayerDisconnected += API_onPlayerDisconnected;
         }

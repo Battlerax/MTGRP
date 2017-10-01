@@ -32,7 +32,7 @@ namespace mtgvrp.job_manager.taxi
 
         public TaxiJob()
         {
-            Init.OnPlayerEnterVehicleEx += API_onPlayerEnterVehicle;
+            API.onPlayerEnterVehicle += API_onPlayerEnterVehicle;
             API.onPlayerExitVehicle += API_onPlayerExitVehicle;
             API.onClientEventTrigger += API_onClientEventTrigger;
             API.onPlayerDisconnected += API_onPlayerDisconnected;

@@ -214,10 +214,12 @@ namespace mtgvrp.property_system
                     API.shared.deleteEntity(BinObject);
                 }
                 BinObject = null;
-                GarbageMarker = new MarkerZone(GarbagePoint + new Vector3(0, 0, 1.2), new Vector3(0, 0, 0), GarbageDimension);
-                GarbageMarker.ColZoneSize = 10f;
-                GarbageMarker.UseMarker = false;
-                GarbageMarker.TextLabelText = $"{PropertyName}'s Garbage\nBags: {GarbageBags}/40\n/pickuptrash";
+                GarbageMarker = new MarkerZone(GarbagePoint + new Vector3(0, 0, 1.2), new Vector3(0, 0, 0), GarbageDimension)
+                {
+                    ColZoneSize = 10f,
+                    UseMarker = false,
+                    TextLabelText = $"{PropertyName}'s Garbage\nBags: {GarbageBags}/40\n/pickuptrash"
+                };
                 GarbageMarker.Create();
                 GarbageMarker.ColZone.setData("property_garbage", Id);
                 BinObject = API.shared.createObject(998415499, GarbagePoint - new Vector3(0, 0, 1.1), GarbageRotation, GarbageDimension);

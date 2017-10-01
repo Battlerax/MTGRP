@@ -24,7 +24,7 @@ namespace mtgvrp.job_manager.lumberjack
 
             API.onClientEventTrigger += API_onClientEventTrigger;
             API.onPlayerExitVehicle += API_onPlayerExitVehicle;
-            Init.OnPlayerEnterVehicleEx += API_onPlayerEnterVehicle;
+            API.onPlayerEnterVehicle += API_onPlayerEnterVehicle;
         }
 
         private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle, int seat)

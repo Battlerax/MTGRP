@@ -38,7 +38,7 @@ namespace mtgvrp.job_manager
         {
             DebugManager.DebugMessage("[JobM] Initalizing job manager...");
 
-            Init.OnPlayerEnterVehicleEx += API_onPlayerEnterVehicle;
+            API.onPlayerEnterVehicle += API_onPlayerEnterVehicle;
 
             API.onClientEventTrigger += ApiOnOnClientEventTrigger;
 

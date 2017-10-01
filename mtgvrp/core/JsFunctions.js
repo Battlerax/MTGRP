@@ -71,8 +71,3 @@ API.onEntityStreamIn.connect((entity, entityType) => {
         return;
     }
 });
-
-API.onPlayerEnterVehicle.connect((vehicle) => {
-    var seat = API.returnNative("GET_SEAT_PED_IS_TRYING_TO_ENTER", 0, API.getLocalPlayer());
-    API.triggerServerEvent("OnPlayerEnterVehicleEx", vehicle, seat);
-});

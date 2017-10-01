@@ -52,20 +52,9 @@ namespace mtgvrp
             DatabaseManager.DatabaseManagerInit();
         }
 
-        public delegate void OnPlayerEnterVehicleExHandler(Client player, NetHandle vehicle, int seat);
-        public static event OnPlayerEnterVehicleExHandler OnPlayerEnterVehicleEx;
-
         private void API_onClientEventTrigger(GrandTheftMultiplayer.Server.Elements.Client sender, string eventName, params object[] arguments)
         {
-            if (eventName == "OnPlayerEnterVehicleEx")
-            {
-                NetHandle veh = (NetHandle) arguments[0];
-                int seat = (int) arguments[1];
-
-                OnPlayerEnterVehicleEx?.Invoke(sender, veh, seat);
-            }
-
-            else if (eventName == "OBJECT_PLACED_PROPERLY")
+            if (eventName == "OBJECT_PLACED_PROPERLY")
             {
                 NetHandle obj = (NetHandle) arguments[0];
                 Vector3 pos = (Vector3) arguments[1];

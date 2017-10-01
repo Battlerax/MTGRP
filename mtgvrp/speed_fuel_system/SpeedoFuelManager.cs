@@ -143,7 +143,7 @@ namespace mtgvrp.speed_fuel_system
             }
         }
 
-        private void API_onPlayerExitVehicle(Client player, NetHandle vehicle)
+        private void API_onPlayerExitVehicle(Client player, NetHandle vehicle, int seat)
         {
             if (API.hasEntityData(player, "FUELING_VEHICLE"))
             {

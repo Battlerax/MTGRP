@@ -219,7 +219,7 @@ namespace mtgvrp.vehicle_manager
             DebugManager.DebugMessage("[VehicleM] Initilizing vehicle manager...");
 
             // Register callbacks
-            Init.OnPlayerEnterVehicleEx += OnPlayerEnterVehicle;
+            API.onPlayerEnterVehicle += OnPlayerEnterVehicle;
             API.onVehicleDeath += OnVehicleDeath;
             API.onPlayerExitVehicle += OnPlayerExitVehicle;
             API.onPlayerDisconnected += API_onPlayerDisconnected;
@@ -767,7 +767,7 @@ namespace mtgvrp.vehicle_manager
             }
         }
 
-        public void OnPlayerExitVehicle(Client player, NetHandle vehicleHandle)
+        public void OnPlayerExitVehicle(Client player, NetHandle vehicleHandle, int seat)
         {
             var veh = GetVehFromNetHandle(vehicleHandle);
 

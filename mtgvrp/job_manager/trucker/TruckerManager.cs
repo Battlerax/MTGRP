@@ -20,7 +20,7 @@ namespace mtgvrp.job_manager.trucker
     {
         public TruckerManager()
         {
-            Init.OnPlayerEnterVehicleEx += API_onPlayerEnterVehicle;
+            API.onPlayerEnterVehicle += API_onPlayerEnterVehicle;
             API.onPlayerExitVehicle += API_onPlayerExitVehicle;
             API.onEntityEnterColShape += API_onEntityEnterColShape;
             API.onPlayerDisconnected += API_onPlayerDisconnected;
@@ -42,7 +42,7 @@ namespace mtgvrp.job_manager.trucker
             }
         }
 
-        private void API_onPlayerExitVehicle(Client player, NetHandle vehicle)
+        private void API_onPlayerExitVehicle(Client player, NetHandle vehicle, int seat)
         {
             Character c = player.GetCharacter();
             if (c == null)
