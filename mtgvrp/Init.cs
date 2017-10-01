@@ -28,9 +28,9 @@ namespace mtgvrp
 {
     public class Init : Script
     {
-        public static string SERVER_NAME = "[EN] Moving Target Gaming Roleplay";
+        public static string SERVER_NAME = "[EN][TEST] Arcadit Roleplay";
         public static string SERVER_VERSION = "v0.0.1682";
-        public static string SERVER_WEBSITE = "www.mt-gaming.com";
+        public static string SERVER_WEBSITE = "www.arcadit.com";
         public static Random Random = new Random();
 
         public Init()
@@ -39,7 +39,7 @@ namespace mtgvrp
             DebugManager.DebugMessage("[INIT] Initalizing script...");
 
             API.setServerName(SERVER_NAME + " ~b~| ~g~" + SERVER_WEBSITE);
-            API.setGamemodeName("MTG V-RP " + SERVER_VERSION);
+            API.setGamemodeName("Arcadit V-RP " + SERVER_VERSION);
 
             API.onResourceStart += OnResourceStartHandler;
             API.onResourceStop += API_onResourceStop;
