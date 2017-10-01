@@ -7,9 +7,6 @@ namespace mtgvrp.core
 {
     public class Whitelist : Script
     {
-
-       
-
         private static bool _useWhitelist = true;
 
         private static readonly List<string> WhitelistedNames = new List<string>
@@ -22,7 +19,8 @@ namespace mtgvrp.core
              "Westingham",
              "xVicee",
              "MTGCharlie",
-             "Leuma0"
+             "Leuma0",
+             "KingstonEU"
         };
 
         public Whitelist()
