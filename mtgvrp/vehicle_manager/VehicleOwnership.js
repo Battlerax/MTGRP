@@ -2,7 +2,7 @@
 
 var menuPool;
 
-API.onServerEventTrigger.connect((eventName, args) => {
+Event.OnServerEventTrigger.connect((eventName, args) => {
     switch(eventName) {
         case "myvehicles_showmenu":
             //carsList contents: 
@@ -34,7 +34,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
                 myCars.Visible = false;
                 actionsMenu.Visible = true;
                 currentSelectedCar = cindex;
-                API.sendChatMessage(`You are managing your ~r~${carsList[cindex][0]}~w~.`);
+                API.SendChatMessage(`You are managing your ~r~${carsList[cindex][0]}~w~.`);
             });
 
             actionsMenu.OnItemSelect.connect(function (osender, oitem, oindex) {
@@ -44,7 +44,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
                             if (carsList[currentSelectedCar][2] !== "0") {
                                 API.triggerServerEvent("myvehicles_locatecar", carsList[currentSelectedCar][2]);
                             } else
-                                API.sendChatMessage("You can't locate an unspawned car.");
+                                API.SendChatMessage("You can't locate an unspawned car.");
                             break;
                         case 1:
                             API.sendNotification("Enter the id of the player you would like to sell to.");
@@ -57,8 +57,8 @@ API.onServerEventTrigger.connect((eventName, args) => {
                             currentSelectedCar = -1;
                             break;
                         case 2:
-                            API.sendChatMessage("Write ~r~ABANDON~w~ to confirm that you would like to abandon this car.");
-                            API.sendChatMessage("~r~This action cannot be undone.");
+                            API.SendChatMessage("Write ~r~ABANDON~w~ to confirm that you would like to abandon this car.");
+                            API.SendChatMessage("~r~This action cannot be undone.");
                             var string = API.getUserInput("", 7);
                             if (string === "ABANDON") {
                                 API.triggerServerEvent("myvehicles_abandoncar", carsList[currentSelectedCar][1]);
@@ -100,7 +100,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
                 myCars.Visible = false;
                 actionsMenu.Visible = true;
                 currentSelectedCar = cindex;
-                API.sendChatMessage(`You are managing your group's ~r~${carsList[cindex][0]}~w~.`);
+                API.SendChatMessage(`You are managing your group's ~r~${carsList[cindex][0]}~w~.`);
             });
 
             actionsMenu.OnItemSelect.connect(function (osender, oitem, oindex) {
@@ -110,7 +110,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
                             if (carsList[currentSelectedCar][2] !== "0") {
                                 API.triggerServerEvent("groupvehicles_locatecar", carsList[currentSelectedCar][2]);
                             } else
-                                API.sendChatMessage("You can't locate an unspawned car.");
+                                API.SendChatMessage("You can't locate an unspawned car.");
                             break;
                     }
                 }
@@ -123,7 +123,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
     }
 });
 
-API.onUpdate.connect(function () {
+Event.OnUpdate.connect(function () {
     if (menuPool != null) {
         menuPool.ProcessMenus();
     }

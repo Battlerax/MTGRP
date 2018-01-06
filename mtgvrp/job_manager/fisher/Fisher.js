@@ -6,10 +6,10 @@ var currentCatchStrength = 50;
 var nextStrengthTick = 0;
 var nextCatchTick = 0;
 var catchTime = 0;
-API.onResourceStart.connect(function () {
+Event.OnResourceStart.connect(function () {
     res = API.getScreenResolutionMaintainRatio();
 });
-API.onServerEventTrigger.connect(function (eventName, args) {
+Event.OnServerEventTrigger.connect(function (eventName, args) {
     switch (eventName) {
         case "start_fishing":
             isFishing = true;
@@ -18,7 +18,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
             break;
     }
 });
-API.onUpdate.connect(function () {
+Event.OnUpdate.connect(function () {
     if (isFishing) {
         if (nextCatchTick === 0 || (nextCatchTick < API.getGlobalTime())) {
             nextCatchTick = API.getGlobalTime() + 1000;
@@ -60,7 +60,7 @@ API.onUpdate.connect(function () {
         }
     }
 });
-API.onKeyDown.connect(function (sender, e) {
+Event.OnKeyDown.connect(function (sender, e) {
     if (e.KeyCode === Keys.Space && isFishing) {
         currentCatchStrength += 5;
         if (currentCatchStrength >= 125) {

@@ -1,7 +1,7 @@
 ﻿var myBrowser = null;
 var argss;
 
-API.onServerEventTrigger.connect((eventName, args) => {
+Event.OnServerEventTrigger.connect((eventName, args) => {
     if (eventName === "help_showMenu") {
         var res = API.getScreenResolutionMaintainRatio();
         var width = 1000;
@@ -30,7 +30,7 @@ function unauth() {
     API.sendNotification("You are unauthorized to view these commands.");
 }
 
-API.onKeyDown.connect((sender, e) => {
+Event.OnKeyDown.connect((sender, e) => {
     if (e.KeyCode === Keys.Escape && myBrowser !== null) {
         API.destroyCefBrowser(myBrowser);
         API.showCursor(false);

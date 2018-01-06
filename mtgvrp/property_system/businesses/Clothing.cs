@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Elements;
-using GrandTheftMultiplayer.Server.Managers;
-using GrandTheftMultiplayer.Server;
-using GrandTheftMultiplayer.Server.Constant;
+
+using GTANetworkAPI;
+
+
+
 using mtgvrp.component_manager;
 using mtgvrp.core;
 using mtgvrp.inventory;
@@ -120,19 +120,19 @@ namespace mtgvrp.property_system.businesses
         public Clothing()
         {
 
-            API.onResourceStart += API_onResourceStart;
-            API.onClientEventTrigger += API_onClientEventTrigger;
+            Event.OnResourceStart += API_onResourceStart;
+            Event.OnClientEventTrigger += API_onClientEventTrigger;
         }
 
         private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
         {
             if (eventName == "closeclothingmenu")
             {
-                API.freezePlayer(sender, false);
-                sender.position = API.getEntityData(sender, "clothing_lastpos");
-                sender.rotation = API.getEntityData(sender, "clothing_lastrot");
-                API.setEntityDimension(sender, 0);
-                API.sendChatMessageToPlayer(sender, "You have exited the clothing menu.");
+                API.FreezePlayer(sender, false);
+                sender.position = API.GetEntityData(sender, "clothing_lastpos");
+                sender.rotation = API.GetEntityData(sender, "clothing_lastrot");
+                API.SetEntityDimension(sender, 0);
+                API.SendChatMessageToPlayer(sender, "You have exited the clothing menu.");
 
             }
 
@@ -186,17 +186,17 @@ namespace mtgvrp.property_system.businesses
 
                 if (prop.Supplies <= 0)
                 {
-                    API.sendChatMessageToPlayer(sender, "The business is out of supplies.");
+                    API.SendChatMessageToPlayer(sender, "The business is out of supplies.");
                     return;
                 }
 
                 if (Money.GetCharacterMoney(character) < price)
                 {
-                    API.sendChatMessageToPlayer(sender, "You don't have enough money.");
+                    API.SendChatMessageToPlayer(sender, "You don't have enough money.");
                     return;
                 }
 
-                API.consoleOutput(LogCat.Debug, $"CHARACTER BUY CLOTHES: {arguments[0]} | {arguments[1]} | {arguments[2]}");
+                API.ConsoleOutput(LogCat.Debug, $"CHARACTER BUY CLOTHES: {arguments[0]} | {arguments[1]} | {arguments[2]}");
                 if (character.Model.Gender == Character.GenderMale)
                 {
                     switch ((int)arguments[0])
@@ -319,30 +319,30 @@ namespace mtgvrp.property_system.businesses
                 character.update_ped();
                 character.Save();
 
-                API.sendChatMessageToPlayer(sender, "You've successfully bought this.");
-                API.triggerClientEvent(sender, "clothing_boughtsucess", arguments[0], arguments[1], arguments[2]);
+                API.SendChatMessageToPlayer(sender, "You've successfully bought this.");
+                API.TriggerClientEvent(sender, "clothing_boughtsucess", arguments[0], arguments[1], arguments[2]);
                 LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought some clothing for {price} from property ID {prop.Id}.");
             }
             else if (eventName == "clothing_bag_preview")
             {
                 var bagstyle = ComponentManager.ValidBags[(int)arguments[0]].ComponentId;
                 var bagvar = (int)ComponentManager.ValidBags[(int)arguments[0]].Variations.ToArray().GetValue((int)arguments[1]);
-                API.setPlayerClothes(sender, 5, bagstyle, bagvar - 1);
+                API.SetPlayerClothes(sender, 5, bagstyle, bagvar - 1);
             }
             else if(eventName == "clothing_bag_closed")
             {
-                API.freezePlayer(sender, false);
-                sender.position = API.getEntityData(sender, "clothing_lastpos");
-                sender.rotation = API.getEntityData(sender, "clothing_lastrot");
-                API.setEntityDimension(sender, 0);
+                API.FreezePlayer(sender, false);
+                sender.position = API.GetEntityData(sender, "clothing_lastpos");
+                sender.rotation = API.GetEntityData(sender, "clothing_lastrot");
+                API.SetEntityDimension(sender, 0);
 
-                API.setPlayerClothes(sender, 5, 0, 0);
+                API.SetPlayerClothes(sender, 5, 0, 0);
 
                 var bag = InventoryManager.DoesInventoryHaveItem<BagItem>(sender.GetCharacter());
                 if (bag.Length > 0)
                 {
                     var bagg = (BagItem) bag[0];
-                    API.setPlayerClothes(sender, 5, bagg.BagType, bagg.BagDesign);
+                    API.SetPlayerClothes(sender, 5, bagg.BagType, bagg.BagDesign);
                 }
             }
             else if (eventName == "clothing_buybag")
@@ -352,7 +352,7 @@ namespace mtgvrp.property_system.businesses
 
                 if (Money.GetCharacterMoney(sender.GetCharacter()) < price)
                 {
-                    API.sendChatMessageToPlayer(sender, "You don't have enough money.");
+                    API.SendChatMessageToPlayer(sender, "You don't have enough money.");
                     return;
                 }
 
@@ -371,13 +371,13 @@ namespace mtgvrp.property_system.businesses
                         InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
                         var prop = PropertyManager.Properties.Single(x => x.Id == sender.getData("clothing_id"));
                         InventoryManager.GiveInventoryItem(prop, new Money(), price);
-                        API.sendChatMessageToPlayer(sender, "You've successfully bought this.");
+                        API.SendChatMessageToPlayer(sender, "You've successfully bought this.");
                         break;
                     case InventoryManager.GiveItemErrors.MaxAmountReached:
-                        API.sendChatMessageToPlayer(sender, "You have reached the maximum amount.");
+                        API.SendChatMessageToPlayer(sender, "You have reached the maximum amount.");
                         break;
                     case InventoryManager.GiveItemErrors.NotEnoughSpace:
-                        API.sendChatMessageToPlayer(sender, "You don't have enough space for that item.");
+                        API.SendChatMessageToPlayer(sender, "You don't have enough space for that item.");
                         break;
                 }
 
@@ -386,29 +386,29 @@ namespace mtgvrp.property_system.businesses
 
         private void API_onResourceStart()
         {
-            API.consoleOutput("Loading componentes into array for clothes.");
+            API.ConsoleOutput("Loading componentes into array for clothes.");
 
-            _maleComponents.Add("Legs", API.toJson(ComponentManager.ValidMaleLegs.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.toJson(x.Variations) }).ToArray()));
-            _maleComponents.Add("Shoes", API.toJson(ComponentManager.ValidMaleShoes.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.toJson(x.Variations) }).ToArray()));
-            _maleComponents.Add("Accessories", API.toJson(ComponentManager.ValidMaleAccessories.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.toJson(x.Variations) }).ToArray()));
-            _maleComponents.Add("Undershirts", API.toJson(ComponentManager.ValidMaleUndershirt.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.toJson(x.Variations) }).ToArray()));
-            _maleComponents.Add("Tops", API.toJson(ComponentManager.ValidMaleTops.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.toJson(x.Variations) }).ToArray()));
-            _maleComponents.Add("Hats", API.toJson(ComponentManager.ValidMaleHats.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.toJson(x.Variations) }).ToArray()));
-            _maleComponents.Add("Glasses", API.toJson(ComponentManager.ValidMaleGlasses.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.toJson(x.Variations) }).ToArray()));
-            _maleComponents.Add("Ears", API.toJson(ComponentManager.ValidMaleEars.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.toJson(x.Variations) }).ToArray()));
-            MaleComponents = API.toJson(_maleComponents);
+            _maleComponents.Add("Legs", API.ToJson(ComponentManager.ValidMaleLegs.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.ToJson(x.Variations) }).ToArray()));
+            _maleComponents.Add("Shoes", API.ToJson(ComponentManager.ValidMaleShoes.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.ToJson(x.Variations) }).ToArray()));
+            _maleComponents.Add("Accessories", API.ToJson(ComponentManager.ValidMaleAccessories.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.ToJson(x.Variations) }).ToArray()));
+            _maleComponents.Add("Undershirts", API.ToJson(ComponentManager.ValidMaleUndershirt.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.ToJson(x.Variations) }).ToArray()));
+            _maleComponents.Add("Tops", API.ToJson(ComponentManager.ValidMaleTops.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.ToJson(x.Variations) }).ToArray()));
+            _maleComponents.Add("Hats", API.ToJson(ComponentManager.ValidMaleHats.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.ToJson(x.Variations) }).ToArray()));
+            _maleComponents.Add("Glasses", API.ToJson(ComponentManager.ValidMaleGlasses.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.ToJson(x.Variations) }).ToArray()));
+            _maleComponents.Add("Ears", API.ToJson(ComponentManager.ValidMaleEars.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.ToJson(x.Variations) }).ToArray()));
+            MaleComponents = API.ToJson(_maleComponents);
 
-            _femaleComponents.Add("Legs", API.toJson(ComponentManager.ValidFemaleLegs.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.toJson(x.Variations) }).ToArray()));
-            _femaleComponents.Add("Shoes", API.toJson(ComponentManager.ValidFemaleShoes.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.toJson(x.Variations) }).ToArray()));
-            _femaleComponents.Add("Accessories", API.toJson(ComponentManager.ValidFemaleAccessories.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.toJson(x.Variations) }).ToArray()));
-            _femaleComponents.Add("Undershirts", API.toJson(ComponentManager.ValidFemaleUndershirt.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.toJson(x.Variations) }).ToArray()));
-            _femaleComponents.Add("Tops", API.toJson(ComponentManager.ValidFemaleTops.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.toJson(x.Variations) }).ToArray()));
-            _femaleComponents.Add("Hats", API.toJson(ComponentManager.ValidFemaleHats.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.toJson(x.Variations) }).ToArray()));
-            _femaleComponents.Add("Glasses", API.toJson(ComponentManager.ValidFemaleGlasses.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.toJson(x.Variations) }).ToArray()));
-            _femaleComponents.Add("Ears", API.toJson(ComponentManager.ValidFemaleEars.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.toJson(x.Variations) }).ToArray()));
-            FemaleComponents = API.toJson(_femaleComponents);
+            _femaleComponents.Add("Legs", API.ToJson(ComponentManager.ValidFemaleLegs.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.ToJson(x.Variations) }).ToArray()));
+            _femaleComponents.Add("Shoes", API.ToJson(ComponentManager.ValidFemaleShoes.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.ToJson(x.Variations) }).ToArray()));
+            _femaleComponents.Add("Accessories", API.ToJson(ComponentManager.ValidFemaleAccessories.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.ToJson(x.Variations) }).ToArray()));
+            _femaleComponents.Add("Undershirts", API.ToJson(ComponentManager.ValidFemaleUndershirt.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.ToJson(x.Variations) }).ToArray()));
+            _femaleComponents.Add("Tops", API.ToJson(ComponentManager.ValidFemaleTops.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.ToJson(x.Variations) }).ToArray()));
+            _femaleComponents.Add("Hats", API.ToJson(ComponentManager.ValidFemaleHats.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.ToJson(x.Variations) }).ToArray()));
+            _femaleComponents.Add("Glasses", API.ToJson(ComponentManager.ValidFemaleGlasses.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.ToJson(x.Variations) }).ToArray()));
+            _femaleComponents.Add("Ears", API.ToJson(ComponentManager.ValidFemaleEars.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.ToJson(x.Variations) }).ToArray()));
+            FemaleComponents = API.ToJson(_femaleComponents);
 
-            API.consoleOutput("Finished loading componentes into array for clothes.");
+            API.ConsoleOutput("Finished loading componentes into array for clothes.");
         }
 
         public void ResetSkin(Client player)
@@ -416,7 +416,7 @@ namespace mtgvrp.property_system.businesses
             Character c = player.GetCharacter();
             c.HasSkin = false;
 
-            API.setPlayerSkin(player, c.Model.Gender == Character.GenderFemale ? PedHash.FreemodeFemale01 : PedHash.FreemodeMale01);
+            API.SetPlayerSkin(player, c.Model.Gender == Character.GenderFemale ? PedHash.FreemodeFemale01 : PedHash.FreemodeMale01);
 
             player.GetCharacter().update_ped();
         }
@@ -427,22 +427,22 @@ namespace mtgvrp.property_system.businesses
             var biz = PropertyManager.IsAtPropertyInteraction(player);
             if (biz?.Type != PropertyManager.PropertyTypes.Clothing)
             {
-                API.sendChatMessageToPlayer(player, "You aren't at a clothing interaction point.");
+                API.SendChatMessageToPlayer(player, "You aren't at a clothing interaction point.");
                 return;
             }
 
             if (player.isInVehicle)
             {
-                API.sendChatMessageToPlayer(player, "You cannot buy new clothes while in a vehicle.");
+                API.SendChatMessageToPlayer(player, "You cannot buy new clothes while in a vehicle.");
                 return;
             }
 
-            API.setEntityData(player, "clothing_lastpos", player.position);
-            API.setEntityData(player, "clothing_lastrot", player.rotation);
-            API.setEntityData(player, "clothing_id", biz.Id);
+            API.SetEntityData(player, "clothing_lastpos", player.position);
+            API.SetEntityData(player, "clothing_lastrot", player.rotation);
+            API.SetEntityData(player, "clothing_id", biz.Id);
 
-            API.freezePlayer(player, true);
-            API.setEntityDimension(player, player.GetCharacter().Id + 1000);
+            API.FreezePlayer(player, true);
+            API.SetEntityDimension(player, player.GetCharacter().Id + 1000);
 
             var character = player.GetCharacter();
 
@@ -541,7 +541,7 @@ namespace mtgvrp.property_system.businesses
             }
 
             var prices = biz.ItemPrices.Select(x => x.Value).ToArray();
-            API.triggerClientEvent(player, "properties_buyclothes", (character.Model.Gender == Character.GenderMale ? MaleComponents : FemaleComponents), API.toJson(oldClothes), API.toJson(prices));
+            API.TriggerClientEvent(player, "properties_buyclothes", (character.Model.Gender == Character.GenderMale ? MaleComponents : FemaleComponents), API.ToJson(oldClothes), API.ToJson(prices));
         }
 
         [Command("buybag"), Help(HelpManager.CommandGroups.General, "Used inside a clothing store to buy a bag.", null)]
@@ -550,26 +550,26 @@ namespace mtgvrp.property_system.businesses
             var biz = PropertyManager.IsAtPropertyInteraction(player);
             if (biz?.Type != PropertyManager.PropertyTypes.Clothing)
             {
-                API.sendChatMessageToPlayer(player, "You aren't at a clothing interaction point.");
+                API.SendChatMessageToPlayer(player, "You aren't at a clothing interaction point.");
                 return;
             }
 
             if (player.isInVehicle)
             {
-                API.sendChatMessageToPlayer(player, "You cannot buy new clothes while in a vehicle.");
+                API.SendChatMessageToPlayer(player, "You cannot buy new clothes while in a vehicle.");
                 return;
             }
 
-            API.setEntityData(player, "clothing_lastpos", player.position);
-            API.setEntityData(player, "clothing_lastrot", player.rotation);
-            API.setEntityData(player, "clothing_id", biz.Id);
+            API.SetEntityData(player, "clothing_lastpos", player.position);
+            API.SetEntityData(player, "clothing_lastrot", player.rotation);
+            API.SetEntityData(player, "clothing_id", biz.Id);
 
             //Setup bag list.
             var bagsList = ComponentManager.ValidBags.Select(x => new[] {x.Name, x.Variations.Count.ToString()}).ToArray();
 
-            API.freezePlayer(player, true);
-            API.triggerClientEvent(player, "properties_buybag", API.toJson(bagsList), biz.ItemPrices["8"]);
-            API.setEntityDimension(player, player.GetCharacter().Id + 1000);
+            API.FreezePlayer(player, true);
+            API.TriggerClientEvent(player, "properties_buybag", API.ToJson(bagsList), biz.ItemPrices["8"]);
+            API.SetEntityDimension(player, player.GetCharacter().Id + 1000);
         }
 
         [Command("buyskin"), Help(HelpManager.CommandGroups.General, "Buy a pedestrian skin as a VIP.", new[] { "Item", "New name" })]
@@ -580,29 +580,29 @@ namespace mtgvrp.property_system.businesses
 
             if (biz?.Type != PropertyManager.PropertyTypes.Clothing)
             {
-                API.sendChatMessageToPlayer(player, "You aren't at a clothing interaction point.");
+                API.SendChatMessageToPlayer(player, "You aren't at a clothing interaction point.");
                 return;
             }
 
             if (account.VipLevel < 1)
             {
-                player.sendChatMessage("You must be a VIP to use this command.");
+                player.SendChatMessage("You must be a VIP to use this command.");
                 return;
             }
 
             if (Money.GetCharacterMoney(player.GetCharacter()) < 250)
             {
-                API.sendChatMessageToPlayer(player, "Not Enough Money");
+                API.SendChatMessageToPlayer(player, "Not Enough Money");
                 return;
             }
 
             if (illegalpeds.Contains(hash))
             {
-                player.sendChatMessage("This skin is not allowed.");
+                player.SendChatMessage("This skin is not allowed.");
                 return;
             }
 
-            API.triggerClientEvent(player,"checkPedGender",API.toJson(hash));
+            API.TriggerClientEvent(player,"checkPedGender",API.ToJson(hash));
 
         }
 
@@ -613,7 +613,7 @@ namespace mtgvrp.property_system.businesses
             {
                 if (gender != 4)
                 {
-                    API.sendChatMessageToPlayer(player,"You're unable to use this skin.");
+                    API.SendChatMessageToPlayer(player,"You're unable to use this skin.");
                     return;
                 }
             }
@@ -622,17 +622,17 @@ namespace mtgvrp.property_system.businesses
             {
                 if (gender != 5)
                 {
-                    API.sendChatMessageToPlayer(player,"You're unable to use this skin.");
+                    API.SendChatMessageToPlayer(player,"You're unable to use this skin.");
                     return;
                 }
             }
 
             InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(Money), 250);
-            API.setPlayerSkin(player, hash);
+            API.SetPlayerSkin(player, hash);
             player.GetCharacter().Skin = hash;
             player.GetCharacter().HasSkin = true;
             player.GetCharacter().Save();
-            player.sendChatMessage("Skin changed! You were charged $250.");
+            player.SendChatMessage("Skin changed! You were charged $250.");
         }
     }
 }

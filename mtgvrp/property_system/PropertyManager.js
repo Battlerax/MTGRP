@@ -2,12 +2,12 @@
 var editMenu = null;
 
 function sendMessage(msg) {
-    API.sendChatMessage("[Property Manager] " + msg);
+    API.SendChatMessage("[Property Manager] " + msg);
 }
 
 var IPLlist;
 var selIPL = 0;
-API.onServerEventTrigger.connect((eventName, args) => {
+Event.OnServerEventTrigger.connect((eventName, args) => {
     switch (eventName) {
         case "editproperty_showmenu":
             if (editMenu !== null) {
@@ -168,7 +168,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
                         break;
 
                     case 15:
-                        API.sendChatMessage("Selected ID: " + selIPL + " Length: " + IPLlist.length);
+                        API.SendChatMessage("Selected ID: " + selIPL + " Length: " + IPLlist.length);
                         if (selIPL === IPLlist.length) {
                             var ipl = "";
                             while (ipl === "") {
@@ -198,7 +198,7 @@ var changingTeleportPos = false;
 var changingInteractionPos = false;
 var changingGarbagePointPos = false;
 
-API.onUpdate.connect(function() {
+Event.OnUpdate.connect(function() {
     if (editMenu != null)
         API.drawMenu(editMenu);
 
@@ -222,7 +222,7 @@ API.onUpdate.connect(function() {
     }
 });
 
-API.onKeyUp.connect(function (sender, e)
+Event.OnKeyUp.connect(function (sender, e)
 {
 	if (e.KeyCode === Keys.C && API.isChatOpen() === false) {
 		API.triggerServerEvent("attempt_enter_prop");

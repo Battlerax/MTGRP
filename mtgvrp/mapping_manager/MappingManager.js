@@ -1,6 +1,6 @@
 ﻿var browser = null;
 
-API.onServerEventTrigger.connect((eventName, args) => {
+Event.OnServerEventTrigger.connect((eventName, args) => {
     switch (eventName) {
         case "send_error":
             browser.call("send_error", args[0]);
@@ -48,7 +48,7 @@ function callServerEvent(eventName /* Args */) {
     API.triggerServerEvent(eventName, ...args);
 }
 
-API.onKeyDown.connect((sender, e) => {
+Event.OnKeyDown.connect((sender, e) => {
     if (e.KeyCode === Keys.Escape && browser !== null) {
         API.destroyCefBrowser(browser);
         API.showCursor(false);

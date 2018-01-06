@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Elements;
-using GrandTheftMultiplayer.Shared.Math;
+
+using GTANetworkAPI;
 using MongoDB.Bson;
 
 using mtgvrp.core;
@@ -66,11 +65,11 @@ namespace mtgvrp.job_manager.lumberjack
 
         public void Delete()
         {
-            if(API.shared.doesEntityExist(TreeObj))
-                API.shared.deleteEntity(TreeObj);
+            if(API.Shared.DoesEntityExist(TreeObj))
+                API.Shared.DeleteEntity(TreeObj);
 
-            if (API.shared.doesEntityExist(TreeText))
-                API.shared.deleteEntity(TreeText);
+            if (API.Shared.DoesEntityExist(TreeText))
+                API.Shared.DeleteEntity(TreeText);
 
             TreeMarker.Destroy();
 
@@ -86,8 +85,8 @@ namespace mtgvrp.job_manager.lumberjack
 
         public void UpdateTreeText()
         {
-            if (TreeText != null && API.shared.doesEntityExist(TreeText))
-                API.shared.deleteEntity(TreeText);
+            if (TreeText != null && API.Shared.DoesEntityExist(TreeText))
+                API.Shared.DeleteEntity(TreeText);
 
             if (TreeMarker == null)
             {
@@ -104,25 +103,25 @@ namespace mtgvrp.job_manager.lumberjack
             switch (Stage)
             {
                 case Stages.Processing:
-                    TreeText = API.shared.createTextLabel("~g~Hit the tree to process it. ~n~" + ProcessPercentage + "%", TreePos, 10f, 1f, true);
+                    TreeText = API.Shared.CreateTextLabel("~g~Hit the tree to process it. ~n~" + ProcessPercentage + "%", TreePos, 10f, 1f, true);
                     TreeMarker.Location = TreePos;
                     TreeMarker.Refresh();
-                    API.shared.attachEntityToEntity(TreeText, TreeObj, "0", new Vector3(1, 1, 1.5), new Vector3());
-                    API.shared.attachEntityToEntity(TreeMarker.Marker, TreeObj, "0", new Vector3(1, 0, 1.5), new Vector3(-90, 0, 0));
+                    API.Shared.AttachEntityToEntity(TreeText, TreeObj, "0", new Vector3(1, 1, 1.5), new Vector3());
+                    API.Shared.AttachEntityToEntity(TreeMarker.Marker, TreeObj, "0", new Vector3(1, 0, 1.5), new Vector3(-90, 0, 0));
                     break;
                 case Stages.Cutting:
-                    TreeText = API.shared.createTextLabel("~g~" + CutPercentage + "% Cut.~n~Tree", TreePos, 10f, 1f, true);
+                    TreeText = API.Shared.CreateTextLabel("~g~" + CutPercentage + "% Cut.~n~Tree", TreePos, 10f, 1f, true);
                     TreeMarker.Location = TreePos;
                     TreeMarker.Refresh();
-                    API.shared.attachEntityToEntity(TreeText, TreeObj, "0", new Vector3(1, 0, 1), new Vector3());
-                    API.shared.attachEntityToEntity(TreeMarker.Marker, TreeObj, "0", new Vector3(1, 0, 0), new Vector3());
+                    API.Shared.AttachEntityToEntity(TreeText, TreeObj, "0", new Vector3(1, 0, 1), new Vector3());
+                    API.Shared.AttachEntityToEntity(TreeMarker.Marker, TreeObj, "0", new Vector3(1, 0, 0), new Vector3());
                     break;
                 case Stages.Waiting:
-                    TreeText = API.shared.createTextLabel("~g~Waiting to be picked, use /pickupwood with a Flatbed.", TreePos, 10f, 1f, true);
+                    TreeText = API.Shared.CreateTextLabel("~g~Waiting to be picked, use /pickupwood with a Flatbed.", TreePos, 10f, 1f, true);
                     TreeMarker.Location = TreePos;
                     TreeMarker.Refresh();      
-                    API.shared.attachEntityToEntity(TreeText, TreeObj, "0", new Vector3(1, 0, 1), new Vector3());
-                    API.shared.attachEntityToEntity(TreeMarker.Marker, TreeObj, "0", new Vector3(1, 0, 0), new Vector3());
+                    API.Shared.AttachEntityToEntity(TreeText, TreeObj, "0", new Vector3(1, 0, 1), new Vector3());
+                    API.Shared.AttachEntityToEntity(TreeMarker.Marker, TreeObj, "0", new Vector3(1, 0, 0), new Vector3());
                     break;
 
                 default:
@@ -134,19 +133,19 @@ namespace mtgvrp.job_manager.lumberjack
 
         public void UpdateTreeObject()
         {
-            if (TreeObj != null && API.shared.doesEntityExist(TreeObj))
-                API.shared.deleteEntity(TreeObj);
+            if (TreeObj != null && API.Shared.DoesEntityExist(TreeObj))
+                API.Shared.DeleteEntity(TreeObj);
 
             switch (Stage)
             {
                 case Stages.Waiting:
-                    TreeObj = API.shared.createObject(-1186441238, TreePos, TreeRot);
+                    TreeObj = API.Shared.CreateObject(-1186441238, TreePos, TreeRot);
                     break;
                 case Stages.Hidden:
                     TreeObj = null;
                     break;
                 default:
-                    TreeObj = API.shared.createObject(-1279773008, TreePos, TreeRot);
+                    TreeObj = API.Shared.CreateObject(-1279773008, TreePos, TreeRot);
                     break;
             }
 

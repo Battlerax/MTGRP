@@ -1,6 +1,6 @@
-﻿using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Shared;
-using GrandTheftMultiplayer.Shared.Math;
+
+
+
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace mtgvrp.mapping_manager
@@ -33,13 +33,13 @@ namespace mtgvrp.mapping_manager
         {
             if(Type == ObjectType.CreateObject)
             {
-                handle = API.shared.createObject(Model, Pos, Rot, dim);
+                handle = API.Shared.CreateObject(Model, Pos, Rot, dim);
             }
         }
 
         public void Despawn()
         {
-            API.shared.deleteEntity(handle);
+            API.Shared.DeleteEntity(handle);
         }
     }
 }

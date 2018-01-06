@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using mtgvrp.database_manager;
 using MongoDB.Bson;
 using MongoDB.Driver;

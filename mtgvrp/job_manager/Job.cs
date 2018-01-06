@@ -1,8 +1,5 @@
-﻿using System.Collections.Generic;
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Managers;
-using GrandTheftMultiplayer.Shared;
-using GrandTheftMultiplayer.Shared.Math;
+using System.Collections.Generic;
+using GTANetworkAPI;
 using mtgvrp.core;
 using mtgvrp.database_manager;
 using mtgvrp.player_manager;
@@ -23,7 +20,7 @@ namespace mtgvrp.job_manager
         public MarkerZone MiscOne { get; set; }
         public MarkerZone MiscTwo { get; set; }
 
-        public List<Rectangle2DColShape> JobZones = new List<Rectangle2DColShape>();
+        public List<ColShape> JobZones = new List<ColShape>();
         public List<List<Vector3>> JobRoutes = new List<List<Vector3>>();
 
         public Job()
@@ -45,16 +42,16 @@ namespace mtgvrp.job_manager
 
         public void add_job_zone(float x1, float y1, float width, float height)
         {
-            JobZones.Add(API.shared.create2DColShape(x1, y1, width, height));
+            JobZones.Add(API.Shared.Create2DColShape(x1, y1, width, height));
         }
 
         public void register_job_zone_events(int index)
         {
-            JobZones[index].onEntityEnterColShape += (shape, entity) =>
+            JobZones[index].OnEntityEnterColShape += (shape, entity) =>
             {
                 if (Type == JobManager.JobTypes.Fisher)
                 {
-                    var c = API.shared.getEntityData(entity, "Character");
+                    var c = API.Shared.GetEntityData(entity, "Character");
                     if (c == null)
                         return;
 
@@ -63,11 +60,11 @@ namespace mtgvrp.job_manager
 
             };
 
-            JobZones[index].onEntityExitColShape += (shape, entity) =>
+            JobZones[index].OnEntityExitColShape += (shape, entity) =>
             {
                 if (Type == JobManager.JobTypes.Fisher)
                 {
-                    var c = API.shared.getEntityData(entity, "Character");
+                    var c = API.Shared.GetEntityData(entity, "Character");
                     if (c == null)
                         return;
 
@@ -85,9 +82,9 @@ namespace mtgvrp.job_manager
         {
             void ColShapeEvent(ColShape shape, NetHandle entity)
             {
-                if (API.shared.getEntityType(entity) == EntityType.Player)
+                if (API.Shared.GetEntityType(entity) == EntityType.Player)
                 {
-                    var c = API.shared.getEntityData(entity, "Character");
+                    var c = API.Shared.GetEntityData(entity, "Character");
                     c.JobZone = Id;
 
                     if(shape == JoinPos.ColZone)
@@ -103,9 +100,9 @@ namespace mtgvrp.job_manager
 
             void OnExitColShape(ColShape shape, NetHandle entity)
             {
-                if (API.shared.getEntityType(entity) == EntityType.Player)
+                if (API.Shared.GetEntityType(entity) == EntityType.Player)
                 {
-                    var c = API.shared.getPlayerFromHandle(entity).GetCharacter();
+                    var c = API.Shared.GetPlayerFromHandle(entity).GetCharacter();
                     c.JobZone = 0;
                     c.JobZoneType = 0;
                 }

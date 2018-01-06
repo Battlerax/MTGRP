@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Timers;
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Constant;
-using GrandTheftMultiplayer.Server.Elements;
-using GrandTheftMultiplayer.Server.Managers;
-using GrandTheftMultiplayer.Shared;
+
+
+using GTANetworkAPI;
+
+
 using mtgvrp.core;
 using mtgvrp.core.Help;
 using Color = mtgvrp.core.Color;
@@ -15,7 +15,7 @@ namespace mtgvrp.player_manager.player_interaction
     {
         public PlayerInteraction()
         {
-            API.onClientEventTrigger += (player, name, arguments) =>
+            Event.OnClientEventTrigger += (player, name, arguments) =>
             {
                 switch (name)
                 {
@@ -25,7 +25,7 @@ namespace mtgvrp.player_manager.player_interaction
                         var option = Convert.ToString(arguments[0]);
                         var interactHandle = (NetHandle) arguments[1];
 
-                        Client interactClient = API.getPlayerFromHandle(interactHandle);
+                        Client interactClient = API.GetPlayerFromHandle(interactHandle);
                         Character interactCharacter = interactClient.GetCharacter();
 
                         Character character = player.GetCharacter();
@@ -42,7 +42,7 @@ namespace mtgvrp.player_manager.player_interaction
                             }
                             case "view_description":
                             {
-                                API.sendChatMessageToPlayer(player, "Not yet implemented. =(");
+                                API.SendChatMessageToPlayer(player, "Not yet implemented. =(");
                                 break;
                             }
                             case "cuff":
@@ -50,28 +50,28 @@ namespace mtgvrp.player_manager.player_interaction
                                 if (interactCharacter.IsCuffed == false)
                                 {
 
-                                    var isStunned = API.fetchNativeFromPlayer<bool>(interactClient,
+                                    var isStunned = API.FetchNativeFromPlayer<bool>(interactClient,
                                         Hash.IS_PED_BEING_STUNNED, interactHandle, 0);
                                    
                                     if (interactCharacter.AreHandsUp == false && isStunned == false)
                                     {
-                                        API.sendChatMessageToPlayer(player, Color.White,
+                                        API.SendChatMessageToPlayer(player, Color.White,
                                             "You cannot cuff a player unless their hands are up or they are stunned.");
                                         return;
                                     }
 
                                     if (player.position.DistanceTo(interactCharacter.Client.position) > 3)
                                     {
-                                        API.sendChatMessageToPlayer(player, Color.White,
+                                        API.SendChatMessageToPlayer(player, Color.White,
                                             "You are too far away to handcuff that player.");
                                         return;
                                     }
 
-                                    API.givePlayerWeapon(player, WeaponHash.Unarmed, 1, true, true);
-                                    API.sendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, interactHandle, true);
+                                    API.GivePlayerWeapon(player, WeaponHash.Unarmed, 1, true, true);
+                                    API.SendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, interactHandle, true);
                                     interactCharacter.IsCuffed = true;
-                                    API.freezePlayer(interactCharacter.Client, true);
-                                    API.playPlayerAnimation(interactCharacter.Client, (int)(1 << 0 | 1 << 4 | 1 << 5),
+                                    API.FreezePlayer(interactCharacter.Client, true);
+                                    API.PlayPlayerAnimation(interactCharacter.Client, (int)(1 << 0 | 1 << 4 | 1 << 5),
                                         "mp_arresting", "idle");
 
                                     ChatManager.RoleplayMessage(player,
@@ -82,15 +82,15 @@ namespace mtgvrp.player_manager.player_interaction
                                 {
                                     if (player.position.DistanceTo(interactCharacter.Client.position) > 3)
                                     {
-                                        API.sendChatMessageToPlayer(player, Color.White,
+                                        API.SendChatMessageToPlayer(player, Color.White,
                                             "You are too far away to unhandcuff that player.");
                                         return;
                                     }
 
-                                    API.freezePlayer(interactCharacter.Client, false);
-                                    API.sendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, interactHandle, false);
+                                    API.FreezePlayer(interactCharacter.Client, false);
+                                    API.SendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, interactHandle, false);
                                     interactCharacter.IsCuffed = false;
-                                    API.stopPlayerAnimation(interactCharacter.Client);
+                                    API.StopPlayerAnimation(interactCharacter.Client);
 
                                     ChatManager.RoleplayMessage(player,
                                         "removes the handcuffs from " + interactCharacter.rp_name(), ChatManager.RoleplayMe);
@@ -102,7 +102,7 @@ namespace mtgvrp.player_manager.player_interaction
                             {
                                 if (player.position.DistanceTo(interactCharacter.Client.position) > 3)
                                 {
-                                    API.sendChatMessageToPlayer(player, Color.White,
+                                    API.SendChatMessageToPlayer(player, Color.White,
                                         "You are too far away from that player.");
                                     return;
                                 }
@@ -124,11 +124,11 @@ namespace mtgvrp.player_manager.player_interaction
                                     interactCharacter.FollowingPlayer = Character.None;
                                     ChatManager.RoleplayMessage(player, "lets go of " + interactCharacter.rp_name(),
                                         ChatManager.RoleplayMe);
-                                    API.sendChatMessageToPlayer(player, "You have stopped dragging your target.");
+                                    API.SendChatMessageToPlayer(player, "You have stopped dragging your target.");
                                 }
                                 else
                                 {
-                                    API.sendChatMessageToPlayer(player, Color.White,
+                                    API.SendChatMessageToPlayer(player, Color.White,
                                         "That player is already being dragged by someone else.");
                                 }
                                 break;
@@ -149,7 +149,7 @@ namespace mtgvrp.player_manager.player_interaction
 
                             character.FollowingTimer.Stop();
                             character.FollowingPlayer = Character.None;
-                            API.sendChatMessageToPlayer(player, "You have stopped following your target.");
+                            API.SendChatMessageToPlayer(player, "You have stopped following your target.");
                         }
                         break;
                     }
@@ -166,36 +166,36 @@ namespace mtgvrp.player_manager.player_interaction
     
             if (receiver == null)
             {
-                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
 
             if (character.IsCuffed == false && character.IsTied == false)
             {
-                API.sendChatMessageToPlayer(player, "Players must be tied/cuffed before you can detain them.");
+                API.SendChatMessageToPlayer(player, "Players must be tied/cuffed before you can detain them.");
                 return;
             }
 
             if (int.Parse(seatNumber) > 2)
             {
-                API.sendChatMessageToPlayer(player, "Seat number ranges from 0-2 (0 is the passenger seat).");
+                API.SendChatMessageToPlayer(player, "Seat number ranges from 0-2 (0 is the passenger seat).");
                 return;
             }
-            if (API.isPlayerInAnyVehicle(player) == false)
+            if (API.IsPlayerInAnyVehicle(player) == false)
             {
-                API.sendChatMessageToPlayer(player, "You must be in a vehicle.");
+                API.SendChatMessageToPlayer(player, "You must be in a vehicle.");
                 return;
             }
 
-            if (API.getEntityPosition(player).DistanceToSquared(API.getEntityPosition(receiver)) > 10f)
+            if (API.GetEntityPosition(player).DistanceToSquared(API.GetEntityPosition(receiver)) > 10f)
             {
-                API.sendChatMessageToPlayer(player, "~r~You're too far away!");
+                API.SendChatMessageToPlayer(player, "~r~You're too far away!");
                 return;
             }
 
-            API.setPlayerIntoVehicle(receiver, API.getPlayerVehicle(player), int.Parse(seatNumber));
-            API.sendChatMessageToPlayer(player, "~g~You have detained " + receiver.name + " into a vehicle.");
-            API.sendChatMessageToPlayer(receiver, "~g~You were detained by " + player.name + " into a vehicle.");
+            API.SetPlayerIntoVehicle(receiver, API.GetPlayerVehicle(player), int.Parse(seatNumber));
+            API.SendChatMessageToPlayer(player, "~g~You have detained " + receiver.name + " into a vehicle.");
+            API.SendChatMessageToPlayer(receiver, "~g~You were detained by " + player.name + " into a vehicle.");
 
 
         }
@@ -207,45 +207,45 @@ namespace mtgvrp.player_manager.player_interaction
 
             if (receiver == null)
             {
-                API.sendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
 
-            if (API.isPlayerInAnyVehicle(player) == false || API.getPlayerVehicleSeat(player) != -1)
+            if (API.IsPlayerInAnyVehicle(player) == false || API.GetPlayerVehicleSeat(player) != -1)
             {
-                API.sendChatMessageToPlayer(player, "You must be in the front seat of a vehicle to eject another player.");
+                API.SendChatMessageToPlayer(player, "You must be in the front seat of a vehicle to eject another player.");
                 return;
             }
 
-            if (API.isPlayerInAnyVehicle(receiver) == false)
+            if (API.IsPlayerInAnyVehicle(receiver) == false)
             {
-                API.sendChatMessageToPlayer(player, "Players must be in a vehicle to be ejected from a vehicle.");
+                API.SendChatMessageToPlayer(player, "Players must be in a vehicle to be ejected from a vehicle.");
                 return;
             }
 
-            if (API.getPlayerVehicle(player) != API.getPlayerVehicle(receiver))
+            if (API.GetPlayerVehicle(player) != API.GetPlayerVehicle(receiver))
             {
-                API.sendChatMessageToPlayer(player, "You must be in the same vehicle as another player to eject them.");
+                API.SendChatMessageToPlayer(player, "You must be in the same vehicle as another player to eject them.");
                 return;
             }
 
-            API.delay(1000, true, () => API.warpPlayerOutOfVehicle(receiver));;
-            API.sendChatMessageToPlayer(player, "You have ejected ~b~" + receiver.GetCharacter().rp_name() + "~w~ from your vehicle.");
-            API.sendChatMessageToPlayer(receiver, "~b~" + player.GetCharacter().rp_name() + "~w~ has ejected you from their vehicle.");
+            API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(receiver));;
+            API.SendChatMessageToPlayer(player, "You have ejected ~b~" + receiver.GetCharacter().rp_name() + "~w~ from your vehicle.");
+            API.SendChatMessageToPlayer(receiver, "~b~" + player.GetCharacter().rp_name() + "~w~ has ejected you from their vehicle.");
         }
  
         public void FollowPlayer(Character c, bool isDrag)
         {
-            API.sendNativeToAllPlayers(Hash.TASK_FOLLOW_TO_OFFSET_OF_ENTITY, c.Client.handle,
+            API.SendNativeToAllPlayers(Hash.TASK_FOLLOW_TO_OFFSET_OF_ENTITY, c.Client.handle,
                                     c.FollowingPlayer.Client.handle, -1.0, 0.0, 0.0, 1, 1050, 2, true);
             if (isDrag == false)
             {
-                API.triggerClientEvent(c.Client, "player_interact_subtitle",
+                API.TriggerClientEvent(c.Client, "player_interact_subtitle",
                     "You are following " + c.FollowingPlayer.rp_name() + ". Press SPACE to stop following.");
             }
             else
             {
-                API.triggerClientEvent(c.Client, "player_interact_subtitle",
+                API.TriggerClientEvent(c.Client, "player_interact_subtitle",
                     "You are being dragged by " + c.FollowingPlayer.rp_name() + ".");
             }
         }

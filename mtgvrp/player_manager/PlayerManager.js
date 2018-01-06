@@ -1,4 +1,4 @@
-﻿API.onEntityStreamIn.connect(function (ent, entType) {
+﻿Event.OnEntityStreamIn.connect(function (ent, entType) {
     if (entType == 6 || entType == 8) {
         API.triggerServerEvent("update_ped_for_client", ent);
     }
@@ -9,7 +9,7 @@ var jail_time = 0;
 var garbage_timer = 0;
 var mark = null;
 
-API.onServerEventTrigger.connect(function (eventName, args) {
+Event.OnServerEventTrigger.connect(function (eventName, args) {
     switch (eventName) {
         case "update_money_display": {
             player_money = args[0];
@@ -39,7 +39,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
     }
 });
 
-API.onUpdate.connect(function () {
+Event.OnUpdate.connect(function () {
     if(player_money != null && !resource.Introduction.isonintro){
         API.drawText("~g~$~w~" + player_money, API.getScreenResolutionMaintainRatio().Width - 15, 100, 1, 115, 186, 131, 255, 4, 2, false, true, 0);
     }

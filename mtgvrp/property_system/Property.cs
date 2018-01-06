@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Elements;
-using GrandTheftMultiplayer.Shared.Math;
+
+using GTANetworkAPI;
+
 
 
 using mtgvrp.core;
@@ -173,10 +173,10 @@ namespace mtgvrp.property_system
             };
             EntranceMarker.Create();
             EntranceMarker.ColZone.setData("property_entrance", Id);
-            if (API.shared.doesEntityExist(EntranceMarker.Blip))
+            if (API.Shared.DoesEntityExist(EntranceMarker.Blip))
             {
-                API.shared.setBlipShortRange(EntranceMarker.Blip, true);
-                API.shared.setBlipName(EntranceMarker.Blip, PropertyName);
+                API.Shared.SetBlipShortRange(EntranceMarker.Blip, true);
+                API.Shared.SetBlipName(EntranceMarker.Blip, PropertyName);
             }
 
             if (IsInteractable && InteractionPos != null && InteractionPos != new Vector3())
@@ -211,7 +211,7 @@ namespace mtgvrp.property_system
             {
                 if (BinObject != null)
                 {
-                    API.shared.deleteEntity(BinObject);
+                    API.Shared.DeleteEntity(BinObject);
                 }
                 BinObject = null;
                 GarbageMarker = new MarkerZone(GarbagePoint + new Vector3(0, 0, 1.2), new Vector3(0, 0, 0), GarbageDimension)
@@ -222,7 +222,7 @@ namespace mtgvrp.property_system
                 };
                 GarbageMarker.Create();
                 GarbageMarker.ColZone.setData("property_garbage", Id);
-                BinObject = API.shared.createObject(998415499, GarbagePoint - new Vector3(0, 0, 1.1), GarbageRotation, GarbageDimension);
+                BinObject = API.Shared.CreateObject(998415499, GarbagePoint - new Vector3(0, 0, 1.1), GarbageRotation, GarbageDimension);
             }
         }
 

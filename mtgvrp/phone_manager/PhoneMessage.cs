@@ -1,4 +1,4 @@
-﻿using mtgvrp.database_manager;
+using mtgvrp.database_manager;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 

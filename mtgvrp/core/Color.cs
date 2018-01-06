@@ -1,4 +1,4 @@
-﻿namespace mtgvrp.core
+namespace mtgvrp.core
 {
     public class Color
     {

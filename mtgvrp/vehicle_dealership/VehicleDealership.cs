@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Elements;
-using GrandTheftMultiplayer.Server.Managers;
-using GrandTheftMultiplayer.Shared;
-using GrandTheftMultiplayer.Shared.Math;
+
+using GTANetworkAPI;
+
+
+
 
 
 using mtgvrp.core;
@@ -163,15 +163,15 @@ namespace mtgvrp.vehicle_dealership
         private List<MarkerZone> _markerZones = new List<MarkerZone>();
         public VehicleDealership()
         {
-            API.onClientEventTrigger += API_onClientEventTrigger;
+            Event.OnClientEventTrigger += API_onClientEventTrigger;
 
             //Setup the blip.
             foreach (var loc in _dealershipsLocations)
             {
                 var marker = new MarkerZone(loc, new Vector3()) {BlipSprite = 100, TextLabelText = "/buyvehicle"};
                 marker.Create();
-                API.shared.setBlipShortRange(marker.Blip, true);
-                API.shared.setBlipName(marker.Blip, "Vehicle Dealership");
+                API.Shared.SetBlipShortRange(marker.Blip, true);
+                API.Shared.SetBlipName(marker.Blip, "Vehicle Dealership");
                 _markerZones.Add(marker);
             }
         }
@@ -261,21 +261,21 @@ namespace mtgvrp.vehicle_dealership
 
                     //Spawn it.
                     if (VehicleManager.spawn_vehicle(theVehicle) != 1)
-                        API.sendChatMessageToPlayer(sender, "An error occured while spawning your vehicle.");
+                        API.SendChatMessageToPlayer(sender, "An error occured while spawning your vehicle.");
 
                     //Notify.
-                    API.sendChatMessageToPlayer(sender,
+                    API.SendChatMessageToPlayer(sender,
                         $"You have sucessfully bought the ~g~{selectedCar[0]}~w~ for ${selectedCar[2]}.");
-                    API.sendChatMessageToPlayer(sender, "Use /myvehicles to manage it.");
+                    API.SendChatMessageToPlayer(sender, "Use /myvehicles to manage it.");
 
                     //Log it.
-                    LogManager.Log(LogManager.LogTypes.Stats, $"[Vehicle Dealership] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a(n) {API.getVehicleDisplayName(theVehicle.VehModel)} for ${selectedCar[2]}.");
+                    LogManager.Log(LogManager.LogTypes.Stats, $"[Vehicle Dealership] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a(n) {API.GetVehicleDisplayName(theVehicle.VehModel)} for ${selectedCar[2]}.");
 
                     //Exit.
-                    API.triggerClientEvent(sender, "dealership_exitdealermenu");
+                    API.TriggerClientEvent(sender, "dealership_exitdealermenu");
                 }
                 else
-                    API.sendChatMessageToPlayer(sender,
+                    API.SendChatMessageToPlayer(sender,
                         $"You don't have enough money to buy the ~g~{selectedCar[0]}~w~.");
             }
         }
@@ -290,26 +290,26 @@ namespace mtgvrp.vehicle_dealership
 
             if (character.OwnedVehicles.Count >= VehicleManager.GetMaxOwnedVehicles(player))
             {
-                API.sendChatMessageToPlayer(player, "You can't own anymore vehicles.");
-                API.sendChatMessageToPlayer(player, "~g~NOTE: You can buy VIP to increase your vehicle slots.");
+                API.SendChatMessageToPlayer(player, "You can't own anymore vehicles.");
+                API.SendChatMessageToPlayer(player, "~g~NOTE: You can buy VIP to increase your vehicle slots.");
                 return;
             }
 
-            var currentPos = API.getEntityPosition(player);
+            var currentPos = API.GetEntityPosition(player);
             if (_dealershipsLocations.Any(dealer => currentPos.DistanceTo(dealer) < 5F))
             {
-                if (API.isPlayerInAnyVehicle(player))
+                if (API.IsPlayerInAnyVehicle(player))
                 {
-                    API.sendChatMessageToPlayer(player, "You're not able to buy a vehicle while in a vehicle!");
+                    API.SendChatMessageToPlayer(player, "You're not able to buy a vehicle while in a vehicle!");
                     return;
                 }
 
-                API.triggerClientEvent(player, "dealership_showbuyvehiclemenu", API.toJson(_motorsycles),
-                    API.toJson(_copues), API.toJson(_trucksnvans), API.toJson(_offroad), API.toJson(_musclecars),
-                    API.toJson(_suv), API.toJson(_supercars), API.toJson(_cycles),API.toJson(_sedans),API.toJson(_sportsCars),API.toJson(_compactCars));
+                API.TriggerClientEvent(player, "dealership_showbuyvehiclemenu", API.ToJson(_motorsycles),
+                    API.ToJson(_copues), API.ToJson(_trucksnvans), API.ToJson(_offroad), API.ToJson(_musclecars),
+                    API.ToJson(_suv), API.ToJson(_supercars), API.ToJson(_cycles),API.ToJson(_sedans),API.ToJson(_sportsCars),API.ToJson(_compactCars));
             }
             else
-                API.sendChatMessageToPlayer(player, "You aren't near any dealership.");
+                API.SendChatMessageToPlayer(player, "You aren't near any dealership.");
         }
     }
 }

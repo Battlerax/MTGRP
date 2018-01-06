@@ -1,4 +1,4 @@
-﻿using mtgvrp.core;
+using mtgvrp.core;
 using mtgvrp.dmv;
 using mtgvrp.door_manager;
 using mtgvrp.group_manager;

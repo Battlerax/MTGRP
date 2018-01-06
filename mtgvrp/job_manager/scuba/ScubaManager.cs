@@ -1,13 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.Linq;
 using System.Threading;
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Constant;
-using GrandTheftMultiplayer.Server.Elements;
-using GrandTheftMultiplayer.Server.Managers;
-using GrandTheftMultiplayer.Shared.Math;
+
+
+using GTANetworkAPI;
+
+
 using mtgvrp.core;
 using mtgvrp.core.Help;
 using mtgvrp.inventory;
@@ -19,9 +19,9 @@ namespace mtgvrp.job_manager.scuba
     {
         public ScubaManager()
         {
-            API.onPlayerDisconnected += API_onPlayerDisconnected;
-            API.onResourceStart += API_onResourceStart;
-            API.onClientEventTrigger += API_onClientEventTrigger;
+            Event.OnPlayerDisconnected += API_onPlayerDisconnected;
+            Event.OnResourceStart += API_onResourceStart;
+            Event.OnClientEventTrigger += API_onClientEventTrigger;
         }
 
         private void API_onClientEventTrigger(Client player, string eventName, params object[] arguments)
@@ -34,14 +34,14 @@ namespace mtgvrp.job_manager.scuba
                 if (scubaitem.Length == 0)
                 {
                     CancelScuba(player);
-                    API.sendChatMessageToPlayer(player, "The scuba set has been removed.");
+                    API.SendChatMessageToPlayer(player, "The scuba set has been removed.");
                     return;
                 }
 
                 if (character.IsScubaDiving != true)
                 {
                     CancelScuba(player);
-                    API.sendChatMessageToPlayer(player, "The scuba set has been removed.");
+                    API.SendChatMessageToPlayer(player, "The scuba set has been removed.");
                     return;
                 }
 
@@ -50,12 +50,12 @@ namespace mtgvrp.job_manager.scuba
                 {
                     CancelScuba(player);
                     InventoryManager.DeleteInventoryItem<ScubaItem>(character);
-                    API.sendChatMessageToPlayer(player, "Your oxygen have run out.");
+                    API.SendChatMessageToPlayer(player, "Your oxygen have run out.");
                     return;
                 }
 
-                API.sendNativeToPlayer(player, Hash.SET_PED_MAX_TIME_UNDERWATER, player.handle, 3600.0f);
-                API.triggerClientEvent(player, "UPDATE_SCUBA_PERCENTAGE",
+                API.SendNativeToPlayer(player, Hash.SET_PED_MAX_TIME_UNDERWATER, player.handle, 3600.0f);
+                API.TriggerClientEvent(player, "UPDATE_SCUBA_PERCENTAGE",
                     "Oxygen Remaining: " + Math.Round((scubaitem[0].OxygenRemaining / ScubaItem.MaxOxygen) * 100f) +
                     "%");
             }
@@ -75,7 +75,7 @@ namespace mtgvrp.job_manager.scuba
                     goto reset;
                 }
 
-                _treasureObjects.Add(API.createObject(-994740387, _treasuresLocations[a][0], _treasuresLocations[a][1]));
+                _treasureObjects.Add(API.CreateObject(-994740387, _treasuresLocations[a][0], _treasuresLocations[a][1]));
             }
         }
 
@@ -184,7 +184,7 @@ namespace mtgvrp.job_manager.scuba
             new [] {new Vector3(-159.6433, -2858.358, -13.95227), new Vector3(12.90809, 1.245686, 0.1409214)},
         };
 
-        private readonly List<GrandTheftMultiplayer.Server.Elements.Object> _treasureObjects = new List<GrandTheftMultiplayer.Server.Elements.Object>();
+        private readonly List<Object> _treasureObjects = new List<Object>();
 
         private void API_onPlayerDisconnected(Client player, string reason)
         {
@@ -205,20 +205,20 @@ namespace mtgvrp.job_manager.scuba
             var character = player.GetCharacter();
             if (!character.IsScubaDiving)
             {
-                API.sendChatMessageToPlayer(player, "You must have the scuba kit on.");
+                API.SendChatMessageToPlayer(player, "You must have the scuba kit on.");
                 return;
             }
 
             var itm = _treasureObjects.FirstOrDefault(x => x.position.DistanceTo(player.position) <= 5.0f);
             if (itm == null)
             {
-                API.sendChatMessageToPlayer(player, "You aren't near any treasure.");
+                API.SendChatMessageToPlayer(player, "You aren't near any treasure.");
                 return;
             }
 
             if (character.CanScuba > TimeManager.GetTimeStamp)
             {
-                API.sendChatMessageToPlayer(player, $@"Please wait {TimeManager.SecondsToHours(character.CanScuba - TimeManager.GetTimeStamp)} more hours before picking up more treasure.");
+                API.SendChatMessageToPlayer(player, $@"Please wait {TimeManager.SecondsToHours(character.CanScuba - TimeManager.GetTimeStamp)} more hours before picking up more treasure.");
                 return;
             }
 
@@ -226,13 +226,13 @@ namespace mtgvrp.job_manager.scuba
             var rnd = new Random();
             int amnt = rnd.Next(2000, 5000);
             InventoryManager.GiveInventoryItem(character, new Money(), amnt, true);
-            API.sendChatMessageToPlayer(player, "You have found a treasure worth ~g~$" + amnt);
+            API.SendChatMessageToPlayer(player, "You have found a treasure worth ~g~$" + amnt);
             LogManager.Log(LogManager.LogTypes.Stats, $"[Minigame] {character.CharacterName}[{player.GetAccount().AccountName}] has earned ${amnt} from a scuba treasure.");
 
             if (character.TrasureFound >= 5)
             {
                 character.TrasureFound = 0;
-                API.sendChatMessageToPlayer(player, "You have found 5 trasure today. You may continue finding treasure tomorrow.");
+                API.SendChatMessageToPlayer(player, "You have found 5 trasure today. You may continue finding treasure tomorrow.");
                 character.CanScuba = TimeManager.GetTimeStampPlus(TimeSpan.FromHours(10));
                 return;
             }
@@ -249,7 +249,7 @@ namespace mtgvrp.job_manager.scuba
                 goto reset;
             }
 
-            _treasureObjects.Add(API.createObject(-994740387, _treasuresLocations[a][0], _treasuresLocations[a][1]));
+            _treasureObjects.Add(API.CreateObject(-994740387, _treasuresLocations[a][0], _treasuresLocations[a][1]));
         }
 
         [Command("togglescuba"), Help(HelpManager.CommandGroups.ScubaActivity, "Toggle your scuba kit on and off.")]
@@ -259,55 +259,55 @@ namespace mtgvrp.job_manager.scuba
             var item = InventoryManager.DoesInventoryHaveItem<ScubaItem>(character);
             if (item.Length == 0)
             {
-                API.sendChatMessageToPlayer(player, "You don't have a scuba kit.");
+                API.SendChatMessageToPlayer(player, "You don't have a scuba kit.");
                 return;
             }
 
             if (character.IsScubaDiving)
             {
                 CancelScuba(player);
-                API.sendChatMessageToPlayer(player, "You have dequiped the scuba set.");
+                API.SendChatMessageToPlayer(player, "You have dequiped the scuba set.");
                 return;
             }
 
             //Set clothes.
             if (character.Model.Gender == 0)
             {
-                API.setPlayerClothes(player, 4, 16, 0);   //Legs
-                API.setPlayerClothes(player, 8, 57, 0);   //Undershirt
-                API.setPlayerClothes(player, 11, 15, 0); //Tops
-                API.setPlayerClothes(player, 3, 15, 0); //Torso
-                API.setPlayerClothes(player, 6, 34, 0); //feet
+                API.SetPlayerClothes(player, 4, 16, 0);   //Legs
+                API.SetPlayerClothes(player, 8, 57, 0);   //Undershirt
+                API.SetPlayerClothes(player, 11, 15, 0); //Tops
+                API.SetPlayerClothes(player, 3, 15, 0); //Torso
+                API.SetPlayerClothes(player, 6, 34, 0); //feet
             }
             else
             {
-                API.setPlayerClothes(player, 4, 15, 0);   //Legs
-                API.setPlayerClothes(player, 8, 3, 0);   //Undershirt
-                API.setPlayerClothes(player, 11, 101, 0); //Tops
-                API.setPlayerClothes(player, 3, 15, 0); //Torso
-                API.setPlayerClothes(player, 6, 35, 0); //feet
+                API.SetPlayerClothes(player, 4, 15, 0);   //Legs
+                API.SetPlayerClothes(player, 8, 3, 0);   //Undershirt
+                API.SetPlayerClothes(player, 11, 101, 0); //Tops
+                API.SetPlayerClothes(player, 3, 15, 0); //Torso
+                API.SetPlayerClothes(player, 6, 35, 0); //feet
             }
 
             //Create the objects for the player.
-            var head = API.createObject(239157435, player.position, new Vector3());
-            API.attachEntityToEntity(head, player, "SKEL_Head", new Vector3(0, 0, 0), new Vector3(180, 90, 0));
-            var tank = API.createObject(1593773001, player.position, new Vector3());
-            API.attachEntityToEntity(tank, player, "SKEL_Spine3", new Vector3(-0.3, -0.23, 0), new Vector3(180, 90, 0));
-            API.setEntityData(player, "SCUBA_TANK", tank);
-            API.setEntityData(player, "SCUBA_HEAD", head);
+            var head = API.CreateObject(239157435, player.position, new Vector3());
+            API.AttachEntityToEntity(head, player, "SKEL_Head", new Vector3(0, 0, 0), new Vector3(180, 90, 0));
+            var tank = API.CreateObject(1593773001, player.position, new Vector3());
+            API.AttachEntityToEntity(tank, player, "SKEL_Spine3", new Vector3(-0.3, -0.23, 0), new Vector3(180, 90, 0));
+            API.SetEntityData(player, "SCUBA_TANK", tank);
+            API.SetEntityData(player, "SCUBA_HEAD", head);
 
             //Set the variable.
             character.IsScubaDiving = true;
 
             //Create the timer.
-            API.setEntityData(player, "SCUBA_TIMER",
+            API.SetEntityData(player, "SCUBA_TIMER",
                 new Timer(delegate { RefreshScuba(player); }, null, 1000, 1000));
 
             //Set the scuba state as true.
-            API.sendNativeToPlayer(player, Hash.SET_ENABLE_SCUBA, player.handle, true);
+            API.SendNativeToPlayer(player, Hash.SET_ENABLE_SCUBA, player.handle, true);
 
             //Show remaining oxygen.
-            API.triggerClientEvent(player, "UPDATE_SCUBA_PERCENTAGE",
+            API.TriggerClientEvent(player, "UPDATE_SCUBA_PERCENTAGE",
                 "Oxygen Remaining: " + Math.Round((item[0].OxygenRemaining / ScubaItem.MaxOxygen) * 100f) + "%");
         }
 
@@ -319,18 +319,18 @@ namespace mtgvrp.job_manager.scuba
             if (scubaitem.Length == 0)
             {
                 CancelScuba(player);
-                API.sendChatMessageToPlayer(player, "The scuba set has been removed.");
+                API.SendChatMessageToPlayer(player, "The scuba set has been removed.");
                 return;
             }
 
             if (character.IsScubaDiving != true)
             {
                 CancelScuba(player);
-                API.sendChatMessageToPlayer(player, "The scuba set has been removed.");
+                API.SendChatMessageToPlayer(player, "The scuba set has been removed.");
                 return;
             }
 
-            API.triggerClientEvent(player, "REQUEST_SCUBA_UNDERWATER");
+            API.TriggerClientEvent(player, "REQUEST_SCUBA_UNDERWATER");
         }
 
         void CancelScuba(Client player)
@@ -338,34 +338,34 @@ namespace mtgvrp.job_manager.scuba
             var character = player.GetCharacter();
 
             //Cancel timer.
-            Timer timer = API.getEntityData(player, "SCUBA_TIMER");
+            Timer timer = API.GetEntityData(player, "SCUBA_TIMER");
             if (timer != null)
             {
                 timer.Dispose();
-                API.resetEntityData(player, "SCUBA_TIMER");
+                API.ResetEntityData(player, "SCUBA_TIMER");
             }
 
             //Remove clothes
-            GrandTheftMultiplayer.Server.Elements.Object head = API.getEntityData(player, "SCUBA_HEAD");
-            GrandTheftMultiplayer.Server.Elements.Object tank = API.getEntityData(player, "SCUBA_TANK");
-            if (head != null && API.doesEntityExist(head))
+            Object head = API.GetEntityData(player, "SCUBA_HEAD");
+            Object tank = API.GetEntityData(player, "SCUBA_TANK");
+            if (head != null && API.DoesEntityExist(head))
             {
                 head.detach();
                 head.delete();
-                API.resetEntityData(player, "SCUBA_HEAD");
+                API.ResetEntityData(player, "SCUBA_HEAD");
             }
-            if (tank != null && API.doesEntityExist(tank))
+            if (tank != null && API.DoesEntityExist(tank))
             {
                 tank.detach();
                 tank.delete();
-                API.resetEntityData(player, "SCUBA_TANK");
+                API.ResetEntityData(player, "SCUBA_TANK");
             }
 
             //Set scuba state
-            API.sendNativeToPlayer(player, Hash.SET_ENABLE_SCUBA, player.handle, false);
+            API.SendNativeToPlayer(player, Hash.SET_ENABLE_SCUBA, player.handle, false);
 
             //Remove exygen
-            API.triggerClientEvent(player, "UPDATE_SCUBA_PERCENTAGE", "none");
+            API.TriggerClientEvent(player, "UPDATE_SCUBA_PERCENTAGE", "none");
 
             //Set the variable.
             character.IsScubaDiving = false;
@@ -374,7 +374,7 @@ namespace mtgvrp.job_manager.scuba
             character.update_ped();
 
             //Set normal underwater time.
-            API.sendNativeToPlayer(player, Hash.SET_PED_MAX_TIME_UNDERWATER, player.handle, 60.0f);
+            API.SendNativeToPlayer(player, Hash.SET_PED_MAX_TIME_UNDERWATER, player.handle, 60.0f);
         }
     }
 }

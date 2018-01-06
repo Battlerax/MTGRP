@@ -25,7 +25,7 @@ function showEditMenu(id) {
                 while (desc === "") {
                     desc = API.getUserInput("", 100);
                     if (desc === "") {
-                        API.sendChatMessage("[Door Manager] Description can't be empty.");
+                        API.SendChatMessage("[Door Manager] Description can't be empty.");
                     }
                 }
                 API.triggerServerEvent("doormanager_changedesc", chosenDoor, desc);
@@ -38,7 +38,7 @@ function showEditMenu(id) {
                 while (groupid === "") {
                     groupid = API.getUserInput("", 100);
                     if (groupid === "") {
-                        API.sendChatMessage("[Door Manager] GroupID can't be empty.");
+                        API.SendChatMessage("[Door Manager] GroupID can't be empty.");
                     }
                 }
                 API.triggerServerEvent("doormanager_setgroup", chosenDoor, groupid);
@@ -48,7 +48,7 @@ function showEditMenu(id) {
                 while (propertyid === "") {
                     propertyid = API.getUserInput("", 100);
                     if (propertyid === "") {
-                        API.sendChatMessage("[Door Manager] PropertyID can't be empty.");
+                        API.SendChatMessage("[Door Manager] PropertyID can't be empty.");
                     }
                 }
                 API.triggerServerEvent("doormanager_setproperty", chosenDoor, propertyid);
@@ -64,7 +64,7 @@ function showEditMenu(id) {
     });
 }
 
-API.onServerEventTrigger.connect(function (eventName, args) {
+Event.OnServerEventTrigger.connect(function (eventName, args) {
     switch (eventName) {
         case "doormanager_managedoors":
             var doors = JSON.parse(args[0]);
@@ -78,12 +78,12 @@ API.onServerEventTrigger.connect(function (eventName, args) {
             gMenu.Visible = true;
 
             gMenu.OnItemSelect.connect(function (sender, item, index) {
-                API.sendChatMessage("You selected: ~g~" + item.Text);
+                API.SendChatMessage("You selected: ~g~" + item.Text);
                 if (item.Description === "CreateDoor") {
                     gMenu.Visible = false;
                     API.showCursor(true);
                     selectingDoor = true;
-                    API.sendChatMessage("[Door Manager] Select a door using your mouse.");
+                    API.SendChatMessage("[Door Manager] Select a door using your mouse.");
                 } else {
                     gMenu.Visible = false;
                     showEditMenu(item.Description);
@@ -101,7 +101,7 @@ var selectingDoor = false;
 var lastDoor = null;
 var lastDoorV = 0;
 
-API.onUpdate.connect(function () {
+Event.OnUpdate.connect(function () {
     if (gMenu != null)
         API.drawMenu(gMenu);
     if (actionMenu != null)
@@ -132,15 +132,15 @@ API.onUpdate.connect(function () {
             selectingDoor = false;
 
             if (localH != null) {
-                API.sendChatMessage("Object model is " + API.getEntityModel(localH));
+                API.SendChatMessage("Object model is " + API.getEntityModel(localH));
                 var model = API.getEntityModel(localH);
                 var pos = API.getEntityPosition(localH);
-                API.sendChatMessage("[Door Manager] Enter a description.");
+                API.SendChatMessage("[Door Manager] Enter a description.");
                 var desc = "";
                 while (desc === "") {
                     desc = API.getUserInput("", 100);
                     if (desc === "") {
-                        API.sendChatMessage("[Door Manager] Description can't be empty.");
+                        API.SendChatMessage("[Door Manager] Description can't be empty.");
                     }
                 }
                 API.triggerServerEvent("doormanager_createdoor", model, pos, desc);
@@ -153,7 +153,7 @@ API.onUpdate.connect(function () {
     }
 });
 
-API.onKeyDown.connect(function (sender, e) {
+Event.OnKeyDown.connect(function (sender, e) {
     if(e.KeyCode === Keys.L && !API.isChatOpen()) {
         API.triggerServerEvent("doormanager_locknearestdoor");
     }

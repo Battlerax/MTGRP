@@ -9,7 +9,7 @@ var cornerStartPos = null;
 var xAdd = 1;
 var yAdd = 1;
 
-API.onServerEventTrigger.connect((eventName, args) => {
+Event.OnServerEventTrigger.connect((eventName, args) => {
     switch (eventName) {
     case "create_job_zone":
             var player = API.getLocalPlayer();
@@ -79,7 +79,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
 });
 
 
-API.onKeyDown.connect(function (Player, args) {
+Event.OnKeyDown.connect(function (Player, args) {
     if (cornerUp != null && cornerDown != null) {
 
         if (args.KeyCode == Keys.Up) {

@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Shared.Math;
-
+using GTANetworkAPI;
 namespace mtgvrp.core
 {
     public class ObjectRemoval : Script
@@ -13,16 +11,16 @@ namespace mtgvrp.core
         {
             _timer = new Timer((state) =>
             {
-                foreach (var player in API.getAllPlayers())
+                foreach (var player in API.GetAllPlayers())
                 {
                     if (player == null)
                         continue;
 
                     foreach (var obj in _objects)
                     {
-                        if (player.position.DistanceTo(obj[0]) <= 175.0f)
+                        if (player.Position.DistanceTo(obj[0]) <= 175.0f)
                         {
-                            API.deleteObject(player, obj[0], obj[1]);
+                            API.DeletePlayerWorldProp(player, obj[0], obj[1], 50.0f);
                         }
                     }
                 }

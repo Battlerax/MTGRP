@@ -4,7 +4,7 @@ var fare_price = 0;
 var total_fare = 0;
 var fare_msg = "";
 
-API.onServerEventTrigger.connect(function (eventName, args) {
+Event.OnServerEventTrigger.connect(function (eventName, args) {
     switch (eventName) {
         case "set_taxi_waypoint":
             var location = args[0];
@@ -29,7 +29,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 });
 
 
-API.onUpdate.connect(function () {
+Event.OnUpdate.connect(function () {
     if (fare_price != 0) {
         API.drawText("~y~Fare: ~g~$~w~" + fare_price + "~n~~y~Current Total: ~g~$~w~" +  total_fare + " " + fare_msg, API.getScreenResolutionMaintainRatio().Width - 15, API.getScreenResolutionMaintainRatio().Height - 200, 1, 115, 186, 131, 255, 4, 2, false, true, 0);
     }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Net.Mime;
 using System.Threading.Tasks;
@@ -6,8 +6,11 @@ using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.CommandsNext.Exceptions;
+using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
 using DSharpPlus.Interactivity;
-using GrandTheftMultiplayer.Server.API;
+using DSharpPlus.Net.WebSocket;
+using GTANetworkAPI;
 using mtgvrp.player_manager;
 
 namespace mtgvrp.core.Discord
@@ -31,7 +34,7 @@ namespace mtgvrp.core.Discord
         public static async Task RunBotAsync()
         {
             // Config
-            var cfg = new DiscordConfig
+            var cfg = new DiscordConfiguration()
             {
                 Token = "MzMyMTI5ODk3MTEzODQ1NzYw.DD5qYQ.xEfmKaGANPkmF8tc7Q3m9n1DVgs",
                 TokenType = TokenType.Bot,
@@ -44,13 +47,11 @@ namespace mtgvrp.core.Discord
             // then we want to instantiate our client
             Client = new DiscordClient(cfg);
 
-            Client.SetWebSocketClient<WebSocketSharpClient>();
-
             // next, let's hook some events, so we know
             // what's going on
             Client.Ready += Client_Ready;
             Client.GuildAvailable += Client_GuildAvailable;
-            Client.ClientError += Client_ClientError;
+            Client.ClientErrored += Client_ClientError;
 
             // up next, let's set up our commands
             var ccfg = new CommandsNextConfiguration
@@ -67,7 +68,7 @@ namespace mtgvrp.core.Discord
             // and hook them up
             Commands = Client.UseCommandsNext(ccfg);
 
-            Client.UseInteractivity();
+            Client.UseInteractivity(new InteractivityConfiguration());
 
             // let's hook some command events, so we know what's 
             // going on
@@ -126,7 +127,7 @@ namespace mtgvrp.core.Discord
             return Task.CompletedTask;
         }
 
-        private static Task Commands_CommandExecuted(CommandExecutedEventArgs e)
+        private static Task Commands_CommandExecuted(CommandExecutionEventArgs e)
         {
             // let's log the name of the guild that was just
             // sent to our client
@@ -154,7 +155,7 @@ namespace mtgvrp.core.Discord
                 var emoji = DiscordEmoji.FromName(e.Context.Client, ":no_entry:");
 
                 // let's wrap the response into an embed
-                var embed = new DiscordEmbed
+                var embed = new DiscordEmbed()
                 {
                     Title = "Access denied",
                     Description = $"{emoji} You do not have the permissions required to execute this command.",
@@ -187,7 +188,7 @@ namespace mtgvrp.core.Discord
 
             if (ctx.Member.Roles.Any(x => x.Name == DiscordManager.AdminRole || x.Name == "V-RP Developer"))
             {
-                foreach (var c in API.shared.getAllPlayers())
+                foreach (var c in API.Shared.GetAllPlayers())
                 {
                     if (c == null)
                         continue;
@@ -196,7 +197,7 @@ namespace mtgvrp.core.Discord
 
                     if (receiverAccount?.AdminLevel > 0)
                     {
-                        API.shared.sendChatMessageToPlayer(c, Color.AdminChat, "[Discord A] " + ctx.Member.DisplayName + ": " + ctx.RawArgumentString);
+                        API.Shared.SendChatMessageToPlayer(c, Color.AdminChat, "[Discord A] " + ctx.Member.DisplayName + ": " + ctx.RawArgumentString);
                     }
                 }
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(DiscordManager.Client, ":white_check_mark:"));
@@ -236,7 +237,7 @@ namespace mtgvrp.core.Discord
             if (ctx.Channel.Name != DiscordManager.VIPChannel)
                 return;
 
-            var players = API.shared.getAllPlayers();
+            var players = API.Shared.GetAllPlayers();
             foreach (var p in players)
             {
                 if(p == null)
@@ -245,7 +246,7 @@ namespace mtgvrp.core.Discord
                 Account pAccount = p.GetAccount();
                 if (pAccount?.VipLevel > 0)
                 {
-                    API.shared.sendChatMessageToPlayer(p, Color.VipChat, "[Discord V] " + ctx.Member.DisplayName + ": " + ctx.RawArgumentString);
+                    API.Shared.SendChatMessageToPlayer(p, Color.VipChat, "[Discord V] " + ctx.Member.DisplayName + ": " + ctx.RawArgumentString);
                 }
             }
             await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(DiscordManager.Client, ":white_check_mark:"));
@@ -276,7 +277,7 @@ namespace mtgvrp.core.Discord
             await ctx.TriggerTypingAsync();
 
             var msg = "";
-            foreach (var c in API.shared.getAllPlayers())
+            foreach (var c in API.Shared.GetAllPlayers())
             {
                 Account receiverAccount = c.GetAccount();
                 if(receiverAccount == null)
@@ -320,12 +321,12 @@ namespace mtgvrp.core.Discord
 
             if (ctx.Member.Roles.Any(x => x.Name == "V-RP Developer"))
             {
-                foreach (var player in API.shared.getAllPlayers())
+                foreach (var player in API.Shared.GetAllPlayers())
                 {
                     if(player == null)
                         continue;
                     
-                    API.shared.sendChatMessageToPlayer(player, "~r~" + ctx.RawArgumentString);
+                    API.Shared.SendChatMessageToPlayer(player, "~r~" + ctx.RawArgumentString);
                 }
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(DiscordManager.Client, ":white_check_mark:"));
             }
@@ -340,7 +341,7 @@ namespace mtgvrp.core.Discord
 
             if (ctx.Member.Roles.Any(x => x.Name == "V-RP Developer"))
             {
-                foreach (var player in API.shared.getAllPlayers())
+                foreach (var player in API.Shared.GetAllPlayers())
                 {
                     if (player == null)
                         continue;

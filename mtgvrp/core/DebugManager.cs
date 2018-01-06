@@ -1,6 +1,6 @@
-﻿
 
-using GrandTheftMultiplayer.Server.API;
+
+
 
 namespace mtgvrp.core
 {
@@ -20,7 +20,7 @@ namespace mtgvrp.core
         {
             if(level <= DebugLevel)
             {
-                API.shared.consoleOutput(msg);
+                API.Shared.ConsoleOutput(msg);
             }
         }
     }

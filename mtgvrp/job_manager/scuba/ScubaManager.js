@@ -1,6 +1,6 @@
 ﻿var text = null;
 
-API.onServerEventTrigger.connect((event, args) => {
+Event.OnServerEventTrigger.connect((event, args) => {
     if (event === "UPDATE_SCUBA_PERCENTAGE") {
         if (args[0] === "none")
             text = null;
@@ -15,7 +15,7 @@ API.onServerEventTrigger.connect((event, args) => {
     }
 });
 
-API.onUpdate.connect(() => {
+Event.OnUpdate.connect(() => {
     if (text !== null) {
         var res = API.getScreenResolutionMaintainRatio();
         var pos = resource.JsFunctions.scaleCoordsToReal({ X: res.Width - 400, Y: res.Height - 60 });

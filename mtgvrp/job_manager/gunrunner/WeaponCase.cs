@@ -1,11 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using GTANetworkAPI;
 using mtgvrp.database_manager;
 using mtgvrp.inventory;
-using GrandTheftMultiplayer.Shared;
-using GrandTheftMultiplayer.Shared.Math;
-using GrandTheftMultiplayer.Server.API;
 using mtgvrp.player_manager;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
@@ -60,12 +58,12 @@ namespace mtgvrp.job_manager.gunrunner
 
         public void CreateCase (Vector3 position, Vector3 rotation)
         {
-            WeaponObject = API.shared.createObject(API.shared.getHashKey("prop_gun_case_01"), position, rotation);
+            WeaponObject = API.Shared.CreateObject(API.Shared.GetHashKey("prop_gun_case_01"), position, rotation);
         }
 
         public void RemoveCase()
         {
-            API.shared.deleteEntity(WeaponObject);
+            API.Shared.DeleteEntity(WeaponObject);
         }
 
     }

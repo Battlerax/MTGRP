@@ -1,11 +1,11 @@
 ﻿var player_list_browser = null;
 var res = null;
 
-API.onResourceStart.connect(function () {
+Event.OnResourceStart.connect(function () {
     res = API.getScreenResolutionMaintainRatio();
 });
 
-API.onServerEventTrigger.connect(function (eventName, args) {
+Event.OnServerEventTrigger.connect(function (eventName, args) {
     switch (eventName) {
         case "send_player_list":
             player_list_browser.call("show_list", args[0], args[1]);
@@ -14,7 +14,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 });
 
 
-API.onKeyUp.connect(function(Player, args){
+Event.OnKeyUp.connect(function(Player, args){
     if (args.KeyCode == Keys.F1){
 		if (player_list_browser == null) {
 			let width = 500;

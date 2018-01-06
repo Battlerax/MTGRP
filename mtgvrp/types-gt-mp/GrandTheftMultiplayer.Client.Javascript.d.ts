@@ -340,8 +340,8 @@
 		setDisplayWastedShard(show: boolean): void;
 		getDisplayWastedShard(): boolean;
 		setUiColor(r: number, g: number, b: number): void;
-		sendChatMessage(sender: string, text: string): void;
-		sendChatMessage(text: string): void;
+		SendChatMessage(sender: string, text: string): void;
+		SendChatMessage(text: string): void;
 		getScreenResolutionMantainRatio(): System.Drawing.SizeF;
 		getScreenResolutionMaintainRatio(): System.Drawing.SizeF;
 		getScreenResolution(): System.Drawing.Size;

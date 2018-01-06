@@ -1,11 +1,11 @@
 ﻿var vehicle_edit_browser = null;
 var res = null;
 
-API.onResourceStart.connect(function () {
+Event.OnResourceStart.connect(function () {
     res = API.getScreenResolutionMaintainRatio();
 });
 
-API.onServerEventTrigger.connect(function (eventName, args) {
+Event.OnServerEventTrigger.connect(function (eventName, args) {
 
     switch (eventName) {
         case "show_vehicle_edit_menu":

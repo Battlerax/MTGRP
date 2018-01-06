@@ -76,7 +76,7 @@ var shot_text = [
     "If you need further help, use ~g~/n~w~ chat to\nget help from players or ~g~/ask~w~ to get\nhelp from a moderator directly.\nNow, get going! ~b~Los Santos~w~ isn't going to run itself."
 ];
 
-API.onServerEventTrigger.connect(function (eventName, args) {
+Event.OnServerEventTrigger.connect(function (eventName, args) {
     if (eventName === "start_introduction") {
 		//API.setCefDrawState(false);
 		isonintro = true;
@@ -185,7 +185,7 @@ function stop_introduction(){
 	API.triggerServerEvent("finish_intro");
 }
 
-API.onUpdate.connect(function () {
+Event.OnUpdate.connect(function () {
 
 	if (timer < Date.now() && timer != 0){
 		timer = 0;

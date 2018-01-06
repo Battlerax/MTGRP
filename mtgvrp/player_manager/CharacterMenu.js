@@ -42,7 +42,7 @@ API.pointCameraAtPosition(creation_view, new Vector3(403, -998, -98.5));
 
 var facial_view = API.createCamera(new Vector3(403, -998, -98.2), new Vector3(0, 0, -15));
 
-API.onServerEventTrigger.connect(function (eventName, args) {
+Event.OnServerEventTrigger.connect(function (eventName, args) {
     if (eventName == "showCharacterSelection") {
         var player = API.getLocalPlayer();
         menu_pool = API.getMenuPool();
@@ -62,11 +62,11 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 
         character_menu.OnItemSelect.connect(function (sender, item, index) {
             if (item.Text == "Create new character") {
-	            API.sendChatMessage("* Enter your desired character name: ");
+	            API.SendChatMessage("* Enter your desired character name: ");
                 
 				var res = false;
 				while (res === false) {
-					API.sendChatMessage("Character name must be similar to: ~g~John_Doe~w~.");
+					API.SendChatMessage("Character name must be similar to: ~g~John_Doe~w~.");
                     var desiredName = API.getUserInput("", 64);
 				    if (desiredName === "")
 				        return;
@@ -199,7 +199,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
 });
 
 
-API.onUpdate.connect(function () {
+Event.OnUpdate.connect(function () {
     if (menu_pool != null) {
         menu_pool.ProcessMenus();
 		API.disableAllControlsThisFrame();
@@ -226,7 +226,7 @@ function next_character_creation_step(player, step) {
             gender = 0;
             menu_pool = API.getMenuPool();
 
-	        API.sendChatMessage("~g~Welcome to character creation! Let's begin by choosing your gender and your parents!");
+	        API.SendChatMessage("~g~Welcome to character creation! Let's begin by choosing your gender and your parents!");
 
             API.triggerServerEvent("initialize_hair", gender);
 
@@ -415,8 +415,8 @@ function next_character_creation_step(player, step) {
         case 1: {
             API.triggerServerEvent("initiate_style_limits", gender);
 
-            API.sendChatMessage("~g~Alright, now that we have figured out your parents let us see what your face looks like!");
-            API.sendChatMessage("~g~NOTE: You can use the PLUS and MINUS keys to rotate your character!");
+            API.SendChatMessage("~g~Alright, now that we have figured out your parents let us see what your face looks like!");
+            API.SendChatMessage("~g~NOTE: You can use the PLUS and MINUS keys to rotate your character!");
 
             player = API.getLocalPlayer();
             character_creation_menu.Visible = false;
@@ -663,7 +663,7 @@ function next_character_creation_step(player, step) {
                     //Save em.
                     API.triggerServerEvent("change_facial_features", hair_style, hair_color, blemishes, facial_hair, eyebrows, ageing, makeup, makeup_color, blush, blush_color, complexion, sun_damage, lipstick, lipstick_color, moles_freckles);
 
-                    API.sendChatMessage("~o~Creating menus... Please wait, this may take a second!");
+                    API.SendChatMessage("~o~Creating menus... Please wait, this may take a second!");
                     next_character_creation_step(player, 2);
                 }
             });
@@ -678,10 +678,10 @@ function next_character_creation_step(player, step) {
             character_creation_menu.Visible = false;
             menu_pool = API.getMenuPool();
 
-            API.sendChatMessage("~o~Menus created!");
+            API.SendChatMessage("~o~Menus created!");
 
-            API.sendChatMessage("~g~Now you can choose what clothes you wear! You can always buy more outfits at a clothing store.");
-            API.sendChatMessage("~y~NOTE: You can use the PLUS and MINUS keys to rotate your character!");
+            API.SendChatMessage("~g~Now you can choose what clothes you wear! You can always buy more outfits at a clothing store.");
+            API.SendChatMessage("~y~NOTE: You can use the PLUS and MINUS keys to rotate your character!");
 
             API.setActiveCamera(creation_view);
 
@@ -1018,7 +1018,7 @@ function next_character_creation_step(player, step) {
             character_creation_menu.Visible = false;
             menu_pool = API.getMenuPool();
 
-            API.sendChatMessage("~y~Lastly, we need some basic information about your character!");
+            API.SendChatMessage("~y~Lastly, we need some basic information about your character!");
 
             var age_list = new List(String);
 
@@ -1062,11 +1062,11 @@ function next_character_creation_step(player, step) {
                         var res = patt.exec(birthday);
                         if (res == null) {
                             birthday = "01/01";
-                            API.sendChatMessage("Wrong age format.");
+                            API.SendChatMessage("Wrong age format.");
                         } else {
                             if (parseInt(res[1]) > 31 || parseInt(res[2]) > 12) {
                                 birthday = "01/01";
-                                API.sendChatMessage("Days must be less than 31 and month must be less than 12.");
+                                API.SendChatMessage("Days must be less than 31 and month must be less than 12.");
                             }
                         }
 
@@ -1131,7 +1131,7 @@ function updateClothes(type, index, variation) {
 }
 
 var rotating = 0;
-API.onKeyDown.connect(function(sender, e) {
+Event.OnKeyDown.connect(function(sender, e) {
     if (e.KeyCode === Keys.Enter) {
         if (pant_menu != null) {
             if (pant_menu.Visible == true) {
@@ -1180,13 +1180,13 @@ API.onKeyDown.connect(function(sender, e) {
     }
 });
 
-API.onKeyUp.connect(function (sender, e) {
+Event.OnKeyUp.connect(function (sender, e) {
     if (e.KeyCode == Keys.Oemplus || e.KeyCode == Keys.OemMinus) {
         rotating = 0;
     }
 });
 
-API.onUpdate.connect(function () {
+Event.OnUpdate.connect(function () {
     if (rotating != 0 && menu_pool !== null) {
         var player = API.getLocalPlayer();
         var new_rot = API.getEntityRotation(player).Add(new Vector3(0, 0, rotating));

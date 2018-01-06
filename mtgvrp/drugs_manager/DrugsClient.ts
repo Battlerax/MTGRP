@@ -3,7 +3,7 @@ const localPlayer = API.getLocalPlayer();
 var cam = API.getActiveCamera();
 var timer;
 
-API.onServerEventTrigger.connect(function (eventName, args) {
+Event.OnServerEventTrigger.connect(function (eventName, args) {
 
     if (eventName === "getClientGround") {
         

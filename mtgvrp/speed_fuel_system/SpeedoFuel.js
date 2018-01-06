@@ -1,7 +1,7 @@
 ﻿var myBrowser = null;
 var vehicleHandle = null;
 
-API.onServerEventTrigger.connect((eventName, args) => {
+Event.OnServerEventTrigger.connect((eventName, args) => {
 	switch (eventName) {
 	case "fuel_updatevalue":
 	    if (myBrowser !== null) {
@@ -61,7 +61,7 @@ function loaded() {
 	API.triggerServerEvent("fuel_getvehiclefuel");
 }
 
-API.onPlayerExitVehicle.connect((vehicle) => {
+Event.OnPlayerExitVehicle.connect((vehicle) => {
     vehicleHandle = null;
 
     if (myBrowser === null) return;
@@ -105,7 +105,7 @@ var lastFuel = "";
 
 var screenRes = null;
 
-API.onUpdate.connect(() => {
+Event.OnUpdate.connect(() => {
 
     if (resource.ModdingManager.myBrowser !== null)
         return;

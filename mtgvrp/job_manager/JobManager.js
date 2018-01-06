@@ -6,7 +6,7 @@ var cornerDown = null;
 var cornerStartPos = null;
 var xAdd = 1;
 var yAdd = 1;
-API.onServerEventTrigger.connect(function (eventName, args) {
+Event.OnServerEventTrigger.connect(function (eventName, args) {
     switch (eventName) {
         case "create_job_zone":
             var player = API.getLocalPlayer();
@@ -38,7 +38,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
             break;
     }
 });
-API.onKeyDown.connect(function (Player, args) {
+Event.OnKeyDown.connect(function (Player, args) {
     if (cornerUp != null && cornerDown != null) {
         if (args.KeyCode == Keys.Up) {
             xAdd++;

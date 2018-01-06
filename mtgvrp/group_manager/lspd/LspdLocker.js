@@ -1,7 +1,7 @@
 "use strict";
 var lspd_menu = null;
 var menu_pool = null;
-API.onServerEventTrigger.connect(function (eventName, args) {
+Event.OnServerEventTrigger.connect(function (eventName, args) {
     switch (eventName) {
         case "show_lspd_locker":
             {
@@ -32,7 +32,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
             }
     }
 });
-API.onUpdate.connect(function () {
+Event.OnUpdate.connect(function () {
     if (menu_pool != null) {
         menu_pool.ProcessMenus();
     }

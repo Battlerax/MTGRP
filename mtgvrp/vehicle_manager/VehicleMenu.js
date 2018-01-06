@@ -3,7 +3,7 @@ var vehicle_menu = null;
 
 var door_index = 0;
 
-API.onPlayerExitVehicle.connect(function (player, vehicle) {
+Event.OnPlayerExitVehicle.connect(function (player, vehicle) {
     if (vehicle_menu != null) {
         if (vehicle_menu.Visible == true) {
             vehicle_menu.Visible = false;
@@ -11,7 +11,7 @@ API.onPlayerExitVehicle.connect(function (player, vehicle) {
     }
 });
 
-API.onKeyDown.connect(function(Player, args){
+Event.OnKeyDown.connect(function(Player, args){
     if (args.KeyCode == Keys.N && !API.isChatOpen() && resource.MDC.mdcBrowser == null && resource.PhoneManager.isMouseShown === false) {
         if (vehicle_menu == null || vehicle_menu.Visible == false) {
             
@@ -115,7 +115,7 @@ API.onKeyDown.connect(function(Player, args){
 
 });
 
-API.onUpdate.connect(function () {
+Event.OnUpdate.connect(function () {
     if (menu_pool != null) {
         menu_pool.ProcessMenus();
     }

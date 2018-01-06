@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.IO;
@@ -6,16 +6,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
-using GrandTheftMultiplayer.Server;
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Constant;
-using GrandTheftMultiplayer.Server.Elements;
-using GrandTheftMultiplayer.Server.Extensions;
-using GrandTheftMultiplayer.Shared;
+
+
+
+using GTANetworkAPI;
+
+
 using VehicleInfoLoader;
 using VehicleInfoLoader.Data;
-using GrandTheftMultiplayer.Server.Managers;
-using GrandTheftMultiplayer.Shared.Math;
+
+
 using mtgvrp.core;
 using mtgvrp.core.Help;
 using mtgvrp.inventory;
@@ -28,8 +28,8 @@ namespace mtgvrp.vehicle_manager.modding
     {
         public ModdingManager()
         {
-            API.onResourceStart += API_onResourceStart;
-            API.onClientEventTrigger += API_onClientEventTrigger;
+            Event.OnResourceStart += API_onResourceStart;
+            Event.OnClientEventTrigger += API_onClientEventTrigger;
         }
 
         private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
@@ -58,7 +58,7 @@ namespace mtgvrp.vehicle_manager.modding
                             isVip == true ? "true" : "false"
                         });
                     }
-                    API.triggerClientEvent(sender, "MODDING_FILL_MODS", API.toJson(modsList.ToArray()));
+                    API.TriggerClientEvent(sender, "MODDING_FILL_MODS", API.ToJson(modsList.ToArray()));
                     break;
                 }
 
@@ -67,11 +67,11 @@ namespace mtgvrp.vehicle_manager.modding
                     var vehicle = sender.vehicle;
                     ClearVehicleMods(vehicle.handle.GetVehicle());
                     ApplyVehicleMods(vehicle.handle.GetVehicle());
-                    API.setEntityPosition(sender.vehicle, sender.getData("ModLastPos"));
-                    API.setEntityDimension(sender.vehicle, 0);
-                    API.setEntityDimension(sender, 0);
+                    API.SetEntityPosition(sender.vehicle, sender.getData("ModLastPos"));
+                    API.SetEntityDimension(sender.vehicle, 0);
+                    API.SetEntityDimension(sender, 0);
                     if (sender.GetAccount().IsSpeedoOn)
-                        API.triggerClientEvent(sender, "TOGGLE_SPEEDO");
+                        API.TriggerClientEvent(sender, "TOGGLE_SPEEDO");
                         break;
                 }
 
@@ -90,10 +90,10 @@ namespace mtgvrp.vehicle_manager.modding
                         allPrices += price;
                         itemCount++;
                     }
-                    var prop = PropertyManager.Properties.First(x => x.Id == API.getEntityData(sender, "MOD_ID"));
+                    var prop = PropertyManager.Properties.First(x => x.Id == API.GetEntityData(sender, "MOD_ID"));
                     if (prop.Supplies != -1 && prop.Supplies < itemCount * 5)
                     {
-                        API.triggerClientEvent(sender, "MODDING_ERROR",
+                        API.TriggerClientEvent(sender, "MODDING_ERROR",
                             "This modshop doesn't have enough supplies.");
                         return;
                     }
@@ -101,7 +101,7 @@ namespace mtgvrp.vehicle_manager.modding
                     var c = sender.GetCharacter();
                     if (Money.GetCharacterMoney(c) < allPrices)
                     {
-                        API.triggerClientEvent(sender, "MODDING_ERROR",
+                        API.TriggerClientEvent(sender, "MODDING_ERROR",
                             "You don't have enough money to purchase these mods. Your balance: " +
                             Money.GetCharacterMoney(c));
                         return;
@@ -122,15 +122,15 @@ namespace mtgvrp.vehicle_manager.modding
                     ClearVehicleMods(veh);
                     ApplyVehicleMods(veh);
                     veh.Save();
-                    API.triggerClientEvent(sender, "MODDING_CLOSE");
-                    API.sendChatMessageToPlayer(sender,
+                    API.TriggerClientEvent(sender, "MODDING_CLOSE");
+                    API.SendChatMessageToPlayer(sender,
                         "You have successfully purchased some vehicle mods for a total of ~g~" +
                         allPrices.ToString("C"));
-                    API.setEntityPosition(sender.vehicle, sender.getData("ModLastPos"));
-                    API.setEntityDimension(sender.vehicle, 0);
-                    API.setEntityDimension(sender, 0);
+                    API.SetEntityPosition(sender.vehicle, sender.getData("ModLastPos"));
+                    API.SetEntityDimension(sender.vehicle, 0);
+                    API.SetEntityDimension(sender, 0);
                     if (sender.GetAccount().IsSpeedoOn)
-                        API.triggerClientEvent(sender, "TOGGLE_SPEEDO");
+                        API.TriggerClientEvent(sender, "TOGGLE_SPEEDO");
                     break;
                 }
             }
@@ -138,7 +138,7 @@ namespace mtgvrp.vehicle_manager.modding
 
         private void API_onResourceStart()
         {
-            VehicleInfo.Setup(Path.Combine(API.getResourceFolder(), @"vehicle_manager/modding/modinfo"));
+            VehicleInfo.Setup(Path.Combine(API.GetResourceFolder(), @"vehicle_manager/modding/modinfo"));
         }
 
         void AddVehicleMod(Vehicle veh, int type, string mod)
@@ -297,13 +297,13 @@ namespace mtgvrp.vehicle_manager.modding
         {
             foreach (var type in ModTypes.Keys)
             {
-                API.shared.removeVehicleMod(veh.NetHandle, type);
+                API.Shared.RemoveVehicleMod(veh.NetHandle, type);
             }
-            API.shared.setVehicleCustomPrimaryColor(veh.NetHandle, 0, 0, 0);
-            API.shared.setVehicleCustomSecondaryColor(veh.NetHandle, 0, 0, 0);
-            API.shared.setVehicleTyreSmokeColor(veh.NetHandle, 0, 0, 0);
-            API.shared.setVehicleNeonColor(veh.NetHandle, 0, 0, 0);
-            API.shared.setVehicleWindowTint(veh.NetHandle, 0);
+            API.Shared.SetVehicleCustomPrimaryColor(veh.NetHandle, 0, 0, 0);
+            API.Shared.SetVehicleCustomSecondaryColor(veh.NetHandle, 0, 0, 0);
+            API.Shared.SetVehicleTyreSmokeColor(veh.NetHandle, 0, 0, 0);
+            API.Shared.SetVehicleNeonColor(veh.NetHandle, 0, 0, 0);
+            API.Shared.SetVehicleWindowTint(veh.NetHandle, 0);
         }
 
         public static void ApplyVehicleMods(Vehicle veh)
@@ -315,41 +315,41 @@ namespace mtgvrp.vehicle_manager.modding
                 {
                     var clrs = ((string) mod.Value).Split('|');
                     if(clrs.Length == 1)
-                        GrandTheftMultiplayer.Server.API.API.shared.setVehiclePrimaryColor(veh.NetHandle, Convert.ToInt32(clrs[0]));
+                        GrandTheftMultiplayer.Server.API.Shared.Red.setVehiclePrimaryColor(veh.NetHandle, Convert.ToInt32(clrs[0]));
                     else
-                        API.shared.setVehicleCustomPrimaryColor(veh.NetHandle, Convert.ToInt32(clrs[0]), Convert.ToInt32(clrs[1]), Convert.ToInt32(clrs[2]));
+                        API.Shared.SetVehicleCustomPrimaryColor(veh.NetHandle, Convert.ToInt32(clrs[0]), Convert.ToInt32(clrs[1]), Convert.ToInt32(clrs[2]));
                 }
                 else if (modid == SecondryColorId)
                 {
                     var clrs = ((string)mod.Value).Split('|');
                     if (clrs.Length == 1)
-                        GrandTheftMultiplayer.Server.API.API.shared.setVehicleSecondaryColor(veh.NetHandle, Convert.ToInt32(clrs[0]));
+                        GrandTheftMultiplayer.Server.API.Shared.Red.setVehicleSecondaryColor(veh.NetHandle, Convert.ToInt32(clrs[0]));
                     else
-                        API.shared.setVehicleCustomSecondaryColor(veh.NetHandle, Convert.ToInt32(clrs[0]), Convert.ToInt32(clrs[1]), Convert.ToInt32(clrs[2]));
+                        API.Shared.SetVehicleCustomSecondaryColor(veh.NetHandle, Convert.ToInt32(clrs[0]), Convert.ToInt32(clrs[1]), Convert.ToInt32(clrs[2]));
                 }
                 else if (modid == TyresSmokeColorId)
                 {
                     var clrs = ((string) mod.Value).Split('|');
-                    API.shared.setVehicleTyreSmokeColor(veh.NetHandle, Convert.ToInt32(clrs[0]),
+                    API.Shared.SetVehicleTyreSmokeColor(veh.NetHandle, Convert.ToInt32(clrs[0]),
                         Convert.ToInt32(clrs[1]), Convert.ToInt32(clrs[2]));
 
-                    foreach (var p in API.shared.getAllPlayers())
+                    foreach (var p in API.Shared.GetAllPlayers())
                     {
                         if (p == null)
                             continue;
 
-                        if (GrandTheftMultiplayer.Server.API.API.shared.getEntityPosition(veh.NetHandle)
+                        if (GrandTheftMultiplayer.Server.API.Shared.Red.getEntityPosition(veh.NetHandle)
                                 .DistanceTo(p.position) <= 500)
                         {
                             if (Convert.ToInt32(clrs[1]) == 0 && Convert.ToInt32(clrs[1]) == 0 &&
                                 Convert.ToInt32(clrs[1]) == 0)
                             {
-                                GrandTheftMultiplayer.Server.API.API.shared.sendNativeToPlayer(p,
+                                GrandTheftMultiplayer.Server.API.Shared.Red.sendNativeToPlayer(p,
                                     Hash.TOGGLE_VEHICLE_MOD, veh.NetHandle, 20, false);
                             }
                             else
                             {
-                                GrandTheftMultiplayer.Server.API.API.shared.sendNativeToPlayer(p,
+                                GrandTheftMultiplayer.Server.API.Shared.Red.sendNativeToPlayer(p,
                                     Hash.TOGGLE_VEHICLE_MOD, veh.NetHandle, 20, true);
                             }
                         }
@@ -358,28 +358,28 @@ namespace mtgvrp.vehicle_manager.modding
                 else if (modid == NeonColorId)
                 {
                     var clrs = ((string) mod.Value).Split('|');
-                    API.shared.setVehicleNeonColor(veh.NetHandle, Convert.ToInt32(clrs[0]), Convert.ToInt32(clrs[1]),
+                    API.Shared.SetVehicleNeonColor(veh.NetHandle, Convert.ToInt32(clrs[0]), Convert.ToInt32(clrs[1]),
                         Convert.ToInt32(clrs[2]));
                 }
                 else if (modid == WindowTintId)
                 {
-                    API.shared.setVehicleWindowTint(veh.NetHandle, Convert.ToInt32(mod.Value));
+                    API.Shared.SetVehicleWindowTint(veh.NetHandle, Convert.ToInt32(mod.Value));
                 }
                 else
                 {
-                    API.shared.setVehicleMod(veh.NetHandle, modid, Convert.ToInt32(mod.Value));
+                    API.Shared.SetVehicleMod(veh.NetHandle, modid, Convert.ToInt32(mod.Value));
 
                     if (modid == 14) //Horns
                     {
-                        foreach (var p in API.shared.getAllPlayers())
+                        foreach (var p in API.Shared.GetAllPlayers())
                         {
                             if (p == null)
                                 continue;
 
-                            if (GrandTheftMultiplayer.Server.API.API.shared.getEntityPosition(veh.NetHandle)
+                            if (GrandTheftMultiplayer.Server.API.Shared.Red.getEntityPosition(veh.NetHandle)
                                     .DistanceTo(p.position) <= 500)
                             {
-                                GrandTheftMultiplayer.Server.API.API.shared.sendNativeToPlayer(p,
+                                GrandTheftMultiplayer.Server.API.Shared.Red.sendNativeToPlayer(p,
                                     Hash.SET_VEHICLE_MOD, veh.NetHandle, 14, Convert.ToInt32(mod.Value));
                             }
                         }
@@ -394,26 +394,26 @@ namespace mtgvrp.vehicle_manager.modding
             var prop = PropertyManager.IsAtPropertyEntrance(player);
             if (prop?.Type != PropertyManager.PropertyTypes.ModdingShop || prop.OwnerId == 0)
             {
-                API.sendChatMessageToPlayer(player, "You must be at an owned modding shop to modify your vehicle.");
+                API.SendChatMessageToPlayer(player, "You must be at an owned modding shop to modify your vehicle.");
                 return;
             }
 
             if (!player.isInVehicle)
             {
-                API.sendChatMessageToPlayer(player, "You must be in a vehicle to modify it.");
+                API.SendChatMessageToPlayer(player, "You must be in a vehicle to modify it.");
                 return;
             }
 
             if (!player.GetCharacter().OwnedVehicles.Contains(player.vehicle.handle.GetVehicle()) && player.GetAccount().AdminLevel == 0)
             {
-                API.sendChatMessageToPlayer(player, "You must own the vehicle you're modifying");
+                API.SendChatMessageToPlayer(player, "You must own the vehicle you're modifying");
                 return;
             }
 
             //Boats, Cycles, Helis, Planes, Trains
             if (player.vehicle.Class == 14 || player.vehicle.Class == 13 || player.vehicle.Class == 15 || player.vehicle.Class == 16 || player.vehicle.Class == 21)
             {
-                API.sendChatMessageToPlayer(player, "You cannot modify this vehicle.");
+                API.SendChatMessageToPlayer(player, "You cannot modify this vehicle.");
                 return;
             }
 
@@ -434,16 +434,16 @@ namespace mtgvrp.vehicle_manager.modding
                     });
             }
 
-            API.setEntityData(player, "ModLastPos", player.position.Copy());
-            API.setEntityData(player, "MOD_ID", prop.Id);
-            API.setEntityPosition(player.vehicle, new Vector3(-335.8468, -138.2994, 38.43893));
-            API.setEntityRotation(player.vehicle, new Vector3(0.1579523, 0.0001232202, -84.06439));
-            API.setEntityDimension(player, player.GetCharacter().Id);
-            API.setEntityDimension(player.vehicle, player.GetCharacter().Id);
+            API.SetEntityData(player, "ModLastPos", player.position.Copy());
+            API.SetEntityData(player, "MOD_ID", prop.Id);
+            API.SetEntityPosition(player.vehicle, new Vector3(-335.8468, -138.2994, 38.43893));
+            API.SetEntityRotation(player.vehicle, new Vector3(0.1579523, 0.0001232202, -84.06439));
+            API.SetEntityDimension(player, player.GetCharacter().Id);
+            API.SetEntityDimension(player.vehicle, player.GetCharacter().Id);
             
-            API.triggerClientEvent(player, "SHOW_MODDING_GUI", API.toJson(modList.ToArray()), player.GetAccount().VipLevel > 0);
+            API.TriggerClientEvent(player, "SHOW_MODDING_GUI", API.ToJson(modList.ToArray()), player.GetAccount().VipLevel > 0);
             if(player.GetAccount().IsSpeedoOn)
-                API.triggerClientEvent(player, "TOGGLE_SPEEDO");
+                API.TriggerClientEvent(player, "TOGGLE_SPEEDO");
         }
 
 
@@ -453,28 +453,28 @@ namespace mtgvrp.vehicle_manager.modding
 
             if (!player.isInVehicle)
             {
-                API.sendChatMessageToPlayer(player, "You aren't in a a vehicle.");
+                API.SendChatMessageToPlayer(player, "You aren't in a a vehicle.");
                 return;
             }
 
             if (player.GetAccount().VipLevel == 0)
             {
-                API.sendChatMessageToPlayer(player, "You must be VIP to use neons.");
+                API.SendChatMessageToPlayer(player, "You must be VIP to use neons.");
                 return;
             }
 
             if (slot > 3 || slot < 0 || slot == -1)
             {
-                API.sendChatMessageToPlayer(player, "USAGE: /toggleneon [0-3]");
-                API.sendChatMessageToPlayer(player, "* 0 -> Left Neon");
-                API.sendChatMessageToPlayer(player, "* 1 -> Right Neon");
-                API.sendChatMessageToPlayer(player, "* 2 -> Front Neon");
-                API.sendChatMessageToPlayer(player, "* 3 -> Back Neon");
+                API.SendChatMessageToPlayer(player, "USAGE: /toggleneon [0-3]");
+                API.SendChatMessageToPlayer(player, "* 0 -> Left Neon");
+                API.SendChatMessageToPlayer(player, "* 1 -> Right Neon");
+                API.SendChatMessageToPlayer(player, "* 2 -> Front Neon");
+                API.SendChatMessageToPlayer(player, "* 3 -> Back Neon");
                 return;
             }
 
-            var newState = !API.getVehicleNeonState(player.vehicle, slot);
-            API.setVehicleNeonState(player.vehicle, slot, newState);
+            var newState = !API.GetVehicleNeonState(player.vehicle, slot);
+            API.SetVehicleNeonState(player.vehicle, slot, newState);
             ChatManager.RoleplayMessage(player, newState ? "turns on the neon of his vehicle." : "turns off the neon of his vehicle.", ChatManager.RoleplayMe);
         }
     }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;

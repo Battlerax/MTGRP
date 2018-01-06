@@ -1,7 +1,7 @@
 ﻿var weaponmenu;
 var marker = null;
 var res = null;
-API.onServerEventTrigger.connect((event, args) => {
+Event.OnServerEventTrigger.connect((event, args) => {
     switch (event) {
         case "get_street_name":
             var pos = args[0];
@@ -45,7 +45,7 @@ API.onServerEventTrigger.connect((event, args) => {
 		    var pos = args[0];
             lastStreet = API.getStreetName(pos);
             lastZone = API.getZoneName(pos);
-			API.sendChatMessage("Yuri Orlov says: The player with the most renown is located at '" + lastStreet + ", " + lastZone + "'. That's all I can give you right now.")
+			API.SendChatMessage("Yuri Orlov says: The player with the most renown is located at '" + lastStreet + ", " + lastZone + "'. That's all I can give you right now.")
             break;
 
         case "close_gunrun_menu":

@@ -1,4 +1,4 @@
-﻿/*
+/*
  *  File: Init.cs
  *  Author: Chenko
  *  Date: 12/24/2016
@@ -11,11 +11,11 @@
 
 
 using System;
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Elements;
-using GrandTheftMultiplayer.Server.Managers;
-using GrandTheftMultiplayer.Shared;
-using GrandTheftMultiplayer.Shared.Math;
+
+using GTANetworkAPI;
+
+
+
 using mtgvrp.core;
 using mtgvrp.core.Discord;
 using mtgvrp.database_manager;
@@ -38,12 +38,12 @@ namespace mtgvrp
 
             DebugManager.DebugMessage("[INIT] Initalizing script...");
 
-            API.setServerName(SERVER_NAME + " ~b~| ~g~" + SERVER_WEBSITE);
-            API.setGamemodeName("Arcadit V-RP " + SERVER_VERSION);
+            API.SetServerName(SERVER_NAME + " ~b~| ~g~" + SERVER_WEBSITE);
+            API.SetGamemodeName("Arcadit V-RP " + SERVER_VERSION);
 
-            API.onResourceStart += OnResourceStartHandler;
-            API.onResourceStop += API_onResourceStop;
-            API.onClientEventTrigger += API_onClientEventTrigger;
+            Event.OnResourceStart += OnResourceStartHandler;
+            Event.OnResourceStop += API_onResourceStop;
+            Event.OnClientEventTrigger += API_onClientEventTrigger;
             InventoryManager.OnStorageItemUpdateAmount += InventoryManager_OnStorageItemUpdateAmount;
 
             SettingsManager.Load();
@@ -59,8 +59,8 @@ namespace mtgvrp
                 NetHandle obj = (NetHandle) arguments[0];
                 Vector3 pos = (Vector3) arguments[1];
                 Vector3 rot = (Vector3) arguments[2];
-                API.setEntityPosition(obj,pos);
-                API.setEntityRotation(obj,rot);
+                API.SetEntityPosition(obj,pos);
+                API.SetEntityRotation(obj,rot);
             }
 
         }
@@ -71,7 +71,7 @@ namespace mtgvrp
             if (sender.GetType() == typeof(Character) && args.Item == typeof(Money))
             {
                 Character c = (Character) sender;
-                API.shared.triggerClientEvent(c.Client, "update_money_display", args.Amount);
+                API.Shared.TriggerClientEvent(c.Client, "update_money_display", args.Amount);
             }
         }
 
@@ -83,10 +83,10 @@ namespace mtgvrp
         public void OnResourceStartHandler()
         {
             //For Dealership.
-            API.removeIpl("fakeint"); // remove the IPL "fakeint"
-            API.requestIpl("shr_int"); // Request the IPL "shr_int"
+            API.RemoveIpl("fakeint"); // remove the IPL "fakeint"
+            API.RequestIpl("shr_int"); // Request the IPL "shr_int"
 
-            API.consoleOutput("[INIT] Unloaded fakeint IPL and loaded shr_int IPL.!");
+            API.ConsoleOutput("[INIT] Unloaded fakeint IPL and loaded shr_int IPL.!");
 
             VehicleManager.load_all_unowned_vehicles();
 
@@ -95,14 +95,14 @@ namespace mtgvrp
             GunrunnerManager.load_all_container_zones();
             GunrunnerManager.MoveDealer();
 
-            API.consoleOutput("[INIT] Script initalized!");
+            API.ConsoleOutput("[INIT] Script initalized!");
 
             LogManager.StartLogArchiveTimer();
 
             //Must be last to be called.
             /*if (IsRunningOnMono())
             {
-                API.consoleOutput("[INIT] Starting Discord Bot!");
+                API.ConsoleOutput("[INIT] Starting Discord Bot!");
                 DiscordManager.StartBot();
             }*/
         }

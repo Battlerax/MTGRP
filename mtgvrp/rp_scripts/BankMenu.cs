@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Elements;
-using GrandTheftMultiplayer.Server.Managers;
-using GrandTheftMultiplayer.Shared.Math;
+
+using GTANetworkAPI;
+
+
 using mtgvrp.core;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;
@@ -17,7 +17,7 @@ namespace mtgvrp.rp_scripts
         public List<int> BankAmount;
         public Test()
         {
-            API.onClientEventTrigger += OnClientEventTrigger;
+            Event.OnClientEventTrigger += OnClientEventTrigger;
 
             Atms = new List<Vector3>
             {
@@ -65,7 +65,7 @@ namespace mtgvrp.rp_scripts
             };
             foreach (var t in Atms)
             {
-                API.createTextLabel("~g~ATM\n~w~(/atm)", t, 25.0f, 0.5f);
+                API.CreateTextLabel("~g~ATM\n~w~(/atm)", t, 25.0f, 0.5f);
             }
 
             // Withdraw/deposit amounts for bank menu
@@ -112,8 +112,8 @@ namespace mtgvrp.rp_scripts
             {
                 Character character = player.GetCharacter();
                 ChatManager.RoleplayMessage(character, "slides in their card and inputs their PIN number.", ChatManager.RoleplayMe);
-                API.sendChatMessageToPlayer(player, "~y~[Bank of Los Santos]~w~ Account balance: ~g~$" + character.BankBalance + "~w~.");
-                API.triggerClientEvent(player, "openATM");
+                API.SendChatMessageToPlayer(player, "~y~[Bank of Los Santos]~w~ Account balance: ~g~$" + character.BankBalance + "~w~.");
+                API.TriggerClientEvent(player, "openATM");
             }
         }
 
@@ -126,7 +126,7 @@ namespace mtgvrp.rp_scripts
                         // check to see if player has moved away from ATM
                         if (Atms.Any(x => x.DistanceTo(player.position) <= 5.0) == false)
                         {
-                            API.sendChatMessageToPlayer(player, "You have moved too far away from the ATM.");
+                            API.SendChatMessageToPlayer(player, "You have moved too far away from the ATM.");
                             return;
                         }
                         var option = (string)arguments[0];
@@ -138,21 +138,21 @@ namespace mtgvrp.rp_scripts
                                 var withdrawIndex = (int)arguments[1];
                                 if (BankAmount[withdrawIndex] > character.BankBalance)
                                 {
-                                    API.sendChatMessageToPlayer(player, "~r~ERROR:~w~ You do not have ~g~$" + BankAmount[withdrawIndex] + "~w~ in your account. Current balance: ~g~$" + character.BankBalance + "~w~.");
+                                    API.SendChatMessageToPlayer(player, "~r~ERROR:~w~ You do not have ~g~$" + BankAmount[withdrawIndex] + "~w~ in your account. Current balance: ~g~$" + character.BankBalance + "~w~.");
                                     break;
                                 }
 
                                 if (BankAmount[withdrawIndex] == -1)
                                 {
                                     InventoryManager.GiveInventoryItem(character, new Money(), character.BankBalance);
-                                    API.sendChatMessageToPlayer(player, "~y~[Bank of Los Santos]~w~ You have withdrawn ~g~$" + character.BankBalance + "~w~. New balance: ~g~$0~w~.");
+                                    API.SendChatMessageToPlayer(player, "~y~[Bank of Los Santos]~w~ You have withdrawn ~g~$" + character.BankBalance + "~w~. New balance: ~g~$0~w~.");
                                     character.BankBalance = 0;
                                 }
                                 else
                                 {
                                     character.BankBalance -= BankAmount[withdrawIndex];
                                     InventoryManager.GiveInventoryItem(character, new Money(), BankAmount[withdrawIndex]);
-                                    API.sendChatMessageToPlayer(player, "~y~[Bank of Los Santos]~w~ You have withdrawn ~g~$" + BankAmount[withdrawIndex] + "~w~. New balance: ~g~$" + character.BankBalance + "~w~.");
+                                    API.SendChatMessageToPlayer(player, "~y~[Bank of Los Santos]~w~ You have withdrawn ~g~$" + BankAmount[withdrawIndex] + "~w~. New balance: ~g~$" + character.BankBalance + "~w~.");
                                 }
                                 
                                 //character.save();
@@ -161,14 +161,14 @@ namespace mtgvrp.rp_scripts
                                 var depositIndex = (int)arguments[1];
                                 if (BankAmount[depositIndex] > Money.GetCharacterMoney(character))
                                 {
-                                    API.sendChatMessageToPlayer(player, "~r~ERROR:~w~ You do not have ~g~$" + BankAmount[depositIndex] + "~w~ on hand. Current money on hand: ~g~$" + Money.GetCharacterMoney(character) + "~w~.");
+                                    API.SendChatMessageToPlayer(player, "~r~ERROR:~w~ You do not have ~g~$" + BankAmount[depositIndex] + "~w~ on hand. Current money on hand: ~g~$" + Money.GetCharacterMoney(character) + "~w~.");
                                     break;
                                 }
 
                                 if (BankAmount[depositIndex] == -1)
                                 {
                                     character.BankBalance += Money.GetCharacterMoney(character);
-                                    API.sendChatMessageToPlayer(player, "~y~[Bank of Los Santos]~w~ You have deposited ~g~$" + Money.GetCharacterMoney(character) + "~w~. New balance: ~g~$" + character.BankBalance + "~w~.");
+                                    API.SendChatMessageToPlayer(player, "~y~[Bank of Los Santos]~w~ You have deposited ~g~$" + Money.GetCharacterMoney(character) + "~w~. New balance: ~g~$" + character.BankBalance + "~w~.");
                                     InventoryManager.SetInventoryAmmount(character, typeof(Money), 0);
                                 }
                                 else
@@ -176,7 +176,7 @@ namespace mtgvrp.rp_scripts
                                     character.BankBalance += BankAmount[depositIndex];
                                     InventoryManager.DeleteInventoryItem(character, typeof(Money),
                                         BankAmount[depositIndex]);
-                                    API.sendChatMessageToPlayer(player, "~y~[Bank of Los Santos]~w~ You have deposited ~g~$" + BankAmount[depositIndex] + "~w~. New balance: ~g~$" + character.BankBalance + "~w~.");
+                                    API.SendChatMessageToPlayer(player, "~y~[Bank of Los Santos]~w~ You have deposited ~g~$" + BankAmount[depositIndex] + "~w~. New balance: ~g~$" + character.BankBalance + "~w~.");
                                 }
 
                                 

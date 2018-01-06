@@ -1,14 +1,14 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Timers;
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Elements;
-using GrandTheftMultiplayer.Shared.Math;
+
+using GTANetworkAPI;
+
 using mtgvrp.core;
 using mtgvrp.database_manager;
 using mtgvrp.group_manager;
 using mtgvrp.player_manager;
-using GrandTheftMultiplayer.Server.Managers;
+
 using mtgvrp.core.Help;
 using MongoDB.Driver;
 
@@ -20,14 +20,14 @@ namespace mtgvrp.door_manager
 
         public DoorManager()
         {
-            API.onClientEventTrigger += API_onClientEventTrigger;
+            Event.OnClientEventTrigger += API_onClientEventTrigger;
 
-            API.consoleOutput("Loading all doors.");
+            API.ConsoleOutput("Loading all doors.");
             foreach (var door in DatabaseManager.DoorsTable.Find(FilterDefinition<Door>.Empty).ToEnumerable())
             {
                 door.RegisterDoor();
             }
-            API.consoleOutput("Loaded " + DatabaseManager.DoorsTable.Count(FilterDefinition<Door>.Empty) + " Doors");
+            API.ConsoleOutput("Loaded " + DatabaseManager.DoorsTable.Count(FilterDefinition<Door>.Empty) + " Doors");
 
             reloadDoorsTimer.Interval = 1000;
             reloadDoorsTimer.Elapsed += ReloadDoorsTimer_Elapsed;
@@ -40,10 +40,10 @@ namespace mtgvrp.door_manager
             {
                 foreach (var player in door.Shape.getAllEntities())
                 {
-                    var client = API.getPlayerFromHandle(player);
+                    var client = API.GetPlayerFromHandle(player);
                     if(client == null)
                         continue;
-                    API.shared.sendNativeToPlayer(client, Door.SetStateOfClosestDoorOfType,
+                    API.Shared.SendNativeToPlayer(client, Door.SetStateOfClosestDoorOfType,
                         door.Hash, door.Position.X, door.Position.Y, door.Position.Z,
                         door.Locked, door.State, false);
                 }
@@ -65,7 +65,7 @@ namespace mtgvrp.door_manager
                         door.Insert();
                         door.RegisterDoor();
 
-                        API.sendChatMessageToPlayer(sender, $"[Door Manager] Created a door with id {door.Id}");
+                        API.SendChatMessageToPlayer(sender, $"[Door Manager] Created a door with id {door.Id}");
                     }
                     break;
 
@@ -76,13 +76,13 @@ namespace mtgvrp.door_manager
                         var door = Door.Doors.SingleOrDefault(x => x.Id == id);
                         if (door == null)
                         {
-                            API.sendChatMessageToPlayer(sender, "[Door Manager] That ID doesn't exist.");
+                            API.SendChatMessageToPlayer(sender, "[Door Manager] That ID doesn't exist.");
                             return;
                         }
                         door.Locked = !door.Locked;
                         door.RefreshDoor();
                         door.Save();
-                        API.sendChatMessageToPlayer(sender, "[Door Manager] Door has been " + (door.Locked ? "~g~Locked" : "~r~Unlocked"));
+                        API.SendChatMessageToPlayer(sender, "[Door Manager] Door has been " + (door.Locked ? "~g~Locked" : "~r~Unlocked"));
                     }
                     break;
 
@@ -94,12 +94,12 @@ namespace mtgvrp.door_manager
                         var door = Door.Doors.SingleOrDefault(x => x.Id == id);
                         if (door == null)
                         {
-                            API.sendChatMessageToPlayer(sender, "[Door Manager] That ID doesn't exist.");
+                            API.SendChatMessageToPlayer(sender, "[Door Manager] That ID doesn't exist.");
                             return;
                         }
                         door.Description = desc;
                         door.Save();
-                        API.sendChatMessageToPlayer(sender, "[Door Manager] Door description has been set to ~g~" + desc);
+                        API.SendChatMessageToPlayer(sender, "[Door Manager] Door description has been set to ~g~" + desc);
                     }
                     break;
 
@@ -110,11 +110,11 @@ namespace mtgvrp.door_manager
                         var door = Door.Doors.SingleOrDefault(x => x.Id == id);
                         if (door == null)
                         {
-                            API.sendChatMessageToPlayer(sender, "[Door Manager] That ID doesn't exist.");
+                            API.SendChatMessageToPlayer(sender, "[Door Manager] That ID doesn't exist.");
                             return;
                         }
                         sender.position = door.Position;
-                        API.sendChatMessageToPlayer(sender, "[Door Manager] Teleported to door id " + door.Id);
+                        API.SendChatMessageToPlayer(sender, "[Door Manager] Teleported to door id " + door.Id);
                     }
                     break;
 
@@ -125,11 +125,11 @@ namespace mtgvrp.door_manager
                         var door = Door.Doors.SingleOrDefault(x => x.Id == id);
                         if (door == null)
                         {
-                            API.sendChatMessageToPlayer(sender, "[Door Manager] That ID doesn't exist.");
+                            API.SendChatMessageToPlayer(sender, "[Door Manager] That ID doesn't exist.");
                             return;
                         }
                         door.Delete();
-                        API.sendChatMessageToPlayer(sender, "[Door Manager] Door removed, id:" + door.Id);
+                        API.SendChatMessageToPlayer(sender, "[Door Manager] Door removed, id:" + door.Id);
                     }
                     break;
 
@@ -140,7 +140,7 @@ namespace mtgvrp.door_manager
                         var door = Door.Doors.SingleOrDefault(x => x.Id == id);
                         if (door == null)
                         {
-                            API.sendChatMessageToPlayer(sender, "[Door Manager] That ID doesn't exist.");
+                            API.SendChatMessageToPlayer(sender, "[Door Manager] That ID doesn't exist.");
                             return;
                         }
                         int groupid;
@@ -150,12 +150,12 @@ namespace mtgvrp.door_manager
                             {
                                 door.GroupId = groupid;
                                 door.Save();
-                                API.sendChatMessageToPlayer(sender,
+                                API.SendChatMessageToPlayer(sender,
                                     "[Door Manager] Group id set to " + groupid + " for door id:" + door.Id);
                             }
                             else
                             {
-                                API.sendChatMessageToPlayer(sender, "Invalid group id.");
+                                API.SendChatMessageToPlayer(sender, "Invalid group id.");
                             }
                         }
                     }
@@ -168,7 +168,7 @@ namespace mtgvrp.door_manager
                         var door = Door.Doors.SingleOrDefault(x => x.Id == id);
                         if (door == null)
                         {
-                            API.sendChatMessageToPlayer(sender, "[Door Manager] That ID doesn't exist.");
+                            API.SendChatMessageToPlayer(sender, "[Door Manager] That ID doesn't exist.");
                             return;
                         }
                         int prop;
@@ -178,12 +178,12 @@ namespace mtgvrp.door_manager
                             {
                                 door.PropertyId = prop;
                                 door.Save();
-                                API.sendChatMessageToPlayer(sender,
+                                API.SendChatMessageToPlayer(sender,
                                     "[Door Manager] PropertyID set to " + prop + " for door id:" + door.Id);
                             }
                             else
                             {
-                                API.sendChatMessageToPlayer(sender, "Invalid door id.");
+                                API.SendChatMessageToPlayer(sender, "Invalid door id.");
                             }
                         }
                     }
@@ -196,22 +196,22 @@ namespace mtgvrp.door_manager
                         var door = Door.Doors.SingleOrDefault(x => x.Id == id);
                         if (door == null)
                         {
-                            API.sendChatMessageToPlayer(sender, "[Door Manager] That ID doesn't exist.");
+                            API.SendChatMessageToPlayer(sender, "[Door Manager] That ID doesn't exist.");
                             return;
                         }
                         door.DoesShowInAdmin = !door.DoesShowInAdmin;
                         door.Save();
-                        API.sendChatMessageToPlayer(sender,
+                        API.SendChatMessageToPlayer(sender,
                             "[Door Manager] Door was " + (door.DoesShowInAdmin ? "unhidden" : "hidden") +
                             " from /managedoors.");
-                        API.sendChatMessageToPlayer(sender, "Could edit the door with /editdoor [id]");
+                        API.SendChatMessageToPlayer(sender, "Could edit the door with /editdoor [id]");
                     }
                     break;
 
                 case "doormanager_locknearestdoor":
                     float distance = -1.0f;
                     var cdoor = new Door(0, new Vector3(0, 0, 0), "NULL", false, false);
-                    Vector3 playerPos = API.getEntityPosition(sender.handle);
+                    Vector3 playerPos = API.GetEntityPosition(sender.handle);
                     foreach(Door d in Door.Doors)
                     {
                         if(playerPos.DistanceTo(d.Position) < distance || distance == -1.0f)
@@ -229,12 +229,12 @@ namespace mtgvrp.door_manager
                                 if(cdoor.Locked)
                                 {
                                     cdoor.Locked = false;
-                                    API.sendChatMessageToPlayer(sender, "Door " + cdoor.Id + " ~g~Unlocked!");
+                                    API.SendChatMessageToPlayer(sender, "Door " + cdoor.Id + " ~g~Unlocked!");
                                 }
                                 else
                                 {
                                     cdoor.Locked = true;
-                                    API.sendChatMessageToPlayer(sender, "Door " + cdoor.Id + " ~r~Locked!");
+                                    API.SendChatMessageToPlayer(sender, "Door " + cdoor.Id + " ~r~Locked!");
                                 }
                                 cdoor.RefreshDoor();
                                 cdoor.Save();
@@ -251,7 +251,7 @@ namespace mtgvrp.door_manager
             if (player.GetAccount().AdminLevel >= 5)
             {
                 var doors = Door.Doors.Where(x => x.DoesShowInAdmin == true).Select(x => new[] {x.Description, x.Id.ToString()}).ToArray();
-                API.triggerClientEvent(player, "doormanager_managedoors", API.toJson(doors));
+                API.TriggerClientEvent(player, "doormanager_managedoors", API.ToJson(doors));
             }
         }
 
@@ -263,10 +263,10 @@ namespace mtgvrp.door_manager
                 var door = Door.Doors.SingleOrDefault(x => x.Id == id);
                 if (door == null)
                 {
-                    API.sendChatMessageToPlayer(player, "[Door Manager] That ID doesn't exist.");
+                    API.SendChatMessageToPlayer(player, "[Door Manager] That ID doesn't exist.");
                     return;
                 }
-                API.triggerClientEvent(player, "doormanager_editdoor", id);
+                API.TriggerClientEvent(player, "doormanager_editdoor", id);
             }
         }
 
@@ -280,7 +280,7 @@ namespace mtgvrp.door_manager
                 door.Insert();
                 door.RegisterDoor();
 
-                API.sendChatMessageToPlayer(player, $"[Door Manager] Created a door with id {door.Id}");
+                API.SendChatMessageToPlayer(player, $"[Door Manager] Created a door with id {door.Id}");
             }
         }
 
@@ -300,33 +300,33 @@ namespace mtgvrp.door_manager
             var door = Door.Doors.SingleOrDefault(x => x.Id == id);
             if (door == null)
             {
-                API.sendChatMessageToPlayer(player, "Invalid door id.");
+                API.SendChatMessageToPlayer(player, "Invalid door id.");
                 return;
             }
             if (DoesPlayerHaveDoorAccess(player, door))
             {
                 if (player.position.DistanceTo(door.Position) > 10.0f)
                 {
-                    API.sendChatMessageToPlayer(player, "You must be near the door.");
+                    API.SendChatMessageToPlayer(player, "You must be near the door.");
                     return;
                 }
 
                 if(door.Locked)
                 {
                     door.Locked = false;
-                    API.sendChatMessageToPlayer(player, "Door ~g~Unlocked!");
+                    API.SendChatMessageToPlayer(player, "Door ~g~Unlocked!");
                 }
                 else
                 {
                     door.Locked = true;
-                    API.sendChatMessageToPlayer(player, "Door ~r~Locked!");
+                    API.SendChatMessageToPlayer(player, "Door ~r~Locked!");
                 }
                 
                 door.RefreshDoor();
                 door.Save();
             }
             else
-                API.sendChatMessageToPlayer(player, "Insufficient permissions.");
+                API.SendChatMessageToPlayer(player, "Insufficient permissions.");
         }
 
         /*[Command("unlockdoor"), Help(HelpManager.CommandGroups.AdminLevel5 | HelpManager.CommandGroups.GroupGeneral, "Unlocks a door.", "Door id")]
@@ -335,24 +335,24 @@ namespace mtgvrp.door_manager
             var door = Door.Doors.SingleOrDefault(x => x.Id == id);
             if (door == null)
             {
-                API.sendChatMessageToPlayer(player, "Invalid door id.");
+                API.SendChatMessageToPlayer(player, "Invalid door id.");
                 return;
             }
             if (DoesPlayerHaveDoorAccess(player, door)) //TODO: add check for property.
             {
                 if (player.position.DistanceTo(door.Position) > 10.0f)
                 {
-                    API.sendChatMessageToPlayer(player, "You must be near the door.");
+                    API.SendChatMessageToPlayer(player, "You must be near the door.");
                     return;
                 }
 
                 door.Locked = false;
                 door.RefreshDoor();
                 door.Save();
-                API.sendChatMessageToPlayer(player, "Door ~g~Unlocked!");
+                API.SendChatMessageToPlayer(player, "Door ~g~Unlocked!");
             }
             else
-                API.sendChatMessageToPlayer(player, "Insufficient permissions.");
+                API.SendChatMessageToPlayer(player, "Insufficient permissions.");
         }*/
     }
 }

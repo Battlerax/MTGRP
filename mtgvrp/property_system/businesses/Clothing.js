@@ -85,7 +85,7 @@ API.pointCameraAtPosition(creation_view, new Vector3(403, -998, -98.5));
 
 var facial_view = API.createCamera(new Vector3(403, -998, -98.2), new Vector3(0, 0, -15));
 
-API.onServerEventTrigger.connect((eventName, args) => {
+Event.OnServerEventTrigger.connect((eventName, args) => {
 	switch (eventName) {
 	case "properties_buyclothes":
 		//Setup items first.
@@ -215,8 +215,8 @@ API.onServerEventTrigger.connect((eventName, args) => {
 		API.setEntityPosition(player, new Vector3(403, -997, -100));
 		API.setEntityRotation(player, new Vector3(0, 0, 177.2663));
 
-		API.sendChatMessage("~g~Select the clothes you would like to buy.");
-		API.sendChatMessage("~y~NOTE: You can use the PLUS and MINUS keys to rotate your character!");
+		API.SendChatMessage("~g~Select the clothes you would like to buy.");
+		API.SendChatMessage("~y~NOTE: You can use the PLUS and MINUS keys to rotate your character!");
 
 		API.setActiveCamera(creation_view);
 
@@ -439,7 +439,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
 		});
 
 		pant_menu.OnItemSelect.connect(function(sender, item, index) {
-			API.sendChatMessage(`Would you like to buy this ~r~Pants~w~ for ~g~\$${pant_price}~w~ ? Enter 'yes' to confirm.`);
+			API.SendChatMessage(`Would you like to buy this ~r~Pants~w~ for ~g~\$${pant_price}~w~ ? Enter 'yes' to confirm.`);
 			if (API.getUserInput("no", 4) === "yes") {
 				API.triggerServerEvent("clothing_buyclothe", 4, pantsIndex, pantsVariation);
 			}
@@ -462,7 +462,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
 		});
 
 		shoe_menu.OnItemSelect.connect(function(sender, item, index) {
-			API.sendChatMessage(`Would you like to buy this ~r~Shoes~w~ for ~g~\$${shoe_price}~w~ ? Enter 'yes' to confirm.`);
+			API.SendChatMessage(`Would you like to buy this ~r~Shoes~w~ for ~g~\$${shoe_price}~w~ ? Enter 'yes' to confirm.`);
 			if (API.getUserInput("no", 4) === "yes") {
 				API.triggerServerEvent("clothing_buyclothe", 6, shoeIndex, shoeVariation);
 			}
@@ -490,7 +490,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
 				return;
 			}
 			
-			API.sendChatMessage(
+			API.SendChatMessage(
 				`Would you like to buy this ~r~Accessory~w~ for ~g~\$${accessory_price}~w~ ? Enter 'yes' to confirm.`);
 			if (API.getUserInput("no", 4) === "yes") {
 				API.triggerServerEvent("clothing_buyclothe", 7, accessoryIndex, accessoryVariation);
@@ -519,7 +519,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
 				return;
 			}
 
-			API.sendChatMessage(
+			API.SendChatMessage(
 				`Would you like to buy this ~r~Undershirt~w~ for ~g~\$${undershirt_price}~w~ ? Enter 'yes' to confirm.`);
 			if (API.getUserInput("no", 4) === "yes") {
 				API.triggerServerEvent("clothing_buyclothe", 8, undershirtIndex, undershirtVariation);
@@ -543,7 +543,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
 		});
 
 		top_menu.OnItemSelect.connect(function(sender, item, index) {
-			API.sendChatMessage(`Would you like to buy this ~r~Top~w~ for ~g~\$${top_price}~w~ ? Enter 'yes' to confirm.`);
+			API.SendChatMessage(`Would you like to buy this ~r~Top~w~ for ~g~\$${top_price}~w~ ? Enter 'yes' to confirm.`);
 			if (API.getUserInput("no", 4) === "yes") {
 				API.triggerServerEvent("clothing_buyclothe", 11, topIndex, topVariation);
 			}
@@ -572,7 +572,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
 				return;
 			}
 
-			API.sendChatMessage(`Would you like to buy this ~r~Hat~w~ for ~g~\$${hat_price}~w~ ? Enter 'yes' to confirm.`);
+			API.SendChatMessage(`Would you like to buy this ~r~Hat~w~ for ~g~\$${hat_price}~w~ ? Enter 'yes' to confirm.`);
 			if (API.getUserInput("no", 4) === "yes") {
 				API.triggerServerEvent("clothing_buyclothe", 20, hatIndex, hatVariation);
 			}
@@ -600,7 +600,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
 				return;
 			}
 
-			API.sendChatMessage(
+			API.SendChatMessage(
 				`Would you like to buy this ~r~Glasses~w~ for ~g~\$${glasses_price}~w~ ? Enter 'yes' to confirm.`);
 			if (API.getUserInput("no", 4) === "yes") {
 				API.triggerServerEvent("clothing_buyclothe", 21, glassesIndex, glassesVariation);
@@ -629,7 +629,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
 				return;
 			}
 
-			API.sendChatMessage(`Would you like to buy this ~r~Earrings~w~ for ~g~\$${ear_price}~w~ ? Enter 'yes' to confirm.`);
+			API.SendChatMessage(`Would you like to buy this ~r~Earrings~w~ for ~g~\$${ear_price}~w~ ? Enter 'yes' to confirm.`);
 			if (API.getUserInput("no", 4) === "yes") {
 				API.triggerServerEvent("clothing_buyclothe", 22, earIndex, earVariation);
 			}
@@ -744,7 +744,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
 			});
 
 			bags_menu.OnItemSelect.connect(function(sender, item, index) {
-				API.sendChatMessage(`Would you like to buy this ~r~Bag~w~ for ~g~\$${args[1]}~w~ ? Enter 'yes' to confirm.`);
+				API.SendChatMessage(`Would you like to buy this ~r~Bag~w~ for ~g~\$${args[1]}~w~ ? Enter 'yes' to confirm.`);
 				if (API.getUserInput("no", 4) === "yes") {
 					API.triggerServerEvent("clothing_buybag", bag_index, bag_variation);
 				}
@@ -792,7 +792,7 @@ function updateClothes(type, index, variation) {
 
 var bags_menu = null;
 
-API.onUpdate.connect(function () {
+Event.OnUpdate.connect(function () {
     if (menu_pool != null) {
         menu_pool.ProcessMenus();
     }
@@ -802,7 +802,7 @@ API.onUpdate.connect(function () {
 });
 
 var rotating = 0;
-API.onKeyDown.connect(function (sender, e) {
+Event.OnKeyDown.connect(function (sender, e) {
     if (e.KeyCode == Keys.Oemplus) {
         rotating = 4;
 
@@ -811,13 +811,13 @@ API.onKeyDown.connect(function (sender, e) {
     }
 });
 
-API.onKeyUp.connect(function (sender, e) {
+Event.OnKeyUp.connect(function (sender, e) {
     if (e.KeyCode == Keys.Oemplus || e.KeyCode == Keys.OemMinus) {
         rotating = 0;
     }
 });
 
-API.onUpdate.connect(function () {
+Event.OnUpdate.connect(function () {
     if (rotating != 0 && (menu_pool !== null || bags_menu !== null)) {
         var player = API.getLocalPlayer();
         var new_rot = API.getEntityRotation(player).Add(new Vector3(0, 0, rotating));

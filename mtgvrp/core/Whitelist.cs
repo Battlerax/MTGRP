@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Elements;
+using System.Collections.Generic;
+
+using GTANetworkAPI;
 
 
 namespace mtgvrp.core
@@ -25,8 +25,8 @@ namespace mtgvrp.core
 
         public Whitelist()
         {
-            API.onPlayerConnected += WhiteList_OnPlayerConnect;
-            API.consoleOutput("[WHITELIST] Whitelist is " + ((_useWhitelist == true) ? ("Active") : ("Inactive")));
+            Event.OnPlayerConnected += WhiteList_OnPlayerConnect;
+            API.ConsoleOutput("[WHITELIST] Whitelist is " + ((_useWhitelist == true) ? ("Active") : ("Inactive")));
         }
 
         public void WhiteList_OnPlayerConnect(Client player)
@@ -35,7 +35,7 @@ namespace mtgvrp.core
             {
                 if (!WhitelistedNames.Contains(player.socialClubName))
                 {
-                    API.kickPlayer(player, "You are not whitelisted.");
+                    API.KickPlayer(player, "You are not whitelisted.");
                 }
             }
         }

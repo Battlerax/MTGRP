@@ -1,4 +1,4 @@
-﻿namespace mtgvrp.core.Discord
+namespace mtgvrp.core.Discord
 {
     class PlayerDiscordCommands
     {

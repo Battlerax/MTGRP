@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Elements;
-using GrandTheftMultiplayer.Server.Managers;
-using GrandTheftMultiplayer.Shared;
-using GrandTheftMultiplayer.Shared.Math;
+
+using GTANetworkAPI;
+
+
+
 
 
 using mtgvrp.core.Items;
@@ -40,15 +40,15 @@ namespace mtgvrp.vehicle_dealership
         private List<MarkerZone> _markerZones = new List<MarkerZone>();
         public BoatDealership()
         {
-            API.onClientEventTrigger += API_onClientEventTrigger;
+            Event.OnClientEventTrigger += API_onClientEventTrigger;
 
             //Setup the blip.
             foreach (var loc in _dealershipsLocations)
             {
                 var marker = new MarkerZone(loc, new Vector3()) { BlipSprite = 371, TextLabelText = "/buyboat /buyrod" };
                 marker.Create();
-                API.shared.setBlipShortRange(marker.Blip, true);
-                API.shared.setBlipName(marker.Blip, "Boat Dealership");
+                API.Shared.SetBlipShortRange(marker.Blip, true);
+                API.Shared.SetBlipName(marker.Blip, "Boat Dealership");
                 _markerZones.Add(marker);
             }
         }
@@ -105,18 +105,18 @@ namespace mtgvrp.vehicle_dealership
 
                     //Spawn it.
                     if (VehicleManager.spawn_vehicle(theVehicle) != 1)
-                        API.sendChatMessageToPlayer(sender, "An error occured while spawning your vehicle.");
+                        API.SendChatMessageToPlayer(sender, "An error occured while spawning your vehicle.");
 
                     //Notify.
-                    API.sendChatMessageToPlayer(sender,
+                    API.SendChatMessageToPlayer(sender,
                         $"You have sucessfully bought the ~g~{selectedCar[0]}~w~ for ${selectedCar[2]}.");
-                    API.sendChatMessageToPlayer(sender, "Use /myvehicles to manage it.");
+                    API.SendChatMessageToPlayer(sender, "Use /myvehicles to manage it.");
 
                     //Exit.
-                    API.triggerClientEvent(sender, "dealership_exitdealermenu");
+                    API.TriggerClientEvent(sender, "dealership_exitdealermenu");
                 }
                 else
-                    API.sendChatMessageToPlayer(sender,
+                    API.SendChatMessageToPlayer(sender,
                         $"You don't have enough money to buy the ~g~{selectedCar[0]}~w~.");
             }
         }
@@ -126,25 +126,25 @@ namespace mtgvrp.vehicle_dealership
         {
 
             var character = player.GetCharacter();
-            var currentPos = API.getEntityPosition(player);
+            var currentPos = API.GetEntityPosition(player);
             if (_dealershipsLocations.Any(dealer => currentPos.DistanceTo(dealer) < 5F))
             {
 
-                if (API.isPlayerInAnyVehicle(player))
+                if (API.IsPlayerInAnyVehicle(player))
                 {
-                    API.sendChatMessageToPlayer(player, "You're not able to buy a rod while in a vehicle!");
+                    API.SendChatMessageToPlayer(player, "You're not able to buy a rod while in a vehicle!");
                     return;
                 }
 
                 if (Money.GetCharacterMoney(character) < 250)
                 {
-                    player.sendChatMessage("You can't afford a fishing rod.");
+                    player.SendChatMessage("You can't afford a fishing rod.");
                     return;
                 }
 
                 if (InventoryManager.DoesInventoryHaveItem<FishingRod>(character).Length >= 1)
                 {
-                    player.sendChatMessage("You already have a fishing rod.");
+                    player.SendChatMessage("You already have a fishing rod.");
                     return;
                 }
 
@@ -152,16 +152,16 @@ namespace mtgvrp.vehicle_dealership
                 {
                     case InventoryManager.GiveItemErrors.Success:
                         InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(Money), 250);
-                        player.sendChatMessage("You have purchased a fishing rod. Use /fish to begin fishing!"); break;
+                        player.SendChatMessage("You have purchased a fishing rod. Use /fish to begin fishing!"); break;
 
                     case InventoryManager.GiveItemErrors.NotEnoughSpace:
-                        API.sendChatMessageToPlayer(player,
+                        API.SendChatMessageToPlayer(player,
                             $"[BUSINESS] You dont have enough space for that item. You need {new FishingRod().AmountOfSlots} Slots.");
                         break;
                 }
             }
             else
-                API.sendChatMessageToPlayer(player, "You aren't near the boat dealership.");
+                API.SendChatMessageToPlayer(player, "You aren't near the boat dealership.");
         }
 
         [Command("buyboat"), Help(HelpManager.CommandGroups.Vehicles, "Command used inside dealership to buy a vehicle.", null)]
@@ -169,26 +169,26 @@ namespace mtgvrp.vehicle_dealership
         {
             //Check if can buy more cars.
             Character character = player.GetCharacter();
-            if (API.isPlayerInAnyVehicle(player))
+            if (API.IsPlayerInAnyVehicle(player))
             {
-                API.sendChatMessageToPlayer(player,"You're not able to buy a boat while in a vehicle!");
+                API.SendChatMessageToPlayer(player,"You're not able to buy a boat while in a vehicle!");
                 return;
             }
 
             if (character.OwnedVehicles.Count >= VehicleManager.GetMaxOwnedVehicles(player))
             {
-                API.sendChatMessageToPlayer(player, "You can't own anymore vehicles.");
-                API.sendChatMessageToPlayer(player, "~g~NOTE: You can buy VIP to increase your vehicle slots.");
+                API.SendChatMessageToPlayer(player, "You can't own anymore vehicles.");
+                API.SendChatMessageToPlayer(player, "~g~NOTE: You can buy VIP to increase your vehicle slots.");
                 return;
             }
 
-            var currentPos = API.getEntityPosition(player);
+            var currentPos = API.GetEntityPosition(player);
             if (_dealershipsLocations.Any(dealer => currentPos.DistanceTo(dealer) < 5F))
             {
-                API.triggerClientEvent(player, "dealership_showbuyboatmenu", API.toJson(_boats));
+                API.TriggerClientEvent(player, "dealership_showbuyboatmenu", API.ToJson(_boats));
             }
             else
-                API.sendChatMessageToPlayer(player, "You aren't near any dealership.");
+                API.SendChatMessageToPlayer(player, "You aren't near any dealership.");
         }
     }
 }

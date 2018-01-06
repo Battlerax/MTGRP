@@ -1,11 +1,5 @@
-﻿using System.Linq;
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Constant;
-using GrandTheftMultiplayer.Server.Elements;
-using GrandTheftMultiplayer.Server.Managers;
-using GrandTheftMultiplayer.Shared;
-
-
+using System.Linq;
+using GTANetworkAPI;
 using mtgvrp.core;
 using mtgvrp.group_manager;
 using mtgvrp.inventory;
@@ -19,8 +13,8 @@ namespace mtgvrp.weapon_manager
     {
         public WeaponManager()
         {
-            API.onPlayerWeaponSwitch += API_onPlayerWeaponSwitch;
-            API.onPlayerWeaponAmmoChange += API_onPlayerWeaponAmmoChange;
+            Event.OnPlayerWeaponSwitch += API_onPlayerWeaponSwitch;
+            Event.OnPlayerWeaponAmmoChange += API_onPlayerWeaponAmmoChange;
             CharacterMenu.OnCharacterLogin += CharacterMenu_OnCharacterLogin;
             InventoryManager.OnStorageGetItem += InventoryManager_OnStorageGetItem;
             InventoryManager.OnStorageLoseItem += InventoryManager_OnStorageLoseItem;
@@ -32,8 +26,8 @@ namespace mtgvrp.weapon_manager
         {
             foreach (Weapon weapon in InventoryManager.DoesInventoryHaveItem<Weapon>(e.Character))
             {
-                API.givePlayerWeapon(e.Character.Client, weapon.WeaponHash, 9999, true, true);
-                API.setPlayerWeaponTint(e.Character.Client, weapon.WeaponHash, weapon.WeaponTint);
+                API.GivePlayerWeapon(e.Character.Client, weapon.WeaponHash, 9999, true, true);
+                API.SetPlayerWeaponTint(e.Character.Client, weapon.WeaponHash, weapon.WeaponTint);
             }
         }
 
@@ -52,7 +46,7 @@ namespace mtgvrp.weapon_manager
                             InventoryManager.DeleteInventoryItem<Weapon>(chr, 1, x => x == w);
                         }
                     }
-                    API.removePlayerWeapon(chr.Client, item.WeaponHash);
+                    API.RemovePlayerWeapon(chr.Client, item.WeaponHash);
                 }
             }
         }
@@ -65,7 +59,7 @@ namespace mtgvrp.weapon_manager
                 {
                     Character chr = (Character)sender;
                     Weapon item = (Weapon)args.Item;
-                    API.shared.givePlayerWeapon(chr.Client, item.WeaponHash, 9999, true, true);
+                    API.Shared.GivePlayerWeapon(chr.Client, item.WeaponHash, 9999);
                 }
             }
         }
@@ -74,7 +68,7 @@ namespace mtgvrp.weapon_manager
         {
             if (ammo <= 1)
             {
-                API.setPlayerWeaponAmmo(player, weapon, 9999);
+                API.SetPlayerWeaponAmmo(player, weapon, 9999);
             }
         }
 
@@ -83,21 +77,21 @@ namespace mtgvrp.weapon_manager
             Character character = player.GetCharacter();
             Account playerAccount = player.GetAccount();
 
-            WeaponHash currentPlayerWeapon = API.getPlayerCurrentWeapon(player);
+            WeaponHash currentPlayerWeapon = API.GetPlayerCurrentWeapon(player);
 
             if (character == null) { return; }
             if (currentPlayerWeapon == WeaponHash.Unarmed) { return; }
 
             if (!DoesPlayerHaveWeapon(player, currentPlayerWeapon) && currentPlayerWeapon != WeaponHash.Unarmed && character.JobOne.Type != job_manager.JobManager.JobTypes.Fisher)
             {
-                API.removePlayerWeapon(player, currentPlayerWeapon);
-                foreach (var p in API.getAllPlayers())
+                API.RemovePlayerWeapon(player, currentPlayerWeapon);
+                foreach (var p in API.GetAllPlayers())
                 {
                     if (p == null)
                         continue;
 
                     Account account = p.GetAccount();
-                    if (account.AdminLevel > 1) { p.sendChatMessage("~r~ [WARNING]: " + player.nametag + " HAS A WEAPON THEY SHOULD NOT HAVE. TAKE ACTION."); }
+                    if (account.AdminLevel > 1) { p.SendChatMessage("~r~ [WARNING]: " + player.Nametag + " HAS A WEAPON THEY SHOULD NOT HAVE. TAKE ACTION."); }
                 }
                 return;
             }
@@ -107,21 +101,21 @@ namespace mtgvrp.weapon_manager
 
             if (character.IsTied || character.IsCuffed)
             {
-                API.givePlayerWeapon(player, WeaponHash.Unarmed, 1, true, true);
+                API.GivePlayerWeapon(player, WeaponHash.Unarmed, 1);
                 return;
             }
             if (currentWeapon.GroupId != character.GroupId && character.GroupId != 0 && currentWeapon.IsGroupWeapon == true)
             {
                 RemoveAllPlayerWeapons(player);
-                player.sendChatMessage("You must be a member of " + GroupManager.GetGroupById(currentWeapon.GroupId).Name + " to use this weapon. Your weapons were removed.");
+                player.SendChatMessage("You must be a member of " + GroupManager.GetGroupById(currentWeapon.GroupId).Name + " to use this weapon. Your weapons were removed.");
                 return;
             }
             if (playerAccount.VipLevel == 0)
             {
-                API.shared.setPlayerWeaponTint(player, currentWeapon.WeaponHash, WeaponTint.Normal);
+                API.Shared.SetPlayerWeaponTint(player, currentWeapon.WeaponHash, WeaponTint.Normal);
                 return;
             }
-            else { API.shared.setPlayerWeaponTint(player, currentWeapon.WeaponHash, currentWeapon.WeaponTint); }
+            else { API.Shared.SetPlayerWeaponTint(player, currentWeapon.WeaponHash, currentWeapon.WeaponTint); }
 
         }
 
@@ -170,7 +164,7 @@ namespace mtgvrp.weapon_manager
                 if (weapon.WeaponHash == weaponhash)
                 {
                     weapon.WeaponTint = weapontint;
-                    API.shared.setPlayerWeaponTint(player, weaponhash, weapontint);
+                    API.Shared.SetPlayerWeaponTint(player, weaponhash, weapontint);
                 }
             }
         }
@@ -184,7 +178,7 @@ namespace mtgvrp.weapon_manager
                 if (weapon.WeaponHash == weaponhash)
                 {
                     weapon.WeaponComponent = weaponcomponent;
-                    API.shared.givePlayerWeaponComponent(player, weaponhash, weaponcomponent);
+                    API.Shared.SetPlayerWeaponComponent(player, weaponhash, weaponcomponent);
                 }
             }
         }
@@ -194,7 +188,7 @@ namespace mtgvrp.weapon_manager
             Character character = player.GetCharacter();
 
             InventoryManager.DeleteInventoryItem(character, typeof(Weapon), -1);
-            API.shared.removeAllPlayerWeapons(player);
+            API.Shared.RemoveAllPlayerWeapons(player);
         }
 
         public static void GivePlayerWeapon(Client player, Weapon weapon)
@@ -204,9 +198,9 @@ namespace mtgvrp.weapon_manager
 
             if (DoesPlayerHaveWeapon(player, weapon.WeaponHash)) { return; }
 
-            if (account.VipLevel < 1) { API.shared.setPlayerWeaponTint(player, weapon.WeaponHash, WeaponTint.Normal); }
-            else { API.shared.setPlayerWeaponTint(player, weapon.WeaponHash, weapon.WeaponTint); }
-            //API.shared.givePlayerWeaponComponent(player, weapon.WeaponHash, weapon.WeaponComponent);
+            if (account.VipLevel < 1) { API.Shared.SetPlayerWeaponTint(player, weapon.WeaponHash, WeaponTint.Normal); }
+            else { API.Shared.SetPlayerWeaponTint(player, weapon.WeaponHash, weapon.WeaponTint); }
+            //API.Shared.GivePlayerWeaponComponent(player, weapon.WeaponHash, weapon.WeaponComponent);
 
             InventoryManager.GiveInventoryItem(character, weapon, 1);
         }
@@ -215,7 +209,7 @@ namespace mtgvrp.weapon_manager
         {
             Character character = player.GetCharacter();
 
-            WeaponHash currentWeapon = API.shared.getPlayerCurrentWeapon(player);
+            WeaponHash currentWeapon = API.Shared.GetPlayerCurrentWeapon(player);
 
             Weapon[] weapon =
                 InventoryManager.DoesInventoryHaveItem<Weapon>(character, x => x.WeaponHash == currentWeapon);
@@ -242,10 +236,10 @@ namespace mtgvrp.weapon_manager
             foreach (Weapon w in InventoryManager.DoesInventoryHaveItem<Weapon>(receiverid))
             {
          
-                player.sendChatMessage("Weapon " + i + ": " + w.WeaponHash);
+                player.SendChatMessage("Weapon " + i + ": " + w.WeaponHash);
                 i++;
             }
-            player.sendChatMessage("This player owns " + i + " weapons.");
+            player.SendChatMessage("This player owns " + i + " weapons.");
 
         }
 
@@ -262,8 +256,8 @@ namespace mtgvrp.weapon_manager
 
             RemoveAllPlayerWeapons(receiver);
 
-            player.sendChatMessage("Weapons removed.");
-            receiver.sendChatMessage("All of your weapons were removed by " + account.AdminName);
+            player.SendChatMessage("Weapons removed.");
+            receiver.SendChatMessage("All of your weapons were removed by " + account.AdminName);
 
         }
     }

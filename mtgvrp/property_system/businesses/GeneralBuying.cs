@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Constant;
-using GrandTheftMultiplayer.Server.Elements;
-using GrandTheftMultiplayer.Server.Managers;
-using GrandTheftMultiplayer.Shared;
+
+
+using GTANetworkAPI;
+
+
 using mtgvrp.core;
 using mtgvrp.core.Items;
 using mtgvrp.inventory;
@@ -26,7 +26,7 @@ namespace mtgvrp.property_system.businesses
     {
         public GeneralBuying()
         {
-            API.onClientEventTrigger += API_onClientEventTrigger;
+            Event.OnClientEventTrigger += API_onClientEventTrigger;
         }
 
         private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
@@ -35,14 +35,14 @@ namespace mtgvrp.property_system.businesses
             Character character = sender.GetCharacter();
             if (eventName == "property_exitbuy")
             {
-                API.freezePlayer(sender, false);
+                API.FreezePlayer(sender, false);
             }
             else if (eventName == "property_buyitem")
             {
                 var prop = PropertyManager.IsAtPropertyInteraction(sender);
                 if (prop == null)
                 {
-                    API.sendChatMessageToPlayer(sender, "You aren't at a property or you moved away.");
+                    API.SendChatMessageToPlayer(sender, "You aren't at a property or you moved away.");
                     return;
                 }
 
@@ -54,7 +54,7 @@ namespace mtgvrp.property_system.businesses
                 //Make sure has enough money.
                 if (Money.GetCharacterMoney(sender.GetCharacter()) < price)
                 {
-                    API.sendChatMessageToPlayer(sender, "Not Enough Money");
+                    API.SendChatMessageToPlayer(sender, "Not Enough Money");
                     return;
                 }
 
@@ -70,7 +70,7 @@ namespace mtgvrp.property_system.businesses
 
                 if (prop.Supplies <= 0)
                 {
-                    API.sendChatMessageToPlayer(sender, "The business is out of supplies.");
+                    API.SendChatMessageToPlayer(sender, "The business is out of supplies.");
                     return;
                 }
 
@@ -121,14 +121,14 @@ namespace mtgvrp.property_system.businesses
                                     .DoesInventoryHaveItem<Weapon>(character, x => x.WeaponHash == WeaponHash.Hatchet)
                                     .Length > 0)
                             {
-                                API.sendChatMessageToPlayer(sender, "You already have that weapon.");
+                                API.SendChatMessageToPlayer(sender, "You already have that weapon.");
                                 return;
                             }
 
                             WeaponManager.CreateWeapon(sender, WeaponHash.Hatchet, WeaponTint.Normal, true);
                             InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
                             prop.Supplies--;
-                            API.sendChatMessageToPlayer(sender,
+                            API.SendChatMessageToPlayer(sender,
                                 $"[BUSINESS] You have sucessfully bought an ~g~Axe~w~ for ~g~${price}.");
                             LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought an Axe for {price} from property ID {prop.Id}.");
                             return;
@@ -160,7 +160,7 @@ namespace mtgvrp.property_system.businesses
                             InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
                             sender.health += 15;
                             if (sender.health > 100) sender.health = 100;
-                            API.sendChatMessageToPlayer(sender,$"[BUSINESS] You have sucessfully bought a ~g~{prop.RestaurantItems[0]}~w~ for ~g~${price}.");
+                            API.SendChatMessageToPlayer(sender,$"[BUSINESS] You have sucessfully bought a ~g~{prop.RestaurantItems[0]}~w~ for ~g~${price}.");
                             InventoryManager.GiveInventoryItem(prop, new Money(), price);
                             LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a {prop.RestaurantItems[0]} for {price} from property ID {prop.Id}.");
                             return;
@@ -169,7 +169,7 @@ namespace mtgvrp.property_system.businesses
                             InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
                             sender.health += 25;
                             if (sender.health > 100) sender.health = 100;
-                            API.sendChatMessageToPlayer(sender,$"[BUSINESS] You have sucessfully bought a ~g~{prop.RestaurantItems[1]}~w~ for ~g~${price}.");
+                            API.SendChatMessageToPlayer(sender,$"[BUSINESS] You have sucessfully bought a ~g~{prop.RestaurantItems[1]}~w~ for ~g~${price}.");
                             InventoryManager.GiveInventoryItem(prop, new Money(), price);
                             LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a {prop.RestaurantItems[1]} for {price} from property ID {prop.Id}.");
                             return;
@@ -178,7 +178,7 @@ namespace mtgvrp.property_system.businesses
                             InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
                             sender.health += 25;
                             if (sender.health > 100) sender.health = 100;
-                            API.sendChatMessageToPlayer(sender,$"[BUSINESS] You have sucessfully bought a ~g~{prop.RestaurantItems[2]}~w~ for ~g~${price}.");
+                            API.SendChatMessageToPlayer(sender,$"[BUSINESS] You have sucessfully bought a ~g~{prop.RestaurantItems[2]}~w~ for ~g~${price}.");
                             InventoryManager.GiveInventoryItem(prop, new Money(), price);
                             LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a {prop.RestaurantItems[2]} for {price} from property ID {prop.Id}.");
                             return;
@@ -187,7 +187,7 @@ namespace mtgvrp.property_system.businesses
                             InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
                             sender.health += 25;
                             if (sender.health > 100) sender.health = 100;
-                            API.sendChatMessageToPlayer(sender,$"[BUSINESS] You have sucessfully bought a ~g~{prop.RestaurantItems[3]}~w~ for ~g~${price}.");
+                            API.SendChatMessageToPlayer(sender,$"[BUSINESS] You have sucessfully bought a ~g~{prop.RestaurantItems[3]}~w~ for ~g~${price}.");
                             InventoryManager.GiveInventoryItem(prop, new Money(), price);
                             LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a {prop.RestaurantItems[3]} for {price} from property ID {prop.Id}.");
                             return;
@@ -197,39 +197,39 @@ namespace mtgvrp.property_system.businesses
                 {
                     prop.Supplies--;
 
-                    if (API.getPlayerCurrentWeapon(sender) == WeaponHash.Unarmed)
+                    if (API.GetPlayerCurrentWeapon(sender) == WeaponHash.Unarmed)
                     {
-                        sender.sendChatMessage("You must be holding the weapon you want to tint.");
+                        sender.SendChatMessage("You must be holding the weapon you want to tint.");
                         return;
                     }
 
                     switch (itemName)
                     {
                         case "pink_tint":
-                            WeaponManager.SetWeaponTint(sender, API.getPlayerCurrentWeapon(sender), WeaponTint.Pink);
+                            WeaponManager.SetWeaponTint(sender, API.GetPlayerCurrentWeapon(sender), WeaponTint.Pink);
                             break;
                         case "gold_tint":
                             if (sender.GetAccount().VipLevel < 3)
                             {
-                                sender.sendChatMessage("You must be a gold VIP to buy a gold tint.");
+                                sender.SendChatMessage("You must be a gold VIP to buy a gold tint.");
                                 return;
                             }
-                            WeaponManager.SetWeaponTint(sender, API.getPlayerCurrentWeapon(sender), WeaponTint.Gold);
+                            WeaponManager.SetWeaponTint(sender, API.GetPlayerCurrentWeapon(sender), WeaponTint.Gold);
                             break;
                         case "green_tint":
-                            WeaponManager.SetWeaponTint(sender, API.getPlayerCurrentWeapon(sender), WeaponTint.Green);
+                            WeaponManager.SetWeaponTint(sender, API.GetPlayerCurrentWeapon(sender), WeaponTint.Green);
                             break;
                         case "orange_tint":
-                            WeaponManager.SetWeaponTint(sender, API.getPlayerCurrentWeapon(sender), WeaponTint.Orange);
+                            WeaponManager.SetWeaponTint(sender, API.GetPlayerCurrentWeapon(sender), WeaponTint.Orange);
                             break;
                         case "platinum_tint":
-                            WeaponManager.SetWeaponTint(sender, API.getPlayerCurrentWeapon(sender), WeaponTint.Platinum);
+                            WeaponManager.SetWeaponTint(sender, API.GetPlayerCurrentWeapon(sender), WeaponTint.Platinum);
                             break;
 
                     }
                     name = ItemManager.VIPItems.Single(x => x[0] == itemName)[1];
 
-                    API.sendChatMessageToPlayer(sender, "[BUSINESSES] You have successfully bought a ~g~" + name + "~w~ weapon tint for ~g~" + price + "~w~.");
+                    API.SendChatMessageToPlayer(sender, "[BUSINESSES] You have successfully bought a ~g~" + name + "~w~ weapon tint for ~g~" + price + "~w~.");
                     LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a {name} for {price} from property ID {prop.Id}.");
                     return;
 
@@ -246,7 +246,7 @@ namespace mtgvrp.property_system.businesses
                             InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
                             InventoryManager.GiveInventoryItem(prop, new Money(), price);
                             character.HasLottoTicket = true;
-                            API.sendChatMessageToPlayer(sender, "You purchased a lottery ticket. Good luck!");
+                            API.SendChatMessageToPlayer(sender, "You purchased a lottery ticket. Good luck!");
                             LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a lottery ticket for {price} from property ID {prop.Id}.");
                             return;
                     }
@@ -262,7 +262,7 @@ namespace mtgvrp.property_system.businesses
                         {
                             if (sender.GetCharacter().LastRedeemedDeerTag == DateTime.Today.Date)
                             {
-                                API.sendChatMessageToPlayer(sender, Color.White,
+                                API.SendChatMessageToPlayer(sender, Color.White,
                                     "~r~[ERROR]~w~ You have already redeemed a deer tag today.");
                                 return;
                             }
@@ -270,7 +270,7 @@ namespace mtgvrp.property_system.businesses
                             var tags = InventoryManager.DoesInventoryHaveItem(character, typeof(HuntingTag));
                             if (tags.Cast<HuntingTag>().Any(i => i.Type == HuntingManager.AnimalTypes.Deer))
                             {
-                                API.sendChatMessageToPlayer(sender, Color.White,
+                                API.SendChatMessageToPlayer(sender, Color.White,
                                     "~r~[ERROR]~w~ You have already purchased a deer tag. Please drop any old ones before buying a new one.");
                                 return;
                             }
@@ -288,7 +288,7 @@ namespace mtgvrp.property_system.businesses
                         {
                             if (sender.GetCharacter().LastRedeemedBoarTag == DateTime.Today.Date)
                             {
-                                API.sendChatMessageToPlayer(sender, Color.White,
+                                API.SendChatMessageToPlayer(sender, Color.White,
                                     "~r~[ERROR]~w~ You have already redeemed a boar tag today.");
                                 return;
                             }
@@ -296,7 +296,7 @@ namespace mtgvrp.property_system.businesses
                             var tags = InventoryManager.DoesInventoryHaveItem(character, typeof(HuntingTag));
                             if (tags.Cast<HuntingTag>().Any(i => i.Type == HuntingManager.AnimalTypes.Boar))
                             {
-                                API.sendChatMessageToPlayer(sender, Color.White,
+                                API.SendChatMessageToPlayer(sender, Color.White,
                                     "~r~[ERROR]~w~ You have already purchased a boar tag. Please drop any old ones before buying a new one.");
                                 return;
                             }
@@ -318,18 +318,18 @@ namespace mtgvrp.property_system.businesses
                                     InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
                                     prop.Supplies--;
                                     WeaponManager.CreateWeapon(sender, WeaponHash.SniperRifle, WeaponTint.Normal, true);
-                                    API.sendChatMessageToPlayer(sender,
+                                    API.SendChatMessageToPlayer(sender,
                                         $"[BUSINESS] You have sucessfully bought a ~g~ 5.56 Bullet ~w~ for ~g~${price}.");
                                     LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a 5.56 Bullet for {price} from property ID {prop.Id}.");
                                         break;
 
                                 case InventoryManager.GiveItemErrors.NotEnoughSpace:
-                                    API.sendChatMessageToPlayer(sender,
+                                    API.SendChatMessageToPlayer(sender,
                                         $"[BUSINESS] You dont have enough space for that item. Need {new AmmoItem().AmountOfSlots} Slots.");
                                     break;
 
                                 case InventoryManager.GiveItemErrors.MaxAmountReached:
-                                    API.sendChatMessageToPlayer(sender,
+                                    API.SendChatMessageToPlayer(sender,
                                         $"[BUSINESS] You have reached the maximum allowed ammount of that item.");
                                     break;
                             }
@@ -346,18 +346,18 @@ namespace mtgvrp.property_system.businesses
                                 InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
                                 InventoryManager.GiveInventoryItem(sender.GetCharacter(), new AmmoItem());
                                 prop.Supplies--;
-                                API.sendChatMessageToPlayer(sender,
+                                API.SendChatMessageToPlayer(sender,
                                     $"[BUSINESS] You have sucessfully bought a ~g~{name}~w~ for ~g~${price}.");
                                 LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a {name} for {price} from property ID {prop.Id}.");
                                 break;
 
                             case InventoryManager.GiveItemErrors.NotEnoughSpace:
-                                API.sendChatMessageToPlayer(sender,
+                                API.SendChatMessageToPlayer(sender,
                                     $"[BUSINESS] You dont have enough space for that item. Need {boughtTag.AmountOfSlots} Slots.");
                                 break;
 
                             case InventoryManager.GiveItemErrors.MaxAmountReached:
-                                API.sendChatMessageToPlayer(sender,
+                                API.SendChatMessageToPlayer(sender,
                                     $"[BUSINESS] You have reached the maximum allowed amount of that item.");
                                 break;
                         }
@@ -378,7 +378,7 @@ namespace mtgvrp.property_system.businesses
 
                 if (item == null)
                 {
-                    API.sendChatMessageToPlayer(sender,
+                    API.SendChatMessageToPlayer(sender,
                         "Error finding the item you bought, report this as a bug report.");
                     return;
                 }
@@ -393,27 +393,27 @@ namespace mtgvrp.property_system.businesses
                         if (item.GetType() == typeof(Phone))
                         {
                             ((Phone)item).InsertNumber();
-                            API.sendChatMessageToPlayer(sender, "Your phone number is: ~g~" + ((Phone)item).PhoneNumber);
+                            API.SendChatMessageToPlayer(sender, "Your phone number is: ~g~" + ((Phone)item).PhoneNumber);
                         }
                         prop.Supplies--;
-                        API.sendChatMessageToPlayer(sender,
+                        API.SendChatMessageToPlayer(sender,
                             $"[BUSINESS] You have sucessfully bought a ~g~{name}~w~ for ~g~${price}.");
 
                         LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a {name} for {price} from property ID {prop.Id}.");
                         break;
 
                     case InventoryManager.GiveItemErrors.NotEnoughSpace:
-                        API.sendChatMessageToPlayer(sender,
+                        API.SendChatMessageToPlayer(sender,
                             $"[BUSINESS] You dont have enough space for that item. Need {item.AmountOfSlots} Slots.");
                         break;
 
                     case InventoryManager.GiveItemErrors.MaxAmountReached:
-                        API.sendChatMessageToPlayer(sender,
+                        API.SendChatMessageToPlayer(sender,
                             $"[BUSINESS] You have reached the maximum allowed amount of that item.");
                         break;
 
                    case InventoryManager.GiveItemErrors.HasSimilarItem:
-                       API.sendChatMessageToPlayer(sender,
+                       API.SendChatMessageToPlayer(sender,
                            $"[BUSINESS] You already have a similar item.");
                         break;
                 }
@@ -426,19 +426,19 @@ namespace mtgvrp.property_system.businesses
             var prop = PropertyManager.IsAtPropertyInteraction(player);
             if (prop == null)
             {
-                API.sendChatMessageToPlayer(player, "You aren't at a property.");
+                API.SendChatMessageToPlayer(player, "You aren't at a property.");
                 return;
             }
 
             if (player.isInVehicle)
             {
-                API.sendChatMessageToPlayer(player, "You cannot /buy while in a vehicle.");
+                API.SendChatMessageToPlayer(player, "You cannot /buy while in a vehicle.");
                 return;
             }
 
             if (player.GetCharacter().IsOnGarbageRun)
             {
-                player.sendChatMessage("You can't do this while on a garbage run.");
+                player.SendChatMessage("You can't do this while on a garbage run.");
                 return;
             }
 
@@ -446,7 +446,7 @@ namespace mtgvrp.property_system.businesses
             {
                 case PropertyManager.PropertyTypes.Hardware:
                 {
-                    API.freezePlayer(player, true);
+                    API.FreezePlayer(player, true);
                     List<string[]> itemsWithPrices = new List<string[]>();
                     foreach (var itm in ItemManager.HardwareItems)
                     {
@@ -456,13 +456,13 @@ namespace mtgvrp.property_system.businesses
                             prop.ItemPrices.SingleOrDefault(x => x.Key == itm[0]).Value.ToString()
                         });
                     }
-                    API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()), "Hardware",
+                    API.TriggerClientEvent(player, "property_buy", API.ToJson(itemsWithPrices.ToArray()), "Hardware",
                         prop.PropertyName);
                 }
                     break;
                 case PropertyManager.PropertyTypes.TwentyFourSeven:
                 {
-                    API.freezePlayer(player, true);
+                    API.FreezePlayer(player, true);
                     List<string[]> itemsWithPrices = new List<string[]>();
                     foreach (var itm in ItemManager.TwentyFourSevenItems)
                     {
@@ -472,13 +472,13 @@ namespace mtgvrp.property_system.businesses
                             prop.ItemPrices.SingleOrDefault(x => x.Key == itm[0]).Value.ToString()
                         });
                     }
-                    API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()), "24/7",
+                    API.TriggerClientEvent(player, "property_buy", API.ToJson(itemsWithPrices.ToArray()), "24/7",
                         prop.PropertyName);
                 }
                     break;
                 case PropertyManager.PropertyTypes.Restaurant:
                 {
-                    API.freezePlayer(player, true);
+                    API.FreezePlayer(player, true);
                     List<string[]> itemsWithPrices = new List<string[]>();
                     for (int i = 0; i < 5; i++)
                     {
@@ -496,14 +496,14 @@ namespace mtgvrp.property_system.businesses
                             "custom" + i, prop.RestaurantItems[i - 1], "", prop.ItemPrices["custom" + i].ToString()
                         });
                     }
-                    API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()), "Restaurant",
+                    API.TriggerClientEvent(player, "property_buy", API.ToJson(itemsWithPrices.ToArray()), "Restaurant",
                         prop.PropertyName);
                 }
                     break;
 
                 case PropertyManager.PropertyTypes.LSNN:
                 {
-                    API.freezePlayer(player, true);
+                    API.FreezePlayer(player, true);
                     List<string[]> itemsWithPrices = new List<string[]>();
                     foreach (var itm in ItemManager.LSNNItems)
                     {
@@ -513,14 +513,14 @@ namespace mtgvrp.property_system.businesses
                             prop.ItemPrices.SingleOrDefault(x => x.Key == itm[0]).Value.ToString()
                         });
                     }
-                    API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()),
+                    API.TriggerClientEvent(player, "property_buy", API.ToJson(itemsWithPrices.ToArray()),
                         "Los Santos News Network",
                         prop.PropertyName);
                 }
                     break;
                 case PropertyManager.PropertyTypes.HuntingStation:
                 {
-                    API.freezePlayer(player, true);
+                    API.FreezePlayer(player, true);
                     List<string[]> itemsWithPrices = new List<string[]>();
                     foreach (var itm in ItemManager.HuntingItems)
                     {
@@ -530,7 +530,7 @@ namespace mtgvrp.property_system.businesses
                             prop.ItemPrices.SingleOrDefault(x => x.Key == itm[0]).Value.ToString()
                         });
                     }
-                    API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()),
+                    API.TriggerClientEvent(player, "property_buy", API.ToJson(itemsWithPrices.ToArray()),
                         "Hunting Shop",
                         prop.PropertyName);
                 }
@@ -538,7 +538,7 @@ namespace mtgvrp.property_system.businesses
 
                 case PropertyManager.PropertyTypes.Government:
                 {
-                    API.freezePlayer(player, true);
+                    API.FreezePlayer(player, true);
                     List<string[]> itemsWithPrices = new List<string[]>();
                     foreach (var itm in ItemManager.GovItems)
                     {
@@ -548,13 +548,13 @@ namespace mtgvrp.property_system.businesses
                             prop.ItemPrices.SingleOrDefault(x => x.Key == itm[0]).Value.ToString()
                         });
                     }
-                    API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()), "Government",
+                    API.TriggerClientEvent(player, "property_buy", API.ToJson(itemsWithPrices.ToArray()), "Government",
                         prop.PropertyName);
                         break;
                 }
 
                 default:
-                    API.sendChatMessageToPlayer(player, "This property doesn't sell anything.");
+                    API.SendChatMessageToPlayer(player, "This property doesn't sell anything.");
                     break;
             }
         }

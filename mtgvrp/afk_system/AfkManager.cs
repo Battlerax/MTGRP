@@ -1,12 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
-using GrandTheftMultiplayer.Server;
-using GrandTheftMultiplayer.Server.API;
+
+
 using mtgvrp.core;
 
 namespace mtgvrp.afk_system
@@ -35,7 +35,7 @@ namespace mtgvrp.afk_system
 
         private void _afkTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            foreach (var p in API.getAllPlayers())
+            foreach (var p in API.GetAllPlayers())
             {
                 if(p == null)
                     continue;
@@ -50,11 +50,11 @@ namespace mtgvrp.afk_system
                     c.AfkTimer++;
                     if (c.AfkTimer == WarningTimer)
                     {
-                        API.sendChatMessageToPlayer(p,"~r~[AFK WARNING] You will be kicked in one minute for being AFK!");
+                        API.SendChatMessageToPlayer(p,"~r~[AFK WARNING] You will be kicked in one minute for being AFK!");
                     }
                     else if (c.AfkTimer >= KickInterval)
                     {
-                        API.kickPlayer(p, "AFK for longer than 10 minutes.");
+                        API.KickPlayer(p, "AFK for longer than 10 minutes.");
                     }
                 }
                 else

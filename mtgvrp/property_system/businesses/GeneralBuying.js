@@ -1,6 +1,6 @@
 ﻿var menu = null;
 
-API.onServerEventTrigger.connect((eventName, args) => {
+Event.OnServerEventTrigger.connect((eventName, args) => {
 	switch (eventName) {
 		case "property_buy":
 			menu = API.createMenu(args[1], args[2], 0, 0, 6);
@@ -27,7 +27,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
 	}
 });
 
-API.onUpdate.connect(function() {
+Event.OnUpdate.connect(function() {
 	if(menu !== null)
 		API.drawMenu(menu);
 });

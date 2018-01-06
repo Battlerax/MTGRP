@@ -1,11 +1,11 @@
 ﻿var mdcBrowser = null;
 
-API.onResourceStart.connect(function () {
+Event.OnResourceStart.connect(function () {
     
 });
 
 //From server
-API.onServerEventTrigger.connect(function (eventName, args) {
+Event.OnServerEventTrigger.connect(function (eventName, args) {
  
     switch (eventName) {
         case "showMDC":

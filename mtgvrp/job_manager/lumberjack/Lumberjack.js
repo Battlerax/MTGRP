@@ -13,7 +13,7 @@ function getPositionInfrontOfPlayer(distance) {
     return newpos;
 }
 
-API.onUpdate.connect(() => {
+Event.OnUpdate.connect(() => {
     if (API.getPlayerCurrentWeapon() == -102973651) {
         API.disableControlThisFrame(24);
 

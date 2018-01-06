@@ -1,11 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using GrandTheftMultiplayer.Server.Constant;
-using GrandTheftMultiplayer.Server.Managers;
-using GrandTheftMultiplayer.Shared.Math;
-using GrandTheftMultiplayer.Shared;
-using GrandTheftMultiplayer.Server.API;
-
+using GTANetworkAPI;
 using mtgvrp.database_manager;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -43,17 +38,17 @@ public class ContainerZone
 
     public void Deploy()
     {
-        Blip = API.shared.createBlip(Position, 0);
-        API.shared.setBlipName(Blip, $"Container Zone {GetContainerId(this)}");
-        API.shared.setBlipSprite(Blip, 357);
-        API.shared.setBlipShortRange(Blip, true);
-        ColShape = API.shared.create2DColShape(Position.X, Position.Y, Radius, Radius);
+        Blip = API.Shared.CreateBlip(Position, 0);
+        API.Shared.SetBlipName(Blip, $"Container Zone {GetContainerId(this)}");
+        API.Shared.SetBlipSprite(Blip, 357);
+        API.Shared.SetBlipShortRange(Blip, true);
+        ColShape = API.Shared.Create2DColShape(Position.X, Position.Y, Radius, Radius);
     }
 
     public void Remove()
     {
-        API.shared.deleteEntity(Blip);
-        API.shared.deleteColShape(ColShape);
+        API.Shared.DeleteEntity(Blip);
+        API.Shared.DeleteColShape(ColShape);
         var filter = Builders<ContainerZone>.Filter.Eq("_id", Id);
         DatabaseManager.ContainerZonesTable.DeleteOne(filter);
         ResetContainerZones();

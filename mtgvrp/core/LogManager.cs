@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading;
 using System.Timers;
-using GrandTheftMultiplayer.Server.Elements;
+using GTANetworkAPI;
 using Timer = System.Timers.Timer;
 
 namespace mtgvrp.core

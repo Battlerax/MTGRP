@@ -15,7 +15,7 @@ function VehicleJSONToMenu(json, type) {
 }
 
 //Events.
-API.onServerEventTrigger.connect((eventName, args) => {
+Event.OnServerEventTrigger.connect((eventName, args) => {
     switch(eventName) {
         case "chopperdealership_showbuyvehiclemenu":
             //Create main list.
@@ -35,7 +35,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
             API.pointCameraAtPosition(newCamera, new Vector3(230.5009, -990.5709, -99.49818));
 	        API.callNative("13507514344510389797", 230.5009, -990.5709, -99.49818, 0.0, 0.0, 0.0); //STREAMING::_SET_FOCUS_AREA
 
-            API.sendChatMessage("~g~NOTE: You can use the PLUS and MINUS keys to rotate your vehicle!");
+            API.SendChatMessage("~g~NOTE: You can use the PLUS and MINUS keys to rotate your vehicle!");
 
             //Listen for click: 
             vehDealerList.OnItemSelect.connect(function (sender, item, index) {
@@ -84,7 +84,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
     }
 });
 
-API.onKeyDown.connect(function(sender, e) {
+Event.OnKeyDown.connect(function(sender, e) {
     if (e.KeyCode == Keys.Oemplus && currentVeh != null) {
         var rot = API.getEntityRotation(currentVeh).Add(new Vector3(0, 0, 4));
         API.setEntityRotation(currentVeh, rot);
@@ -96,7 +96,7 @@ API.onKeyDown.connect(function(sender, e) {
     }
 });
 
-API.onUpdate.connect(function () {
+Event.OnUpdate.connect(function () {
     if (vehDealerList != null)
         API.drawMenu(vehDealerList);
     if (currentVehicleList != null)

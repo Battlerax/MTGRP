@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Elements;
-using GrandTheftMultiplayer.Server.Managers;
-using GrandTheftMultiplayer.Shared;
-using GrandTheftMultiplayer.Shared.Math;
+
+using GTANetworkAPI;
+
+
+
 using mtgvrp.core;
 using mtgvrp.core.Help;
 using mtgvrp.inventory;
@@ -48,7 +48,7 @@ namespace mtgvrp.drugs_manager
             Inventory = null;
             marker.Destroy();
             marker = null;
-            API.shared.deleteEntity(prop);
+            API.Shared.DeleteEntity(prop);
         }
 
         public void UpdateMarkerOpen()

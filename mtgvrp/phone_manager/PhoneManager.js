@@ -32,11 +32,11 @@ function phoneLoaded() {
 }
 
 
-API.onServerEventTrigger.connect((eventName, args) => {
+Event.OnServerEventTrigger.connect((eventName, args) => {
     switch (eventName) {
         case "phone_showphone":
             if (myBrowser !== null) {
-                API.sendChatMessage("You already have the phone opened.");
+                API.SendChatMessage("You already have the phone opened.");
                 break;
             }
 
@@ -118,7 +118,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
 });
 
 var isMouseShown = false;
-API.onKeyUp.connect(function(sender, e) {
+Event.OnKeyUp.connect(function(sender, e) {
     if (myBrowser !== null && e.KeyCode === Keys.Escape) {
         API.destroyCefBrowser(myBrowser);
         //API.setCefDrawState(false);
@@ -133,7 +133,7 @@ API.onKeyUp.connect(function(sender, e) {
     }
 });
 
-API.onUpdate.connect(() => {
+Event.OnUpdate.connect(() => {
     if (isMouseShown) {
 
     }

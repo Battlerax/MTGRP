@@ -1,8 +1,8 @@
-﻿using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Elements;
-using GrandTheftMultiplayer.Server.Managers;
-using GrandTheftMultiplayer.Shared;
-using GrandTheftMultiplayer.Shared.Math;
+
+using GTANetworkAPI;
+
+
+
 
 
 using MongoDB.Bson.Serialization.Attributes;
@@ -110,39 +110,39 @@ namespace mtgvrp.core
           
             if (UseMarker)
             {
-                Marker = API.shared.createMarker(MarkerType, Location, MarkerDirection, Rotation, MarkerScale,
+                Marker = API.Shared.CreateMarker(MarkerType, Location, MarkerDirection, Rotation, MarkerScale,
                     MarkerColor[0], MarkerColor[1], MarkerColor[2], MarkerColor[3], Dimension);
             }
 
             if (UseText)
             {
-                Label = API.shared.createTextLabel(TextLabelText, Location, TextLabelRange, TextLabelSize,
+                Label = API.Shared.CreateTextLabel(TextLabelText, Location, TextLabelRange, TextLabelSize,
                     TextLabelSeeThrough, Dimension);
-                API.shared.setTextLabelColor(Label, TextLabelColor[1], TextLabelColor[2], TextLabelColor[3], TextLabelColor[0]);
+                API.Shared.SetTextLabelColor(Label, TextLabelColor[1], TextLabelColor[2], TextLabelColor[3], TextLabelColor[0]);
             }
 
-            //Blip = API.shared.createBlip(Location, BlipRange, Dimension);
-            Blip = API.shared.createBlip(Location, Dimension);
-            API.shared.setBlipColor(Blip, BlipColor);
-            API.shared.setBlipName(Blip, BlipName);
-            API.shared.setBlipScale(Blip, BlipScale);
-            API.shared.setBlipShortRange(Blip, BlipShortRange);
-            API.shared.setBlipSprite(Blip, (UseBlip && BlipSprite != -1) ? (BlipSprite) : (2));
-            API.shared.setBlipTransparency(Blip, BlipTransparency);
+            //Blip = API.Shared.CreateBlip(Location, BlipRange, Dimension);
+            Blip = API.Shared.CreateBlip(Location, Dimension);
+            API.Shared.SetBlipColor(Blip, BlipColor);
+            API.Shared.SetBlipName(Blip, BlipName);
+            API.Shared.SetBlipScale(Blip, BlipScale);
+            API.Shared.SetBlipShortRange(Blip, BlipShortRange);
+            API.Shared.SetBlipSprite(Blip, (UseBlip && BlipSprite != -1) ? (BlipSprite) : (2));
+            API.Shared.SetBlipTransparency(Blip, BlipTransparency);
 
             if (UseColZone)
             {
-                ColZone = API.shared.createCylinderColShape(Location, ColZoneSize, ColZoneHeight);
+                ColZone = API.Shared.CreateCylinderColShape(Location, ColZoneSize, ColZoneHeight);
             }
         }
 
         public void Destroy()
         {
-            if (API.shared.doesEntityExist(Marker)) { API.shared.deleteEntity(Marker);}
-            if (API.shared.doesEntityExist(Label)) { API.shared.deleteEntity(Label);}
-            if (API.shared.doesEntityExist(Blip)) { API.shared.deleteEntity(Blip);}
+            if (API.Shared.DoesEntityExist(Marker)) { API.Shared.DeleteEntity(Marker);}
+            if (API.Shared.DoesEntityExist(Label)) { API.Shared.DeleteEntity(Label);}
+            if (API.Shared.DoesEntityExist(Blip)) { API.Shared.DeleteEntity(Blip);}
 
-            API.shared.deleteColShape(ColZone);
+            API.Shared.DeleteColShape(ColZone);
         }
 
         public void TotalRefresh()
@@ -168,40 +168,40 @@ namespace mtgvrp.core
                 return;
             }
 
-            switch (API.shared.getEntityType(type))
+            switch (API.Shared.GetEntityType(type))
             {
                 case EntityType.Marker:
-                    API.shared.setMarkerColor(Marker, MarkerColor[0], MarkerColor[1], MarkerColor[2], MarkerColor[3]);
-                    API.shared.setMarkerDirection(Marker, MarkerDirection);
-                    API.shared.setMarkerScale(Marker, MarkerScale);
-                    API.shared.setMarkerType(Marker, MarkerType);
+                    API.Shared.SetMarkerColor(Marker, MarkerColor[0], MarkerColor[1], MarkerColor[2], MarkerColor[3]);
+                    API.Shared.SetMarkerDirection(Marker, MarkerDirection);
+                    API.Shared.SetMarkerScale(Marker, MarkerScale);
+                    API.Shared.SetMarkerType(Marker, MarkerType);
                     break;
                 case EntityType.TextLabel:
-                    API.shared.setTextLabelSeethrough(Label, TextLabelSeeThrough);
-                    API.shared.setTextLabelColor(Label, TextLabelColor[1], TextLabelColor[2], TextLabelColor[3], TextLabelColor[0]);
-                    API.shared.setTextLabelRange(Label, TextLabelRange);
-                    API.shared.setTextLabelText(Label, TextLabelText);
+                    API.Shared.SetTextLabelSeethrough(Label, TextLabelSeeThrough);
+                    API.Shared.SetTextLabelColor(Label, TextLabelColor[1], TextLabelColor[2], TextLabelColor[3], TextLabelColor[0]);
+                    API.Shared.SetTextLabelRange(Label, TextLabelRange);
+                    API.Shared.SetTextLabelText(Label, TextLabelText);
                     break;
                 case EntityType.Blip:
-                    API.shared.setBlipColor(Blip, BlipColor);
-                    API.shared.setBlipName(Blip, BlipName);
-                    API.shared.setBlipScale(Blip, BlipScale);
-                    API.shared.setBlipShortRange(Blip, BlipShortRange);
-                    API.shared.setBlipSprite(Blip, (UseBlip && BlipSprite != -1) ? (BlipSprite) : (2));
-                    API.shared.setBlipTransparency(Blip, BlipTransparency);
+                    API.Shared.SetBlipColor(Blip, BlipColor);
+                    API.Shared.SetBlipName(Blip, BlipName);
+                    API.Shared.SetBlipScale(Blip, BlipScale);
+                    API.Shared.SetBlipShortRange(Blip, BlipShortRange);
+                    API.Shared.SetBlipSprite(Blip, (UseBlip && BlipSprite != -1) ? (BlipSprite) : (2));
+                    API.Shared.SetBlipTransparency(Blip, BlipTransparency);
                     break;
             }
         }
 
         public void Refresh(CylinderColShape colshape)
         {
-            API.shared.deleteColShape(ColZone);
-            ColZone = API.shared.createCylinderColShape(Location, ColZoneSize, ColZoneHeight);
+            API.Shared.DeleteColShape(ColZone);
+            ColZone = API.Shared.CreateCylinderColShape(Location, ColZoneSize, ColZoneHeight);
         }
 
         public void SetMarkerZoneRouteVisible(Client player, bool visible, int color)
         {
-            API.shared.triggerClientEvent(player, "setMarkerZoneRouteVisible", Blip, visible, color);
+            API.Shared.TriggerClientEvent(player, "setMarkerZoneRouteVisible", Blip, visible, color);
         }
     }
 }

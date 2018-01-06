@@ -1,10 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using GrandTheftMultiplayer.Server.Constant;
-using GrandTheftMultiplayer.Shared.Math;
-using GrandTheftMultiplayer.Shared;
-using GrandTheftMultiplayer.Server.API;
-
+using GTANetworkAPI;
 using mtgvrp.database_manager;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -42,7 +38,7 @@ public class Container
 
     public void Deploy()
     {
-        ContainerObject = API.shared.createObject(API.shared.getHashKey("prop_container_03b"), Position, Rotation);
+        ContainerObject = API.Shared.CreateObject(API.Shared.GetHashKey("prop_container_03b"), Position, Rotation);
         property = new Property(PropertyManager.PropertyTypes.Container, Position, Rotation, PropertyManager.PropertyTypes.Container.ToString());
         ItemManager.SetDefaultPrices(property);
         property.OwnerId = OwnerId;
@@ -63,7 +59,7 @@ public class Container
 
     public void Remove()
     {
-        API.shared.deleteEntity(ContainerObject);
+        API.Shared.DeleteEntity(ContainerObject);
         property.DestroyMarkers();
         var filter = Builders<Property>.Filter.Eq("_id", Id);
         DatabaseManager.PropertyTable.DeleteOne(filter);

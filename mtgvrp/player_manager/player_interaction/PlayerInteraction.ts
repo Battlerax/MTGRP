@@ -6,11 +6,11 @@ var interactBrowser = null;
 
 var res = null;
 
-API.onResourceStart.connect(() => {
+Event.OnResourceStart.connect(() => {
     res = API.getScreenResolutionMaintainRatio();
 });
 
-API.onServerEventTrigger.connect((eventname, args) => {
+Event.OnServerEventTrigger.connect((eventname, args) => {
     switch(eventname) {
         case "player_interact_subtitle":
             API.displaySubtitle(args[0], 1000);
@@ -18,7 +18,7 @@ API.onServerEventTrigger.connect((eventname, args) => {
     }
 });
 
-API.onKeyDown.connect((sender, e) => {
+Event.OnKeyDown.connect((sender, e) => {
     if (e.KeyCode == Keys.X && e.Control) {
         API.showCursor(true);
         selectingPlayer = true;
@@ -28,7 +28,7 @@ API.onKeyDown.connect((sender, e) => {
     }
 });
 
-API.onKeyUp.connect((sender, e) => {
+Event.OnKeyUp.connect((sender, e) => {
     if (e.KeyCode == Keys.X && selectingPlayer == true) {
         API.showCursor(false);
         selectingPlayer = false;
@@ -37,7 +37,7 @@ API.onKeyUp.connect((sender, e) => {
     }
 });
 
-API.onUpdate.connect(() => {
+Event.OnUpdate.connect(() => {
     if (selectingPlayer) {
         API.disableControlThisFrame(25);
 

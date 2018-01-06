@@ -1,15 +1,15 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 
 using System.Timers;
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Constant;
-using GrandTheftMultiplayer.Server.Elements;
-using GrandTheftMultiplayer.Server.Managers;
-using GrandTheftMultiplayer.Shared;
-using GrandTheftMultiplayer.Shared.Math;
+
+
+using GTANetworkAPI;
+
+
+
 using mtgvrp.core;
 using mtgvrp.core.Help;
 using mtgvrp.inventory;
@@ -71,10 +71,10 @@ namespace mtgvrp.job_manager.hunting
 
         public HuntingManager()
         {
-            API.onResourceStart += OnHuntingManagerStart;
-            API.onPlayerWeaponAmmoChange += OnPlayerWeaponAmmoChange;
-            API.onPlayerWeaponSwitch += OnPlayerWeaponSwitch;
-            API.onClientEventTrigger += OnClientEventTrigger;
+            Event.OnResourceStart += OnHuntingManagerStart;
+            Event.OnPlayerWeaponAmmoChange += OnPlayerWeaponAmmoChange;
+            Event.OnPlayerWeaponSwitch += OnPlayerWeaponSwitch;
+            Event.OnClientEventTrigger += OnClientEventTrigger;
         }
 
         public void OnHuntingManagerStart()
@@ -84,7 +84,7 @@ namespace mtgvrp.job_manager.hunting
                 new HuntingAnimal(spawn, AnimalTypes.Deer, AnimalState.Wandering).UpdateState = true;
                 new HuntingAnimal(spawn, AnimalTypes.Boar, AnimalState.Wandering).UpdateState = true;
             }
-            API.consoleOutput("[HuntingManager] Created " + SpawnedAnimals.Count + " animals.");*/
+            API.ConsoleOutput("[HuntingManager] Created " + SpawnedAnimals.Count + " animals.");*/
         }
 
         public void OnPlayerWeaponSwitch(Client player, WeaponHash oldWeapon)
@@ -93,16 +93,16 @@ namespace mtgvrp.job_manager.hunting
             {
                 foreach (var a in SpawnedAnimals)
                 {
-                    if(API.doesEntityExistForPlayer(player, a.handle))
-                        API.triggerClientEvent(player, "toggle_animal_invincible", a.handle, true);
+                    if(API.DoesEntityExistForPlayer(player, a.handle))
+                        API.TriggerClientEvent(player, "toggle_animal_invincible", a.handle, true);
                 }
             }
-            else if (API.shared.getPlayerCurrentWeapon(player) == WeaponHash.SniperRifle)
+            else if (API.Shared.GetPlayerCurrentWeapon(player) == WeaponHash.SniperRifle)
             {
                 foreach (var a in SpawnedAnimals)
                 {
-                    if (API.doesEntityExistForPlayer(player, a.handle))
-                        API.triggerClientEvent(player, "toggle_animal_invincible", a.handle, false);
+                    if (API.DoesEntityExistForPlayer(player, a.handle))
+                        API.TriggerClientEvent(player, "toggle_animal_invincible", a.handle, false);
                 }
             }
         }
@@ -120,7 +120,7 @@ namespace mtgvrp.job_manager.hunting
 
                     if (ammo[0].Amount == 0)
                     {
-                        API.sendChatMessageToPlayer(player,
+                        API.SendChatMessageToPlayer(player,
                         "~r~[ERROR]~w~ You've run out of 5.56 ammo and your gun was destroyed.");
                         InventoryManager.DeleteInventoryItem(c, typeof(Weapon), 1,
                             w => w.CommandFriendlyName == "SniperRifle");
@@ -129,7 +129,7 @@ namespace mtgvrp.job_manager.hunting
 
                 foreach (var a in SpawnedAnimals)
                 {
-                    if (player.position.DistanceTo(API.getEntityPosition(a.handle)) < 80f)
+                    if (player.position.DistanceTo(API.GetEntityPosition(a.handle)) < 80f)
                     {
                         a.State = AnimalState.Fleeing;
                         a.FleeingPed = player;
@@ -144,7 +144,7 @@ namespace mtgvrp.job_manager.hunting
         {
             if (eventName == "update_animal_position")
             {
-                API.shared.setEntityPosition((NetHandle)arguments[0], (Vector3)arguments[1]);
+                API.Shared.SetEntityPosition((NetHandle)arguments[0], (Vector3)arguments[1]);
             }
         }
 
@@ -164,24 +164,24 @@ namespace mtgvrp.job_manager.hunting
 
             if (index > HuntingManager.SpawnedAnimals.Count)
             {
-                API.sendChatMessageToPlayer(player, "Invalid animal");
+                API.SendChatMessageToPlayer(player, "Invalid animal");
                 return;
             }
 
-            if (!API.doesEntityExist(SpawnedAnimals[index].handle))
+            if (!API.DoesEntityExist(SpawnedAnimals[index].handle))
             {
-                API.sendChatMessageToPlayer(player, "That animal doesn't exist for the server.");
+                API.SendChatMessageToPlayer(player, "That animal doesn't exist for the server.");
                 return;
             }
 
-            if (!API.doesEntityExistForPlayer(player, SpawnedAnimals[index].handle))
+            if (!API.DoesEntityExistForPlayer(player, SpawnedAnimals[index].handle))
             {
-                API.sendChatMessageToPlayer(player, "That animal doesn't exist for you.");
+                API.SendChatMessageToPlayer(player, "That animal doesn't exist for you.");
                 return;
             }
 
-            API.setEntityPosition(player, API.getEntityPosition(SpawnedAnimals[index].handle));
-            API.sendChatMessageToPlayer(player, "TPed");
+            API.SetEntityPosition(player, API.GetEntityPosition(SpawnedAnimals[index].handle));
+            API.SendChatMessageToPlayer(player, "TPed");
             return;
         }
 
@@ -195,9 +195,9 @@ namespace mtgvrp.job_manager.hunting
             {
                 foreach (var a in SpawnedAnimals)
                 {
-                    if (player.position.DistanceTo(API.getEntityPosition(a.handle)) < 2.0)
+                    if (player.position.DistanceTo(API.GetEntityPosition(a.handle)) < 2.0)
                     {
-                        bool isDead = API.fetchNativeFromPlayer<bool>(player, Hash.IS_PED_DEAD_OR_DYING, a.handle, 1);
+                        bool isDead = API.FetchNativeFromPlayer<bool>(player, Hash.IS_PED_DEAD_OR_DYING, a.handle, 1);
                         if (isDead)
                         {
                             var animalItem = new AnimalItem();
@@ -205,7 +205,7 @@ namespace mtgvrp.job_manager.hunting
                             switch (InventoryManager.GiveInventoryItem(character, animalItem, 1, false))
                             {
                                 case InventoryManager.GiveItemErrors.Success:
-                                    API.sendChatMessageToPlayer(player, Color.White,
+                                    API.SendChatMessageToPlayer(player, Color.White,
                                         "You pickup the Deer carcass from the ground.");
                                     ChatManager.RoleplayMessage(character, "picks up the Deer carcass from the ground.",
                                         ChatManager.RoleplayMe);
@@ -213,20 +213,20 @@ namespace mtgvrp.job_manager.hunting
                                     break;
 
                                 case InventoryManager.GiveItemErrors.NotEnoughSpace:
-                                    API.sendChatMessageToPlayer(player, Color.White,
+                                    API.SendChatMessageToPlayer(player, Color.White,
                                         "~r~[ERROR] You do not have enough inventory space for this. (Need " +
                                         animalItem.AmountOfSlots + ")");
                                     break;
 
                                 case InventoryManager.GiveItemErrors.MaxAmountReached:
-                                    API.sendChatMessageToPlayer(player, Color.White,
+                                    API.SendChatMessageToPlayer(player, Color.White,
                                         "~r~[ERROR]~w~ You can only carry one of these at a time.");
                                     break;
                             }
                         }
                         else
                         {
-                            API.sendChatMessageToPlayer(player, Color.White, "~r~[ERROR]~w~ This dear is not dead!");
+                            API.SendChatMessageToPlayer(player, Color.White, "~r~[ERROR]~w~ This dear is not dead!");
                         }
                         return;
                     }
@@ -234,7 +234,7 @@ namespace mtgvrp.job_manager.hunting
             }
             else
             {
-                API.sendChatMessageToPlayer(player, Color.White, "~r~[ERROR]~w~ You don't have a valid Deer tag for today.");
+                API.SendChatMessageToPlayer(player, Color.White, "~r~[ERROR]~w~ You don't have a valid Deer tag for today.");
             }
         }
 
@@ -248,9 +248,9 @@ namespace mtgvrp.job_manager.hunting
             {
                 foreach (var a in SpawnedAnimals)
                 {
-                    if (player.position.DistanceTo(API.getEntityPosition(a.handle)) < 2.0)
+                    if (player.position.DistanceTo(API.GetEntityPosition(a.handle)) < 2.0)
                     {
-                        bool isDead = API.fetchNativeFromPlayer<bool>(player, Hash.IS_PED_DEAD_OR_DYING, a.handle, 1);
+                        bool isDead = API.FetchNativeFromPlayer<bool>(player, Hash.IS_PED_DEAD_OR_DYING, a.handle, 1);
                         if (isDead)
                         {
                             var animalItem = new AnimalItem();
@@ -258,7 +258,7 @@ namespace mtgvrp.job_manager.hunting
                             switch (InventoryManager.GiveInventoryItem(character, animalItem))
                             {
                                 case InventoryManager.GiveItemErrors.Success:
-                                    API.sendChatMessageToPlayer(player, Color.White,
+                                    API.SendChatMessageToPlayer(player, Color.White,
                                         "You pickup the Boar carcass from the ground.");
                                     ChatManager.RoleplayMessage(character, "picks up the Boar carcass from the ground.",
                                         ChatManager.RoleplayMe);
@@ -266,20 +266,20 @@ namespace mtgvrp.job_manager.hunting
                                     break;
 
                                 case InventoryManager.GiveItemErrors.NotEnoughSpace:
-                                    API.sendChatMessageToPlayer(player, Color.White,
+                                    API.SendChatMessageToPlayer(player, Color.White,
                                         "~r~[ERROR] You do not have enough inventory space for this. (Need " +
                                         animalItem.AmountOfSlots + ")");
                                     break;
 
                                 case InventoryManager.GiveItemErrors.MaxAmountReached:
-                                    API.sendChatMessageToPlayer(player, Color.White,
+                                    API.SendChatMessageToPlayer(player, Color.White,
                                         "~r~[ERROR]~w~ You can only carry one of these at a time.");
                                     break;
                             }
                         }
                         else
                         {
-                            API.sendChatMessageToPlayer(player, Color.White, "~r~[ERROR]~w~ This Boar is not dead!");
+                            API.SendChatMessageToPlayer(player, Color.White, "~r~[ERROR]~w~ This Boar is not dead!");
                         }
                         return;
                     }
@@ -287,7 +287,7 @@ namespace mtgvrp.job_manager.hunting
             }
             else
             {
-                API.sendChatMessageToPlayer(player, Color.White, "~r~[ERROR]~w~ You don't have a valid Boar tag for today.");
+                API.SendChatMessageToPlayer(player, Color.White, "~r~[ERROR]~w~ You don't have a valid Boar tag for today.");
             }
         }
 
@@ -297,14 +297,14 @@ namespace mtgvrp.job_manager.hunting
             var prop = PropertyManager.IsAtPropertyInteraction(player);
             if (prop == null || prop?.Type != PropertyManager.PropertyTypes.HuntingStation)
             {
-                API.sendChatMessageToPlayer(player, "You aren't at a hunting shop interaction point.");
+                API.SendChatMessageToPlayer(player, "You aren't at a hunting shop interaction point.");
                 return;
             }
 
             var character = player.GetCharacter();
             if (character.LastRedeemedDeerTag == DateTime.Today.Date)
             {
-                API.sendChatMessageToPlayer(player, Color.White, "~r~ERROR:~w~ You already redeemed a Deer tag today.");
+                API.SendChatMessageToPlayer(player, Color.White, "~r~ERROR:~w~ You already redeemed a Deer tag today.");
                 return;
             }
 
@@ -320,14 +320,14 @@ namespace mtgvrp.job_manager.hunting
                         i => i.CommandFriendlyName == "Deer_Tag");
                     InventoryManager.GiveInventoryItem(character, new Money(), 2000);
                     character.LastRedeemedDeerTag = DateTime.Today.Date;
-                    API.sendChatMessageToPlayer(player, Color.White, "You redeemed your Deer carcass for ~g~$2500!");
+                    API.SendChatMessageToPlayer(player, Color.White, "You redeemed your Deer carcass for ~g~$2500!");
                     ChatManager.RoleplayMessage(character, "redeems their Deer carcass.", ChatManager.RoleplayMe);
 
                     LogManager.Log(LogManager.LogTypes.Stats, $"[Minigame] {character.CharacterName}[{player.GetAccount().AccountName}] has earned $2500 from a deer tag.");
                 }
-                else API.sendChatMessageToPlayer(player, Color.White, "~r~ERROR:~w~ You do not have a Deer to redeem.");
+                else API.SendChatMessageToPlayer(player, Color.White, "~r~ERROR:~w~ You do not have a Deer to redeem.");
             }
-            else API.sendChatMessageToPlayer(player, Color.White, "~r~ERROR:~w~ You do not have a Deer tag for today.");
+            else API.SendChatMessageToPlayer(player, Color.White, "~r~ERROR:~w~ You do not have a Deer tag for today.");
         }
 
         [Command("redeemboartag"), Help(HelpManager.CommandGroups.HuntingActivity, "Sells the boar you have in your hands.")]
@@ -336,14 +336,14 @@ namespace mtgvrp.job_manager.hunting
             var prop = PropertyManager.IsAtPropertyInteraction(player);
             if (prop == null || prop?.Type != PropertyManager.PropertyTypes.HuntingStation)
             {
-                API.sendChatMessageToPlayer(player, "You aren't at a hunting shop interaction point.");
+                API.SendChatMessageToPlayer(player, "You aren't at a hunting shop interaction point.");
                 return;
             }
 
             var character = player.GetCharacter();
             if (character.LastRedeemedBoarTag == DateTime.Today.Date)
             {
-                API.sendChatMessageToPlayer(player, Color.White, "~r~ERROR:~w~ You already redeemed a Boar tag today.");
+                API.SendChatMessageToPlayer(player, Color.White, "~r~ERROR:~w~ You already redeemed a Boar tag today.");
                 return;
             }
 
@@ -359,14 +359,14 @@ namespace mtgvrp.job_manager.hunting
                         i => i.CommandFriendlyName == "Boar_Tag");
                     InventoryManager.GiveInventoryItem(character, new Money(), 2000);
                     character.LastRedeemedBoarTag = DateTime.Today.Date;
-                    API.sendChatMessageToPlayer(player, Color.White, "You redeemed your Boar carcass for ~g~$2500!");
+                    API.SendChatMessageToPlayer(player, Color.White, "You redeemed your Boar carcass for ~g~$2500!");
                     ChatManager.RoleplayMessage(character, "redeems their Boar carcass.", ChatManager.RoleplayMe);
 
                     LogManager.Log(LogManager.LogTypes.Stats, $"[Minigame] {character.CharacterName}[{player.GetAccount().AccountName}] has earned $2500 from a boar tag.");
                 }
-                else API.sendChatMessageToPlayer(player, Color.White, "~r~ERROR:~w~ You do not have a Boar to redeem.");
+                else API.SendChatMessageToPlayer(player, Color.White, "~r~ERROR:~w~ You do not have a Boar to redeem.");
             }
-            else API.sendChatMessageToPlayer(player, Color.White, "~r~ERROR:~w~ You do not have a Boar tag for today.");
+            else API.SendChatMessageToPlayer(player, Color.White, "~r~ERROR:~w~ You do not have a Boar tag for today.");
         }
     }
 
@@ -387,7 +387,7 @@ namespace mtgvrp.job_manager.hunting
 
         public HuntingAnimal(Vector3 spawn, HuntingManager.AnimalTypes type, HuntingManager.AnimalState state)
         {
-            handle = API.shared.createPed((type == HuntingManager.AnimalTypes.Deer) ? (PedHash.Deer) : (PedHash.Boar),
+            handle = API.Shared.CreatePed((type == HuntingManager.AnimalTypes.Deer) ? (PedHash.Deer) : (PedHash.Boar),
                 spawn, 0, 0);
 
             Spawn = spawn;
@@ -403,22 +403,22 @@ namespace mtgvrp.job_manager.hunting
             StateTimer.Start();
 
             HuntingManager.SpawnedAnimals.Add(this);
-            API.shared.setEntitySyncedData(handle, "IS_ANIMAL", true);
-            API.shared.setEntitySyncedData(handle, "ANIMAL_ID", HuntingManager.SpawnedAnimals.IndexOf(this));
+            API.Shared.SetEntitySyncedData(handle, "IS_ANIMAL", true);
+            API.Shared.SetEntitySyncedData(handle, "ANIMAL_ID", HuntingManager.SpawnedAnimals.IndexOf(this));
         }
 
         public void AnimalAi(HuntingAnimal animal)
         {
-            API.shared.setEntityPositionFrozen(handle, false);
+            API.Shared.SetEntityPositionFrozen(handle, false);
 
             List<Client> playersInRadius = new List<Client>();
 
-            foreach (var player in API.shared.getAllPlayers())
+            foreach (var player in API.Shared.GetAllPlayers())
             {
                 if (player == null)
                     return;
 
-                if (player.position.DistanceTo(API.shared.getEntityPosition(handle)) <= 500f)
+                if (player.position.DistanceTo(API.Shared.GetEntityPosition(handle)) <= 500f)
                 {
                     playersInRadius.Add(player);
                 }
@@ -426,15 +426,15 @@ namespace mtgvrp.job_manager.hunting
 
             if (playersInRadius.Count > 0)
             {
-                API.shared.triggerClientEvent(playersInRadius[0], "update_animal_position", handle);
+                API.Shared.TriggerClientEvent(playersInRadius[0], "update_animal_position", handle);
 
                 var tooClosePlayers = new List<Client>();
-                foreach (var player in API.shared.getAllPlayers())
+                foreach (var player in API.Shared.GetAllPlayers())
                 {
                     if (player == null)
                         return;
 
-                    if (player.position.DistanceTo(API.shared.getEntityPosition(handle)) <= 50f)
+                    if (player.position.DistanceTo(API.Shared.GetEntityPosition(handle)) <= 50f)
                     {
                         tooClosePlayers.Add(player);
                     }
@@ -457,13 +457,13 @@ namespace mtgvrp.job_manager.hunting
                         if (nextStateChance < 35) // Graze
                         {
                             State = HuntingManager.AnimalState.Grazing;
-                            API.shared.playPedScenario(handle,
+                            API.Shared.PlayPedScenario(handle,
                                 Type == HuntingManager.AnimalTypes.Deer ? "WORLD_DEER_GRAZING" : "WORLD_PIG_GRAZING");
                         }
                         else // Wander
                         {
                             State = HuntingManager.AnimalState.Wandering;
-                            Destination = HuntingManager.RandomFarawayDestination(API.shared.getEntityPosition(handle));
+                            Destination = HuntingManager.RandomFarawayDestination(API.Shared.GetEntityPosition(handle));
                             UpdateState = true;
                         }
 
@@ -475,7 +475,7 @@ namespace mtgvrp.job_manager.hunting
                     if (StateChangeTick > 20)
                     {
                         State = HuntingManager.AnimalState.Grazing;
-                        API.shared.playPedScenario(handle,
+                        API.Shared.PlayPedScenario(handle,
                             Type == HuntingManager.AnimalTypes.Deer ? "WORLD_DEER_GRAZING" : "WORLD_PIG_GRAZING");
                         StateChangeTick = 0;
                     }
@@ -484,7 +484,7 @@ namespace mtgvrp.job_manager.hunting
             else
             {
                 State = HuntingManager.AnimalState.Grazing;
-                API.shared.playPedScenario(handle,
+                API.Shared.PlayPedScenario(handle,
                     Type == HuntingManager.AnimalTypes.Deer ? "WORLD_DEER_GRAZING" : "WORLD_PIG_GRAZING");
             }
      
@@ -494,17 +494,17 @@ namespace mtgvrp.job_manager.hunting
                 case HuntingManager.AnimalState.Fleeing:
                     foreach (var p in playersInRadius)
                     {
-                        API.shared.sendNativeToPlayer(p, Hash.TASK_SMART_FLEE_PED, handle, FleeingPed.handle, 75f, 5000, 0, 0);
+                        API.Shared.SendNativeToPlayer(p, Hash.TASK_SMART_FLEE_PED, handle, FleeingPed.handle, 75f, 5000, 0, 0);
                     }
                     break;
                 case HuntingManager.AnimalState.Grazing:
-                    API.shared.playPedScenario(handle,
+                    API.Shared.PlayPedScenario(handle,
                         Type == HuntingManager.AnimalTypes.Deer ? "WORLD_DEER_GRAZING" : "WORLD_PIG_GRAZING");
                     break;
                 case HuntingManager.AnimalState.Wandering:
                     foreach (var p in playersInRadius)
                     {
-                        API.shared.sendNativeToPlayer(p, Hash.TASK_WANDER_IN_AREA, handle, Destination.X,
+                        API.Shared.SendNativeToPlayer(p, Hash.TASK_WANDER_IN_AREA, handle, Destination.X,
                             Destination.Y, Destination.Z, 25, 0, 0);
                     }
                     break;
@@ -515,10 +515,10 @@ namespace mtgvrp.job_manager.hunting
 
         public void Respawn()
         {
-            if(API.shared.doesEntityExist(handle))
-                API.shared.deleteEntity(handle);
+            if(API.Shared.DoesEntityExist(handle))
+                API.Shared.DeleteEntity(handle);
 
-            handle = API.shared.createPed((Type == HuntingManager.AnimalTypes.Deer) ? (PedHash.Deer) : (PedHash.Boar),
+            handle = API.Shared.CreatePed((Type == HuntingManager.AnimalTypes.Deer) ? (PedHash.Deer) : (PedHash.Boar),
                 Spawn, 0, 0);
         }
     }

@@ -7,7 +7,7 @@ var curCamPos = new Vector3(-331.7626, -135.005, 41.0);
 var camera = API.createCamera(curCamPos, new Vector3(0, 0, 135.6836));
 var veh;
 
-API.onServerEventTrigger.connect((event, args) => {
+Event.OnServerEventTrigger.connect((event, args) => {
     if (event === "SHOW_MODDING_GUI") {
         var res = API.getScreenResolution();
         myBrowser = API.createCefBrowser(res.Width, res.Height);
@@ -169,7 +169,7 @@ function updateColor(type, r, g, b) {
     }
 }
 
-API.onKeyUp.connect((sender, e) => {
+Event.OnKeyUp.connect((sender, e) => {
     if (e.KeyCode == Keys.Escape && myBrowser != null) {
         exitModShop();
     }
@@ -187,7 +187,7 @@ function exitModShop() {
 
 /* Vehicle Rotation */
 var rotating = 0;
-API.onKeyDown.connect(function (sender, e) {
+Event.OnKeyDown.connect(function (sender, e) {
     if (myBrowser == null)
         return;
 
@@ -221,13 +221,13 @@ API.onKeyDown.connect(function (sender, e) {
     }
 });
 
-API.onKeyUp.connect(function (sender, e) {
+Event.OnKeyUp.connect(function (sender, e) {
     if (e.KeyCode == Keys.Oemplus || e.KeyCode == Keys.OemMinus) {
         rotating = 0;
     }
 });
 
-API.onUpdate.connect(function () {
+Event.OnUpdate.connect(function () {
     if (rotating != 0 && myBrowser !== null) {
         var new_rot = API.getEntityRotation(veh).Add(new Vector3(0, 0, rotating));
         API.setEntityRotation(veh, new_rot);

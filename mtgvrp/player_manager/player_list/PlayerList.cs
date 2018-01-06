@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Elements;
+
+using GTANetworkAPI;
 using mtgvrp.AdminSystem;
 using mtgvrp.core;
 
@@ -11,7 +11,7 @@ namespace mtgvrp.player_manager.player_list
     {
         public PlayerList()
         {
-            API.onClientEventTrigger += API_onClientEventTrigger;
+            Event.OnClientEventTrigger += API_onClientEventTrigger;
         }
 
         private void API_onClientEventTrigger(Client player, string eventName, params object[] arguments)
@@ -31,7 +31,7 @@ namespace mtgvrp.player_manager.player_list
 
                     if (character.GroupId == 0 && type == 2)
                     {
-                        API.sendNotificationToPlayer(player, "You aren't in any group");
+                        API.SendNotificationToPlayer(player, "You aren't in any group");
                         return;
                     }
 
@@ -54,7 +54,7 @@ namespace mtgvrp.player_manager.player_list
                         playerList.Add(new [] { c.CharacterName , PlayerManager.GetPlayerId(c).ToString() });
                     }
 
-                    API.triggerClientEvent(player, "send_player_list", API.toJson(playerList.ToArray()), account.AdminLevel != 0);
+                    API.TriggerClientEvent(player, "send_player_list", API.ToJson(playerList.ToArray()), account.AdminLevel != 0);
                     break;
                 case "player_list_pm":
                     ChatManager.pm_cmd(player, Convert.ToString(arguments[0]), Convert.ToString(arguments[1]));

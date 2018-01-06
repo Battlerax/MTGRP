@@ -4,7 +4,7 @@ var bank_menu = null;
 var withdraw_index = 0;
 var deposit_index = 0;
 
-API.onServerEventTrigger.connect(function(eventName, args){
+Event.OnServerEventTrigger.connect(function(eventName, args){
     if(eventName === "openATM") {
         if (bank_menu == null || bank_menu.Visible == false) {
             var player = API.getLocalPlayer();
@@ -114,7 +114,7 @@ API.onServerEventTrigger.connect(function(eventName, args){
 
 });
 
-API.onUpdate.connect(function () {
+Event.OnUpdate.connect(function () {
     if (menu_pool != null) {
         menu_pool.ProcessMenus();
     }

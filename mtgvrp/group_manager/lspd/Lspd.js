@@ -1,5 +1,5 @@
 let menuPool = null;
-API.onServerEventTrigger.connect(function (eventName, args) {
+Event.OnServerEventTrigger.connect(function (eventName, args) {
     switch (eventName) {
 		
         case "update_beacon":

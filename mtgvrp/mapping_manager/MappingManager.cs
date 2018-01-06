@@ -1,4 +1,4 @@
-﻿using mtgvrp.core;
+using mtgvrp.core;
 using mtgvrp.core.Help;
 using mtgvrp.database_manager;
 using mtgvrp.property_system;
@@ -7,10 +7,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Elements;
-using GrandTheftMultiplayer.Server.Managers;
-using GrandTheftMultiplayer.Shared.Math;
+
+using GTANetworkAPI;
+
+
 using MongoDB.Driver;
 
 namespace mtgvrp.mapping_manager
@@ -23,7 +23,7 @@ namespace mtgvrp.mapping_manager
         {
             DebugManager.DebugMessage("[MAPPING MANAGER] Initializing mapping manager...");
 
-            API.onClientEventTrigger += Mapping_onClientEventTrigger;
+            Event.OnClientEventTrigger += Mapping_onClientEventTrigger;
 
             Mapping = DatabaseManager.MappingTable.Find(FilterDefinition<Mapping>.Empty).ToList();
 
@@ -53,7 +53,7 @@ namespace mtgvrp.mapping_manager
 
                     if (dimension < 0)
                     {
-                        API.triggerClientEvent(player, "send_error", "The dimension entered is less than 0.");
+                        API.TriggerClientEvent(player, "send_error", "The dimension entered is less than 0.");
                         return;
                     }
 
@@ -61,7 +61,7 @@ namespace mtgvrp.mapping_manager
                     {
                         if (PropertyManager.Properties.FindAll(p => p.Id == propLink).Count < 1)
                         {
-                            API.triggerClientEvent(player, "send_error", "The property link ID you entered is invalid.");
+                            API.TriggerClientEvent(player, "send_error", "The property link ID you entered is invalid.");
                             return;
                         }
                     }
@@ -81,14 +81,14 @@ namespace mtgvrp.mapping_manager
                         Mapping.Add(newMapping);
 
                         LogManager.Log(LogManager.LogTypes.MappingRequests, player.GetAccount().AccountName + " has created mapping request #" + newMapping.Id);
-                        API.sendChatMessageToPlayer(player, Color.White, "You have successfully created and loaded mapping request #" + newMapping.Id);
+                        API.SendChatMessageToPlayer(player, Color.White, "You have successfully created and loaded mapping request #" + newMapping.Id);
                         return;
                     }
                     catch (WebException e)
                     {
                         if (((HttpWebResponse)e.Response).StatusCode.ToString() == "NotFound")
                         {
-                            API.triggerClientEvent(player, "send_error", "The pastebin link you entered does not exist.");
+                            API.TriggerClientEvent(player, "send_error", "The pastebin link you entered does not exist.");
                             return;
                         }
                     }
@@ -102,14 +102,14 @@ namespace mtgvrp.mapping_manager
 
                     if (foundRequest == null)
                     {
-                        API.triggerClientEvent(player, "send_error", "The mapping request you searched for does not exist.");
+                        API.TriggerClientEvent(player, "send_error", "The mapping request you searched for does not exist.");
                         return;
                     }
 
                     //id, createdBy, createdDate, propLink, dim, pastebinLink, description, isLoaded, isActive
-                    API.triggerClientEvent(player, "populateViewMappingRequest", foundRequest.Id, foundRequest.CreatedBy, foundRequest.CreatedDate.ToString(), foundRequest.PropertyLinkId, foundRequest.Dimension, foundRequest.PastebinLink, foundRequest.Description, foundRequest.IsSpawned, foundRequest.IsActive);
+                    API.TriggerClientEvent(player, "populateViewMappingRequest", foundRequest.Id, foundRequest.CreatedBy, foundRequest.CreatedDate.ToString(), foundRequest.PropertyLinkId, foundRequest.Dimension, foundRequest.PastebinLink, foundRequest.Description, foundRequest.IsSpawned, foundRequest.IsActive);
                     player.GetAccount().ViewingMappingRequest = foundRequest;
-                    player.sendChatMessage("You are now viewing mapping request #" + foundRequest.Id);
+                    player.SendChatMessage("You are now viewing mapping request #" + foundRequest.Id);
                     break;
                 }
                 case "saveMappingRequest":
@@ -123,7 +123,7 @@ namespace mtgvrp.mapping_manager
 
                     if (editingRequest.Id != mappingId)
                     {
-                        API.triggerClientEvent(player, "send_error", "The mapping ID you are saving does not match the one you are viewing. Please hit search first.");
+                        API.TriggerClientEvent(player, "send_error", "The mapping ID you are saving does not match the one you are viewing. Please hit search first.");
                         return;
                     }
 
@@ -131,7 +131,7 @@ namespace mtgvrp.mapping_manager
                     editingRequest.Dimension = newDim;
                     editingRequest.Description = newDesc;
                     editingRequest.Save();
-                    player.sendChatMessage("You saved mapping request #" + mappingId);
+                    player.SendChatMessage("You saved mapping request #" + mappingId);
                     LogManager.Log(LogManager.LogTypes.MappingRequests, player.GetAccount().AccountName + " has saved mapping request #" + mappingId);
                     break;
                 }
@@ -142,11 +142,11 @@ namespace mtgvrp.mapping_manager
 
                     if (editingRequest.Id != mappingId)
                     {
-                        API.triggerClientEvent(player, "send_error", "The mapping ID you are saving does not match the one you are viewing. Please hit search first.");
+                        API.TriggerClientEvent(player, "send_error", "The mapping ID you are saving does not match the one you are viewing. Please hit search first.");
                         return;
                     }
 
-                    player.sendChatMessage("You have deleted mapping request #" + mappingId + ". This cannot be undone.");
+                    player.SendChatMessage("You have deleted mapping request #" + mappingId + ". This cannot be undone.");
                     LogManager.Log(LogManager.LogTypes.MappingRequests, player.GetAccount().AccountName + " has deleted mapping request #" + mappingId);
                     Mapping.Remove(editingRequest);
                     editingRequest.Unload();
@@ -160,7 +160,7 @@ namespace mtgvrp.mapping_manager
 
                     if (editingRequest.Id != mappingId)
                     {
-                        API.triggerClientEvent(player, "send_error", "The mapping ID you are saving does not match the one you are viewing. Please hit search first.");
+                        API.TriggerClientEvent(player, "send_error", "The mapping ID you are saving does not match the one you are viewing. Please hit search first.");
                         return;
                     }
 
@@ -176,7 +176,7 @@ namespace mtgvrp.mapping_manager
                     }
 
                     editingRequest.Save();
-                    player.sendChatMessage("You have " + ((editingRequest.IsSpawned == true) ? ("loaded") : ("unloaded")) + " mapping request #" + mappingId);
+                    player.SendChatMessage("You have " + ((editingRequest.IsSpawned == true) ? ("loaded") : ("unloaded")) + " mapping request #" + mappingId);
                     LogManager.Log(LogManager.LogTypes.MappingRequests, player.GetAccount().AccountName + "has  " + ((editingRequest.IsSpawned == true) ? ("loaded") : ("unloaded")) + " mapping request #" + mappingId);
                     break;
                 }
@@ -187,7 +187,7 @@ namespace mtgvrp.mapping_manager
 
                     if (editingRequest.Id != mappingId)
                     {
-                        API.triggerClientEvent(player, "send_error", "The mapping ID you are saving does not match the one you are viewing. Please hit search first.");
+                        API.TriggerClientEvent(player, "send_error", "The mapping ID you are saving does not match the one you are viewing. Please hit search first.");
                         return;
                     }
 
@@ -199,7 +199,7 @@ namespace mtgvrp.mapping_manager
                     }
 
                     editingRequest.Save();
-                    player.sendChatMessage("You have " + ((editingRequest.IsActive == true) ? ("actived") : ("deactivated")) + " mapping request #" + mappingId + ". Deactived mapping does not spawn on server load.");
+                    player.SendChatMessage("You have " + ((editingRequest.IsActive == true) ? ("actived") : ("deactivated")) + " mapping request #" + mappingId + ". Deactived mapping does not spawn on server load.");
                     LogManager.Log(LogManager.LogTypes.MappingRequests, player.GetAccount().AccountName + "has  " + ((editingRequest.IsActive == true) ? ("activated") : ("deactived")) + " mapping request #" + mappingId);
                     break;
                 }
@@ -210,7 +210,7 @@ namespace mtgvrp.mapping_manager
 
                     if (editingRequest.Id != mappingId)
                     {
-                        API.triggerClientEvent(player, "send_error", "The mapping ID you are saving does not match the one you are viewing. Please hit search first.");
+                        API.TriggerClientEvent(player, "send_error", "The mapping ID you are saving does not match the one you are viewing. Please hit search first.");
                         return;
                     }
 
@@ -221,18 +221,18 @@ namespace mtgvrp.mapping_manager
                             
                         if(o.Type == MappingObject.ObjectType.CreateObject)
                         {
-                            //API.createObject(int model, Vector3 pos, Vector3 rot, int dimension = 0);
-                            mappingString += string.Format("API.createObject({0}, new Vector3({1}, {2}, {3}), new Vector3({4}, {5}, {6}, {7});\n", o.Model, o.Pos.X, o.Pos.Y, o.Pos.Z, o.Rot.X, o.Rot.Y, o.Rot.Z, editingRequest.Dimension);
+                            //API.CreateObject(int model, Vector3 pos, Vector3 rot, int dimension = 0);
+                            mappingString += string.Format("API.CreateObject({0}, new Vector3({1}, {2}, {3}), new Vector3({4}, {5}, {6}, {7});\n", o.Model, o.Pos.X, o.Pos.Y, o.Pos.Z, o.Rot.X, o.Rot.Y, o.Rot.Z, editingRequest.Dimension);
                         }
                         else
                         {
-                            //API.deleteObject(Client client, Vector3 position, int modelHash);
-                            mappingString += string.Format("API.deleteObject(player, new Vector3({0}, {1}, {2}), {4});\n", o.Pos.X, o.Pos.Y, o.Pos.Z, o.Model);
+                            //API.DeleteObject(Client client, Vector3 position, int modelHash);
+                            mappingString += string.Format("API.DeleteObject(player, new Vector3({0}, {1}, {2}), {4});\n", o.Pos.X, o.Pos.Y, o.Pos.Z, o.Model);
                         }
                            
                     }
 
-                    API.triggerClientEvent(player, "showRequestCode", mappingString);
+                    API.TriggerClientEvent(player, "showRequestCode", mappingString);
                     break;
                 }
                 case "requestFirstMappingPage":
@@ -240,7 +240,7 @@ namespace mtgvrp.mapping_manager
                     var count = 0;
                     foreach (var o in Mapping)
                     {
-                        API.triggerClientEvent(player, "addMappingRequest", o.Id, o.Description, o.CreatedBy, o.IsActive);
+                        API.TriggerClientEvent(player, "addMappingRequest", o.Id, o.Description, o.CreatedBy, o.IsActive);
                         count++;
                         if (count == 10)
                             break;
@@ -248,17 +248,17 @@ namespace mtgvrp.mapping_manager
 
                     var numOfPages = (Mapping.Count() + 9) / 10;
                     var middlePage = ((1 + numOfPages) / 2) - 1;
-                    API.triggerClientEvent(player, "createPagination", 1, middlePage, numOfPages);
+                    API.TriggerClientEvent(player, "createPagination", 1, middlePage, numOfPages);
                     break;
                 }
                 case "requestMappingPage":
                 {
                     var page = Convert.ToInt32(arguments[0]);
-                    API.triggerClientEvent(player, "emptyMappingTable");
+                    API.TriggerClientEvent(player, "emptyMappingTable");
                     var count = 0;
                     foreach (var o in Mapping.Skip(page * 10))
                     {
-                        API.triggerClientEvent(player,  "addMappingRequest", o.Id, o.Description, o.CreatedBy, o.IsActive);
+                        API.TriggerClientEvent(player,  "addMappingRequest", o.Id, o.Description, o.CreatedBy, o.IsActive);
                         count++;
 
                         if (count == 10)
@@ -273,7 +273,7 @@ namespace mtgvrp.mapping_manager
         {
             List<MappingObject> objectList = new List<MappingObject>();
 
-            var objectPattern = @"API.createObject\s*\((?<model>-?[0-9]+)\s*,\s*new\s*Vector3\s*\(\s*(?<posX>-?[0-9.]*)\s*,\s*(?<posY>-?[0-9.]*)\s*,\s*(?<posZ>-?[0-9.]*)\)\s*,\s*new\s*Vector3\s*\(\s*(?<rotX>-?[0-9.]*)\s*,\s*(?<rotY>-?[0-9.]*)\s*,\s*(?<rotZ>-?[0-9.]*)\s*\)\s*\)";
+            var objectPattern = @"API.CreateObject\s*\((?<model>-?[0-9]+)\s*,\s*new\s*Vector3\s*\(\s*(?<posX>-?[0-9.]*)\s*,\s*(?<posY>-?[0-9.]*)\s*,\s*(?<posZ>-?[0-9.]*)\)\s*,\s*new\s*Vector3\s*\(\s*(?<rotX>-?[0-9.]*)\s*,\s*(?<rotY>-?[0-9.]*)\s*,\s*(?<rotZ>-?[0-9.]*)\s*\)\s*\)";
             var regex = new Regex(objectPattern);
             foreach(Match match in regex.Matches(input))
             {
@@ -287,7 +287,7 @@ namespace mtgvrp.mapping_manager
         {
             List<MappingObject> objectList = new List<MappingObject>();
 
-            var objectPattern = @"API.deleteObject\s*\(player,\s*new\s*Vector3\s*\(\s*(?<posX>-?[0-9.]*)\s*,\s*(?<posY>-?[0-9.]*)\s*,\s*(?<posZ>-?[0-9.]*)\)\s*,\s*(?<model>-?[0-9]+)\s*\);";
+            var objectPattern = @"API.DeleteObject\s*\(player,\s*new\s*Vector3\s*\(\s*(?<posX>-?[0-9.]*)\s*,\s*(?<posY>-?[0-9.]*)\s*,\s*(?<posZ>-?[0-9.]*)\)\s*,\s*(?<model>-?[0-9]+)\s*\);";
             var regex = new Regex(objectPattern);
             foreach (Match match in regex.Matches(input))
             {
@@ -305,8 +305,8 @@ namespace mtgvrp.mapping_manager
                 return;
             }
 
-            player.sendChatMessage("Mapping manager opened. Hit ~r~ESC~w~ to close it.");
-            API.triggerClientEvent(player, "showMappingManager");
+            player.SendChatMessage("Mapping manager opened. Hit ~r~ESC~w~ to close it.");
+            API.TriggerClientEvent(player, "showMappingManager");
             return;
         }
     }

@@ -3,17 +3,17 @@ var selectingPlayer = false;
 var playerSelected = null;
 var interactBrowser = null;
 var res = null;
-API.onResourceStart.connect(function () {
+Event.OnResourceStart.connect(function () {
     res = API.getScreenResolutionMaintainRatio();
 });
-API.onServerEventTrigger.connect(function (eventname, args) {
+Event.OnServerEventTrigger.connect(function (eventname, args) {
     switch (eventname) {
         case "player_interact_subtitle":
             API.displaySubtitle(args[0], 1000);
             break;
     }
 });
-API.onKeyDown.connect(function (sender, e) {
+Event.OnKeyDown.connect(function (sender, e) {
     if (e.KeyCode == Keys.X && e.Control) {
         API.showCursor(true);
         selectingPlayer = true;
@@ -22,7 +22,7 @@ API.onKeyDown.connect(function (sender, e) {
         API.triggerServerEvent("cancel_following");
     }
 });
-API.onKeyUp.connect(function (sender, e) {
+Event.OnKeyUp.connect(function (sender, e) {
     if (e.KeyCode == Keys.X && selectingPlayer == true) {
         API.showCursor(false);
         selectingPlayer = false;
@@ -30,7 +30,7 @@ API.onKeyUp.connect(function (sender, e) {
         reset_browser();
     }
 });
-API.onUpdate.connect(function () {
+Event.OnUpdate.connect(function () {
     if (selectingPlayer) {
         API.disableControlThisFrame(25);
         var player = API.getLocalPlayer();

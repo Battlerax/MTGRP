@@ -1,12 +1,10 @@
-﻿
+
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Elements;
-using GrandTheftMultiplayer.Shared;
+using GTANetworkAPI;
 using mtgvrp.player_manager;
 
 namespace mtgvrp.core
@@ -15,22 +13,22 @@ namespace mtgvrp.core
     {
         public static Character GetCharacter(this Client player)
         {
-            if (!API.shared.hasEntityData(player, "Character")) return null;
+            if (!API.Shared.HasEntityData(player, "Character")) return null;
 
-            return (Character) player.getData("Character");
+            return (Character) player.GetData("Character");
         }
         public static Account GetAccount(this Client player)
         {
-            if (!API.shared.hasEntityData(player, "Account")) return null;
+            if (!API.Shared.HasEntityData(player, "Account")) return null;
 
-            return (Account)player.getData("Account");
+            return (Account)player.GetData("Account");
         }
 
         public static vehicle_manager.Vehicle GetVehicle(this NetHandle veh)
         {
-            if (!API.shared.hasEntityData(veh, "Vehicle")) return null;
+            if (!API.Shared.HasEntityData(veh, "Vehicle")) return null;
 
-            return (vehicle_manager.Vehicle)API.shared.getEntityData(veh, "Vehicle");
+            return (vehicle_manager.Vehicle)API.Shared.GetEntityData(veh, "Vehicle");
         }
 
         public static T CastTo<T>(this object obj)

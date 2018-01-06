@@ -14,7 +14,7 @@ function cefLoaded() {
 }
 
 var lowerthird;
-API.onServerEventTrigger.connect(function (eventName, args) {
+Event.OnServerEventTrigger.connect(function (eventName, args) {
     switch (eventName) {
 		
         case "watch_broadcast":

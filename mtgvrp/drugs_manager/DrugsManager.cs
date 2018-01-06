@@ -1,14 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Timers;
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Constant;
-using GrandTheftMultiplayer.Server.Elements;
-using GrandTheftMultiplayer.Server.Managers;
-using GrandTheftMultiplayer.Shared.Math;
+using GTANetworkAPI;
 using mtgvrp.core;
 using mtgvrp.core.Help;
 using mtgvrp.inventory;
@@ -57,15 +53,15 @@ namespace mtgvrp.drugs_manager
         public DrugsManager()
         {
             DebugManager.DebugMessage("[DrugsM]: Drugs are booting up.");
-            API.onResourceStart += StartTimer;
-            API.onPlayerDisconnected += ClearEffects;
+            Event.OnResourceStart += StartTimer;
+            Event.OnPlayerDisconnected += ClearEffects;
             DebugManager.DebugMessage("[DrugsM]: Drugs have successfully booted up.");
         }
 
 
         private void ClearEffects(Client player, string reason)
         {
-            API.triggerClientEvent(player,"clearAllEffects");
+            API.TriggerClientEvent(player,"clearAllEffects");
         }
 
         // Ticks based on TempTime, reduces tempHealth of any player on server.
@@ -79,7 +75,7 @@ namespace mtgvrp.drugs_manager
        
         private void ReducePlayerTempValues(object sender, ElapsedEventArgs e)
         {
-            foreach (Client c in API.getAllPlayers())
+            foreach (Client c in API.GetAllPlayers())
             {
                 if(c == null) return;
 
@@ -92,22 +88,22 @@ namespace mtgvrp.drugs_manager
                 if (playerChar.TempHealth < TempHealthMultipler)
                 {
                     int amountToTake = TempHealthMultipler - playerChar.TempHealth;
-                    int playerRemHealth = API.getPlayerHealth(c) - amountToTake;
+                    int playerRemHealth = API.GetPlayerHealth(c) - amountToTake;
 
                     // If a player is unable to "payback" their health, set them on 1 HP.
                     if (playerRemHealth <= 0)
                     {
-                        API.setPlayerHealth(c, 1);
+                        API.SetPlayerHealth(c, 1);
                         playerChar.TempHealth = 0;
                         return;
                     }
                     // If there's less than the Multiplier remaining, take that and set temphealth to 0.
-                    API.setPlayerHealth(c, API.getPlayerHealth(c) - amountToTake);
+                    API.SetPlayerHealth(c, API.GetPlayerHealth(c) - amountToTake);
                     playerChar.TempHealth = 0;
                     return;
                 }
                 // Else, just take the health and remove the multipler from temphealth.
-                API.setPlayerHealth(c, API.getPlayerHealth(c) - TempHealthMultipler);
+                API.SetPlayerHealth(c, API.GetPlayerHealth(c) - TempHealthMultipler);
                 playerChar.TempHealth = playerChar.TempHealth - TempHealthMultipler;
             }
         }
@@ -128,15 +124,15 @@ namespace mtgvrp.drugs_manager
             var drugCheck = InventoryManager.DoesInventoryHaveItem(playerChar, typeof(Cocaine));
             if (!CheckForCorrectAmount(cokeVal, drugCheck))
             {
-                API.sendChatMessageToPlayer(sender, "You don't have enough coke to sniff!");
+                API.SendChatMessageToPlayer(sender, "You don't have enough coke to sniff!");
                 return;
             }
 
             BoostArmor(sender, cokeVal);
 
-            API.triggerClientEvent(sender, "cokeVisual", (cokeVal * VisualPerAmount) * 1000);
+            API.TriggerClientEvent(sender, "cokeVisual", (cokeVal * VisualPerAmount) * 1000);
             ChatManager.RoleplayMessage(playerChar, "has sniffed some cocaine.", ChatManager.RoleplayMe);
-            API.sendChatMessageToPlayer(sender, "You sniffed " + cokeVal + " grams of cocaine.");
+            API.SendChatMessageToPlayer(sender, "You sniffed " + cokeVal + " grams of cocaine.");
 
             InventoryManager.DeleteInventoryItem(playerChar, typeof(Cocaine), cokeVal);
             playerChar.CocaineTimer = new Timer { Interval = (cokeVal * VisualPerAmount) * 1000 };
@@ -155,20 +151,20 @@ namespace mtgvrp.drugs_manager
             var drugCheck = InventoryManager.DoesInventoryHaveItem(playerChar, typeof(Weed));
             if (playerChar.WeedTimer != null && playerChar.WeedTimer.Enabled)
             {
-                API.sendChatMessageToPlayer(sender,"Taking more drugs in the middle of a trip is probably a bad idea. Wait it out.");
+                API.SendChatMessageToPlayer(sender,"Taking more drugs in the middle of a trip is probably a bad idea. Wait it out.");
                 return;
             }
             if (!CheckForCorrectAmount(weedVal, drugCheck))
             {
-                API.sendChatMessageToPlayer(sender, "You don't have enough weed to smoke!");
+                API.SendChatMessageToPlayer(sender, "You don't have enough weed to smoke!");
                 return;
             }
 
             BoostHealth(sender, weedVal);
 
-            API.triggerClientEvent(sender, "weedVisual",(VisualPerAmount*weedVal) * 1000);
+            API.TriggerClientEvent(sender, "weedVisual",(VisualPerAmount*weedVal) * 1000);
             ChatManager.RoleplayMessage(playerChar, "has smoked some weed.", ChatManager.RoleplayMe);
-            API.sendChatMessageToPlayer(sender, "You smoked " + weedVal + " grams of weed.");
+            API.SendChatMessageToPlayer(sender, "You smoked " + weedVal + " grams of weed.");
             playerChar.WeedTimer = new Timer {Interval = (weedVal * VisualPerAmount) * 1000};
             playerChar.WeedTimer.Elapsed += delegate { clearWeedEffect(sender); };
             playerChar.WeedTimer.Start();   
@@ -187,23 +183,23 @@ namespace mtgvrp.drugs_manager
             var drugCheck = InventoryManager.DoesInventoryHaveItem(playerChar, typeof(Speed));
             if (playerChar.Speedtimer != null && playerChar.Speedtimer.Enabled)
             {
-                API.sendChatMessageToPlayer(sender, "Taking more drugs in the middle of a trip is probably a bad idea. Wait it out.");
+                API.SendChatMessageToPlayer(sender, "Taking more drugs in the middle of a trip is probably a bad idea. Wait it out.");
                 return;
             }
             if (!CheckForCorrectAmount(speedVal, drugCheck))
             {
-                API.sendChatMessageToPlayer(sender, "You don't have enough speed to take!");
+                API.SendChatMessageToPlayer(sender, "You don't have enough speed to take!");
                 return;
             }
             
-            API.triggerClientEvent(sender, "speedVisual",(VisualPerAmount*speedVal) * 1000);
+            API.TriggerClientEvent(sender, "speedVisual",(VisualPerAmount*speedVal) * 1000);
             playerChar.Speedtimer = new Timer{Interval = speedVal * VisualPerAmount * 1000};
             playerChar.Speedtimer.Elapsed += delegate { ClearSpeedEffect(sender); };
             playerChar.Speedtimer.Start();
             TempBoostHealth(sender,speedVal);
             ChatManager.RoleplayMessage(playerChar, "has took some pills of speed.", ChatManager.RoleplayMe);
 
-            API.sendChatMessageToPlayer(sender, "You took " + speedVal + " pills of speed.");
+            API.SendChatMessageToPlayer(sender, "You took " + speedVal + " pills of speed.");
             InventoryManager.DeleteInventoryItem(playerChar, typeof(Speed), speedVal);
         }
 
@@ -218,20 +214,20 @@ namespace mtgvrp.drugs_manager
             var drugCheck = InventoryManager.DoesInventoryHaveItem(playerChar, typeof(Heroin));
             if (!CheckForCorrectAmount(heroinVal, drugCheck))
             {
-                API.sendChatMessageToPlayer(sender, "You don't have enough heroin to inject!");
+                API.SendChatMessageToPlayer(sender, "You don't have enough heroin to inject!");
                 return;
             }
 
             if (playerChar.HeroinTimer != null && playerChar.HeroinTimer.Enabled)
             {
-                API.sendChatMessageToPlayer(sender,"You're in the middle of a horrible trip. You're unable to inject anymore heroin!");
+                API.SendChatMessageToPlayer(sender,"You're in the middle of a horrible trip. You're unable to inject anymore heroin!");
                 return;
             }
 
             ChatManager.RoleplayMessage(playerChar, "has injected some heroin into their vein.",
                 ChatManager.RoleplayMe);
 
-            API.sendChatMessageToPlayer(sender, "You injected " + heroinVal + " mg of heroin.");
+            API.SendChatMessageToPlayer(sender, "You injected " + heroinVal + " mg of heroin.");
             MaxArmourAndHealth(sender,heroinVal);
             InventoryManager.DeleteInventoryItem(playerChar, typeof(Heroin), heroinVal);
         }
@@ -246,12 +242,12 @@ namespace mtgvrp.drugs_manager
             var drugCheck = InventoryManager.DoesInventoryHaveItem(playerChar, typeof(Meth));
             if (!CheckForCorrectAmount(methVal, drugCheck))
             {
-                API.sendChatMessageToPlayer(sender, "You don't have enough meth to take!");
+                API.SendChatMessageToPlayer(sender, "You don't have enough meth to take!");
                 return;
             }
 
             ChatManager.RoleplayMessage(playerChar, "has took some pills of meth.", ChatManager.RoleplayMe);
-            API.sendChatMessageToPlayer(sender, "You took " + methVal + " pills of meth.");
+            API.SendChatMessageToPlayer(sender, "You took " + methVal + " pills of meth.");
             InventoryManager.DeleteInventoryItem(playerChar, typeof(Meth), methVal);
         }
 
@@ -265,28 +261,28 @@ namespace mtgvrp.drugs_manager
         {
             Character c = sender.GetCharacter();
             c.WeedTimer.Stop();
-            API.triggerClientEvent(sender, "clearWeed");
+            API.TriggerClientEvent(sender, "clearWeed");
         }
 
         private void clearHeroinEffect(Client sender)
         {
             Character c = sender.GetCharacter();
             c.HeroinTimer.Stop();
-            API.triggerClientEvent(sender, "clearHeroin");
+            API.TriggerClientEvent(sender, "clearHeroin");
         }
 
         private void ClearSpeedEffect(Client sender)
         {
             Character c = sender.GetCharacter();
             c.Speedtimer.Stop();
-            API.triggerClientEvent(sender, "clearSpeed");
+            API.TriggerClientEvent(sender, "clearSpeed");
         }
 
         private void clearCocaineEffect(Client sender)
         {
             Character c = sender.GetCharacter();
             c.CocaineTimer.Stop();
-            API.triggerClientEvent(sender,"clearCoke");
+            API.TriggerClientEvent(sender,"clearCoke");
         }
         #endregion
 
@@ -307,22 +303,22 @@ namespace mtgvrp.drugs_manager
             if (!int.TryParse(amount, out drugAmount)) return;
             if (a.AdminLevel < 5 || drugAmount < 1) return;
 
-            if (API.isPlayerInAnyVehicle(sender))
+            if (API.IsPlayerInAnyVehicle(sender))
             {
-                API.sendChatMessageToPlayer(sender,"Get out of the vehicle, and try again.");
+                API.SendChatMessageToPlayer(sender,"Get out of the vehicle, and try again.");
                 return;
             }
             
 
             if (FindNearestAirdrop(sender, 20) != null)
             {
-                API.sendChatMessageToPlayer(sender, "Another crate is too close.");
+                API.SendChatMessageToPlayer(sender, "Another crate is too close.");
                 return;
             }
 
             if (drugAmount * CurrentDrugSize > MaxAirDropSize)
             {
-                API.sendChatMessageToPlayer(sender,"You're only allowed up to " + MaxAirDropSize + " of a drug in one airdrop!");
+                API.SendChatMessageToPlayer(sender,"You're only allowed up to " + MaxAirDropSize + " of a drug in one airdrop!");
                 return;
             }
 
@@ -363,13 +359,13 @@ namespace mtgvrp.drugs_manager
                     break;
 
                 default:
-                    API.sendChatMessageToPlayer(sender,"That's an incorrect drug name.");
+                    API.SendChatMessageToPlayer(sender,"That's an incorrect drug name.");
                     return;
 
                 
             }
 
-            API.sendChatMessageToPlayer(sender, "Crate dropped.");
+            API.SendChatMessageToPlayer(sender, "Crate dropped.");
 
         }
 
@@ -385,13 +381,13 @@ namespace mtgvrp.drugs_manager
 
             if (dropToDelete == null)
             {
-                API.sendChatMessageToPlayer(sender,"No airdrops nearby.");
+                API.SendChatMessageToPlayer(sender,"No airdrops nearby.");
                 return;
             }
 
             dropToDelete.Delete();
             _airdrops.Remove(dropToDelete);
-            API.sendChatMessageToPlayer(sender,"Airdrop has been deleted.");
+            API.SendChatMessageToPlayer(sender,"Airdrop has been deleted.");
             LogManager.Log(LogManager.LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {a.AdminName} has deleted a crate.");
 
@@ -404,9 +400,9 @@ namespace mtgvrp.drugs_manager
         public void OpenCrate(Client sender)
         {
 
-            if (API.isPlayerInAnyVehicle(sender))
+            if (API.IsPlayerInAnyVehicle(sender))
             {
-                API.sendChatMessageToPlayer(sender, "You can't open a crate while you're in a vehicle!");
+                API.SendChatMessageToPlayer(sender, "You can't open a crate while you're in a vehicle!");
                 return;
             }
 
@@ -417,7 +413,7 @@ namespace mtgvrp.drugs_manager
             if (!closest.IsOpen)
             {
                 ChatManager.RoleplayMessage(c,"attempts to open the crate, but was unable to open it.",ChatManager.RoleplayMe);
-                API.sendChatMessageToPlayer(sender,"The crate is locked.");
+                API.SendChatMessageToPlayer(sender,"The crate is locked.");
                 return;
             }
 
@@ -432,9 +428,9 @@ namespace mtgvrp.drugs_manager
         public void PryCrate(Client sender)
         {
 
-            if (API.isPlayerInAnyVehicle(sender))
+            if (API.IsPlayerInAnyVehicle(sender))
             {
-                API.sendChatMessageToPlayer(sender, "You can't pry a crate while you're in a vehicle!");
+                API.SendChatMessageToPlayer(sender, "You can't pry a crate while you're in a vehicle!");
                 return;
             }
 
@@ -445,7 +441,7 @@ namespace mtgvrp.drugs_manager
 
             if (closest.IsOpen)
             {
-                API.sendChatMessageToPlayer(sender,"This crate is already open!");
+                API.SendChatMessageToPlayer(sender,"This crate is already open!");
                 return;
             }
 
@@ -462,7 +458,7 @@ namespace mtgvrp.drugs_manager
             }
 
             ChatManager.RoleplayMessage(c,"attempts to pry open the crate lid with their hands, but is unable to.",ChatManager.RoleplayMe);
-            API.sendChatMessageToPlayer(sender,"You need a crowbar for this!");
+            API.SendChatMessageToPlayer(sender,"You need a crowbar for this!");
 
         }
 
@@ -500,13 +496,13 @@ namespace mtgvrp.drugs_manager
                 Airdrop drop = FindNearestAirdrop(sender);
                 if (drop == null)
                 {
-                    API.sendChatMessageToPlayer(sender, "No crate around.");
+                    API.SendChatMessageToPlayer(sender, "No crate around.");
                     return;
                 }
 
                 if (drop.IsOpen)
                 {
-                    API.sendChatMessageToPlayer(sender, "Crates already open!");
+                    API.SendChatMessageToPlayer(sender, "Crates already open!");
                     return;
                 }
 
@@ -516,7 +512,7 @@ namespace mtgvrp.drugs_manager
                 return;
             }
 
-            API.sendChatMessageToPlayer(sender, "You're not on admin duty!");
+            API.SendChatMessageToPlayer(sender, "You're not on admin duty!");
             LogManager.Log(LogManager.LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {a.AdminName} has admin opened a crate.");
         }
@@ -526,11 +522,11 @@ namespace mtgvrp.drugs_manager
         // Creates the drop, adds it to the list and calls for the prop to be set on the floor.
         public void SpawnDrop(Client sender, IInventoryItem drug)
         {
-            var drop = new Airdrop(drug, API.getEntityPosition(sender));
+            var drop = new Airdrop(drug, API.GetEntityPosition(sender));
             _airdrops.Add(drop);
-            PlaceAirDropProp(drop,API.getEntityPosition(sender));
-            API.triggerClientEvent(sender, "PLACE_OBJECT_ON_GROUND_PROPERLY", drop.prop, "");
-            Vector3 crateLoc = API.getEntityPosition(drop.prop);
+            PlaceAirDropProp(drop,API.GetEntityPosition(sender));
+            API.TriggerClientEvent(sender, "PLACE_OBJECT_ON_GROUND_PROPERLY", drop.prop, "");
+            Vector3 crateLoc = API.GetEntityPosition(drop.prop);
             drop.SetCorrectCrateLocation(crateLoc);
             drop.marker = new MarkerZone(crateLoc, new Vector3()) { TextLabelText = "Drugs Crate - Locked" };
             drop.marker.Create();
@@ -554,18 +550,18 @@ namespace mtgvrp.drugs_manager
 
         public void BoostArmor(Client sender, int amount)
         {
-            if (API.getPlayerArmor(sender) + amount * ArmorMultipler > MaxArmor)
-                API.setPlayerArmor(sender, MaxArmor);
+            if (API.GetPlayerArmor(sender) + amount * ArmorMultipler > MaxArmor)
+                API.SetPlayerArmor(sender, MaxArmor);
             else
-                API.setPlayerArmor(sender, API.getPlayerArmor(sender) + amount * ArmorMultipler);
+                API.SetPlayerArmor(sender, API.GetPlayerArmor(sender) + amount * ArmorMultipler);
         }
 
         public void BoostHealth(Client sender, int amount)
         {
-            if (API.getPlayerHealth(sender) + amount * HealthMultipler > MaxHealth)
-                API.setPlayerHealth(sender, MaxHealth);
+            if (API.GetPlayerHealth(sender) + amount * HealthMultipler > MaxHealth)
+                API.SetPlayerHealth(sender, MaxHealth);
             else
-                API.setPlayerHealth(sender, API.getPlayerHealth(sender) + amount * HealthMultipler);
+                API.SetPlayerHealth(sender, API.GetPlayerHealth(sender) + amount * HealthMultipler);
         }
 
 
@@ -573,14 +569,14 @@ namespace mtgvrp.drugs_manager
         {
             Character c = sender.GetCharacter();
 
-            if (API.getPlayerHealth(sender) + amount * TempHealthMultipler > MaxHealth)
+            if (API.GetPlayerHealth(sender) + amount * TempHealthMultipler > MaxHealth)
             {
-                c.TempHealth = MaxHealth - API.getPlayerHealth(sender);
-                API.setPlayerHealth(sender,MaxHealth);
+                c.TempHealth = MaxHealth - API.GetPlayerHealth(sender);
+                API.SetPlayerHealth(sender,MaxHealth);
                 return;
             }
 
-            API.setPlayerHealth(sender,API.getPlayerHealth(sender) + amount * TempHealthMultipler);
+            API.SetPlayerHealth(sender,API.GetPlayerHealth(sender) + amount * TempHealthMultipler);
             c.TempHealth = amount * TempHealthMultipler;
         }
 
@@ -591,19 +587,19 @@ namespace mtgvrp.drugs_manager
             int tot = c.HeroinTolerance / HeroinDivider;
             if (amount <  tot)
             {
-                API.sendChatMessageToPlayer(sender,"The heroin has no effect on you! You've built up too much of a tolerance!");
+                API.SendChatMessageToPlayer(sender,"The heroin has no effect on you! You've built up too much of a tolerance!");
                 return;
             }
         
-            API.setPlayerArmor(sender,100);
-            API.setPlayerHealth(sender,100);
+            API.SetPlayerArmor(sender,100);
+            API.SetPlayerHealth(sender,100);
 
             if (c.HeroinTolerance > MaxPermittedToleranceLevel)
             {
                 ToleranceEffectRoll(c);
                 return;
             }
-            API.sendChatMessageToPlayer(sender,"Your tolerance levels have gone up from this... You'll need more in the future to get the same buzz.");
+            API.SendChatMessageToPlayer(sender,"Your tolerance levels have gone up from this... You'll need more in the future to get the same buzz.");
             c.HeroinTolerance = (c.HeroinTolerance + 2);
 
         
@@ -627,25 +623,25 @@ namespace mtgvrp.drugs_manager
 
             if (effectRoll == 1)
             {
-                API.sendChatMessageToPlayer(c.Client,"You manage to kick part of your tolerance. You should be more careful of heroin usage...");
+                API.SendChatMessageToPlayer(c.Client,"You manage to kick part of your tolerance. You should be more careful of heroin usage...");
                 c.HeroinTolerance = 2;
                 return;
             }
             if (effectRoll > 1 && effectRoll < 6)
             {
-                API.sendChatMessageToPlayer(c.Client,"You're really not feeling the effects anymore. Might be a good time to cutdown.");
+                API.SendChatMessageToPlayer(c.Client,"You're really not feeling the effects anymore. Might be a good time to cutdown.");
                 c.HeroinTolerance = c.HeroinTolerance - 5;
                 return;
             }
             if (effectRoll >= 6 && effectRoll < 10)
             {
-                API.sendChatMessageToPlayer(c.Client,"Your current usage limits are causing you serious pain.");
-                API.setPlayerHealth(c.Client,API.getPlayerHealth(c.Client) - 10);
+                API.SendChatMessageToPlayer(c.Client,"Your current usage limits are causing you serious pain.");
+                API.SetPlayerHealth(c.Client,API.GetPlayerHealth(c.Client) - 10);
                 if (c.Client == null)
                 {
-                    API.sendChatMessageToAll("lol null");
+                    API.SendChatMessageToAll("lol null");
                 }
-                API.triggerClientEvent(c.Client, "heroinVisual",LowerHeroinTripTime * 1000);       
+                API.TriggerClientEvent(c.Client, "heroinVisual",LowerHeroinTripTime * 1000);       
                 c.HeroinTimer = new Timer { Interval = LowerHeroinTripTime * 1000 };
                 c.HeroinTimer.Elapsed += delegate { clearHeroinEffect(c.Client); };
                 c.HeroinTimer.Start();
@@ -654,10 +650,10 @@ namespace mtgvrp.drugs_manager
             }
             if (effectRoll == 10)
             {
-                API.sendChatMessageToPlayer(c.Client,"Your body is unable to take the heroin anymore, and begins to breakdown.");
-                API.setPlayerHealth(c.Client,1);
-                API.setPlayerArmor(c.Client,0);
-                API.triggerClientEvent(c.Client, "heroinVisual", HigherHeroinTripTime * 1000);
+                API.SendChatMessageToPlayer(c.Client,"Your body is unable to take the heroin anymore, and begins to breakdown.");
+                API.SetPlayerHealth(c.Client,1);
+                API.SetPlayerArmor(c.Client,0);
+                API.TriggerClientEvent(c.Client, "heroinVisual", HigherHeroinTripTime * 1000);
                 c.HeroinTimer = new Timer { Interval = HigherHeroinTripTime * 1000 };
                 c.HeroinTimer.Elapsed += delegate { clearHeroinEffect(c.Client); };
                 c.HeroinTimer.Start();
@@ -672,7 +668,7 @@ namespace mtgvrp.drugs_manager
 
         public void PlaceAirDropProp(Airdrop drop, Vector3 loc)
         {
-            drop.prop = API.createObject(1885839156, drop.Loc, new Vector3());
+            drop.prop = API.CreateObject(1885839156, drop.Loc, new Vector3());
         }
 
         private Airdrop FindNearestAirdrop(Client sender, float bound = 5)
@@ -680,7 +676,7 @@ namespace mtgvrp.drugs_manager
             Airdrop drop = null;
             foreach (var a in _airdrops)
             {
-                var dist = a.Loc.DistanceTo(API.getEntityPosition(sender));
+                var dist = a.Loc.DistanceTo(API.GetEntityPosition(sender));
                 if (dist < bound)
                     drop = a;
             }

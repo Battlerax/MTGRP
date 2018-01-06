@@ -3,7 +3,7 @@ API.pointCameraAtPosition(login_view, new Vector3(718.9848, 1194.599, 325.2131))
 
 var login_browser = null;
 
-API.onResourceStart.connect(function () {
+Event.OnResourceStart.connect(function () {
 
     var res = API.getScreenResolutionMaintainRatio();
 	var pos = resource.JsFunctions.scaleCoordsToReal({ X: res.Width, Y:  res.Height});
@@ -17,7 +17,7 @@ API.onResourceStart.connect(function () {
    
 });
 
-API.onServerEventTrigger.connect(function (eventName, args) {
+Event.OnServerEventTrigger.connect(function (eventName, args) {
 
     switch (eventName) {
         case "onPlayerConnectedEx":
@@ -56,7 +56,7 @@ function attempt_login(password) {
     API.triggerServerEvent("attempt_login", password);
 }
 
-API.onKeyDown.connect((sender, e) =>
+Event.OnKeyDown.connect((sender, e) =>
 {
 	if (e.KeyCode === Keys.F12 && login_browser !== null) {
 		API.showCursor(false);

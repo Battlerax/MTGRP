@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Security.Cryptography;
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Elements;
-using GrandTheftMultiplayer.Server.Managers;
+
+using GTANetworkAPI;
+
 using mtgvrp.core;
 using mtgvrp.core.Help;
 using mtgvrp.database_manager;
@@ -20,9 +20,9 @@ namespace mtgvrp.player_manager.login
         {
             DebugManager.DebugMessage("[LoginM] Initalizing Login Manager...");
 
-            API.onPlayerConnected += OnPlayerConnected;
-            API.onPlayerFinishedDownload += OnPlayerFinishedDownload;
-            API.onClientEventTrigger += API_onClientEventTrigger;
+            Event.OnPlayerConnected += OnPlayerConnected;
+            Event.OnPlayerFinishedDownload += OnPlayerFinishedDownload;
+            Event.OnClientEventTrigger += API_onClientEventTrigger;
 
             DebugManager.DebugMessage("[LoginM] Login Manager initalized.");
         }
@@ -37,23 +37,23 @@ namespace mtgvrp.player_manager.login
 
                     if (adminPin.Length != 6)
                     {
-                        API.sendChatMessageToPlayer(player, Color.AdminOrange,
+                        API.SendChatMessageToPlayer(player, Color.AdminOrange,
                             "Your pin must be exactly 6 characters long.");
-                        API.triggerClientEvent(player, "create_admin_pin");
+                        API.TriggerClientEvent(player, "create_admin_pin");
                     }
 
                     Account account = player.GetAccount();
 
                     if (account.AdminLevel < 1)
                     {
-                        API.sendChatMessageToPlayer(player, Color.AdminOrange, "You are not an admin anymore.");
+                        API.SendChatMessageToPlayer(player, Color.AdminOrange, "You are not an admin anymore.");
                         prepare_character_menu(player);
                         return;
                     }
 
                     account.AdminPin = adminPin;
                     account.Save();
-                    API.sendChatMessageToPlayer(player, Color.AdminOrange, "Admin pin successully set to: " + adminPin);
+                    API.SendChatMessageToPlayer(player, Color.AdminOrange, "Admin pin successully set to: " + adminPin);
                     prepare_character_menu(player);
                     break;
                 }
@@ -65,21 +65,21 @@ namespace mtgvrp.player_manager.login
 
                     if (account.AdminLevel == 0)
                     {
-                        API.sendChatMessageToPlayer(player, Color.AdminOrange, "You are not an admin anymore.");
+                        API.SendChatMessageToPlayer(player, Color.AdminOrange, "You are not an admin anymore.");
                         prepare_character_menu(player);
                         return;
                     }
 
                     if (account.AdminPin.Equals(adminPin))
                     {
-                        API.sendChatMessageToPlayer(player, Color.AdminOrange, "You have successfully logged in.");
+                        API.SendChatMessageToPlayer(player, Color.AdminOrange, "You have successfully logged in.");
                         prepare_character_menu(player);
                     }
                     else
                     {
-                        API.sendChatMessageToPlayer(player, Color.AdminOrange, "Incorrect pin.");
+                        API.SendChatMessageToPlayer(player, Color.AdminOrange, "Incorrect pin.");
                         //TO DO: SEND TO ADMIN THEY GOT IT WRONG 
-                        API.triggerClientEvent(player, "admin_pin_check");
+                        API.TriggerClientEvent(player, "admin_pin_check");
                     }
                     break;
                 }
@@ -90,7 +90,7 @@ namespace mtgvrp.player_manager.login
 
                     if (inputPass.Length < 8)
                     {
-                        API.triggerClientEvent(player, "login_error", "Password entered is too short.");
+                        API.TriggerClientEvent(player, "login_error", "Password entered is too short.");
                         return;
                     }
 
@@ -100,7 +100,7 @@ namespace mtgvrp.player_manager.login
                     {
                         if (account.IsLoggedIn)
                         {
-                            API.triggerClientEvent(player, "login_error", "You are already logged in.");
+                            API.TriggerClientEvent(player, "login_error", "You are already logged in.");
                             return;
                         }
 
@@ -117,44 +117,44 @@ namespace mtgvrp.player_manager.login
                         {
                             if (account.IsTempbanned == true && account.TempBanExpiration < DateTime.Now)
                             {
-                                API.sendChatMessageToPlayer(player, "~r~You are temp-banned from this server. You will be unbanned in " + (account.TempBanExpiration - DateTime.Now).TotalDays + " days.");
-                                API.sendNotificationToPlayer(player, "~r~You are temp-banned from this server. You will be unbanned in " + (account.TempBanExpiration - DateTime.Now).TotalDays + " days.");
-                                API.kickPlayer(player);
+                                API.SendChatMessageToPlayer(player, "~r~You are temp-banned from this server. You will be unbanned in " + (account.TempBanExpiration - DateTime.Now).TotalDays + " days.");
+                                API.SendNotificationToPlayer(player, "~r~You are temp-banned from this server. You will be unbanned in " + (account.TempBanExpiration - DateTime.Now).TotalDays + " days.");
+                                API.KickPlayer(player);
                                 AdminSystem.AdminCommands.SendtoAllAdmins(account.AccountName + "attempted to log in to a temp-banned account.");
                                 return;
                             }
                             if (account.IsBanned == true)
                             {
-                                API.sendChatMessageToPlayer(player, "~r~You are banned from this server. Visit MT-Gaming.com to submit an unban appeal. ");
-                                API.sendNotificationToPlayer(player, "~r~You are banned from this server. Visit MT-Gaming.com to submit an unban appeal.");
-                                API.kickPlayer(player);
+                                API.SendChatMessageToPlayer(player, "~r~You are banned from this server. Visit MT-Gaming.com to submit an unban appeal. ");
+                                API.SendNotificationToPlayer(player, "~r~You are banned from this server. Visit MT-Gaming.com to submit an unban appeal.");
+                                API.KickPlayer(player);
                                 AdminSystem.AdminCommands.SendtoAllAdmins(account.AccountName + "attempted to log in to a banned account.");
                                 return;
                             }
 
                                
-                            API.sendChatMessageToPlayer(player, "~g~ You have successfully logged in!");
+                            API.SendChatMessageToPlayer(player, "~g~ You have successfully logged in!");
                             LogManager.Log(LogManager.LogTypes.Connection, player.socialClubName + " has logged in to the server. (IP: " + player.address + ")");
 
                                 account.IsLoggedIn = true;
 
                             if (account.AdminLevel > 0)
                             {
-                                API.sendChatMessageToPlayer(player, Color.AdminOrange,
+                                API.SendChatMessageToPlayer(player, Color.AdminOrange,
                                     "Welcome back Admin " + account.AdminName);
-                                API.shared.triggerClientEvent(player, "hide_login_browser");
+                                API.Shared.TriggerClientEvent(player, "hide_login_browser");
 
                                 if (account.AdminPin.Equals(string.Empty))
                                 {
-                                    API.sendChatMessageToPlayer(player, Color.AdminOrange,
+                                    API.SendChatMessageToPlayer(player, Color.AdminOrange,
                                         "You do not have an admin pin set. Please choose one now: ");
-                                    API.triggerClientEvent(player, "create_admin_pin");
+                                    API.TriggerClientEvent(player, "create_admin_pin");
                                 }
                                 else
                                 {
-                                    API.sendChatMessageToPlayer(player, Color.AdminOrange,
+                                    API.SendChatMessageToPlayer(player, Color.AdminOrange,
                                         "Pleae login with your admin pin to continue.");
-                                    API.triggerClientEvent(player, "admin_pin_check");
+                                    API.TriggerClientEvent(player, "admin_pin_check");
                                 }
                                
                             }
@@ -165,21 +165,21 @@ namespace mtgvrp.player_manager.login
                         }
                         else
                         {
-                            API.triggerClientEvent(player, "login_error", "Incorrect password");
+                            API.TriggerClientEvent(player, "login_error", "Incorrect password");
                         }
                     }
                     else
                     {
                         if (inputPass.Length < 8)
                         {
-                            API.triggerClientEvent(player,
+                            API.TriggerClientEvent(player,
                                 "Please choose a password that is at least 8 characters long.");
                             return;
                         }
 
                         if (account.IsLoggedIn)
                         {
-                            API.triggerClientEvent(player, "ERROR: You are already logged in!");
+                            API.TriggerClientEvent(player, "ERROR: You are already logged in!");
                             return;
                         }
 
@@ -199,7 +199,7 @@ namespace mtgvrp.player_manager.login
 
                         account.Register();
 
-                        API.sendChatMessageToPlayer(player,
+                        API.SendChatMessageToPlayer(player,
                             "You have successfully registered! Please select a character slot below to get started!");
                         LogManager.Log(LogManager.LogTypes.Connection, player.socialClubName + " has registered in to the server. (IP: " + player.address + ")");
                             prepare_character_menu(player);
@@ -218,20 +218,20 @@ namespace mtgvrp.player_manager.login
         public void OnPlayerFinishedDownload(Client player)
         {
             Account account = player.GetAccount();
-            API.setEntitySyncedData(player, "REG_DIMENSION",  1000);
-            API.setEntityDimension(player, 1000);
+            API.SetEntitySyncedData(player, "REG_DIMENSION",  1000);
+            API.SetEntityDimension(player, 1000);
 
             if (account.is_registered())
             {
-                API.sendChatMessageToPlayer(player, "This account is already registered. Use /login [password] to continue to character selection.");
+                API.SendChatMessageToPlayer(player, "This account is already registered. Use /login [password] to continue to character selection.");
             }
             else
             {
-                API.sendChatMessageToPlayer(player, "This account is unregistered! Use /register [password] to register it.");
+                API.SendChatMessageToPlayer(player, "This account is unregistered! Use /register [password] to register it.");
             }
 
-            API.sendChatMessageToPlayer(player, "Press ~g~F12~w~ to disable CEF and login manually.");
-            API.triggerClientEvent(player, "onPlayerConnectedEx", account.is_registered());
+            API.SendChatMessageToPlayer(player, "Press ~g~F12~w~ to disable CEF and login manually.");
+            API.TriggerClientEvent(player, "onPlayerConnectedEx", account.is_registered());
         }
 
        
@@ -240,7 +240,7 @@ namespace mtgvrp.player_manager.login
         {
             if (inputPass.Length < 8)
             {
-                API.sendChatMessageToPlayer(player, "The password you entered to log in is too short.");
+                API.SendChatMessageToPlayer(player, "The password you entered to log in is too short.");
                 return;
             }
 
@@ -248,13 +248,13 @@ namespace mtgvrp.player_manager.login
 
             if (!account.is_registered())
             {
-                API.sendChatMessageToPlayer(player, "~r~ ERROR: You are not registered~");
+                API.SendChatMessageToPlayer(player, "~r~ ERROR: You are not registered~");
                 return;
             }
 
             if (account.IsLoggedIn)
             {
-                API.sendChatMessageToPlayer(player, "~r~ ERROR: You are already logged in!");
+                API.SendChatMessageToPlayer(player, "~r~ ERROR: You are already logged in!");
                 return;
             }
 
@@ -271,44 +271,44 @@ namespace mtgvrp.player_manager.login
             {
                 if (account.IsTempbanned == true && account.TempBanExpiration < DateTime.Now)
                 {
-                    API.sendChatMessageToPlayer(player, "~r~You are temp-banned from this server. You will be unbanned in " + (account.TempBanExpiration - DateTime.Now).TotalDays + " days.");
-                    API.sendNotificationToPlayer(player, "~r~You are temp-banned from this server. You will be unbanned in " + (account.TempBanExpiration - DateTime.Now).TotalDays + " days.");
-                    API.kickPlayer(player);
+                    API.SendChatMessageToPlayer(player, "~r~You are temp-banned from this server. You will be unbanned in " + (account.TempBanExpiration - DateTime.Now).TotalDays + " days.");
+                    API.SendNotificationToPlayer(player, "~r~You are temp-banned from this server. You will be unbanned in " + (account.TempBanExpiration - DateTime.Now).TotalDays + " days.");
+                    API.KickPlayer(player);
                     AdminSystem.AdminCommands.SendtoAllAdmins(account.AccountName + "attempted to log in to a temp-banned account.");
                     return;
                 }
                 if (account.IsBanned == true)
                 {
-                    API.sendChatMessageToPlayer(player, "~r~You are banned from this server for the following reason: ");
-                    API.sendChatMessageToPlayer(player, account.BanReason);
-                    API.sendNotificationToPlayer(player, "~r~You are banned from this server for the following reason: ");
-                    API.sendNotificationToPlayer(player, account.BanReason);
-                    API.kickPlayer(player);
+                    API.SendChatMessageToPlayer(player, "~r~You are banned from this server for the following reason: ");
+                    API.SendChatMessageToPlayer(player, account.BanReason);
+                    API.SendNotificationToPlayer(player, "~r~You are banned from this server for the following reason: ");
+                    API.SendNotificationToPlayer(player, account.BanReason);
+                    API.KickPlayer(player);
                     AdminSystem.AdminCommands.SendtoAllAdmins(account.AccountName + "attempted to log in to a banned account.");
                     return;
                 }
 
-                API.sendChatMessageToPlayer(player, "~g~ You have successfully logged in!");
+                API.SendChatMessageToPlayer(player, "~g~ You have successfully logged in!");
 
                 account.IsLoggedIn = true;
 
                 if (account.AdminLevel > 0)
                 {
-                    API.sendChatMessageToPlayer(player, Color.AdminOrange,
+                    API.SendChatMessageToPlayer(player, Color.AdminOrange,
                         "Welcome back Admin " + account.AdminName);
-                    API.shared.triggerClientEvent(player, "hide_login_browser");
+                    API.Shared.TriggerClientEvent(player, "hide_login_browser");
 
                     if (account.AdminPin.Equals(string.Empty))
                     {
-                        API.sendChatMessageToPlayer(player, Color.AdminOrange,
+                        API.SendChatMessageToPlayer(player, Color.AdminOrange,
                             "You do not have an admin pin set. Please choose one now: ");
-                        API.triggerClientEvent(player, "create_admin_pin");
+                        API.TriggerClientEvent(player, "create_admin_pin");
                     }
                     else
                     {
-                        API.sendChatMessageToPlayer(player, Color.AdminOrange,
+                        API.SendChatMessageToPlayer(player, Color.AdminOrange,
                             "Please login with your admin pin to continue.");
-                        API.triggerClientEvent(player, "admin_pin_check");
+                        API.TriggerClientEvent(player, "admin_pin_check");
                     }
 
                 }
@@ -319,7 +319,7 @@ namespace mtgvrp.player_manager.login
             }
             else
             {
-                API.sendChatMessageToPlayer(player, "~r~ ERROR: Incorrect password entered.");
+                API.SendChatMessageToPlayer(player, "~r~ ERROR: Incorrect password entered.");
             }
 
         }
@@ -330,7 +330,7 @@ namespace mtgvrp.player_manager.login
         {
             if(inputPass.Length < 8)
             {
-                API.sendChatMessageToPlayer(player, "Please choose a password that is at least 6 characters long.");
+                API.SendChatMessageToPlayer(player, "Please choose a password that is at least 6 characters long.");
                 return;
             }
 
@@ -338,13 +338,13 @@ namespace mtgvrp.player_manager.login
 
             if (account.is_registered())
             {
-                API.sendChatMessageToPlayer(player, "~r~ ERROR: You are already registered~");
+                API.SendChatMessageToPlayer(player, "~r~ ERROR: You are already registered~");
                 return;
             }
 
             if (account.IsLoggedIn)
             {
-                API.sendChatMessageToPlayer(player, "~r~ ERROR: You are already logged in!");
+                API.SendChatMessageToPlayer(player, "~r~ ERROR: You are already logged in!");
                 return;
             }
 
@@ -364,14 +364,14 @@ namespace mtgvrp.player_manager.login
 
             account.Register();
 
-            API.sendChatMessageToPlayer(player, "You have successfully registered! Please select a character slot below to get started!");
+            API.SendChatMessageToPlayer(player, "You have successfully registered! Please select a character slot below to get started!");
             prepare_character_menu(player);
         }
 
 
         public static void prepare_character_menu(Client player)
         {
-            API.shared.triggerClientEvent(player, "hide_login_browser");
+            API.Shared.TriggerClientEvent(player, "hide_login_browser");
 
             Account account = player.GetAccount();
 
@@ -382,17 +382,17 @@ namespace mtgvrp.player_manager.login
 
             foreach(var c in charactersFound)
             {
-                API.shared.setEntitySyncedData(player.handle, "char_name_" + charCount, c.CharacterName);
-                API.shared.setEntitySyncedData(player.handle, "char_info_" + charCount, "SQL: " + c.Id);
+                API.Shared.SetEntitySyncedData(player.handle, "char_name_" + charCount, c.CharacterName);
+                API.Shared.SetEntitySyncedData(player.handle, "char_info_" + charCount, "SQL: " + c.Id);
                 charCount++;
             }
 
-            API.shared.setEntitySyncedData(player.handle, "char_name_" + charCount, "Create new character");
-            API.shared.setEntitySyncedData(player.handle, "char_info_" + charCount, "Begin the creation of a new character");
+            API.Shared.SetEntitySyncedData(player.handle, "char_name_" + charCount, "Create new character");
+            API.Shared.SetEntitySyncedData(player.handle, "char_info_" + charCount, "Begin the creation of a new character");
             charCount++;
 
-            API.shared.setEntitySyncedData(player.handle, "char_count", charCount);
-            API.shared.triggerClientEvent(player, "showCharacterSelection");
+            API.Shared.SetEntitySyncedData(player.handle, "char_count", charCount);
+            API.Shared.TriggerClientEvent(player, "showCharacterSelection");
         }
     }
 }

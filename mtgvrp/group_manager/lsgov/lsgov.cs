@@ -1,6 +1,6 @@
-﻿using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Elements;
-using GrandTheftMultiplayer.Server.Managers;
+
+using GTANetworkAPI;
+
 using mtgvrp.core;
 using mtgvrp.core.Help;
 using mtgvrp.inventory;
@@ -39,7 +39,7 @@ namespace mtgvrp.group_manager.lsgov
                     Settings.Default.vipbonuslevelthree = int.Parse(percentage);
                     break;
             }
-            player.sendChatMessage("You have set VIP level " + viplevel + "'s paycheck bonus to " + percentage + "%.");
+            player.SendChatMessage("You have set VIP level " + viplevel + "'s paycheck bonus to " + percentage + "%.");
         }
 
         //SET TAXATION FOR PAYCHECKS AS MAYOR/OFFICIAL
@@ -61,7 +61,7 @@ namespace mtgvrp.group_manager.lsgov
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov && character.GroupRank < 7) { return; }
             Settings.Default.basepaycheck = int.Parse(amount);
-            API.sendChatMessageToPlayer(player, "Base paycheck set to $" + amount + ".");
+            API.SendChatMessageToPlayer(player, "Base paycheck set to $" + amount + ".");
         }
 
         //GOVERNMENT ANNOUNCEMENT AS MAYOR OR HIGH RANKING LSPD
@@ -74,7 +74,7 @@ namespace mtgvrp.group_manager.lsgov
 
             foreach (var receiver in PlayerManager.Players)
             {
-                API.sendChatMessageToPlayer(receiver.Client, "[Government] " + character.rp_name() + " says: " + text);
+                API.SendChatMessageToPlayer(receiver.Client, "[Government] " + character.rp_name() + " says: " + text);
             }
         }
 
@@ -85,16 +85,16 @@ namespace mtgvrp.group_manager.lsgov
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov || character.GroupRank < 7) { return; }
 
-            player.sendChatMessage("======================================");
-            player.sendChatMessage("Los Santos Government - Budget Manager");
-            player.sendChatMessage("======================================");
-            player.sendChatMessage($"~r~Government Balance: ~w~${Settings.Default.governmentbalance}");
-            player.sendChatMessage($"~y~Organization Funding:");
+            player.SendChatMessage("======================================");
+            player.SendChatMessage("Los Santos Government - Budget Manager");
+            player.SendChatMessage("======================================");
+            player.SendChatMessage($"~r~Government Balance: ~w~${Settings.Default.governmentbalance}");
+            player.SendChatMessage($"~y~Organization Funding:");
             //All faction budget information
             int i = 0;
             foreach (var group in GroupManager.Groups)
             {
-                player.sendChatMessage($"~p~Group ID: ~w~{i} | ~b~{group.Name}~w~ | ~r~Funding:~w~ {group.FundingPercentage}% | " +
+                player.SendChatMessage($"~p~Group ID: ~w~{i} | ~b~{group.Name}~w~ | ~r~Funding:~w~ {group.FundingPercentage}% | " +
                     $"~g~Balance: ${Settings.Default.governmentbalance * group.FundingPercentage/100}");
                 i++;
             }
@@ -110,7 +110,7 @@ namespace mtgvrp.group_manager.lsgov
 
             if (!(int.Parse(groupid) < GroupManager.Groups.Count))
             {
-                player.sendChatMessage("Invalid group ID.");
+                player.SendChatMessage("Invalid group ID.");
                 return;
             }
 
@@ -118,15 +118,15 @@ namespace mtgvrp.group_manager.lsgov
 
             if (int.Parse(percentage) == -1)
             {
-                if (account.AdminLevel < 6) { player.sendChatMessage("You don't have permission to do that."); return; }
+                if (account.AdminLevel < 6) { player.SendChatMessage("You don't have permission to do that."); return; }
 
-                player.sendChatMessage($"You have set ~b~{group.Name}~w~'s funding to ~r~infinite~w~.");
+                player.SendChatMessage($"You have set ~b~{group.Name}~w~'s funding to ~r~infinite~w~.");
                 group.FundingPercentage = int.Parse(percentage);
             }
 
             group.FundingPercentage = int.Parse(percentage);
             group.Save();
-            player.sendChatMessage($"You have set ~b~{group.Name}~w~'s funding to ~r~{percentage}%~w~.");
+            player.SendChatMessage($"You have set ~b~{group.Name}~w~'s funding to ~r~{percentage}%~w~.");
         }
 
         [Command("setgovbalance"), Help(HelpManager.CommandGroups.Gov, "Set the government balance (Admin only)", new[] { "The amount being set." })]
@@ -137,7 +137,7 @@ namespace mtgvrp.group_manager.lsgov
             if (account.AdminLevel < 6) { return; }
 
             Settings.Default.governmentbalance = int.Parse(amount);
-            player.sendChatMessage($"You have set the government balance to ${amount}.");
+            player.SendChatMessage($"You have set the government balance to ${amount}.");
         }
 
         //DEPLOY A PODIUM AS MAYOR OR HIGH RANKING LSPD
@@ -168,7 +168,7 @@ namespace mtgvrp.group_manager.lsgov
             var targetPlayer = PlayerManager.ParseClient(target);
             if (targetPlayer == null)
             {
-                API.sendChatMessageToPlayer(player, "That player is not online.");
+                API.SendChatMessageToPlayer(player, "That player is not online.");
                 return;
             }
 
@@ -176,20 +176,20 @@ namespace mtgvrp.group_manager.lsgov
 
             if (InventoryManager.DoesInventoryHaveItem<IdentificationItem>(c).Length == 0)
             {
-                API.sendChatMessageToPlayer(player, "You don't have an identification.");
+                API.SendChatMessageToPlayer(player, "You don't have an identification.");
                 return;
             }
 
             if (targetPlayer.position.DistanceTo(player.position) > 3.0)
             {
-                API.sendChatMessageToPlayer(player, "The player must be near you.");
+                API.SendChatMessageToPlayer(player, "The player must be near you.");
                 return;
             }
 
-            API.sendChatMessageToPlayer(targetPlayer, " [************** Identification **************]");
-            API.sendChatMessageToPlayer(targetPlayer, $"* Name: ~h~{c.rp_name()}~h~ | Age: ~h~{c.Age}~h~");
-            API.sendChatMessageToPlayer(targetPlayer, $"* DOB: ~h~{c.Birthday}~h~ | Birth Place: ~h~{c.Birthplace}~h~");
-            API.sendChatMessageToPlayer(targetPlayer, " [********************************************]");
+            API.SendChatMessageToPlayer(targetPlayer, " [************** Identification **************]");
+            API.SendChatMessageToPlayer(targetPlayer, $"* Name: ~h~{c.rp_name()}~h~ | Age: ~h~{c.Age}~h~");
+            API.SendChatMessageToPlayer(targetPlayer, $"* DOB: ~h~{c.Birthday}~h~ | Birth Place: ~h~{c.Birthplace}~h~");
+            API.SendChatMessageToPlayer(targetPlayer, " [********************************************]");
 
             ChatManager.RoleplayMessage(player, "shows his id to " + targetPlayer.GetCharacter().rp_name(), ChatManager.RoleplayMe);
         }

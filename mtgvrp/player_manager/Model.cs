@@ -1,4 +1,4 @@
-﻿namespace mtgvrp.player_manager
+namespace mtgvrp.player_manager
 {
     public class Model
     {

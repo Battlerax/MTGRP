@@ -1,5 +1,5 @@
 ﻿var holdingbag = false;
-API.onServerEventTrigger.connect(function (eventName, args) {
+Event.OnServerEventTrigger.connect(function (eventName, args) {
     switch (eventName) {
 
 	        case "garbage_setwaypoint":
@@ -21,7 +21,7 @@ API.onServerEventTrigger.connect(function (eventName, args) {
     }
 });
 
-API.onUpdate.connect(() => {
+Event.OnUpdate.connect(() => {
     if (holdingbag) {
         API.disableControlThisFrame(25);
         API.disableControlThisFrame(21);
@@ -37,7 +37,7 @@ API.onUpdate.connect(() => {
     }
 });
 
-API.onKeyDown.connect((sender, e) =>
+Event.OnKeyDown.connect((sender, e) =>
 {
 	if (e.KeyCode === Keys.E) {
 	API.triggerServerEvent("garbage_pickupbag");

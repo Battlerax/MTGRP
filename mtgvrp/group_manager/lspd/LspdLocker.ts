@@ -1,7 +1,7 @@
 ﻿var lspd_menu = null;
 var menu_pool = null;
 
-API.onServerEventTrigger.connect((eventName, args) => {
+Event.OnServerEventTrigger.connect((eventName, args) => {
 
     switch (eventName) {
 
@@ -42,7 +42,7 @@ API.onServerEventTrigger.connect((eventName, args) => {
 
 });
 
-API.onUpdate.connect(() => {
+Event.OnUpdate.connect(() => {
     if (menu_pool != null) {
         menu_pool.ProcessMenus();
     }

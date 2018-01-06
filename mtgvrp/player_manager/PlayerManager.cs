@@ -1,12 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
-using GrandTheftMultiplayer.Server;
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Elements;
-using GrandTheftMultiplayer.Server.Managers;
-using GrandTheftMultiplayer.Shared;
+
+
+using GTANetworkAPI;
+
+
 using mtgvrp.vehicle_manager;
 using mtgvrp.weapon_manager;
 using mtgvrp.inventory;
@@ -27,7 +27,7 @@ namespace mtgvrp.player_manager
         public static void AddPlayer(Character c)
         {
             int id = -1;
-            for (var i = 0; i < API.shared.getMaxPlayers(); i++)
+            for (var i = 0; i < API.Shared.GetMaxPlayers(); i++)
             {
                 if (_players.ContainsKey(i) == false)
                 {
@@ -51,11 +51,11 @@ namespace mtgvrp.player_manager
         {
             DebugManager.DebugMessage("[PlayerM] Initalizing player manager...");
 
-            API.onPlayerConnected += OnPlayerConnected;
-            API.onPlayerDisconnected += OnPlayerDisconnected;
-            API.onClientEventTrigger += API_onClientEventTrigger;
-            API.onPlayerDeath += API_onPlayerDeath;
-            API.onPlayerHealthChange += API_onPlayerHealthChange;
+            Event.OnPlayerConnected += OnPlayerConnected;
+            Event.OnPlayerDisconnected += OnPlayerDisconnected;
+            Event.OnClientEventTrigger += API_onClientEventTrigger;
+            Event.OnPlayerDeath += API_onPlayerDeath;
+            Event.OnPlayerHealthChange += API_onPlayerHealthChange;
 
             //Setup save timer.
             PlayerSaveTimer.Interval = 900000;
@@ -72,7 +72,7 @@ namespace mtgvrp.player_manager
 
         private void PlayerSaveTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            foreach (var player in API.shared.getAllPlayers())
+            foreach (var player in API.Shared.GetAllPlayers())
             {
                 if (player == null)
                     continue;
@@ -83,7 +83,7 @@ namespace mtgvrp.player_manager
 
                 character.Save();
 
-                player.sendChatMessage("Character saved.");
+                player.SendChatMessage("Character saved.");
             }
         }
 
@@ -96,12 +96,12 @@ namespace mtgvrp.player_manager
             if (character == null)
                 return;
 
-            if (API.getPlayerHealth(player) < oldValue && account.AdminDuty)
+            if (API.GetPlayerHealth(player) < oldValue && account.AdminDuty)
             {
-                API.setPlayerHealth(player, 100);
+                API.SetPlayerHealth(player, 100);
             }
 
-            character.Health = API.getPlayerHealth(player);
+            character.Health = API.GetPlayerHealth(player);
         }
 
 
@@ -115,7 +115,7 @@ namespace mtgvrp.player_manager
             }
 
             var character = player.GetCharacter();
-            player.sendChatMessage("You were revived by the ~b~Los Santos Medical Department ~w~ and were charged $200 for hospital fees.");
+            player.SendChatMessage("You were revived by the ~b~Los Santos Medical Department ~w~ and were charged $200 for hospital fees.");
             WeaponManager.RemoveAllPlayerWeapons(player);
             int amount = -200;
 
@@ -134,7 +134,7 @@ namespace mtgvrp.player_manager
                 InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(Money), 200);
             }
 
-            Client killer = API.getPlayerFromHandle(entityKiller);
+            Client killer = API.GetPlayerFromHandle(entityKiller);
             if (killer != null)
             {
                 LogManager.Log(LogManager.LogTypes.Death, $"{character.CharacterName}[{player.socialClubName}] has died. Killer: {killer.GetCharacter().rp_name()}[{killer.GetAccount().AccountName}]. Weapon: {((WeaponHash)weapon).ToString()}");
@@ -154,7 +154,7 @@ namespace mtgvrp.player_manager
             if(eventName == "update_ped_for_client")
             {
                 var player = (NetHandle)arguments[0];
-                Character c = API.getEntityData(player, "Character");
+                Character c = API.GetEntityData(player, "Character");
                 c?.update_ped(sender);
             }
         }
@@ -164,7 +164,7 @@ namespace mtgvrp.player_manager
             var account = new Account();
             account.AccountName = player.socialClubName;
 
-            API.setEntityData(player, "Account", account);
+            API.SetEntityData(player, "Account", account);
         }
 
         public void OnPlayerDisconnected(Client player, string reason)
@@ -182,7 +182,7 @@ namespace mtgvrp.player_manager
                     {
                         if (p.Client.GetAccount().AdminLevel > 0)
                         {
-                            p.Client.sendChatMessage($"Admin {account.AdminName} has left the server.");
+                            p.Client.SendChatMessage($"Admin {account.AdminName} has left the server.");
                         }
                     }
                 }
@@ -327,7 +327,7 @@ namespace mtgvrp.player_manager
             foreach (var player in Players.Select(x => x.Client))
             {
                 Character character = player.GetCharacter();
-                if (!API.shared.isPlayerConnected(player))
+                if (!API.Shared.IsPlayerConnected(player))
                 {
                     LogManager.Log(LogManager.LogTypes.Connection, $"ERROR: PLAYER {character.CharacterName} IS NOT LOGGED IN WHILE IN LIST");
                     continue;
@@ -338,14 +338,14 @@ namespace mtgvrp.player_manager
                     int paycheckAmount = CalculatePaycheck(player);
                     character.BankBalance += paycheckAmount;
                     Properties.Settings.Default.governmentbalance += paycheckAmount * taxationAmount / 100;
-                    player.sendChatMessage("--------------PAYCHECK RECEIVED!--------------");
-                    player.sendChatMessage("Base paycheck: $" + basepaycheck + ".");
-                    player.sendChatMessage("Interest: $" + character.BankBalance / 1000 + ".");
-                    player.sendChatMessage("You were taxed at " + taxationAmount + "%.");
-                    //player.sendChatMessage("VIP bonus: " + getVIPPaycheckBonus(player) + "%.");
-                    player.sendChatMessage("Faction bonus: $" + getFactionBonus(player) + ".");
-                    player.sendChatMessage("----------------------------------------------");
-                    player.sendChatMessage("Total: ~g~$" + paycheckAmount + "~w~.");
+                    player.SendChatMessage("--------------PAYCHECK RECEIVED!--------------");
+                    player.SendChatMessage("Base paycheck: $" + basepaycheck + ".");
+                    player.SendChatMessage("Interest: $" + character.BankBalance / 1000 + ".");
+                    player.SendChatMessage("You were taxed at " + taxationAmount + "%.");
+                    //player.SendChatMessage("VIP bonus: " + getVIPPaycheckBonus(player) + "%.");
+                    player.SendChatMessage("Faction bonus: $" + getFactionBonus(player) + ".");
+                    player.SendChatMessage("----------------------------------------------");
+                    player.SendChatMessage("Total: ~g~$" + paycheckAmount + "~w~.");
 
                     player.sendPictureNotificationToPlayer("Your paycheck for ~g~$" + paycheckAmount + " ~w~has been added to your balance.", "CHAR_BANK_MAZE", 0, 0, "Maze Bank", "Paycheck Received!");
                     Account account = player.GetAccount();
@@ -353,7 +353,7 @@ namespace mtgvrp.player_manager
                     {
                         if (account.VipExpirationDate < DateTime.Now)
                         {
-                            player.sendChatMessage(
+                            player.SendChatMessage(
                                 "Your ~y~VIP~w~ subscription has ran out. Visit www.mt-gaming.com to renew your subscription.");
                             account.VipLevel = 0;
                         }
@@ -369,15 +369,15 @@ namespace mtgvrp.player_manager
         [Command("getid", GreedyArg = true, Alias = "id"), Help(HelpManager.CommandGroups.General, "Used to find the ID of specific player name.", new [] {"Name of the target character. (Partial name accepted)"})]
         public void getid_cmd(Client sender, string playerName)
         {
-            API.sendChatMessageToPlayer(sender, Color.White, "----------- Searching for: " + playerName + " -----------");
+            API.SendChatMessageToPlayer(sender, Color.White, "----------- Searching for: " + playerName + " -----------");
             foreach(var c in Players)
             {
                 if(c.CharacterName.StartsWith(playerName, StringComparison.OrdinalIgnoreCase))
                 {
-                    API.sendChatMessageToPlayer(sender, Color.Grey, c.CharacterName + " - ID " + GetPlayerId(c));
+                    API.SendChatMessageToPlayer(sender, Color.Grey, c.CharacterName + " - ID " + GetPlayerId(c));
                 }
             }
-            API.sendChatMessageToPlayer(sender, Color.White, "------------------------------------------------------------");
+            API.SendChatMessageToPlayer(sender, Color.White, "------------------------------------------------------------");
         }
 
         [Command("stats"), Help(HelpManager.CommandGroups.General, "Used to find your character statistics", new []{"ID of target character. <strong>[ADMIN ONLY]</strong>"})]          //Stats command
@@ -409,19 +409,19 @@ namespace mtgvrp.player_manager
         {
             Character character = player.GetCharacter();
 
-            API.sendChatMessageToPlayer(player, Color.White, "__________________ TIME __________________");
-            API.sendChatMessageToPlayer(player, Color.Grey, "The current server time is: " + DateTime.Now.ToString("h:mm:ss tt"));
-            API.sendChatMessageToPlayer(player, Color.Grey, $"The current in-game time is: {TimeWeatherManager.Hours:D2}:{TimeWeatherManager.Minutes:D2}");
-            API.sendChatMessageToPlayer(player, Color.Grey,
+            API.SendChatMessageToPlayer(player, Color.White, "__________________ TIME __________________");
+            API.SendChatMessageToPlayer(player, Color.Grey, "The current server time is: " + DateTime.Now.ToString("h:mm:ss tt"));
+            API.SendChatMessageToPlayer(player, Color.Grey, $"The current in-game time is: {TimeWeatherManager.Hours:D2}:{TimeWeatherManager.Minutes:D2}");
+            API.SendChatMessageToPlayer(player, Color.Grey,
                 $"Time until next paycheck: { (int)(3600 - (character.GetTimePlayed() % 3600)) / 60}" + " minutes.");
-            API.sendChatMessageToPlayer(player, Color.White, "__________________ TIME __________________");
+            API.SendChatMessageToPlayer(player, Color.White, "__________________ TIME __________________");
         }
 
         [Command("dimreset"), Help(HelpManager.CommandGroups.General, "Reset your dimension.", null)]
         public void dimreset_cmd(Client player)
         {
-            API.setEntityDimension(player, 0);
-            player.sendChatMessage("Dimension reset.");
+            API.SetEntityDimension(player, 0);
+            player.SendChatMessage("Dimension reset.");
         }
 
         [Command("attempt", GreedyArg = true), Help(HelpManager.CommandGroups.Roleplay, "Attempt to do something with a 50% chance of either success or fail.", "The attempt message")]
@@ -448,32 +448,32 @@ namespace mtgvrp.player_manager
             Character character = receiver.GetCharacter();
             Account account = receiver.GetAccount();
             Account senderAccount = sender.GetAccount();
-            var playerveh = VehicleManager.GetVehFromNetHandle(API.getPlayerVehicle(receiver))?.Id.ToString() ?? "None";
+            var playerveh = VehicleManager.GetVehFromNetHandle(API.GetPlayerVehicle(receiver))?.Id.ToString() ?? "None";
 
-            API.sendChatMessageToPlayer(sender, "==============================================");
-            API.sendChatMessageToPlayer(sender, "Player statistics for " + character.CharacterName);
-            API.sendChatMessageToPlayer(sender, "==============================================");
-            API.sendChatMessageToPlayer(sender, "~g~General:~g~");
-            API.sendChatMessageToPlayer(sender,
+            API.SendChatMessageToPlayer(sender, "==============================================");
+            API.SendChatMessageToPlayer(sender, "Player statistics for " + character.CharacterName);
+            API.SendChatMessageToPlayer(sender, "==============================================");
+            API.SendChatMessageToPlayer(sender, "~g~General:~g~");
+            API.SendChatMessageToPlayer(sender,
                 $"~h~Character name:~h~ {character.CharacterName} | ~h~ID:~h~ {character.Id} | ~h~Money:~h~ {Money.GetCharacterMoney(character)} | ~h~Bank balance:~h~ {character.BankBalance} | ~h~Playing hours:~h~ {character.GetPlayingHours()}  | ~h~Total hours:~h~ {account.TotalPlayingHours}");
 
-            API.sendChatMessageToPlayer(sender,
+            API.SendChatMessageToPlayer(sender,
                 $"~h~Age:~h~ {character.Age} ~h~Birthplace:~h~ {character.Birthplace} ~h~Birthday:~h~ {character.Birthday} ~h~VIP level:~h~ {account.VipLevel} ~h~VIP expires:~h~ {account.VipExpirationDate}");
 
-            API.sendChatMessageToPlayer(sender, "~b~Faction/Jobs:~b~");
-            API.sendChatMessageToPlayer(sender,
+            API.SendChatMessageToPlayer(sender, "~b~Faction/Jobs:~b~");
+            API.SendChatMessageToPlayer(sender,
                 $"~h~Faction ID:~h~ {character.GroupId} ~h~Rank:~h~ {character.GroupRank} ~h~Group name:~h~ {character.Group.Name} ~h~Job 1:~h~ {character.JobOne.Name}");
 
-            API.sendChatMessageToPlayer(sender, "~r~Property:~r~");
-            API.sendChatMessageToPlayer(sender, $"~h~Owned vehicles:~h~ {character.OwnedVehicles.Count()}");
+            API.SendChatMessageToPlayer(sender, "~r~Property:~r~");
+            API.SendChatMessageToPlayer(sender, $"~h~Owned vehicles:~h~ {character.OwnedVehicles.Count()}");
 
             if (senderAccount.AdminLevel > 0)
             {
-                API.sendChatMessageToPlayer(sender, "~y~Admin:~y~");
-                API.sendChatMessageToPlayer(sender,
-                    $"~h~Admin level:~h~ {account.AdminLevel} ~h~Admin name:~h~ {account.AdminName} ~h~Dimension:~h~ {API.getEntityDimension(receiver)} ~h~Last IP:~h~ {account.LastIp}");
-                API.sendChatMessageToPlayer(sender, $"~h~Current vehicle:~h~{playerveh} ~h~Last vehicle: ~h~ { character?.LastVehicle?.Id}");
-                API.sendChatMessageToPlayer(sender,
+                API.SendChatMessageToPlayer(sender, "~y~Admin:~y~");
+                API.SendChatMessageToPlayer(sender,
+                    $"~h~Admin level:~h~ {account.AdminLevel} ~h~Admin name:~h~ {account.AdminName} ~h~Dimension:~h~ {API.GetEntityDimension(receiver)} ~h~Last IP:~h~ {account.LastIp}");
+                API.SendChatMessageToPlayer(sender, $"~h~Current vehicle:~h~{playerveh} ~h~Last vehicle: ~h~ { character?.LastVehicle?.Id}");
+                API.SendChatMessageToPlayer(sender,
                     $"~h~Social Club Name:~h~ {account.AccountName} ~h~Admin actions: {account.AdminActions}");
             }
         }
@@ -482,29 +482,29 @@ namespace mtgvrp.player_manager
         {
             Account senderAccount = sender.GetAccount();
 
-            API.shared.sendChatMessageToPlayer(sender, "==============================================");
-            API.shared.sendChatMessageToPlayer(sender, "Player statistics for " + receiver.CharacterName);
-            API.shared.sendChatMessageToPlayer(sender, "==============================================");
-            API.shared.sendChatMessageToPlayer(sender, "~g~General:~g~");
-            API.shared.sendChatMessageToPlayer(sender,
+            API.Shared.SendChatMessageToPlayer(sender, "==============================================");
+            API.Shared.SendChatMessageToPlayer(sender, "Player statistics for " + receiver.CharacterName);
+            API.Shared.SendChatMessageToPlayer(sender, "==============================================");
+            API.Shared.SendChatMessageToPlayer(sender, "~g~General:~g~");
+            API.Shared.SendChatMessageToPlayer(sender,
                 $"~h~receiver name:~h~ {receiver.CharacterName} | ~h~ID:~h~ {receiver.Id} | ~h~Money:~h~ {Money.GetCharacterMoney(receiver)} | ~h~Bank balance:~h~ {receiver.BankBalance} | ~h~Playing hours:~h~ {receiver.GetPlayingHours()}  | ~h~Total hours:~h~ {receiverAcc.TotalPlayingHours}");
 
-            API.shared.sendChatMessageToPlayer(sender,
+            API.Shared.SendChatMessageToPlayer(sender,
                 $"~h~Age:~h~ {receiver.Age} ~h~Birthplace:~h~ {receiver.Birthplace} ~h~Birthday:~h~ {receiver.Birthday} ~h~VIP level:~h~ {receiverAcc.VipLevel} ~h~VIP expires:~h~ {receiverAcc.VipExpirationDate}");
 
-            API.shared.sendChatMessageToPlayer(sender, "~b~Faction/Jobs:~b~");
-            API.shared.sendChatMessageToPlayer(sender,
+            API.Shared.SendChatMessageToPlayer(sender, "~b~Faction/Jobs:~b~");
+            API.Shared.SendChatMessageToPlayer(sender,
                 $"~h~Faction ID:~h~ {receiver.GroupId} ~h~Rank:~h~ {receiver.GroupRank} ~h~Group name:~h~ {receiver.Group.Name} ~h~Job 1:~h~ {receiver.JobOne.Name}");
 
-            API.shared.sendChatMessageToPlayer(sender, "~r~Property:~r~");
-            API.shared.sendChatMessageToPlayer(sender, $"~h~Owned vehicles:~h~ {receiver.OwnedVehicles.Count()}");
+            API.Shared.SendChatMessageToPlayer(sender, "~r~Property:~r~");
+            API.Shared.SendChatMessageToPlayer(sender, $"~h~Owned vehicles:~h~ {receiver.OwnedVehicles.Count()}");
 
             if (senderAccount.AdminLevel > 0)
             {
-                API.shared.sendChatMessageToPlayer(sender, "~y~Admin:~y~");
-                API.shared.sendChatMessageToPlayer(sender,
+                API.Shared.SendChatMessageToPlayer(sender, "~y~Admin:~y~");
+                API.Shared.SendChatMessageToPlayer(sender,
                     $"~h~Admin level:~h~ {receiverAcc.AdminLevel} ~h~Admin name:~h~ {receiverAcc.AdminName} ~h~Dimension:~h~ {receiver.LastDimension} ~h~Last IP:~h~ {receiverAcc.LastIp}");
-                API.shared.sendChatMessageToPlayer(sender,
+                API.Shared.SendChatMessageToPlayer(sender,
                     $"~h~Social Club Name:~h~ {receiverAcc.AccountName} ~h~Admin actions: {receiverAcc.AdminActions}");
             }
         }

@@ -10,7 +10,7 @@ var nextCheckpoint = null;
 var testVehicle;
 var player;
 
-API.onServerEventTrigger.connect((event, args) => {
+Event.OnServerEventTrigger.connect((event, args) => {
     if (event === "DMV_CANCEL_TEST") {
         checkpoints = null;
         nextCheckpoint = null;
@@ -100,7 +100,7 @@ function updateMarkers(nextLoc, afterLoc) {
     }
 }
 
-API.onUpdate.connect(function () {
+Event.OnUpdate.connect(function () {
     if (menuPool != null) {
         menuPool.ProcessMenus();
     }

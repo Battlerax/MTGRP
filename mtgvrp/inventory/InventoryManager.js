@@ -2,7 +2,7 @@
 
 var myBrowser = null;
 var newArgs = null;
-API.onServerEventTrigger.connect((eventName, args) => {
+Event.OnServerEventTrigger.connect((eventName, args) => {
     switch (eventName) {
         case 'invmanagement_showmanager':
             var res = API.getScreenResolutionMaintainRatio();
@@ -46,7 +46,7 @@ function ExitWindow() {
     API.triggerServerEvent("invmanagement_cancelled");
 }
 
-API.onUpdate.connect(() => {
+Event.OnUpdate.connect(() => {
     if (API.hasEntitySyncedData(API.getLocalPlayer(), "OVERWEIGHT")) {
         API.disableControlThisFrame(25);
         API.disableControlThisFrame(21);

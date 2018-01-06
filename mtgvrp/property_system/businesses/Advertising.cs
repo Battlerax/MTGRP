@@ -1,9 +1,9 @@
-﻿using System.Timers;
+using System.Timers;
 
 using System.Linq;
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Elements;
-using GrandTheftMultiplayer.Server.Managers;
+
+using GTANetworkAPI;
+
 using mtgvrp.core;
 using mtgvrp.inventory;
 using mtgvrp.phone_manager;
@@ -21,7 +21,7 @@ namespace mtgvrp.property_system.businesses
 
         public static void SendtoAllAdmins(string text)
         {
-            foreach (var c in API.shared.getAllPlayers())
+            foreach (var c in API.Shared.GetAllPlayers())
             {
                 if (c == null)
                     continue;
@@ -33,7 +33,7 @@ namespace mtgvrp.property_system.businesses
 
                 if (receiverAccount.AdminLevel > 0)
                 {
-                    API.shared.sendChatMessageToPlayer(c, Color.AdminChat, text);
+                    API.Shared.SendChatMessageToPlayer(c, Color.AdminChat, text);
                 }
             }
         }
@@ -47,7 +47,7 @@ namespace mtgvrp.property_system.businesses
             var biz = PropertyManager.IsAtPropertyInteraction(player);
             if (biz?.Type != PropertyManager.PropertyTypes.Advertising)
             {
-                API.sendChatMessageToPlayer(player, "You aren't at an advertising interaction point.");
+                API.SendChatMessageToPlayer(player, "You aren't at an advertising interaction point.");
                 return;
             }
 
@@ -59,25 +59,25 @@ namespace mtgvrp.property_system.businesses
 
             if (Money.GetCharacterMoney(character) - price < 0)
             {
-                API.sendChatMessageToPlayer(player, "~r~Advertising costs " + price + "$. You don't have enough money.");
+                API.SendChatMessageToPlayer(player, "~r~Advertising costs " + price + "$. You don't have enough money.");
                 return;
             }
 
             if (phone.Length == 0)
             {
-                player.sendChatMessage("You must own a phone before submitting an advertisement.");
+                player.SendChatMessage("You must own a phone before submitting an advertisement.");
                 return;
             }
 
             if (!CanAdvertise)
             {
-                player.sendChatMessage("An advertisement has just been placed. Please wait 15 seconds.");
+                player.SendChatMessage("An advertisement has just been placed. Please wait 15 seconds.");
                 return;
             }
 
             if (text.Length < 5)
             {
-                player.sendChatMessage("Advertisement text must be longer than 5 characters.");
+                player.SendChatMessage("Advertisement text must be longer than 5 characters.");
                 return;
             }
 
@@ -93,7 +93,7 @@ namespace mtgvrp.property_system.businesses
 
                 if (receiverPhone[0].IsOn)
                 {
-                    receiver.Client.sendChatMessage("~g~[AD] (#" + senderPhone.PhoneNumber + "): " + text);
+                    receiver.Client.SendChatMessage("~g~[AD] (#" + senderPhone.PhoneNumber + "): " + text);
                 }
             }
 
@@ -102,7 +102,7 @@ namespace mtgvrp.property_system.businesses
             AdvertTimer.Elapsed += delegate { ResetAdvertTimer(); };
             AdvertTimer.Start();
 
-            player.sendChatMessage("Advertisement subimtted.");
+            player.SendChatMessage("Advertisement subimtted.");
             LogManager.Log(LogManager.LogTypes.Ads, $"{player.GetCharacter().CharacterName}[{player.GetAccount().AccountName}]: {text}");
                        
             var account = player.GetAccount();

@@ -1,8 +1,8 @@
-﻿using System.Timers;
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Elements;
-using GrandTheftMultiplayer.Server.Managers;
-using GrandTheftMultiplayer.Shared;
+using System.Timers;
+
+using GTANetworkAPI;
+
+
 using mtgvrp.core;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;
@@ -23,17 +23,17 @@ namespace mtgvrp.speed_fuel_system
             FuelTimer.Elapsed += FuelTimer_Elapsed;
             FuelTimer.Start();
 
-            API.onClientEventTrigger += API_onClientEventTrigger;
-            API.onPlayerExitVehicle += API_onPlayerExitVehicle;
+            Event.OnClientEventTrigger += API_onClientEventTrigger;
+            Event.OnPlayerExitVehicle += API_onPlayerExitVehicle;
         }
 
         private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
         {
-            if (eventName == "fuel_getvehiclefuel" && API.isPlayerInAnyVehicle(sender) &&
-                API.getPlayerVehicleSeat(sender) == -1)
+            if (eventName == "fuel_getvehiclefuel" && API.IsPlayerInAnyVehicle(sender) &&
+                API.GetPlayerVehicleSeat(sender) == -1)
             {
-                Vehicle veh = API.getEntityData(API.getPlayerVehicle(sender), "Vehicle");
-                API.triggerClientEvent(sender, "fuel_updatevalue", veh.Fuel);
+                Vehicle veh = API.GetEntityData(API.GetPlayerVehicle(sender), "Vehicle");
+                API.TriggerClientEvent(sender, "fuel_updatevalue", veh.Fuel);
             }
         }
 
@@ -42,24 +42,24 @@ namespace mtgvrp.speed_fuel_system
             foreach (var veh in VehicleManager.Vehicles)
             {
                 if (!veh.IsSpawned) continue;
-                if (API.getVehicleEngineStatus(veh.NetHandle) != true || veh.Fuel <= 0) continue;
-                if (API.shared.getVehicleClass(veh.VehModel) == 13) continue; //Skip cycles
+                if (API.GetVehicleEngineStatus(veh.NetHandle) != true || veh.Fuel <= 0) continue;
+                if (API.Shared.GetVehicleClass(veh.VehModel) == 13) continue; //Skip cycles
 
-                var ocups = API.getVehicleOccupants(veh.NetHandle);
+                var ocups = API.GetVehicleOccupants(veh.NetHandle);
 
                 //Reduce fuel by one.
                 veh.Fuel -= 1;
                 if (veh.Fuel <= 0)
                 {
-                    API.setVehicleEngineStatus(veh.NetHandle, false);
+                    API.SetVehicleEngineStatus(veh.NetHandle, false);
                     if (ocups.Length > 0)
-                        API.sendChatMessageToPlayer(ocups[0], "~y~The vehicle fuel has finished.");
+                        API.SendChatMessageToPlayer(ocups[0], "~y~The vehicle fuel has finished.");
                 }
 
                 //Notify driver with loss of fuel.
                 if (ocups.Length > 0)
                 {
-                    API.triggerClientEvent(ocups[0], "fuel_updatevalue", veh.Fuel);
+                    API.TriggerClientEvent(ocups[0], "fuel_updatevalue", veh.Fuel);
                 }
             }
         }
@@ -69,12 +69,12 @@ namespace mtgvrp.speed_fuel_system
         {
             Account a = player.GetAccount();
             a.IsSpeedoOn = !a.IsSpeedoOn;
-            API.sendChatMessageToPlayer(player, a.IsSpeedoOn ? "You've sucessfully turned on the speedometer." : "You've sucessfully turned off the speedometer.");
+            API.SendChatMessageToPlayer(player, a.IsSpeedoOn ? "You've sucessfully turned on the speedometer." : "You've sucessfully turned off the speedometer.");
             a.Save();
 
             if (player.isInVehicle)
             {
-                API.triggerClientEvent(player, "TOGGLE_SPEEDO");
+                API.TriggerClientEvent(player, "TOGGLE_SPEEDO");
             }
         }
 
@@ -84,20 +84,20 @@ namespace mtgvrp.speed_fuel_system
             var prop = PropertyManager.IsAtPropertyInteraction(player);
             if (prop?.Type == PropertyManager.PropertyTypes.GasStation)
             {
-                if (API.isPlayerInAnyVehicle(player) && API.getPlayerVehicleSeat(player) == -1)
+                if (API.IsPlayerInAnyVehicle(player) && API.GetPlayerVehicleSeat(player) == -1)
                 {
-                    var vehEntity = API.getPlayerVehicle(player);
-                    Vehicle veh = API.getEntityData(vehEntity, "Vehicle");
+                    var vehEntity = API.GetPlayerVehicle(player);
+                    Vehicle veh = API.GetEntityData(vehEntity, "Vehicle");
 
-                    if (API.getVehicleEngineStatus(vehEntity))
+                    if (API.GetVehicleEngineStatus(vehEntity))
                     {
-                        API.sendChatMessageToPlayer(player, "Vehicle engine must be off.");
+                        API.SendChatMessageToPlayer(player, "Vehicle engine must be off.");
                         return;
                     }
 
                     if (player.hasData("FUELING_VEHICLE"))
                     {
-                        API.sendChatMessageToPlayer(player, "You're already refueling a vehicle.");
+                        API.SendChatMessageToPlayer(player, "You're already refueling a vehicle.");
                         return;
                     }
 
@@ -108,50 +108,50 @@ namespace mtgvrp.speed_fuel_system
 
                     if (pendingFuel > 100 || pendingFuel + veh.Fuel > 100 || pendingFuel < 0)
                     {
-                        API.sendChatMessageToPlayer(player, "Vehicle fuel can't be above 100 or negative.");
+                        API.SendChatMessageToPlayer(player, "Vehicle fuel can't be above 100 or negative.");
                         return;
                     }
 
                     if (Money.GetCharacterMoney(player.GetCharacter()) < pendingFuel * prop.ItemPrices["gas"] && player.GetCharacter().Group.CommandType != group_manager.Group.CommandTypeLspd)
                     {
-                        API.sendChatMessageToPlayer(player,
+                        API.SendChatMessageToPlayer(player,
                             $"You don't have enough money to get ~r~{pendingFuel}~w~ units of fuel.~n~It's worth ~g~${pendingFuel * prop.ItemPrices["gas"]}~w~.");
                         return;
                     }
 
-                    API.sendChatMessageToPlayer(player,
+                    API.SendChatMessageToPlayer(player,
                         $"You will be charged ~g~${pendingFuel * prop.ItemPrices["gas"]}~w~ for ~r~{pendingFuel}~w~ units of fuel.");
-                    API.freezePlayer(player, true);
-                    API.setEntityData(vehEntity, "PENDING_FUEL", pendingFuel);
+                    API.FreezePlayer(player, true);
+                    API.SetEntityData(vehEntity, "PENDING_FUEL", pendingFuel);
                     veh.RefuelProp = prop;
                     FuelVeh(new[] { player, vehEntity });
-                    if (API.hasEntityData(vehEntity, "PENDING_FUEL"))
+                    if (API.HasEntityData(vehEntity, "PENDING_FUEL"))
                     {
-                        API.setEntityData(player, "FUELING_VEHICLE", vehEntity);
+                        API.SetEntityData(player, "FUELING_VEHICLE", vehEntity);
                         veh.FuelingTimer = new System.Threading.Timer(FuelVeh, new[] { player, vehEntity }, 3000, 3000);
                         return;
                     }
                 }
                 else
                 {
-                    API.sendChatMessageToPlayer(player, "You must be driving a vehicle.");
+                    API.SendChatMessageToPlayer(player, "You must be driving a vehicle.");
                 }
             }
             else
             {
-                API.sendChatMessageToPlayer(player, "You must be at a gas station.");
+                API.SendChatMessageToPlayer(player, "You must be at a gas station.");
             }
         }
 
         private void API_onPlayerExitVehicle(Client player, NetHandle vehicle, int seat)
         {
-            if (API.hasEntityData(player, "FUELING_VEHICLE"))
+            if (API.HasEntityData(player, "FUELING_VEHICLE"))
             {
-                var vehEntity = API.getEntityData(player, "FUELING_VEHICLE");
-                API.sendChatMessageToPlayer(player, "Refuel ended.");
-                Vehicle veh = API.getEntityData(vehEntity, "Vehicle");
+                var vehEntity = API.GetEntityData(player, "FUELING_VEHICLE");
+                API.SendChatMessageToPlayer(player, "Refuel ended.");
+                Vehicle veh = API.GetEntityData(vehEntity, "Vehicle");
                 veh.FuelingTimer?.Dispose();
-                API.freezePlayer(player, false);
+                API.FreezePlayer(player, false);
                 veh.Save();
             }
         }
@@ -159,7 +159,7 @@ namespace mtgvrp.speed_fuel_system
         private void FuelVeh(System.Object vars)
         {
             var handles = (NetHandle[])vars;
-            Client playerEntity = API.getPlayerFromHandle(handles[0]);
+            Client playerEntity = API.GetPlayerFromHandle(handles[0]);
             NetHandle vehEntity = handles[1];
 
             if (vehEntity.IsNull)
@@ -167,7 +167,7 @@ namespace mtgvrp.speed_fuel_system
                 return;
             }
 
-            Vehicle veh = API.getEntityData(vehEntity, "Vehicle");
+            Vehicle veh = API.GetEntityData(vehEntity, "Vehicle");
 
             if (veh == null)
             {
@@ -177,7 +177,7 @@ namespace mtgvrp.speed_fuel_system
             if (playerEntity == null)
             {
                 veh.FuelingTimer?.Dispose();
-                API.resetEntityData(vehEntity, "PENDING_FUEL");
+                API.ResetEntityData(vehEntity, "PENDING_FUEL");
                 return;
             }
 
@@ -186,35 +186,35 @@ namespace mtgvrp.speed_fuel_system
             if (c == null)
             {
                 veh.FuelingTimer?.Dispose();
-                API.resetEntityData(vehEntity, "PENDING_FUEL");
+                API.ResetEntityData(vehEntity, "PENDING_FUEL");
                 return;
             }
 
-            if (API.getVehicleEngineStatus(vehEntity))
+            if (API.GetVehicleEngineStatus(vehEntity))
             {
                 veh.FuelingTimer?.Dispose();
-                API.resetEntityData(vehEntity, "PENDING_FUEL");
-                API.resetEntityData(playerEntity, "FUELING_VEHICLE");
-                API.freezePlayer(playerEntity, false);
-                API.sendChatMessageToPlayer(playerEntity, "Refuel has been cancelled cause the engine has turned on.");
+                API.ResetEntityData(vehEntity, "PENDING_FUEL");
+                API.ResetEntityData(playerEntity, "FUELING_VEHICLE");
+                API.FreezePlayer(playerEntity, false);
+                API.SendChatMessageToPlayer(playerEntity, "Refuel has been cancelled cause the engine has turned on.");
                 veh.Save();
                 return;
             }
 
-            int pendingFuel = API.getEntityData(vehEntity, "PENDING_FUEL") ?? 0;
+            int pendingFuel = API.GetEntityData(vehEntity, "PENDING_FUEL") ?? 0;
 
             if (pendingFuel <= 0 || veh.RefuelProp.Supplies <= 0)
             {
-                API.triggerClientEvent(playerEntity, "fuel_updatevalue", veh.Fuel);
+                API.TriggerClientEvent(playerEntity, "fuel_updatevalue", veh.Fuel);
                 veh.FuelingTimer?.Dispose();
-                API.resetEntityData(vehEntity, "PENDING_FUEL");
-                API.resetEntityData(playerEntity, "FUELING_VEHICLE");
-                API.freezePlayer(playerEntity, false);
+                API.ResetEntityData(vehEntity, "PENDING_FUEL");
+                API.ResetEntityData(playerEntity, "FUELING_VEHICLE");
+                API.FreezePlayer(playerEntity, false);
 
                 if(veh.RefuelProp.Supplies <= 0)
-                    API.sendChatMessageToPlayer(playerEntity, "The gas station ran out of gas.");
+                    API.SendChatMessageToPlayer(playerEntity, "The gas station ran out of gas.");
                 else if (pendingFuel <= 0)
-                    API.sendChatMessageToPlayer(playerEntity, "Refueling finished.");
+                    API.SendChatMessageToPlayer(playerEntity, "Refueling finished.");
 
                 veh.Save();
                 return;
@@ -241,8 +241,8 @@ namespace mtgvrp.speed_fuel_system
                 veh.RefuelProp.Supplies--;
             }
 
-            API.triggerClientEvent(playerEntity, "fuel_updatevalue", veh.Fuel);
-            API.setEntityData(vehEntity, "PENDING_FUEL", pendingFuel);
+            API.TriggerClientEvent(playerEntity, "fuel_updatevalue", veh.Fuel);
+            API.SetEntityData(vehEntity, "PENDING_FUEL", pendingFuel);
         }
     }
 }

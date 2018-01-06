@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Elements;
-using GrandTheftMultiplayer.Server.Managers;
+
+using GTANetworkAPI;
+
 using mtgvrp.group_manager;
 
 namespace mtgvrp.core.Help
@@ -65,13 +65,13 @@ namespace mtgvrp.core.Help
                 .SelectMany(t => t.GetMethods())
                 .Where(m => m.GetCustomAttributes(typeof(CommandAttribute), false).Length > 0).ToArray();
 
-            API.consoleOutput($"*** Intializing Help. [ {methods.Length + animCmds.Length} Commands Of {totalCommands.Length} ]");
+            API.ConsoleOutput($"*** Intializing Help. [ {methods.Length + animCmds.Length} Commands Of {totalCommands.Length} ]");
 
             //Show commands with no help.
             foreach (var missing in totalCommands.Except(animCmds).Except(methods))
             {
                 var info = missing.GetCustomAttribute<CommandAttribute>();
-                API.consoleOutput($"*** [ERROR] COMMAND `/{info.CommandString}` HAS NO HELP.");
+                API.ConsoleOutput($"*** [ERROR] COMMAND `/{info.CommandString}` HAS NO HELP.");
             }
 
             Dictionary<CommandGroups, List<string[]>> cmds = new Dictionary<CommandGroups, List<string[]>>();
@@ -82,7 +82,7 @@ namespace mtgvrp.core.Help
 
                 if (cmd.GetParameters().Skip(1).Select(x => x.Name).Count() != commandHelp.Parameters.Length)
                 {
-                    API.consoleOutput($"*** [ERROR] COMMAND `/{commandInfo.CommandString}` HAS AMOUNT OF PARAMETER DESCRIPTIONS NOT EQUAL TO ACTUAL PARAMETERS.");
+                    API.ConsoleOutput($"*** [ERROR] COMMAND `/{commandInfo.CommandString}` HAS AMOUNT OF PARAMETER DESCRIPTIONS NOT EQUAL TO ACTUAL PARAMETERS.");
                     continue;
                 }
 
@@ -104,9 +104,9 @@ namespace mtgvrp.core.Help
                 cmds[CommandGroups.Animation].Add(new[] { commandInfo.CommandString, string.Join("|", cmd.GetParameters().Skip(1).Select(x => x.Name)) /* Skip sender */ , "", ""});
             }
 
-            CommandStuff = API.toJson(cmds);
+            CommandStuff = API.ToJson(cmds);
 
-            API.consoleOutput($"*** Help Done");
+            API.ConsoleOutput($"*** Help Done");
         }
 
         [Command("help"), Help(CommandGroups.General, "Shows the list of commands available.")]
@@ -132,7 +132,7 @@ namespace mtgvrp.core.Help
                     isGov = true;
             }
 
-            API.triggerClientEvent(player, "help_showMenu", CommandStuff, player.GetAccount().AdminLevel, isPD, isLSNN, isGov);
+            API.TriggerClientEvent(player, "help_showMenu", CommandStuff, player.GetAccount().AdminLevel, isPD, isLSNN, isGov);
         }
     }
 }

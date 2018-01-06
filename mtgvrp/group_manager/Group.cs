@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Elements;
-using GrandTheftMultiplayer.Shared;
-using GrandTheftMultiplayer.Shared.Math;
+
+using GTANetworkAPI;
+
+
 using mtgvrp.core;
 using mtgvrp.database_manager;
 using mtgvrp.player_manager;
@@ -91,15 +91,15 @@ namespace mtgvrp.group_manager
         {
             if (MapIcon == null && MapIconId != 0)
             {
-                MapIcon = API.shared.createBlip(MapIconPos);
-                API.shared.setBlipSprite(MapIcon, MapIconId);
-                API.shared.setBlipName(MapIcon, MapIconText);
+                MapIcon = API.Shared.CreateBlip(MapIconPos);
+                API.Shared.SetBlipSprite(MapIcon, MapIconId);
+                API.Shared.SetBlipName(MapIcon, MapIconText);
             }
             else if(MapIcon != null)
             {
-                API.shared.setBlipPosition(MapIcon, MapIconPos);
-                API.shared.setBlipSprite(MapIcon, MapIconId);
-                API.shared.setBlipName(MapIcon, MapIconText);
+                API.Shared.SetBlipPosition(MapIcon, MapIconPos);
+                API.Shared.SetBlipSprite(MapIcon, MapIconId);
+                API.Shared.SetBlipName(MapIcon, MapIconText);
             }
         }
 
@@ -113,7 +113,7 @@ namespace mtgvrp.group_manager
 
                 Locker.ColZone.onEntityEnterColShape += (shape, entity) =>
                 {
-                    if (API.shared.getEntityType(entity) != EntityType.Player)
+                    if (API.Shared.GetEntityType(entity) != EntityType.Player)
                     {
                         return;
                     }
@@ -125,7 +125,7 @@ namespace mtgvrp.group_manager
                 };
                 Locker.ColZone.onEntityExitColShape += (shape, entity) =>
                 {
-                    if (API.shared.getEntityType(entity) != EntityType.Player)
+                    if (API.Shared.GetEntityType(entity) != EntityType.Player)
                     {
                         return;
                     }
@@ -147,7 +147,7 @@ namespace mtgvrp.group_manager
 
                 FrontDesk.ColZone.onEntityEnterColShape += (shape, entity) =>
                 {
-                    if (API.shared.getEntityType(entity) != EntityType.Player)
+                    if (API.Shared.GetEntityType(entity) != EntityType.Player)
                     {
                         return;
                     }
@@ -158,7 +158,7 @@ namespace mtgvrp.group_manager
                 };
                 FrontDesk.ColZone.onEntityExitColShape += (shape, entity) =>
                 {
-                    if (API.shared.getEntityType(entity) != EntityType.Player)
+                    if (API.Shared.GetEntityType(entity) != EntityType.Player)
                     {
                         return;
                     }
@@ -179,7 +179,7 @@ namespace mtgvrp.group_manager
 
                 ArrestLocation.ColZone.onEntityEnterColShape += (shape, entity) =>
                 {
-                    if (API.shared.getEntityType(entity) != EntityType.Player)
+                    if (API.Shared.GetEntityType(entity) != EntityType.Player)
                     {
                         return;
                     }
@@ -190,7 +190,7 @@ namespace mtgvrp.group_manager
                 };
                 ArrestLocation.ColZone.onEntityExitColShape += (shape, entity) =>
                 {
-                    if (API.shared.getEntityType(entity) != EntityType.Player)
+                    if (API.Shared.GetEntityType(entity) != EntityType.Player)
                     {
                         return;
                     }

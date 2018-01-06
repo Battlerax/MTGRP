@@ -1,13 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Xml;
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Elements;
-using GrandTheftMultiplayer.Server.Managers;
-using GrandTheftMultiplayer.Shared;
-using GrandTheftMultiplayer.Shared.Math;
+
+using GTANetworkAPI;
+
+
+
 
 
 using mtgvrp.core;
@@ -71,7 +71,7 @@ namespace mtgvrp.inventory
 
             #endregion
 
-            API.onClientEventTrigger += API_onClientEventTrigger;
+            Event.OnClientEventTrigger += API_onClientEventTrigger;
             CharacterMenu.OnCharacterLogin += CharacterMenu_OnCharacterLogin;
         }
 
@@ -79,9 +79,9 @@ namespace mtgvrp.inventory
         {
             if (GetInventoryFilledSlots(e.Character) > e.Character.MaxInvStorage)
             {
-                API.shared.sendChatMessageToPlayer(e.Character.Client,
+                API.Shared.SendChatMessageToPlayer(e.Character.Client,
                     "You are overweight. You won't be able to sprint or jump.");
-                API.shared.setEntitySyncedData(e.Character.Client, "OVERWEIGHT", true);
+                API.Shared.SetEntitySyncedData(e.Character.Client, "OVERWEIGHT", true);
             }
         }
     
@@ -222,8 +222,8 @@ namespace mtgvrp.inventory
 
                     if (GetInventoryFilledSlots(storage) > storage.MaxInvStorage && storage.GetType() == typeof(Character))
                     {
-                        API.shared.sendChatMessageToPlayer(((Character)storage).Client, "You have gone overweight. You'll no longer be able to sprint or jump.");
-                        API.shared.setEntitySyncedData(((Character) storage).Client,
+                        API.Shared.SendChatMessageToPlayer(((Character)storage).Client, "You have gone overweight. You'll no longer be able to sprint or jump.");
+                        API.Shared.SetEntitySyncedData(((Character) storage).Client,
                             "OVERWEIGHT", true);
                     }
                     return GiveItemErrors.Success;
@@ -254,8 +254,8 @@ namespace mtgvrp.inventory
 
                     if (GetInventoryFilledSlots(storage) > storage.MaxInvStorage && storage.GetType() == typeof(Character))
                     {
-                        API.shared.sendChatMessageToPlayer(((Character)storage).Client, "You have gone overweight. You'll no longer be able to sprint or jump.");
-                        API.shared.setEntitySyncedData(((Character)storage).Client,
+                        API.Shared.SendChatMessageToPlayer(((Character)storage).Client, "You have gone overweight. You'll no longer be able to sprint or jump.");
+                        API.Shared.SetEntitySyncedData(((Character)storage).Client,
                             "OVERWEIGHT", true);
                     }
                     return GiveItemErrors.Success;
@@ -373,7 +373,7 @@ namespace mtgvrp.inventory
 
                 if (GetInventoryFilledSlots(storage) <= storage.MaxInvStorage && storage.GetType() == typeof(Character) && ((Character)storage).Client.hasSyncedData("OVERWEIGHT"))
                 {
-                    API.shared.resetEntitySyncedData(((Character)storage).Client,
+                    API.Shared.ResetEntitySyncedData(((Character)storage).Client,
                         "OVERWEIGHT");
                 }
                 return true;
@@ -392,7 +392,7 @@ namespace mtgvrp.inventory
 
             if (GetInventoryFilledSlots(storage) <= storage.MaxInvStorage && storage.GetType() == typeof(Character) && ((Character)storage).Client.hasSyncedData("OVERWEIGHT"))
             {
-                API.shared.resetEntitySyncedData(((Character)storage).Client,
+                API.Shared.ResetEntitySyncedData(((Character)storage).Client,
                     "OVERWEIGHT");
             }
             return true;
@@ -423,7 +423,7 @@ namespace mtgvrp.inventory
 
                 if (GetInventoryFilledSlots(storage) <= storage.MaxInvStorage && storage.GetType() == typeof(Character) && ((Character)storage).Client.hasSyncedData("OVERWEIGHT"))
                 {
-                    API.shared.resetEntitySyncedData(((Character)storage).Client,
+                    API.Shared.ResetEntitySyncedData(((Character)storage).Client,
                         "OVERWEIGHT");
                 }
                 return true;
@@ -441,7 +441,7 @@ namespace mtgvrp.inventory
 
             if (GetInventoryFilledSlots(storage) <= storage.MaxInvStorage && storage.GetType() == typeof(Character) && ((Character)storage).Client.hasSyncedData("OVERWEIGHT"))
             {
-                API.shared.resetEntitySyncedData(((Character)storage).Client,
+                API.Shared.ResetEntitySyncedData(((Character)storage).Client,
                     "OVERWEIGHT");
             }
             return true;
@@ -465,7 +465,7 @@ namespace mtgvrp.inventory
             else if (stor.GetType() == typeof(vehicle_manager.Vehicle))
             {
                 var c = (vehicle_manager.Vehicle)stor;
-                text = $"Vehicle<{c.Id}, {API.shared.getVehicleDisplayName(c.VehModel)}>";
+                text = $"Vehicle<{c.Id}, {API.Shared.GetVehicleDisplayName(c.VehModel)}>";
             }
             else if (stor.GetType() == typeof(Property))
             {
@@ -498,7 +498,7 @@ namespace mtgvrp.inventory
         {
             if (_activeInvsBeingManaged.ContainsKey(player))
             {
-                API.shared.sendNotificationToPlayer(player, "You already have an inventory management window open.");
+                API.Shared.SendNotificationToPlayer(player, "You already have an inventory management window open.");
                 return;
             }
 
@@ -508,12 +508,12 @@ namespace mtgvrp.inventory
                 activeRight.Inventory.Where(x => x.CanBeStored).Select(x => new[] { x.LongName, x.CommandFriendlyName, x.Amount.ToString() })
                     .ToArray();
 
-            var leftJson = API.shared.toJson(leftItems);
-            var rightJson = API.shared.toJson(rightItems);
+            var leftJson = API.Shared.ToJson(leftItems);
+            var rightJson = API.Shared.ToJson(rightItems);
             var usedLeft = GetInventoryFilledSlots(activeLeft) + "/" + activeLeft.MaxInvStorage;
             var usedRight = GetInventoryFilledSlots(activeRight) + "/" + activeRight.MaxInvStorage;
-            API.shared.freezePlayer(player, true);
-            API.shared.triggerClientEvent(player, "invmanagement_showmanager", leftJson, rightJson, leftTitle, rightTitle, usedLeft, usedRight);
+            API.Shared.FreezePlayer(player, true);
+            API.Shared.TriggerClientEvent(player, "invmanagement_showmanager", leftJson, rightJson, leftTitle, rightTitle, usedLeft, usedRight);
             _activeInvsBeingManaged.Add(player, new KeyValuePair<IStorage, IStorage>(activeLeft, activeRight));
         }
 
@@ -527,8 +527,8 @@ namespace mtgvrp.inventory
                     _activeInvsBeingManaged[sender].Value.Save();
 
                     _activeInvsBeingManaged.Remove(sender);
-                    API.shared.freezePlayer(sender, false);
-                    API.sendNotificationToPlayer(sender, "Closed Inventory Management.");
+                    API.Shared.FreezePlayer(sender, false);
+                    API.SendNotificationToPlayer(sender, "Closed Inventory Management.");
                     break;
                    
                 case "invmanagement_moveFromLeftToRight":
@@ -536,19 +536,19 @@ namespace mtgvrp.inventory
                     int amount;
                     if (!int.TryParse((string)arguments[1], out amount))
                     {
-                        API.sendNotificationToPlayer(sender, "Invalid amount entered.");
+                        API.SendNotificationToPlayer(sender, "Invalid amount entered.");
                         return;
                     }
                     if (amount <= 0)
                     {
-                        API.sendNotificationToPlayer(sender, "Amount must not be zero or negative.");
+                        API.SendNotificationToPlayer(sender, "Amount must not be zero or negative.");
                         return;
                     }
 
                     //Make sure is managing.
                     if (!_activeInvsBeingManaged.ContainsKey(sender))
                     {
-                        API.sendNotificationToPlayer(sender, "You aren't managing any inventory.");
+                        API.SendNotificationToPlayer(sender, "You aren't managing any inventory.");
                         return;
                     }
 
@@ -559,13 +559,13 @@ namespace mtgvrp.inventory
                     var item = InventoryManager.DoesInventoryHaveItem(storages.Key, shortname);
                     if (item.Length == 0)
                     {
-                        API.sendNotificationToPlayer(sender, "That item type doesn't exist.");
+                        API.SendNotificationToPlayer(sender, "That item type doesn't exist.");
                         return;
                     }
                     var playerItem = item.SingleOrDefault(x => x.CommandFriendlyName == shortname);
                     if (playerItem == null || playerItem.Amount < amount)
                     {
-                        API.sendNotificationToPlayer(sender, "The source storage doesn't have that item or doesn't have that amount.");
+                        API.SendNotificationToPlayer(sender, "The source storage doesn't have that item or doesn't have that amount.");
                         return;
                     }
 
@@ -573,13 +573,13 @@ namespace mtgvrp.inventory
                     switch (InventoryManager.GiveInventoryItem(storages.Value, playerItem, amount, true))
                     {
                         case InventoryManager.GiveItemErrors.NotEnoughSpace:
-                            API.sendNotificationToPlayer(sender, "There is no enough slots in target storage.");
+                            API.SendNotificationToPlayer(sender, "There is no enough slots in target storage.");
                             break;
                         case InventoryManager.GiveItemErrors.MaxAmountReached:
-                            API.sendNotificationToPlayer(sender, "Reached max amount of that item in target storage.");
+                            API.SendNotificationToPlayer(sender, "Reached max amount of that item in target storage.");
                             break;
                         case InventoryManager.GiveItemErrors.HasSimilarItem:
-                            API.sendNotificationToPlayer(sender, "You can't have 2 of this item with the same name, change it if possible.");
+                            API.SendNotificationToPlayer(sender, "You can't have 2 of this item with the same name, change it if possible.");
                             break;
                         case InventoryManager.GiveItemErrors.Success:
                             //Remove from player.
@@ -589,8 +589,8 @@ namespace mtgvrp.inventory
                             //Send event done.
                             var usedLeft = GetInventoryFilledSlots(storages.Key) + "/" + storages.Key.MaxInvStorage;
                             var usedRight = GetInventoryFilledSlots(storages.Value) + "/" + storages.Value.MaxInvStorage;
-                            API.triggerClientEvent(sender, "moveItemFromLeftToRightSuccess", shortname, amount, usedLeft, usedRight); //Id should be same cause it was already set since it was in player inv.
-                            API.sendNotificationToPlayer(sender, $"The item ~g~{shortname}~w~ was moved sucessfully.");
+                            API.TriggerClientEvent(sender, "moveItemFromLeftToRightSuccess", shortname, amount, usedLeft, usedRight); //Id should be same cause it was already set since it was in player inv.
+                            API.SendNotificationToPlayer(sender, $"The item ~g~{shortname}~w~ was moved sucessfully.");
 
                             LogManager.Log(LogManager.LogTypes.Stats, $"[InventoryManagement] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] moved item '{playerItem.LongName}', Amount: '{playerItem.Amount}'. From {GetStorageInfo(storages.Key)} To {GetStorageInfo(storages.Value)}");
                             break;
@@ -603,19 +603,19 @@ namespace mtgvrp.inventory
                     int rlamount;
                     if (!int.TryParse((string)arguments[1], out rlamount))
                     {
-                        API.sendNotificationToPlayer(sender, "Invalid amount entered.");
+                        API.SendNotificationToPlayer(sender, "Invalid amount entered.");
                         return;
                     }
                     if (rlamount <= 0)
                     {
-                        API.sendNotificationToPlayer(sender, "Amount must not be zero or negative.");
+                        API.SendNotificationToPlayer(sender, "Amount must not be zero or negative.");
                         return;
                     }
 
                     //Make sure is managing.
                     if (!_activeInvsBeingManaged.ContainsKey(sender))
                     {
-                        API.sendNotificationToPlayer(sender, "You aren't managing any inventory.");
+                        API.SendNotificationToPlayer(sender, "You aren't managing any inventory.");
                         return;
                     }
 
@@ -626,13 +626,13 @@ namespace mtgvrp.inventory
                     var rlitem = InventoryManager.DoesInventoryHaveItem(rlstorages.Value, rlshortname);
                     if (rlitem.Length == 0)
                     {
-                        API.sendNotificationToPlayer(sender, "That item type doesn't exist.");
+                        API.SendNotificationToPlayer(sender, "That item type doesn't exist.");
                         return;
                     }
                     var rlplayerItem = rlitem.SingleOrDefault(x => x.CommandFriendlyName == rlshortname);
                     if (rlplayerItem == null || rlplayerItem.Amount < rlamount)
                     {
-                        API.sendNotificationToPlayer(sender, "The source storage doesn't have that item or doesn't have that amount.");
+                        API.SendNotificationToPlayer(sender, "The source storage doesn't have that item or doesn't have that amount.");
                         return;
                     }
 
@@ -640,13 +640,13 @@ namespace mtgvrp.inventory
                     switch (InventoryManager.GiveInventoryItem(rlstorages.Key, rlplayerItem, rlamount, true))
                     {
                         case InventoryManager.GiveItemErrors.NotEnoughSpace:
-                            API.sendNotificationToPlayer(sender, "There is no enough slots in target storage.");
+                            API.SendNotificationToPlayer(sender, "There is no enough slots in target storage.");
                             break;
                         case InventoryManager.GiveItemErrors.MaxAmountReached:
-                            API.sendNotificationToPlayer(sender, "Reached max amount of that item in target storage.");
+                            API.SendNotificationToPlayer(sender, "Reached max amount of that item in target storage.");
                             break;
                         case InventoryManager.GiveItemErrors.HasSimilarItem:
-                            API.sendNotificationToPlayer(sender, "You can't have 2 of this item with the same name, change it if possible.");
+                            API.SendNotificationToPlayer(sender, "You can't have 2 of this item with the same name, change it if possible.");
                             break;
                         case InventoryManager.GiveItemErrors.Success:
                             //Remove from player.
@@ -656,8 +656,8 @@ namespace mtgvrp.inventory
                             //Send event done.
                             var usedLeft = GetInventoryFilledSlots(rlstorages.Key) + "/" + rlstorages.Key.MaxInvStorage;
                             var usedRight = GetInventoryFilledSlots(rlstorages.Value) + "/" + rlstorages.Value.MaxInvStorage;
-                            API.triggerClientEvent(sender, "moveItemFromRightToLeftSuccess", rlshortname, rlamount, usedLeft, usedRight); //Id should be same cause it was already set since it was in player inv.
-                            API.sendNotificationToPlayer(sender, $"The item ~g~{rlshortname}~w~ was moved sucessfully.");
+                            API.TriggerClientEvent(sender, "moveItemFromRightToLeftSuccess", rlshortname, rlamount, usedLeft, usedRight); //Id should be same cause it was already set since it was in player inv.
+                            API.SendNotificationToPlayer(sender, $"The item ~g~{rlshortname}~w~ was moved sucessfully.");
 
                             LogManager.Log(LogManager.LogTypes.Stats, $"[InventoryManagement] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] moved item '{rlplayerItem.LongName}', Amount: '{rlplayerItem.Amount}'. From {GetStorageInfo(rlstorages.Value)} To {GetStorageInfo(rlstorages.Key)}");
                             break;
@@ -675,14 +675,14 @@ namespace mtgvrp.inventory
             var targetClient = PlayerManager.ParseClient(id);
             if (targetClient == null)
             {
-                API.sendNotificationToPlayer(player, "Target player not found.");
+                API.SendNotificationToPlayer(player, "Target player not found.");
                 return;
             }
             Character sender = player.GetCharacter();
             Character target = targetClient.GetCharacter();
             if (player.position.DistanceTo(targetClient.position) > 5f)
             {
-                API.sendNotificationToPlayer(player, "You must be near the target player to give him an item.");
+                API.SendNotificationToPlayer(player, "You must be near the target player to give him an item.");
                 return;
             }
 
@@ -690,13 +690,13 @@ namespace mtgvrp.inventory
             var sendersItem = DoesInventoryHaveItem(sender, item);
             if (sendersItem.Length != 1 || sendersItem[0].Amount < amount || amount <= 0)
             {
-                API.sendNotificationToPlayer(player, "You don't have that item or you don't have that amount or there is more than 1 item with that name.");
+                API.SendNotificationToPlayer(player, "You don't have that item or you don't have that amount or there is more than 1 item with that name.");
                 return;
             }
 
             if (sendersItem[0].CanBeGiven == false)
             {
-                API.sendNotificationToPlayer(player, "That item cannot be given.");
+                API.SendNotificationToPlayer(player, "That item cannot be given.");
                 return;
             }
 
@@ -706,7 +706,7 @@ namespace mtgvrp.inventory
 
                 if (weaponItem.OwnerId == target.Id)
                 {
-                    player.sendChatMessage("You can't give a weapon case back to the gun dealer.");
+                    player.SendChatMessage("You can't give a weapon case back to the gun dealer.");
                     return;
                 }
             }
@@ -715,21 +715,21 @@ namespace mtgvrp.inventory
             switch (GiveInventoryItem(target, sendersItem[0], amount))
             {
                 case GiveItemErrors.NotEnoughSpace:
-                    API.sendNotificationToPlayer(player, "The target player doesn't have enough space in his inventory.");
-                    API.sendNotificationToPlayer(targetClient,
+                    API.SendNotificationToPlayer(player, "The target player doesn't have enough space in his inventory.");
+                    API.SendNotificationToPlayer(targetClient,
                         "Someone has tried to give you an item but failed due to insufficient inventory.");
                     break;
 
                 case GiveItemErrors.MaxAmountReached:
-                    API.sendNotificationToPlayer(player, "The target player reach max amount of that item.");
-                    API.sendNotificationToPlayer(targetClient,
+                    API.SendNotificationToPlayer(player, "The target player reach max amount of that item.");
+                    API.SendNotificationToPlayer(targetClient,
                         "You have reached the max amount of that item.");
                     break;
 
                 case GiveItemErrors.Success:
-                    API.sendNotificationToPlayer(player,
+                    API.SendNotificationToPlayer(player,
                         $"You have sucessfully given ~g~{amount}~w~ ~g~{sendersItem[0].LongName}~w~ to ~g~{target.rp_name()}~w~.");
-                    API.sendNotificationToPlayer(targetClient,
+                    API.SendNotificationToPlayer(targetClient,
                         $"You have receieved ~g~{amount}~w~ ~g~{sendersItem[0].LongName}~w~ from ~g~{sender.rp_name()}~w~.");
 
                     if (sendersItem[0].GetType() == typeof(WeaponCase))
@@ -739,7 +739,7 @@ namespace mtgvrp.inventory
                         if (sender.IsGunrunner && sendersItem[0].GetType() == typeof(WeaponCase) &&
                             weaponItem.OwnerId == sender.Id)
                         {
-                            player.sendChatMessage("You have sold a weapon and earned 5 renown.");
+                            player.SendChatMessage("You have sold a weapon and earned 5 renown.");
                             sender.Renown += 5 * amount;
                             sender.WeaponsSold += sender.WeaponsSold * amount;
                             sender.TotalWeaponsSold += amount;
@@ -766,13 +766,13 @@ namespace mtgvrp.inventory
             var sendersItem = DoesInventoryHaveItem(character, item);
             if (sendersItem.Length != 1 || sendersItem[0].Amount < amount || amount <= 0)
             {
-                API.sendNotificationToPlayer(player, "You don't have that item or you don't have that amount or there is more than 1 item with that name.");
+                API.SendNotificationToPlayer(player, "You don't have that item or you don't have that amount or there is more than 1 item with that name.");
                 return;
             }
 
             if (sendersItem[0].CanBeDropped == false)
             {
-                API.sendNotificationToPlayer(player, "That item cannot be dropped.");
+                API.SendNotificationToPlayer(player, "That item cannot be dropped.");
                 return;
             }
 
@@ -782,7 +782,7 @@ namespace mtgvrp.inventory
             
                 if (weaponItem.OwnerId == character.Id)
                 {
-                    player.sendChatMessage("You dropped a weapon case that you're supposed to sell. You've lost 10 renown.");
+                    player.SendChatMessage("You dropped a weapon case that you're supposed to sell. You've lost 10 renown.");
                     DeleteInventoryItem(character, sendersItem[0].GetType(), amount, x => x == sendersItem[0]);
                     character.WeaponsSold += amount;
                     character.Renown -= 10 * amount;
@@ -793,7 +793,7 @@ namespace mtgvrp.inventory
 
             if (DeleteInventoryItem(character, sendersItem[0].GetType(), amount, x => x == sendersItem[0]))
             {
-                API.sendNotificationToPlayer(player, "Item(s) was sucessfully dropped.");
+                API.SendNotificationToPlayer(player, "Item(s) was sucessfully dropped.");
                 //RP
                 ChatManager.RoleplayMessage(player, $"drops an item.", ChatManager.RoleplayMe);
 
@@ -813,27 +813,27 @@ namespace mtgvrp.inventory
             var sendersItem = DoesInventoryHaveItem(character, item);
             if (sendersItem.Length != 1 || sendersItem[0].Amount < amount || amount <= 0)
             {
-                API.sendNotificationToPlayer(player, "You don't have that item or you don't have that amount.");
+                API.SendNotificationToPlayer(player, "You don't have that item or you don't have that amount.");
                 return;
             }
 
             if (sendersItem[0].CanBeStashed == false)
             {
-                API.sendNotificationToPlayer(player, "That item cannot be stashed.");
+                API.SendNotificationToPlayer(player, "That item cannot be stashed.");
                 return;
             }
 
             //Create object and add to list.
-            var droppedObject = API.createObject(sendersItem[0].Object, player.position, new Vector3());
+            var droppedObject = API.CreateObject(sendersItem[0].Object, player.position, new Vector3());
             var itemaa = CloneItem(sendersItem[0], amount);
             _stashedItems.Add(droppedObject, new KeyValuePair<string[], IInventoryItem>(new []{character.CharacterName, player.GetAccount().AccountName}, itemaa));
-            API.triggerClientEvent(player, "PLACE_OBJECT_ON_GROUND_PROPERLY", droppedObject.handle, "");
+            API.TriggerClientEvent(player, "PLACE_OBJECT_ON_GROUND_PROPERLY", droppedObject.handle, "");
 
             //Decrease.
             DeleteInventoryItem(character, sendersItem[0].GetType(), amount, x => x == sendersItem[0]);
 
             //Send message.
-            API.sendNotificationToPlayer(player, $"You have sucessfully stashed ~g~{amount} {sendersItem[0].LongName}~w~. Use /pickupstash to take it.");
+            API.SendNotificationToPlayer(player, $"You have sucessfully stashed ~g~{amount} {sendersItem[0].LongName}~w~. Use /pickupstash to take it.");
             //RP
             ChatManager.RoleplayMessage(player, $"stashs an item.", ChatManager.RoleplayMe);
 
@@ -844,10 +844,10 @@ namespace mtgvrp.inventory
         public void pickupstash_cmd(Client player)
         {
             //Check if near any stash.
-            var items = _stashedItems.Where(x => API.getEntityPosition(x.Key).DistanceTo(player.position) <= 3).ToArray();
+            var items = _stashedItems.Where(x => API.GetEntityPosition(x.Key).DistanceTo(player.position) <= 3).ToArray();
             if (!items.Any())
             {
-                API.sendNotificationToPlayer(player, "You aren't near any stash.");
+                API.SendNotificationToPlayer(player, "You aren't near any stash.");
                 return;
             }
 
@@ -859,7 +859,7 @@ namespace mtgvrp.inventory
 
             if (a.AccountName == names[1] && character.CharacterName != names[0])
             {
-                API.sendChatMessageToPlayer(player, "You cannot pickup a stash you placed from one of your other characters.");
+                API.SendChatMessageToPlayer(player, "You cannot pickup a stash you placed from one of your other characters.");
                 return;
             }
 
@@ -867,19 +867,19 @@ namespace mtgvrp.inventory
             switch (GiveInventoryItem(character, item, item.Amount))
             {
                 case GiveItemErrors.NotEnoughSpace:
-                    API.sendNotificationToPlayer(player, "You don't have enough space in his inventory.");
+                    API.SendNotificationToPlayer(player, "You don't have enough space in his inventory.");
                     break;
 
                 case GiveItemErrors.MaxAmountReached:
-                    API.sendNotificationToPlayer(player, "You have reached the max amount of that item.");
+                    API.SendNotificationToPlayer(player, "You have reached the max amount of that item.");
                     break;
 
                 case GiveItemErrors.Success:
-                    API.sendNotificationToPlayer(player,
+                    API.SendNotificationToPlayer(player,
                         $"You have sucessfully taken ~g~{item.Amount}~w~ ~g~{item.LongName}~w~ from the stash.");
 
                     //Remove object and item from list.
-                    API.deleteEntity(items.First().Key);
+                    API.DeleteEntity(items.First().Key);
                     _stashedItems.Remove(items.First().Key);
 
                     //RP
@@ -899,17 +899,17 @@ namespace mtgvrp.inventory
             Character character = player.GetCharacter();
 
             //First the main thing.
-            API.sendChatMessageToPlayer(player, "-------------------------------------------------------------");
-            API.sendChatMessageToPlayer(player, $"[INVENTORY] {GetInventoryFilledSlots(character)}/{character.MaxInvStorage} Slots [INVENTORY]");
+            API.SendChatMessageToPlayer(player, "-------------------------------------------------------------");
+            API.SendChatMessageToPlayer(player, $"[INVENTORY] {GetInventoryFilledSlots(character)}/{character.MaxInvStorage} Slots [INVENTORY]");
             
             //For Each item.
             foreach (var item in character.Inventory)
             {
-                API.sendChatMessageToPlayer(player, $"* ~r~{item.LongName}~w~ [{item.CommandFriendlyName}] ({item.Amount}) Weights {item.AmountOfSlots} Slots");
+                API.SendChatMessageToPlayer(player, $"* ~r~{item.LongName}~w~ [{item.CommandFriendlyName}] ({item.Amount}) Weights {item.AmountOfSlots} Slots");
             }
 
             //Ending
-            API.sendChatMessageToPlayer(player, "-------------------------------------------------------------");
+            API.SendChatMessageToPlayer(player, "-------------------------------------------------------------");
         }
     }
 }

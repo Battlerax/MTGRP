@@ -1,12 +1,12 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Elements;
-using GrandTheftMultiplayer.Server.Managers;
-using GrandTheftMultiplayer.Shared;
-using GrandTheftMultiplayer.Shared.Math;
+
+using GTANetworkAPI;
+
+
+
 using mtgvrp.core;
 using mtgvrp.core.Help;
 using mtgvrp.inventory;
@@ -20,10 +20,10 @@ namespace mtgvrp.job_manager.trucker
     {
         public TruckerManager()
         {
-            API.onPlayerEnterVehicle += API_onPlayerEnterVehicle;
-            API.onPlayerExitVehicle += API_onPlayerExitVehicle;
-            API.onEntityEnterColShape += API_onEntityEnterColShape;
-            API.onPlayerDisconnected += API_onPlayerDisconnected;
+            Event.OnPlayerEnterVehicle += API_onPlayerEnterVehicle;
+            Event.OnPlayerExitVehicle += API_onPlayerExitVehicle;
+            Event.OnEntityEnterColShape += API_onEntityEnterColShape;
+            Event.OnPlayerDisconnected += API_onPlayerDisconnected;
         }
 
         private static readonly Vector3 TruckerLocationCheck = new Vector3(979.6286,-2532.368, 28.30198);
@@ -48,20 +48,20 @@ namespace mtgvrp.job_manager.trucker
             if (c == null)
                 return;
 
-            if (c.TruckingStage != Character.TruckingStages.None && API.getEntityData(vehicle, "TRUCKER_DRIVER") == player)
+            if (c.TruckingStage != Character.TruckingStages.None && API.GetEntityData(vehicle, "TRUCKER_DRIVER") == player)
             {
-                API.sendChatMessageToPlayer(player, "You have a minute to get back into the truck before its cancelled.");
-                API.setEntityData(player, "TRUCKING_CANCELTIMER", new Timer(state => CancelRun(player), null, 60000, Timeout.Infinite));
+                API.SendChatMessageToPlayer(player, "You have a minute to get back into the truck before its cancelled.");
+                API.SetEntityData(player, "TRUCKING_CANCELTIMER", new Timer(state => CancelRun(player), null, 60000, Timeout.Infinite));
                 return;
             }
         }
 
         private void API_onEntityEnterColShape(ColShape colshape, NetHandle entity)
         {
-            if (API.getEntityType(entity) != EntityType.Player)
+            if (API.GetEntityType(entity) != EntityType.Player)
                 return;
 
-            var player = API.getPlayerFromHandle(entity);
+            var player = API.GetPlayerFromHandle(entity);
             var character = player.GetCharacter();
 
             if (character?.JobOne?.Type != JobManager.JobTypes.Trucker)
@@ -77,13 +77,13 @@ namespace mtgvrp.job_manager.trucker
                     if (vehicle.Job?.Type != JobManager.JobTypes.Trucker ||
                         character.JobOne?.Type != JobManager.JobTypes.Trucker) return;
 
-                    if (API.getEntityData(veh, "TRUCKER_DRIVER") != player)
+                    if (API.GetEntityData(veh, "TRUCKER_DRIVER") != player)
                     {
-                        API.sendChatMessageToPlayer(player, "~r~[Trucking]~w~ You aren't in your truck.");
+                        API.SendChatMessageToPlayer(player, "~r~[Trucking]~w~ You aren't in your truck.");
                         return;
                     }
 
-                    API.triggerClientEvent(player, "update_beacon", new Vector3());
+                    API.TriggerClientEvent(player, "update_beacon", new Vector3());
 
                     Property needsGasProp = null;
                     foreach (var prop in PropertyManager.Properties.Where(x => x.Type == PropertyManager.PropertyTypes.GasStation))
@@ -98,26 +98,26 @@ namespace mtgvrp.job_manager.trucker
                     }
                     if (needsGasProp == null)
                     {
-                        API.sendChatMessageToPlayer(player, "No gas stations need fuel at the moment.");
+                        API.SendChatMessageToPlayer(player, "No gas stations need fuel at the moment.");
                         return;
                     }
 
-                    API.triggerClientEvent(player, "COMPLETE_FREEZE", true);
-                    API.sendChatMessageToPlayer(player,
+                    API.TriggerClientEvent(player, "COMPLETE_FREEZE", true);
+                    API.SendChatMessageToPlayer(player,
                         "~r~[Trucking]~w~ Please wait 10 seconds while your truck is loading fuel...");
 
-                    API.setEntityData(player, "TRUCKING_LOAD_TIMER", new Timer(state =>
+                    API.SetEntityData(player, "TRUCKING_LOAD_TIMER", new Timer(state =>
                     {
                         character.TruckingStage = Character.TruckingStages.DeliveringFuel;
-                        API.triggerClientEvent(player, "COMPLETE_FREEZE", false);
+                        API.TriggerClientEvent(player, "COMPLETE_FREEZE", false);
 
-                        API.triggerClientEvent(player, "update_beacon", needsGasProp.EntranceMarker.Location);
+                        API.TriggerClientEvent(player, "update_beacon", needsGasProp.EntranceMarker.Location);
                         
-                        API.setEntityData(player, "TRUCKING_TARGETGAS", needsGasProp);
+                        API.SetEntityData(player, "TRUCKING_TARGETGAS", needsGasProp);
 
-                        API.sendChatMessageToPlayer(player,
+                        API.SendChatMessageToPlayer(player,
                             "~r~[Trucking]~w~ Your truck have been loaded, head to the checkpoint to deliver them.");
-                        API.resetEntityData(player, "TRUCKING_LOAD_TIMER");
+                        API.ResetEntityData(player, "TRUCKING_LOAD_TIMER");
 
                     }, null, 10000, Timeout.Infinite));
                 }
@@ -133,34 +133,34 @@ namespace mtgvrp.job_manager.trucker
                     if (vehicle.Job?.Type != JobManager.JobTypes.Trucker ||
                         character.JobOne?.Type != JobManager.JobTypes.Trucker) return;
 
-                    if (API.getEntityData(veh, "TRUCKER_DRIVER") != player)
+                    if (API.GetEntityData(veh, "TRUCKER_DRIVER") != player)
                     {
-                        API.sendChatMessageToPlayer(player, "~r~[Trucking]~w~ You aren't in your truck.");
+                        API.SendChatMessageToPlayer(player, "~r~[Trucking]~w~ You aren't in your truck.");
                         return;
                     }
 
-                    API.triggerClientEvent(player, "update_beacon", new Vector3());
+                    API.TriggerClientEvent(player, "update_beacon", new Vector3());
 
                     if (SettingsManager.Settings.WoodSupplies < 50)
                     {
-                        API.sendChatMessageToPlayer(player, "There isn't any wood to load.");
+                        API.SendChatMessageToPlayer(player, "There isn't any wood to load.");
                         return;
                     }
 
-                    API.triggerClientEvent(player, "COMPLETE_FREEZE", true);
-                    API.sendChatMessageToPlayer(player,
+                    API.TriggerClientEvent(player, "COMPLETE_FREEZE", true);
+                    API.SendChatMessageToPlayer(player,
                         "~r~[Trucking]~w~ Please wait 10 seconds while your truck is loading supplies...");
 
-                    API.setEntityData(player, "TRUCKING_LOAD_TIMER", new Timer(state =>
+                    API.SetEntityData(player, "TRUCKING_LOAD_TIMER", new Timer(state =>
                     {
                         character.TruckingStage = Character.TruckingStages.DeliveringWood;
-                        API.triggerClientEvent(player, "COMPLETE_FREEZE", false);
+                        API.TriggerClientEvent(player, "COMPLETE_FREEZE", false);
 
-                        API.triggerClientEvent(player, "update_beacon", character.JobOne.MiscTwo.Location);
+                        API.TriggerClientEvent(player, "update_beacon", character.JobOne.MiscTwo.Location);
                         
-                        API.sendChatMessageToPlayer(player,
+                        API.SendChatMessageToPlayer(player,
                             "~r~[Trucking]~w~ Your truck have been loaded, head to the checkpoint to deliver them.");
-                        API.resetEntityData(player, "TRUCKING_LOAD_TIMER");
+                        API.ResetEntityData(player, "TRUCKING_LOAD_TIMER");
                         SettingsManager.Settings.WoodSupplies -= 50;
 
                     }, null, 10000, Timeout.Infinite));
@@ -177,28 +177,28 @@ namespace mtgvrp.job_manager.trucker
                     if (vehicle.Job?.Type != JobManager.JobTypes.Trucker ||
                         character.JobOne?.Type != JobManager.JobTypes.Trucker) return;
 
-                    if (API.getEntityData(veh, "TRUCKER_DRIVER") != player)
+                    if (API.GetEntityData(veh, "TRUCKER_DRIVER") != player)
                     {
-                        API.sendChatMessageToPlayer(player, "~r~[Trucking]~w~ You aren't in your truck.");
+                        API.SendChatMessageToPlayer(player, "~r~[Trucking]~w~ You aren't in your truck.");
                         return;
                     }
 
-                    API.triggerClientEvent(player, "update_beacon", new Vector3());
+                    API.TriggerClientEvent(player, "update_beacon", new Vector3());
 
-                    API.triggerClientEvent(player, "COMPLETE_FREEZE", true);
-                    API.sendChatMessageToPlayer(player,
+                    API.TriggerClientEvent(player, "COMPLETE_FREEZE", true);
+                    API.SendChatMessageToPlayer(player,
                         "~r~[Trucking]~w~ Please wait 10 seconds while your truck is unloading...");
 
-                    API.setEntityData(player, "TRUCKING_UNLOAD_TIMER", new Timer(state =>
+                    API.SetEntityData(player, "TRUCKING_UNLOAD_TIMER", new Timer(state =>
                     {
                         character.TruckingStage = Character.TruckingStages.HeadingBack;
-                        API.triggerClientEvent(player, "COMPLETE_FREEZE", false);
+                        API.TriggerClientEvent(player, "COMPLETE_FREEZE", false);
 
-                        API.triggerClientEvent(player, "update_beacon", character.JobOne.JoinPos.Location);
+                        API.TriggerClientEvent(player, "update_beacon", character.JobOne.JoinPos.Location);
                         
-                        API.sendChatMessageToPlayer(player,
+                        API.SendChatMessageToPlayer(player,
                             "~r~[Trucking]~w~ Your truck have been unloaded, head to the checkpoint finish your run.");
-                        API.resetEntityData(player, "TRUCKING_UNLOAD_TIMER");
+                        API.ResetEntityData(player, "TRUCKING_UNLOAD_TIMER");
                         SettingsManager.Settings.TruckerSupplies += 50;
 
                     }, null, 10000, Timeout.Infinite));
@@ -219,29 +219,29 @@ namespace mtgvrp.job_manager.trucker
                     if (vehicle.Job?.Type != JobManager.JobTypes.Trucker ||
                         character.JobOne?.Type != JobManager.JobTypes.Trucker) return;
 
-                    if (API.getEntityData(veh, "TRUCKER_DRIVER") != player)
+                    if (API.GetEntityData(veh, "TRUCKER_DRIVER") != player)
                     {
-                        API.sendChatMessageToPlayer(player, "~r~[Trucking]~w~ You aren't in your truck.");
+                        API.SendChatMessageToPlayer(player, "~r~[Trucking]~w~ You aren't in your truck.");
                         return;
                     }
 
-                    API.triggerClientEvent(player, "update_beacon", new Vector3());
+                    API.TriggerClientEvent(player, "update_beacon", new Vector3());
 
-                    API.triggerClientEvent(player, "COMPLETE_FREEZE", true);
-                    API.sendChatMessageToPlayer(player,
+                    API.TriggerClientEvent(player, "COMPLETE_FREEZE", true);
+                    API.SendChatMessageToPlayer(player,
                         "~r~[Trucking]~w~ Please wait 10 seconds while your truck is unloading...");
 
-                    API.setEntityData(player, "TRUCKING_UNLOAD_TIMER", new Timer(state =>
+                    API.SetEntityData(player, "TRUCKING_UNLOAD_TIMER", new Timer(state =>
                     {
                         character.TruckingStage = Character.TruckingStages.HeadingBack;
-                        API.triggerClientEvent(player, "COMPLETE_FREEZE", false);
+                        API.TriggerClientEvent(player, "COMPLETE_FREEZE", false);
 
-                        API.triggerClientEvent(player, "update_beacon", character.JobOne.JoinPos.Location);
+                        API.TriggerClientEvent(player, "update_beacon", character.JobOne.JoinPos.Location);
                         
 
-                        API.sendChatMessageToPlayer(player,
+                        API.SendChatMessageToPlayer(player,
                             "~r~[Trucking]~w~ Your truck have been unloaded, head to the checkpoint finish your run.");
-                        API.resetEntityData(player, "TRUCKING_UNLOAD_TIMER");
+                        API.ResetEntityData(player, "TRUCKING_UNLOAD_TIMER");
                         prop.Supplies += 20;
 
                     }, null, 10000, Timeout.Infinite));
@@ -255,26 +255,26 @@ namespace mtgvrp.job_manager.trucker
                 if (vehicle.Job?.Type != JobManager.JobTypes.Trucker ||
                     character.JobOne?.Type != JobManager.JobTypes.Trucker) return;
 
-                if (API.getEntityData(veh, "TRUCKER_DRIVER") != player)
+                if (API.GetEntityData(veh, "TRUCKER_DRIVER") != player)
                 {
-                    API.sendChatMessageToPlayer(player, "~r~[Trucking]~w~ You aren't in your truck.");
+                    API.SendChatMessageToPlayer(player, "~r~[Trucking]~w~ You aren't in your truck.");
                     return;
                 }
 
                 if (player.getData("TRUCKING_TYPE") == "supplies")
                 {
-                    player.sendChatMessage("You have been paid ~g~$3000.");
+                    player.SendChatMessage("You have been paid ~g~$3000.");
                     InventoryManager.GiveInventoryItem(character, new Money(), 3000, true);
                     LogManager.Log(LogManager.LogTypes.Stats, $"[Job] {player.GetCharacter().CharacterName}[{player.GetAccount().AccountName}] has earned $2000 from a trucking run.");
                 }
                 else if (player.getData("TRUCKING_TYPE") == "gas")
                 {
-                    player.sendChatMessage("You have been paid ~g~$1000.");
+                    player.SendChatMessage("You have been paid ~g~$1000.");
                     InventoryManager.GiveInventoryItem(character, new Money(), 1000, true);
                     LogManager.Log(LogManager.LogTypes.Stats, $"[Job] {player.GetCharacter().CharacterName}[{player.GetAccount().AccountName}] has earned $900 from a trucking run.");
                 }
 
-                API.triggerClientEvent(player, "update_beacon", new Vector3());
+                API.TriggerClientEvent(player, "update_beacon", new Vector3());
                 CancelRun(player);
             }
 
@@ -285,14 +285,14 @@ namespace mtgvrp.job_manager.trucker
         {
             var character = player.GetCharacter();
             
-            if (API.getPlayerVehicleSeat(player) != -1)
+            if (API.GetPlayerVehicleSeat(player) != -1)
             {
-                player.sendChatMessage("You must be the driver of the truck to start the truck run.");
+                player.SendChatMessage("You must be the driver of the truck to start the truck run.");
                 return;
             }
-            if (API.getEntityPosition(player).DistanceTo(TruckerLocationCheck) > PermittedDistance)
+            if (API.GetEntityPosition(player).DistanceTo(TruckerLocationCheck) > PermittedDistance)
             {
-                API.sendChatMessageToPlayer(player,"You need to be at the depot to start a supply run!");
+                API.SendChatMessageToPlayer(player,"You need to be at the depot to start a supply run!");
                 return;
             }
             if (character.TruckingStage == Character.TruckingStages.GettingTrailer)
@@ -312,16 +312,16 @@ namespace mtgvrp.job_manager.trucker
                     }
                     if (needsGasProp == null)
                     {
-                        API.sendChatMessageToPlayer(player, "No gas stations need fuel at the moment.");
+                        API.SendChatMessageToPlayer(player, "No gas stations need fuel at the moment.");
                         return;
                     }
 
-                    API.triggerClientEvent(player, "update_beacon", character.JobOne.MiscOne.Location);
+                    API.TriggerClientEvent(player, "update_beacon", character.JobOne.MiscOne.Location);
                     
-                    API.sendChatMessageToPlayer(player,
+                    API.SendChatMessageToPlayer(player,
                         "~r~[Trucking]~w~ Head to the checkpoint to load your truck with fuel.");
                     player.GetCharacter().TruckingStage = Character.TruckingStages.HeadingForFuelSupplies;
-                    API.setEntityData(player, "TRUCKING_TYPE", "gas");
+                    API.SetEntityData(player, "TRUCKING_TYPE", "gas");
                 }
                 else if (type == "supplies")
                 {
@@ -329,12 +329,12 @@ namespace mtgvrp.job_manager.trucker
                     if (job == null)
                         return;
 
-                    API.triggerClientEvent(player, "update_beacon", job.MiscTwo.Location);
+                    API.TriggerClientEvent(player, "update_beacon", job.MiscTwo.Location);
                     
-                    API.sendChatMessageToPlayer(player,
+                    API.SendChatMessageToPlayer(player,
                         "~r~[Trucking]~w~ Head to the checkpoint to load your truck with supplies.");
                     player.GetCharacter().TruckingStage = Character.TruckingStages.HeadingForWoodSupplies;
-                    API.setEntityData(player, "TRUCKING_TYPE", "supplies");
+                    API.SetEntityData(player, "TRUCKING_TYPE", "supplies");
                 }
             }
         }
@@ -346,29 +346,29 @@ namespace mtgvrp.job_manager.trucker
 
             if (veh?.Job?.Type == JobManager.JobTypes.Trucker && character.JobOne?.Type == JobManager.JobTypes.Trucker)
             {
-                if (API.hasEntityData(player, "TRUCKING_CANCELTIMER") &&
-                    API.getEntityData(vehicle, "TRUCKER_DRIVER") == player)
+                if (API.HasEntityData(player, "TRUCKING_CANCELTIMER") &&
+                    API.GetEntityData(vehicle, "TRUCKER_DRIVER") == player)
                 {
-                    Timer timer = API.getEntityData(player, "TRUCKING_CANCELTIMER");
+                    Timer timer = API.GetEntityData(player, "TRUCKING_CANCELTIMER");
                     timer.Dispose();
-                    API.resetEntityData(player, "TRUCKING_CANCELTIMER");
-                    API.sendChatMessageToPlayer(player, "You've got back into the truck.");
+                    API.ResetEntityData(player, "TRUCKING_CANCELTIMER");
+                    API.SendChatMessageToPlayer(player, "You've got back into the truck.");
                     return;
                 }
 
-                if (API.getEntityData(vehicle, "TRUCKER_DRIVER") == player)
+                if (API.GetEntityData(vehicle, "TRUCKER_DRIVER") == player)
                     return;
 
                 if (character.TruckingStage != Character.TruckingStages.None)
                 {
-                    API.delay(1000, true, () => API.warpPlayerOutOfVehicle(player));;
+                    API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));;
                     return;
                 }
 
                 character.TruckingStage = Character.TruckingStages.GettingTrailer;
-                API.setEntityData(vehicle, "TRUCKER_DRIVER", player);
-                API.setEntityData(player, "TRUCKER_VEHICLE", vehicle);
-                API.sendChatMessageToPlayer(player, "~r~[Trucking]~w~ Decide what to deliver using ~g~/startrun [supplies/gas].");
+                API.SetEntityData(vehicle, "TRUCKER_DRIVER", player);
+                API.SetEntityData(player, "TRUCKER_VEHICLE", vehicle);
+                API.SendChatMessageToPlayer(player, "~r~[Trucking]~w~ Decide what to deliver using ~g~/startrun [supplies/gas].");
             }
         }
 
@@ -380,10 +380,10 @@ namespace mtgvrp.job_manager.trucker
 
             //Respawn cars and warp out.
             player.GetCharacter().TruckingStage = Character.TruckingStages.None;
-            NetHandle veh = API.getEntityData(player, "TRUCKER_VEHICLE");
+            NetHandle veh = API.GetEntityData(player, "TRUCKER_VEHICLE");
 
             if (player.vehicle != null && player.vehicle == veh)
-                API.delay(1000, true, () => API.warpPlayerOutOfVehicle(player));;
+                API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));;
 
             if (!veh.IsNull)
             {
@@ -391,23 +391,23 @@ namespace mtgvrp.job_manager.trucker
             }
             
             //Reset Timers.
-            Timer timer = API.getEntityData(player, "TRUCKING_CANCELTIMER");
+            Timer timer = API.GetEntityData(player, "TRUCKING_CANCELTIMER");
             timer?.Dispose();
-            timer = API.getEntityData(player, "TRUCKING_UNLOAD_TIMER");
+            timer = API.GetEntityData(player, "TRUCKING_UNLOAD_TIMER");
             timer?.Dispose();
-            timer = API.getEntityData(player, "TRUCKING_LOAD_TIMER");
+            timer = API.GetEntityData(player, "TRUCKING_LOAD_TIMER");
             timer?.Dispose();
-            API.resetEntityData(player, "TRUCKING_CANCELTIMER");
-            API.resetEntityData(player, "TRUCKING_UNLOAD_TIMER");
-            API.resetEntityData(player, "TRUCKING_LOAD_TIMER");
+            API.ResetEntityData(player, "TRUCKING_CANCELTIMER");
+            API.ResetEntityData(player, "TRUCKING_UNLOAD_TIMER");
+            API.ResetEntityData(player, "TRUCKING_LOAD_TIMER");
 
             //Reset other variables
-            API.resetEntityData(player, "TRUCKER_VEHICLE");
-            API.resetEntityData(veh, "TRUCKER_DRIVER");
+            API.ResetEntityData(player, "TRUCKER_VEHICLE");
+            API.ResetEntityData(veh, "TRUCKER_DRIVER");
 
             //Unfreeze and send message.
-            API.freezePlayer(player, false);
-            API.sendChatMessageToPlayer(player, "The trucking run has been done or cancelled.");
+            API.FreezePlayer(player, false);
+            API.SendChatMessageToPlayer(player, "The trucking run has been done or cancelled.");
         }
 
         [Command("supplydemand"), Help(HelpManager.CommandGroups.TruckerJob, "Check the current supply and gas status.")]
@@ -421,14 +421,14 @@ namespace mtgvrp.job_manager.trucker
             PropertyManager.Properties.Where(x => x.Type == PropertyManager.PropertyTypes.GasStation).AsParallel()
                 .ForAll(x => fuel += x.Supplies);
 
-            API.sendChatMessageToPlayer(player,
+            API.SendChatMessageToPlayer(player,
                 "The amount of supplies stored: " +
                 SettingsManager.Settings.TruckerSupplies);
 
             if (maxfuel == 0)
-                API.sendChatMessageToPlayer(player, "The amount of fuel available in gas stations: 100%");
+                API.SendChatMessageToPlayer(player, "The amount of fuel available in gas stations: 100%");
             else
-                API.sendChatMessageToPlayer(player,
+                API.SendChatMessageToPlayer(player,
                     "The amount of fuel available in gas stations: " + Math.Round((fuel / maxfuel) * 100) + "%");
         }
     }

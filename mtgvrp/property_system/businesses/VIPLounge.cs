@@ -1,10 +1,10 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Collections.Generic;
 using mtgvrp.player_manager;
 using mtgvrp.core.Help;
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Managers;
-using GrandTheftMultiplayer.Server.Elements;
+
+
+using GTANetworkAPI;
 using mtgvrp.core;
 
 namespace mtgvrp.property_system.businesses
@@ -19,7 +19,7 @@ namespace mtgvrp.property_system.businesses
 
             if (account.VipLevel < 1)
             {
-                player.sendChatMessage("You must be a ~y~VIP~w~ to use this command.");
+                player.SendChatMessage("You must be a ~y~VIP~w~ to use this command.");
                 return;
             }
 
@@ -27,11 +27,11 @@ namespace mtgvrp.property_system.businesses
 
             if (biz?.Type != PropertyManager.PropertyTypes.VIPLounge)
             {
-                API.sendChatMessageToPlayer(player, "You aren't at the VIP interaction point.");
+                API.SendChatMessageToPlayer(player, "You aren't at the VIP interaction point.");
                 return;
             }
 
-            API.freezePlayer(player, true);
+            API.FreezePlayer(player, true);
             List<string[]> itemsWithPrices = new List<string[]>();
             foreach (var itm in ItemManager.VIPItems)
             {
@@ -41,7 +41,7 @@ namespace mtgvrp.property_system.businesses
                     biz.ItemPrices.SingleOrDefault(x => x.Key == itm[0]).Value.ToString()
                 });
             }
-            API.triggerClientEvent(player, "property_buy", API.toJson(itemsWithPrices.ToArray()),
+            API.TriggerClientEvent(player, "property_buy", API.ToJson(itemsWithPrices.ToArray()),
                 "VIP Weapon Tints",
                 biz.PropertyName);
 

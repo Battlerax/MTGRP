@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Elements;
-using GrandTheftMultiplayer.Server.Managers;
-using GrandTheftMultiplayer.Shared;
-using GrandTheftMultiplayer.Shared.Math;
+
+using GTANetworkAPI;
+
+
+
 using mtgvrp.core;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;
@@ -75,16 +75,16 @@ namespace mtgvrp.vehicle_dealership
         private List<MarkerZone> _markerZones = new List<MarkerZone>();
         public VipDealership()
         {
-            API.onClientEventTrigger += API_onClientEventTrigger;
+            Event.OnClientEventTrigger += API_onClientEventTrigger;
 
             //Setup the blip.
             /*foreach (var loc in _dealershipsLocations)
             {
                 var marker = new MarkerZone(loc, new Vector3()) {BlipSprite = 100, TextLabelText = "/buyvipvehicle", BlipColor = 46};
                 marker.Create();
-                API.shared.setBlipShortRange(marker.Blip, true);
-                API.shared.setBlipName(marker.Blip, "VIP Vehicle Dealership");
-                API.shared.setBlipColor(marker.Blip, 46);
+                API.Shared.SetBlipShortRange(marker.Blip, true);
+                API.Shared.SetBlipName(marker.Blip, "VIP Vehicle Dealership");
+                API.Shared.SetBlipColor(marker.Blip, 46);
                 _markerZones.Add(marker);
             }
             */
@@ -160,18 +160,18 @@ namespace mtgvrp.vehicle_dealership
 
                     //Spawn it.
                     if (VehicleManager.spawn_vehicle(theVehicle) != 1)
-                        API.sendChatMessageToPlayer(sender, "An error occured while spawning your vehicle.");
+                        API.SendChatMessageToPlayer(sender, "An error occured while spawning your vehicle.");
 
                     //Notify.
-                    API.sendChatMessageToPlayer(sender,
+                    API.SendChatMessageToPlayer(sender,
                         $"You have sucessfully bought the ~g~{selectedCar[0]}~w~ for ${selectedCar[2]}.");
-                    API.sendChatMessageToPlayer(sender, "Use /myvehicles to manage it.");
+                    API.SendChatMessageToPlayer(sender, "Use /myvehicles to manage it.");
 
                     //Exit.
-                    API.triggerClientEvent(sender, "vipdealership_exitdealermenu");
+                    API.TriggerClientEvent(sender, "vipdealership_exitdealermenu");
                 }
                 else
-                    API.sendChatMessageToPlayer(sender,
+                    API.SendChatMessageToPlayer(sender,
                         $"You don't have enough money to buy the ~g~{selectedCar[0]}~w~.");
             }
         }
@@ -185,25 +185,25 @@ namespace mtgvrp.vehicle_dealership
 
             if (account.VipLevel < 1)
             {
-                player.sendChatMessage("You must be a VIP to use the VIP dealership.");
+                player.SendChatMessage("You must be a VIP to use the VIP dealership.");
                 return;
             }
             if (character.OwnedVehicles.Count >= VehicleManager.GetMaxOwnedVehicles(player))
             {
-                API.sendChatMessageToPlayer(player, "You can't own anymore vehicles.");
-                API.sendChatMessageToPlayer(player, "~g~NOTE: You can upgrade your VIP to increase your vehicle slots.");
+                API.SendChatMessageToPlayer(player, "You can't own anymore vehicles.");
+                API.SendChatMessageToPlayer(player, "~g~NOTE: You can upgrade your VIP to increase your vehicle slots.");
                 return;
             }
 
-            var currentPos = API.getEntityPosition(player);
+            var currentPos = API.GetEntityPosition(player);
             if (_dealershipsLocations.Any(dealer => currentPos.DistanceTo(dealer) < 5F))
             {
-                API.triggerClientEvent(player, "vipdealership_showbuyvehiclemenu", API.toJson(_motorsycles),
-                    API.toJson(_copues), API.toJson(_trucksnvans), API.toJson(_offroad), API.toJson(_musclecars),
-                    API.toJson(_suv), API.toJson(_supercars));
+                API.TriggerClientEvent(player, "vipdealership_showbuyvehiclemenu", API.ToJson(_motorsycles),
+                    API.ToJson(_copues), API.ToJson(_trucksnvans), API.ToJson(_offroad), API.ToJson(_musclecars),
+                    API.ToJson(_suv), API.ToJson(_supercars));
             }
             else
-                API.sendChatMessageToPlayer(player, "You aren't near any dealership.");
+                API.SendChatMessageToPlayer(player, "You aren't near any dealership.");
         }
     }
 }

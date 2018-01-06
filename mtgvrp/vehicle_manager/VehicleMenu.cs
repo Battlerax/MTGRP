@@ -1,8 +1,8 @@
-﻿
 
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Elements;
-using GrandTheftMultiplayer.Shared;
+
+
+using GTANetworkAPI;
+
 using mtgvrp.core;
 using mtgvrp.player_manager;
 
@@ -12,7 +12,7 @@ namespace mtgvrp.vehicle_manager
     {
         public VehicleMenu()
         {
-            API.onClientEventTrigger += OnClientEventTrigger;
+            Event.OnClientEventTrigger += OnClientEventTrigger;
             DebugManager.DebugMessage("[VehicleMenu] Vehicle Menu initalized.");
         }
 
@@ -25,12 +25,12 @@ namespace mtgvrp.vehicle_manager
                     var option = (string)arguments[1];
 
                     Character character = player.GetCharacter();
-                    Vehicle vehicle = API.shared.getEntityData(vehicleHandle, "Vehicle");
+                    Vehicle vehicle = API.Shared.GetEntityData(vehicleHandle, "Vehicle");
 
-                    var playerSeat = API.shared.getPlayerVehicleSeat(player);
+                    var playerSeat = API.Shared.GetPlayerVehicleSeat(player);
 
                     //Check that player vehicle is the same as the menu vehicle...
-                    if(API.shared.getPlayerVehicle(player) != vehicleHandle)
+                    if(API.Shared.GetPlayerVehicle(player) != vehicleHandle)
                     {
                         DebugManager.DebugMessage("[VehicleMenu] " + character.CharacterName + "(" + player.socialClubName + ", " + player.handle + ") used VehicleMenu option in a different vehicle handle.");
                         return;
@@ -41,13 +41,13 @@ namespace mtgvrp.vehicle_manager
 
                     if ((option.Equals("park") || option.Equals("lock")) && !parkAccess)
                     {
-                        API.shared.sendChatMessageToPlayer(player, "~r~ You do not have access to this vehicle.");
+                        API.Shared.SendChatMessageToPlayer(player, "~r~ You do not have access to this vehicle.");
                         return;
                     }
 
                     if((option.Equals("engine") || option.Equals("park")) && playerSeat != -1)
                     {
-                        API.shared.sendChatMessageToPlayer(player, "~r~ You can only access these options in the driver seat.");
+                        API.Shared.SendChatMessageToPlayer(player, "~r~ You can only access these options in the driver seat.");
                         return;
                     }
 
@@ -64,16 +64,16 @@ namespace mtgvrp.vehicle_manager
                             }
                             break;
                         case "lock":
-                            var lockState = API.shared.getVehicleLocked(vehicleHandle);
+                            var lockState = API.Shared.GetVehicleLocked(vehicleHandle);
 
                             if(lockState)
                             {
-                                API.shared.setVehicleLocked(vehicleHandle, false);
+                                API.Shared.SetVehicleLocked(vehicleHandle, false);
                                 ChatManager.RoleplayMessage(character, "unlocks the doors of the vehicle.", ChatManager.RoleplayMe);
                             }
                             else
                             {
-                                API.shared.setVehicleLocked(vehicleHandle, true);
+                                API.Shared.SetVehicleLocked(vehicleHandle, true);
                                 ChatManager.RoleplayMessage(character, "locks the doors of the vehicle.", ChatManager.RoleplayMe);
                             }
 
@@ -81,9 +81,9 @@ namespace mtgvrp.vehicle_manager
                             break;
                         case "park":
 
-                            var pos = API.getEntityPosition(vehicleHandle);
-                            var rot = API.getEntityRotation(vehicleHandle);
-                            var dimension = API.getEntityDimension(vehicleHandle);
+                            var pos = API.GetEntityPosition(vehicleHandle);
+                            var rot = API.GetEntityRotation(vehicleHandle);
+                            var dimension = API.GetEntityDimension(vehicleHandle);
 
                             vehicle.SpawnPos = pos;
                             vehicle.SpawnRot = rot;
@@ -91,7 +91,7 @@ namespace mtgvrp.vehicle_manager
 
                             vehicle.Save();
 
-                            API.shared.sendChatMessageToPlayer(player, "Car spawn location saved to current location.");
+                            API.Shared.SendChatMessageToPlayer(player, "Car spawn location saved to current location.");
                             break;
                         case "door":
                             var doorIndex = (int)arguments[2];
@@ -119,16 +119,16 @@ namespace mtgvrp.vehicle_manager
                                     break;
                             }
 
-                            var doorState = API.getVehicleDoorState(vehicleHandle, doorIndex);
+                            var doorState = API.GetVehicleDoorState(vehicleHandle, doorIndex);
 
                             if(doorState)
                             {
-                                API.setVehicleDoorState(vehicleHandle, doorIndex, false);
+                                API.SetVehicleDoorState(vehicleHandle, doorIndex, false);
                                 ChatManager.RoleplayMessage(character, "closed the " + doorName + " of the vehicle.", ChatManager.RoleplayMe);
                             }
                             else
                             {
-                                API.setVehicleDoorState(vehicleHandle, doorIndex, true);
+                                API.SetVehicleDoorState(vehicleHandle, doorIndex, true);
                                 ChatManager.RoleplayMessage(character, "opened the " + doorName + " of the vehicle.", ChatManager.RoleplayMe);
                             }
 

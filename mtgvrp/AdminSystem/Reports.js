@@ -1,6 +1,6 @@
 var report_menu = null;
 var menu_pool = null;
-API.onServerEventTrigger.connect(function (eventName, args) {
+Event.OnServerEventTrigger.connect(function (eventName, args) {
     switch (eventName) {
         case "show_report_menu":
             {
@@ -22,11 +22,11 @@ API.onServerEventTrigger.connect(function (eventName, args) {
                       report_menu = null;
                       menu_pool = null;
 					  API.sendNotification("~r~Enter your reason for request.");
-					  API.sendChatMessage("~r~Enter your reason for request.");
+					  API.SendChatMessage("~r~Enter your reason for request.");
                       var message = API.getUserInput("", 200);
 					  if(message.length == 0){
 						API.sendNotification("~r~Please enter a valid reason for your request.");
-						API.sendChatMessage("~r~Please enter a valid reason for your request.");
+						API.SendChatMessage("~r~Please enter a valid reason for your request.");
 						return;
 					  }
                       API.triggerServerEvent("OnRequestSubmitted", message);
@@ -37,20 +37,20 @@ API.onServerEventTrigger.connect(function (eventName, args) {
                       report_menu = null;
                       menu_pool = null;
 					  API.sendNotification("~r~Enter the name or ID of the player you want to report.");
-					  API.sendChatMessage("~r~Enter the name or ID of the player you want to report.");
+					  API.SendChatMessage("~r~Enter the name or ID of the player you want to report.");
                       var targetPlayer = API.getUserInput("",65);
 					  if(targetPlayer.length == 0){
 						API.sendNotification("~r~Please enter a valid name or ID of the player you want to report.");
-						API.sendChatMessage("~r~Please enter a valid name or ID of the player you want to report.");
+						API.SendChatMessage("~r~Please enter a valid name or ID of the player you want to report.");
 						return;
 					  }
 
 					  API.sendNotification("~r~Enter your report reason.");
-					  API.sendChatMessage("~r~Enter your report reason.");
+					  API.SendChatMessage("~r~Enter your report reason.");
                       var nmessage = API.getUserInput("", 200);
                       if (nmessage.length == 0){
 						API.sendNotification("~r~Please enter a valid report reason.");
-						API.sendChatMessage("~r~Please enter a valid report reason.");
+						API.SendChatMessage("~r~Please enter a valid report reason.");
 						return;
 					  }
                       API.triggerServerEvent("OnReportMade", nmessage, targetPlayer);
@@ -74,7 +74,7 @@ API.triggerServerEvent("SET_PLAYER_CP", args[0], API.getWaypointPosition());
 var text = "";
 var pos = null;
 
-API.onServerEventTrigger.connect((event, args) => {
+Event.OnServerEventTrigger.connect((event, args) => {
     if (event === "texttest_settext") {
         text = args[0];
 
@@ -86,7 +86,7 @@ API.onServerEventTrigger.connect((event, args) => {
     }
 });
 
-API.onUpdate.connect(function () {
+Event.OnUpdate.connect(function () {
     if (menu_pool != null) {
         menu_pool.ProcessMenus();
     }
@@ -97,6 +97,6 @@ API.onUpdate.connect(function () {
 
     if (API.isControlJustPressed(24) && text !== "") {
         pos = API.getCursorPositionMaintainRatio();
-        API.sendChatMessage("X: " + pos.X + " | Y: " + pos.Y);
+        API.SendChatMessage("X: " + pos.X + " | Y: " + pos.Y);
     }
 });

@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Elements;
-using GrandTheftMultiplayer.Server.Managers;
-using GrandTheftMultiplayer.Shared;
-using GrandTheftMultiplayer.Shared.Math;
+using System.Collections.Generic;
+
+using GTANetworkAPI;
+
+
+
 using mtgvrp.database_manager;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -62,7 +62,7 @@ namespace mtgvrp.door_manager
             RefreshDoor();
             Text.delete();
             Shape.onEntityEnterColShape -= Shape_onEntityEnterColShape;
-            API.shared.deleteColShape(Shape);
+            API.Shared.DeleteColShape(Shape);
 
             var filter = MongoDB.Driver.Builders<Door>.Filter.Eq("_id", Id);
             DatabaseManager.DoorsTable.DeleteOne(filter);
@@ -71,8 +71,8 @@ namespace mtgvrp.door_manager
 
         public void RegisterDoor()
         {
-            Shape = API.shared.createSphereColShape(Position, 35f);
-            Text = API.shared.createTextLabel("~g~Door Id: " + Id, Position.Add(new Vector3(-1, 0, 0)), 5f, 1f, true);
+            Shape = API.Shared.CreateSphereColShape(Position, 35f);
+            Text = API.Shared.CreateTextLabel("~g~Door Id: " + Id, Position.Add(new Vector3(-1, 0, 0)), 5f, 1f, true);
             Shape.onEntityEnterColShape += Shape_onEntityEnterColShape;
             Doors.Add(this);
         }
@@ -81,9 +81,9 @@ namespace mtgvrp.door_manager
         {
             foreach (var person in Shape.getAllEntities())
             {
-                var player = API.shared.getPlayerFromHandle(person);
+                var player = API.Shared.GetPlayerFromHandle(person);
                 if (player == null) continue;
-                API.shared.sendNativeToPlayer(player, SetStateOfClosestDoorOfType,
+                API.Shared.SendNativeToPlayer(player, SetStateOfClosestDoorOfType,
                     Hash, Position.X, Position.Y, Position.Z,
                     Locked, State, false);
             }
@@ -91,13 +91,13 @@ namespace mtgvrp.door_manager
 
         private void Shape_onEntityEnterColShape(ColShape colshape, NetHandle entity)
         {
-            if (colshape == Shape && API.shared.getEntityType(entity) == EntityType.Player)
+            if (colshape == Shape && API.Shared.GetEntityType(entity) == EntityType.Player)
             {
-                var player = API.shared.getPlayerFromHandle(entity);
+                var player = API.Shared.GetPlayerFromHandle(entity);
 
                 if (player == null) return;
 
-                API.shared.sendNativeToPlayer(player, SetStateOfClosestDoorOfType,
+                API.Shared.SendNativeToPlayer(player, SetStateOfClosestDoorOfType,
                     Hash, Position.X, Position.Y, Position.Z,
                     Locked, State, false);
             }

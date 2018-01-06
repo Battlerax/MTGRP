@@ -1,4 +1,4 @@
-﻿/*
+/*
  *  File: Vehicle.cs
  *  Author: Chenko
  *  Date: 12/24/2016
@@ -14,10 +14,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Elements;
-using GrandTheftMultiplayer.Shared;
-using GrandTheftMultiplayer.Shared.Math;
+
+using GTANetworkAPI;
+
+
 using mtgvrp.core;
 using mtgvrp.database_manager;
 using mtgvrp.group_manager;
@@ -202,7 +202,7 @@ namespace mtgvrp.vehicle_manager
             if (!VehMods.ContainsKey(ModdingManager.SecondryColorId.ToString()))
                 VehMods.Add(ModdingManager.SecondryColorId.ToString(), "0");
 
-            NetHandle = API.shared.createVehicle(VehModel, pos, SpawnRot,
+            NetHandle = API.Shared.CreateVehicle(VehModel, pos, SpawnRot,
                 VehMods[ModdingManager.PrimaryColorId.ToString()].IsInteger()
                     ? Convert.ToInt32(VehMods[ModdingManager.PrimaryColorId.ToString()])
                     : 0,
@@ -210,14 +210,14 @@ namespace mtgvrp.vehicle_manager
                     ? Convert.ToInt32(VehMods[ModdingManager.SecondryColorId.ToString()])
                     : 0, SpawnDimension);
 
-            API.shared.setVehicleNumberPlate(NetHandle, LicensePlate);
+            API.Shared.SetVehicleNumberPlate(NetHandle, LicensePlate);
 
-            Blip = API.shared.createBlip(NetHandle);
-            API.shared.setBlipColor(Blip, 40);
-            API.shared.setBlipSprite(Blip, API.shared.getVehicleClass(VehModel) == 14 ? 410 : 225);
-            API.shared.setBlipScale(Blip, (float) 0.7);
-            API.shared.setBlipShortRange(Blip, true);
-            API.shared.setBlipTransparency(Blip, 100);
+            Blip = API.Shared.CreateBlip(NetHandle);
+            API.Shared.SetBlipColor(Blip, 40);
+            API.Shared.SetBlipSprite(Blip, API.Shared.GetVehicleClass(VehModel) == 14 ? 410 : 225);
+            API.Shared.SetBlipScale(Blip, (float) 0.7);
+            API.Shared.SetBlipShortRange(Blip, true);
+            API.Shared.SetBlipTransparency(Blip, 100);
 
             //Set owner detials.
             OwnerClient = PlayerManager.Players.SingleOrDefault(x => x.Id == OwnerId)?.Client;
@@ -233,7 +233,7 @@ namespace mtgvrp.vehicle_manager
                 Fuel = 100;
             }
 
-            if (API.shared.getVehicleClass(VehModel) == 13) // Cycles
+            if (API.Shared.GetVehicleClass(VehModel) == 13) // Cycles
             {
                 Fuel = 0;
             }
@@ -247,8 +247,8 @@ namespace mtgvrp.vehicle_manager
             if (IsSpawned == false)
                 return 0; // Vehicle is not spawned
 
-            API.shared.deleteEntity(Blip);
-            API.shared.deleteEntity(NetHandle);
+            API.Shared.DeleteEntity(Blip);
+            API.Shared.DeleteEntity(NetHandle);
             IsSpawned = false;
             return 1; // Successful despawn
         }
@@ -300,8 +300,8 @@ namespace mtgvrp.vehicle_manager
             {
                 if (this.Job?.Type == JobManager.JobTypes.Garbageman)
                 {
-                    this.Label = API.shared.createTextLabel("~g~" + $"Garbage Bags\n{this.GarbageBags}/10", API.shared.getEntityPosition(this.NetHandle), 25f, 0.5f, true, API.shared.getEntityDimension(this.NetHandle));
-                    API.shared.attachEntityToEntity(this.Label, this.NetHandle, "tipper", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                    this.Label = API.Shared.CreateTextLabel("~g~" + $"Garbage Bags\n{this.GarbageBags}/10", API.Shared.GetEntityPosition(this.NetHandle), 25f, 0.5f, true, API.Shared.GetEntityDimension(this.NetHandle));
+                    API.Shared.AttachEntityToEntity(this.Label, this.NetHandle, "tipper", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
 
                 }
             }

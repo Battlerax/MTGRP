@@ -3,7 +3,7 @@ var weedblip = null;
 var localPlayer = API.getLocalPlayer();
 var cam = API.getActiveCamera();
 var timer;
-API.onServerEventTrigger.connect(function (eventName, args) {
+Event.OnServerEventTrigger.connect(function (eventName, args) {
     if (eventName === "getClientGround") {
         var clientLoc = API.getEntityPosition(API.getLocalPlayer());
         var ground = API.getGroundHeight(clientLoc);

@@ -1,7 +1,7 @@
-﻿
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Elements;
-using GrandTheftMultiplayer.Server.Managers;
+
+
+using GTANetworkAPI;
+
 using mtgvrp.core;
 using mtgvrp.core.Help;
 using mtgvrp.player_manager;
@@ -23,7 +23,7 @@ namespace mtgvrp.inventory.bags
             if (items.Length == 1)
             {
                 BagItem item = (BagItem)items[0];
-                API.setPlayerClothes(e.Character.Client, 5, item.BagType, item.BagDesign);
+                API.SetPlayerClothes(e.Character.Client, 5, item.BagType, item.BagDesign);
             }
         }
 
@@ -34,7 +34,7 @@ namespace mtgvrp.inventory.bags
                 if (args.Item.GetType() == typeof(BagItem))
                 {
                     Character chr = (Character)sender;
-                    API.setPlayerClothes(chr.Client, 5, 0, 0);
+                    API.SetPlayerClothes(chr.Client, 5, 0, 0);
                 }
             }
         }
@@ -47,7 +47,7 @@ namespace mtgvrp.inventory.bags
                 {
                     Character chr = (Character) sender;
                     BagItem item = (BagItem) args.Item;
-                    API.setPlayerClothes(chr.Client, 5, item.BagType, item.BagDesign);
+                    API.SetPlayerClothes(chr.Client, 5, item.BagType, item.BagDesign);
                 }
             }
         }
@@ -59,7 +59,7 @@ namespace mtgvrp.inventory.bags
             IInventoryItem[] bag = InventoryManager.DoesInventoryHaveItem(character, typeof(BagItem));
             if (bag.Length != 1)
             {
-                API.sendNotificationToPlayer(player, "You don't have a bag.");
+                API.SendNotificationToPlayer(player, "You don't have a bag.");
                 return;
             }
 
@@ -74,13 +74,13 @@ namespace mtgvrp.inventory.bags
             IInventoryItem[] bag = InventoryManager.DoesInventoryHaveItem(character, typeof(BagItem));
             if (bag.Length != 1)
             {
-                API.sendNotificationToPlayer(player, "You don't have a bag.");
+                API.SendNotificationToPlayer(player, "You don't have a bag.");
                 return;
             }
             var bg = (BagItem) bag[0];
             bg.BagName = name;
 
-            API.sendChatMessageToPlayer(player, "Bag name was changed sucessfully.");
+            API.SendChatMessageToPlayer(player, "Bag name was changed sucessfully.");
         }
     }
 }

@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Timers;
-using GrandTheftMultiplayer.Server.API;
-using GrandTheftMultiplayer.Server.Elements;
+
+using GTANetworkAPI;
 using NodaTime;
 
 namespace mtgvrp.core
@@ -14,25 +14,25 @@ namespace mtgvrp.core
 
         public TimeWeatherManager()
         {
-            API.onResourceStart += API_onResourceStart;
-            API.onResourceStop += API_onResourceStop;
-            API.onPlayerFinishedDownload += API_onPlayerFinishedDownload;
+            Event.OnResourceStart += API_onResourceStart;
+            Event.OnResourceStop += API_onResourceStop;
+            Event.OnPlayerFinishedDownload += API_onPlayerFinishedDownload;
         }
 
         private void API_onPlayerFinishedDownload(Client player)
         {
-            API.freezePlayerTime(player, true);
+            API.FreezePlayerTime(player, true);
         }
 
         private void API_onResourceStop()
         {
             _weatherTimeTimer.Stop();
-            API.consoleOutput("Unload Weather Module.");
+            API.ConsoleOutput("Unload Weather Module.");
         }
 
         private void API_onResourceStart()
         {
-            API.consoleOutput("Loading Weather Module.");
+            API.ConsoleOutput("Loading Weather Module.");
 
             //Set proper current time
             var time = CurrentTime;
@@ -46,7 +46,7 @@ namespace mtgvrp.core
             _weatherTimeTimer.AutoReset = true;
             _weatherTimeTimer.Start();
 
-            API.consoleOutput("Weather Updated To LA.");
+            API.ConsoleOutput("Weather Updated To LA.");
         }
 
         
@@ -69,7 +69,7 @@ namespace mtgvrp.core
                     Hours = 0;
                 }
             }
-            API.setTime(Hours, Minutes);
+            API.SetTime(Hours, Minutes);
 
             //Update weather
             if (_elapsedMinutes >= 30)
@@ -85,7 +85,7 @@ namespace mtgvrp.core
                 }
                 catch (WebException ex)
                 {
-                    API.consoleOutput("Weather API Exception: " + ex.Status);
+                    API.ConsoleOutput("Weather API Exception: " + ex.Status);
                 }
                 Match result = Regex.Match(reply, "\\{.*\\\"code\\\":([0-9]+)\\}");
                 if (result.Success)
@@ -95,21 +95,21 @@ namespace mtgvrp.core
                     switch (code)
                     {
                         case 1000:
-                            API.setWeather(0);
+                            API.SetWeather(0);
                             break;
                         case 1003:
-                            API.setWeather(1);
+                            API.SetWeather(1);
                             break;
                         case 1006:
-                            API.setWeather(2);
+                            API.SetWeather(2);
                             break;
                         case 1009:
-                            API.setWeather(5);
+                            API.SetWeather(5);
                             break;
                         case 1030:
                         case 1135:
                         case 1147:
-                            API.setWeather(4);
+                            API.SetWeather(4);
                             break;
                         case 1063:
                         case 1072:
@@ -125,7 +125,7 @@ namespace mtgvrp.core
                         case 1204:
                         case 1240:
                         case 1249:
-                            API.setWeather(8);
+                            API.SetWeather(8);
                             break;
                         case 1066:
                         case 1069:
@@ -133,17 +133,17 @@ namespace mtgvrp.core
                         case 1216:
                         case 1255:
                         case 1261:
-                            API.setWeather(10);
+                            API.SetWeather(10);
                             break;
                         case 1087:
                         case 1273:
                         case 1276:
                         case 1279:
                         case 1282:
-                            API.setWeather(7);
+                            API.SetWeather(7);
                             break;
                         case 1114:
-                            API.setWeather(11);
+                            API.SetWeather(11);
                             break;
                         case 1117:
                         case 1213:
@@ -153,7 +153,7 @@ namespace mtgvrp.core
                         case 1237:
                         case 1258:
                         case 1264:
-                            API.setWeather(12);
+                            API.SetWeather(12);
                             break;
                         case 1192:
                         case 1195:
@@ -162,11 +162,11 @@ namespace mtgvrp.core
                         case 1243:
                         case 1246:
                         case 1252:
-                            API.setWeather(6);
+                            API.SetWeather(6);
                             break;
                     }
 
-                    API.consoleOutput("Set Weather To " + API.getWeather());
+                    API.ConsoleOutput("Set Weather To " + API.GetWeather());
                 }
             }
         }

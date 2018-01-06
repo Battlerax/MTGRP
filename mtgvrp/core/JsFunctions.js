@@ -34,7 +34,7 @@ var mapY = API.getScreenResolutionMaintainRatio().Height - mapHeight - mapMargin
 
 var lastObj;
 var lastEvent;
-API.onServerEventTrigger.connect((event, args) => {
+Event.OnServerEventTrigger.connect((event, args) => {
     if (event === "PLACE_OBJECT_ON_GROUND_PROPERLY") {
         //0: Object
 
@@ -62,7 +62,7 @@ API.onServerEventTrigger.connect((event, args) => {
     }
 });
 
-API.onEntityStreamIn.connect((entity, entityType) => {
+Event.OnEntityStreamIn.connect((entity, entityType) => {
     if (API.getEntitySyncedData(entity, "TargetObj") === lastObj) {
         API.callNative("0x58A850EAEE20FAA3", entity);
         var pos = API.getEntityPosition(entity);
