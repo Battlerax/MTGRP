@@ -7,12 +7,19 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
-
 namespace mtgvrp.Properties {
-    
-    
-    [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.1.0.0")]
+
+    internal sealed partial class Settings
+    {
+        public static int basepaycheck = 3000;
+        public static int governmentbalance = 2000000000;
+        public static int vipbonuslevelone = 10;
+        public static int vipbonusleveltwo = 11;
+        public static int vipbonuslevelthree = 12;
+        public static int taxationamount = 4;
+
+    }
+    /*[global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.1.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -94,5 +101,5 @@ namespace mtgvrp.Properties {
                 this["governmentbalance"] = value;
             }
         }
-    }
+    }*/
 }

@@ -5,8 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
-
-
+using GTANetworkAPI;
 using mtgvrp.core;
 
 namespace mtgvrp.afk_system
@@ -45,7 +44,7 @@ namespace mtgvrp.afk_system
                 if (!c.IsCreated)
                     return;
 
-                if (c.LastPos == p.position)
+                if (c.LastPos == p.Position)
                 {
                     c.AfkTimer++;
                     if (c.AfkTimer == WarningTimer)
@@ -59,7 +58,7 @@ namespace mtgvrp.afk_system
                 }
                 else
                 {
-                    c.LastPos = p.position;
+                    c.LastPos = p.Position;
                     c.AfkTimer = 0;
                 }
             }

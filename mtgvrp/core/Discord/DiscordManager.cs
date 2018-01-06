@@ -155,13 +155,13 @@ namespace mtgvrp.core.Discord
                 var emoji = DiscordEmoji.FromName(e.Context.Client, ":no_entry:");
 
                 // let's wrap the response into an embed
-                var embed = new DiscordEmbed()
+                /*var embed = new DiscordEmbed()
                 {
                     Title = "Access denied",
                     Description = $"{emoji} You do not have the permissions required to execute this command.",
                     Color = 0xFF0000 // red
-                };
-                await e.Context.RespondAsync("", embed: embed);
+                };*/
+                await e.Context.RespondAsync("", embed: null);
             }
         }
 
@@ -288,13 +288,13 @@ namespace mtgvrp.core.Discord
                 msg += receiverAccount.AdminName + " | LEVEL " + receiverAccount.AdminLevel + " | " +
                        (receiverAccount.AdminDuty ? "**On Duty**" : "Off Duty") + "\n";
             }
-            var embed = new DiscordEmbed
+            /*var embed = new DiscordEmbed
             {
                 Title = "Admins Online",
                 Description = (msg == "" ? "None" : msg),
                 Color = 0x00FF00 // green
-            };
-            await ctx.RespondAsync("", embed: embed);
+            };*/
+            await ctx.RespondAsync("", embed: null);
         }
 
 
@@ -307,7 +307,7 @@ namespace mtgvrp.core.Discord
 
             if (ctx.Member.Roles.Any(x => x.Name == DiscordManager.AdminRole))
             {
-                await DiscordManager.Client.UpdateStatusAsync(new Game(ctx.RawArgumentString));
+                await DiscordManager.Client.UpdateStatusAsync(null/*new Game(ctx.RawArgumentString)*/);
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(DiscordManager.Client, ":white_check_mark:"));
             }
         }
@@ -351,7 +351,7 @@ namespace mtgvrp.core.Discord
                         continue;
 
                     character.Save();
-                    character.Client?.kick(ctx.RawArgumentString);
+                    character.Client?.Kick(ctx.RawArgumentString);
                 }
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(DiscordManager.Client, ":white_check_mark:"));
             }

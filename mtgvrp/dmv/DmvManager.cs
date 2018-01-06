@@ -145,7 +145,7 @@ namespace mtgvrp.dmv
             else if(eventName == "DMV_TEST_FINISH") {
                 var c = player.GetCharacter();
                 var isOnTime = DateTime.Now.Subtract(c.TimeStartedDmvTest) <= TimeSpan.FromMinutes(5);
-                var isOnHealth = player.vehicle.health >= 999;
+                var isOnHealth = player.Vehicle.Health >= 999;
 
                 if (isOnTime && isOnHealth)
                 {
@@ -163,11 +163,13 @@ namespace mtgvrp.dmv
 
                 API.SendChatMessageToPlayer(player,
                     isOnHealth
-                        ? $"* Vehicle Health: ~g~ {player.vehicle.health} / 999"
-                        : $"* Vehicle Health: ~r~ {player.vehicle.health} / 999");
+                        ? $"* Vehicle Health: ~g~ {player.Vehicle.Health} / 999"
+                        : $"* Vehicle Health: ~r~ {player.Vehicle.Health} / 999");
 
-                VehicleManager.respawn_vehicle(player.vehicle.handle.GetVehicle());
-                API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));;
+                VehicleManager.respawn_vehicle(player.Vehicle.Handle.GetVehicle());
+                // CONV NOTE: proper delay needed probably
+                //API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));
+                Task.Delay(1000).ContinueWith(t => API.WarpPlayerOutOfVehicle(player));
 
                 c.IsInDmvTest = false;
             }
@@ -205,7 +207,7 @@ namespace mtgvrp.dmv
             return plate;
         }
 
-        private void API_onPlayerExitVehicle(Client player, NetHandle vehicle, int seat)
+        private void API_onPlayerExitVehicle(Client player, NetHandle vehicle)
         {
             var c = player.GetCharacter();
 
@@ -215,11 +217,13 @@ namespace mtgvrp.dmv
             if (!c.IsInDmvTest)
                 return;
 
-            if (player.hasData("DMV_VEHICLE"))
-                VehicleManager.respawn_vehicle(((NetHandle)player.getData("DMV_VEHICLE")).GetVehicle());
-            API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));;
+            if (player.HasData("DMV_VEHICLE"))
+                VehicleManager.respawn_vehicle(((NetHandle)player.GetData("DMV_VEHICLE")).GetVehicle());
+            // CONV NOTE: proper delay needed probably
+            //API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));
+            Task.Delay(1000).ContinueWith(t => API.WarpPlayerOutOfVehicle(player));
 
-            player.resetData("DMV_VEHICLE");
+            player.ResetData("DMV_VEHICLE");
             c.IsInDmvTest = false;
             API.TriggerClientEvent(player, "DMV_CANCEL_TEST");
 
@@ -257,7 +261,7 @@ namespace mtgvrp.dmv
                     if (c.IsInDmvTest)
                     {
                         c.TimeStartedDmvTest = DateTime.Now;
-                        player.setData("DMV_VEHICLE", vehicle);
+                        player.SetData("DMV_VEHICLE", vehicle);
                         API.TriggerClientEvent(player, "DMV_STARTTEST", _testCheckpoints, vehicle);
                         API.SendChatMessageToPlayer(player, "~y~** GO! You'll have to finish in less than or equal to 5 minutes and with more than 999 damage to the vehicle.");
                         API.SendChatMessageToPlayer(player, "~y~** You have plently of time so drive safe and make sure you don't break your vehicle.");
@@ -268,7 +272,9 @@ namespace mtgvrp.dmv
                         {
                             API.SendChatMessageToPlayer(player, "You haven't started the driving test.");
                             API.SetVehicleEngineStatus(vehicle, false);
-                            API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));
+                            // CONV NOTE: proper delay needed probably
+                            //API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));
+                            Task.Delay(1000).ContinueWith(t => API.WarpPlayerOutOfVehicle(player));
                         }
                     }
                 }
@@ -366,7 +372,7 @@ namespace mtgvrp.dmv
                 return;
             }
 
-            if (targetPlayer.position.DistanceTo(player.position) > 3.0)
+            if (targetPlayer.Position.DistanceTo(player.Position) > 3.0)
             {
                 API.SendChatMessageToPlayer(player, "The player must be near you.");
                 return;
@@ -398,7 +404,7 @@ namespace mtgvrp.dmv
                 return;
             }
 
-            if (targetPlayer.position.DistanceTo(player.position) > 3.0)
+            if (targetPlayer.Position.DistanceTo(player.Position) > 3.0)
             {
                 API.SendChatMessageToPlayer(player, "The player must be near you.");
                 return;

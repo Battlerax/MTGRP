@@ -147,8 +147,8 @@ namespace mtgvrp.vehicle_manager
                 Vehicle veh = data[1];
                 int price = data[2];
                 //Make sure near him.
-                var buyingPos = buyingFrom.Client.position;
-                if (player.position.DistanceTo(buyingPos) <= 5f)
+                var buyingPos = buyingFrom.Client.Position;
+                if (player.Position.DistanceTo(buyingPos) <= 5f)
                 {
                     //make sure still have slots.
                     if (character.OwnedVehicles.Count < VehicleManager.GetMaxOwnedVehicles(character.Client))
@@ -211,11 +211,11 @@ namespace mtgvrp.vehicle_manager
             }
             switch(hash)
             {
-                case VehicleHash.Ratbike:
+                case VehicleHash.RatBike:
                     return "Ratbike";
                 case VehicleHash.Chimera:
                     return "Chimera";
-                case VehicleHash.Zombiea:
+                case VehicleHash.ZombieA:
                     return "Zombie";
                 case VehicleHash.Faggio:
                     return "Faggio Sport";
@@ -231,7 +231,7 @@ namespace mtgvrp.vehicle_manager
                     return "Zentorno";
                 case VehicleHash.Turismo2:
                     return "Turismo";
-                case VehicleHash.Italigtb:
+                case VehicleHash.ItaliGTB2:
                     return "Itali GTB";
                 case VehicleHash.Nero:
                     return "Nero";

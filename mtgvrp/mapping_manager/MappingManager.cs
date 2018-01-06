@@ -81,7 +81,7 @@ namespace mtgvrp.mapping_manager
                         Mapping.Add(newMapping);
 
                         LogManager.Log(LogManager.LogTypes.MappingRequests, player.GetAccount().AccountName + " has created mapping request #" + newMapping.Id);
-                        API.SendChatMessageToPlayer(player, Color.White, "You have successfully created and loaded mapping request #" + newMapping.Id);
+                        API.SendChatMessageToPlayer(player, core.Color.White, "You have successfully created and loaded mapping request #" + newMapping.Id);
                         return;
                     }
                     catch (WebException e)

@@ -14,6 +14,8 @@ using MongoDB.Driver;
 using mtgvrp.core.Help;
 using mtgvrp.property_system;
 
+using Color = mtgvrp.core.Color;
+
 namespace mtgvrp.phone_manager
 {
     public class PhoneManager : Script
@@ -687,7 +689,7 @@ namespace mtgvrp.phone_manager
 
         public static Character GetPlayerWithNumber(string number)
         {
-            foreach (var p in GrandTheftMultiplayer.Server.API.Shared.Red.getAllPlayers())
+            foreach (var p in API.Shared.GetAllPlayers())
             {
                 if (p == null)
                     continue;

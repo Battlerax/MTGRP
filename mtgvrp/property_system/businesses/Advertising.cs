@@ -33,7 +33,7 @@ namespace mtgvrp.property_system.businesses
 
                 if (receiverAccount.AdminLevel > 0)
                 {
-                    API.Shared.SendChatMessageToPlayer(c, Color.AdminChat, text);
+                    API.Shared.SendChatMessageToPlayer(c, core.Color.AdminChat, text);
                 }
             }
         }

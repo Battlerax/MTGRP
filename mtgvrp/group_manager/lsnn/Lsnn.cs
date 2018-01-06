@@ -18,7 +18,7 @@ namespace mtgvrp.group_manager.lsnn
             Event.OnPlayerDisconnected += API_onPlayerDisconnected;
         }
 
-        private void API_onPlayerDisconnected(Client player, string reason)
+        private void API_onPlayerDisconnected(Client player, byte type, string reason)
         {
             var character = player.GetCharacter();
             if (character == null) return;
@@ -34,7 +34,7 @@ namespace mtgvrp.group_manager.lsnn
             LsnnFrontDoorShape = API.CreateCylinderColShape(LsnnFrontDoor, 2f, 3f);
 
             API.CreateMarker(1, LsnnFrontDoor - new Vector3(0, 0, 1f), new Vector3(), new Vector3(),
-                new Vector3(1f, 1f, 1f), 100, 51, 153, 255);
+                1f, new GTANetworkAPI.Color(100, 51, 153, 255), false);
         }
 
         public ColShape LsnnFrontDoorShape;
@@ -56,7 +56,7 @@ namespace mtgvrp.group_manager.lsnn
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLsnn)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "You must be a member of the LSNN to use that command.");
+                API.SendChatMessageToPlayer(player, core.Color.White, "You must be a member of the LSNN to use that command.");
                 return;
             }
 
@@ -110,7 +110,7 @@ namespace mtgvrp.group_manager.lsnn
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLsnn)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "You must be a member of the LSNN to use that command.");
+                API.SendChatMessageToPlayer(player, core.Color.White, "You must be a member of the LSNN to use that command.");
                 return;
             }
 
@@ -125,7 +125,7 @@ namespace mtgvrp.group_manager.lsnn
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLsnn)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "You must be a member of the LSNN to use that command.");
+                API.SendChatMessageToPlayer(player, core.Color.White, "You must be a member of the LSNN to use that command.");
                 return;
             }
 
@@ -141,11 +141,11 @@ namespace mtgvrp.group_manager.lsnn
                 return;
             }
 
-            var pos = API.GetEntityPosition(player.handle);
-            var angle = API.GetEntityRotation(player.handle).Z;
+            var pos = API.GetEntityPosition(player.Handle);
+            var angle = API.GetEntityRotation(player.Handle).Z;
             CameraPosition = XyInFrontOfPoint(pos, angle, 1) - new Vector3(0, 0, 0.5);
-            CameraRotation = API.GetEntityRotation(player.handle) + new Vector3(0, 0, 180);
-            CameraDimension = API.GetEntityDimension(player);
+            CameraRotation = API.GetEntityRotation(player.Handle) + new Vector3(0, 0, 180);
+            CameraDimension = (int)API.GetEntityDimension(player);
             API.SendNotificationToPlayer(player, "A camera has been placed on your position.");
             ChatManager.NearbyMessage(player, 10, "~p~" + character.rp_name() + " sets down a news camera");
             API.CreateObject(API.GetHashKey("p_tv_cam_02_s"), CameraPosition, CameraRotation);
@@ -160,7 +160,7 @@ namespace mtgvrp.group_manager.lsnn
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLsnn)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "You must be a member of the LSNN to use that command.");
+                API.SendChatMessageToPlayer(player, core.Color.White, "You must be a member of the LSNN to use that command.");
                 return;
             }
 
@@ -232,7 +232,7 @@ namespace mtgvrp.group_manager.lsnn
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLsnn)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "You must be a member of the LSNN to use that command.");
+                API.SendChatMessageToPlayer(player, core.Color.White, "You must be a member of the LSNN to use that command.");
                 return;
             }
 
@@ -260,13 +260,13 @@ namespace mtgvrp.group_manager.lsnn
                 {
                     if(v.GroupId == character.GroupId)
                     {
-                        if (CameraSet == true && player.position.DistanceTo(CameraPosition) > 2f && player.position.DistanceTo(API.GetEntityPosition(v.NetHandle)) < 3f)
+                        if (CameraSet == true && player.Position.DistanceTo(CameraPosition) > 2f && player.Position.DistanceTo(API.GetEntityPosition(v.NetHandle)) < 3f)
                         {
                             API.SendChatMessageToPlayer(player, "You can only have one camera.");
                             return;
                         }
 
-                        if (player.position.DistanceTo(API.GetEntityPosition(v.NetHandle)) < 3f)
+                        if (player.Position.DistanceTo(API.GetEntityPosition(v.NetHandle)) < 3f)
                         {
                             API.SendChatMessageToPlayer(player, "You grabbed a camera from the news vehicle.");
                             ChatManager.NearbyMessage(player, 10, "~p~" + character.rp_name() + " reaches into the news vehicle, pulling out a camera.");
@@ -282,7 +282,7 @@ namespace mtgvrp.group_manager.lsnn
             var playerPos = API.GetEntityPosition(player);
             API.SendNotificationToPlayer(player, "You are carrying a camera.", true);
             ChatManager.NearbyMessage(player, 10, "~p~" + character.rp_name() + " picks up the news camera.");
-            API.DeleteObject(player, playerPos, API.GetHashKey("p_tv_cam_02_s"));
+            API.DeletePlayerWorldProp(player, API.GetHashKey("p_tv_cam_02_s"), playerPos, 2.5f); // CONV NOTE: adjust radius value
             character.HasCamera = true;
             CameraPosition = null;
             CameraRotation = null;
@@ -312,7 +312,7 @@ namespace mtgvrp.group_manager.lsnn
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLsnn)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "You must be a member of the LSNN to use that command.");
+                API.SendChatMessageToPlayer(player, core.Color.White, "You must be a member of the LSNN to use that command.");
                 return;
             }
 
@@ -387,7 +387,7 @@ namespace mtgvrp.group_manager.lsnn
                 return;
             }
 
-            API.SetEntityDimension(player, CameraDimension);
+            API.SetEntityDimension(player, (uint)CameraDimension);
             API.SendChatMessageToPlayer(player, "You are watching the broadcast. Use /stopwatching to stop watching .");
             API.TriggerClientEvent(player, "watch_broadcast", camPos, camRot, Headline, focusX, focusY, focusZ);
             API.FreezePlayer(player, true);
@@ -445,11 +445,11 @@ namespace mtgvrp.group_manager.lsnn
 
             if (sendercharacter.Group == Group.None || sendercharacter.Group.CommandType != Group.CommandTypeLsnn)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "You must be a member of the LSNN to use that command.");
+                API.SendChatMessageToPlayer(player, core.Color.White, "You must be a member of the LSNN to use that command.");
                 return;
             }
 
-            if (player.position.DistanceTo(target.position) > 2f)
+            if (player.Position.DistanceTo(target.Position) > 2f)
             {
                 API.SendChatMessageToPlayer(player, "You are too far away from that player.");
                 return;
@@ -459,12 +459,12 @@ namespace mtgvrp.group_manager.lsnn
             {
                 character.HasMic = true;
                 API.SendChatMessageToPlayer(target, "You have been given a microphone. Use /mic to toggle it on/off.");
-                API.SendChatMessageToPlayer(player, "You have given a microphone to " + target.name);
+                API.SendChatMessageToPlayer(player, "You have given a microphone to " + target.Name);
                 return;
             }
             character.HasMic = false;
             API.SendChatMessageToPlayer(target, "Microphone revoked. You can no longer use the microphone.");
-            API.SendChatMessageToPlayer(player, "Microphone removed from " + target.name);
+            API.SendChatMessageToPlayer(player, "Microphone removed from " + target.Name);
 
         }
 
@@ -475,7 +475,7 @@ namespace mtgvrp.group_manager.lsnn
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLsnn)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "You must be a member of the LSNN to use that command.");
+                API.SendChatMessageToPlayer(player, core.Color.White, "You must be a member of the LSNN to use that command.");
                 return;
             }
 

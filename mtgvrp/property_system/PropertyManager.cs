@@ -67,33 +67,33 @@ namespace mtgvrp.property_system
 
         private void API_onEntityExitColShape(ColShape colshape, NetHandle entity)
         {
-            if (API.GetEntityType(entity) == EntityType.Player && colshape.hasData("property_entrance"))
+            if (API.GetEntityType(entity) == EntityType.Player && colshape.HasData("property_entrance"))
             {
-                if (API.GetEntityData(entity, "at_interance_property_id") == colshape.getData("property_entrance"))
+                if (API.GetEntityData(entity, "at_interance_property_id") == colshape.GetData("property_entrance"))
                 {
                     API.ResetEntityData(entity, "at_interance_property_id");
                 }
             }
 
-            if (API.GetEntityType(entity) == EntityType.Player && colshape.hasData("property_interaction"))
+            if (API.GetEntityType(entity) == EntityType.Player && colshape.HasData("property_interaction"))
             {
-                if (API.GetEntityData(entity, "at_interaction_property_id") == colshape.getData("property_interaction"))
+                if (API.GetEntityData(entity, "at_interaction_property_id") == colshape.GetData("property_interaction"))
                 {
                     API.ResetEntityData(entity, "at_interaction_property_id");
                 }
             }
 
-            if (API.GetEntityType(entity) == EntityType.Player && colshape.hasData("property_garbage"))
+            if (API.GetEntityType(entity) == EntityType.Player && colshape.HasData("property_garbage"))
             {
-                if (API.GetEntityData(entity, "at_garbage_property_id") == colshape.getData("property_garbage"))
+                if (API.GetEntityData(entity, "at_garbage_property_id") == colshape.GetData("property_garbage"))
                 {
                     API.ResetEntityData(entity, "at_garbage_property_id");
                 }
             }
 
-            if (API.GetEntityType(entity) == EntityType.Player && colshape.hasData("property_exit"))
+            if (API.GetEntityType(entity) == EntityType.Player && colshape.HasData("property_exit"))
             {
-                if (API.GetEntityData(entity, "at_exit_property_id") == colshape.getData("property_exit"))
+                if (API.GetEntityData(entity, "at_exit_property_id") == colshape.GetData("property_exit"))
                 {
                     API.ResetEntityData(entity, "at_exit_property_id");
                 }
@@ -102,44 +102,44 @@ namespace mtgvrp.property_system
 
         private void API_onEntityEnterColShape(ColShape colshape, NetHandle entity)
         {
-            if (API.GetEntityType(entity) == EntityType.Player && colshape.hasData("property_entrance"))
+            if (API.GetEntityType(entity) == EntityType.Player && colshape.HasData("property_entrance"))
             {
-                int id = colshape.getData("property_entrance");
+                int id = colshape.GetData("property_entrance");
                 var property = Properties.SingleOrDefault(x => x.Id == id);
                 if(property.EntranceDimension != API.GetEntityDimension(entity))
                     return;
 
-                API.SetEntityData(entity, "at_interance_property_id", colshape.getData("property_entrance"));
+                API.SetEntityData(entity, "at_interance_property_id", colshape.GetData("property_entrance"));
             }
 
-            if (API.GetEntityType(entity) == EntityType.Player && colshape.hasData("property_interaction"))
+            if (API.GetEntityType(entity) == EntityType.Player && colshape.HasData("property_interaction"))
             {
-                int id = colshape.getData("property_interaction");
+                int id = colshape.GetData("property_interaction");
                 var property = Properties.SingleOrDefault(x => x.Id == id);
                 if(property.InteractionDimension != API.GetEntityDimension(entity))
                     return;
 
-                API.SetEntityData(entity, "at_interaction_property_id", colshape.getData("property_interaction"));
+                API.SetEntityData(entity, "at_interaction_property_id", colshape.GetData("property_interaction"));
             }
 
-            if (API.GetEntityType(entity) == EntityType.Player && colshape.hasData("property_garbage"))
+            if (API.GetEntityType(entity) == EntityType.Player && colshape.HasData("property_garbage"))
             {
-                int id = colshape.getData("property_garbage");
+                int id = colshape.GetData("property_garbage");
                 var property = Properties.SingleOrDefault(x => x.Id == id);
                 if(property.GarbageDimension != API.GetEntityDimension(entity))
                     return;
                 
-                API.SetEntityData(entity, "at_garbage_property_id", colshape.getData("property_garbage"));
+                API.SetEntityData(entity, "at_garbage_property_id", colshape.GetData("property_garbage"));
             }
 
-            if (API.GetEntityType(entity) == EntityType.Player && colshape.hasData("property_exit"))
+            if (API.GetEntityType(entity) == EntityType.Player && colshape.HasData("property_exit"))
             {
-                int id = colshape.getData("property_exit");
+                int id = colshape.GetData("property_exit");
                 var property = Properties.SingleOrDefault(x => x.Id == id);
                 if(property.TargetDimension != API.GetEntityDimension(entity))
                     return;
 
-                API.SetEntityData(entity, "at_exit_property_id", colshape.getData("property_exit"));
+                API.SetEntityData(entity, "at_exit_property_id", colshape.GetData("property_exit"));
             }
         }
 
@@ -273,13 +273,13 @@ namespace mtgvrp.property_system
                             API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
                             return;
                         }
-                        prop.EntrancePos = sender.position;
-                        prop.EntranceRot = sender.rotation;
-                        prop.EntranceDimension = sender.dimension;
+                        prop.EntrancePos = sender.Position;
+                        prop.EntranceRot = sender.Rotation;
+                        prop.EntranceDimension = (int)sender.Dimension;
                         prop.Save();
                         prop.UpdateMarkers();
                         API.SendChatMessageToPlayer(sender,
-                            $"[Property Manager] Entrance position of property #{id} was changed.");
+                            $"[Property Manager] Entrance Position of property #{id} was changed.");
                     }
                     break;
 
@@ -293,9 +293,9 @@ namespace mtgvrp.property_system
                             API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
                             return;
                         }
-                        sender.position = prop.EntrancePos;
-                        sender.rotation = prop.EntranceRot;
-                        sender.dimension = 0;
+                        sender.Position = prop.EntrancePos;
+                        sender.Rotation = prop.EntranceRot;
+                        sender.Dimension = 0;
                     }
                     break;
 
@@ -365,12 +365,12 @@ namespace mtgvrp.property_system
                             API.SendChatMessageToPlayer(sender, "[Property Manager] Property isn't teleportable.");
                             return;
                         }
-                        prop.TargetPos = sender.position;
-                        prop.TargetRot = sender.rotation;
+                        prop.TargetPos = sender.Position;
+                        prop.TargetRot = sender.Rotation;
                         prop.Save();
                         prop.UpdateMarkers();
                         API.SendChatMessageToPlayer(sender,
-                            $"[Property Manager] Interior TP position of property #{id} was changed.");
+                            $"[Property Manager] Interior TP Position of property #{id} was changed.");
                     }
                     break;
 
@@ -408,13 +408,13 @@ namespace mtgvrp.property_system
                             API.SendChatMessageToPlayer(sender, "[Property Manager] Property isn't interactable.");
                             return;
                         }
-                        prop.InteractionPos = sender.position;
-                        prop.InteractionRot = sender.rotation;
-                        prop.InteractionDimension = sender.dimension;
+                        prop.InteractionPos = sender.Position;
+                        prop.InteractionRot = sender.Rotation;
+                        prop.InteractionDimension = (int)sender.Dimension;
                         prop.UpdateMarkers();
                         prop.Save();
                         API.SendChatMessageToPlayer(sender,
-                            $"[Property Manager] Interaction position of property #{id} was changed.");
+                            $"[Property Manager] Interaction Position of property #{id} was changed.");
                     }
                     break;
 
@@ -535,9 +535,9 @@ namespace mtgvrp.property_system
                             API.SendChatMessageToPlayer(sender, "[Property Manager] Property cannot have a garbage point.");
                             return;
                         }
-                        prop.GarbagePoint = sender.position;
-                        prop.GarbageRotation = sender.rotation;
-                        prop.GarbageDimension = sender.dimension;
+                        prop.GarbagePoint = sender.Position;
+                        prop.GarbageRotation = sender.Rotation;
+                        prop.GarbageDimension = (int)sender.Dimension;
                         prop.UpdateMarkers();
                         prop.Save();
                         API.SendChatMessageToPlayer(sender,
@@ -714,9 +714,9 @@ namespace mtgvrp.property_system
                         //TODO: request ipl for player.
                     }
 
-                    player.position = prop.TargetPos;
-                    player.rotation = prop.TargetRot;
-                    player.dimension = prop.TargetDimension;
+                    player.Position = prop.TargetPos;
+                    player.Rotation = prop.TargetRot;
+                    player.Dimension = (uint)prop.TargetDimension;
                     ChatManager.RoleplayMessage(player, $"has entered {prop.PropertyName}.", ChatManager.RoleplayMe);
 
                     //Supplies.
@@ -752,14 +752,14 @@ namespace mtgvrp.property_system
 
                     if (prop.Type == PropertyTypes.Container)
                     {
-                        player.position = prop.EntrancePos + new Vector3(0, 0, 5f);
+                        player.Position = prop.EntrancePos + new Vector3(0, 0, 5f);
                     }
                     else
                     {
-                        player.position = prop.EntrancePos;
+                        player.Position = prop.EntrancePos;
                     }
-                        player.rotation = prop.EntranceRot;
-                        player.dimension = prop.EntranceDimension;
+                        player.Rotation = prop.EntranceRot;
+                        player.Dimension = (uint)prop.EntranceDimension;
                     
                     ChatManager.RoleplayMessage(player, $"has exited the building.", ChatManager.RoleplayMe);
                     return true;
@@ -973,7 +973,7 @@ namespace mtgvrp.property_system
             var account = player.GetAccount();
             if (account.AdminLevel >= 5)
             {
-                var property = new Property(type, player.position, player.rotation, type.ToString());
+                var property = new Property(type, player.Position, player.Rotation, type.ToString());
                 ItemManager.SetDefaultPrices(property);
                 property.Insert();
                 property.CreateProperty();

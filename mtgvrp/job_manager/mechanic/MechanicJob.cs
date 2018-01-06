@@ -11,7 +11,6 @@ using mtgvrp.core.Items;
 using System.Linq;
 
 using mtgvrp.vehicle_manager.modding;
-using WebSocketSharp;
 
 namespace mtgvrp.job_manager.taxi
 {

@@ -14,6 +14,8 @@ using mtgvrp.core;
 using mtgvrp.core.Help;
 using mtgvrp.group_manager;
 
+using Color = mtgvrp.core.Color;
+
 namespace mtgvrp.player_manager
 {
     class PlayerManager : Script
@@ -55,7 +57,7 @@ namespace mtgvrp.player_manager
             Event.OnPlayerDisconnected += OnPlayerDisconnected;
             Event.OnClientEventTrigger += API_onClientEventTrigger;
             Event.OnPlayerDeath += API_onPlayerDeath;
-            Event.OnPlayerHealthChange += API_onPlayerHealthChange;
+            Event.OnPlayerDamage += API_onPlayerHealthChange;
 
             //Setup save timer.
             PlayerSaveTimer.Interval = 900000;
@@ -87,8 +89,9 @@ namespace mtgvrp.player_manager
             }
         }
 
-        private void API_onPlayerHealthChange(Client player, int oldValue)
+        private void API_onPlayerHealthChange(NetHandle entity, float lossFirst, float lossSecond)
         {
+            Client player = API.GetPlayerFromHandle(entity);
             var character = player.GetCharacter();
             Account account = player.GetAccount();
             if (account == null)
@@ -96,7 +99,7 @@ namespace mtgvrp.player_manager
             if (character == null)
                 return;
 
-            if (API.GetPlayerHealth(player) < oldValue && account.AdminDuty)
+            if (API.GetPlayerHealth(player) < 100 && account.AdminDuty)
             {
                 API.SetPlayerHealth(player, 100);
             }
@@ -105,7 +108,7 @@ namespace mtgvrp.player_manager
         }
 
 
-        private void API_onPlayerDeath(Client player, NetHandle entityKiller, int weapon)
+        private void API_onPlayerDeath(Client player, NetHandle entityKiller, uint weapon, CancelEventArgs cancel)
         {
             if (player.GetAccount().AdminDuty)
             {
@@ -137,17 +140,17 @@ namespace mtgvrp.player_manager
             Client killer = API.GetPlayerFromHandle(entityKiller);
             if (killer != null)
             {
-                LogManager.Log(LogManager.LogTypes.Death, $"{character.CharacterName}[{player.socialClubName}] has died. Killer: {killer.GetCharacter().rp_name()}[{killer.GetAccount().AccountName}]. Weapon: {((WeaponHash)weapon).ToString()}");
+                LogManager.Log(LogManager.LogTypes.Death, $"{character.CharacterName}[{player.SocialClubName}] has died. Killer: {killer.GetCharacter().rp_name()}[{killer.GetAccount().AccountName}]. Weapon: {((WeaponHash)weapon).ToString()}");
             }
             else
             {
-                LogManager.Log(LogManager.LogTypes.Death, $"{character.CharacterName}[{player.socialClubName}] has died. Weapon: {((WeaponHash)weapon).ToString()}");
+                LogManager.Log(LogManager.LogTypes.Death, $"{character.CharacterName}[{player.SocialClubName}] has died. Weapon: {((WeaponHash)weapon).ToString()}");
             }
             
         }
 
-        public static int basepaycheck = Properties.Settings.Default.basepaycheck;
-        public static int taxationAmount = Properties.Settings.Default.taxationamount;
+        public static int basepaycheck = Properties.Settings.basepaycheck;
+        public static int taxationAmount = Properties.Settings.taxationamount;
 
         private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
         {
@@ -159,15 +162,15 @@ namespace mtgvrp.player_manager
             }
         }
 
-        public void OnPlayerConnected(Client player)
+        public void OnPlayerConnected(Client player, CancelEventArgs e)
         {
             var account = new Account();
-            account.AccountName = player.socialClubName;
+            account.AccountName = player.SocialClubName;
 
             API.SetEntityData(player, "Account", account);
         }
 
-        public void OnPlayerDisconnected(Client player, string reason)
+        public void OnPlayerDisconnected(Client player, byte type, string reason)
         {
             //Save data
             Character character = player.GetCharacter();
@@ -204,10 +207,10 @@ namespace mtgvrp.player_manager
                 }
 
                 RemovePlayer(character);
-                LogManager.Log(LogManager.LogTypes.Connection, $"{character.CharacterName}[{player.socialClubName}] has left the server.");
+                LogManager.Log(LogManager.LogTypes.Connection, $"{character.CharacterName}[{player.SocialClubName}] has left the server.");
             }
             else
-                LogManager.Log(LogManager.LogTypes.Connection, $"{player.socialClubName} has left the server. (Not logged into a character)");
+                LogManager.Log(LogManager.LogTypes.Connection, $"{player.SocialClubName} has left the server. (Not logged into a character)");
         }
 
         public static void UpdatePlayerNametags()
@@ -294,9 +297,9 @@ namespace mtgvrp.player_manager
         {
             Account account = player.GetAccount();
 
-            if (account.VipLevel == 1) { return Properties.Settings.Default.vipbonuslevelone; }
-            if (account.VipLevel == 2) { return Properties.Settings.Default.vipbonusleveltwo; }
-            if (account.VipLevel == 3) { return Properties.Settings.Default.vipbonuslevelthree; }
+            if (account.VipLevel == 1) { return Properties.Settings.vipbonuslevelone; }
+            if (account.VipLevel == 2) { return Properties.Settings.vipbonusleveltwo; }
+            if (account.VipLevel == 3) { return Properties.Settings.vipbonuslevelthree; }
             else { return 0; }
         }
 
@@ -306,7 +309,7 @@ namespace mtgvrp.player_manager
 
             if (character.Group == Group.None) { return 0; }
 
-            if (Properties.Settings.Default.governmentbalance * character.Group.FundingPercentage / 100 - character.Group.FactionPaycheckBonus < 0 && character.Group.FundingPercentage != -1)
+            if (Properties.Settings.governmentbalance * character.Group.FundingPercentage / 100 - character.Group.FactionPaycheckBonus < 0 && character.Group.FundingPercentage != -1)
             {
                 return 0;
             }
@@ -318,7 +321,7 @@ namespace mtgvrp.player_manager
         public static int CalculatePaycheck(Client player)
         {
             Character character = player.GetCharacter();
-            return basepaycheck - (Properties.Settings.Default.basepaycheck * Properties.Settings.Default.taxationamount/100) + /*(Properties.Settings.Default.basepaycheck * getVIPPaycheckBonus(player)/100) +*/ getFactionBonus(player) + character.BankBalance/1000;
+            return basepaycheck - (Properties.Settings.basepaycheck * Properties.Settings.taxationamount/100) + /*(Properties.Settings.basepaycheck * getVIPPaycheckBonus(player)/100) +*/ getFactionBonus(player) + character.BankBalance/1000;
         }
 
         private Timer _payCheckTimer;
@@ -337,7 +340,7 @@ namespace mtgvrp.player_manager
                 {
                     int paycheckAmount = CalculatePaycheck(player);
                     character.BankBalance += paycheckAmount;
-                    Properties.Settings.Default.governmentbalance += paycheckAmount * taxationAmount / 100;
+                    Properties.Settings.governmentbalance += paycheckAmount * taxationAmount / 100;
                     player.SendChatMessage("--------------PAYCHECK RECEIVED!--------------");
                     player.SendChatMessage("Base paycheck: $" + basepaycheck + ".");
                     player.SendChatMessage("Interest: $" + character.BankBalance / 1000 + ".");
@@ -347,7 +350,7 @@ namespace mtgvrp.player_manager
                     player.SendChatMessage("----------------------------------------------");
                     player.SendChatMessage("Total: ~g~$" + paycheckAmount + "~w~.");
 
-                    player.sendPictureNotificationToPlayer("Your paycheck for ~g~$" + paycheckAmount + " ~w~has been added to your balance.", "CHAR_BANK_MAZE", 0, 0, "Maze Bank", "Paycheck Received!");
+                    player.SendPictureNotificationToPlayer("Your paycheck for ~g~$" + paycheckAmount + " ~w~has been added to your balance.", "CHAR_BANK_MAZE", 0, 0, "Maze Bank", "Paycheck Received!");
                     Account account = player.GetAccount();
                     if (account.VipLevel > 0 && account.AdminLevel < 1)
                     {

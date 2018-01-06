@@ -9,6 +9,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace mtgvrp.door_manager
 {
+    // TODO: add dimensions
     public class Door
     {
         [BsonIgnore]
@@ -60,8 +61,8 @@ namespace mtgvrp.door_manager
         {
             Locked = true;
             RefreshDoor();
-            Text.delete();
-            Shape.onEntityEnterColShape -= Shape_onEntityEnterColShape;
+            Text.Delete();
+            Shape.OnEntityEnterColShape -= Shape_onEntityEnterColShape;
             API.Shared.DeleteColShape(Shape);
 
             var filter = MongoDB.Driver.Builders<Door>.Filter.Eq("_id", Id);
@@ -72,21 +73,22 @@ namespace mtgvrp.door_manager
         public void RegisterDoor()
         {
             Shape = API.Shared.CreateSphereColShape(Position, 35f);
-            Text = API.Shared.CreateTextLabel("~g~Door Id: " + Id, Position.Add(new Vector3(-1, 0, 0)), 5f, 1f, true);
-            Shape.onEntityEnterColShape += Shape_onEntityEnterColShape;
+            Text = API.Shared.CreateTextLabel("~g~Door Id: " + Id, Position.Add(new Vector3(-1, 0, 0)), 5f, 1f, 1, new GTANetworkAPI.Color(1, 1, 1), true);
+            Shape.OnEntityEnterColShape += Shape_onEntityEnterColShape;
             Doors.Add(this);
         }
 
+        // CONV NOTE: fix this
         public void RefreshDoor()
         {
-            foreach (var person in Shape.getAllEntities())
+            /*foreach (var person in Shape.GetAllEntities())
             {
                 var player = API.Shared.GetPlayerFromHandle(person);
                 if (player == null) continue;
                 API.Shared.SendNativeToPlayer(player, SetStateOfClosestDoorOfType,
                     Hash, Position.X, Position.Y, Position.Z,
                     Locked, State, false);
-            }
+            }*/
         }
 
         private void Shape_onEntityEnterColShape(ColShape colshape, NetHandle entity)

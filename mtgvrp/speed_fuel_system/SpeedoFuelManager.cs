@@ -52,12 +52,12 @@ namespace mtgvrp.speed_fuel_system
                 if (veh.Fuel <= 0)
                 {
                     API.SetVehicleEngineStatus(veh.NetHandle, false);
-                    if (ocups.Length > 0)
+                    if (ocups.Count > 0)
                         API.SendChatMessageToPlayer(ocups[0], "~y~The vehicle fuel has finished.");
                 }
 
                 //Notify driver with loss of fuel.
-                if (ocups.Length > 0)
+                if (ocups.Count > 0)
                 {
                     API.TriggerClientEvent(ocups[0], "fuel_updatevalue", veh.Fuel);
                 }
@@ -72,7 +72,7 @@ namespace mtgvrp.speed_fuel_system
             API.SendChatMessageToPlayer(player, a.IsSpeedoOn ? "You've sucessfully turned on the speedometer." : "You've sucessfully turned off the speedometer.");
             a.Save();
 
-            if (player.isInVehicle)
+            if (player.IsInVehicle)
             {
                 API.TriggerClientEvent(player, "TOGGLE_SPEEDO");
             }
@@ -95,7 +95,7 @@ namespace mtgvrp.speed_fuel_system
                         return;
                     }
 
-                    if (player.hasData("FUELING_VEHICLE"))
+                    if (player.HasData("FUELING_VEHICLE"))
                     {
                         API.SendChatMessageToPlayer(player, "You're already refueling a vehicle.");
                         return;
@@ -143,7 +143,7 @@ namespace mtgvrp.speed_fuel_system
             }
         }
 
-        private void API_onPlayerExitVehicle(Client player, NetHandle vehicle, int seat)
+        private void API_onPlayerExitVehicle(Client player, NetHandle vehicle)
         {
             if (API.HasEntityData(player, "FUELING_VEHICLE"))
             {

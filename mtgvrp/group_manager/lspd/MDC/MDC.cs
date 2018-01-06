@@ -63,7 +63,7 @@ namespace mtgvrp.group_manager.lspd.MDC
             var character = player.GetCharacter();
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                API.SendChatMessageToPlayer(player, core.Color.White, "You must be in the LSPD to use this command.");
                 return;
             }
 
@@ -71,13 +71,13 @@ namespace mtgvrp.group_manager.lspd.MDC
             var veh = VehicleManager.GetVehFromNetHandle(vehHandle);
             if(veh.Group.CommandType != Group.CommandTypeLspd)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "This vehicle is not equipped with a Mobile Database Computer.");
+                API.SendChatMessageToPlayer(player, core.Color.White, "This vehicle is not equipped with a Mobile Database Computer.");
                 return;
             }
 
             if(API.GetPlayerVehicleSeat(player) != -1 && API.GetPlayerVehicleSeat(player) != 0)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "You can only access the Mobile Database Computer from the front seats.");
+                API.SendChatMessageToPlayer(player, core.Color.White, "You can only access the Mobile Database Computer from the front seats.");
                 return;
             }
 
@@ -201,7 +201,7 @@ namespace mtgvrp.group_manager.lspd.MDC
                     var crimes = GetCrimeArray(foundPlayer);
 
                    //Store character.
-                   player.setData("MDC_LAST_CHECKED", foundPlayer);
+                   player.SetData("MDC_LAST_CHECKED", foundPlayer);
 
                     //Send Event
                     API.TriggerClientEvent(player, "MDC_SHOW_CITIZEN_INFO", foundPlayer.rp_name(), foundPlayer.Birthday,
@@ -228,7 +228,7 @@ namespace mtgvrp.group_manager.lspd.MDC
                 }
                 case "MDC_RequestNextCrimesPage":
                 {
-                    Character p = player.getData("MDC_LAST_CHECKED");
+                    Character p = player.GetData("MDC_LAST_CHECKED");
                     if (p == null)
                         return;
 

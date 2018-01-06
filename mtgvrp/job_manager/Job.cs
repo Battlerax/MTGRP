@@ -42,7 +42,10 @@ namespace mtgvrp.job_manager
 
         public void add_job_zone(float x1, float y1, float width, float height)
         {
-            JobZones.Add(API.Shared.Create2DColShape(x1, y1, width, height));
+            ColShape shape = API.Shared.Create2DColShape(x1, y1, width, height);
+            shape.SetData("Width", width);
+            shape.SetData("Height", height); // TODO: convert to extension
+            JobZones.Add(shape);
         }
 
         public void register_job_zone_events(int index)
@@ -109,34 +112,34 @@ namespace mtgvrp.job_manager
             }
 
 
-            JoinPos.ColZone.onEntityEnterColShape -= ColShapeEvent;
-            JoinPos.ColZone.onEntityEnterColShape += ColShapeEvent;
+            JoinPos.ColZone.OnEntityEnterColShape -= ColShapeEvent;
+            JoinPos.ColZone.OnEntityEnterColShape += ColShapeEvent;
 
             if (MiscOne != MarkerZone.None)
             {
-                MiscOne.ColZone.onEntityEnterColShape -= ColShapeEvent;
-                MiscOne.ColZone.onEntityEnterColShape += ColShapeEvent;
+                MiscOne.ColZone.OnEntityEnterColShape -= ColShapeEvent;
+                MiscOne.ColZone.OnEntityEnterColShape += ColShapeEvent;
             }
 
             if (MiscTwo != MarkerZone.None)
             {
-                MiscTwo.ColZone.onEntityEnterColShape -= ColShapeEvent;
-                MiscTwo.ColZone.onEntityEnterColShape += ColShapeEvent;
+                MiscTwo.ColZone.OnEntityEnterColShape -= ColShapeEvent;
+                MiscTwo.ColZone.OnEntityEnterColShape += ColShapeEvent;
             }
 
-            JoinPos.ColZone.onEntityExitColShape -= OnExitColShape;
-            JoinPos.ColZone.onEntityExitColShape += OnExitColShape;
+            JoinPos.ColZone.OnEntityEnterColShape -= OnExitColShape;
+            JoinPos.ColZone.OnEntityEnterColShape += OnExitColShape;
 
             if (MiscOne != MarkerZone.None)
             {
-                MiscOne.ColZone.onEntityExitColShape -= OnExitColShape;
-                MiscOne.ColZone.onEntityExitColShape += OnExitColShape;
+                MiscOne.ColZone.OnEntityEnterColShape -= OnExitColShape;
+                MiscOne.ColZone.OnEntityEnterColShape += OnExitColShape;
             }
 
             if (MiscTwo != MarkerZone.None)
             {
-                MiscTwo.ColZone.onEntityExitColShape -= OnExitColShape;
-                MiscTwo.ColZone.onEntityExitColShape += OnExitColShape;
+                MiscTwo.ColZone.OnEntityEnterColShape -= OnExitColShape;
+                MiscTwo.ColZone.OnEntityEnterColShape += OnExitColShape;
             }
         }
 

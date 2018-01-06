@@ -59,9 +59,9 @@ namespace mtgvrp.drugs_manager
         }
 
 
-        private void ClearEffects(Client player, string reason)
+        private void ClearEffects(Client player, byte type, string reason)
         {
-            API.TriggerClientEvent(player,"clearAllEffects");
+            API.TriggerClientEvent(player, "clearAllEffects");
         }
 
         // Ticks based on TempTime, reduces tempHealth of any player on server.

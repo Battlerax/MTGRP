@@ -103,21 +103,21 @@ namespace mtgvrp.job_manager.lumberjack
             switch (Stage)
             {
                 case Stages.Processing:
-                    TreeText = API.Shared.CreateTextLabel("~g~Hit the tree to process it. ~n~" + ProcessPercentage + "%", TreePos, 10f, 1f, true);
+                    TreeText = API.Shared.CreateTextLabel("~g~Hit the tree to process it. ~n~" + ProcessPercentage + "%", TreePos, 10f, 1f, 1, new GTANetworkAPI.Color(1, 1, 1), true);
                     TreeMarker.Location = TreePos;
                     TreeMarker.Refresh();
                     API.Shared.AttachEntityToEntity(TreeText, TreeObj, "0", new Vector3(1, 1, 1.5), new Vector3());
                     API.Shared.AttachEntityToEntity(TreeMarker.Marker, TreeObj, "0", new Vector3(1, 0, 1.5), new Vector3(-90, 0, 0));
                     break;
                 case Stages.Cutting:
-                    TreeText = API.Shared.CreateTextLabel("~g~" + CutPercentage + "% Cut.~n~Tree", TreePos, 10f, 1f, true);
+                    TreeText = API.Shared.CreateTextLabel("~g~" + CutPercentage + "% Cut.~n~Tree", TreePos, 10f, 1f, 1, new GTANetworkAPI.Color(1, 1, 1), true);
                     TreeMarker.Location = TreePos;
                     TreeMarker.Refresh();
                     API.Shared.AttachEntityToEntity(TreeText, TreeObj, "0", new Vector3(1, 0, 1), new Vector3());
                     API.Shared.AttachEntityToEntity(TreeMarker.Marker, TreeObj, "0", new Vector3(1, 0, 0), new Vector3());
                     break;
                 case Stages.Waiting:
-                    TreeText = API.Shared.CreateTextLabel("~g~Waiting to be picked, use /pickupwood with a Flatbed.", TreePos, 10f, 1f, true);
+                    TreeText = API.Shared.CreateTextLabel("~g~Waiting to be picked, use /pickupwood with a Flatbed.", TreePos, 10f, 1f, 1, new GTANetworkAPI.Color(1, 1, 1), true);
                     TreeMarker.Location = TreePos;
                     TreeMarker.Refresh();      
                     API.Shared.AttachEntityToEntity(TreeText, TreeObj, "0", new Vector3(1, 0, 1), new Vector3());
@@ -149,7 +149,7 @@ namespace mtgvrp.job_manager.lumberjack
                     break;
             }
 
-            TreeObj?.setSyncedData("IS_TREE", true);
+            TreeObj?.SetSharedData("IS_TREE", true);
         }
 
         public void UpdateAllTree()

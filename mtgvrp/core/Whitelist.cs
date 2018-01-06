@@ -11,16 +11,8 @@ namespace mtgvrp.core
 
         private static readonly List<string> WhitelistedNames = new List<string>
         {
-             "NortonPlays",
+             "battlerax",
              "Ahmad45123",
-             "TheSmoothie",
-             "iMerle",
-             "Charpur",
-             "Westingham",
-             "xVicee",
-             "MTGCharlie",
-             "Leuma0",
-             "KingstonEU"
         };
 
         public Whitelist()
@@ -29,13 +21,14 @@ namespace mtgvrp.core
             API.ConsoleOutput("[WHITELIST] Whitelist is " + ((_useWhitelist == true) ? ("Active") : ("Inactive")));
         }
 
-        public void WhiteList_OnPlayerConnect(Client player)
+        public void WhiteList_OnPlayerConnect(Client player, CancelEventArgs e)
         {
             if (_useWhitelist == true)
             {
-                if (!WhitelistedNames.Contains(player.socialClubName))
+                if (!WhitelistedNames.Contains(player.SocialClubName))
                 {
                     API.KickPlayer(player, "You are not whitelisted.");
+                    e.Cancel = true;
                 }
             }
         }

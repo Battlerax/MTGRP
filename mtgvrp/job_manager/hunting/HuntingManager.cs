@@ -72,7 +72,7 @@ namespace mtgvrp.job_manager.hunting
         public HuntingManager()
         {
             Event.OnResourceStart += OnHuntingManagerStart;
-            Event.OnPlayerWeaponAmmoChange += OnPlayerWeaponAmmoChange;
+            //Event.OnPlayerWeaponAmmoChange += OnPlayerWeaponAmmoChange;
             Event.OnPlayerWeaponSwitch += OnPlayerWeaponSwitch;
             Event.OnClientEventTrigger += OnClientEventTrigger;
         }
@@ -87,7 +87,7 @@ namespace mtgvrp.job_manager.hunting
             API.ConsoleOutput("[HuntingManager] Created " + SpawnedAnimals.Count + " animals.");*/
         }
 
-        public void OnPlayerWeaponSwitch(Client player, WeaponHash oldWeapon)
+        public void OnPlayerWeaponSwitch(Client player, WeaponHash oldWeapon, WeaponHash newValue)
         {
             if (oldWeapon == WeaponHash.SniperRifle)
             {
@@ -129,7 +129,7 @@ namespace mtgvrp.job_manager.hunting
 
                 foreach (var a in SpawnedAnimals)
                 {
-                    if (player.position.DistanceTo(API.GetEntityPosition(a.handle)) < 80f)
+                    if (player.Position.DistanceTo(API.GetEntityPosition(a.handle)) < 80f)
                     {
                         a.State = AnimalState.Fleeing;
                         a.FleeingPed = player;
@@ -195,7 +195,7 @@ namespace mtgvrp.job_manager.hunting
             {
                 foreach (var a in SpawnedAnimals)
                 {
-                    if (player.position.DistanceTo(API.GetEntityPosition(a.handle)) < 2.0)
+                    if (player.Position.DistanceTo(API.GetEntityPosition(a.handle)) < 2.0)
                     {
                         bool isDead = API.FetchNativeFromPlayer<bool>(player, Hash.IS_PED_DEAD_OR_DYING, a.handle, 1);
                         if (isDead)
@@ -248,7 +248,7 @@ namespace mtgvrp.job_manager.hunting
             {
                 foreach (var a in SpawnedAnimals)
                 {
-                    if (player.position.DistanceTo(API.GetEntityPosition(a.handle)) < 2.0)
+                    if (player.Position.DistanceTo(API.GetEntityPosition(a.handle)) < 2.0)
                     {
                         bool isDead = API.FetchNativeFromPlayer<bool>(player, Hash.IS_PED_DEAD_OR_DYING, a.handle, 1);
                         if (isDead)
@@ -403,8 +403,8 @@ namespace mtgvrp.job_manager.hunting
             StateTimer.Start();
 
             HuntingManager.SpawnedAnimals.Add(this);
-            API.Shared.SetEntitySyncedData(handle, "IS_ANIMAL", true);
-            API.Shared.SetEntitySyncedData(handle, "ANIMAL_ID", HuntingManager.SpawnedAnimals.IndexOf(this));
+            API.Shared.SetEntitySharedData(handle, "IS_ANIMAL", true);
+            API.Shared.SetEntitySharedData(handle, "ANIMAL_ID", HuntingManager.SpawnedAnimals.IndexOf(this));
         }
 
         public void AnimalAi(HuntingAnimal animal)
@@ -418,7 +418,7 @@ namespace mtgvrp.job_manager.hunting
                 if (player == null)
                     return;
 
-                if (player.position.DistanceTo(API.Shared.GetEntityPosition(handle)) <= 500f)
+                if (player.Position.DistanceTo(API.Shared.GetEntityPosition(handle)) <= 500f)
                 {
                     playersInRadius.Add(player);
                 }
@@ -434,7 +434,7 @@ namespace mtgvrp.job_manager.hunting
                     if (player == null)
                         return;
 
-                    if (player.position.DistanceTo(API.Shared.GetEntityPosition(handle)) <= 50f)
+                    if (player.Position.DistanceTo(API.Shared.GetEntityPosition(handle)) <= 50f)
                     {
                         tooClosePlayers.Add(player);
                     }
@@ -449,6 +449,7 @@ namespace mtgvrp.job_manager.hunting
 
                 StateChangeTick++;
 
+                
                 if (State != HuntingManager.AnimalState.Fleeing)
                 {
                     if (StateChangeTick > 15)
@@ -456,8 +457,9 @@ namespace mtgvrp.job_manager.hunting
                         var nextStateChance = Init.Random.Next(100);
                         if (nextStateChance < 35) // Graze
                         {
+                            Ped p = API.Shared.GetEntityFromHandle<Ped>(handle);
                             State = HuntingManager.AnimalState.Grazing;
-                            API.Shared.PlayPedScenario(handle,
+                            API.Shared.PlayPedScenario(p,
                                 Type == HuntingManager.AnimalTypes.Deer ? "WORLD_DEER_GRAZING" : "WORLD_PIG_GRAZING");
                         }
                         else // Wander
@@ -474,8 +476,9 @@ namespace mtgvrp.job_manager.hunting
                 {
                     if (StateChangeTick > 20)
                     {
+                        Ped p = API.Shared.GetEntityFromHandle<Ped>(handle);
                         State = HuntingManager.AnimalState.Grazing;
-                        API.Shared.PlayPedScenario(handle,
+                        API.Shared.PlayPedScenario(p,
                             Type == HuntingManager.AnimalTypes.Deer ? "WORLD_DEER_GRAZING" : "WORLD_PIG_GRAZING");
                         StateChangeTick = 0;
                     }
@@ -483,8 +486,9 @@ namespace mtgvrp.job_manager.hunting
             }
             else
             {
+                Ped p = API.Shared.GetEntityFromHandle<Ped>(handle);
                 State = HuntingManager.AnimalState.Grazing;
-                API.Shared.PlayPedScenario(handle,
+                API.Shared.PlayPedScenario(p,
                     Type == HuntingManager.AnimalTypes.Deer ? "WORLD_DEER_GRAZING" : "WORLD_PIG_GRAZING");
             }
      
@@ -494,11 +498,12 @@ namespace mtgvrp.job_manager.hunting
                 case HuntingManager.AnimalState.Fleeing:
                     foreach (var p in playersInRadius)
                     {
-                        API.Shared.SendNativeToPlayer(p, Hash.TASK_SMART_FLEE_PED, handle, FleeingPed.handle, 75f, 5000, 0, 0);
+                        API.Shared.SendNativeToPlayer(p, Hash.TASK_SMART_FLEE_PED, handle, FleeingPed.Handle, 75f, 5000, 0, 0);
                     }
                     break;
                 case HuntingManager.AnimalState.Grazing:
-                    API.Shared.PlayPedScenario(handle,
+                    Ped ped = API.Shared.GetEntityFromHandle<Ped>(handle);
+                    API.Shared.PlayPedScenario(ped,
                         Type == HuntingManager.AnimalTypes.Deer ? "WORLD_DEER_GRAZING" : "WORLD_PIG_GRAZING");
                     break;
                 case HuntingManager.AnimalState.Wandering:

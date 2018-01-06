@@ -32,7 +32,7 @@ namespace mtgvrp.vehicle_manager
                     //Check that player vehicle is the same as the menu vehicle...
                     if(API.Shared.GetPlayerVehicle(player) != vehicleHandle)
                     {
-                        DebugManager.DebugMessage("[VehicleMenu] " + character.CharacterName + "(" + player.socialClubName + ", " + player.handle + ") used VehicleMenu option in a different vehicle handle.");
+                        DebugManager.DebugMessage("[VehicleMenu] " + character.CharacterName + "(" + player.SocialClubName + ", " + player.Handle + ") used VehicleMenu option in a different vehicle handle.");
                         return;
                     }
 
@@ -87,7 +87,7 @@ namespace mtgvrp.vehicle_manager
 
                             vehicle.SpawnPos = pos;
                             vehicle.SpawnRot = rot;
-                            vehicle.SpawnDimension = dimension;
+                            vehicle.SpawnDimension = (int)dimension;
 
                             vehicle.Save();
 

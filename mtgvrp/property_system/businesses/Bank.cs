@@ -132,7 +132,7 @@ namespace mtgvrp.property_system.businesses
                 API.SendChatMessageToPlayer(player, "You can't give a check to yourself.");
             }
 
-            if (player.position.DistanceTo(target.position) > 5.0)
+            if (player.Position.DistanceTo(target.Position) > 5.0)
             {
                 API.SendChatMessageToPlayer(player, "Must be near the target.");
                 return;

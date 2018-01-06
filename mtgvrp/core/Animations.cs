@@ -15,8 +15,6 @@ namespace mtgvrp.core
 {
     class Animations : Script
     {
-
-
         public Animations()
         {
             Event.OnClientEventTrigger += OnClientEventTrigger;
@@ -54,7 +52,7 @@ namespace mtgvrp.core
             Character character = player.GetCharacter();
             if (character.IsCuffed || character.IsTied) { return; }
             API.StopPlayerAnimation(player);
-            API.StopPedAnimation(player);
+            //API.StopPedAnimation(player);
             character.AreHandsUp = false;
         }
 

@@ -52,7 +52,7 @@ namespace mtgvrp
             DatabaseManager.DatabaseManagerInit();
         }
 
-        private void API_onClientEventTrigger(GrandTheftMultiplayer.Server.Elements.Client sender, string eventName, params object[] arguments)
+        private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
         {
             if (eventName == "OBJECT_PLACED_PROPERLY")
             {

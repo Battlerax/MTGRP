@@ -111,7 +111,7 @@ namespace mtgvrp.group_manager
             if (Locker != MarkerZone.None)
             {
 
-                Locker.ColZone.onEntityEnterColShape += (shape, entity) =>
+                Locker.ColZone.OnEntityEnterColShape += (shape, entity) =>
                 {
                     if (API.Shared.GetEntityType(entity) != EntityType.Player)
                     {
@@ -123,7 +123,7 @@ namespace mtgvrp.group_manager
                         c.LockerZoneGroup = this;
                     }
                 };
-                Locker.ColZone.onEntityExitColShape += (shape, entity) =>
+                Locker.ColZone.OnEntityEnterColShape += (shape, entity) =>
                 {
                     if (API.Shared.GetEntityType(entity) != EntityType.Player)
                     {
@@ -145,7 +145,7 @@ namespace mtgvrp.group_manager
             if (FrontDesk != MarkerZone.None)
             {
 
-                FrontDesk.ColZone.onEntityEnterColShape += (shape, entity) =>
+                FrontDesk.ColZone.OnEntityEnterColShape += (shape, entity) =>
                 {
                     if (API.Shared.GetEntityType(entity) != EntityType.Player)
                     {
@@ -156,7 +156,7 @@ namespace mtgvrp.group_manager
                         if (c.Client != entity) { continue; }
                     }
                 };
-                FrontDesk.ColZone.onEntityExitColShape += (shape, entity) =>
+                FrontDesk.ColZone.OnEntityEnterColShape += (shape, entity) =>
                 {
                     if (API.Shared.GetEntityType(entity) != EntityType.Player)
                     {
@@ -177,7 +177,7 @@ namespace mtgvrp.group_manager
             if (ArrestLocation != MarkerZone.None)
             {
 
-                ArrestLocation.ColZone.onEntityEnterColShape += (shape, entity) =>
+                ArrestLocation.ColZone.OnEntityEnterColShape += (shape, entity) =>
                 {
                     if (API.Shared.GetEntityType(entity) != EntityType.Player)
                     {
@@ -188,7 +188,7 @@ namespace mtgvrp.group_manager
                         if (c.Client != entity) { continue; }
                     }
                 };
-                ArrestLocation.ColZone.onEntityExitColShape += (shape, entity) =>
+                ArrestLocation.ColZone.OnEntityEnterColShape += (shape, entity) =>
                 {
                     if (API.Shared.GetEntityType(entity) != EntityType.Player)
                     {

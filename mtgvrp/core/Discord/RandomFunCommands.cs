@@ -13,7 +13,7 @@ namespace mtgvrp.core.Discord
 {
     class RandomFunCommands
     {
-        [Command("poll"), Description("Run a poll with reactions.")]
+        /*[Command("poll"), Description("Run a poll with reactions.")]
         public async Task Poll(CommandContext ctx, [Description("How long should the poll last.")] int duration, [Description("What options should people have.")] params DiscordEmoji[] options)
         {
             if (!ctx.Member.Roles.Any(x => x.Permissions.HasFlag(Permissions.ChangeNickname)))
@@ -149,6 +149,6 @@ namespace mtgvrp.core.Discord
             {
                 await ctx.RespondAsync("*yawn*");
             }
-        }
+        }*/
     }
 }

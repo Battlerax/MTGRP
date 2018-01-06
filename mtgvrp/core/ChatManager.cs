@@ -25,14 +25,14 @@ namespace mtgvrp.core
             DebugManager.DebugMessage("[ChatM] Initalizing chat manager...");
 
             Event.OnChatMessage += OnChatMessage;
-            Event.OnChatCommand += API_onChatCommand;
+            //Event.OnChatCommand += API_onChatCommand;
             Event.OnClientEventTrigger += OnClientEventTrigger;
             Event.OnPlayerDisconnected += API_onPlayerDisconnected;
 
             DebugManager.DebugMessage("[ChatM] Chat Manager initalized.");
         }
 
-        private void API_onPlayerDisconnected(Client player, string reason)
+        private void API_onPlayerDisconnected(Client player, byte type, string reason)
         {
             var c = player.GetCharacter();
             if (c != null)
@@ -52,6 +52,12 @@ namespace mtgvrp.core
 
         public void OnChatMessage(Client player, string msg, CancelEventArgs e)
         {
+            if(msg.StartsWith('/'))
+            {
+                if (msg.EndsWith("login") || msg.EndsWith("register"))
+                    return;
+            }
+            
             Account account = player.GetAccount();
             Character character = player.GetCharacter();
 
@@ -116,13 +122,13 @@ namespace mtgvrp.core
                 }
                 API.SendChatMessageToPlayer(talkingTo.Client, Color.Grey, phonemsg);
                 e.Cancel = true;
-                e.Reason = "Phone";
-                LogManager.Log(LogManager.LogTypes.Phone, $"[Phone] {character.CharacterName}[{account.AccountName}] To {talkingTo.CharacterName}[{talkingTo.Client.socialClubName}]: {msg}");
+                //e.Reason = "Phone";
+                LogManager.Log(LogManager.LogTypes.Phone, $"[Phone] {character.CharacterName}[{account.AccountName}] To {talkingTo.CharacterName}[{talkingTo.Client.SocialClubName}]: {msg}");
                 return;
             }
             else if (account.AdminDuty == false && character.Calling911 == true)
             {
-                //API.GetZoneName(player.position);
+                //API.GetZoneName(player.Position);
 
                 var charitems = InventoryManager.DoesInventoryHaveItem(character, typeof(Phone));
                 var charphone = (Phone)charitems[0];
@@ -136,7 +142,7 @@ namespace mtgvrp.core
                 PhoneManager.h_cmd(player);
                 group_manager.lspd.Lspd.SendToCops(player, $"~r~911: #{charphone.PhoneNumber} reported a crime: {msg}");
                 e.Cancel = true;
-                e.Reason = "Phone";
+                //e.Reason = "Phone";
                 LogManager.Log(LogManager.LogTypes.Phone, $"[Phone] {character.CharacterName}[{account.AccountName}] To LSPD(911): {msg}");
                 return;
             }
@@ -431,7 +437,7 @@ namespace mtgvrp.core
                 if (i == null)
                     continue;
 
-                if (i.position.DistanceTo(player.position) > radius)
+                if (i.Position.DistanceTo(player.Position) > radius)
                     continue;
 
                 API.Shared.SendChatMessageToPlayer(i, color, msg);
@@ -446,7 +452,7 @@ namespace mtgvrp.core
                 if(i == null)
                     continue;
 
-                if(i.position.DistanceTo(player.position) > radius || i.dimension != player.dimension)
+                if(i.Position.DistanceTo(player.Position) > radius || i.Dimension != player.Dimension)
                     continue;
 
                 API.Shared.SendChatMessageToPlayer(i, msg);
@@ -456,7 +462,7 @@ namespace mtgvrp.core
 
         public float GetDistanceBetweenPlayers(Client player1, Client player2)
         {
-            return player1.position.DistanceTo(player2.position);
+            return player1.Position.DistanceTo(player2.Position);
         }
 
         
@@ -660,9 +666,9 @@ namespace mtgvrp.core
                 character.AmeTimer.Stop();
             }
 
-            character.AmeText = API.Shared.CreateTextLabel(Color.PlayerRoleplay + "* " + character.rp_name() + " " + action, player.position, 15, (float)(0.5), false, player.dimension);
+            character.AmeText = API.Shared.CreateTextLabel(Color.PlayerRoleplay + "* " + character.rp_name() + " " + action, player.Position, 15, 0.5f, 1, new GTANetworkAPI.Color(1, 1, 1), false, (uint)player.Dimension);
             API.Shared.SetTextLabelColor(character.AmeText, 194, 162, 218, 255);
-            API.Shared.AttachEntityToEntity(character.AmeText, player.handle, "SKEL_Head", new Vector3(0.0, 0.0, 1.3), new Vector3(0, 0, 0));
+            API.Shared.AttachEntityToEntity(character.AmeText, player.Handle, "SKEL_Head", new Vector3(0.0, 0.0, 1.3), new Vector3(0, 0, 0));
 
             character.AmeTimer = new System.Timers.Timer {Interval = time};
             character.AmeTimer.Elapsed += delegate { RemoveAmeText(character); };

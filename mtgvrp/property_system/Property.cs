@@ -172,7 +172,7 @@ namespace mtgvrp.property_system
                 UseBlip = true
             };
             EntranceMarker.Create();
-            EntranceMarker.ColZone.setData("property_entrance", Id);
+            EntranceMarker.ColZone.SetData("property_entrance", Id);
             if (API.Shared.DoesEntityExist(EntranceMarker.Blip))
             {
                 API.Shared.SetBlipShortRange(EntranceMarker.Blip, true);
@@ -197,14 +197,14 @@ namespace mtgvrp.property_system
                     };
                 }
                 InteractionMarker.Create();
-                InteractionMarker.ColZone.setData("property_interaction", Id);
+                InteractionMarker.ColZone.SetData("property_interaction", Id);
             }
 
             if (IsTeleportable && TargetPos != null && TargetPos != new Vector3())
             {
                 ExitMarker = new MarkerZone(TargetPos ?? new Vector3(), TargetRot ?? new Vector3(), TargetDimension) {TextLabelText = "/exit"};
                 ExitMarker.Create();
-                ExitMarker.ColZone.setData("property_exit", Id);
+                ExitMarker.ColZone.SetData("property_exit", Id);
             }
 
             if (HasGarbagePoint)
@@ -221,8 +221,8 @@ namespace mtgvrp.property_system
                     TextLabelText = $"{PropertyName}'s Garbage\nBags: {GarbageBags}/40\n/pickuptrash"
                 };
                 GarbageMarker.Create();
-                GarbageMarker.ColZone.setData("property_garbage", Id);
-                BinObject = API.Shared.CreateObject(998415499, GarbagePoint - new Vector3(0, 0, 1.1), GarbageRotation, GarbageDimension);
+                GarbageMarker.ColZone.SetData("property_garbage", Id);
+                BinObject = API.Shared.CreateObject(998415499, GarbagePoint - new Vector3(0, 0, 1.1), GarbageRotation, (uint)GarbageDimension);
             }
         }
 

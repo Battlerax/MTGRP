@@ -29,7 +29,7 @@ namespace mtgvrp.job_manager.trucker
         private static readonly Vector3 TruckerLocationCheck = new Vector3(979.6286,-2532.368, 28.30198);
         private const int PermittedDistance = 150;
 
-        private void API_onPlayerDisconnected(Client player, string reason)
+        private void API_onPlayerDisconnected(Client player, byte type, string reason)
         {
             Character c = player.GetCharacter();
 
@@ -42,7 +42,7 @@ namespace mtgvrp.job_manager.trucker
             }
         }
 
-        private void API_onPlayerExitVehicle(Client player, NetHandle vehicle, int seat)
+        private void API_onPlayerExitVehicle(Client player, NetHandle vehicle)
         {
             Character c = player.GetCharacter();
             if (c == null)
@@ -67,12 +67,12 @@ namespace mtgvrp.job_manager.trucker
             if (character?.JobOne?.Type != JobManager.JobTypes.Trucker)
                 return;
 
-            if (player.isInVehicle && character.TruckingStage == Character.TruckingStages.HeadingForFuelSupplies)
+            if (player.IsInVehicle && character.TruckingStage == Character.TruckingStages.HeadingForFuelSupplies)
             {
                 if (character.JobOne.MiscOne.ColZone == colshape) //Fuel load.
                 {
-                    var veh = player.vehicle;
-                    var vehicle = veh.handle.GetVehicle();
+                    var veh = player.Vehicle;
+                    var vehicle = veh.Handle.GetVehicle();
 
                     if (vehicle.Job?.Type != JobManager.JobTypes.Trucker ||
                         character.JobOne?.Type != JobManager.JobTypes.Trucker) return;
@@ -122,13 +122,13 @@ namespace mtgvrp.job_manager.trucker
                     }, null, 10000, Timeout.Infinite));
                 }
             }
-            else if (player.isInVehicle && character.TruckingStage == Character.TruckingStages.HeadingForWoodSupplies)
+            else if (player.IsInVehicle && character.TruckingStage == Character.TruckingStages.HeadingForWoodSupplies)
             {
                 if (JobManager.GetJobById(character.JobZone)?.Type == JobManager.JobTypes.Lumberjack &&
                     character.JobZoneType == 3)
                 {
-                    var veh = player.vehicle;
-                    var vehicle = veh.handle.GetVehicle();
+                    var veh = player.Vehicle;
+                    var vehicle = veh.Handle.GetVehicle();
 
                     if (vehicle.Job?.Type != JobManager.JobTypes.Trucker ||
                         character.JobOne?.Type != JobManager.JobTypes.Trucker) return;
@@ -166,13 +166,13 @@ namespace mtgvrp.job_manager.trucker
                     }, null, 10000, Timeout.Infinite));
                 }
             }
-            else if (character.TruckingStage == Character.TruckingStages.DeliveringWood && player.isInVehicle)
+            else if (character.TruckingStage == Character.TruckingStages.DeliveringWood && player.IsInVehicle)
             {
                 if (JobManager.GetJobById(character.JobZone)?.Type == JobManager.JobTypes.Trucker &&
                     character.JobZoneType == 3)
                 {
-                    var veh = player.vehicle;
-                    var vehicle = veh.handle.GetVehicle();
+                    var veh = player.Vehicle;
+                    var vehicle = veh.Handle.GetVehicle();
 
                     if (vehicle.Job?.Type != JobManager.JobTypes.Trucker ||
                         character.JobOne?.Type != JobManager.JobTypes.Trucker) return;
@@ -204,17 +204,17 @@ namespace mtgvrp.job_manager.trucker
                     }, null, 10000, Timeout.Infinite));
                 }
             }
-            else if (character.TruckingStage == Character.TruckingStages.DeliveringFuel && player.isInVehicle)
+            else if (character.TruckingStage == Character.TruckingStages.DeliveringFuel && player.IsInVehicle)
             {
-                Property prop = player.getData("TRUCKING_TARGETGAS");
+                Property prop = player.GetData("TRUCKING_TARGETGAS");
                 if (prop == null)
                     return;
 
                 if (prop.EntranceMarker.ColZone == colshape)
                 {
 
-                    var veh = player.vehicle;
-                    var vehicle = veh.handle.GetVehicle();
+                    var veh = player.Vehicle;
+                    var vehicle = veh.Handle.GetVehicle();
 
                     if (vehicle.Job?.Type != JobManager.JobTypes.Trucker ||
                         character.JobOne?.Type != JobManager.JobTypes.Trucker) return;
@@ -247,10 +247,10 @@ namespace mtgvrp.job_manager.trucker
                     }, null, 10000, Timeout.Infinite));
                 }
             }
-            else if (character.TruckingStage == Character.TruckingStages.HeadingBack && player.isInVehicle && character.JobOne.JoinPos.ColZone == colshape)
+            else if (character.TruckingStage == Character.TruckingStages.HeadingBack && player.IsInVehicle && character.JobOne.JoinPos.ColZone == colshape)
             {
-                var veh = player.vehicle;
-                var vehicle = veh.handle.GetVehicle();
+                var veh = player.Vehicle;
+                var vehicle = veh.Handle.GetVehicle();
 
                 if (vehicle.Job?.Type != JobManager.JobTypes.Trucker ||
                     character.JobOne?.Type != JobManager.JobTypes.Trucker) return;
@@ -261,13 +261,13 @@ namespace mtgvrp.job_manager.trucker
                     return;
                 }
 
-                if (player.getData("TRUCKING_TYPE") == "supplies")
+                if (player.GetData("TRUCKING_TYPE") == "supplies")
                 {
                     player.SendChatMessage("You have been paid ~g~$3000.");
                     InventoryManager.GiveInventoryItem(character, new Money(), 3000, true);
                     LogManager.Log(LogManager.LogTypes.Stats, $"[Job] {player.GetCharacter().CharacterName}[{player.GetAccount().AccountName}] has earned $2000 from a trucking run.");
                 }
-                else if (player.getData("TRUCKING_TYPE") == "gas")
+                else if (player.GetData("TRUCKING_TYPE") == "gas")
                 {
                     player.SendChatMessage("You have been paid ~g~$1000.");
                     InventoryManager.GiveInventoryItem(character, new Money(), 1000, true);
@@ -339,7 +339,7 @@ namespace mtgvrp.job_manager.trucker
             }
         }
 
-        private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle, int seat)
+        private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle, byte seat)
         {
             var veh = vehicle.GetVehicle();
             var character = player.GetCharacter();
@@ -361,7 +361,8 @@ namespace mtgvrp.job_manager.trucker
 
                 if (character.TruckingStage != Character.TruckingStages.None)
                 {
-                    API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));;
+                    //API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));
+                    Task.Delay(1000).ContinueWith(t => API.WarpPlayerOutOfVehicle(player)); // CONV NOTE: delay fixme
                     return;
                 }
 
@@ -382,8 +383,9 @@ namespace mtgvrp.job_manager.trucker
             player.GetCharacter().TruckingStage = Character.TruckingStages.None;
             NetHandle veh = API.GetEntityData(player, "TRUCKER_VEHICLE");
 
-            if (player.vehicle != null && player.vehicle == veh)
-                API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));;
+            if (player.Vehicle != null && player.Vehicle == veh)
+                //API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));
+                Task.Delay(1000).ContinueWith(t => API.WarpPlayerOutOfVehicle(player)); // CONV NOTE: delay fixme
 
             if (!veh.IsNull)
             {

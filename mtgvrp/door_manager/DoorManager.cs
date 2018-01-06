@@ -34,11 +34,12 @@ namespace mtgvrp.door_manager
             reloadDoorsTimer.Start();
         }
 
+        // CONV NOTE: fixme
         private void ReloadDoorsTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             foreach (var door in Door.Doors)
             {
-                foreach (var player in door.Shape.getAllEntities())
+                /*foreach (var player in door.Shape.getAllEntities())
                 {
                     var client = API.GetPlayerFromHandle(player);
                     if(client == null)
@@ -46,7 +47,7 @@ namespace mtgvrp.door_manager
                     API.Shared.SendNativeToPlayer(client, Door.SetStateOfClosestDoorOfType,
                         door.Hash, door.Position.X, door.Position.Y, door.Position.Z,
                         door.Locked, door.State, false);
-                }
+                }*/
             }
         }
 
@@ -113,7 +114,7 @@ namespace mtgvrp.door_manager
                             API.SendChatMessageToPlayer(sender, "[Door Manager] That ID doesn't exist.");
                             return;
                         }
-                        sender.position = door.Position;
+                        sender.Position = door.Position;
                         API.SendChatMessageToPlayer(sender, "[Door Manager] Teleported to door id " + door.Id);
                     }
                     break;
@@ -211,7 +212,7 @@ namespace mtgvrp.door_manager
                 case "doormanager_locknearestdoor":
                     float distance = -1.0f;
                     var cdoor = new Door(0, new Vector3(0, 0, 0), "NULL", false, false);
-                    Vector3 playerPos = API.GetEntityPosition(sender.handle);
+                    Vector3 playerPos = API.GetEntityPosition(sender.Handle);
                     foreach(Door d in Door.Doors)
                     {
                         if(playerPos.DistanceTo(d.Position) < distance || distance == -1.0f)
@@ -305,7 +306,7 @@ namespace mtgvrp.door_manager
             }
             if (DoesPlayerHaveDoorAccess(player, door))
             {
-                if (player.position.DistanceTo(door.Position) > 10.0f)
+                if (player.Position.DistanceTo(door.Position) > 10.0f)
                 {
                     API.SendChatMessageToPlayer(player, "You must be near the door.");
                     return;

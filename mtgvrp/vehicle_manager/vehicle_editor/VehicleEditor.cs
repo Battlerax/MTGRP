@@ -25,7 +25,7 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
 
             if (eventName == "vehicle_edit_change_spawn")
             {
-                Vehicle veh = API.GetEntityData(player.handle, "EDIT_VEH");
+                Vehicle veh = API.GetEntityData(player.Handle, "EDIT_VEH");
 
                 if (veh == null)
                 {
@@ -35,14 +35,14 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
 
                 veh.SpawnPos = API.GetEntityPosition(veh.NetHandle);
                 veh.SpawnRot = API.GetEntityRotation(veh.NetHandle);
-                veh.SpawnDimension = API.GetEntityDimension(veh.NetHandle);
+                veh.SpawnDimension = (int)API.GetEntityDimension(veh.NetHandle);
                 veh.Save();
 
                 API.SendChatMessageToPlayer(player, "Vehicle position spawn saved to current location.");
             }
             else if (eventName == "vehicle_edit_save")
             {
-                Vehicle veh = API.GetEntityData(player.handle, "EDIT_VEH");
+                Vehicle veh = API.GetEntityData(player.Handle, "EDIT_VEH");
 
                 if (veh == null)
                 {
@@ -126,7 +126,7 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
             }
             else if (eventName == "edit_veh_delete")
             {
-                Vehicle veh = API.GetEntityData(player.handle, "EDIT_VEH");
+                Vehicle veh = API.GetEntityData(player.Handle, "EDIT_VEH");
 
                 if (veh == null)
                 {
@@ -142,7 +142,7 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
             }
             else if(eventName == "vehicle_edit_respawn")
             {
-                Vehicle veh = API.GetEntityData(player.handle, "EDIT_VEH");
+                Vehicle veh = API.GetEntityData(player.Handle, "EDIT_VEH");
 
                 if (veh == null)
                 {
@@ -184,7 +184,7 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
                 return;
             }
 
-            API.SetEntityData(player.handle, "EDIT_VEH", veh);
+            API.SetEntityData(player.Handle, "EDIT_VEH", veh);
             API.TriggerClientEvent(player, "show_vehicle_edit_menu", veh.Id, veh.VehModel.ToString(), (veh.OwnerId == 0 ? "NONE" : PlayerManager.Players.Single(x => x.Id == veh.OwnerId).CharacterName), veh.LicensePlate, veh.VehMods[ModdingManager.PrimaryColorId.ToString()], veh.VehMods[ModdingManager.SecondryColorId.ToString()], veh.RespawnDelay.TotalMinutes.ToString("G"), veh.JobId, veh.GroupId);
         }
     }

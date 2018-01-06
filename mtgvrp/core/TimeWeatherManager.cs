@@ -16,10 +16,10 @@ namespace mtgvrp.core
         {
             Event.OnResourceStart += API_onResourceStart;
             Event.OnResourceStop += API_onResourceStop;
-            Event.OnPlayerFinishedDownload += API_onPlayerFinishedDownload;
+            Event.OnPlayerConnected += Event_OnPlayerConnected;
         }
 
-        private void API_onPlayerFinishedDownload(Client player)
+        private void Event_OnPlayerConnected(Client player, CancelEventArgs cancel)
         {
             API.FreezePlayerTime(player, true);
         }
@@ -69,7 +69,7 @@ namespace mtgvrp.core
                     Hours = 0;
                 }
             }
-            API.SetTime(Hours, Minutes);
+            API.SetTime(Hours, Minutes, 0);
 
             //Update weather
             if (_elapsedMinutes >= 30)

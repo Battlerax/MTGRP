@@ -25,7 +25,7 @@ namespace mtgvrp.core.Items
                 API.SendChatMessageToPlayer(player, "You can't do that on yourself");
                 return;
             }
-            if (player.position.DistanceTo(target.position) <= 5.0)
+            if (player.Position.DistanceTo(target.Position) <= 5.0)
             {
                 var tie = InventoryManager.DoesInventoryHaveItem<RopeItem>(player.GetCharacter());
                 if (tie.Length == 0)
@@ -60,7 +60,7 @@ namespace mtgvrp.core.Items
                 API.SendChatMessageToPlayer(player, "You can't do that on yourself");
                 return;
             }
-            if (player.position.DistanceTo(target.position) <= 5.0)
+            if (player.Position.DistanceTo(target.Position) <= 5.0)
             {
                 if (!target.GetCharacter().IsTied)
                 {
@@ -91,7 +91,7 @@ namespace mtgvrp.core.Items
                 API.SendChatMessageToPlayer(player, "You can't do that on yourself");
                 return;
             }
-            if (player.position.DistanceTo(target.position) <= 5.0)
+            if (player.Position.DistanceTo(target.Position) <= 5.0)
             {
                 var rag = InventoryManager.DoesInventoryHaveItem<RagsItem>(player.GetCharacter());
                 if (rag.Length == 0)
@@ -126,7 +126,7 @@ namespace mtgvrp.core.Items
                 API.SendChatMessageToPlayer(player, "You can't do that on yourself");
                 return;
             }
-            if (player.position.DistanceTo(target.position) <= 5.0)
+            if (player.Position.DistanceTo(target.Position) <= 5.0)
             {
                 if (!target.GetCharacter().IsBlindfolded)
                 {
@@ -157,7 +157,7 @@ namespace mtgvrp.core.Items
                 API.SendChatMessageToPlayer(player, "You can't do that on yourself");
                 return;
             }
-            if (player.position.DistanceTo(target.position) <= 5.0)
+            if (player.Position.DistanceTo(target.Position) <= 5.0)
             {
                 var rag = InventoryManager.DoesInventoryHaveItem<RagsItem>(player.GetCharacter());
                 if (rag.Length == 0)
@@ -191,7 +191,7 @@ namespace mtgvrp.core.Items
                 API.SendChatMessageToPlayer(player, "You can't do that on yourself");
                 return;
             }
-            if (player.position.DistanceTo(target.position) <= 5.0)
+            if (player.Position.DistanceTo(target.Position) <= 5.0)
             {
                 if (!target.GetCharacter().IsRagged)
                 {
@@ -217,8 +217,8 @@ namespace mtgvrp.core.Items
                 return;
             }
 
-            player.health += 5;
-            if (player.health > 100) player.health = 100;
+            player.Health += 5;
+            if (player.Health > 100) player.Health = 100;
             ChatManager.RoleplayMessage(player, "drinks a sprunk.", ChatManager.RoleplayMe);
             InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(SprunkItem), 1);
         }

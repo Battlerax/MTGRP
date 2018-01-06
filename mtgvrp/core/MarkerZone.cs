@@ -57,7 +57,7 @@ namespace mtgvrp.core
         [BsonIgnore]
         public NetHandle Blip { get; set; }
         [BsonIgnore]
-        public CylinderColShape ColZone { get; set; }
+        public ColShape ColZone { get; set; }
 
         public int BlipColor { get; set; } = 0;
         public string BlipName { get; set; }
@@ -110,14 +110,16 @@ namespace mtgvrp.core
           
             if (UseMarker)
             {
-                Marker = API.Shared.CreateMarker(MarkerType, Location, MarkerDirection, Rotation, MarkerScale,
-                    MarkerColor[0], MarkerColor[1], MarkerColor[2], MarkerColor[3], Dimension);
+                // CONV NOTE: SCALE IS NO LONGER VECTOR
+                Marker = API.Shared.CreateMarker(MarkerType, Location, MarkerDirection, Rotation, MarkerScale.X,
+                    new GTANetworkAPI.Color(MarkerColor[0], MarkerColor[1], MarkerColor[2], MarkerColor[3]), false, (uint)Dimension);
             }
 
             if (UseText)
             {
-                Label = API.Shared.CreateTextLabel(TextLabelText, Location, TextLabelRange, TextLabelSize,
-                    TextLabelSeeThrough, Dimension);
+                // CONV NOTE: did some shit to this
+                Label = API.Shared.CreateTextLabel(TextLabelText, Location, TextLabelRange, TextLabelSize, 1, new GTANetworkAPI.Color(1, 1, 1),
+                    entitySeethrough: TextLabelSeeThrough, dimension: (uint)Dimension);
                 API.Shared.SetTextLabelColor(Label, TextLabelColor[1], TextLabelColor[2], TextLabelColor[3], TextLabelColor[0]);
             }
 
@@ -173,7 +175,7 @@ namespace mtgvrp.core
                 case EntityType.Marker:
                     API.Shared.SetMarkerColor(Marker, MarkerColor[0], MarkerColor[1], MarkerColor[2], MarkerColor[3]);
                     API.Shared.SetMarkerDirection(Marker, MarkerDirection);
-                    API.Shared.SetMarkerScale(Marker, MarkerScale);
+                    API.Shared.SetMarkerScale(Marker, MarkerScale.X);
                     API.Shared.SetMarkerType(Marker, MarkerType);
                     break;
                 case EntityType.TextLabel:
@@ -193,7 +195,7 @@ namespace mtgvrp.core
             }
         }
 
-        public void Refresh(CylinderColShape colshape)
+        public void Refresh(ColShape colshape)
         {
             API.Shared.DeleteColShape(ColZone);
             ColZone = API.Shared.CreateCylinderColShape(Location, ColZoneSize, ColZoneHeight);

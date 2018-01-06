@@ -15,6 +15,7 @@ using mtgvrp.player_manager;
 using mtgvrp.vehicle_manager;
 using MongoDB.Driver;
 using Color = mtgvrp.core.Color;
+using System.Threading.Tasks;
 
 namespace mtgvrp.job_manager
 {
@@ -54,7 +55,7 @@ namespace mtgvrp.job_manager
                 Account account = player.GetAccount();
                 if(account.AdminLevel < 4) { return;}
 
-                Job job = API.GetEntityData(player.handle, "JOB_ZONE_CREATE");
+                Job job = API.GetEntityData(player.Handle, "JOB_ZONE_CREATE");
 
                 var cornerStartPos = (Vector3) arguments[0];
                 var xAdd = Convert.ToSingle(arguments[1]);
@@ -79,17 +80,18 @@ namespace mtgvrp.job_manager
             }
         }
 
-        private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle, int seat)
+        private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle, byte seat)
         {
             Character character = player.GetCharacter();
             var veh = VehicleManager.GetVehFromNetHandle(vehicle);
 
             if (veh?.JobId != 0)
             {
-                if (seat == -1 && veh?.JobId != 0 && veh?.JobId != character.JobOneId && player.GetAccount().AdminDuty == false)
+                if (seat == 0 && veh?.JobId != 0 && veh?.JobId != character.JobOneId && player.GetAccount().AdminDuty == false)
                 {
                     API.SendPictureNotificationToPlayer(player, "This vehicle is only available to " + veh?.Job?.Name, "CHAR_BLOCKED", 0, 1, "Server", "~r~Vehicle Locked");
-                    API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));;
+                    //API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));
+                    Task.Delay(1000).ContinueWith(t => API.WarpPlayerOutOfVehicle(player)); // CONV NOTE: delay fixme
                 }
             }
         }
@@ -167,7 +169,7 @@ namespace mtgvrp.job_manager
             {
                 Type = type,
                 Name = name,
-                JoinPos = new MarkerZone(player.position, player.rotation, player.dimension)
+                JoinPos = new MarkerZone(player.Position, player.Rotation, (int)player.Dimension)
                 {
                     TextLabelText = name + "~n~/joinjob"
                 }
@@ -217,9 +219,9 @@ namespace mtgvrp.job_manager
                     API.SendChatMessageToPlayer(player, Color.White, "You have changed Job " + job.Id + "'s type to " + job.Type);
                     break;
                 case "joinpos_loc":
-                    job.JoinPos.Location = player.position;
-                    job.JoinPos.Rotation = player.rotation;
-                    job.JoinPos.Dimension = player.dimension;
+                    job.JoinPos.Location = player.Position;
+                    job.JoinPos.Rotation = player.Rotation;
+                    job.JoinPos.Dimension = (int)player.Dimension;
                     job.JoinPos.UseBlip = true;
                     job.JoinPos.Refresh();
                     job.Save();
@@ -230,7 +232,7 @@ namespace mtgvrp.job_manager
 
                     if (job.MiscOne == MarkerZone.None)
                     {
-                        job.MiscOne = new MarkerZone(player.position, player.rotation, player.dimension)
+                        job.MiscOne = new MarkerZone(player.Position, player.Rotation, (int)player.Dimension)
                         {
                             TextLabelText = job.Name + " Misc One"
                         };
@@ -238,9 +240,9 @@ namespace mtgvrp.job_manager
                     }
                     else
                     {
-                        job.MiscOne.Location = player.position;
-                        job.MiscOne.Rotation = player.rotation;
-                        job.MiscOne.Dimension = player.dimension;
+                        job.MiscOne.Location = player.Position;
+                        job.MiscOne.Rotation = player.Rotation;
+                        job.MiscOne.Dimension = (int)player.Dimension;
                         job.MiscOne.Refresh();
                     }
                     job.Save();
@@ -251,7 +253,7 @@ namespace mtgvrp.job_manager
                 case "misc_one_name":
                     if (job.MiscOne == MarkerZone.None)
                     {
-                        job.MiscOne = new MarkerZone(player.position, player.rotation, player.dimension)
+                        job.MiscOne = new MarkerZone(player.Position, player.Rotation, (int)player.Dimension)
                         {
                             TextLabelText = job.Name + " Misc One"
                         };
@@ -284,7 +286,7 @@ namespace mtgvrp.job_manager
 
                     if (job.MiscTwo == MarkerZone.None)
                     {
-                        job.MiscTwo = new MarkerZone(player.position, player.rotation, player.dimension)
+                        job.MiscTwo = new MarkerZone(player.Position, player.Rotation, (int)player.Dimension)
                         {
                             TextLabelText = job.Name + " Misc Two"
                         };
@@ -292,9 +294,9 @@ namespace mtgvrp.job_manager
                     }
                     else
                     {
-                        job.MiscTwo.Location = player.position;
-                        job.MiscTwo.Rotation = player.rotation;
-                        job.MiscTwo.Dimension = player.dimension;
+                        job.MiscTwo.Location = player.Position;
+                        job.MiscTwo.Rotation = player.Rotation;
+                        job.MiscTwo.Dimension = (int)player.Dimension;
                         job.MiscTwo.Refresh();
                     }
                     job.Save();
@@ -304,7 +306,7 @@ namespace mtgvrp.job_manager
                 case "misc_two_name":
                     if (job.MiscTwo == MarkerZone.None)
                     {
-                        job.MiscTwo = new MarkerZone(player.position, player.rotation, player.dimension)
+                        job.MiscTwo = new MarkerZone(player.Position, player.Rotation, (int)player.Dimension)
                         {
                             TextLabelText = job.Name + " Misc Two"
                         };
@@ -358,7 +360,7 @@ namespace mtgvrp.job_manager
             {
                 case "start":
 
-                    API.SetEntityData(player.handle, "JOB_ZONE_CREATE", job);
+                    API.SetEntityData(player.Handle, "JOB_ZONE_CREATE", job);
                     API.TriggerClientEvent(player, "create_job_zone");
                     API.SendChatMessageToPlayer(player, "Creating zone...");
                     break;
@@ -420,39 +422,41 @@ namespace mtgvrp.job_manager
                 return;
             }
 
-            if (API.GetEntityData(player.handle, "ZONE_MARKER_1") == null)
+            if (API.GetEntityData(player.Handle, "ZONE_MARKER_1") == null)
             {
-                var topLeft = new Vector3(job.JobZones[zoneId - 1].X, job.JobZones[zoneId - 1].Y, player.position.Z);
-                var topRight = topLeft.Add(new Vector3(job.JobZones[zoneId - 1].Width, 0.0, 0.0));
-                var bottomLeft = topLeft.Add(new Vector3(0.0, job.JobZones[zoneId - 1].Height, 0.0));
+                float width = job.JobZones[zoneId - 1].GetData("Width");
+                float height = job.JobZones[zoneId - 1].GetData("Height");
+                var topLeft = new Vector3(job.JobZones[zoneId - 1].Position.X, job.JobZones[zoneId - 1].Position.Y, player.Position.Z);
+                var topRight = topLeft.Add(new Vector3(width, 0.0f, 0.0f));
+                var bottomLeft = topLeft.Add(new Vector3(0.0f, height, 0.0f));
                 var bottomRight =
-                    topLeft.Add(new Vector3(job.JobZones[zoneId - 1].Width, job.JobZones[zoneId - 1].Height, 0.0));
+                    topLeft.Add(new Vector3(width, height, 0.0f));
 
-                API.SetEntityData(player.handle, "ZONE_MARKER_1",
-                    API.CreateMarker(0, topLeft, new Vector3(), new Vector3(), new Vector3(1, 1, 1), 255, 255, 255, 0,
-                        player.dimension));
-                API.SetEntityData(player.handle, "ZONE_MARKER_2",
-                    API.CreateMarker(0, topRight, new Vector3(), new Vector3(), new Vector3(1, 1, 1), 255, 255, 255, 0,
-                        player.dimension));
-                API.SetEntityData(player.handle, "ZONE_MARKER_3",
-                    API.CreateMarker(0, bottomLeft, new Vector3(), new Vector3(), new Vector3(1, 1, 1), 255, 255, 255, 0,
-                        player.dimension));
-                API.SetEntityData(player.handle, "ZONE_MARKER_4",
-                    API.CreateMarker(0, bottomRight, new Vector3(), new Vector3(), new Vector3(1, 1, 1), 255, 255, 255,
-                        0, player.dimension));
+                API.SetEntityData(player.Handle, "ZONE_MARKER_1",
+                    API.CreateMarker(0, topLeft, new Vector3(), new Vector3(), 1f, new GTANetworkAPI.Color(255, 255, 255, 0), false,
+                        player.Dimension));
+                API.SetEntityData(player.Handle, "ZONE_MARKER_2",
+                    API.CreateMarker(0, topRight, new Vector3(), new Vector3(), 1f, new GTANetworkAPI.Color(255, 255, 255, 0), false,
+                        player.Dimension));
+                API.SetEntityData(player.Handle, "ZONE_MARKER_3",
+                    API.CreateMarker(0, bottomLeft, new Vector3(), new Vector3(),1f, new GTANetworkAPI.Color(255, 255, 255, 0), false,
+                        player.Dimension));
+                API.SetEntityData(player.Handle, "ZONE_MARKER_4",
+                    API.CreateMarker(0, bottomRight, new Vector3(), new Vector3(), 1f, new GTANetworkAPI.Color(255, 255, 255, 0), false,
+                        player.Dimension));
 
                 API.SendChatMessageToPlayer(player, "Viewing zone " + zoneId + " of Job " + job.Id);
             }
             else
             {
-                API.DeleteEntity(API.GetEntityData(player.handle, "ZONE_MARKER_1"));
-                API.DeleteEntity(API.GetEntityData(player.handle, "ZONE_MARKER_2"));
-                API.DeleteEntity(API.GetEntityData(player.handle, "ZONE_MARKER_3"));
-                API.DeleteEntity(API.GetEntityData(player.handle, "ZONE_MARKER_4"));
-                API.ResetEntityData(player.handle, "ZONE_MARKER_1");
-                API.ResetEntityData(player.handle, "ZONE_MARKER_2");
-                API.ResetEntityData(player.handle, "ZONE_MARKER_3");
-                API.ResetEntityData(player.handle, "ZONE_MARKER_4");
+                API.DeleteEntity(API.GetEntityData(player.Handle, "ZONE_MARKER_1"));
+                API.DeleteEntity(API.GetEntityData(player.Handle, "ZONE_MARKER_2"));
+                API.DeleteEntity(API.GetEntityData(player.Handle, "ZONE_MARKER_3"));
+                API.DeleteEntity(API.GetEntityData(player.Handle, "ZONE_MARKER_4"));
+                API.ResetEntityData(player.Handle, "ZONE_MARKER_1");
+                API.ResetEntityData(player.Handle, "ZONE_MARKER_2");
+                API.ResetEntityData(player.Handle, "ZONE_MARKER_3");
+                API.ResetEntityData(player.Handle, "ZONE_MARKER_4");
                 API.SendChatMessageToPlayer(player, "No longer viewing job zone.");
             }
         }
@@ -572,8 +576,9 @@ namespace mtgvrp.job_manager
 
                 for(var i = 0; i < j.JobZones.Count; i++)
                 {
-                    j.JobZones[i] = API.Create2DColShape(j.JobZones[i].X, j.JobZones[i].Y, j.JobZones[i].Width,
-                        j.JobZones[i].Height);
+                    float width = j.JobZones[i].GetData("Width");
+                    float height = j.JobZones[i].GetData("Height");
+                    j.JobZones[i] = API.Create2DColShape(j.JobZones[i].Position.X, j.JobZones[i].Position.Y, width, height);
                     j.register_job_zone_events(i);  
                 }
 

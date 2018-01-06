@@ -52,9 +52,9 @@ namespace mtgvrp.player_manager
             character.LastRot = new Vector3(0, 0, 90);
             character.update_ped();
             character.update_nametag();
-            API.SetEntityPosition(player.handle, character.LastPos);
-            API.SetEntityRotation(player.handle, character.LastRot);
-            API.SetEntityDimension(player.handle, 0);
+            API.SetEntityPosition(player.Handle, character.LastPos);
+            API.SetEntityRotation(player.Handle, character.LastRot);
+            API.SetEntityDimension(player.Handle, 0);
             API.FreezePlayer(player, false);
             API.SendChatMessageToPlayer(player,
                 "~g~You have successfully created your character: " + character.CharacterName + "!");
@@ -81,7 +81,7 @@ namespace mtgvrp.player_manager
                     Account account = player.GetAccount();
                     var charName = (string)arguments[0];
 
-                    account.LastIp = player.address;
+                    account.LastIp = player.Address;
 
                     if(charName == "Create new character")
                     {
@@ -118,19 +118,19 @@ namespace mtgvrp.player_manager
 
                         character.Insert();
 
-                        API.SetEntityData(player.handle, "Character", character);
+                        API.SetEntityData(player.Handle, "Character", character);
                         PlayerManager.AddPlayer(character);
 
                         API.SendChatMessageToPlayer(player, "Welcome to Los Santos, " + charName + "! Let's get started with what you look like!");
                         API.FreezePlayer(player, true);
-                        API.SetEntityDimension(player, player.GetCharacter().Id + 1000);
-                        API.SetEntitySyncedData(player, "REG_DIMENSION", player.GetCharacter().Id + 1000);
+                        API.SetEntityDimension(player, (uint)player.GetCharacter().Id + 1000);
+                        API.SetEntitySharedData(player, "REG_DIMENSION", player.GetCharacter().Id + 1000);
                         character.Model.SetDefault();
                         API.TriggerClientEvent(player, "show_character_creation_menu");
                     }
                     else
                     {
-                        if (API.HasEntityData(player.handle, "Character") == true)
+                        if (API.HasEntityData(player.Handle, "Character") == true)
                         {
                             API.SendChatMessageToPlayer(player, Color.Yellow,
                                 "Your character is already loaded, please be patient.");
@@ -154,7 +154,7 @@ namespace mtgvrp.player_manager
 
                         foreach(var c in foundCharacters)
                         {
-                            API.SetEntityData(player.handle, "Character", c);
+                            API.SetEntityData(player.Handle, "Character", c);
                             PlayerManager.AddPlayer(c);
                             break;
                         }
@@ -174,8 +174,8 @@ namespace mtgvrp.player_manager
                             API.SendChatMessageToPlayer(player, "Welcome back, " + character.CharacterName + "! Let's finish figuring out what you look like!");
                             character.update_ped();
                             API.FreezePlayer(player, true);
-                            API.SetEntityDimension(player, player.GetCharacter().Id + 1000);
-                            API.SetEntitySyncedData(player, "REG_DIMENSION", player.GetCharacter().Id + 1000);
+                            API.SetEntityDimension(player, (uint)player.GetCharacter().Id + 1000);
+                            API.SetEntitySharedData(player, "REG_DIMENSION", player.GetCharacter().Id + 1000);
                             character.Model.SetDefault();
                             API.TriggerClientEvent(player, "show_character_creation_menu");
                             return;
@@ -201,9 +201,9 @@ namespace mtgvrp.player_manager
                             lmcphone.LoadContacts();
                         }
 
-                        API.SetEntityPosition(player.handle, character.LastPos);
-                        API.SetEntityRotation(player.handle, character.LastRot);
-                        API.SetEntityDimension(player.handle, character.LastDimension);
+                        API.SetEntityPosition(player.Handle, character.LastPos);
+                        API.SetEntityRotation(player.Handle, character.LastRot);
+                        API.SetEntityDimension(player.Handle, (uint)character.LastDimension);
                         API.SetPlayerHealth(player, character.Health);
                         API.SetPlayerArmor(player,character.Armor);
 
@@ -225,7 +225,7 @@ namespace mtgvrp.player_manager
 
                             if (character.Group.CommandType == Group.CommandTypeLspd)
                             {
-                                API.SetEntitySyncedData(character.Client.handle, "IsCop", true);
+                                API.SetEntitySharedData(character.Client.Handle, "IsCop", true);
                             }
                         }
 
@@ -241,7 +241,7 @@ namespace mtgvrp.player_manager
 
                         API.SetPlayerHealth(player, character.Health);
                         API.SendChatMessageToPlayer(player, "You have successfully loaded your character: " + charName);
-                        LogManager.Log(LogManager.LogTypes.Connection, player.socialClubName + $" has loaded the character {character.CharacterName}. (IP: " + player.address + ")");
+                        LogManager.Log(LogManager.LogTypes.Connection, player.SocialClubName + $" has loaded the character {character.CharacterName}. (IP: " + player.Address + ")");
 
                         API.TriggerClientEvent(player, "login_finished");
                         OnCharacterLogin(this, new CharacterLoginEventArgs(character));
@@ -413,7 +413,7 @@ namespace mtgvrp.player_manager
                         character.LastRot = new Vector3(0, 0, 90);
                     }*/
 
-                    if (!player.hasData("REDOING_CHAR"))
+                    if (!player.HasData("REDOING_CHAR"))
                     {
                         character.LastPos = new Vector3(433.2354, -645.8408, 28.72639);
                         character.LastRot = new Vector3(0, 0, 90);
@@ -432,7 +432,7 @@ namespace mtgvrp.player_manager
                         API.SetEntityRotation(player, character.LastRot);
                         API.SetEntityDimension(player, 0);
                         API.FreezePlayer(player, false);
-                        player.resetData("REDOING_CHAR");
+                        player.ResetData("REDOING_CHAR");
                     }
                 }
                     break;
@@ -474,7 +474,7 @@ namespace mtgvrp.player_manager
                     API.SetVehicleEngineStatus(vehicle.NetHandle, true);
                     SpawnedVehicles.Add(vehicle);
 
-                    API.SendNativeToAllPlayers(Hash.TASK_VEHICLE_DRIVE_TO_COORD, player.handle, vehicle.NetHandle, -582.3301, -2201.367, 56.25008, 120f, 1f, vehicle.GetHashCode(), 16777216, 1f, true);
+                    API.SendNativeToAllPlayers(Hash.TASK_VEHICLE_DRIVE_TO_COORD, player.Handle, vehicle.NetHandle, -582.3301, -2201.367, 56.25008, 120f, 1f, vehicle.GetHashCode(), 16777216, 1f, true);
                     break;
 
                 case "bus_driving_station":
@@ -485,7 +485,7 @@ namespace mtgvrp.player_manager
                     API.SetVehicleEngineStatus(vehicle.NetHandle, true);
                     SpawnedVehicles.Add(vehicle);
 
-                    API.SendNativeToAllPlayers(Hash.TASK_VEHICLE_DRIVE_TO_COORD, player.handle, vehicle.NetHandle, 464.645, -673.3629, 27.20791, 10f, 1f, vehicle.GetHashCode(), 16777216, 1f, true);
+                    API.SendNativeToAllPlayers(Hash.TASK_VEHICLE_DRIVE_TO_COORD, player.Handle, vehicle.NetHandle, 464.645, -673.3629, 27.20791, 10f, 1f, vehicle.GetHashCode(), 16777216, 1f, true);
                     break;
 
                 case "player_exiting_bus":
@@ -496,7 +496,7 @@ namespace mtgvrp.player_manager
                     API.SetVehicleEngineStatus(vehicle.NetHandle, true);
                     SpawnedVehicles.Add(vehicle);
 
-                    API.SendNativeToAllPlayers(Hash.TASK_LEAVE_VEHICLE, player.handle, vehicle.NetHandle, 0);
+                    API.SendNativeToAllPlayers(Hash.TASK_LEAVE_VEHICLE, player.Handle, vehicle.NetHandle, 0);
                     break;
 */
                 case "finish_intro":

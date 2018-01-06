@@ -10,6 +10,7 @@ using MongoDB.Bson;
 using Color = mtgvrp.core.Color;
 using Timer = System.Timers.Timer;
 using Vehicle = mtgvrp.vehicle_manager.Vehicle;
+using System.Threading.Tasks;
 
 namespace mtgvrp.job_manager.lumberjack
 {
@@ -24,7 +25,7 @@ namespace mtgvrp.job_manager.lumberjack
             Event.OnPlayerEnterVehicle += API_onPlayerEnterVehicle;
         }
 
-        private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle, int seat)
+        private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle, byte seat)
         {
             if(vehicle.GetVehicle() == null)
                 return;
@@ -48,7 +49,8 @@ namespace mtgvrp.job_manager.lumberjack
                     int id = API.GetEntityData(vehicle, "TREE_DRIVER");
                     if (id != player.GetCharacter().Id)
                     {
-                        API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));;
+                        //API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));
+                        Task.Delay(1000).ContinueWith(t => API.WarpPlayerOutOfVehicle(player)); // CONV NOTE: delay fixme
                         API.SendChatMessageToPlayer(player, "This is not yours.");
                         return;
                     }
@@ -64,7 +66,7 @@ namespace mtgvrp.job_manager.lumberjack
             }
         }
 
-        private void API_onPlayerExitVehicle(Client player, NetHandle vehicle, int seat)
+        private void API_onPlayerExitVehicle(Client player, NetHandle vehicle)
         {
             if (API.GetEntityModel(vehicle) == (int) VehicleHash.Flatbed && player.GetCharacter().JobOne.Type == JobManager.JobTypes.Lumberjack)
             {
@@ -109,7 +111,7 @@ namespace mtgvrp.job_manager.lumberjack
             if (eventName == "lumberjack_hittree" && character.JobOne.Type == JobManager.JobTypes.Lumberjack)
             {
 
-                var tree = Tree.Trees.FirstOrDefault(x => x.TreeObj?.position?.DistanceTo(sender.Position) <= 3.0f);
+                var tree = Tree.Trees.FirstOrDefault(x => x.TreeObj?.Position?.DistanceTo(sender.Position) <= 3.0f);
                 if (tree == null)
                     return;
                 if (tree.Stage == Tree.Stages.Cutting)
@@ -134,7 +136,7 @@ namespace mtgvrp.job_manager.lumberjack
                         InventoryManager.DeleteInventoryItem<Weapon>(character, 1,
                             x => x.CommandFriendlyName == "Hatchet");
                         API.StopPlayerAnimation(sender);
-                        API.StopPedAnimation(sender);
+                        //API.StopPedAnimation(sender);
                     }
                 }
                 else if (tree.Stage == Tree.Stages.Processing)
@@ -157,7 +159,7 @@ namespace mtgvrp.job_manager.lumberjack
                         InventoryManager.DeleteInventoryItem<Weapon>(character, 1,
                             x => x.CommandFriendlyName == "Hatchet");
                         API.StopPlayerAnimation(sender);
-                        API.StopPedAnimation(sender);
+                        //API.StopPedAnimation(sender);
                     }
                 }
 
@@ -165,8 +167,8 @@ namespace mtgvrp.job_manager.lumberjack
             else if (eventName == "TreePlaced")
             {
                 var tree = Tree.Trees.First(x => x.TreeObj == (NetHandle) arguments[0]);
-                tree.TreePos = tree.TreeObj.position;
-                tree.TreePos = tree.TreeObj.position;
+                tree.TreePos = tree.TreeObj.Position;
+                tree.TreePos = tree.TreeObj.Position;
             }
         }
 
@@ -179,8 +181,8 @@ namespace mtgvrp.job_manager.lumberjack
             var tree = new Tree {Id = ObjectId.GenerateNewId(DateTime.Now), TreePos = player.Position, TreeRot = new Vector3()};
             tree.CreateTree();
             tree.Insert();
-            API.SetEntitySyncedData(tree.TreeObj, "TargetObj", tree.Id.ToString());
-            API.TriggerClientEvent(player, "PLACE_OBJECT_ON_GROUND_PROPERLY", tree.TreeObj.handle, "TreePlaced");
+            API.SetEntitySharedData(tree.TreeObj, "TargetObj", tree.Id.ToString());
+            API.TriggerClientEvent(player, "PLACE_OBJECT_ON_GROUND_PROPERLY", tree.TreeObj.Handle, "TreePlaced");
         }
 
         [Command("deletetree"), Help(HelpManager.CommandGroups.LumberJob, "Delete the nearest lumberjack tree to you.")]
@@ -189,7 +191,7 @@ namespace mtgvrp.job_manager.lumberjack
             if (player.GetAccount().AdminLevel < 4)
                 return;
 
-            var tree = Tree.Trees.FirstOrDefault(x => x.TreeMarker?.Location.DistanceTo(player.position) <= 1.5);
+            var tree = Tree.Trees.FirstOrDefault(x => x.TreeMarker?.Location.DistanceTo(player.Position) <= 1.5);
             if (tree == null)
             {
                 API.SendChatMessageToPlayer(player, "You aren't near a tree.");
@@ -224,7 +226,7 @@ namespace mtgvrp.job_manager.lumberjack
                     return;
                 }
 
-                var tree = Tree.Trees.FirstOrDefault(x => x.TreeObj?.position?.DistanceTo(player.position) <= 10.0f && x.Stage == Tree.Stages.Waiting);
+                var tree = Tree.Trees.FirstOrDefault(x => x.TreeObj?.Position?.DistanceTo(player.Position) <= 10.0f && x.Stage == Tree.Stages.Waiting);
                 if (tree == null || tree?.Stage != Tree.Stages.Waiting)
                 {
                     API.SendChatMessageToPlayer(player, "You aren't near a tree.");
@@ -282,7 +284,7 @@ namespace mtgvrp.job_manager.lumberjack
 
                 Vehicle vehicle = API.GetEntityData(API.GetPlayerVehicle(player), "Vehicle");
                 API.ResetEntityData(API.GetPlayerVehicle(player), "TREE_OBJ");
-                API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));;
+                Task.Delay(1000).ContinueWith(t => API.WarpPlayerOutOfVehicle(player)); // CONV NOTE: delay fixme
                 VehicleManager.respawn_vehicle(vehicle);
                 API.ResetEntityData(API.GetPlayerVehicle(player), "TREE_DRIVER");
                 API.TriggerClientEvent(player, "update_beacon", new Vector3());

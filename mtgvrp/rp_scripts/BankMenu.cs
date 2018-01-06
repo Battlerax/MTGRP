@@ -65,7 +65,7 @@ namespace mtgvrp.rp_scripts
             };
             foreach (var t in Atms)
             {
-                API.CreateTextLabel("~g~ATM\n~w~(/atm)", t, 25.0f, 0.5f);
+                API.CreateTextLabel("~g~ATM\n~w~(/atm)", t, 25.0f, 0.5f, 1, new GTANetworkAPI.Color(1, 1, 1));
             }
 
             // Withdraw/deposit amounts for bank menu
@@ -108,7 +108,7 @@ namespace mtgvrp.rp_scripts
         [Command("atm"), Help(HelpManager.CommandGroups.General, "Use this command near an atm to use it to withdraw money.", null)]
         public void atm_cmd(Client player)
         {
-            if (Atms.Any(x=> x.DistanceTo(player.position) <= 5.0))
+            if (Atms.Any(x=> x.DistanceTo(player.Position) <= 5.0))
             {
                 Character character = player.GetCharacter();
                 ChatManager.RoleplayMessage(character, "slides in their card and inputs their PIN number.", ChatManager.RoleplayMe);
@@ -124,7 +124,7 @@ namespace mtgvrp.rp_scripts
                 case "OnBankMenuTrigger":
                     {
                         // check to see if player has moved away from ATM
-                        if (Atms.Any(x => x.DistanceTo(player.position) <= 5.0) == false)
+                        if (Atms.Any(x => x.DistanceTo(player.Position) <= 5.0) == false)
                         {
                             API.SendChatMessageToPlayer(player, "You have moved too far away from the ATM.");
                             return;

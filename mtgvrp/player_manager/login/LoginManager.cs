@@ -8,6 +8,8 @@ using mtgvrp.core.Help;
 using mtgvrp.database_manager;
 using MongoDB.Driver;
 
+using Color = mtgvrp.core.Color;
+
 namespace mtgvrp.player_manager.login
 {
     class LoginManager : Script
@@ -21,7 +23,6 @@ namespace mtgvrp.player_manager.login
             DebugManager.DebugMessage("[LoginM] Initalizing Login Manager...");
 
             Event.OnPlayerConnected += OnPlayerConnected;
-            Event.OnPlayerFinishedDownload += OnPlayerFinishedDownload;
             Event.OnClientEventTrigger += API_onClientEventTrigger;
 
             DebugManager.DebugMessage("[LoginM] Login Manager initalized.");
@@ -134,7 +135,7 @@ namespace mtgvrp.player_manager.login
 
                                
                             API.SendChatMessageToPlayer(player, "~g~ You have successfully logged in!");
-                            LogManager.Log(LogManager.LogTypes.Connection, player.socialClubName + " has logged in to the server. (IP: " + player.address + ")");
+                            LogManager.Log(LogManager.LogTypes.Connection, player.SocialClubName + " has logged in to the server. (IP: " + player.Address + ")");
 
                                 account.IsLoggedIn = true;
 
@@ -201,7 +202,7 @@ namespace mtgvrp.player_manager.login
 
                         API.SendChatMessageToPlayer(player,
                             "You have successfully registered! Please select a character slot below to get started!");
-                        LogManager.Log(LogManager.LogTypes.Connection, player.socialClubName + " has registered in to the server. (IP: " + player.address + ")");
+                        LogManager.Log(LogManager.LogTypes.Connection, player.SocialClubName + " has registered in to the server. (IP: " + player.Address + ")");
                             prepare_character_menu(player);
                     }
                         break;
@@ -209,16 +210,13 @@ namespace mtgvrp.player_manager.login
             }
         }
 
-        public void OnPlayerConnected(Client player)
+        public void OnPlayerConnected(Client player, CancelEventArgs e)
         {
-            DebugManager.DebugMessage("[LoginM] " + player.socialClubName + " has connected to the server [NOT LOGGED IN]. (IP: " + player.address + ")");
-            LogManager.Log(LogManager.LogTypes.Connection, player.socialClubName + " has connected to the server [NOT LOGGED IN]. (IP: " + player.address + ")");
-        }
+            DebugManager.DebugMessage("[LoginM] " + player.SocialClubName + " has connected to the server [NOT LOGGED IN]. (IP: " + player.Address + ")");
+            LogManager.Log(LogManager.LogTypes.Connection, player.SocialClubName + " has connected to the server [NOT LOGGED IN]. (IP: " + player.Address + ")");
 
-        public void OnPlayerFinishedDownload(Client player)
-        {
             Account account = player.GetAccount();
-            API.SetEntitySyncedData(player, "REG_DIMENSION",  1000);
+            API.SetEntitySharedData(player, "REG_DIMENSION", 1000);
             API.SetEntityDimension(player, 1000);
 
             if (account.is_registered())
@@ -233,7 +231,6 @@ namespace mtgvrp.player_manager.login
             API.SendChatMessageToPlayer(player, "Press ~g~F12~w~ to disable CEF and login manually.");
             API.TriggerClientEvent(player, "onPlayerConnectedEx", account.is_registered());
         }
-
        
         [Command("login"), Help(HelpManager.CommandGroups.General, "Used to login.", "Your password")]
         public void login_cmd(Client player, string inputPass)
@@ -382,16 +379,16 @@ namespace mtgvrp.player_manager.login
 
             foreach(var c in charactersFound)
             {
-                API.Shared.SetEntitySyncedData(player.handle, "char_name_" + charCount, c.CharacterName);
-                API.Shared.SetEntitySyncedData(player.handle, "char_info_" + charCount, "SQL: " + c.Id);
+                API.Shared.SetEntitySharedData(player.Handle, "char_name_" + charCount, c.CharacterName);
+                API.Shared.SetEntitySharedData(player.Handle, "char_info_" + charCount, "SQL: " + c.Id);
                 charCount++;
             }
 
-            API.Shared.SetEntitySyncedData(player.handle, "char_name_" + charCount, "Create new character");
-            API.Shared.SetEntitySyncedData(player.handle, "char_info_" + charCount, "Begin the creation of a new character");
+            API.Shared.SetEntitySharedData(player.Handle, "char_name_" + charCount, "Create new character");
+            API.Shared.SetEntitySharedData(player.Handle, "char_info_" + charCount, "Begin the creation of a new character");
             charCount++;
 
-            API.Shared.SetEntitySyncedData(player.handle, "char_count", charCount);
+            API.Shared.SetEntitySharedData(player.Handle, "char_count", charCount);
             API.Shared.TriggerClientEvent(player, "showCharacterSelection");
         }
     }

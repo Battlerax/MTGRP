@@ -230,7 +230,7 @@ namespace mtgvrp.job_manager.gunrunner
                         if (!player.GetCharacter().IsGunrunner)
                         {
                             player.GetCharacter().IsGunrunner = true;
-                            player.sendNotification("Gunrunning", "You have become a gunrunner. Earn renown by selling weapons to other players.", true);
+                            player.SendNotification("You have become a gunrunner. Earn renown by selling weapons to other players.", true);
                             player.SendChatMessage("~g~You have become a gunrunner. Earn renown by selling weapons to other players. You can deploy a headquarters once you've reached 500 renown.");
                         }
                     }
@@ -273,7 +273,7 @@ namespace mtgvrp.job_manager.gunrunner
         {
             foreach (var c in ContainerZone.GetAllContainerZones())
             {
-                if (c.Position.DistanceTo(player.position) <= c.Radius)
+                if (c.Position.DistanceTo(player.Position) <= c.Radius)
                 {
                     return true;
                 }
@@ -377,12 +377,12 @@ namespace mtgvrp.job_manager.gunrunner
             int r = rand.Next(DealerLocations.Count);
 
             if (CurrentDealer != null) { API.Shared.DeleteEntity(CurrentDealer); }
-            if (DealerLabel != null) { DealerLabel.delete(); }
-            if (DealerNameLabel != null) { DealerNameLabel.delete(); }
+            if (DealerLabel != null) { DealerLabel.Delete(); }
+            if (DealerNameLabel != null) { DealerNameLabel.Delete(); }
             foreach(var o in WeaponCases) { API.Shared.DeleteEntity(o); }
 
-            DealerLabel = API.Shared.CreateTextLabel("~g~/gunrun\n/intervene", DealerLocations[r], 25f, 1f, true);
-            DealerNameLabel = API.Shared.CreateTextLabel("Yuri_Orlov", DealerLocations[r] + new Vector3(0, 0, 1f), 25f, 0.5f, true);
+            DealerLabel = API.Shared.CreateTextLabel("~g~/gunrun\n/intervene", DealerLocations[r], 25f, 1f, 1, new GTANetworkAPI.Color(1,1,1), true);
+            DealerNameLabel = API.Shared.CreateTextLabel("Yuri_Orlov", DealerLocations[r] + new Vector3(0, 0, 1f), 25f, 0.5f, 1, new GTANetworkAPI.Color(1, 1, 1), true);
             CurrentDealer = API.Shared.CreatePed(PedHash.RoccoPelosi, DealerLocations[r], 180);
             NetHandle WeaponCase = API.Shared.CreateObject(API.Shared.GetHashKey("prop_gun_case_01"), 
                 API.Shared.GetEntityPosition(CurrentDealer) - new Vector3(-1f, 0, 1f), API.Shared.GetEntityRotation(CurrentDealer), API.Shared.GetEntityDimension(CurrentDealer));
@@ -411,7 +411,7 @@ namespace mtgvrp.job_manager.gunrunner
                 return;
             }
 
-            if (player.position.DistanceTo(CurrentDealer.position) > 5f)
+            if (player.Position.DistanceTo(CurrentDealer.Position) > 5f)
             {
                 player.SendChatMessage("You must be at a weapon dealer location.");
                 return;
@@ -473,7 +473,7 @@ namespace mtgvrp.job_manager.gunrunner
                 return;
             }
             
-            if (player.position.DistanceTo(CurrentDealer.position) > 5f)
+            if (player.Position.DistanceTo(CurrentDealer.Position) > 5f)
             {
                 player.SendChatMessage("You must be at a weapon dealer location.");
                 return;
@@ -515,7 +515,7 @@ namespace mtgvrp.job_manager.gunrunner
                 return;
             }
 
-            if (player.position.DistanceTo(CurrentDealer.position) > 5f)
+            if (player.Position.DistanceTo(CurrentDealer.Position) > 5f)
             {
                 player.SendChatMessage("You must be at the gun dealer to use this ability.");
             }
@@ -543,7 +543,7 @@ namespace mtgvrp.job_manager.gunrunner
             {
                 player.SendChatMessage($"Yuri_Orlov says: {MostRenown.CharacterName} is doing quite well for themselves. Here's where they are..");
                 player.SendChatMessage("A waypoint has been set to the position of the current gun dealer with the most renown.");
-                API.TriggerClientEvent(player, "intervene_track_player", MostRenown.Client.position);
+                API.TriggerClientEvent(player, "intervene_track_player", MostRenown.Client.Position);
                 character.InterveneTimeLimit = TimeManager.GetTimeStampPlus(TimeSpan.FromHours(12));
             }
         }
@@ -625,7 +625,7 @@ namespace mtgvrp.job_manager.gunrunner
             }
 
             player.SendChatMessage("Weapon dealer location tracked. A waypoint has been set on your map.");
-            API.TriggerClientEvent(player, "track_weapon_dealer", CurrentDealer.position.X, CurrentDealer.position.Y);
+            API.TriggerClientEvent(player, "track_weapon_dealer", CurrentDealer.Position.X, CurrentDealer.Position.Y);
         }
 
         [Command("movehq"), Help(HelpManager.CommandGroups.JobsGeneral, "Move your headquarters to your current location.", null)]
@@ -651,17 +651,17 @@ namespace mtgvrp.job_manager.gunrunner
                 return;
             }
 
-            if (IsOverlapping(player.position, player.rotation))
+            if (IsOverlapping(player.Position, player.Rotation))
             {
                 player.SendChatMessage("You can't place a container too close to another container.");
                 return;
             }
 
-            character.Container.Position = player.position;
-            character.Container.Rotation = player.rotation;
+            character.Container.Position = player.Position;
+            character.Container.Rotation = player.Rotation;
             character.Container.Respawn();
             character.Container.Save();
-            API.SetEntityPosition(player, player.position + new Vector3(0, 0, 5));
+            API.SetEntityPosition(player, player.Position + new Vector3(0, 0, 5));
             API.TriggerClientEvent(player, "PLACE_OBJECT_ON_GROUND_PROPERLY", character.Container.ContainerObject, "CONTAINER_PLACED");
             player.SendChatMessage("Container moved.");
         }
@@ -695,16 +695,16 @@ namespace mtgvrp.job_manager.gunrunner
                 return;
             }
 
-            if (IsOverlapping(player.position, player.rotation))
+            if (IsOverlapping(player.Position, player.Rotation))
             {
                 player.SendChatMessage("You can't place a container too close to another container.");
                 return;
             }
 
-            character.Container = new Container(character, player.position, player.rotation);
+            character.Container = new Container(character, player.Position, player.Rotation);
             character.Container.Deploy();
             character.Container.Insert();
-            API.SetEntityPosition(player, player.position + new Vector3(0, 0, 5));
+            API.SetEntityPosition(player, player.Position + new Vector3(0, 0, 5));
             API.TriggerClientEvent(player, "PLACE_OBJECT_ON_GROUND_PROPERLY", character.Container.ContainerObject, "CONTAINER_PLACED");
             player.SendChatMessage("Container placed. You now have your very own gun running headquarters.");
         }
@@ -895,10 +895,10 @@ namespace mtgvrp.job_manager.gunrunner
                 return;
             }
 
-            var containerZone = new ContainerZone(player.position, player.rotation);
+            var containerZone = new ContainerZone(player.Position, player.Rotation);
             containerZone.Insert();
             containerZone.Deploy();
-            API.TriggerClientEvent(player, "create_zone_marker", player.position, 30);
+            API.TriggerClientEvent(player, "create_zone_marker", player.Position, 30);
             player.SendChatMessage("Container zone created. The radius is displayed for 2 seconds. Use /editcontainerradius to change it.");
             ZoneTimer = new Timer { Interval = 2000 };
             ZoneTimer.Elapsed += delegate { DeleteZoneMarker(player); };
@@ -919,7 +919,7 @@ namespace mtgvrp.job_manager.gunrunner
             var containerZone = ContainerZone.GetAllContainerZones()[int.Parse(containerid)];
             containerZone.Radius = int.Parse(radius);
             containerZone.Save();
-            API.TriggerClientEvent(player, "create_zone_marker", player.position, int.Parse(radius));
+            API.TriggerClientEvent(player, "create_zone_marker", player.Position, int.Parse(radius));
             player.SendChatMessage("Container raidus edited. The radius will be displayed for 2 seconds.");
             ZoneTimer = new Timer { Interval = 2000 };
             ZoneTimer.Elapsed += delegate { DeleteZoneMarker(player); };

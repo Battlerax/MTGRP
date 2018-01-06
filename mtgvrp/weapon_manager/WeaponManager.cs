@@ -14,7 +14,7 @@ namespace mtgvrp.weapon_manager
         public WeaponManager()
         {
             Event.OnPlayerWeaponSwitch += API_onPlayerWeaponSwitch;
-            Event.OnPlayerWeaponAmmoChange += API_onPlayerWeaponAmmoChange;
+            //Event.OnPlayerWeaponAmmoChange += API_onPlayerWeaponAmmoChange;
             CharacterMenu.OnCharacterLogin += CharacterMenu_OnCharacterLogin;
             InventoryManager.OnStorageGetItem += InventoryManager_OnStorageGetItem;
             InventoryManager.OnStorageLoseItem += InventoryManager_OnStorageLoseItem;
@@ -26,7 +26,7 @@ namespace mtgvrp.weapon_manager
         {
             foreach (Weapon weapon in InventoryManager.DoesInventoryHaveItem<Weapon>(e.Character))
             {
-                API.GivePlayerWeapon(e.Character.Client, weapon.WeaponHash, 9999, true, true);
+                API.GivePlayerWeapon(e.Character.Client, weapon.WeaponHash, 9999);
                 API.SetPlayerWeaponTint(e.Character.Client, weapon.WeaponHash, weapon.WeaponTint);
             }
         }
@@ -72,7 +72,7 @@ namespace mtgvrp.weapon_manager
             }
         }
 
-        private void API_onPlayerWeaponSwitch(Client player, WeaponHash weapon)
+        private void API_onPlayerWeaponSwitch(Client player, WeaponHash weapon, WeaponHash newhash)
         {
             Character character = player.GetCharacter();
             Account playerAccount = player.GetAccount();

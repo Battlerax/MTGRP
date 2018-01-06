@@ -54,7 +54,7 @@ namespace mtgvrp.job_manager.scuba
                     return;
                 }
 
-                API.SendNativeToPlayer(player, Hash.SET_PED_MAX_TIME_UNDERWATER, player.handle, 3600.0f);
+                API.SendNativeToPlayer(player, Hash.SET_PED_MAX_TIME_UNDERWATER, player.Handle, 3600.0f);
                 API.TriggerClientEvent(player, "UPDATE_SCUBA_PERCENTAGE",
                     "Oxygen Remaining: " + Math.Round((scubaitem[0].OxygenRemaining / ScubaItem.MaxOxygen) * 100f) +
                     "%");
@@ -70,7 +70,7 @@ namespace mtgvrp.job_manager.scuba
                 reset:
                 var a = rnd.Next(0, 100);
 
-                if (_treasureObjects.Any(x => x.position == _treasuresLocations[a][0]))
+                if (_treasureObjects.Any(x => x.Position == _treasuresLocations[a][0]))
                 {
                     goto reset;
                 }
@@ -184,9 +184,9 @@ namespace mtgvrp.job_manager.scuba
             new [] {new Vector3(-159.6433, -2858.358, -13.95227), new Vector3(12.90809, 1.245686, 0.1409214)},
         };
 
-        private readonly List<Object> _treasureObjects = new List<Object>();
+        private readonly List<GTANetworkAPI.Object> _treasureObjects = new List<GTANetworkAPI.Object>();
 
-        private void API_onPlayerDisconnected(Client player, string reason)
+        private void API_onPlayerDisconnected(Client player, byte type, string reason)
         {
             Character c = player.GetCharacter();
 
@@ -209,7 +209,7 @@ namespace mtgvrp.job_manager.scuba
                 return;
             }
 
-            var itm = _treasureObjects.FirstOrDefault(x => x.position.DistanceTo(player.position) <= 5.0f);
+            var itm = _treasureObjects.FirstOrDefault(x => x.Position.DistanceTo(player.Position) <= 5.0f);
             if (itm == null)
             {
                 API.SendChatMessageToPlayer(player, "You aren't near any treasure.");
@@ -237,14 +237,14 @@ namespace mtgvrp.job_manager.scuba
                 return;
             }
 
-            itm.delete();
+            itm.Delete();
             _treasureObjects.Remove(itm);
 
             //Add new one.
             reset:
             var a = rnd.Next(0, 100);
 
-            if (_treasureObjects.Any(x => x.position == _treasuresLocations[a][0]))
+            if (_treasureObjects.Any(x => x.Position == _treasuresLocations[a][0]))
             {
                 goto reset;
             }
@@ -289,9 +289,9 @@ namespace mtgvrp.job_manager.scuba
             }
 
             //Create the objects for the player.
-            var head = API.CreateObject(239157435, player.position, new Vector3());
+            var head = API.CreateObject(239157435, player.Position, new Vector3());
             API.AttachEntityToEntity(head, player, "SKEL_Head", new Vector3(0, 0, 0), new Vector3(180, 90, 0));
-            var tank = API.CreateObject(1593773001, player.position, new Vector3());
+            var tank = API.CreateObject(1593773001, player.Position, new Vector3());
             API.AttachEntityToEntity(tank, player, "SKEL_Spine3", new Vector3(-0.3, -0.23, 0), new Vector3(180, 90, 0));
             API.SetEntityData(player, "SCUBA_TANK", tank);
             API.SetEntityData(player, "SCUBA_HEAD", head);
@@ -304,7 +304,7 @@ namespace mtgvrp.job_manager.scuba
                 new Timer(delegate { RefreshScuba(player); }, null, 1000, 1000));
 
             //Set the scuba state as true.
-            API.SendNativeToPlayer(player, Hash.SET_ENABLE_SCUBA, player.handle, true);
+            API.SendNativeToPlayer(player, Hash.SET_ENABLE_SCUBA, player.Handle, true);
 
             //Show remaining oxygen.
             API.TriggerClientEvent(player, "UPDATE_SCUBA_PERCENTAGE",
@@ -346,23 +346,23 @@ namespace mtgvrp.job_manager.scuba
             }
 
             //Remove clothes
-            Object head = API.GetEntityData(player, "SCUBA_HEAD");
-            Object tank = API.GetEntityData(player, "SCUBA_TANK");
+            GTANetworkAPI.Object head = API.GetEntityData(player, "SCUBA_HEAD");
+            GTANetworkAPI.Object tank = API.GetEntityData(player, "SCUBA_TANK");
             if (head != null && API.DoesEntityExist(head))
             {
-                head.detach();
-                head.delete();
+                head.Detach();
+                head.Delete();
                 API.ResetEntityData(player, "SCUBA_HEAD");
             }
             if (tank != null && API.DoesEntityExist(tank))
             {
-                tank.detach();
-                tank.delete();
+                tank.Detach();
+                tank.Delete();
                 API.ResetEntityData(player, "SCUBA_TANK");
             }
 
             //Set scuba state
-            API.SendNativeToPlayer(player, Hash.SET_ENABLE_SCUBA, player.handle, false);
+            API.SendNativeToPlayer(player, Hash.SET_ENABLE_SCUBA, player.Handle, false);
 
             //Remove exygen
             API.TriggerClientEvent(player, "UPDATE_SCUBA_PERCENTAGE", "none");
@@ -374,7 +374,7 @@ namespace mtgvrp.job_manager.scuba
             character.update_ped();
 
             //Set normal underwater time.
-            API.SendNativeToPlayer(player, Hash.SET_PED_MAX_TIME_UNDERWATER, player.handle, 60.0f);
+            API.SendNativeToPlayer(player, Hash.SET_PED_MAX_TIME_UNDERWATER, player.Handle, 60.0f);
         }
     }
 }

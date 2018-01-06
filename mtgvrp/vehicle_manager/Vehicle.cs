@@ -202,13 +202,13 @@ namespace mtgvrp.vehicle_manager
             if (!VehMods.ContainsKey(ModdingManager.SecondryColorId.ToString()))
                 VehMods.Add(ModdingManager.SecondryColorId.ToString(), "0");
 
-            NetHandle = API.Shared.CreateVehicle(VehModel, pos, SpawnRot,
+            NetHandle = API.Shared.CreateVehicle((int)VehModel, pos, SpawnRot.Z,
                 VehMods[ModdingManager.PrimaryColorId.ToString()].IsInteger()
                     ? Convert.ToInt32(VehMods[ModdingManager.PrimaryColorId.ToString()])
                     : 0,
                 VehMods[ModdingManager.SecondryColorId.ToString()].IsInteger()
                     ? Convert.ToInt32(VehMods[ModdingManager.SecondryColorId.ToString()])
-                    : 0, SpawnDimension);
+                    : 0, dimension: (uint)SpawnDimension);
 
             API.Shared.SetVehicleNumberPlate(NetHandle, LicensePlate);
 
@@ -290,7 +290,7 @@ namespace mtgvrp.vehicle_manager
 
         public void DestroyMarkers()
         {
-            Label?.delete();
+            Label?.Delete();
         }
 
         public void UpdateMarkers()
@@ -300,7 +300,7 @@ namespace mtgvrp.vehicle_manager
             {
                 if (this.Job?.Type == JobManager.JobTypes.Garbageman)
                 {
-                    this.Label = API.Shared.CreateTextLabel("~g~" + $"Garbage Bags\n{this.GarbageBags}/10", API.Shared.GetEntityPosition(this.NetHandle), 25f, 0.5f, true, API.Shared.GetEntityDimension(this.NetHandle));
+                    this.Label = API.Shared.CreateTextLabel("~g~" + $"Garbage Bags\n{this.GarbageBags}/10", API.Shared.GetEntityPosition(this.NetHandle), 25f, 0.5f, 1, new GTANetworkAPI.Color(1, 1, 1), true, dimension:(uint)API.Shared.GetEntityDimension(this.NetHandle));
                     API.Shared.AttachEntityToEntity(this.Label, this.NetHandle, "tipper", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
 
                 }

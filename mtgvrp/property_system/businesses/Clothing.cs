@@ -129,8 +129,8 @@ namespace mtgvrp.property_system.businesses
             if (eventName == "closeclothingmenu")
             {
                 API.FreezePlayer(sender, false);
-                sender.position = API.GetEntityData(sender, "clothing_lastpos");
-                sender.rotation = API.GetEntityData(sender, "clothing_lastrot");
+                sender.Position = API.GetEntityData(sender, "clothing_lastpos");
+                sender.Rotation = API.GetEntityData(sender, "clothing_lastrot");
                 API.SetEntityDimension(sender, 0);
                 API.SendChatMessageToPlayer(sender, "You have exited the clothing menu.");
 
@@ -147,42 +147,42 @@ namespace mtgvrp.property_system.businesses
                 switch ((int) arguments[0])
                 {
                     case Component.ComponentTypeLegs:
-                        price = PropertyManager.Properties.Single(x => x.Id == sender.getData("clothing_id"))
+                        price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
                             .ItemPrices["pants"];
                         break;
                     case Component.ComponentTypeShoes:
-                        price = PropertyManager.Properties.Single(x => x.Id == sender.getData("clothing_id"))
+                        price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
                             .ItemPrices["shoes"];
                         break;
                     case Component.ComponentTypeAccessories:
-                        price = PropertyManager.Properties.Single(x => x.Id == sender.getData("clothing_id"))
+                        price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
                             .ItemPrices["accessories"];
                         break;
                     case Component.ComponentTypeUndershirt:
-                        price = PropertyManager.Properties.Single(x => x.Id == sender.getData("clothing_id"))
+                        price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
                             .ItemPrices["undershirts"];
                         break;
                     case Component.ComponentTypeTops:
-                        price = PropertyManager.Properties.Single(x => x.Id == sender.getData("clothing_id"))
+                        price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
                             .ItemPrices["tops"];
                         break;
                     case Component.ComponentTypeHats:
-                        price = PropertyManager.Properties.Single(x => x.Id == sender.getData("clothing_id"))
+                        price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
                             .ItemPrices["hats"];
                         break;
                     case Component.ComponentTypeGlasses:
-                        price = PropertyManager.Properties.Single(x => x.Id == sender.getData("clothing_id"))
+                        price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
                             .ItemPrices["glasses"];
                         break;
                     case Component.ComponentTypeEars:
-                        price = PropertyManager.Properties.Single(x => x.Id == sender.getData("clothing_id"))
+                        price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
                             .ItemPrices["earrings"];
                         break;
                     case Component.ComponentTypeTorso:
                         price = 0;
                         break;
                 }
-                var prop = PropertyManager.Properties.Single(x => x.Id == sender.getData("clothing_id"));
+                var prop = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"));
 
                 if (prop.Supplies <= 0)
                 {
@@ -196,7 +196,7 @@ namespace mtgvrp.property_system.businesses
                     return;
                 }
 
-                API.ConsoleOutput(LogCat.Debug, $"CHARACTER BUY CLOTHES: {arguments[0]} | {arguments[1]} | {arguments[2]}");
+                API.ConsoleOutput($"CHARACTER BUY CLOTHES: {arguments[0]} | {arguments[1]} | {arguments[2]}");
                 if (character.Model.Gender == Character.GenderMale)
                 {
                     switch ((int)arguments[0])
@@ -332,8 +332,8 @@ namespace mtgvrp.property_system.businesses
             else if(eventName == "clothing_bag_closed")
             {
                 API.FreezePlayer(sender, false);
-                sender.position = API.GetEntityData(sender, "clothing_lastpos");
-                sender.rotation = API.GetEntityData(sender, "clothing_lastrot");
+                sender.Position = API.GetEntityData(sender, "clothing_lastpos");
+                sender.Rotation = API.GetEntityData(sender, "clothing_lastrot");
                 API.SetEntityDimension(sender, 0);
 
                 API.SetPlayerClothes(sender, 5, 0, 0);
@@ -347,7 +347,7 @@ namespace mtgvrp.property_system.businesses
             }
             else if (eventName == "clothing_buybag")
             {
-                var price = PropertyManager.Properties.Single(x => x.Id == sender.getData("clothing_id"))
+                var price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
                     .ItemPrices["8"];
 
                 if (Money.GetCharacterMoney(sender.GetCharacter()) < price)
@@ -369,7 +369,7 @@ namespace mtgvrp.property_system.businesses
                 {
                     case InventoryManager.GiveItemErrors.Success:
                         InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
-                        var prop = PropertyManager.Properties.Single(x => x.Id == sender.getData("clothing_id"));
+                        var prop = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"));
                         InventoryManager.GiveInventoryItem(prop, new Money(), price);
                         API.SendChatMessageToPlayer(sender, "You've successfully bought this.");
                         break;
@@ -431,18 +431,18 @@ namespace mtgvrp.property_system.businesses
                 return;
             }
 
-            if (player.isInVehicle)
+            if (player.IsInVehicle)
             {
                 API.SendChatMessageToPlayer(player, "You cannot buy new clothes while in a vehicle.");
                 return;
             }
 
-            API.SetEntityData(player, "clothing_lastpos", player.position);
-            API.SetEntityData(player, "clothing_lastrot", player.rotation);
+            API.SetEntityData(player, "clothing_lastpos", player.Position);
+            API.SetEntityData(player, "clothing_lastrot", player.Rotation);
             API.SetEntityData(player, "clothing_id", biz.Id);
 
             API.FreezePlayer(player, true);
-            API.SetEntityDimension(player, player.GetCharacter().Id + 1000);
+            API.SetEntityDimension(player, (uint)player.GetCharacter().Id + 1000);
 
             var character = player.GetCharacter();
 
@@ -554,14 +554,14 @@ namespace mtgvrp.property_system.businesses
                 return;
             }
 
-            if (player.isInVehicle)
+            if (player.IsInVehicle)
             {
                 API.SendChatMessageToPlayer(player, "You cannot buy new clothes while in a vehicle.");
                 return;
             }
 
-            API.SetEntityData(player, "clothing_lastpos", player.position);
-            API.SetEntityData(player, "clothing_lastrot", player.rotation);
+            API.SetEntityData(player, "clothing_lastpos", player.Position);
+            API.SetEntityData(player, "clothing_lastrot", player.Rotation);
             API.SetEntityData(player, "clothing_id", biz.Id);
 
             //Setup bag list.
@@ -569,7 +569,7 @@ namespace mtgvrp.property_system.businesses
 
             API.FreezePlayer(player, true);
             API.TriggerClientEvent(player, "properties_buybag", API.ToJson(bagsList), biz.ItemPrices["8"]);
-            API.SetEntityDimension(player, player.GetCharacter().Id + 1000);
+            API.SetEntityDimension(player, (uint)player.GetCharacter().Id + 1000);
         }
 
         [Command("buyskin"), Help(HelpManager.CommandGroups.General, "Buy a pedestrian skin as a VIP.", new[] { "Item", "New name" })]

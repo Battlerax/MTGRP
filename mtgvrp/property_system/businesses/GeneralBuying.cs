@@ -158,8 +158,8 @@ namespace mtgvrp.property_system.businesses
 
                         case "custom1":
                             InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
-                            sender.health += 15;
-                            if (sender.health > 100) sender.health = 100;
+                            sender.Health += 15;
+                            if (sender.Health > 100) sender.Health = 100;
                             API.SendChatMessageToPlayer(sender,$"[BUSINESS] You have sucessfully bought a ~g~{prop.RestaurantItems[0]}~w~ for ~g~${price}.");
                             InventoryManager.GiveInventoryItem(prop, new Money(), price);
                             LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a {prop.RestaurantItems[0]} for {price} from property ID {prop.Id}.");
@@ -167,8 +167,8 @@ namespace mtgvrp.property_system.businesses
 
                         case "custom2":
                             InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
-                            sender.health += 25;
-                            if (sender.health > 100) sender.health = 100;
+                            sender.Health += 25;
+                            if (sender.Health > 100) sender.Health = 100;
                             API.SendChatMessageToPlayer(sender,$"[BUSINESS] You have sucessfully bought a ~g~{prop.RestaurantItems[1]}~w~ for ~g~${price}.");
                             InventoryManager.GiveInventoryItem(prop, new Money(), price);
                             LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a {prop.RestaurantItems[1]} for {price} from property ID {prop.Id}.");
@@ -176,8 +176,8 @@ namespace mtgvrp.property_system.businesses
 
                         case "custom3":
                             InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
-                            sender.health += 25;
-                            if (sender.health > 100) sender.health = 100;
+                            sender.Health += 25;
+                            if (sender.Health > 100) sender.Health = 100;
                             API.SendChatMessageToPlayer(sender,$"[BUSINESS] You have sucessfully bought a ~g~{prop.RestaurantItems[2]}~w~ for ~g~${price}.");
                             InventoryManager.GiveInventoryItem(prop, new Money(), price);
                             LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a {prop.RestaurantItems[2]} for {price} from property ID {prop.Id}.");
@@ -185,8 +185,8 @@ namespace mtgvrp.property_system.businesses
 
                         case "custom4":
                             InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
-                            sender.health += 25;
-                            if (sender.health > 100) sender.health = 100;
+                            sender.Health += 25;
+                            if (sender.Health > 100) sender.Health = 100;
                             API.SendChatMessageToPlayer(sender,$"[BUSINESS] You have sucessfully bought a ~g~{prop.RestaurantItems[3]}~w~ for ~g~${price}.");
                             InventoryManager.GiveInventoryItem(prop, new Money(), price);
                             LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a {prop.RestaurantItems[3]} for {price} from property ID {prop.Id}.");
@@ -430,7 +430,7 @@ namespace mtgvrp.property_system.businesses
                 return;
             }
 
-            if (player.isInVehicle)
+            if (player.IsInVehicle)
             {
                 API.SendChatMessageToPlayer(player, "You cannot /buy while in a vehicle.");
                 return;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using System.Timers;
 
 
@@ -38,7 +39,7 @@ namespace mtgvrp.job_manager.taxi
             Event.OnPlayerDisconnected += API_onPlayerDisconnected;
         }
 
-        private void API_onPlayerDisconnected(Client player, string reason)
+        private void API_onPlayerDisconnected(Client player, byte type, string reason)
         {
             var c = player.GetCharacter();
             if (c == null)
@@ -67,7 +68,7 @@ namespace mtgvrp.job_manager.taxi
             }
         }
 
-        private void API_onPlayerExitVehicle(Client player, NetHandle vehicle, int seat)
+        private void API_onPlayerExitVehicle(Client player, NetHandle vehicle)
         {
             Character character = player.GetCharacter();
             var veh = VehicleManager.GetVehFromNetHandle(vehicle);
@@ -114,7 +115,7 @@ namespace mtgvrp.job_manager.taxi
             }
         }
 
-        private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle, int seat)
+        private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle, byte seat)
         {
             Character character = player.GetCharacter();
             var veh = VehicleManager.GetVehFromNetHandle(vehicle);
@@ -125,7 +126,7 @@ namespace mtgvrp.job_manager.taxi
             //Cancel taxi car respawn 
             if (OnDutyDrivers.Contains(character) && veh.Job.Type == JobManager.JobTypes.Taxi)
             {
-                if (veh.CustomRespawnTimer.Enabled && seat == -1)
+                if (veh.CustomRespawnTimer.Enabled && seat == 0)
                 {
                     API.SendChatMessageToPlayer(player, Color.Yellow, "[TAXI] You have returned to your taxi and will no longer be taken off-duty.");
                     veh.CustomRespawnTimer.Stop();
@@ -133,7 +134,7 @@ namespace mtgvrp.job_manager.taxi
             }
 
             //Check for passengers entering available cabs
-            if (seat != -1)
+            if (seat != 0)
             {
                 if (veh.Job?.Type == JobManager.JobTypes.Taxi)
                 {
@@ -146,7 +147,8 @@ namespace mtgvrp.job_manager.taxi
                     if (veh.Driver == null)
                     {
                         API.SendChatMessageToPlayer(player, Color.Yellow, "[TAXI] This taxi currently has no driver.");
-                        API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));;
+                        //API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));
+                        Task.Delay(1000).ContinueWith(t => API.WarpPlayerOutOfVehicle(player)); // CONV NOTE: delay fixme
                         return;
                     }
 
@@ -337,8 +339,8 @@ namespace mtgvrp.job_manager.taxi
             
             foreach(var c in OnDutyDrivers)
             {
-                TaxiPictureNotification(c.Client, character.rp_name() + " has requested a taxi. (" +  (c.Client.position.DistanceTo(character.Client.position) / 1000)+ "KM away) ((ID: " + PlayerManager.GetPlayerId(character) + "))");
-                player.SendChatMessage(character.rp_name() + " has requested a taxi. (" + (c.Client.position.DistanceTo(character.Client.position) / 1000) + "KM away. /acceptfare to accept.");
+                TaxiPictureNotification(c.Client, character.rp_name() + " has requested a taxi. (" +  (c.Client.Position.DistanceTo(character.Client.Position) / 1000)+ "KM away) ((ID: " + PlayerManager.GetPlayerId(character) + "))");
+                player.SendChatMessage(character.rp_name() + " has requested a taxi. (" + (c.Client.Position.DistanceTo(character.Client.Position) / 1000) + "KM away. /acceptfare to accept.");
             }
         }
 
@@ -362,7 +364,7 @@ namespace mtgvrp.job_manager.taxi
 
             API.TriggerClientEvent(player, "get_waypoint_position");
 
-            character.TaxiStart = character.Client.position;
+            character.TaxiStart = character.Client.Position;
 
             character.TaxiTimer = new Timer {Interval = 2000};
             character.TaxiTimer.Elapsed += delegate { TaxiMeterTimer(character); };
@@ -371,7 +373,7 @@ namespace mtgvrp.job_manager.taxi
 
         public void TaxiMeterTimer(Character c)
         {
-            c.TotalFare = (int)Math.Round(c.Client.position.DistanceTo(c.TaxiStart) / 100) * c.TaxiDriver.TaxiFare;
+            c.TotalFare = (int)Math.Round(c.Client.Position.DistanceTo(c.TaxiStart) / 100) * c.TaxiDriver.TaxiFare;
             var fareMsg = "";
 
             if(c.TotalFare > Money.GetCharacterMoney(c))
@@ -425,7 +427,7 @@ namespace mtgvrp.job_manager.taxi
             player.SendChatMessage("You have accepted " + passenger.rp_name() + "'s taxi request. Follow your waypoint to their location.");
             passenger.Client.SendChatMessage(character.rp_name() + " has accepted your taxi request. Please stay at your current location.");
             
-            API.TriggerClientEvent(player, "set_taxi_waypoint", passenger.Client.position);
+            API.TriggerClientEvent(player, "set_taxi_waypoint", passenger.Client.Position);
         }
 
         public static bool IsOnTaxiDuty(Character c)

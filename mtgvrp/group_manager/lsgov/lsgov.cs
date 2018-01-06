@@ -28,15 +28,15 @@ namespace mtgvrp.group_manager.lsgov
             switch (viplevel)
             {
                 case "1":
-                    Settings.Default.vipbonuslevelone = int.Parse(percentage);
+                    Settings.vipbonuslevelone = int.Parse(percentage);
                     break;
 
                 case "2":
-                    Settings.Default.vipbonusleveltwo = int.Parse(percentage);
+                    Settings.vipbonusleveltwo = int.Parse(percentage);
                     break;
 
                 case "3":
-                    Settings.Default.vipbonuslevelthree = int.Parse(percentage);
+                    Settings.vipbonuslevelthree = int.Parse(percentage);
                     break;
             }
             player.SendChatMessage("You have set VIP level " + viplevel + "'s paycheck bonus to " + percentage + "%.");
@@ -50,7 +50,7 @@ namespace mtgvrp.group_manager.lsgov
             Character character = player.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov && character.GroupRank < 7) { return; }
-            Settings.Default.taxationamount = int.Parse(percentage);
+            Settings.taxationamount = int.Parse(percentage);
         }
 
         //SET BASE PAYCHECK AS MAYOR/OFFICIAL
@@ -60,7 +60,7 @@ namespace mtgvrp.group_manager.lsgov
             Character character = player.GetCharacter();
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov && character.GroupRank < 7) { return; }
-            Settings.Default.basepaycheck = int.Parse(amount);
+            Settings.basepaycheck = int.Parse(amount);
             API.SendChatMessageToPlayer(player, "Base paycheck set to $" + amount + ".");
         }
 
@@ -88,14 +88,14 @@ namespace mtgvrp.group_manager.lsgov
             player.SendChatMessage("======================================");
             player.SendChatMessage("Los Santos Government - Budget Manager");
             player.SendChatMessage("======================================");
-            player.SendChatMessage($"~r~Government Balance: ~w~${Settings.Default.governmentbalance}");
+            player.SendChatMessage($"~r~Government Balance: ~w~${Settings.governmentbalance}");
             player.SendChatMessage($"~y~Organization Funding:");
             //All faction budget information
             int i = 0;
             foreach (var group in GroupManager.Groups)
             {
                 player.SendChatMessage($"~p~Group ID: ~w~{i} | ~b~{group.Name}~w~ | ~r~Funding:~w~ {group.FundingPercentage}% | " +
-                    $"~g~Balance: ${Settings.Default.governmentbalance * group.FundingPercentage/100}");
+                    $"~g~Balance: ${Settings.governmentbalance * group.FundingPercentage/100}");
                 i++;
             }
         }
@@ -136,7 +136,7 @@ namespace mtgvrp.group_manager.lsgov
 
             if (account.AdminLevel < 6) { return; }
 
-            Settings.Default.governmentbalance = int.Parse(amount);
+            Settings.governmentbalance = int.Parse(amount);
             player.SendChatMessage($"You have set the government balance to ${amount}.");
         }
 
@@ -180,7 +180,7 @@ namespace mtgvrp.group_manager.lsgov
                 return;
             }
 
-            if (targetPlayer.position.DistanceTo(player.position) > 3.0)
+            if (targetPlayer.Position.DistanceTo(player.Position) > 3.0)
             {
                 API.SendChatMessageToPlayer(player, "The player must be near you.");
                 return;

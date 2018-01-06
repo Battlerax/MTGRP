@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using System.Timers;
 
 
@@ -60,14 +61,14 @@ namespace mtgvrp.player_manager.player_interaction
                                         return;
                                     }
 
-                                    if (player.position.DistanceTo(interactCharacter.Client.position) > 3)
+                                    if (player.Position.DistanceTo(interactCharacter.Client.Position) > 3)
                                     {
                                         API.SendChatMessageToPlayer(player, Color.White,
                                             "You are too far away to handcuff that player.");
                                         return;
                                     }
 
-                                    API.GivePlayerWeapon(player, WeaponHash.Unarmed, 1, true, true);
+                                    API.GivePlayerWeapon(player, WeaponHash.Unarmed, 1);
                                     API.SendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, interactHandle, true);
                                     interactCharacter.IsCuffed = true;
                                     API.FreezePlayer(interactCharacter.Client, true);
@@ -80,7 +81,7 @@ namespace mtgvrp.player_manager.player_interaction
                                 }
                                 else
                                 {
-                                    if (player.position.DistanceTo(interactCharacter.Client.position) > 3)
+                                    if (player.Position.DistanceTo(interactCharacter.Client.Position) > 3)
                                     {
                                         API.SendChatMessageToPlayer(player, Color.White,
                                             "You are too far away to unhandcuff that player.");
@@ -100,7 +101,7 @@ namespace mtgvrp.player_manager.player_interaction
                             }
                             case "drag":
                             {
-                                if (player.position.DistanceTo(interactCharacter.Client.position) > 3)
+                                if (player.Position.DistanceTo(interactCharacter.Client.Position) > 3)
                                 {
                                     API.SendChatMessageToPlayer(player, Color.White,
                                         "You are too far away from that player.");
@@ -194,8 +195,8 @@ namespace mtgvrp.player_manager.player_interaction
             }
 
             API.SetPlayerIntoVehicle(receiver, API.GetPlayerVehicle(player), int.Parse(seatNumber));
-            API.SendChatMessageToPlayer(player, "~g~You have detained " + receiver.name + " into a vehicle.");
-            API.SendChatMessageToPlayer(receiver, "~g~You were detained by " + player.name + " into a vehicle.");
+            API.SendChatMessageToPlayer(player, "~g~You have detained " + receiver.Name + " into a vehicle.");
+            API.SendChatMessageToPlayer(receiver, "~g~You were detained by " + player.Name + " into a vehicle.");
 
 
         }
@@ -229,15 +230,16 @@ namespace mtgvrp.player_manager.player_interaction
                 return;
             }
 
-            API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(receiver));;
+            //API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));
+            Task.Delay(1000).ContinueWith(t => API.WarpPlayerOutOfVehicle(player)); // CONV NOTE: delay fixme
             API.SendChatMessageToPlayer(player, "You have ejected ~b~" + receiver.GetCharacter().rp_name() + "~w~ from your vehicle.");
             API.SendChatMessageToPlayer(receiver, "~b~" + player.GetCharacter().rp_name() + "~w~ has ejected you from their vehicle.");
         }
  
         public void FollowPlayer(Character c, bool isDrag)
         {
-            API.SendNativeToAllPlayers(Hash.TASK_FOLLOW_TO_OFFSET_OF_ENTITY, c.Client.handle,
-                                    c.FollowingPlayer.Client.handle, -1.0, 0.0, 0.0, 1, 1050, 2, true);
+            API.SendNativeToAllPlayers(Hash.TASK_FOLLOW_TO_OFFSET_OF_ENTITY, c.Client.Handle,
+                                    c.FollowingPlayer.Client.Handle, -1.0, 0.0, 0.0, 1, 1050, 2, true);
             if (isDrag == false)
             {
                 API.TriggerClientEvent(c.Client, "player_interact_subtitle",

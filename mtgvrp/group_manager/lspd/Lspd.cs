@@ -2,12 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
 
-
 using GTANetworkAPI;
-
-
-
-
 
 using mtgvrp.core;
 using mtgvrp.inventory;
@@ -28,7 +23,7 @@ namespace mtgvrp.group_manager.lspd
             Event.OnPlayerDisconnected += API_onPlayerDisconnected;
         }
 
-        private void API_onPlayerDisconnected(Client player, string reason)
+        private void API_onPlayerDisconnected(Client player, byte type, string reason)
         {
             var character = player.GetCharacter();
             if (character == null) return;
@@ -369,7 +364,7 @@ namespace mtgvrp.group_manager.lspd
                 return;
             }
 
-            if (player.position.DistanceTo(character.Group.ArrestLocation.Location) > 4)
+            if (player.Position.DistanceTo(character.Group.ArrestLocation.Location) > 4)
             {
                 API.SendChatMessageToPlayer(player, Color.White, "You are not at the arrest location.");
                 return;
@@ -391,7 +386,7 @@ namespace mtgvrp.group_manager.lspd
                 }
             }
 
-            API.SendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, receiverCharacter.Client.handle, false);
+            API.SendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, receiverCharacter.Client.Handle, false);
             receiverCharacter.IsCuffed = false;
             API.StopPlayerAnimation(receiverCharacter.Client);
 
@@ -546,7 +541,7 @@ namespace mtgvrp.group_manager.lspd
                 return;
             }
 
-            var isStunned = API.FetchNativeFromPlayer<bool>(receiver, Hash.IS_PED_BEING_STUNNED, receiver.handle, 0);
+            var isStunned = API.FetchNativeFromPlayer<bool>(receiver, Hash.IS_PED_BEING_STUNNED, receiver.Handle, 0);
 
             if (receivercharacter.AreHandsUp == false && isStunned == false)
             {
@@ -554,7 +549,7 @@ namespace mtgvrp.group_manager.lspd
                 return;
             }
 
-            API.GivePlayerWeapon(player, WeaponHash.Unarmed, 1, true, true);
+            API.GivePlayerWeapon(player, WeaponHash.Unarmed, 1);
             API.SendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, receivercharacter, true);
             receivercharacter.IsCuffed = true;
             API.PlayPlayerAnimation(receiver, (1 << 0 | 1 << 4 | 1 << 5), "mp_arresting", "idle");
@@ -740,7 +735,7 @@ namespace mtgvrp.group_manager.lspd
                 return;
             }
 
-            if (player.position.DistanceTo(character.Group.Locker.Location) > 8)
+            if (player.Position.DistanceTo(character.Group.Locker.Location) > 8)
             {
                 API.SendChatMessageToPlayer(player, Color.White, "You are not in the LSPD locker room.");
                 return;
@@ -839,7 +834,7 @@ namespace mtgvrp.group_manager.lspd
             {
                 if (group.CommandType == Group.CommandTypeLspd)
                 {
-                    if (player.position.DistanceTo(group.FrontDesk.Location) > 5)
+                    if (player.Position.DistanceTo(group.FrontDesk.Location) > 5)
                     {
                         API.SendNotificationToPlayer(player, "~r~You are not at the front desk of the police station.");
                         return;
@@ -965,13 +960,13 @@ namespace mtgvrp.group_manager.lspd
 
             int id = -1;
             float distance = -1.0f;
-            Vector3 playerPos = API.GetEntityPosition(player.handle);
+            Vector3 playerPos = API.GetEntityPosition(player.Handle);
             Object currentObject = null;
             int cid = 0;
 
             foreach(Object o in Objects)
             {
-                Vector3 objectPos = API.GetEntityPosition(o.handle);
+                Vector3 objectPos = API.GetEntityPosition(o.Handle);
                 if(objectPos.DistanceTo(playerPos) < distance || distance == -1.0f)
                 {
                     id = cid;
@@ -984,7 +979,7 @@ namespace mtgvrp.group_manager.lspd
             {
                 if(API.GetEntityPosition(currentObject).DistanceTo(playerPos) <= 3.0f)
                 {
-                    API.DeleteEntity(currentObject.handle);
+                    API.DeleteEntity(currentObject.Handle);
                     Objects.Remove(currentObject);
                     API.SendNotificationToPlayer(player, "Object removed. There are now ~r~" + Objects.Count + "~w~ placed.");
                 }
@@ -1050,17 +1045,17 @@ namespace mtgvrp.group_manager.lspd
 
             if (character.Group.Locker == MarkerZone.None)
             {
-                character.Group.Locker = new MarkerZone(character.Client.position, character.Client.rotation,
-                    character.Client.dimension)
+                character.Group.Locker = new MarkerZone(character.Client.Position, character.Client.Rotation,
+                    (int)character.Client.Dimension)
                 { TextLabelText = "LSPD Locker Room~n~/locker" };
                 character.Group.Save();
                 character.Group.Locker.Create();
             }
             else
             {
-                character.Group.Locker.Location = character.Client.position;
-                character.Group.Locker.Rotation = character.Client.rotation;
-                character.Group.Locker.Dimension = character.Client.dimension;
+                character.Group.Locker.Location = character.Client.Position;
+                character.Group.Locker.Rotation = character.Client.Rotation;
+                character.Group.Locker.Dimension = (int)character.Client.Dimension;
                 character.Group.Locker.TextLabelText = "LSPD Locker Room~n~/locker";
                 character.Group.Locker.Refresh();
                 character.Group.Save();
@@ -1085,17 +1080,17 @@ namespace mtgvrp.group_manager.lspd
 
             if (character.Group.FrontDesk == MarkerZone.None)
             {
-                character.Group.FrontDesk = new MarkerZone(character.Client.position, character.Client.rotation,
-                    character.Client.dimension)
+                character.Group.FrontDesk = new MarkerZone(character.Client.Position, character.Client.Rotation,
+                    (int)character.Client.Dimension)
                 { TextLabelText = "LSPD Front Desk~n~/paycoptickets" };
                 character.Group.Save();
                 character.Group.FrontDesk.Create();
             }
             else
             {
-                character.Group.FrontDesk.Location = character.Client.position;
-                character.Group.FrontDesk.Rotation = character.Client.rotation;
-                character.Group.FrontDesk.Dimension = character.Client.dimension;
+                character.Group.FrontDesk.Location = character.Client.Position;
+                character.Group.FrontDesk.Rotation = character.Client.Rotation;
+                character.Group.FrontDesk.Dimension = (int)character.Client.Dimension;
                 character.Group.FrontDesk.TextLabelText = "LSPD Front Desk~n~/paycoptickets";
                 character.Group.FrontDesk.Refresh();
                 character.Group.Save();
@@ -1121,17 +1116,17 @@ namespace mtgvrp.group_manager.lspd
 
             if (character.Group.ArrestLocation == MarkerZone.None)
             {
-                character.Group.ArrestLocation = new MarkerZone(character.Client.position, character.Client.rotation,
-                        character.Client.dimension)
+                character.Group.ArrestLocation = new MarkerZone(character.Client.Position, character.Client.Rotation,
+                        (int)character.Client.Dimension)
                 { TextLabelText = "Arrest Location~n~/arrest" };
 
                 character.Group.ArrestLocation.Create();
             }
             else
             {
-                character.Group.ArrestLocation.Location = character.Client.position;
-                character.Group.ArrestLocation.Rotation = character.Client.rotation;
-                character.Group.ArrestLocation.Dimension = character.Client.dimension;
+                character.Group.ArrestLocation.Location = character.Client.Position;
+                character.Group.ArrestLocation.Rotation = character.Client.Rotation;
+                character.Group.ArrestLocation.Dimension = (int)character.Client.Dimension;
                 character.Group.ArrestLocation.TextLabelText = "Arrest Location~n~/arrest";
                 character.Group.ArrestLocation.Refresh();
             }
@@ -1148,12 +1143,12 @@ namespace mtgvrp.group_manager.lspd
                 case 0:
                     WeaponManager.CreateWeapon(player, WeaponHash.StunGun, WeaponTint.Normal, false, false, true);
                     WeaponManager.CreateWeapon(player, WeaponHash.Nightstick, WeaponTint.Normal, false, false, true);
-                    WeaponManager.CreateWeapon(player, WeaponHash.CombatPistol, WeaponTint.LSPD, false, false, true);
+                    WeaponManager.CreateWeapon(player, WeaponHash.CombatPistol, WeaponTint.Lspd, false, false, true);
                     WeaponManager.CreateWeapon(player, WeaponHash.Flashlight, WeaponTint.Normal, false, false, true);
                     break;
                 case 1:
-                    WeaponManager.CreateWeapon(player, WeaponHash.CombatPistol, WeaponTint.LSPD, false, false, true);
-                    WeaponManager.CreateWeapon(player, WeaponHash.CombatPDW, WeaponTint.LSPD, false, false, true);
+                    WeaponManager.CreateWeapon(player, WeaponHash.CombatPistol, WeaponTint.Lspd, false, false, true);
+                    WeaponManager.CreateWeapon(player, WeaponHash.CombatPDW, WeaponTint.Lspd, false, false, true);
                     WeaponManager.CreateWeapon(player, WeaponHash.SmokeGrenade, WeaponTint.Normal, false, false, true);
                     WeaponManager.CreateWeapon(player, WeaponHash.BZGas, WeaponTint.Normal, false, false, true);
                     break;

@@ -24,7 +24,7 @@ namespace mtgvrp.job_manager.garbageman
             Event.OnPlayerDisconnected += API_onPlayerDisconnected;
         }
 
-        private void API_onPlayerDisconnected(Client player, string reason)
+        private void API_onPlayerDisconnected(Client player, byte type, string reason)
         {
             var c = player.GetCharacter();
             if (c?.GarbageBag != null)
@@ -56,7 +56,7 @@ namespace mtgvrp.job_manager.garbageman
                             player.SendChatMessage("~r~You must throw the garbage bag into the back of the garbage truck!");
                             return;
                         }
-                        if (player.rotation.Z > API.GetEntityRotation(closestVeh.NetHandle).Z + 30 || player.rotation.Z < API.GetEntityRotation(closestVeh.NetHandle).Z - 30)
+                        if (player.Rotation.Z > API.GetEntityRotation(closestVeh.NetHandle).Z + 30 || player.Rotation.Z < API.GetEntityRotation(closestVeh.NetHandle).Z - 30)
                         {
                             ChatManager.RoleplayMessage(character, "throws the garbage bag at the garbage truck and misses.", ChatManager.RoleplayMe);
                             player.SendChatMessage("~r~You failed to throw the garbage bag into the back of the garbage truck!");
@@ -93,7 +93,7 @@ namespace mtgvrp.job_manager.garbageman
             }
         }
 
-        private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle, int seat)
+        private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle, byte seat)
         {
             Character character = player.GetCharacter();
             var veh = VehicleManager.GetVehFromNetHandle(vehicle);
@@ -126,7 +126,7 @@ namespace mtgvrp.job_manager.garbageman
                     if (GarbageProperties == PropertyManager.Properties.Count)
                     {
                         player.SendChatMessage("There is no garbage to pick up!");
-                        player.warpOutOfVehicle();
+                        player.WarpOutOfVehicle();
                         return;
                     }
 
@@ -229,7 +229,7 @@ namespace mtgvrp.job_manager.garbageman
                 return;
             }
 
-            if (player.position.DistanceTo(character.JobOne.MiscOne.Location) > 10)
+            if (player.Position.DistanceTo(character.JobOne.MiscOne.Location) > 10)
             {
                 player.SendChatMessage("You must be at the trash depot to unload the trash.");
                 return;
@@ -243,7 +243,7 @@ namespace mtgvrp.job_manager.garbageman
                 return;
             }
 
-            if (player.rotation.Z > API.GetEntityRotation(closestVeh.NetHandle).Z + 20 || player.rotation.Z < API.GetEntityRotation(closestVeh.NetHandle).Z - 20)
+            if (player.Rotation.Z > API.GetEntityRotation(closestVeh.NetHandle).Z + 20 || player.Rotation.Z < API.GetEntityRotation(closestVeh.NetHandle).Z - 20)
             {
                 player.SendChatMessage("~r~You must be at the back of your garbage truck to unload the trash.");
                 return;
@@ -338,7 +338,7 @@ namespace mtgvrp.job_manager.garbageman
 
             prop.GarbageBags -= 1;
             prop.UpdateMarkers();
-            character.GarbageBag = API.CreateObject(API.GetHashKey("hei_prop_heist_binbag"), player.position, new Vector3());
+            character.GarbageBag = API.CreateObject(API.GetHashKey("hei_prop_heist_binbag"), player.Position, new Vector3());
             API.AttachEntityToEntity(character.GarbageBag, player, "IK_R_Hand", new Vector3(0, 0, 0), new Vector3(360, 0, 0));
             API.TriggerClientEvent(player, "garbage_holdbag");
             ChatManager.RoleplayMessage(character, "reaches into the trash and pulls out a garbage bag.", ChatManager.RoleplayMe);
@@ -385,7 +385,7 @@ namespace mtgvrp.job_manager.garbageman
 
             prop.GarbageBags -= 1;
             prop.UpdateMarkers();
-            character.GarbageBag = API.CreateObject(API.GetHashKey("hei_prop_heist_binbag"), player.position, new Vector3());
+            character.GarbageBag = API.CreateObject(API.GetHashKey("hei_prop_heist_binbag"), player.Position, new Vector3());
             API.AttachEntityToEntity(character.GarbageBag, player, "IK_R_Hand", new Vector3(0, 0, 0), new Vector3(360, 0, 0));
             API.TriggerClientEvent(player, "garbage_holdbag");
             ChatManager.RoleplayMessage(character, "reaches into the trash and pulls out a garbage bag.", ChatManager.RoleplayMe);
