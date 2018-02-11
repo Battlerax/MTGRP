@@ -38,12 +38,11 @@ namespace mtgvrp
 
             DebugManager.DebugMessage("[INIT] Initalizing script...");
 
-            API.SetServerName(SERVER_NAME + " ~b~| ~g~" + SERVER_WEBSITE);
-            API.SetGamemodeName("Arcadit V-RP " + SERVER_VERSION);
+            //API.SetServerName(SERVER_NAME + " ~b~| ~g~" + SERVER_WEBSITE);
+            //API.SetGamemodeName("Arcadit V-RP " + SERVER_VERSION);
 
             Event.OnResourceStart += OnResourceStartHandler;
             Event.OnResourceStop += API_onResourceStop;
-            Event.OnClientEventTrigger += API_onClientEventTrigger;
             InventoryManager.OnStorageItemUpdateAmount += InventoryManager_OnStorageItemUpdateAmount;
 
             SettingsManager.Load();
@@ -52,17 +51,14 @@ namespace mtgvrp
             DatabaseManager.DatabaseManagerInit();
         }
 
-        private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
+        [RemoteEvent("OBJECT_PLACED_PROPERLY")]
+        private void ObjectPlacedProperly(Client sender, params object[] arguments)
         {
-            if (eventName == "OBJECT_PLACED_PROPERLY")
-            {
-                NetHandle obj = (NetHandle) arguments[0];
-                Vector3 pos = (Vector3) arguments[1];
-                Vector3 rot = (Vector3) arguments[2];
-                API.SetEntityPosition(obj,pos);
-                API.SetEntityRotation(obj,rot);
-            }
-
+            NetHandle obj = (NetHandle) arguments[0];
+            Vector3 pos = (Vector3) arguments[1];
+            Vector3 rot = (Vector3) arguments[2];
+            API.SetEntityPosition(obj,pos);
+            API.SetEntityRotation(obj,rot);
         }
 
         private void InventoryManager_OnStorageItemUpdateAmount(IStorage sender,

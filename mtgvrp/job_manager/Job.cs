@@ -83,32 +83,26 @@ namespace mtgvrp.job_manager
 
         public void register_job_marker_events()
         {
-            void ColShapeEvent(ColShape shape, NetHandle entity)
+            void ColShapeEvent(ColShape shape, Client entity)
             {
-                if (API.Shared.GetEntityType(entity) == EntityType.Player)
-                {
-                    var c = API.Shared.GetEntityData(entity, "Character");
-                    c.JobZone = Id;
+                var c = API.Shared.GetEntityData(entity, "Character");
+                c.JobZone = Id;
 
-                    if(shape == JoinPos.ColZone)
-                        c.JobZoneType = 1;
-                    else if(shape == MiscOne.ColZone)
-                        c.JobZoneType = 2;
-                    else if (shape == MiscTwo.ColZone)
-                        c.JobZoneType = 3;
-                    else
-                        c.JobZoneType = 0;
-                }
+                if(shape == JoinPos.ColZone)
+                    c.JobZoneType = 1;
+                else if(shape == MiscOne.ColZone)
+                    c.JobZoneType = 2;
+                else if (shape == MiscTwo.ColZone)
+                    c.JobZoneType = 3;
+                else
+                    c.JobZoneType = 0;
             }
 
-            void OnExitColShape(ColShape shape, NetHandle entity)
+            void OnExitColShape(ColShape shape, Client entity)
             {
-                if (API.Shared.GetEntityType(entity) == EntityType.Player)
-                {
-                    var c = API.Shared.GetPlayerFromHandle(entity).GetCharacter();
-                    c.JobZone = 0;
-                    c.JobZoneType = 0;
-                }
+                var c = API.Shared.GetPlayerFromHandle(entity).GetCharacter();
+                c.JobZone = 0;
+                c.JobZoneType = 0;
             }
 
 

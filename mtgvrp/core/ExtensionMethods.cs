@@ -24,11 +24,18 @@ namespace mtgvrp.core
             return (Account)player.GetData("Account");
         }
 
-        public static vehicle_manager.Vehicle GetVehicle(this NetHandle veh)
+        public static vehicle_manager.GameVehicle GetVehicle(this NetHandle veh)
         {
             if (!API.Shared.HasEntityData(veh, "Vehicle")) return null;
 
-            return (vehicle_manager.Vehicle)API.Shared.GetEntityData(veh, "Vehicle");
+            return (vehicle_manager.GameVehicle)API.Shared.GetEntityData(veh, "Vehicle");
+        }
+
+        public static vehicle_manager.GameVehicle GetVehicle(this Vehicle veh)
+        {
+            if (!API.Shared.HasEntityData(veh, "Vehicle")) return null;
+
+            return (vehicle_manager.GameVehicle)API.Shared.GetEntityData(veh, "Vehicle");
         }
 
         public static T CastTo<T>(this object obj)
@@ -40,6 +47,12 @@ namespace mtgvrp.core
         {
             int t;
             return int.TryParse(i, out t);
+        }
+
+        // TODO: remove this shit - austin
+        public static Quaternion ToQuat(this Vector3 vector)
+        {
+            return new Quaternion(vector.X, vector.Y, vector.Z, 0);
         }
     }
 

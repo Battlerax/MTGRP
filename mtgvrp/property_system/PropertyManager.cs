@@ -27,9 +27,8 @@ namespace mtgvrp.property_system
         public PropertyManager()
         {
             Event.OnResourceStart += API_onResourceStart;
-            Event.OnEntityEnterColShape += API_onEntityEnterColShape;
-            Event.OnEntityExitColShape += API_onEntityExitColShape;
-            Event.OnClientEventTrigger += API_onClientEventTrigger;
+            Event.OnPlayerEnterColShape += API_onEntityEnterColShape;
+            Event.OnPlayerExitColShape += API_onEntityExitColShape;
         }
 
         private void API_onResourceStart()
@@ -65,7 +64,7 @@ namespace mtgvrp.property_system
 
         #region ColShapeKnowing
 
-        private void API_onEntityExitColShape(ColShape colshape, NetHandle entity)
+        private void API_onEntityExitColShape(ColShape colshape, Client entity)
         {
             if (API.GetEntityType(entity) == EntityType.Player && colshape.HasData("property_entrance"))
             {
@@ -100,7 +99,7 @@ namespace mtgvrp.property_system
             }
         }
 
-        private void API_onEntityEnterColShape(ColShape colshape, NetHandle entity)
+        private void API_onEntityEnterColShape(ColShape colshape, Client entity)
         {
             if (API.GetEntityType(entity) == EntityType.Player && colshape.HasData("property_entrance"))
             {
@@ -189,407 +188,438 @@ namespace mtgvrp.property_system
 
         #endregion
 
-        private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
+        [RemoteEvent("editproperty_setname")]
+        private void EditPropertySetName(Client sender, params object[] arguments)
         {
-            switch (eventName)
+            if (sender.GetAccount().AdminLevel >= 5)
             {
-                case "editproperty_setname":
-                    if (sender.GetAccount().AdminLevel >= 5)
-                    {
-                        var id = Convert.ToInt32(arguments[0]);
-                        var prop = Properties.SingleOrDefault(x => x.Id == id);
-                        if (prop == null)
-                        {
-                            API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
-                            return;
-                        }
-                        prop.PropertyName = (string) arguments[1];
-                        prop.Save();
-                        prop.UpdateMarkers();
-                        API.SendChatMessageToPlayer(sender,
-                            $"[Property Manager] Name of Property #{id} was changed to: '{arguments[1]}'");
-                    }
-                    break;
+                var id = Convert.ToInt32(arguments[0]);
+                var prop = Properties.SingleOrDefault(x => x.Id == id);
+                if (prop == null)
+                {
+                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                    return;
+                }
+                prop.PropertyName = (string)arguments[1];
+                prop.Save();
+                prop.UpdateMarkers();
+                API.SendChatMessageToPlayer(sender,
+                    $"[Property Manager] Name of Property #{id} was changed to: '{arguments[1]}'");
+            }
+        }
 
-                case "editproperty_settype":
-                    if (sender.GetAccount().AdminLevel >= 5)
-                    {
-                        var id = Convert.ToInt32(arguments[0]);
-                        var prop = Properties.SingleOrDefault(x => x.Id == id);
-                        if (prop == null)
-                        {
-                            API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
-                            return;
-                        }
-                        PropertyTypes type;
-                        if (Enum.TryParse((string) arguments[1], out type))
-                        {
-                            prop.Type = type;
-                            ItemManager.SetDefaultPrices(prop);
-                            prop.Save();
-                            prop.UpdateMarkers();
-                            API.SendChatMessageToPlayer(sender,
-                                $"[Property Manager] Type of Property #{id} was changed to: '{prop.Type}'");
-                        }
-                        else
-                        {
-                            API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Type Entered.");
-                        }
-                    }
-                    break;
+        [RemoteEvent("editproperty_settype")]
+        private void EditPropertySetType(Client sender, params object[] arguments)
+        {
+            if (sender.GetAccount().AdminLevel >= 5)
+            {
+                var id = Convert.ToInt32(arguments[0]);
+                var prop = Properties.SingleOrDefault(x => x.Id == id);
+                if (prop == null)
+                {
+                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                    return;
+                }
+                PropertyTypes type;
+                if (Enum.TryParse((string)arguments[1], out type))
+                {
+                    prop.Type = type;
+                    ItemManager.SetDefaultPrices(prop);
+                    prop.Save();
+                    prop.UpdateMarkers();
+                    API.SendChatMessageToPlayer(sender,
+                        $"[Property Manager] Type of Property #{id} was changed to: '{prop.Type}'");
+                }
+                else
+                {
+                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Type Entered.");
+                }
+            }
+        }
 
-                case "editproperty_setsupplies":
-                    if (sender.GetAccount().AdminLevel >= 5)
-                    {
-                        var id = Convert.ToInt32(arguments[0]);
-                        var prop = Properties.SingleOrDefault(x => x.Id == id);
-                        if (prop == null)
-                        {
-                            API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
-                            return;
-                        }
-                        int sup;
-                        if (int.TryParse((string) arguments[1], out sup))
-                        {
-                            prop.Supplies = sup;
-                            prop.Save();
-                            API.SendChatMessageToPlayer(sender,
-                                $"[Property Manager] Supplies of Property #{id} was changed to: '{sup}'");
-                        }
-                        else
-                        {
-                            API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Supplies Entered.");
-                        }
-                    }
-                    break;
+        [RemoteEvent("editproperty_setsupplies")]
+        private void EditPropertySetSupplies(Client sender, params object[] arguments)
+        {
+            if (sender.GetAccount().AdminLevel >= 5)
+            {
+                var id = Convert.ToInt32(arguments[0]);
+                var prop = Properties.SingleOrDefault(x => x.Id == id);
+                if (prop == null)
+                {
+                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                    return;
+                }
+                int sup;
+                if (int.TryParse((string)arguments[1], out sup))
+                {
+                    prop.Supplies = sup;
+                    prop.Save();
+                    API.SendChatMessageToPlayer(sender,
+                        $"[Property Manager] Supplies of Property #{id} was changed to: '{sup}'");
+                }
+                else
+                {
+                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Supplies Entered.");
+                }
+            }
+        }
 
-                case "editproperty_setentrancepos":
-                    if (sender.GetAccount().AdminLevel >= 5)
-                    {
-                        var id = Convert.ToInt32(arguments[0]);
-                        var prop = Properties.SingleOrDefault(x => x.Id == id);
-                        if (prop == null)
-                        {
-                            API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
-                            return;
-                        }
-                        prop.EntrancePos = sender.Position;
-                        prop.EntranceRot = sender.Rotation;
-                        prop.EntranceDimension = (int)sender.Dimension;
-                        prop.Save();
-                        prop.UpdateMarkers();
-                        API.SendChatMessageToPlayer(sender,
-                            $"[Property Manager] Entrance Position of property #{id} was changed.");
-                    }
-                    break;
+        [RemoteEvent("editproperty_setentrancepos")]
+        private void EditPropertySetEntrancePos(Client sender, params object[] arguments)
+        {
+            if (sender.GetAccount().AdminLevel >= 5)
+            {
+                var id = Convert.ToInt32(arguments[0]);
+                var prop = Properties.SingleOrDefault(x => x.Id == id);
+                if (prop == null)
+                {
+                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                    return;
+                }
+                prop.EntrancePos = sender.Position;
+                prop.EntranceRot = sender.Rotation;
+                prop.EntranceDimension = (int)sender.Dimension;
+                prop.Save();
+                prop.UpdateMarkers();
+                API.SendChatMessageToPlayer(sender,
+                    $"[Property Manager] Entrance Position of property #{id} was changed.");
+            }
+        }
 
-                case "editproperty_gotoentrance":
-                    if (sender.GetAccount().AdminLevel >= 5)
-                    {
-                        var id = Convert.ToInt32(arguments[0]);
-                        var prop = Properties.SingleOrDefault(x => x.Id == id);
-                        if (prop == null)
-                        {
-                            API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
-                            return;
-                        }
-                        sender.Position = prop.EntrancePos;
-                        sender.Rotation = prop.EntranceRot;
-                        sender.Dimension = 0;
-                    }
-                    break;
+        [RemoteEvent("editproperty_gotoentrance")]
+        private void EditPropertyGotoEntrance(Client sender, params object[] arguments)
+        {
+            if (sender.GetAccount().AdminLevel >= 5)
+            {
+                var id = Convert.ToInt32(arguments[0]);
+                var prop = Properties.SingleOrDefault(x => x.Id == id);
+                if (prop == null)
+                {
+                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                    return;
+                }
+                sender.Position = prop.EntrancePos;
+                sender.Rotation = prop.EntranceRot;
+                sender.Dimension = 0;
+            }
+        }
 
-                case "editproperty_setmaindoor":
-                    if (sender.GetAccount().AdminLevel >= 5)
+        [RemoteEvent("editproperty_setmaindoor")]
+        private void EditPropertySetMainDoor(Client sender, params object[] arguments)
+        {
+            if (sender.GetAccount().AdminLevel >= 5)
+            {
+                var id = Convert.ToInt32(arguments[0]);
+                var prop = Properties.SingleOrDefault(x => x.Id == id);
+                if (prop == null)
+                {
+                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                    return;
+                }
+                int doorid;
+                if (int.TryParse((string)arguments[1], out doorid))
+                {
+                    if (Door.Doors.Exists(x => x.Id == doorid))
                     {
-                        var id = Convert.ToInt32(arguments[0]);
-                        var prop = Properties.SingleOrDefault(x => x.Id == id);
-                        if (prop == null)
-                        {
-                            API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
-                            return;
-                        }
-                        int doorid;
-                        if (int.TryParse((string) arguments[1], out doorid))
-                        {
-                            if (Door.Doors.Exists(x => x.Id == doorid))
-                            {
-                                prop.MainDoorId = doorid;
-                                prop.Save();
-                                API.SendChatMessageToPlayer(sender,
-                                    $"[Property Manager] Main Door of Property #{id} was changed to: '{doorid}'");
-                            }
-                            else
-                            {
-                                API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid DoorId Entered.");
-                            }
-                        }
-                        else
-                        {
-                            API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid DoorId Entered.");
-                        }
-                    }
-                    break;
-
-                case "editproperty_toggleteleportable":
-                    if (sender.GetAccount().AdminLevel >= 5)
-                    {
-                        var id = Convert.ToInt32(arguments[0]);
-                        var prop = Properties.SingleOrDefault(x => x.Id == id);
-                        if (prop == null)
-                        {
-                            API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
-                            return;
-                        }
-                        prop.IsTeleportable = !prop.IsTeleportable;
-                        prop.Save();
-                        prop.UpdateMarkers();
-                        API.SendChatMessageToPlayer(sender,
-                            $"[Property Manager] Property #{id} was made to be '" +
-                            (prop.IsTeleportable ? "Teleportable" : "UnTeleportable") + "'");
-                    }
-                    break;
-
-                case "editproperty_setteleportpos":
-                    if (sender.GetAccount().AdminLevel >= 5)
-                    {
-                        var id = Convert.ToInt32(arguments[0]);
-                        var prop = Properties.SingleOrDefault(x => x.Id == id);
-                        if (prop == null)
-                        {
-                            API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
-                            return;
-                        }
-                        if (!prop.IsTeleportable)
-                        {
-                            API.SendChatMessageToPlayer(sender, "[Property Manager] Property isn't teleportable.");
-                            return;
-                        }
-                        prop.TargetPos = sender.Position;
-                        prop.TargetRot = sender.Rotation;
-                        prop.Save();
-                        prop.UpdateMarkers();
-                        API.SendChatMessageToPlayer(sender,
-                            $"[Property Manager] Interior TP Position of property #{id} was changed.");
-                    }
-                    break;
-
-                case "editproperty_toggleinteractable":
-                    if (sender.GetAccount().AdminLevel >= 5)
-                    {
-                        var id = Convert.ToInt32(arguments[0]);
-                        var prop = Properties.SingleOrDefault(x => x.Id == id);
-                        if (prop == null)
-                        {
-                            API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
-                            return;
-                        }
-                        prop.IsInteractable = !prop.IsInteractable;
-                        if (!prop.IsInteractable) { prop.UpdateMarkers(); }
+                        prop.MainDoorId = doorid;
                         prop.Save();
                         API.SendChatMessageToPlayer(sender,
-                            $"[Property Manager] Property #{id} was made to be '" +
-                            (prop.IsInteractable ? "Interactable" : "UnInteractable") + "'");
+                            $"[Property Manager] Main Door of Property #{id} was changed to: '{doorid}'");
                     }
-                    break;
-
-                case "editproperty_setinteractpos":
-                    if (sender.GetAccount().AdminLevel >= 5)
+                    else
                     {
-                        var id = Convert.ToInt32(arguments[0]);
-                        var prop = Properties.SingleOrDefault(x => x.Id == id);
-                        if (prop == null)
-                        {
-                            API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
-                            return;
-                        }
-                        if (!prop.IsInteractable)
-                        {
-                            API.SendChatMessageToPlayer(sender, "[Property Manager] Property isn't interactable.");
-                            return;
-                        }
-                        prop.InteractionPos = sender.Position;
-                        prop.InteractionRot = sender.Rotation;
-                        prop.InteractionDimension = (int)sender.Dimension;
-                        prop.UpdateMarkers();
-                        prop.Save();
-                        API.SendChatMessageToPlayer(sender,
-                            $"[Property Manager] Interaction Position of property #{id} was changed.");
+                        API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid DoorId Entered.");
                     }
-                    break;
+                }
+                else
+                {
+                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid DoorId Entered.");
+                }
+            }
+        }
 
-                case "editproperty_togglelock":
-                    if (sender.GetAccount().AdminLevel >= 5)
-                    {
-                        var id = Convert.ToInt32(arguments[0]);
-                        var prop = Properties.SingleOrDefault(x => x.Id == id);
-                        if (prop == null)
-                        {
-                            API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
-                            return;
-                        }
-                        prop.IsLocked = !prop.IsLocked;
-                        prop.UpdateLockStatus();
-                        prop.Save();
-                        API.SendChatMessageToPlayer(sender,
-                            $"[Property Manager] Property #{id} was made to be '" +
-                            (prop.IsLocked ? "Locked" : "UnLocked") + "'");
-                    }
-                    break;
+        [RemoteEvent("editproperty_toggleteleportable")]
+        private void EditPropertyToggleTeleportable(Client sender, params object[] arguments)
+        {
+            if (sender.GetAccount().AdminLevel >= 5)
+            {
+                var id = Convert.ToInt32(arguments[0]);
+                var prop = Properties.SingleOrDefault(x => x.Id == id);
+                if (prop == null)
+                {
+                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                    return;
+                }
+                prop.IsTeleportable = !prop.IsTeleportable;
+                prop.Save();
+                prop.UpdateMarkers();
+                API.SendChatMessageToPlayer(sender,
+                    $"[Property Manager] Property #{id} was made to be '" +
+                    (prop.IsTeleportable ? "Teleportable" : "UnTeleportable") + "'");
+            }
+        }
 
-                case "editproperty_deleteproperty":
-                    if (sender.GetAccount().AdminLevel >= 5)
-                    {
-                        var id = Convert.ToInt32(arguments[0]);
-                        var prop = Properties.SingleOrDefault(x => x.Id == id);
-                        if (prop == null)
-                        {
-                            API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
-                            return;
-                        }
-                        prop.Delete();
-                        API.SendChatMessageToPlayer(sender, $"[Property Manager] Property #{id} was deleted.");
-                    }
-                    break;
+        [RemoteEvent("editproperty_setteleportpos")]
+        private void EditPropertySetTeleportPos(Client sender, params object[] arguments)
+        {
+            if (sender.GetAccount().AdminLevel >= 5)
+            {
+                var id = Convert.ToInt32(arguments[0]);
+                var prop = Properties.SingleOrDefault(x => x.Id == id);
+                if (prop == null)
+                {
+                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                    return;
+                }
+                if (!prop.IsTeleportable)
+                {
+                    API.SendChatMessageToPlayer(sender, "[Property Manager] Property isn't teleportable.");
+                    return;
+                }
+                prop.TargetPos = sender.Position;
+                prop.TargetRot = sender.Rotation;
+                prop.Save();
+                prop.UpdateMarkers();
+                API.SendChatMessageToPlayer(sender,
+                    $"[Property Manager] Interior TP Position of property #{id} was changed.");
+            }
+        }
 
-                case "editproperty_setprice":
-                    if (sender.GetAccount().AdminLevel >= 5)
-                    {
-                        var id = Convert.ToInt32(arguments[0]);
-                        var prop = Properties.SingleOrDefault(x => x.Id == id);
-                        if (prop == null)
-                        {
-                            API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
-                            return;
-                        }
-                        int price;
-                        if (int.TryParse((string) arguments[1], out price))
-                        {
-                            prop.PropertyPrice = price;
-                            prop.Save();
-                            prop.UpdateMarkers();
-                            API.SendChatMessageToPlayer(sender,
-                                $"[Property Manager] Price of Property #{id} was changed to: '{price}'");
-                        }
-                        else
-                        {
-                            API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Price Entered.");
-                        }
-                    }
-                    break;
+        [RemoteEvent("editproperty_toggleinteractable")]
+        private void EditPropertyToggleInteractable(Client sender, params object[] arguments)
+        {
+            if (sender.GetAccount().AdminLevel >= 5)
+            {
+                var id = Convert.ToInt32(arguments[0]);
+                var prop = Properties.SingleOrDefault(x => x.Id == id);
+                if (prop == null)
+                {
+                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                    return;
+                }
+                prop.IsInteractable = !prop.IsInteractable;
+                if (!prop.IsInteractable) { prop.UpdateMarkers(); }
+                prop.Save();
+                API.SendChatMessageToPlayer(sender,
+                    $"[Property Manager] Property #{id} was made to be '" +
+                    (prop.IsInteractable ? "Interactable" : "UnInteractable") + "'");
+            }
+        }
 
-                case "editproperty_setowner":
-                    if (sender.GetAccount().AdminLevel >= 5)
-                    {
-                        var id = Convert.ToInt32(arguments[0]);
-                        var prop = Properties.SingleOrDefault(x => x.Id == id);
-                        if (prop == null)
-                        {
-                            API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
-                            return;
-                        }
-                        var player = PlayerManager.ParseClient((string) arguments[1]);
-                        if (player == null)
-                        {
-                            API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Player Entered.");
-                            return;
-                        }
-                        prop.OwnerId = player.GetCharacter().Id;
-                        prop.Save();
-                        prop.UpdateMarkers();
-                        API.SendChatMessageToPlayer(sender,
-                            $"[Property Manager] Owner of Property #{id} was changed to: '{player.GetCharacter().CharacterName}'");
-                    }
-                    break;
+        [RemoteEvent("editproperty_setinteractpos")]
+        private void EditPropertySetInteractPos(Client sender, params object[] arguments)
+        {
+            if (sender.GetAccount().AdminLevel >= 5)
+            {
+                var id = Convert.ToInt32(arguments[0]);
+                var prop = Properties.SingleOrDefault(x => x.Id == id);
+                if (prop == null)
+                {
+                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                    return;
+                }
+                if (!prop.IsInteractable)
+                {
+                    API.SendChatMessageToPlayer(sender, "[Property Manager] Property isn't interactable.");
+                    return;
+                }
+                prop.InteractionPos = sender.Position;
+                prop.InteractionRot = sender.Rotation;
+                prop.InteractionDimension = (int)sender.Dimension;
+                prop.UpdateMarkers();
+                prop.Save();
+                API.SendChatMessageToPlayer(sender,
+                    $"[Property Manager] Interaction Position of property #{id} was changed.");
+            }
+        }
 
-                case "editproperty_togglehasgarbage":
-                    if (sender.GetAccount().AdminLevel >= 5)
-                    {
-                        var id = Convert.ToInt32(arguments[0]);
-                        var prop = Properties.SingleOrDefault(x => x.Id == id);
-                        if (prop == null)
-                        {
-                            API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
-                            return;
-                        }
-                        prop.HasGarbagePoint = !prop.HasGarbagePoint;
-                        prop.Save();
-                        API.SendChatMessageToPlayer(sender,
-                            $"[Property Manager] Property #{id} was made to '" +
-                            (prop.HasGarbagePoint ? "have garbage" : "have no garbage") + "'");
-                    }
-                    break;
+        [RemoteEvent("editproperty_togglelock")]
+        private void EditPropertyToggleLock(Client sender, params object[] arguments)
+        {
+            if (sender.GetAccount().AdminLevel >= 5)
+            {
+                var id = Convert.ToInt32(arguments[0]);
+                var prop = Properties.SingleOrDefault(x => x.Id == id);
+                if (prop == null)
+                {
+                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                    return;
+                }
+                prop.IsLocked = !prop.IsLocked;
+                prop.UpdateLockStatus();
+                prop.Save();
+                API.SendChatMessageToPlayer(sender,
+                    $"[Property Manager] Property #{id} was made to be '" +
+                    (prop.IsLocked ? "Locked" : "UnLocked") + "'");
+            }
+        }
 
-                case "editproperty_setgarbagepoint":
-                    if (sender.GetAccount().AdminLevel >= 5)
-                    {
-                        var id = Convert.ToInt32(arguments[0]);
-                        var prop = Properties.SingleOrDefault(x => x.Id == id);
-                        if (prop == null)
-                        {
-                            API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
-                            return;
-                        }
-                        if (!prop.HasGarbagePoint)
-                        {
-                            API.SendChatMessageToPlayer(sender, "[Property Manager] Property cannot have a garbage point.");
-                            return;
-                        }
-                        prop.GarbagePoint = sender.Position;
-                        prop.GarbageRotation = sender.Rotation;
-                        prop.GarbageDimension = (int)sender.Dimension;
-                        prop.UpdateMarkers();
-                        prop.Save();
-                        API.SendChatMessageToPlayer(sender,
-                            $"[Property Manager] Garbage point of property #{id} was changed.");
-                    }
-                    break;
+        [RemoteEvent("editproperty_deleteproperty")]
+        private void EditPropertyDeleteProperty(Client sender, params object[] arguments)
+        {
+            if (sender.GetAccount().AdminLevel >= 5)
+            {
+                var id = Convert.ToInt32(arguments[0]);
+                var prop = Properties.SingleOrDefault(x => x.Id == id);
+                if (prop == null)
+                {
+                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                    return;
+                }
+                prop.Delete();
+                API.SendChatMessageToPlayer(sender, $"[Property Manager] Property #{id} was deleted.");
+            }
+        }
 
+        [RemoteEvent("editproperty_setprice")]
+        private void EditPropertySetPrice(Client sender, params object[] arguments)
+        {
+            if (sender.GetAccount().AdminLevel >= 5)
+            {
+                var id = Convert.ToInt32(arguments[0]);
+                var prop = Properties.SingleOrDefault(x => x.Id == id);
+                if (prop == null)
+                {
+                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                    return;
+                }
+                int price;
+                if (int.TryParse((string)arguments[1], out price))
+                {
+                    prop.PropertyPrice = price;
+                    prop.Save();
+                    prop.UpdateMarkers();
+                    API.SendChatMessageToPlayer(sender,
+                        $"[Property Manager] Price of Property #{id} was changed to: '{price}'");
+                }
+                else
+                {
+                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Price Entered.");
+                }
+            }
+        }
 
-                case "attempt_enter_prop":
-                    if(Exitproperty(sender) == false)
-                        Enterproperty(sender);
-                    break;
+        [RemoteEvent("editproperty_setowner")]
+        private void EditPropertySetOwner(Client sender, params object[] arguments)
+        {
+            if (sender.GetAccount().AdminLevel >= 5)
+            {
+                var id = Convert.ToInt32(arguments[0]);
+                var prop = Properties.SingleOrDefault(x => x.Id == id);
+                if (prop == null)
+                {
+                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                    return;
+                }
+                var player = PlayerManager.ParseClient((string)arguments[1]);
+                if (player == null)
+                {
+                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Player Entered.");
+                    return;
+                }
+                prop.OwnerId = player.GetCharacter().Id;
+                prop.Save();
+                prop.UpdateMarkers();
+                API.SendChatMessageToPlayer(sender,
+                    $"[Property Manager] Owner of Property #{id} was changed to: '{player.GetCharacter().CharacterName}'");
+            }
+        }
 
-                case "editproperty_addipl":
-                    if (sender.GetAccount().AdminLevel >= 5)
-                    {
-                        var id = Convert.ToInt32(arguments[0]);
-                        var prop = Properties.SingleOrDefault(x => x.Id == id);
-                        if (prop == null)
-                        {
-                            API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
-                            return;
-                        }
-                        prop.IPLs.Add(arguments[1].ToString());
-                        prop.Save();
-                        API.SendChatMessageToPlayer(sender,
-                            $"[Property Manager] Added IPL {arguments[1]} to property #{id}.");
-                        API.TriggerClientEvent(sender, "editproperty_showmenu", prop.Id, API.ToJson(prop.IPLs.ToArray()));
-                    }
-                    break;
+        [RemoteEvent("editproperty_togglehasgarbage")]
+        private void EditPropertyToggleHasGarbage(Client sender, params object[] arguments)
+        {
+            if (sender.GetAccount().AdminLevel >= 5)
+            {
+                var id = Convert.ToInt32(arguments[0]);
+                var prop = Properties.SingleOrDefault(x => x.Id == id);
+                if (prop == null)
+                {
+                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                    return;
+                }
+                prop.HasGarbagePoint = !prop.HasGarbagePoint;
+                prop.Save();
+                API.SendChatMessageToPlayer(sender,
+                    $"[Property Manager] Property #{id} was made to '" +
+                    (prop.HasGarbagePoint ? "have garbage" : "have no garbage") + "'");
+            }
+        }
 
-                case "editproperty_deleteipl":
-                    if (sender.GetAccount().AdminLevel >= 5)
-                    {
-                        var id = Convert.ToInt32(arguments[0]);
-                        var prop = Properties.SingleOrDefault(x => x.Id == id);
-                        if (prop == null)
-                        {
-                            API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
-                            return;
-                        }
+        [RemoteEvent("editproperty_setgarbagepoint")]
+        private void EditPropertySetGarbagePoint(Client sender, params object[] arguments)
+        {
+            if (sender.GetAccount().AdminLevel >= 5)
+            {
+                var id = Convert.ToInt32(arguments[0]);
+                var prop = Properties.SingleOrDefault(x => x.Id == id);
+                if (prop == null)
+                {
+                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                    return;
+                }
+                if (!prop.HasGarbagePoint)
+                {
+                    API.SendChatMessageToPlayer(sender, "[Property Manager] Property cannot have a garbage point.");
+                    return;
+                }
+                prop.GarbagePoint = sender.Position;
+                prop.GarbageRotation = sender.Rotation;
+                prop.GarbageDimension = (int)sender.Dimension;
+                prop.UpdateMarkers();
+                prop.Save();
+                API.SendChatMessageToPlayer(sender,
+                    $"[Property Manager] Garbage point of property #{id} was changed.");
+            }
+        }
 
-                        var ipl = arguments[1].ToString();
-                        if (prop.IPLs.RemoveAll(x => x == ipl) > 0)
-                        {
-                            prop.Save();
-                            API.SendChatMessageToPlayer(sender,
-                                $"[Property Manager] Removed IPL {ipl} from property #{id}.");
-                            API.TriggerClientEvent(sender, "editproperty_showmenu", prop.Id, API.ToJson(prop.IPLs.ToArray()));
-                        }
-                    }
-                    break;
+        [RemoteEvent("attempt_enter_prop")]
+        private void AttemptEnterProp(Client sender, params object[] arguments)
+        {
+            if (Exitproperty(sender) == false)
+                Enterproperty(sender);
+        }
+
+        [RemoteEvent("editproperty_addipl")]
+        private void EditPropertyAddIpl(Client sender, params object[] arguments)
+        {
+            if (sender.GetAccount().AdminLevel >= 5)
+            {
+                var id = Convert.ToInt32(arguments[0]);
+                var prop = Properties.SingleOrDefault(x => x.Id == id);
+                if (prop == null)
+                {
+                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                    return;
+                }
+                prop.IPLs.Add(arguments[1].ToString());
+                prop.Save();
+                API.SendChatMessageToPlayer(sender,
+                    $"[Property Manager] Added IPL {arguments[1]} to property #{id}.");
+                API.TriggerClientEvent(sender, "editproperty_showmenu", prop.Id, API.ToJson(prop.IPLs.ToArray()));
+            }
+        }
+
+        [RemoteEvent("editproperty_deleteipl")]
+        private void EditPropertyDeleteIpl(Client sender, params object[] arguments)
+        {
+            if (sender.GetAccount().AdminLevel >= 5)
+            {
+                var id = Convert.ToInt32(arguments[0]);
+                var prop = Properties.SingleOrDefault(x => x.Id == id);
+                if (prop == null)
+                {
+                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                    return;
+                }
+
+                var ipl = arguments[1].ToString();
+                if (prop.IPLs.RemoveAll(x => x == ipl) > 0)
+                {
+                    prop.Save();
+                    API.SendChatMessageToPlayer(sender,
+                        $"[Property Manager] Removed IPL {ipl} from property #{id}.");
+                    API.TriggerClientEvent(sender, "editproperty_showmenu", prop.Id, API.ToJson(prop.IPLs.ToArray()));
+                }
             }
         }
 

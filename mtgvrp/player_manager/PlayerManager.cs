@@ -55,7 +55,6 @@ namespace mtgvrp.player_manager
 
             Event.OnPlayerConnected += OnPlayerConnected;
             Event.OnPlayerDisconnected += OnPlayerDisconnected;
-            Event.OnClientEventTrigger += API_onClientEventTrigger;
             Event.OnPlayerDeath += API_onPlayerDeath;
             Event.OnPlayerDamage += API_onPlayerHealthChange;
 
@@ -89,7 +88,7 @@ namespace mtgvrp.player_manager
             }
         }
 
-        private void API_onPlayerHealthChange(NetHandle entity, float lossFirst, float lossSecond)
+        private void API_onPlayerHealthChange(Client entity, float lossFirst, float lossSecond)
         {
             Client player = API.GetPlayerFromHandle(entity);
             var character = player.GetCharacter();
@@ -108,7 +107,7 @@ namespace mtgvrp.player_manager
         }
 
 
-        private void API_onPlayerDeath(Client player, NetHandle entityKiller, uint weapon, CancelEventArgs cancel)
+        private void API_onPlayerDeath(Client player, Client entityKiller, uint weapon, CancelEventArgs cancel)
         {
             if (player.GetAccount().AdminDuty)
             {
@@ -152,14 +151,12 @@ namespace mtgvrp.player_manager
         public static int basepaycheck = Properties.Settings.basepaycheck;
         public static int taxationAmount = Properties.Settings.taxationamount;
 
-        private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
+        [RemoteEvent("update_ped_for_client")]
+        private void UpdatePedForClient(Client sender, params object[] arguments)
         {
-            if(eventName == "update_ped_for_client")
-            {
-                var player = (NetHandle)arguments[0];
-                Character c = API.GetEntityData(player, "Character");
-                c?.update_ped(sender);
-            }
+            var player = (NetHandle)arguments[0];
+            Character c = API.GetEntityData(player, "Character");
+            c?.update_ped(sender);
         }
 
         public void OnPlayerConnected(Client player, CancelEventArgs e)

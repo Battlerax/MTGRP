@@ -12,128 +12,123 @@ namespace mtgvrp.vehicle_manager
     {
         public VehicleMenu()
         {
-            Event.OnClientEventTrigger += OnClientEventTrigger;
             DebugManager.DebugMessage("[VehicleMenu] Vehicle Menu initalized.");
         }
 
-        public void OnClientEventTrigger(Client player, string eventName, params object[] arguments)
+        [RemoteEvent("OnVehicleMenuTrigger")]
+        public void OnClientEventTrigger(Client player, params object[] arguments)
         {
-            switch (eventName)
+            var vehicleHandle = (NetHandle)arguments[0];
+            var option = (string)arguments[1];
+
+            Character character = player.GetCharacter();
+            GameVehicle vehicle = API.Shared.GetEntityData(vehicleHandle, "Vehicle");
+
+            var playerSeat = API.Shared.GetPlayerVehicleSeat(player);
+
+            //Check that player vehicle is the same as the menu vehicle...
+            if(API.Shared.GetPlayerVehicle(player) != vehicleHandle)
             {
-                case "OnVehicleMenuTrigger":
-                    var vehicleHandle = (NetHandle)arguments[0];
-                    var option = (string)arguments[1];
+                DebugManager.DebugMessage("[VehicleMenu] " + character.CharacterName + "(" + player.SocialClubName + ", " + player.Handle + ") used VehicleMenu option in a different vehicle handle.");
+                return;
+            }
 
-                    Character character = player.GetCharacter();
-                    Vehicle vehicle = API.Shared.GetEntityData(vehicleHandle, "Vehicle");
+            var vehAccess = VehicleManager.DoesPlayerHaveVehicleAccess(player, vehicle);
+            var parkAccess = VehicleManager.DoesPlayerHaveVehicleParkLockAccess(player, vehicle);
 
-                    var playerSeat = API.Shared.GetPlayerVehicleSeat(player);
+            if ((option.Equals("park") || option.Equals("lock")) && !parkAccess)
+            {
+                API.Shared.SendChatMessageToPlayer(player, "~r~ You do not have access to this vehicle.");
+                return;
+            }
 
-                    //Check that player vehicle is the same as the menu vehicle...
-                    if(API.Shared.GetPlayerVehicle(player) != vehicleHandle)
+            if((option.Equals("engine") || option.Equals("park")) && playerSeat != -1)
+            {
+                API.Shared.SendChatMessageToPlayer(player, "~r~ You can only access these options in the driver seat.");
+                return;
+            }
+
+            switch (option)
+            {
+                case "engine":
+                    if (vehAccess)
                     {
-                        DebugManager.DebugMessage("[VehicleMenu] " + character.CharacterName + "(" + player.SocialClubName + ", " + player.Handle + ") used VehicleMenu option in a different vehicle handle.");
-                        return;
+                        VehicleManager.engine_cmd(player);
+                    }
+                    else
+                    {
+                        VehicleManager.hotwire_cmd(player);
+                    }
+                    break;
+                case "lock":
+                    var lockState = API.Shared.GetVehicleLocked(vehicleHandle);
+
+                    if(lockState)
+                    {
+                        API.Shared.SetVehicleLocked(vehicleHandle, false);
+                        ChatManager.RoleplayMessage(character, "unlocks the doors of the vehicle.", ChatManager.RoleplayMe);
+                    }
+                    else
+                    {
+                        API.Shared.SetVehicleLocked(vehicleHandle, true);
+                        ChatManager.RoleplayMessage(character, "locks the doors of the vehicle.", ChatManager.RoleplayMe);
                     }
 
-                    var vehAccess = VehicleManager.DoesPlayerHaveVehicleAccess(player, vehicle);
-                    var parkAccess = VehicleManager.DoesPlayerHaveVehicleParkLockAccess(player, vehicle);
 
-                    if ((option.Equals("park") || option.Equals("lock")) && !parkAccess)
+                    break;
+                case "park":
+
+                    var pos = API.GetEntityPosition(vehicleHandle);
+                    var rot = API.GetEntityRotation(vehicleHandle);
+                    var dimension = API.GetEntityDimension(vehicleHandle);
+
+                    vehicle.SpawnPos = pos;
+                    vehicle.SpawnRot = rot;
+                    vehicle.SpawnDimension = (int)dimension;
+
+                    vehicle.Save();
+
+                    API.Shared.SendChatMessageToPlayer(player, "Car spawn location saved to current location.");
+                    break;
+                case "door":
+                    var doorIndex = (int)arguments[2];
+
+                    var doorName = "";
+                    switch (doorIndex)
                     {
-                        API.Shared.SendChatMessageToPlayer(player, "~r~ You do not have access to this vehicle.");
-                        return;
+                        case 0:
+                            doorName = "front left door";
+                            break;
+                        case 1:
+                            doorName = "front right door";
+                            break;
+                        case 2:
+                            doorName = "back left door";
+                            break;
+                        case 3:
+                            doorName = "back right door";
+                            break;
+                        case 4:
+                            doorName = "hood";
+                            break;
+                        case 5:
+                            doorName = "trunk";
+                            break;
                     }
 
-                    if((option.Equals("engine") || option.Equals("park")) && playerSeat != -1)
+                    var doorState = API.GetVehicleDoorState(vehicleHandle, doorIndex);
+
+                    if(doorState)
                     {
-                        API.Shared.SendChatMessageToPlayer(player, "~r~ You can only access these options in the driver seat.");
-                        return;
+                        API.SetVehicleDoorState(vehicleHandle, doorIndex, false);
+                        ChatManager.RoleplayMessage(character, "closed the " + doorName + " of the vehicle.", ChatManager.RoleplayMe);
+                    }
+                    else
+                    {
+                        API.SetVehicleDoorState(vehicleHandle, doorIndex, true);
+                        ChatManager.RoleplayMessage(character, "opened the " + doorName + " of the vehicle.", ChatManager.RoleplayMe);
                     }
 
-                    switch (option)
-                    {
-                        case "engine":
-                            if (vehAccess)
-                            {
-                                VehicleManager.engine_cmd(player);
-                            }
-                            else
-                            {
-                                VehicleManager.hotwire_cmd(player);
-                            }
-                            break;
-                        case "lock":
-                            var lockState = API.Shared.GetVehicleLocked(vehicleHandle);
-
-                            if(lockState)
-                            {
-                                API.Shared.SetVehicleLocked(vehicleHandle, false);
-                                ChatManager.RoleplayMessage(character, "unlocks the doors of the vehicle.", ChatManager.RoleplayMe);
-                            }
-                            else
-                            {
-                                API.Shared.SetVehicleLocked(vehicleHandle, true);
-                                ChatManager.RoleplayMessage(character, "locks the doors of the vehicle.", ChatManager.RoleplayMe);
-                            }
-
-
-                            break;
-                        case "park":
-
-                            var pos = API.GetEntityPosition(vehicleHandle);
-                            var rot = API.GetEntityRotation(vehicleHandle);
-                            var dimension = API.GetEntityDimension(vehicleHandle);
-
-                            vehicle.SpawnPos = pos;
-                            vehicle.SpawnRot = rot;
-                            vehicle.SpawnDimension = (int)dimension;
-
-                            vehicle.Save();
-
-                            API.Shared.SendChatMessageToPlayer(player, "Car spawn location saved to current location.");
-                            break;
-                        case "door":
-                            var doorIndex = (int)arguments[2];
-
-                            var doorName = "";
-                            switch (doorIndex)
-                            {
-                                case 0:
-                                    doorName = "front left door";
-                                    break;
-                                case 1:
-                                    doorName = "front right door";
-                                    break;
-                                case 2:
-                                    doorName = "back left door";
-                                    break;
-                                case 3:
-                                    doorName = "back right door";
-                                    break;
-                                case 4:
-                                    doorName = "hood";
-                                    break;
-                                case 5:
-                                    doorName = "trunk";
-                                    break;
-                            }
-
-                            var doorState = API.GetVehicleDoorState(vehicleHandle, doorIndex);
-
-                            if(doorState)
-                            {
-                                API.SetVehicleDoorState(vehicleHandle, doorIndex, false);
-                                ChatManager.RoleplayMessage(character, "closed the " + doorName + " of the vehicle.", ChatManager.RoleplayMe);
-                            }
-                            else
-                            {
-                                API.SetVehicleDoorState(vehicleHandle, doorIndex, true);
-                                ChatManager.RoleplayMessage(character, "opened the " + doorName + " of the vehicle.", ChatManager.RoleplayMe);
-                            }
-
-                            break;
-                    }
                     break;
             }
         }

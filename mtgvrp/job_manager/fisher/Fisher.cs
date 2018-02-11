@@ -35,67 +35,62 @@ namespace mtgvrp.job_manager.fisher
                 new Fish("Dungeness Crab", 120, 1, 3, true, 10),
                 new Fish("Great White Shark", 200, 1500, 1501, true, 5),
             };
-
-            Event.OnClientEventTrigger += API_onClientEventTrigger;
         }
 
-        private void API_onClientEventTrigger(Client player, string eventName, params object[] arguments)
+        [RemoteEvent("caught_fish")]
+        private void CaughtFish(Client player, params object[] arguments)
         {
-            switch (eventName)
+            Character c = player.GetCharacter();
+
+            var catchStrength = (int)arguments[0];
+
+            var strengthDifference = catchStrength - c.PerfectCatchStrength;
+
+            if (strengthDifference < -25)
             {
-                case "caught_fish":
+                c.CatchingFish = Fish.None;
+                c.PerfectCatchStrength = 0;
 
-                    Character c = player.GetCharacter();
-
-                    var catchStrength = (int) arguments[0];
-
-                    var strengthDifference = catchStrength - c.PerfectCatchStrength;
-
-                    if (strengthDifference < -25)
-                    {
-                        c.CatchingFish = Fish.None;
-                        c.PerfectCatchStrength = 0;
-
-                        API.SendChatMessageToPlayer(player, Color.AdminOrange, "The fish managed to get away...");
-                        API.StopPlayerAnimation(player);
-                    }
-                    else if (strengthDifference > 30)
-                    {
-                        API.SendChatMessageToPlayer(player, "You snapped your fishing rod!");
-                        API.StopPlayerAnimation(player);
-                    }
-                    else
-                    {
-                        var weight = MapValue(0, 100, c.CatchingFish.MinWeight, c.CatchingFish.MaxWeight, catchStrength);
-
-                        API.SendChatMessageToPlayer(player, Color.White,
-                            "You caught a " + c.CatchingFish.Name + " that weighs " + weight + " pounds. It is worth about $" + c.CatchingFish.calculate_value(weight));
-                        API.StopPlayerAnimation(player);
-
-                        var fish = (Fish) c.CatchingFish;
-                        fish.ActualWeight = weight;
-
-                        var status = InventoryManager.GiveInventoryItem(c, fish);
-                        switch (status)
-                        {
-                            case InventoryManager.GiveItemErrors.MaxAmountReached:
-                                API.SendChatMessageToPlayer(player, Color.White,
-                                    "You have the max amount of this fish in your inventory.");
-                                break;
-                            case InventoryManager.GiveItemErrors.NotEnoughSpace:
-                                API.SendChatMessageToPlayer(player, Color.White,
-                                    "Your inventory does not have enough space for another fish. You throw the fish back into the water.");
-                                break;
-                        }
-                    }
-                    break;
-
-                case "snapped_rod":
-                    API.SendChatMessageToPlayer(player, "You snapped your fishing rod!");
-                    InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(FishingRod), 1);
-                    API.StopPlayerAnimation(player);
-                    break;
+                API.SendChatMessageToPlayer(player, Color.AdminOrange, "The fish managed to get away...");
+                API.StopPlayerAnimation(player);
             }
+            else if (strengthDifference > 30)
+            {
+                API.SendChatMessageToPlayer(player, "You snapped your fishing rod!");
+                API.StopPlayerAnimation(player);
+            }
+            else
+            {
+                var weight = MapValue(0, 100, c.CatchingFish.MinWeight, c.CatchingFish.MaxWeight, catchStrength);
+
+                API.SendChatMessageToPlayer(player, Color.White,
+                    "You caught a " + c.CatchingFish.Name + " that weighs " + weight + " pounds. It is worth about $" + c.CatchingFish.calculate_value(weight));
+                API.StopPlayerAnimation(player);
+
+                var fish = (Fish)c.CatchingFish;
+                fish.ActualWeight = weight;
+
+                var status = InventoryManager.GiveInventoryItem(c, fish);
+                switch (status)
+                {
+                    case InventoryManager.GiveItemErrors.MaxAmountReached:
+                        API.SendChatMessageToPlayer(player, Color.White,
+                            "You have the max amount of this fish in your inventory.");
+                        break;
+                    case InventoryManager.GiveItemErrors.NotEnoughSpace:
+                        API.SendChatMessageToPlayer(player, Color.White,
+                            "Your inventory does not have enough space for another fish. You throw the fish back into the water.");
+                        break;
+                }
+            }
+        }
+
+        [RemoteEvent("snapped_rod")]
+        private void SnappedRod(Client player, params object[] arguments)
+        {
+            API.SendChatMessageToPlayer(player, "You snapped your fishing rod!");
+            InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(FishingRod), 1);
+            API.StopPlayerAnimation(player);
         }
 
         [Command("fish"), Help(HelpManager.CommandGroups.FisherJob, "Pretty obvious, its to fish!")]

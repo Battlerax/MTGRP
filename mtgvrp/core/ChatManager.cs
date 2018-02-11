@@ -26,7 +26,6 @@ namespace mtgvrp.core
 
             Event.OnChatMessage += OnChatMessage;
             //Event.OnChatCommand += API_onChatCommand;
-            Event.OnClientEventTrigger += OnClientEventTrigger;
             Event.OnPlayerDisconnected += API_onPlayerDisconnected;
 
             DebugManager.DebugMessage("[ChatM] Chat Manager initalized.");
@@ -422,12 +421,10 @@ namespace mtgvrp.core
             DiscordManager.SendVIPMessage("[V] " + c.rp_name() + $"[{account.AccountName}]" + ": " + message);
         }
 
-        public void OnClientEventTrigger(Client player, string eventName, params object[] arguments)
+        [RemoteEvent("NearbyMessage")]
+        public void NearbyMessage(Client player, params object[] arguments)
         {
-            if(eventName == "NearbyMessage")
-            {
-                NearbyMessage(player, (float)arguments[0], (string)arguments[1]);
-            }
+            NearbyMessage(player, (float)arguments[0], (string)arguments[1]);
         }
 
         public static void NearbyMessage(Client player, float radius, string msg, string color)
@@ -444,7 +441,6 @@ namespace mtgvrp.core
             }
         }
 
-
         public static void NearbyMessage(Client player, float radius, string msg)
         {   
             foreach (var i in API.Shared.GetAllPlayers())
@@ -459,13 +455,10 @@ namespace mtgvrp.core
             }
         }
 
-
         public float GetDistanceBetweenPlayers(Client player1, Client player2)
         {
             return player1.Position.DistanceTo(player2.Position);
         }
-
-        
 
         [Command("me", GreedyArg = true), Help.Help(HelpManager.CommandGroups.Roleplay, "Descrive an action you're doing.", "The action")]
         public void me_cmd(Client player, string action)
@@ -481,7 +474,6 @@ namespace mtgvrp.core
             AmeLabelMessage(player, action, 8000);
         }
 
-       
         [Command("do", GreedyArg = true), Help.Help(HelpManager.CommandGroups.Roleplay, "Describe an event that's occuring near you.", "The action")]
         public void do_cmd(Client player, string action)
         {

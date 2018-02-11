@@ -9,7 +9,7 @@ using mtgvrp.vehicle_manager;
 using MongoDB.Bson;
 using Color = mtgvrp.core.Color;
 using Timer = System.Timers.Timer;
-using Vehicle = mtgvrp.vehicle_manager.Vehicle;
+using GameVehicle = mtgvrp.vehicle_manager.GameVehicle;
 using System.Threading.Tasks;
 
 namespace mtgvrp.job_manager.lumberjack
@@ -20,19 +20,18 @@ namespace mtgvrp.job_manager.lumberjack
         {
             Tree.LoadTrees();
 
-            Event.OnClientEventTrigger += API_onClientEventTrigger;
             Event.OnPlayerExitVehicle += API_onPlayerExitVehicle;
             Event.OnPlayerEnterVehicle += API_onPlayerEnterVehicle;
         }
 
-        private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle, byte seat)
+        private void API_onPlayerEnterVehicle(Client player, Vehicle vehicle, sbyte seat)
         {
             if(vehicle.GetVehicle() == null)
                 return;
 
             if (API.GetEntityModel(vehicle) == (int)VehicleHash.Flatbed && player.GetCharacter().JobOne.Type == JobManager.JobTypes.Lumberjack)
             {
-                Vehicle veh = API.GetEntityData(vehicle, "Vehicle");
+                GameVehicle veh = API.GetEntityData(vehicle, "Vehicle");
                 if (veh.Job?.Type != JobManager.JobTypes.Lumberjack)
                 {
                     return;
@@ -66,11 +65,11 @@ namespace mtgvrp.job_manager.lumberjack
             }
         }
 
-        private void API_onPlayerExitVehicle(Client player, NetHandle vehicle)
+        private void API_onPlayerExitVehicle(Client player, Vehicle vehicle)
         {
             if (API.GetEntityModel(vehicle) == (int) VehicleHash.Flatbed && player.GetCharacter().JobOne.Type == JobManager.JobTypes.Lumberjack)
             {
-                Vehicle veh = API.GetEntityData(vehicle, "Vehicle");
+                GameVehicle veh = API.GetEntityData(vehicle, "Vehicle");
                 if (veh.Job.Type != JobManager.JobTypes.Lumberjack)
                 {
                     return;
@@ -84,7 +83,7 @@ namespace mtgvrp.job_manager.lumberjack
 
                 API.SetEntityData(vehicle, "Tree_Cancel_Timer", new System.Threading.Timer(state =>
                 {
-                    Vehicle vehN = API.GetEntityData(vehicle, "Vehicle");
+                    GameVehicle vehN = API.GetEntityData(vehicle, "Vehicle");
                     Tree ttree = API.GetEntityData(vehicle, "TREE_OBJ");
                     if (ttree == null)
                     {
@@ -105,12 +104,12 @@ namespace mtgvrp.job_manager.lumberjack
             }
         }
 
-        private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
+        [RemoteEvent("lumberjack_hittree")]
+        private void LumberjackHittree(Client sender, params object[] arguments)
         {
             var character = sender.GetCharacter();
-            if (eventName == "lumberjack_hittree" && character.JobOne.Type == JobManager.JobTypes.Lumberjack)
+            if (character.JobOne.Type == JobManager.JobTypes.Lumberjack)
             {
-
                 var tree = Tree.Trees.FirstOrDefault(x => x.TreeObj?.Position?.DistanceTo(sender.Position) <= 3.0f);
                 if (tree == null)
                     return;
@@ -162,14 +161,15 @@ namespace mtgvrp.job_manager.lumberjack
                         //API.StopPedAnimation(sender);
                     }
                 }
+            }
+        }
 
-            }
-            else if (eventName == "TreePlaced")
-            {
-                var tree = Tree.Trees.First(x => x.TreeObj == (NetHandle) arguments[0]);
-                tree.TreePos = tree.TreeObj.Position;
-                tree.TreePos = tree.TreeObj.Position;
-            }
+        [RemoteEvent("TreePlaced")]
+        private void TreePlaced(Client sender, params object[] arguments)
+        {
+            var tree = Tree.Trees.First(x => x.TreeObj == (NetHandle)arguments[0]);
+            tree.TreePos = tree.TreeObj.Position;
+            tree.TreePos = tree.TreeObj.Position;
         }
 
         [Command("createtree"), Help(HelpManager.CommandGroups.LumberJob, "Creates a tree for lumberjack under you.")]
@@ -213,7 +213,7 @@ namespace mtgvrp.job_manager.lumberjack
 
             if (API.IsPlayerInAnyVehicle(player) && API.GetEntityModel(API.GetPlayerVehicle(player)) == (int)VehicleHash.Flatbed)
             {
-                Vehicle vehicle = API.GetEntityData(API.GetPlayerVehicle(player), "Vehicle");
+                GameVehicle vehicle = API.GetEntityData(API.GetPlayerVehicle(player), "Vehicle");
                 if (vehicle.Job.Type != JobManager.JobTypes.Lumberjack)
                 {
                     API.SendChatMessageToPlayer(player, "This is not a Lumberjack vehicle.");
@@ -282,7 +282,7 @@ namespace mtgvrp.job_manager.lumberjack
                 tree.RespawnTimer.Elapsed += tree.RespawnTimer_Elapsed;
                 tree.RespawnTimer.Start();
 
-                Vehicle vehicle = API.GetEntityData(API.GetPlayerVehicle(player), "Vehicle");
+                GameVehicle vehicle = API.GetEntityData(API.GetPlayerVehicle(player), "Vehicle");
                 API.ResetEntityData(API.GetPlayerVehicle(player), "TREE_OBJ");
                 Task.Delay(1000).ContinueWith(t => API.WarpPlayerOutOfVehicle(player)); // CONV NOTE: delay fixme
                 VehicleManager.respawn_vehicle(vehicle);

@@ -15,10 +15,9 @@ namespace mtgvrp.rp_scripts
     {
         public List<Vector3> Atms;
         public List<int> BankAmount;
+
         public Test()
         {
-            Event.OnClientEventTrigger += OnClientEventTrigger;
-
             Atms = new List<Vector3>
             {
                 new Vector3(-1109.797f, -1690.808f, 4.375014f),
@@ -117,73 +116,66 @@ namespace mtgvrp.rp_scripts
             }
         }
 
-        public void OnClientEventTrigger(Client player, string eventName, params object[] arguments)
+        [RemoteEvent("BankMenuTrigger")]
+        public void BankMenuTrigger(Client player, params object[] arguments)
         {
-            switch (eventName)
+            // check to see if player has moved away from ATM
+            if (Atms.Any(x => x.DistanceTo(player.Position) <= 5.0) == false)
             {
-                case "OnBankMenuTrigger":
-                    {
-                        // check to see if player has moved away from ATM
-                        if (Atms.Any(x => x.DistanceTo(player.Position) <= 5.0) == false)
-                        {
-                            API.SendChatMessageToPlayer(player, "You have moved too far away from the ATM.");
-                            return;
-                        }
-                        var option = (string)arguments[0];
+                API.SendChatMessageToPlayer(player, "You have moved too far away from the ATM.");
+                return;
+            }
+            var option = (string)arguments[0];
                       
-                        Character character = player.GetCharacter();
-                        switch (option)
-                        {
-                            case "Withdraw cash":
-                                var withdrawIndex = (int)arguments[1];
-                                if (BankAmount[withdrawIndex] > character.BankBalance)
-                                {
-                                    API.SendChatMessageToPlayer(player, "~r~ERROR:~w~ You do not have ~g~$" + BankAmount[withdrawIndex] + "~w~ in your account. Current balance: ~g~$" + character.BankBalance + "~w~.");
-                                    break;
-                                }
-
-                                if (BankAmount[withdrawIndex] == -1)
-                                {
-                                    InventoryManager.GiveInventoryItem(character, new Money(), character.BankBalance);
-                                    API.SendChatMessageToPlayer(player, "~y~[Bank of Los Santos]~w~ You have withdrawn ~g~$" + character.BankBalance + "~w~. New balance: ~g~$0~w~.");
-                                    character.BankBalance = 0;
-                                }
-                                else
-                                {
-                                    character.BankBalance -= BankAmount[withdrawIndex];
-                                    InventoryManager.GiveInventoryItem(character, new Money(), BankAmount[withdrawIndex]);
-                                    API.SendChatMessageToPlayer(player, "~y~[Bank of Los Santos]~w~ You have withdrawn ~g~$" + BankAmount[withdrawIndex] + "~w~. New balance: ~g~$" + character.BankBalance + "~w~.");
-                                }
-                                
-                                //character.save();
-                                break;
-                            case "Deposit cash":
-                                var depositIndex = (int)arguments[1];
-                                if (BankAmount[depositIndex] > Money.GetCharacterMoney(character))
-                                {
-                                    API.SendChatMessageToPlayer(player, "~r~ERROR:~w~ You do not have ~g~$" + BankAmount[depositIndex] + "~w~ on hand. Current money on hand: ~g~$" + Money.GetCharacterMoney(character) + "~w~.");
-                                    break;
-                                }
-
-                                if (BankAmount[depositIndex] == -1)
-                                {
-                                    character.BankBalance += Money.GetCharacterMoney(character);
-                                    API.SendChatMessageToPlayer(player, "~y~[Bank of Los Santos]~w~ You have deposited ~g~$" + Money.GetCharacterMoney(character) + "~w~. New balance: ~g~$" + character.BankBalance + "~w~.");
-                                    InventoryManager.SetInventoryAmmount(character, typeof(Money), 0);
-                                }
-                                else
-                                {
-                                    character.BankBalance += BankAmount[depositIndex];
-                                    InventoryManager.DeleteInventoryItem(character, typeof(Money),
-                                        BankAmount[depositIndex]);
-                                    API.SendChatMessageToPlayer(player, "~y~[Bank of Los Santos]~w~ You have deposited ~g~$" + BankAmount[depositIndex] + "~w~. New balance: ~g~$" + character.BankBalance + "~w~.");
-                                }
-
-                                
-                                //character.save();
-                                break;
-                        }
+            Character character = player.GetCharacter();
+            switch (option)
+            {
+                case "Withdraw cash":
+                    var withdrawIndex = (int)arguments[1];
+                    if (BankAmount[withdrawIndex] > character.BankBalance)
+                    {
+                        API.SendChatMessageToPlayer(player, "~r~ERROR:~w~ You do not have ~g~$" + BankAmount[withdrawIndex] + "~w~ in your account. Current balance: ~g~$" + character.BankBalance + "~w~.");
+                        break;
                     }
+
+                    if (BankAmount[withdrawIndex] == -1)
+                    {
+                        InventoryManager.GiveInventoryItem(character, new Money(), character.BankBalance);
+                        API.SendChatMessageToPlayer(player, "~y~[Bank of Los Santos]~w~ You have withdrawn ~g~$" + character.BankBalance + "~w~. New balance: ~g~$0~w~.");
+                        character.BankBalance = 0;
+                    }
+                    else
+                    {
+                        character.BankBalance -= BankAmount[withdrawIndex];
+                        InventoryManager.GiveInventoryItem(character, new Money(), BankAmount[withdrawIndex]);
+                        API.SendChatMessageToPlayer(player, "~y~[Bank of Los Santos]~w~ You have withdrawn ~g~$" + BankAmount[withdrawIndex] + "~w~. New balance: ~g~$" + character.BankBalance + "~w~.");
+                    }
+                                
+                    //character.save();
+                    break;
+                case "Deposit cash":
+                    var depositIndex = (int)arguments[1];
+                    if (BankAmount[depositIndex] > Money.GetCharacterMoney(character))
+                    {
+                        API.SendChatMessageToPlayer(player, "~r~ERROR:~w~ You do not have ~g~$" + BankAmount[depositIndex] + "~w~ on hand. Current money on hand: ~g~$" + Money.GetCharacterMoney(character) + "~w~.");
+                        break;
+                    }
+
+                    if (BankAmount[depositIndex] == -1)
+                    {
+                        character.BankBalance += Money.GetCharacterMoney(character);
+                        API.SendChatMessageToPlayer(player, "~y~[Bank of Los Santos]~w~ You have deposited ~g~$" + Money.GetCharacterMoney(character) + "~w~. New balance: ~g~$" + character.BankBalance + "~w~.");
+                        InventoryManager.SetInventoryAmmount(character, typeof(Money), 0);
+                    }
+                    else
+                    {
+                        character.BankBalance += BankAmount[depositIndex];
+                        InventoryManager.DeleteInventoryItem(character, typeof(Money),
+                            BankAmount[depositIndex]);
+                        API.SendChatMessageToPlayer(player, "~y~[Bank of Los Santos]~w~ You have deposited ~g~$" + BankAmount[depositIndex] + "~w~. New balance: ~g~$" + character.BankBalance + "~w~.");
+                    }
+                                
+                    //character.save();
                     break;
             }
         }

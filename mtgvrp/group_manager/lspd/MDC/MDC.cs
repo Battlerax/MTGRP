@@ -54,7 +54,6 @@ namespace mtgvrp.group_manager.lspd.MDC
 
         public Mdc()
         {
-            Event.OnClientEventTrigger += MDC_onClientEventTrigger;
         }
 
         [Command("mdc"), Help(HelpManager.CommandGroups.LSPD, "Open the MDC. Must be in vehicle.")]
@@ -95,150 +94,151 @@ namespace mtgvrp.group_manager.lspd.MDC
             }
         }
 
-        private void MDC_onClientEventTrigger(Client player, string eventName, params object[] arguments)
+        [RemoteEvent("server_updateMdcAnnouncement")]
+        private void UpdateMdcAnnouncement(Client player, params object[] arguments)
         {
-            switch (eventName)
+            // i guess there was no code written for this... - austin
+            // TODO: find out what this needs and add it i guess
+        }
+
+        [RemoteEvent("server_removeBolo")]
+        private void RemoveBolo(Client player, params object[] arguments)
+        {
+            ActiveBolos.RemoveAt((int)arguments[0]);
+            API.SendChatMessageToPlayer(player, "You removed Bolo # " + (int)arguments[0]);
+        }
+
+        [RemoteEvent("server_createBolo")]
+        private void CreateBolo(Client player, params object[] arguments)
+        {
+            Character character = player.GetCharacter();
+            var newBolo = new Bolo(character.CharacterName, Convert.ToInt32(arguments[1]),
+                Convert.ToString(arguments[0]));
+
+            ActiveBolos.Add(newBolo);
+            newBolo.Id = ActiveBolos.IndexOf(newBolo);
+
+            foreach (var c in PlayerManager.Players)
             {
-                case "server_updateMdcAnnouncement":
+                if (c.IsViewingMdc)
                 {
-
-                    break;
+                    SendBoloToClient(c.Client, newBolo);
                 }
-                case "server_removeBolo":
+            }
+
+            API.SendChatMessageToPlayer(player, "Successfully submitted Bolo #" + newBolo.Id);
+        }
+
+        [RemoteEvent("requestMdcInformation")]
+        private void RequestMdcInformation(Client player, params object[] arguments)
+        {
+            SendAll911ToClient(player);
+            SendAllBoloToClient(player);
+        }
+
+        [RemoteEvent("server_mdc_close")]
+        private void MdcClose(Client player, params object[] arguments)
+        {
+            var character = player.GetCharacter();
+            ChatManager.RoleplayMessage(character, "logs off of the MDC.", ChatManager.RoleplayMe);
+            character.IsViewingMdc = false;
+        }
+
+        [RemoteEvent("MDC_SearchForCitizen")]
+        private void MDCSearchForCitizen(Client player, params object[] arguments)
+        {
+            var name = (string)arguments[0];
+            var phone = (string)arguments[1];
+
+            //First if online.
+
+
+            Character foundPlayer = null;
+
+            foreach (var playerfound in PlayerManager.Players)
+            {
+                if (playerfound == null)
                 {
-                    ActiveBolos.RemoveAt((int) arguments[0]);
-                    API.SendChatMessageToPlayer(player, "You removed Bolo # " + (int) arguments[0]);
-                    break;
+                    continue;
                 }
-                case "server_createBolo":
+                if (playerfound.CharacterName == name)
                 {
-                    Character character = player.GetCharacter();
-                    var newBolo = new Bolo(character.CharacterName, Convert.ToInt32(arguments[1]),
-                        Convert.ToString(arguments[0]));
-
-                    ActiveBolos.Add(newBolo);
-                    newBolo.Id = ActiveBolos.IndexOf(newBolo);
-
-                    foreach (var c in PlayerManager.Players)
-                    {
-                        if (c.IsViewingMdc)
-                        {
-                            SendBoloToClient(c.Client, newBolo);
-                        }
-                    }
-
-                    API.SendChatMessageToPlayer(player, "Successfully submitted Bolo #" + newBolo.Id);
-                    break;
-                }
-                case "requestMdcInformation":
-                {
-                    SendAll911ToClient(player);
-                    SendAllBoloToClient(player);
-                    break;
-                }
-                case "server_mdc_close":
-                {
-                    var character = player.GetCharacter();
-                    ChatManager.RoleplayMessage(character, "logs off of the MDC.", ChatManager.RoleplayMe);
-                    character.IsViewingMdc = false;
-                    break;
-                }
-                case "MDC_SearchForCitizen":
-                {
-                    var name = (string) arguments[0];
-                    var phone = (string) arguments[1];
-
-                    //First if online.
-
-
-                    Character foundPlayer = null;
-
-                    foreach(var playerfound in PlayerManager.Players)
-                        {
-                            if (playerfound == null)
-                            {
-                                continue;
-                            }
-                            if (playerfound.CharacterName == name)
-                            {
-                                foundPlayer = playerfound;
-                                break;
-                            }
-                        }
-
-                    if(foundPlayer == null)
-                        {
-                            foundPlayer = PhoneManager.GetPlayerWithNumber(phone);
-                        }
-
-                    if (foundPlayer == null)
-                    {
-                            var filter = Builders<Character>.Filter.Eq(x => x.CharacterName, name) |
-                                     (Builders<Character>.Filter.Eq("Inventory.PhoneNumber", phone));
-
-                        //Not online.. check DB.
-                        var found = DatabaseManager.CharacterTable.Find(filter);
-                        if (found.Any())
-                        {
-                            foundPlayer = found.First();
-                        }
-                    }
-
-                    //If still NULL
-                    if (foundPlayer == null)
-                    {
-                        API.TriggerClientEvent(player, "MDC_SHOW_CITIZEN_INFO", "", "", "", "", "");
-                        return;
-                    }
-
-                    //GET VEHICLES.
-                    var vehicles = DatabaseManager.VehicleTable.Find(x => x.OwnerId == foundPlayer.Id).ToList();
-                    var vehiclesList = vehicles.Where(x => x.IsRegistered).Select(x => new[]
-                        {VehicleOwnership.returnCorrDisplayName(x.VehModel), x.LicensePlate}).ToArray();
-
-                    //Get amount of crimes.
-                    var amountOfPages = Math.Floor((foundPlayer.GetCrimesNumber() + 9d) / 10d);
-                    var crimes = GetCrimeArray(foundPlayer);
-
-                   //Store character.
-                   player.SetData("MDC_LAST_CHECKED", foundPlayer);
-
-                    //Send Event
-                    API.TriggerClientEvent(player, "MDC_SHOW_CITIZEN_INFO", foundPlayer.rp_name(), foundPlayer.Birthday,
-                        API.ToJson(vehiclesList), API.ToJson(crimes), amountOfPages);
-                    break;
-                }
-
-                case "MDC_SearchForVehicle":
-                {
-                    var lic = (string) arguments[0];
-                    vehicle_manager.Vehicle veh = VehicleManager.Vehicles.FirstOrDefault(x => x.LicensePlate == lic) ??
-                                                  DatabaseManager.VehicleTable.Find(x => x.LicensePlate == lic)
-                                                      .FirstOrDefault();
-
-                    if (veh == null)
-                    {
-                        API.TriggerClientEvent(player, "MDC_SHOW_VEHICLE_INFO", "", "");
-                        return;
-                    }
-
-                    API.TriggerClientEvent(player, "MDC_SHOW_VEHICLE_INFO", VehicleOwnership.returnCorrDisplayName(veh.VehModel),
-                        veh.OwnerName, API.GetVehicleClassName(API.GetVehicleClass(veh.VehModel)));
-                    break;
-                }
-                case "MDC_RequestNextCrimesPage":
-                {
-                    Character p = player.GetData("MDC_LAST_CHECKED");
-                    if (p == null)
-                        return;
-
-                    var next = Convert.ToInt32(arguments[0]);
-                    var crimes = GetCrimeArray(p, next);
-
-                        API.TriggerClientEvent(player, "MDC_UPDATE_CRIMES", API.ToJson(crimes));
+                    foundPlayer = playerfound;
                     break;
                 }
             }
+
+            if (foundPlayer == null)
+            {
+                foundPlayer = PhoneManager.GetPlayerWithNumber(phone);
+            }
+
+            if (foundPlayer == null)
+            {
+                var filter = Builders<Character>.Filter.Eq(x => x.CharacterName, name) |
+                         (Builders<Character>.Filter.Eq("Inventory.PhoneNumber", phone));
+
+                //Not online.. check DB.
+                var found = DatabaseManager.CharacterTable.Find(filter);
+                if (found.Any())
+                {
+                    foundPlayer = found.First();
+                }
+            }
+
+            //If still NULL
+            if (foundPlayer == null)
+            {
+                API.TriggerClientEvent(player, "MDC_SHOW_CITIZEN_INFO", "", "", "", "", "");
+                return;
+            }
+
+            //GET VEHICLES.
+            var vehicles = DatabaseManager.VehicleTable.Find(x => x.OwnerId == foundPlayer.Id).ToList();
+            var vehiclesList = vehicles.Where(x => x.IsRegistered).Select(x => new[]
+                {VehicleOwnership.returnCorrDisplayName(x.VehModel), x.LicensePlate}).ToArray();
+
+            //Get amount of crimes.
+            var amountOfPages = Math.Floor((foundPlayer.GetCrimesNumber() + 9d) / 10d);
+            var crimes = GetCrimeArray(foundPlayer);
+
+            //Store character.
+            player.SetData("MDC_LAST_CHECKED", foundPlayer);
+
+            //Send Event
+            API.TriggerClientEvent(player, "MDC_SHOW_CITIZEN_INFO", foundPlayer.rp_name(), foundPlayer.Birthday,
+            API.ToJson(vehiclesList), API.ToJson(crimes), amountOfPages);
+        }
+
+        [RemoteEvent("MDC_SearchForVehicle")]
+        private void MDCSearchForVehicle(Client player, params object[] arguments)
+        {
+            var lic = (string)arguments[0];
+            vehicle_manager.GameVehicle veh = VehicleManager.Vehicles.FirstOrDefault(x => x.LicensePlate == lic) ??
+                                          DatabaseManager.VehicleTable.Find(x => x.LicensePlate == lic)
+                                              .FirstOrDefault();
+
+            if (veh == null)
+            {
+                API.TriggerClientEvent(player, "MDC_SHOW_VEHICLE_INFO", "", "");
+                return;
+            }
+
+            API.TriggerClientEvent(player, "MDC_SHOW_VEHICLE_INFO", VehicleOwnership.returnCorrDisplayName(veh.VehModel),
+                veh.OwnerName, API.GetVehicleClassName(API.GetVehicleClass(veh.VehModel)));
+        }
+
+        [RemoteEvent("MDC_RequestNextCrimesPage")]
+        private void MDCRequestNextCrimesPage(Client player, params object[] arguments)
+        {
+            Character p = player.GetData("MDC_LAST_CHECKED");
+            if (p == null)
+                return;
+
+            var next = Convert.ToInt32(arguments[0]);
+            var crimes = GetCrimeArray(p, next);
+
+            API.TriggerClientEvent(player, "MDC_UPDATE_CRIMES", API.ToJson(crimes));
         }
 
         //Crime Type, Crime Name, DateTime String, OfficerIssued, IsActive

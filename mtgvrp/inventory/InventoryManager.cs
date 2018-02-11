@@ -66,7 +66,6 @@ namespace mtgvrp.inventory
 
             #endregion
 
-            Event.OnClientEventTrigger += API_onClientEventTrigger;
             CharacterMenu.OnCharacterLogin += CharacterMenu_OnCharacterLogin;
         }
 
@@ -457,9 +456,9 @@ namespace mtgvrp.inventory
                 var c = (Character)stor;
                 text = $"Inventory<{c.CharacterName}>";
             }
-            else if (stor.GetType() == typeof(vehicle_manager.Vehicle))
+            else if (stor.GetType() == typeof(vehicle_manager.GameVehicle))
             {
-                var c = (vehicle_manager.Vehicle)stor;
+                var c = (vehicle_manager.GameVehicle)stor;
                 text = $"Vehicle<{c.Id}, {API.Shared.GetVehicleDisplayName(c.VehModel)}>";
             }
             else if (stor.GetType() == typeof(Property))
@@ -512,152 +511,150 @@ namespace mtgvrp.inventory
             _activeInvsBeingManaged.Add(player, new KeyValuePair<IStorage, IStorage>(activeLeft, activeRight));
         }
 
-        private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
+        [RemoteEvent("invmanagement_cancelled")]
+        private void InvManagementCancelled(Client sender, params object[] arguments)
         {
-            switch (eventName)
+            //Save
+            _activeInvsBeingManaged[sender].Key.Save();
+            _activeInvsBeingManaged[sender].Value.Save();
+
+            _activeInvsBeingManaged.Remove(sender);
+            API.Shared.FreezePlayer(sender, false);
+            API.SendNotificationToPlayer(sender, "Closed Inventory Management.");
+        }
+
+        [RemoteEvent("invmanagement_moveFromLeftToRight")]
+        private void InvManagementMoveFromLeftToRight(Client sender, params object[] arguments)
+        {
+            string shortname = (string)arguments[0];
+            int amount;
+            if (!int.TryParse((string)arguments[1], out amount))
             {
-                case "invmanagement_cancelled":
-                    //Save
-                    _activeInvsBeingManaged[sender].Key.Save();
-                    _activeInvsBeingManaged[sender].Value.Save();
+                API.SendNotificationToPlayer(sender, "Invalid amount entered.");
+                return;
+            }
+            if (amount <= 0)
+            {
+                API.SendNotificationToPlayer(sender, "Amount must not be zero or negative.");
+                return;
+            }
 
-                    _activeInvsBeingManaged.Remove(sender);
-                    API.Shared.FreezePlayer(sender, false);
-                    API.SendNotificationToPlayer(sender, "Closed Inventory Management.");
+            //Make sure is managing.
+            if (!_activeInvsBeingManaged.ContainsKey(sender))
+            {
+                API.SendNotificationToPlayer(sender, "You aren't managing any inventory.");
+                return;
+            }
+
+            //Get the invs.
+            KeyValuePair<IStorage, IStorage> storages = _activeInvsBeingManaged.GetValueOrDefault(sender);
+
+            //See if has item.
+            var item = DoesInventoryHaveItem(storages.Key, shortname);
+            if (item.Length == 0)
+            {
+                API.SendNotificationToPlayer(sender, "That item type doesn't exist.");
+                return;
+            }
+            var playerItem = item.SingleOrDefault(x => x.CommandFriendlyName == shortname);
+            if (playerItem == null || playerItem.Amount < amount)
+            {
+                API.SendNotificationToPlayer(sender, "The source storage doesn't have that item or doesn't have that amount.");
+                return;
+            }
+
+            //Add to bag.
+            switch (GiveInventoryItem(storages.Value, playerItem, amount, true))
+            {
+                case GiveItemErrors.NotEnoughSpace:
+                    API.SendNotificationToPlayer(sender, "There is no enough slots in target storage.");
                     break;
-                   
-                case "invmanagement_moveFromLeftToRight":
-                    string shortname = (string)arguments[0];
-                    int amount;
-                    if (!int.TryParse((string)arguments[1], out amount))
-                    {
-                        API.SendNotificationToPlayer(sender, "Invalid amount entered.");
-                        return;
-                    }
-                    if (amount <= 0)
-                    {
-                        API.SendNotificationToPlayer(sender, "Amount must not be zero or negative.");
-                        return;
-                    }
-
-                    //Make sure is managing.
-                    if (!_activeInvsBeingManaged.ContainsKey(sender))
-                    {
-                        API.SendNotificationToPlayer(sender, "You aren't managing any inventory.");
-                        return;
-                    }
-
-                    //Get the invs.
-                    KeyValuePair<IStorage, IStorage> storages = _activeInvsBeingManaged.GetValueOrDefault(sender);
-
-                    //See if has item.
-                    var item = InventoryManager.DoesInventoryHaveItem(storages.Key, shortname);
-                    if (item.Length == 0)
-                    {
-                        API.SendNotificationToPlayer(sender, "That item type doesn't exist.");
-                        return;
-                    }
-                    var playerItem = item.SingleOrDefault(x => x.CommandFriendlyName == shortname);
-                    if (playerItem == null || playerItem.Amount < amount)
-                    {
-                        API.SendNotificationToPlayer(sender, "The source storage doesn't have that item or doesn't have that amount.");
-                        return;
-                    }
-
-                    //Add to bag.
-                    switch (InventoryManager.GiveInventoryItem(storages.Value, playerItem, amount, true))
-                    {
-                        case InventoryManager.GiveItemErrors.NotEnoughSpace:
-                            API.SendNotificationToPlayer(sender, "There is no enough slots in target storage.");
-                            break;
-                        case InventoryManager.GiveItemErrors.MaxAmountReached:
-                            API.SendNotificationToPlayer(sender, "Reached max amount of that item in target storage.");
-                            break;
-                        case InventoryManager.GiveItemErrors.HasSimilarItem:
-                            API.SendNotificationToPlayer(sender, "You can't have 2 of this item with the same name, change it if possible.");
-                            break;
-                        case InventoryManager.GiveItemErrors.Success:
-                            //Remove from player.
-                            InventoryManager.DeleteInventoryItem(storages.Key, playerItem.GetType(), amount,
-                                x => x.CommandFriendlyName == shortname);
-
-                            //Send event done.
-                            var usedLeft = GetInventoryFilledSlots(storages.Key) + "/" + storages.Key.MaxInvStorage;
-                            var usedRight = GetInventoryFilledSlots(storages.Value) + "/" + storages.Value.MaxInvStorage;
-                            API.TriggerClientEvent(sender, "moveItemFromLeftToRightSuccess", shortname, amount, usedLeft, usedRight); //Id should be same cause it was already set since it was in player inv.
-                            API.SendNotificationToPlayer(sender, $"The item ~g~{shortname}~w~ was moved sucessfully.");
-
-                            LogManager.Log(LogManager.LogTypes.Stats, $"[InventoryManagement] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] moved item '{playerItem.LongName}', Amount: '{playerItem.Amount}'. From {GetStorageInfo(storages.Key)} To {GetStorageInfo(storages.Value)}");
-                            break;
-                    }
+                case GiveItemErrors.MaxAmountReached:
+                    API.SendNotificationToPlayer(sender, "Reached max amount of that item in target storage.");
                     break;
+                case GiveItemErrors.HasSimilarItem:
+                    API.SendNotificationToPlayer(sender, "You can't have 2 of this item with the same name, change it if possible.");
+                    break;
+                case GiveItemErrors.Success:
+                    //Remove from player.
+                    DeleteInventoryItem(storages.Key, playerItem.GetType(), amount,
+                        x => x.CommandFriendlyName == shortname);
 
-                case "invmanagement_moveFromRightToLeft":
+                    //Send event done.
+                    var usedLeft = GetInventoryFilledSlots(storages.Key) + "/" + storages.Key.MaxInvStorage;
+                    var usedRight = GetInventoryFilledSlots(storages.Value) + "/" + storages.Value.MaxInvStorage;
+                    API.TriggerClientEvent(sender, "moveItemFromLeftToRightSuccess", shortname, amount, usedLeft, usedRight); //Id should be same cause it was already set since it was in player inv.
+                    API.SendNotificationToPlayer(sender, $"The item ~g~{shortname}~w~ was moved sucessfully.");
 
-                    string rlshortname = (string)arguments[0];
-                    int rlamount;
-                    if (!int.TryParse((string)arguments[1], out rlamount))
-                    {
-                        API.SendNotificationToPlayer(sender, "Invalid amount entered.");
-                        return;
-                    }
-                    if (rlamount <= 0)
-                    {
-                        API.SendNotificationToPlayer(sender, "Amount must not be zero or negative.");
-                        return;
-                    }
+                    LogManager.Log(LogManager.LogTypes.Stats, $"[InventoryManagement] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] moved item '{playerItem.LongName}', Amount: '{playerItem.Amount}'. From {GetStorageInfo(storages.Key)} To {GetStorageInfo(storages.Value)}");
+                    break;
+            }
+        }
 
-                    //Make sure is managing.
-                    if (!_activeInvsBeingManaged.ContainsKey(sender))
-                    {
-                        API.SendNotificationToPlayer(sender, "You aren't managing any inventory.");
-                        return;
-                    }
+        [RemoteEvent("invmanagement_moveFromRightToLeft")]
+        private void InvManagementMoveFromRightToLeft(Client sender, params object[] arguments)
+        {
+            string rlshortname = (string)arguments[0];
+            int rlamount;
+            if (!int.TryParse((string)arguments[1], out rlamount))
+            {
+                API.SendNotificationToPlayer(sender, "Invalid amount entered.");
+                return;
+            }
+            if (rlamount <= 0)
+            {
+                API.SendNotificationToPlayer(sender, "Amount must not be zero or negative.");
+                return;
+            }
 
-                    //Get the invs.
-                    KeyValuePair<IStorage, IStorage> rlstorages = _activeInvsBeingManaged.GetValueOrDefault(sender);
+            //Make sure is managing.
+            if (!_activeInvsBeingManaged.ContainsKey(sender))
+            {
+                API.SendNotificationToPlayer(sender, "You aren't managing any inventory.");
+                return;
+            }
 
-                    //See if has item.
-                    var rlitem = InventoryManager.DoesInventoryHaveItem(rlstorages.Value, rlshortname);
-                    if (rlitem.Length == 0)
-                    {
-                        API.SendNotificationToPlayer(sender, "That item type doesn't exist.");
-                        return;
-                    }
-                    var rlplayerItem = rlitem.SingleOrDefault(x => x.CommandFriendlyName == rlshortname);
-                    if (rlplayerItem == null || rlplayerItem.Amount < rlamount)
-                    {
-                        API.SendNotificationToPlayer(sender, "The source storage doesn't have that item or doesn't have that amount.");
-                        return;
-                    }
+            //Get the invs.
+            KeyValuePair<IStorage, IStorage> rlstorages = _activeInvsBeingManaged.GetValueOrDefault(sender);
 
-                    //Add to bag.
-                    switch (InventoryManager.GiveInventoryItem(rlstorages.Key, rlplayerItem, rlamount, true))
-                    {
-                        case InventoryManager.GiveItemErrors.NotEnoughSpace:
-                            API.SendNotificationToPlayer(sender, "There is no enough slots in target storage.");
-                            break;
-                        case InventoryManager.GiveItemErrors.MaxAmountReached:
-                            API.SendNotificationToPlayer(sender, "Reached max amount of that item in target storage.");
-                            break;
-                        case InventoryManager.GiveItemErrors.HasSimilarItem:
-                            API.SendNotificationToPlayer(sender, "You can't have 2 of this item with the same name, change it if possible.");
-                            break;
-                        case InventoryManager.GiveItemErrors.Success:
-                            //Remove from player.
-                            InventoryManager.DeleteInventoryItem(rlstorages.Value, rlplayerItem.GetType(), rlamount,
-                                x => x.CommandFriendlyName == rlshortname);
+            //See if has item.
+            var rlitem = InventoryManager.DoesInventoryHaveItem(rlstorages.Value, rlshortname);
+            if (rlitem.Length == 0)
+            {
+                API.SendNotificationToPlayer(sender, "That item type doesn't exist.");
+                return;
+            }
+            var rlplayerItem = rlitem.SingleOrDefault(x => x.CommandFriendlyName == rlshortname);
+            if (rlplayerItem == null || rlplayerItem.Amount < rlamount)
+            {
+                API.SendNotificationToPlayer(sender, "The source storage doesn't have that item or doesn't have that amount.");
+                return;
+            }
 
-                            //Send event done.
-                            var usedLeft = GetInventoryFilledSlots(rlstorages.Key) + "/" + rlstorages.Key.MaxInvStorage;
-                            var usedRight = GetInventoryFilledSlots(rlstorages.Value) + "/" + rlstorages.Value.MaxInvStorage;
-                            API.TriggerClientEvent(sender, "moveItemFromRightToLeftSuccess", rlshortname, rlamount, usedLeft, usedRight); //Id should be same cause it was already set since it was in player inv.
-                            API.SendNotificationToPlayer(sender, $"The item ~g~{rlshortname}~w~ was moved sucessfully.");
+            //Add to bag.
+            switch (GiveInventoryItem(rlstorages.Key, rlplayerItem, rlamount, true))
+            {
+                case GiveItemErrors.NotEnoughSpace:
+                    API.SendNotificationToPlayer(sender, "There is no enough slots in target storage.");
+                    break;
+                case GiveItemErrors.MaxAmountReached:
+                    API.SendNotificationToPlayer(sender, "Reached max amount of that item in target storage.");
+                    break;
+                case GiveItemErrors.HasSimilarItem:
+                    API.SendNotificationToPlayer(sender, "You can't have 2 of this item with the same name, change it if possible.");
+                    break;
+                case GiveItemErrors.Success:
+                    //Remove from player.
+                    DeleteInventoryItem(rlstorages.Value, rlplayerItem.GetType(), rlamount,
+                        x => x.CommandFriendlyName == rlshortname);
 
-                            LogManager.Log(LogManager.LogTypes.Stats, $"[InventoryManagement] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] moved item '{rlplayerItem.LongName}', Amount: '{rlplayerItem.Amount}'. From {GetStorageInfo(rlstorages.Value)} To {GetStorageInfo(rlstorages.Key)}");
-                            break;
-                    }
+                    //Send event done.
+                    var usedLeft = GetInventoryFilledSlots(rlstorages.Key) + "/" + rlstorages.Key.MaxInvStorage;
+                    var usedRight = GetInventoryFilledSlots(rlstorages.Value) + "/" + rlstorages.Value.MaxInvStorage;
+                    API.TriggerClientEvent(sender, "moveItemFromRightToLeftSuccess", rlshortname, rlamount, usedLeft, usedRight); //Id should be same cause it was already set since it was in player inv.
+                    API.SendNotificationToPlayer(sender, $"The item ~g~{rlshortname}~w~ was moved sucessfully.");
 
+                    LogManager.Log(LogManager.LogTypes.Stats, $"[InventoryManagement] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] moved item '{rlplayerItem.LongName}', Amount: '{rlplayerItem.Amount}'. From {GetStorageInfo(rlstorages.Value)} To {GetStorageInfo(rlstorages.Key)}");
                     break;
             }
         }

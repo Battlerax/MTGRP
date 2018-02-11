@@ -41,46 +41,42 @@ namespace mtgvrp.job_manager
 
             Event.OnPlayerEnterVehicle += API_onPlayerEnterVehicle;
 
-            Event.OnClientEventTrigger += ApiOnOnClientEventTrigger;
-
             load_jobs();
 
             DebugManager.DebugMessage("[JobM] Job Manager initalized!");
         }
 
-        private void ApiOnOnClientEventTrigger(Client player, string eventName, params object[] arguments)
+        [RemoteEvent("finish_job_zone_create")]
+        private void FinishJobZoneCreate(Client player, params object[] arguments)
         {
-            if (eventName == "finish_job_zone_create")
+            Account account = player.GetAccount();
+            if (account.AdminLevel < 4) { return; }
+
+            Job job = API.GetEntityData(player.Handle, "JOB_ZONE_CREATE");
+
+            var cornerStartPos = (Vector3)arguments[0];
+            var xAdd = Convert.ToSingle(arguments[1]);
+            var yAdd = Convert.ToSingle(arguments[2]);
+
+            if (xAdd < 0)
             {
-                Account account = player.GetAccount();
-                if(account.AdminLevel < 4) { return;}
-
-                Job job = API.GetEntityData(player.Handle, "JOB_ZONE_CREATE");
-
-                var cornerStartPos = (Vector3) arguments[0];
-                var xAdd = Convert.ToSingle(arguments[1]);
-                var yAdd = Convert.ToSingle(arguments[2]);
-
-                if (xAdd < 0)
-                {
-                    cornerStartPos = cornerStartPos.Add(new Vector3(xAdd, 0.0, 0.0));
-                    xAdd = -xAdd;
-                }
-
-                if (yAdd < 0)
-                {
-                    cornerStartPos = cornerStartPos.Add(new Vector3(0.0, yAdd, 0.0));
-                    yAdd = -yAdd;
-                }
-
-                job.add_job_zone(cornerStartPos.X, cornerStartPos.Y, xAdd, yAdd);
-                job.register_job_zone_events(job.JobZones.Count - 1);
-                job.Save();
-                API.SendChatMessageToPlayer(player, "You have successfully added Job Zone " + job.JobZones.Count + " to Job " + job.Id);
+                cornerStartPos = cornerStartPos.Add(new Vector3(xAdd, 0.0, 0.0));
+                xAdd = -xAdd;
             }
+
+            if (yAdd < 0)
+            {
+                cornerStartPos = cornerStartPos.Add(new Vector3(0.0, yAdd, 0.0));
+                yAdd = -yAdd;
+            }
+
+            job.add_job_zone(cornerStartPos.X, cornerStartPos.Y, xAdd, yAdd);
+            job.register_job_zone_events(job.JobZones.Count - 1);
+            job.Save();
+            API.SendChatMessageToPlayer(player, "You have successfully added Job Zone " + job.JobZones.Count + " to Job " + job.Id);
         }
 
-        private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle, byte seat)
+        private void API_onPlayerEnterVehicle(Client player, Vehicle vehicle, sbyte seat)
         {
             Character character = player.GetCharacter();
             var veh = VehicleManager.GetVehFromNetHandle(vehicle);

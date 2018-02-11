@@ -114,7 +114,7 @@ namespace mtgvrp.group_manager
             }
 
             API.SendChatMessageToPlayer(player, "======GROUP VEHICLES======");
-            var filter = Builders<vehicle_manager.Vehicle>.Filter.Eq("GroupId", id);
+            var filter = Builders<vehicle_manager.GameVehicle>.Filter.Eq("GroupId", id);
             var groupVehicles = DatabaseManager.VehicleTable.Find(filter).ToList();
 
             int j = 0;

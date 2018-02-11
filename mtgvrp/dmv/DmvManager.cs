@@ -73,106 +73,106 @@ namespace mtgvrp.dmv
             Event.OnResourceStart += API_onResourceStart;
             VehicleManager.OnVehicleEngineToggle += OnVehicleEngineToggle;
             Event.OnPlayerExitVehicle += API_onPlayerExitVehicle;
-            Event.OnClientEventTrigger += API_onClientEventTrigger;
         }
 
-        private void API_onClientEventTrigger(Client player, string eventName, params object[] arguments)
+        [RemoteEvent("DMV_REGISTER_VEHICLE")]
+        private void DMVRegisterVehicle(Client player, params object[] arguments)
         {
-            if (eventName == "DMV_REGISTER_VEHICLE")
+            var prop = PropertyManager.IsAtPropertyInteraction(player);
+            if (prop?.Type != PropertyManager.PropertyTypes.DMV)
             {
-                var prop = PropertyManager.IsAtPropertyInteraction(player);
-                if (prop?.Type != PropertyManager.PropertyTypes.DMV)
-                {
-                    API.SendChatMessageToPlayer(player, "You need to be at a DMV.");
-                    return;
-                }
-
-                var c = player.GetCharacter();
-
-                if (InventoryManager.DoesInventoryHaveItem<IdentificationItem>(c).Length == 0)
-                {
-                    API.SendChatMessageToPlayer(player, "You must have a valid identification.");
-                    return;
-                }
-
-                if (InventoryManager.DoesInventoryHaveItem<DrivingLicenseItem>(c).Length == 0)
-                {
-                    API.SendChatMessageToPlayer(player, "You must have a valid driving license.");
-                    return;
-                }
-
-                int vehid = Convert.ToInt32(arguments[0]);
-                if (!c.OwnedVehicles.Exists(x => x.Id == vehid))
-                {
-                    API.SendChatMessageToPlayer(player, "You don't own that vehicle!!!");
-                    return;
-                }
-
-                var veh = VehicleManager.Vehicles.FirstOrDefault(x => x.Id == vehid);
-                if (veh == null || veh.OwnerId != c.Id)
-                {
-                    API.SendChatMessageToPlayer(player, "You don't own that vehicle!!!");
-                    return;
-                }
-
-                if (veh.IsRegistered)
-                {
-                    API.SendChatMessageToPlayer(player, "Vehicle is already registered!!!");
-                    return;
-                }
-
-                if (Money.GetCharacterMoney(c) < 100)
-                {
-                    API.SendChatMessageToPlayer(player, "You need $100 to register your vehicle.");
-                    return;
-                }
-
-                //Set License Plate.
-                veh.LicensePlate = GetValidLicensePlate();
-                veh.IsRegistered = true;
-
-                if (veh.IsSpawned)
-                {
-                    API.SetVehicleNumberPlate(veh.NetHandle, veh.LicensePlate);
-                }
-
-                //Remove money.
-                InventoryManager.DeleteInventoryItem<Money>(c, 100);
-
-                API.SendChatMessageToPlayer(player, $"You've successfully registered your {VehicleOwnership.returnCorrDisplayName(veh.VehModel)}. License: {veh.LicensePlate}");
-                veh.Save();
+                API.SendChatMessageToPlayer(player, "You need to be at a DMV.");
+                return;
             }
-            else if(eventName == "DMV_TEST_FINISH") {
-                var c = player.GetCharacter();
-                var isOnTime = DateTime.Now.Subtract(c.TimeStartedDmvTest) <= TimeSpan.FromMinutes(5);
-                var isOnHealth = player.Vehicle.Health >= 999;
 
-                if (isOnTime && isOnHealth)
-                {
-                    InventoryManager.GiveInventoryItem(c, new DrivingLicenseItem(), 1, true);
-                    API.SendChatMessageToPlayer(player, "You have ~g~COMPLETED~w~ your test.");
-                    LogManager.Log(LogManager.LogTypes.Stats, $"[DMV] {c.CharacterName}[{player.GetAccount().AccountName}] has got his driving license in {DateTime.Now.Subtract(c.TimeStartedDmvTest).Minutes:D2}:{DateTime.Now.Subtract(c.TimeStartedDmvTest).Seconds:D2}");
-                }
-                else
-                    API.SendChatMessageToPlayer(player, "You have ~r~FAILED~w~ your test.");
+            var c = player.GetCharacter();
 
-                API.SendChatMessageToPlayer(player,
-                    isOnTime
-                        ? $"* Time: ~g~ {DateTime.Now.Subtract(c.TimeStartedDmvTest).Minutes:D2}:{DateTime.Now.Subtract(c.TimeStartedDmvTest).Seconds:D2} / 05:00"
-                        : $"* Time: ~r~ {DateTime.Now.Subtract(c.TimeStartedDmvTest).Minutes:D2}:{DateTime.Now.Subtract(c.TimeStartedDmvTest).Seconds:D2} / 05:00");
-
-                API.SendChatMessageToPlayer(player,
-                    isOnHealth
-                        ? $"* Vehicle Health: ~g~ {player.Vehicle.Health} / 999"
-                        : $"* Vehicle Health: ~r~ {player.Vehicle.Health} / 999");
-
-                VehicleManager.respawn_vehicle(player.Vehicle.Handle.GetVehicle());
-                // CONV NOTE: proper delay needed probably
-                //API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));
-                Task.Delay(1000).ContinueWith(t => API.WarpPlayerOutOfVehicle(player));
-
-                c.IsInDmvTest = false;
+            if (InventoryManager.DoesInventoryHaveItem<IdentificationItem>(c).Length == 0)
+            {
+                API.SendChatMessageToPlayer(player, "You must have a valid identification.");
+                return;
             }
+
+            if (InventoryManager.DoesInventoryHaveItem<DrivingLicenseItem>(c).Length == 0)
+            {
+                API.SendChatMessageToPlayer(player, "You must have a valid driving license.");
+                return;
+            }
+
+            int vehid = Convert.ToInt32(arguments[0]);
+            if (!c.OwnedVehicles.Exists(x => x.Id == vehid))
+            {
+                API.SendChatMessageToPlayer(player, "You don't own that vehicle!!!");
+                return;
+            }
+
+            var veh = VehicleManager.Vehicles.FirstOrDefault(x => x.Id == vehid);
+            if (veh == null || veh.OwnerId != c.Id)
+            {
+                API.SendChatMessageToPlayer(player, "You don't own that vehicle!!!");
+                return;
+            }
+
+            if (veh.IsRegistered)
+            {
+                API.SendChatMessageToPlayer(player, "Vehicle is already registered!!!");
+                return;
+            }
+
+            if (Money.GetCharacterMoney(c) < 100)
+            {
+                API.SendChatMessageToPlayer(player, "You need $100 to register your vehicle.");
+                return;
+            }
+
+            //Set License Plate.
+            veh.LicensePlate = GetValidLicensePlate();
+            veh.IsRegistered = true;
+
+            if (veh.IsSpawned)
+            {
+                API.SetVehicleNumberPlate(veh.NetHandle, veh.LicensePlate);
+            }
+
+            //Remove money.
+            InventoryManager.DeleteInventoryItem<Money>(c, 100);
+
+            API.SendChatMessageToPlayer(player, $"You've successfully registered your {VehicleOwnership.returnCorrDisplayName(veh.VehModel)}. License: {veh.LicensePlate}");
+            veh.Save();
+        }
+
+        [RemoteEvent("DMV_TEST_FINISH")]
+        private void DMVTestFinish(Client player, params object[] arguments)
+        {
+            var c = player.GetCharacter();
+            var isOnTime = DateTime.Now.Subtract(c.TimeStartedDmvTest) <= TimeSpan.FromMinutes(5);
+            var isOnHealth = player.Vehicle.Health >= 999;
+
+            if (isOnTime && isOnHealth)
+            {
+                InventoryManager.GiveInventoryItem(c, new DrivingLicenseItem(), 1, true);
+                API.SendChatMessageToPlayer(player, "You have ~g~COMPLETED~w~ your test.");
+                LogManager.Log(LogManager.LogTypes.Stats, $"[DMV] {c.CharacterName}[{player.GetAccount().AccountName}] has got his driving license in {DateTime.Now.Subtract(c.TimeStartedDmvTest).Minutes:D2}:{DateTime.Now.Subtract(c.TimeStartedDmvTest).Seconds:D2}");
+            }
+            else
+                API.SendChatMessageToPlayer(player, "You have ~r~FAILED~w~ your test.");
+
+            API.SendChatMessageToPlayer(player,
+                isOnTime
+                    ? $"* Time: ~g~ {DateTime.Now.Subtract(c.TimeStartedDmvTest).Minutes:D2}:{DateTime.Now.Subtract(c.TimeStartedDmvTest).Seconds:D2} / 05:00"
+                    : $"* Time: ~r~ {DateTime.Now.Subtract(c.TimeStartedDmvTest).Minutes:D2}:{DateTime.Now.Subtract(c.TimeStartedDmvTest).Seconds:D2} / 05:00");
+
+            API.SendChatMessageToPlayer(player,
+                isOnHealth
+                    ? $"* Vehicle Health: ~g~ {player.Vehicle.Health} / 999"
+                    : $"* Vehicle Health: ~r~ {player.Vehicle.Health} / 999");
+
+            VehicleManager.respawn_vehicle(player.Vehicle.Handle.GetVehicle());
+            // CONV NOTE: proper delay needed probably
+            //API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));
+            Task.Delay(1000).ContinueWith(t => API.WarpPlayerOutOfVehicle(player));
+
+            c.IsInDmvTest = false;
         }
 
         string GetValidLicensePlate()
@@ -207,7 +207,7 @@ namespace mtgvrp.dmv
             return plate;
         }
 
-        private void API_onPlayerExitVehicle(Client player, NetHandle vehicle)
+        private void API_onPlayerExitVehicle(Client player, GTANetworkAPI.Vehicle vehicle)
         {
             var c = player.GetCharacter();
 
@@ -236,7 +236,7 @@ namespace mtgvrp.dmv
             foreach (var car in _testVehicles)
             {
                 car[2] = VehicleManager.CreateVehicle(VehicleHash.Asea, car[0], car[1], "DMV", 0,
-                    vehicle_manager.Vehicle.VehTypePerm, 89, 89);
+                    vehicle_manager.GameVehicle.VehTypePerm, 89, 89);
 
                 VehicleManager.spawn_vehicle(car[2]);
             }

@@ -222,7 +222,7 @@ namespace mtgvrp.property_system
                 };
                 GarbageMarker.Create();
                 GarbageMarker.ColZone.SetData("property_garbage", Id);
-                BinObject = API.Shared.CreateObject(998415499, GarbagePoint - new Vector3(0, 0, 1.1), GarbageRotation, (uint)GarbageDimension);
+                BinObject = API.Shared.CreateObject(998415499, GarbagePoint - new Vector3(0, 0, 1.1), GarbageRotation.ToQuat(), (uint)GarbageDimension);
             }
         }
 

@@ -21,44 +21,41 @@ namespace mtgvrp.job_manager.scuba
         {
             Event.OnPlayerDisconnected += API_onPlayerDisconnected;
             Event.OnResourceStart += API_onResourceStart;
-            Event.OnClientEventTrigger += API_onClientEventTrigger;
         }
 
-        private void API_onClientEventTrigger(Client player, string eventName, params object[] arguments)
+        [RemoteEvent("SCUBA_ISUNDERWATER")]
+        private void API_onClientEventTrigger(Client player, params object[] arguments)
         {
-            if (eventName == "SCUBA_ISUNDERWATER")
+            var character = player.GetCharacter();
+            var scubaitem = InventoryManager.DoesInventoryHaveItem<ScubaItem>(character);
+
+            if (scubaitem.Length == 0)
             {
-                var character = player.GetCharacter();
-                var scubaitem = InventoryManager.DoesInventoryHaveItem<ScubaItem>(character);
-
-                if (scubaitem.Length == 0)
-                {
-                    CancelScuba(player);
-                    API.SendChatMessageToPlayer(player, "The scuba set has been removed.");
-                    return;
-                }
-
-                if (character.IsScubaDiving != true)
-                {
-                    CancelScuba(player);
-                    API.SendChatMessageToPlayer(player, "The scuba set has been removed.");
-                    return;
-                }
-
-                scubaitem[0].OxygenRemaining--;
-                if (scubaitem[0].OxygenRemaining <= 0)
-                {
-                    CancelScuba(player);
-                    InventoryManager.DeleteInventoryItem<ScubaItem>(character);
-                    API.SendChatMessageToPlayer(player, "Your oxygen have run out.");
-                    return;
-                }
-
-                API.SendNativeToPlayer(player, Hash.SET_PED_MAX_TIME_UNDERWATER, player.Handle, 3600.0f);
-                API.TriggerClientEvent(player, "UPDATE_SCUBA_PERCENTAGE",
-                    "Oxygen Remaining: " + Math.Round((scubaitem[0].OxygenRemaining / ScubaItem.MaxOxygen) * 100f) +
-                    "%");
+                CancelScuba(player);
+                API.SendChatMessageToPlayer(player, "The scuba set has been removed.");
+                return;
             }
+
+            if (character.IsScubaDiving != true)
+            {
+                CancelScuba(player);
+                API.SendChatMessageToPlayer(player, "The scuba set has been removed.");
+                return;
+            }
+
+            scubaitem[0].OxygenRemaining--;
+            if (scubaitem[0].OxygenRemaining <= 0)
+            {
+                CancelScuba(player);
+                InventoryManager.DeleteInventoryItem<ScubaItem>(character);
+                API.SendChatMessageToPlayer(player, "Your oxygen have run out.");
+                return;
+            }
+
+            API.SendNativeToPlayer(player, Hash.SET_PED_MAX_TIME_UNDERWATER, player.Handle, 3600.0f);
+            API.TriggerClientEvent(player, "UPDATE_SCUBA_PERCENTAGE",
+                "Oxygen Remaining: " + Math.Round((scubaitem[0].OxygenRemaining / ScubaItem.MaxOxygen) * 100f) +
+                "%");
         }
 
         private void API_onResourceStart()

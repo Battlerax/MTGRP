@@ -38,7 +38,7 @@ namespace mtgvrp.vehicle_manager
 {
     public class VehicleManager : Script
     {
-        public static List<Vehicle> Vehicles = new List<Vehicle>();
+        public static List<GameVehicle> Vehicles = new List<GameVehicle>();
 
         public static readonly Dictionary<int, string> VehicleColors = new Dictionary<int, string>()
         {
@@ -216,14 +216,13 @@ namespace mtgvrp.vehicle_manager
 
         public VehicleManager()
         {
-            DebugManager.DebugMessage("[VehicleM] Initilizing vehicle manager...");
+            DebugManager.DebugMessage("[VehicleM] Initializing vehicle manager...");
 
             // Register callbacks
             Event.OnPlayerEnterVehicle += OnPlayerEnterVehicle;
             Event.OnVehicleDeath += OnVehicleDeath;
             Event.OnPlayerExitVehicle += OnPlayerExitVehicle;
             Event.OnPlayerDisconnected += API_onPlayerDisconnected;
-            Event.OnClientEventTrigger += API_onClientEventTrigger;
 
             //Setup respawn timer.
             VehicleRespawnTimer.Interval = 5000;
@@ -264,28 +263,26 @@ namespace mtgvrp.vehicle_manager
             DebugManager.DebugMessage("[VehicleM] Vehicle Manager initalized!");
         }
 
-        private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
+        [RemoteEvent("VehicleStreamedForPlayer")]
+        private void API_onClientEventTrigger(Client sender, params object[] arguments)
         {
-            if (eventName == "VehicleStreamedForPlayer")
+            var veh = (NetHandle)arguments[0];
+
+            //Sync horns
+            if (veh.GetVehicle()?.VehMods?.ContainsKey("14") ?? false)
             {
-                var veh = (NetHandle)arguments[0];
+                API.SendNativeToPlayer(sender, Hash.SET_VEHICLE_MOD, veh, 14,
+                    Convert.ToInt32(veh.GetVehicle().VehMods["14"]));
+            }
 
-                //Sync horns
-                if (veh.GetVehicle()?.VehMods?.ContainsKey("14") ?? false)
-                {
-                    API.SendNativeToPlayer(sender, Hash.SET_VEHICLE_MOD, veh, 14,
-                        Convert.ToInt32(veh.GetVehicle().VehMods["14"]));
-                }
-
-                //Sync tyre smokes
-                if (veh.GetVehicle()?.VehMods?.ContainsKey(ModdingManager.TyresSmokeColorId.ToString()) ?? false)
-                {
-                    API.SendNativeToPlayer(sender, Hash.TOGGLE_VEHICLE_MOD, veh, 20, true);
-                }
-                else
-                {
-                    API.SendNativeToPlayer(sender, Hash.TOGGLE_VEHICLE_MOD, veh, 20, false);
-                }
+            //Sync tyre smokes
+            if (veh.GetVehicle()?.VehMods?.ContainsKey(ModdingManager.TyresSmokeColorId.ToString()) ?? false)
+            {
+                API.SendNativeToPlayer(sender, Hash.TOGGLE_VEHICLE_MOD, veh, 20, true);
+            }
+            else
+            {
+                API.SendNativeToPlayer(sender, Hash.TOGGLE_VEHICLE_MOD, veh, 20, false);
             }
         }
 
@@ -318,7 +315,7 @@ namespace mtgvrp.vehicle_manager
             var pos = player.Position;
             var rot = player.Rotation;
 
-            var veh = CreateVehicle(model, pos, rot, "ABC123", 0, Vehicle.VehTypeTemp, color1, color2, dimension);
+            var veh = CreateVehicle(model, pos, rot, "ABC123", 0, GameVehicle.VehTypeTemp, color1, color2, dimension);
             spawn_vehicle(veh);
             
             API.SetPlayerIntoVehicle(player, veh.NetHandle, -1);
@@ -347,7 +344,7 @@ namespace mtgvrp.vehicle_manager
                 return;
             }
 
-            if(veh.VehType != Vehicle.VehTypeTemp)
+            if(veh.VehType != GameVehicle.VehTypeTemp)
             {
                 API.SendNotificationToPlayer(player, "~r~ ERROR: You must be inside a temporary vehicle to save it.");
                 return;
@@ -362,7 +359,7 @@ namespace mtgvrp.vehicle_manager
             
             veh.Insert();
 
-            veh.VehType = Vehicle.VehTypePerm;
+            veh.VehType = GameVehicle.VehTypePerm;
             veh.Save();
 
             API.SendChatMessageToPlayer(player, "You have saved vehicle " + Vehicles.IndexOf(veh) + ". (SQL: " + veh.Id + ")");
@@ -399,7 +396,7 @@ namespace mtgvrp.vehicle_manager
         {
             Character character = player.GetCharacter();
             var vehicleHandle = API.Shared.GetPlayerVehicle(player);
-            Vehicle vehicle = API.Shared.GetEntityData(vehicleHandle, "Vehicle");
+            GameVehicle vehicle = API.Shared.GetEntityData(vehicleHandle, "Vehicle");
             if (vehicle == null) return;
 
             if (API.Shared.GetPlayerVehicleSeat(player) != -1)
@@ -458,7 +455,7 @@ namespace mtgvrp.vehicle_manager
 
             Character character = player.GetCharacter();
             var veh = API.Shared.GetPlayerVehicle(player);
-            Vehicle vehicle = API.Shared.GetEntityData(veh, "Vehicle");
+            GameVehicle vehicle = API.Shared.GetEntityData(veh, "Vehicle");
 
             if (API.Shared.GetVehicleEngineStatus(veh) == true)
             {
@@ -618,7 +615,7 @@ namespace mtgvrp.vehicle_manager
             var group = character.Group;
             if(group != Group.None)
             {
-                List<Vehicle> gCarsList = new List<Vehicle>();
+                List<GameVehicle> gCarsList = new List<GameVehicle>();
                 foreach(var v in Vehicles)
                 {
                     if(v.GroupId == group.Id)
@@ -695,7 +692,7 @@ namespace mtgvrp.vehicle_manager
             }
         }
 
-        private void OnPlayerEnterVehicle(Client player, NetHandle vehicleHandle, byte seat)
+        private void OnPlayerEnterVehicle(Client player, Vehicle vehicleHandle, sbyte seat)
         {
             // Admin check in future
 
@@ -770,7 +767,7 @@ namespace mtgvrp.vehicle_manager
             }
         }
 
-        public void OnPlayerExitVehicle(Client player, NetHandle vehicleHandle)
+        public void OnPlayerExitVehicle(Client player, Vehicle vehicleHandle)
         {
             var veh = GetVehFromNetHandle(vehicleHandle);
 
@@ -781,7 +778,7 @@ namespace mtgvrp.vehicle_manager
 
             API.SetBlipTransparency(veh.Blip, 100);
 
-            if (veh.VehType == Vehicle.VehTypeTemp)
+            if (veh.VehType == GameVehicle.VehTypeTemp)
             {
                 despawn_vehicle(veh);
                 delete_vehicle(veh);
@@ -825,7 +822,7 @@ namespace mtgvrp.vehicle_manager
             }
         }
 
-        public void OnVehicleDeath(NetHandle vehicleHandle)
+        public void OnVehicleDeath(Vehicle vehicleHandle)
         {
             var veh = GetVehFromNetHandle(vehicleHandle);
             if (veh == null) return;
@@ -856,9 +853,9 @@ namespace mtgvrp.vehicle_manager
             return handleReturned;
         }
 
-        public static Vehicle GetVehicleById(int id)
+        public static GameVehicle GetVehicleById(int id)
         {
-            foreach (Vehicle v in Vehicles)
+            foreach (GameVehicle v in Vehicles)
             {
                 if (v.Id == id) { return v; }
             }
@@ -883,9 +880,9 @@ namespace mtgvrp.vehicle_manager
             return 0;
         }
 
-    public static Vehicle CreateVehicle(VehicleHash model, Vector3 pos, Vector3 rot, string license, int ownerid, int vehtype, int color1 = 0, int color2 = 0, int dimension = 0)
+    public static GameVehicle CreateVehicle(VehicleHash model, Vector3 pos, Vector3 rot, string license, int ownerid, int vehtype, int color1 = 0, int color2 = 0, int dimension = 0)
         {
-            var veh = new Vehicle
+            var veh = new GameVehicle
             {
                 VehModel = model,
                 SpawnPos = pos,
@@ -901,17 +898,17 @@ namespace mtgvrp.vehicle_manager
             return veh;
         }
 
-        public static void delete_vehicle(Vehicle veh)
+        public static void delete_vehicle(GameVehicle veh)
         {
             Vehicles.Remove(veh);
         }
 
-        public static Vehicle GetVehFromNetHandle(NetHandle Handle)
+        public static GameVehicle GetVehFromNetHandle(NetHandle Handle)
         {
             return API.Shared.GetEntityData(Handle, "Vehicle") ?? null;
         }
 
-        public static int spawn_vehicle(Vehicle veh, Vector3 pos)
+        public static int spawn_vehicle(GameVehicle veh, Vector3 pos)
         {
             var returnCode = veh.Spawn(pos);
 
@@ -939,12 +936,12 @@ namespace mtgvrp.vehicle_manager
             return returnCode;
         }
 
-        public static int spawn_vehicle(Vehicle veh)
+        public static int spawn_vehicle(GameVehicle veh)
         {
             return spawn_vehicle(veh, veh.SpawnPos);
         }
 
-        public static int despawn_vehicle(Vehicle veh)
+        public static int despawn_vehicle(GameVehicle veh)
         {
             var returnCode = veh.Despawn();
 
@@ -956,7 +953,7 @@ namespace mtgvrp.vehicle_manager
             return returnCode;
         }
 
-        public static int respawn_vehicle(Vehicle veh, Vector3 pos)
+        public static int respawn_vehicle(GameVehicle veh, Vector3 pos)
         {
             if (API.Shared.HasEntityData(veh.NetHandle, "Vehicle"))
             {
@@ -965,7 +962,7 @@ namespace mtgvrp.vehicle_manager
             return spawn_vehicle(veh, pos);
         }
 
-        public static int respawn_vehicle(Vehicle veh)
+        public static int respawn_vehicle(GameVehicle veh)
         {
             if (veh == null)
                 return -1;
@@ -973,7 +970,7 @@ namespace mtgvrp.vehicle_manager
             return respawn_vehicle(veh, veh.SpawnPos);
         }
 
-        public static bool DoesPlayerHaveVehicleAccess(Client player, Vehicle vehicle)
+        public static bool DoesPlayerHaveVehicleAccess(Client player, GameVehicle vehicle)
         {
             Account account = player.GetAccount();
             Character character = player.GetCharacter();
@@ -991,7 +988,7 @@ namespace mtgvrp.vehicle_manager
             return false;
         }
 
-        public static bool DoesPlayerHaveVehicleParkLockAccess(Client player, Vehicle vehicle)
+        public static bool DoesPlayerHaveVehicleParkLockAccess(Client player, GameVehicle vehicle)
         {
             Account account = player.GetAccount();
             Character character = player.GetCharacter();
@@ -1025,7 +1022,7 @@ namespace mtgvrp.vehicle_manager
 
         public static void load_all_unowned_vehicles()
         {
-            var filter = Builders<Vehicle>.Filter.Eq("OwnerId", "0");
+            var filter = Builders<GameVehicle>.Filter.Eq("OwnerId", "0");
             var unownedVehicles = DatabaseManager.VehicleTable.Find(filter).ToList();
 
             foreach (var v in unownedVehicles)

@@ -23,7 +23,7 @@ using mtgvrp.weapon_manager;
 using MongoDB.Driver;
 using static mtgvrp.core.LogManager;
 using Color = mtgvrp.core.Color;
-using Vehicle = mtgvrp.vehicle_manager.Vehicle;
+using GameVehicle = mtgvrp.vehicle_manager.GameVehicle;
 using MongoDB.Bson;
 
 namespace mtgvrp.AdminSystem
@@ -34,13 +34,11 @@ namespace mtgvrp.AdminSystem
         {
             DebugManager.DebugMessage("[AdminSys] Initalizing Admin System...");
             DebugManager.DebugMessage("[AdminSys] Admin System initalized.");
-            Event.OnClientEventTrigger += OnClientEventTrigger;
             Event.OnPlayerDamage += resetPlayerHealth;
         }
 
-        private void resetPlayerHealth(NetHandle entity, float lossFirst, float lossSecond)
+        private void resetPlayerHealth(Client player, float lossFirst, float lossSecond)
         {
-            Client player = NAPI.Entity.GetEntityFromHandle<Client>(entity);
             Character c = player.GetCharacter();
             if (c.isAJailed || c.IsJailed)
             {
@@ -48,57 +46,55 @@ namespace mtgvrp.AdminSystem
             }
         }
 
-
         private static readonly Vector3 aJailLoc = new Vector3(136.5146, -2203.149, 7.30914);
 
-
-
-
-        public void OnClientEventTrigger(Client player, string eventId, params object[] arguments)
+        [RemoteEvent("OnRequestSubmitted")]
+        public void OnRequestSubmitted(Client player, params object[] arguments)
         {
-            switch (eventId)
+            Character character = player.GetCharacter();
+            int playerid = PlayerManager.GetPlayerId(character);
+            AdminReports.InsertReport(3, player.Nametag, (string)arguments[0]);
+            SendtoAllAdmins("~g~[REPORT]~w~ " + PlayerManager.GetName(player) + " (ID:" + playerid + "): " +
+                            (string)arguments[0]);
+            API.SendChatMessageToPlayer(player, "Report submitted.");
+            startReportTimer(player);
+            character.HasActiveReport = true;
+        }
+
+        [RemoteEvent("OnReportMade")]
+        public void OnReportMade(Client player, params object[] arguments)
+        {
+            Character senderchar = player.GetCharacter();
+            int senderid = PlayerManager.GetPlayerId(senderchar);
+            string id = (string)arguments[1];
+            var receiver = PlayerManager.ParseClient(id);
+            if (receiver == null)
             {
-                case "OnRequestSubmitted":
-                    Character character = player.GetCharacter();
-                    int playerid = PlayerManager.GetPlayerId(character);
-                    AdminReports.InsertReport(3, player.Nametag, (string) arguments[0]);
-                    SendtoAllAdmins("~g~[REPORT]~w~ " + PlayerManager.GetName(player) + " (ID:" + playerid + "): " +
-                                    (string) arguments[0]);
-                    API.SendChatMessageToPlayer(player, "Report submitted.");
-                    startReportTimer(player);
-                    character.HasActiveReport = true;
-                    break;
-
-                case "OnReportMade":
-                    Character senderchar = player.GetCharacter();
-                    int senderid = PlayerManager.GetPlayerId(senderchar);
-                    string id = (string) arguments[1];
-                    var receiver = PlayerManager.ParseClient(id);
-                    if (receiver == null)
-                    {
-                        API.Shared.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
-                        return;
-                    }
-                    AdminReports.InsertReport(2, player.Nametag, (string) arguments[0],
-                        PlayerManager.GetName(receiver) + " (ID:" + id + ")");
-                    SendtoAllAdmins("~g~[REPORT]~w~ " + PlayerManager.GetName(player) + " (ID:" + senderid + ")" +
-                                    " reported " + PlayerManager.GetName(receiver) + " (ID:" + id + ") for " +
-                                    (string) arguments[0]);
-                    API.SendChatMessageToPlayer(player, "Report submitted.");
-                    startReportTimer(player);
-                    senderchar.HasActiveReport = true;
-                    break;
-
-                case "teleport":
-                    Vector3 pos = (Vector3) arguments[0];
-                    player.Position = new Vector3(pos.X, pos.Y, pos.Z);
-                    break;
-                case "SET_PLAYER_CP":
-                    var p = API.GetPlayerFromHandle((NetHandle) arguments[0]);
-                    API.TriggerClientEvent(p, "update_beacon", (Vector3) arguments[1]);
-                    break;
-
+                API.Shared.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                return;
             }
+            AdminReports.InsertReport(2, player.Nametag, (string)arguments[0],
+                PlayerManager.GetName(receiver) + " (ID:" + id + ")");
+            SendtoAllAdmins("~g~[REPORT]~w~ " + PlayerManager.GetName(player) + " (ID:" + senderid + ")" +
+                            " reported " + PlayerManager.GetName(receiver) + " (ID:" + id + ") for " +
+                            (string)arguments[0]);
+            API.SendChatMessageToPlayer(player, "Report submitted.");
+            startReportTimer(player);
+            senderchar.HasActiveReport = true;
+        }
+
+        [RemoteEvent("SET_PLAYER_CP")]
+        public void SetPlayerCP(Client player, params object[] arguments)
+        {
+            var p = API.GetPlayerFromHandle((NetHandle)arguments[0]);
+            API.TriggerClientEvent(p, "update_beacon", (Vector3)arguments[1]);
+        }
+
+        [RemoteEvent("teleport")]
+        public void Teleport(Client player, params object[] arguments)
+        {
+            Vector3 pos = (Vector3)arguments[0];
+            player.Position = new Vector3(pos.X, pos.Y, pos.Z);
         }
 
         [Command("arelease")]
@@ -2051,7 +2047,7 @@ namespace mtgvrp.AdminSystem
                 return;
             }
 
-            Vehicle veh = null;
+            GameVehicle veh = null;
 
             if (player.IsInVehicle)
             {

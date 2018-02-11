@@ -74,7 +74,6 @@ namespace mtgvrp.job_manager.hunting
             Event.OnResourceStart += OnHuntingManagerStart;
             //Event.OnPlayerWeaponAmmoChange += OnPlayerWeaponAmmoChange;
             Event.OnPlayerWeaponSwitch += OnPlayerWeaponSwitch;
-            Event.OnClientEventTrigger += OnClientEventTrigger;
         }
 
         public void OnHuntingManagerStart()
@@ -140,12 +139,10 @@ namespace mtgvrp.job_manager.hunting
             }
         }
 
-        public void OnClientEventTrigger(Client player, string eventName, params object[] arguments)
+        [RemoteEvent("update_animal_position")]
+        public void UpdateAnimalPosition(Client player, params object[] arguments)
         {
-            if (eventName == "update_animal_position")
-            {
-                API.Shared.SetEntityPosition((NetHandle)arguments[0], (Vector3)arguments[1]);
-            }
+            API.Shared.SetEntityPosition((NetHandle)arguments[0], (Vector3)arguments[1]);
         }
 
         public static Vector3 RandomFarawayDestination(Vector3 currentPos)

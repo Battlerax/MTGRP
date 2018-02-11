@@ -5,8 +5,6 @@ using System.Runtime.CompilerServices;
 
 using GTANetworkAPI;
 
-
-
 using mtgvrp.core;
 using mtgvrp.inventory;
 using mtgvrp.player_manager;
@@ -18,80 +16,85 @@ namespace mtgvrp.vehicle_manager
     {
         public VehicleOwnership()
         {
-            Event.OnClientEventTrigger += API_onClientEventTrigger;
         }
 
-        private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
+        [RemoteEvent("myvehicles_locatecar")]
+        private void MyVehiclesLocateCar(Client sender, params object[] arguments)
         {
             Character character = sender.GetCharacter();
-            switch (eventName)
-            {
-                case "myvehicles_locatecar":
-                    vehicle_manager.Vehicle lcVeh =
+            GameVehicle lcVeh =
                         VehicleManager.Vehicles.Single(
                             x => x.NetHandle.Value == Convert.ToInt32(arguments[0]) && x.OwnerId == character.Id);
-                    Vector3 loc = API.GetEntityPosition(lcVeh.NetHandle);
-                    API.TriggerClientEvent(sender, "myvehicles_setCheckpointToCar", loc.X, loc.Y, loc.Z);
-                    API.SendChatMessageToPlayer(sender, "A checkpoint has been set to the vehicle.");
-                    break;
+            Vector3 loc = API.GetEntityPosition(lcVeh.NetHandle);
+            API.TriggerClientEvent(sender, "myvehicles_setCheckpointToCar", loc.X, loc.Y, loc.Z);
+            API.SendChatMessageToPlayer(sender, "A checkpoint has been set to the vehicle.");
+        }
 
-                case "myvehicles_abandoncar":
-                    vehicle_manager.Vehicle acVeh =
+        [RemoteEvent("myvehicles_abandoncar")]
+        private void MyVehiclesAbandonCar(Client sender, params object[] arguments)
+        {
+            Character character = sender.GetCharacter();
+            GameVehicle acVeh =
                         VehicleManager.Vehicles.Single(
                             x => x.Id == Convert.ToInt32(arguments[0]) && x.OwnerId == character.Id);
-                    VehicleManager.despawn_vehicle(acVeh);
-                    VehicleManager.delete_vehicle(acVeh);
-                    acVeh.Delete();
-                    API.SendChatMessageToPlayer(sender,
-                        $"You have sucessfully abandoned your ~r~{VehicleOwnership.returnCorrDisplayName(acVeh.VehModel)}~w~");
-                    break;
+            VehicleManager.despawn_vehicle(acVeh);
+            VehicleManager.delete_vehicle(acVeh);
+            acVeh.Delete();
+            API.SendChatMessageToPlayer(sender,
+                $"You have sucessfully abandoned your ~r~{returnCorrDisplayName(acVeh.VehModel)}~w~");
+        }
 
-                case "myvehicles_sellcar":
-                    vehicle_manager.Vehicle scVeh =
+        [RemoteEvent("myvehicles_sellcar")]
+        private void MyVehiclesSellCar(Client sender, params object[] arguments)
+        {
+            Character character = sender.GetCharacter();
+            GameVehicle scVeh =
                         VehicleManager.Vehicles.Single(
                             x => x.Id == Convert.ToInt32(arguments[0]) && x.OwnerId == character.Id);
-                    var tid = (string) arguments[1];
-                    var target = PlayerManager.ParseClient(tid);
-                    if (target == null)
-                    {
-                        API.SendChatMessageToPlayer(sender, "That player isn't online or doesn't exist.");
-                        return;
-                    }
-                    var targetChar = target.GetCharacter();
-                    var targetAccount = target.GetAccount();
+            var tid = (string)arguments[1];
+            var target = PlayerManager.ParseClient(tid);
+            if (target == null)
+            {
+                API.SendChatMessageToPlayer(sender, "That player isn't online or doesn't exist.");
+                return;
+            }
+            var targetChar = target.GetCharacter();
+            var targetAccount = target.GetAccount();
 
-                    var price = 0;
-                    if (!int.TryParse((string) arguments[2], out price))
-                    {
-                        API.SendChatMessageToPlayer(sender, "Invalid price entered.");
-                        return;
-                    }
-                    if (price < 0)
-                    {
-                        API.SendChatMessageToPlayer(sender, "Price cannot be negative.");
-                        return;
-                    }
+            var price = 0;
+            if (!int.TryParse((string)arguments[2], out price))
+            {
+                API.SendChatMessageToPlayer(sender, "Invalid price entered.");
+                return;
+            }
+            if (price < 0)
+            {
+                API.SendChatMessageToPlayer(sender, "Price cannot be negative.");
+                return;
+            }
 
-                    if (targetChar.OwnedVehicles.Count >= VehicleManager.GetMaxOwnedVehicles(targetChar.Client))
-                    {
-                        API.SendChatMessageToPlayer(sender, "This player cannot own any more vehicles.");
-                        return;
-                    }
+            if (targetChar.OwnedVehicles.Count >= VehicleManager.GetMaxOwnedVehicles(targetChar.Client))
+            {
+                API.SendChatMessageToPlayer(sender, "This player cannot own any more vehicles.");
+                return;
+            }
 
-                    API.SendChatMessageToPlayer(sender,
-                        $"Are you sure you would like to sell the ~r~{VehicleOwnership.returnCorrDisplayName(scVeh.VehModel)}~w~ for ~r~${price}~w~ to the player ~r~{targetChar.rp_name()}~w~?");
-                    API.SendChatMessageToPlayer(sender, "Use /confirmsellvehicle to sell.");
-                    API.SetEntityData(sender, "sellcar_selling", new dynamic[] {scVeh, targetChar, price});
-                    break;
-                case "groupvehicles_locatecar":
-                    vehicle_manager.Vehicle gVeh =
+            API.SendChatMessageToPlayer(sender,
+                $"Are you sure you would like to sell the ~r~{returnCorrDisplayName(scVeh.VehModel)}~w~ for ~r~${price}~w~ to the player ~r~{targetChar.rp_name()}~w~?");
+            API.SendChatMessageToPlayer(sender, "Use /confirmsellvehicle to sell.");
+            API.SetEntityData(sender, "sellcar_selling", new dynamic[] { scVeh, targetChar, price });
+        }
+
+        [RemoteEvent("groupvehicles_locatecar")]
+        private void GroupVehiclesLocateCar(Client sender, params object[] arguments)
+        {
+            Character character = sender.GetCharacter();
+            GameVehicle gVeh =
                         VehicleManager.Vehicles.Single(
                             x => x.NetHandle.Value == Convert.ToInt32(arguments[0]) && x.GroupId == character.GroupId);
-                    Vector3 location = API.GetEntityPosition(gVeh.NetHandle);
-                    API.TriggerClientEvent(sender, "myvehicles_setCheckpointToCar", location.X, location.Y, location.Z);
-                    API.SendChatMessageToPlayer(sender, "A checkpoint has been set to the vehicle.");
-                    break;
-            }
+            Vector3 location = API.GetEntityPosition(gVeh.NetHandle);
+            API.TriggerClientEvent(sender, "myvehicles_setCheckpointToCar", location.X, location.Y, location.Z);
+            API.SendChatMessageToPlayer(sender, "A checkpoint has been set to the vehicle.");
         }
 
         [Command("myvehicles"), Help(HelpManager.CommandGroups.Vehicles, "Lists the vehicles you own.", null)]
@@ -106,7 +109,7 @@ namespace mtgvrp.vehicle_manager
             }
             string[][] cars = character.OwnedVehicles
                 .Select(x => new[]
-                    {VehicleOwnership.returnCorrDisplayName(x.VehModel), x.Id.ToString(), x.NetHandle.Value.ToString()})
+                    {returnCorrDisplayName(x.VehModel), x.Id.ToString(), x.NetHandle.Value.ToString()})
                 .ToArray();
 
             API.TriggerClientEvent(player, "myvehicles_showmenu", API.ToJson(cars));
@@ -120,13 +123,13 @@ namespace mtgvrp.vehicle_manager
             var data = API.GetEntityData(player, "sellcar_selling");
             if (data != null)
             {
-                Vehicle veh = data[0];
+                GameVehicle veh = data[0];
                 Character target = data[1];
                 int price = data[2];
                 API.SetEntityData(target.Client, "sellcar_buying", new dynamic[] {character, veh, price});
                 API.SetEntityData(player, "sellcar_selling", null);
                 API.SendChatMessageToPlayer(target.Client,
-                    $"~r~{character.rp_name()}~w~ has offered to sell you a ~r~{VehicleOwnership.returnCorrDisplayName(veh.VehModel)}~w~ for ~r~${price}~w~.");
+                    $"~r~{character.rp_name()}~w~ has offered to sell you a ~r~{returnCorrDisplayName(veh.VehModel)}~w~ for ~r~${price}~w~.");
                 API.SendChatMessageToPlayer(target.Client, "Use /confirmbuyvehicle to buy it.");
                 API.SendChatMessageToPlayer(player, "Request sent.");
             }
@@ -144,7 +147,7 @@ namespace mtgvrp.vehicle_manager
             if (data != null)
             {
                 Character buyingFrom = data[0];
-                Vehicle veh = data[1];
+                GameVehicle veh = data[1];
                 int price = data[2];
                 //Make sure near him.
                 var buyingPos = buyingFrom.Client.Position;

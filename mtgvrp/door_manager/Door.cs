@@ -91,7 +91,7 @@ namespace mtgvrp.door_manager
             }*/
         }
 
-        private void Shape_onEntityEnterColShape(ColShape colshape, NetHandle entity)
+        private void Shape_onEntityEnterColShape(ColShape colshape, Client entity)
         {
             if (colshape == Shape && API.Shared.GetEntityType(entity) == EntityType.Player)
             {

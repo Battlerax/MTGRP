@@ -23,8 +23,6 @@ namespace mtgvrp.mapping_manager
         {
             DebugManager.DebugMessage("[MAPPING MANAGER] Initializing mapping manager...");
 
-            Event.OnClientEventTrigger += Mapping_onClientEventTrigger;
-
             Mapping = DatabaseManager.MappingTable.Find(FilterDefinition<Mapping>.Empty).ToList();
 
             foreach(var m in Mapping)
@@ -40,232 +38,233 @@ namespace mtgvrp.mapping_manager
             DebugManager.DebugMessage("[MAPPING MANAGER] Mapping initialized.");
         }
 
-        public void Mapping_onClientEventTrigger(Client player, string eventName, params object[] arguments)
+        [RemoteEvent("requestCreateMapping")]
+        public void RequestCreateMapping(Client player, params object[] arguments)
         {
-            switch (eventName)
+            var propLink = Convert.ToInt32(arguments[0]);
+            var dimension = Convert.ToInt32(arguments[1]);
+            var pastebinLink = Convert.ToString(arguments[2]);
+            var description = Convert.ToString(arguments[3]);
+
+            if (dimension < 0)
             {
-                case "requestCreateMapping":
+                API.TriggerClientEvent(player, "send_error", "The dimension entered is less than 0.");
+                return;
+            }
+
+            if (propLink > 0)
+            {
+                if (PropertyManager.Properties.FindAll(p => p.Id == propLink).Count < 1)
                 {
-                    var propLink = Convert.ToInt32(arguments[0]);
-                    var dimension = Convert.ToInt32(arguments[1]);
-                    var pastebinLink = Convert.ToString(arguments[2]);
-                    var description = Convert.ToString(arguments[3]);
-
-                    if (dimension < 0)
-                    {
-                        API.TriggerClientEvent(player, "send_error", "The dimension entered is less than 0.");
-                        return;
-                    }
-
-                    if(propLink > 0)
-                    {
-                        if (PropertyManager.Properties.FindAll(p => p.Id == propLink).Count < 1)
-                        {
-                            API.TriggerClientEvent(player, "send_error", "The property link ID you entered is invalid.");
-                            return;
-                        }
-                    }
-                  
-
-                    var webClient = new WebClient();
-
-                    try
-                    {
-                        var pastebinData = webClient.DownloadString("http://pastebin.com/raw/" + pastebinLink);
-
-                        var newMapping = new Mapping(player.GetAccount().AdminName, pastebinLink, description, propLink, dimension);
-                        newMapping.Objects = ParseObjectsFromString(pastebinData);
-                        newMapping.DeleteObjects = ParseDeleteObjectsFromString(pastebinData);
-                        newMapping.Insert();
-                        newMapping.Load();
-                        Mapping.Add(newMapping);
-
-                        LogManager.Log(LogManager.LogTypes.MappingRequests, player.GetAccount().AccountName + " has created mapping request #" + newMapping.Id);
-                        API.SendChatMessageToPlayer(player, core.Color.White, "You have successfully created and loaded mapping request #" + newMapping.Id);
-                        return;
-                    }
-                    catch (WebException e)
-                    {
-                        if (((HttpWebResponse)e.Response).StatusCode.ToString() == "NotFound")
-                        {
-                            API.TriggerClientEvent(player, "send_error", "The pastebin link you entered does not exist.");
-                            return;
-                        }
-                    }
-                    break;
+                    API.TriggerClientEvent(player, "send_error", "The property link ID you entered is invalid.");
+                    return;
                 }
-                case "searchForMappingRequest":
+            }
+
+            var webClient = new WebClient();
+
+            try
+            {
+                var pastebinData = webClient.DownloadString("http://pastebin.com/raw/" + pastebinLink);
+
+                var newMapping = new Mapping(player.GetAccount().AdminName, pastebinLink, description, propLink, dimension);
+                newMapping.Objects = ParseObjectsFromString(pastebinData);
+                newMapping.DeleteObjects = ParseDeleteObjectsFromString(pastebinData);
+                newMapping.Insert();
+                newMapping.Load();
+                Mapping.Add(newMapping);
+
+                LogManager.Log(LogManager.LogTypes.MappingRequests, player.GetAccount().AccountName + " has created mapping request #" + newMapping.Id);
+                API.SendChatMessageToPlayer(player, core.Color.White, "You have successfully created and loaded mapping request #" + newMapping.Id);
+                return;
+            }
+            catch (WebException e)
+            {
+                if (((HttpWebResponse)e.Response).StatusCode.ToString() == "NotFound")
                 {
-                    var searchForId = Convert.ToInt32(arguments[0]);
-
-                    var foundRequest = Mapping.Find(m => m.Id == searchForId);
-
-                    if (foundRequest == null)
-                    {
-                        API.TriggerClientEvent(player, "send_error", "The mapping request you searched for does not exist.");
-                        return;
-                    }
-
-                    //id, createdBy, createdDate, propLink, dim, pastebinLink, description, isLoaded, isActive
-                    API.TriggerClientEvent(player, "populateViewMappingRequest", foundRequest.Id, foundRequest.CreatedBy, foundRequest.CreatedDate.ToString(), foundRequest.PropertyLinkId, foundRequest.Dimension, foundRequest.PastebinLink, foundRequest.Description, foundRequest.IsSpawned, foundRequest.IsActive);
-                    player.GetAccount().ViewingMappingRequest = foundRequest;
-                    player.SendChatMessage("You are now viewing mapping request #" + foundRequest.Id);
-                    break;
+                    API.TriggerClientEvent(player, "send_error", "The pastebin link you entered does not exist.");
+                    return;
                 }
-                case "saveMappingRequest":
+            }
+        }
+
+        [RemoteEvent("searchForMappingRequest")]
+        public void SearchForMappingRequest(Client player, params object[] arguments)
+        {
+            var searchForId = Convert.ToInt32(arguments[0]);
+
+            var foundRequest = Mapping.Find(m => m.Id == searchForId);
+
+            if (foundRequest == null)
+            {
+                API.TriggerClientEvent(player, "send_error", "The mapping request you searched for does not exist.");
+                return;
+            }
+
+            //id, createdBy, createdDate, propLink, dim, pastebinLink, description, isLoaded, isActive
+            API.TriggerClientEvent(player, "populateViewMappingRequest", foundRequest.Id, foundRequest.CreatedBy, foundRequest.CreatedDate.ToString(), foundRequest.PropertyLinkId, foundRequest.Dimension, foundRequest.PastebinLink, foundRequest.Description, foundRequest.IsSpawned, foundRequest.IsActive);
+            player.GetAccount().ViewingMappingRequest = foundRequest;
+            player.SendChatMessage("You are now viewing mapping request #" + foundRequest.Id);
+        }
+
+        [RemoteEvent("saveMappingRequest")]
+        public void SaveMappingRequest(Client player, params object[] arguments)
+        {
+            var mappingId = Convert.ToInt32(arguments[0]);
+            var newPropLink = Convert.ToInt32(arguments[1]);
+            var newDim = Convert.ToInt32(arguments[2]);
+            var newDesc = Convert.ToString(arguments[3]);
+
+            var editingRequest = player.GetAccount().ViewingMappingRequest;
+
+            if (editingRequest.Id != mappingId)
+            {
+                API.TriggerClientEvent(player, "send_error", "The mapping ID you are saving does not match the one you are viewing. Please hit search first.");
+                return;
+            }
+
+            editingRequest.PropertyLinkId = newPropLink;
+            editingRequest.Dimension = newDim;
+            editingRequest.Description = newDesc;
+            editingRequest.Save();
+            player.SendChatMessage("You saved mapping request #" + mappingId);
+            LogManager.Log(LogManager.LogTypes.MappingRequests, player.GetAccount().AccountName + " has saved mapping request #" + mappingId);
+        }
+
+        [RemoteEvent("deleteMappingRequest")]
+        public void DeleteMappingRequest(Client player, params object[] arguments)
+        {
+            var mappingId = Convert.ToInt32(arguments[0]);
+            var editingRequest = player.GetAccount().ViewingMappingRequest;
+
+            if (editingRequest.Id != mappingId)
+            {
+                API.TriggerClientEvent(player, "send_error", "The mapping ID you are saving does not match the one you are viewing. Please hit search first.");
+                return;
+            }
+
+            player.SendChatMessage("You have deleted mapping request #" + mappingId + ". This cannot be undone.");
+            LogManager.Log(LogManager.LogTypes.MappingRequests, player.GetAccount().AccountName + " has deleted mapping request #" + mappingId);
+            Mapping.Remove(editingRequest);
+            editingRequest.Unload();
+            editingRequest.Delete();
+        }
+
+        [RemoteEvent("toggleMappingLoaded")]
+        public void ToggleMappingLoaded(Client player, params object[] arguments)
+        {
+            var mappingId = Convert.ToInt32(arguments[0]);
+            var editingRequest = player.GetAccount().ViewingMappingRequest;
+
+            if (editingRequest.Id != mappingId)
+            {
+                API.TriggerClientEvent(player, "send_error", "The mapping ID you are saving does not match the one you are viewing. Please hit search first.");
+                return;
+            }
+
+            editingRequest.IsSpawned = !editingRequest.IsSpawned;
+
+            if (editingRequest.IsSpawned == true)
+            {
+                editingRequest.Load();
+            }
+            else
+            {
+                editingRequest.Unload();
+            }
+
+            editingRequest.Save();
+            player.SendChatMessage("You have " + ((editingRequest.IsSpawned == true) ? ("loaded") : ("unloaded")) + " mapping request #" + mappingId);
+            LogManager.Log(LogManager.LogTypes.MappingRequests, player.GetAccount().AccountName + "has  " + ((editingRequest.IsSpawned == true) ? ("loaded") : ("unloaded")) + " mapping request #" + mappingId);
+        }
+
+        [RemoteEvent("toggleMappingActive")]
+        public void ToggleMappingActive(Client player, params object[] arguments)
+        {
+            var mappingId = Convert.ToInt32(arguments[0]);
+            var editingRequest = player.GetAccount().ViewingMappingRequest;
+
+            if (editingRequest.Id != mappingId)
+            {
+                API.TriggerClientEvent(player, "send_error", "The mapping ID you are saving does not match the one you are viewing. Please hit search first.");
+                return;
+            }
+
+            editingRequest.IsActive = !editingRequest.IsActive;
+
+            if (editingRequest.IsActive == true)
+            {
+                editingRequest.Load();
+            }
+
+            editingRequest.Save();
+            player.SendChatMessage("You have " + ((editingRequest.IsActive == true) ? ("actived") : ("deactivated")) + " mapping request #" + mappingId + ". Deactived mapping does not spawn on server load.");
+            LogManager.Log(LogManager.LogTypes.MappingRequests, player.GetAccount().AccountName + "has  " + ((editingRequest.IsActive == true) ? ("activated") : ("deactived")) + " mapping request #" + mappingId);
+        }
+
+        [RemoteEvent("requestMappingCode")]
+        public void RequestMappingCode(Client player, params object[] arguments)
+        {
+            var mappingId = Convert.ToInt32(arguments[0]);
+            var editingRequest = player.GetAccount().ViewingMappingRequest;
+
+            if (editingRequest.Id != mappingId)
+            {
+                API.TriggerClientEvent(player, "send_error", "The mapping ID you are saving does not match the one you are viewing. Please hit search first.");
+                return;
+            }
+
+            var mappingString = "";
+
+            foreach (var o in editingRequest.Objects)
+            {
+
+                if (o.Type == MappingObject.ObjectType.CreateObject)
                 {
-                    var mappingId = Convert.ToInt32(arguments[0]);
-                    var newPropLink = Convert.ToInt32(arguments[1]);
-                    var newDim = Convert.ToInt32(arguments[2]);
-                    var newDesc = Convert.ToString(arguments[3]);
-
-                    var editingRequest = player.GetAccount().ViewingMappingRequest;
-
-                    if (editingRequest.Id != mappingId)
-                    {
-                        API.TriggerClientEvent(player, "send_error", "The mapping ID you are saving does not match the one you are viewing. Please hit search first.");
-                        return;
-                    }
-
-                    editingRequest.PropertyLinkId = newPropLink;
-                    editingRequest.Dimension = newDim;
-                    editingRequest.Description = newDesc;
-                    editingRequest.Save();
-                    player.SendChatMessage("You saved mapping request #" + mappingId);
-                    LogManager.Log(LogManager.LogTypes.MappingRequests, player.GetAccount().AccountName + " has saved mapping request #" + mappingId);
-                    break;
+                    //API.CreateObject(int model, Vector3 pos, Vector3 rot, int dimension = 0);
+                    mappingString += string.Format("API.CreateObject({0}, new Vector3({1}, {2}, {3}), new Vector3({4}, {5}, {6}, {7});\n", o.Model, o.Pos.X, o.Pos.Y, o.Pos.Z, o.Rot.X, o.Rot.Y, o.Rot.Z, editingRequest.Dimension);
                 }
-                case "deleteMappingRequest":
+                else
                 {
-                    var mappingId = Convert.ToInt32(arguments[0]);
-                    var editingRequest = player.GetAccount().ViewingMappingRequest;
-
-                    if (editingRequest.Id != mappingId)
-                    {
-                        API.TriggerClientEvent(player, "send_error", "The mapping ID you are saving does not match the one you are viewing. Please hit search first.");
-                        return;
-                    }
-
-                    player.SendChatMessage("You have deleted mapping request #" + mappingId + ". This cannot be undone.");
-                    LogManager.Log(LogManager.LogTypes.MappingRequests, player.GetAccount().AccountName + " has deleted mapping request #" + mappingId);
-                    Mapping.Remove(editingRequest);
-                    editingRequest.Unload();
-                    editingRequest.Delete();
-                    break;
+                    //API.DeleteObject(Client client, Vector3 position, int modelHash);
+                    mappingString += string.Format("API.DeleteObject(player, new Vector3({0}, {1}, {2}), {4});\n", o.Pos.X, o.Pos.Y, o.Pos.Z, o.Model);
                 }
-                case "toggleMappingLoaded":
-                {
-                    var mappingId = Convert.ToInt32(arguments[0]);
-                    var editingRequest = player.GetAccount().ViewingMappingRequest;
 
-                    if (editingRequest.Id != mappingId)
-                    {
-                        API.TriggerClientEvent(player, "send_error", "The mapping ID you are saving does not match the one you are viewing. Please hit search first.");
-                        return;
-                    }
+            }
 
-                    editingRequest.IsSpawned = !editingRequest.IsSpawned;
+            API.TriggerClientEvent(player, "showRequestCode", mappingString);
+        }
 
-                    if(editingRequest.IsSpawned == true)
-                    {
-                        editingRequest.Load();
-                    }
-                    else
-                    {
-                        editingRequest.Unload();
-                    }
-
-                    editingRequest.Save();
-                    player.SendChatMessage("You have " + ((editingRequest.IsSpawned == true) ? ("loaded") : ("unloaded")) + " mapping request #" + mappingId);
-                    LogManager.Log(LogManager.LogTypes.MappingRequests, player.GetAccount().AccountName + "has  " + ((editingRequest.IsSpawned == true) ? ("loaded") : ("unloaded")) + " mapping request #" + mappingId);
+        [RemoteEvent("requestFirstMappingPage")]
+        public void RequestFirstMappingPage(Client player, params object[] arguments)
+        {
+            var count = 0;
+            foreach (var o in Mapping)
+            {
+                API.TriggerClientEvent(player, "addMappingRequest", o.Id, o.Description, o.CreatedBy, o.IsActive);
+                count++;
+                if (count == 10)
                     break;
-                }
-                case "toggleMappingActive":
-                {
-                    var mappingId = Convert.ToInt32(arguments[0]);
-                    var editingRequest = player.GetAccount().ViewingMappingRequest;
+            }
 
-                    if (editingRequest.Id != mappingId)
-                    {
-                        API.TriggerClientEvent(player, "send_error", "The mapping ID you are saving does not match the one you are viewing. Please hit search first.");
-                        return;
-                    }
+            var numOfPages = (Mapping.Count() + 9) / 10;
+            var middlePage = ((1 + numOfPages) / 2) - 1;
+            API.TriggerClientEvent(player, "createPagination", 1, middlePage, numOfPages);
+        }
 
-                    editingRequest.IsActive = !editingRequest.IsActive;
+        [RemoteEvent("requestMappingPage")]
+        public void RequestMappingPage(Client player, params object[] arguments)
+        {
+            var page = Convert.ToInt32(arguments[0]);
+            API.TriggerClientEvent(player, "emptyMappingTable");
+            var count = 0;
+            foreach (var o in Mapping.Skip(page * 10))
+            {
+                API.TriggerClientEvent(player, "addMappingRequest", o.Id, o.Description, o.CreatedBy, o.IsActive);
+                count++;
 
-                    if (editingRequest.IsActive == true)
-                    {
-                        editingRequest.Load();
-                    }
-
-                    editingRequest.Save();
-                    player.SendChatMessage("You have " + ((editingRequest.IsActive == true) ? ("actived") : ("deactivated")) + " mapping request #" + mappingId + ". Deactived mapping does not spawn on server load.");
-                    LogManager.Log(LogManager.LogTypes.MappingRequests, player.GetAccount().AccountName + "has  " + ((editingRequest.IsActive == true) ? ("activated") : ("deactived")) + " mapping request #" + mappingId);
+                if (count == 10)
                     break;
-                }
-                case "requestMappingCode":
-                {
-                    var mappingId = Convert.ToInt32(arguments[0]);
-                    var editingRequest = player.GetAccount().ViewingMappingRequest;
-
-                    if (editingRequest.Id != mappingId)
-                    {
-                        API.TriggerClientEvent(player, "send_error", "The mapping ID you are saving does not match the one you are viewing. Please hit search first.");
-                        return;
-                    }
-
-                    var mappingString = "";
-
-                    foreach(var o in editingRequest.Objects)
-                    {
-                            
-                        if(o.Type == MappingObject.ObjectType.CreateObject)
-                        {
-                            //API.CreateObject(int model, Vector3 pos, Vector3 rot, int dimension = 0);
-                            mappingString += string.Format("API.CreateObject({0}, new Vector3({1}, {2}, {3}), new Vector3({4}, {5}, {6}, {7});\n", o.Model, o.Pos.X, o.Pos.Y, o.Pos.Z, o.Rot.X, o.Rot.Y, o.Rot.Z, editingRequest.Dimension);
-                        }
-                        else
-                        {
-                            //API.DeleteObject(Client client, Vector3 position, int modelHash);
-                            mappingString += string.Format("API.DeleteObject(player, new Vector3({0}, {1}, {2}), {4});\n", o.Pos.X, o.Pos.Y, o.Pos.Z, o.Model);
-                        }
-                           
-                    }
-
-                    API.TriggerClientEvent(player, "showRequestCode", mappingString);
-                    break;
-                }
-                case "requestFirstMappingPage":
-                {
-                    var count = 0;
-                    foreach (var o in Mapping)
-                    {
-                        API.TriggerClientEvent(player, "addMappingRequest", o.Id, o.Description, o.CreatedBy, o.IsActive);
-                        count++;
-                        if (count == 10)
-                            break;
-                    }
-
-                    var numOfPages = (Mapping.Count() + 9) / 10;
-                    var middlePage = ((1 + numOfPages) / 2) - 1;
-                    API.TriggerClientEvent(player, "createPagination", 1, middlePage, numOfPages);
-                    break;
-                }
-                case "requestMappingPage":
-                {
-                    var page = Convert.ToInt32(arguments[0]);
-                    API.TriggerClientEvent(player, "emptyMappingTable");
-                    var count = 0;
-                    foreach (var o in Mapping.Skip(page * 10))
-                    {
-                        API.TriggerClientEvent(player,  "addMappingRequest", o.Id, o.Description, o.CreatedBy, o.IsActive);
-                        count++;
-
-                        if (count == 10)
-                            break;
-                    }
-                    break;
-                }
             }
         }
 

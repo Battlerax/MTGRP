@@ -20,8 +20,6 @@ namespace mtgvrp.door_manager
 
         public DoorManager()
         {
-            Event.OnClientEventTrigger += API_onClientEventTrigger;
-
             API.ConsoleOutput("Loading all doors.");
             foreach (var door in DatabaseManager.DoorsTable.Find(FilterDefinition<Door>.Empty).ToEnumerable())
             {
@@ -51,198 +49,210 @@ namespace mtgvrp.door_manager
             }
         }
 
-        private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
+        [RemoteEvent("doormanager_createdoor")]
+        public void DoorManagerCreateDoor(Client sender, params object[] arguments)
         {
-            switch (eventName)
+            if (sender.GetAccount().AdminLevel >= 5)
             {
-                case "doormanager_createdoor":
-                    if (sender.GetAccount().AdminLevel >= 5)
-                    {
-                        var model = (int)arguments[0];
-                        var position = (Vector3) arguments[1];
-                        var desc = (string) arguments[2];
-                        
-                        var door = new Door(model, position, desc, false, true);
-                        door.Insert();
-                        door.RegisterDoor();
+                var model = (int)arguments[0];
+                var position = (Vector3)arguments[1];
+                var desc = (string)arguments[2];
 
-                        API.SendChatMessageToPlayer(sender, $"[Door Manager] Created a door with id {door.Id}");
-                    }
-                    break;
+                var door = new Door(model, position, desc, false, true);
+                door.Insert();
+                door.RegisterDoor();
 
-                case "doormanager_togglelock":
-                    if (sender.GetAccount().AdminLevel >= 5)
-                    {
-                        var id = Convert.ToInt32(arguments[0]);
-                        var door = Door.Doors.SingleOrDefault(x => x.Id == id);
-                        if (door == null)
-                        {
-                            API.SendChatMessageToPlayer(sender, "[Door Manager] That ID doesn't exist.");
-                            return;
-                        }
-                        door.Locked = !door.Locked;
-                        door.RefreshDoor();
-                        door.Save();
-                        API.SendChatMessageToPlayer(sender, "[Door Manager] Door has been " + (door.Locked ? "~g~Locked" : "~r~Unlocked"));
-                    }
-                    break;
+                API.SendChatMessageToPlayer(sender, $"[Door Manager] Created a door with id {door.Id}");
+            }
+        }
 
-                case "doormanager_changedesc":
-                    if (sender.GetAccount().AdminLevel >= 5)
-                    {
-                        var id = Convert.ToInt32(arguments[0]);
-                        var desc = (string) arguments[1];
-                        var door = Door.Doors.SingleOrDefault(x => x.Id == id);
-                        if (door == null)
-                        {
-                            API.SendChatMessageToPlayer(sender, "[Door Manager] That ID doesn't exist.");
-                            return;
-                        }
-                        door.Description = desc;
-                        door.Save();
-                        API.SendChatMessageToPlayer(sender, "[Door Manager] Door description has been set to ~g~" + desc);
-                    }
-                    break;
+        [RemoteEvent("doormanager_togglelock")]
+        public void DoorManagerToggleLock(Client sender, params object[] arguments)
+        {
+            if (sender.GetAccount().AdminLevel >= 5)
+            {
+                var id = Convert.ToInt32(arguments[0]);
+                var door = Door.Doors.SingleOrDefault(x => x.Id == id);
+                if (door == null)
+                {
+                    API.SendChatMessageToPlayer(sender, "[Door Manager] That ID doesn't exist.");
+                    return;
+                }
+                door.Locked = !door.Locked;
+                door.RefreshDoor();
+                door.Save();
+                API.SendChatMessageToPlayer(sender, "[Door Manager] Door has been " + (door.Locked ? "~g~Locked" : "~r~Unlocked"));
+            }
+        }
 
-                case "doormanager_goto":
-                    if (sender.GetAccount().AdminLevel >= 5)
-                    {
-                        var id = Convert.ToInt32(arguments[0]);
-                        var door = Door.Doors.SingleOrDefault(x => x.Id == id);
-                        if (door == null)
-                        {
-                            API.SendChatMessageToPlayer(sender, "[Door Manager] That ID doesn't exist.");
-                            return;
-                        }
-                        sender.Position = door.Position;
-                        API.SendChatMessageToPlayer(sender, "[Door Manager] Teleported to door id " + door.Id);
-                    }
-                    break;
+        [RemoteEvent("doormanager_changedesc")]
+        public void DoorManagerChangeDesc(Client sender, params object[] arguments)
+        {
+            if (sender.GetAccount().AdminLevel >= 5)
+            {
+                var id = Convert.ToInt32(arguments[0]);
+                var desc = (string)arguments[1];
+                var door = Door.Doors.SingleOrDefault(x => x.Id == id);
+                if (door == null)
+                {
+                    API.SendChatMessageToPlayer(sender, "[Door Manager] That ID doesn't exist.");
+                    return;
+                }
+                door.Description = desc;
+                door.Save();
+                API.SendChatMessageToPlayer(sender, "[Door Manager] Door description has been set to ~g~" + desc);
+            }
+        }
 
-                case "doormanager_delete":
-                    if (sender.GetAccount().AdminLevel >= 5)
-                    {
-                        var id = Convert.ToInt32(arguments[0]);
-                        var door = Door.Doors.SingleOrDefault(x => x.Id == id);
-                        if (door == null)
-                        {
-                            API.SendChatMessageToPlayer(sender, "[Door Manager] That ID doesn't exist.");
-                            return;
-                        }
-                        door.Delete();
-                        API.SendChatMessageToPlayer(sender, "[Door Manager] Door removed, id:" + door.Id);
-                    }
-                    break;
+        [RemoteEvent("doormanager_goto")]
+        public void DoorManagerGoto(Client sender, params object[] arguments)
+        {
+            if (sender.GetAccount().AdminLevel >= 5)
+            {
+                var id = Convert.ToInt32(arguments[0]);
+                var door = Door.Doors.SingleOrDefault(x => x.Id == id);
+                if (door == null)
+                {
+                    API.SendChatMessageToPlayer(sender, "[Door Manager] That ID doesn't exist.");
+                    return;
+                }
+                sender.Position = door.Position;
+                API.SendChatMessageToPlayer(sender, "[Door Manager] Teleported to door id " + door.Id);
+            }
+        }
 
-                case "doormanager_setgroup":
-                    if (sender.GetAccount().AdminLevel >= 5)
-                    {
-                        var id = Convert.ToInt32(arguments[0]);
-                        var door = Door.Doors.SingleOrDefault(x => x.Id == id);
-                        if (door == null)
-                        {
-                            API.SendChatMessageToPlayer(sender, "[Door Manager] That ID doesn't exist.");
-                            return;
-                        }
-                        int groupid;
-                        if (int.TryParse((string)arguments[1], out groupid))
-                        {
-                            if (GroupManager.Groups.Exists(x => x.Id == groupid))
-                            {
-                                door.GroupId = groupid;
-                                door.Save();
-                                API.SendChatMessageToPlayer(sender,
-                                    "[Door Manager] Group id set to " + groupid + " for door id:" + door.Id);
-                            }
-                            else
-                            {
-                                API.SendChatMessageToPlayer(sender, "Invalid group id.");
-                            }
-                        }
-                    }
-                    break;
+        [RemoteEvent("doormanager_delete")]
+        public void DoorManagerDelete(Client sender, params object[] arguments)
+        {
+            if (sender.GetAccount().AdminLevel >= 5)
+            {
+                var id = Convert.ToInt32(arguments[0]);
+                var door = Door.Doors.SingleOrDefault(x => x.Id == id);
+                if (door == null)
+                {
+                    API.SendChatMessageToPlayer(sender, "[Door Manager] That ID doesn't exist.");
+                    return;
+                }
+                door.Delete();
+                API.SendChatMessageToPlayer(sender, "[Door Manager] Door removed, id:" + door.Id);
+            }
+        }
 
-                case "doormanager_setproperty":
-                    if (sender.GetAccount().AdminLevel >= 5)
+        [RemoteEvent("doormanager_setgroup")]
+        public void DoorManagerSetGroup(Client sender, params object[] arguments)
+        {
+            if (sender.GetAccount().AdminLevel >= 5)
+            {
+                var id = Convert.ToInt32(arguments[0]);
+                var door = Door.Doors.SingleOrDefault(x => x.Id == id);
+                if (door == null)
+                {
+                    API.SendChatMessageToPlayer(sender, "[Door Manager] That ID doesn't exist.");
+                    return;
+                }
+                int groupid;
+                if (int.TryParse((string)arguments[1], out groupid))
+                {
+                    if (GroupManager.Groups.Exists(x => x.Id == groupid))
                     {
-                        var id = Convert.ToInt32(arguments[0]);
-                        var door = Door.Doors.SingleOrDefault(x => x.Id == id);
-                        if (door == null)
-                        {
-                            API.SendChatMessageToPlayer(sender, "[Door Manager] That ID doesn't exist.");
-                            return;
-                        }
-                        int prop;
-                        if (int.TryParse((string)arguments[1], out prop))
-                        {
-                            if (Door.Doors.Exists(x => x.Id == prop))
-                            {
-                                door.PropertyId = prop;
-                                door.Save();
-                                API.SendChatMessageToPlayer(sender,
-                                    "[Door Manager] PropertyID set to " + prop + " for door id:" + door.Id);
-                            }
-                            else
-                            {
-                                API.SendChatMessageToPlayer(sender, "Invalid door id.");
-                            }
-                        }
-                    }
-                    break;
-
-                case "doormanager_hide":
-                    if (sender.GetAccount().AdminLevel >= 5)
-                    {
-                        var id = Convert.ToInt32(arguments[0]);
-                        var door = Door.Doors.SingleOrDefault(x => x.Id == id);
-                        if (door == null)
-                        {
-                            API.SendChatMessageToPlayer(sender, "[Door Manager] That ID doesn't exist.");
-                            return;
-                        }
-                        door.DoesShowInAdmin = !door.DoesShowInAdmin;
+                        door.GroupId = groupid;
                         door.Save();
                         API.SendChatMessageToPlayer(sender,
-                            "[Door Manager] Door was " + (door.DoesShowInAdmin ? "unhidden" : "hidden") +
-                            " from /managedoors.");
-                        API.SendChatMessageToPlayer(sender, "Could edit the door with /editdoor [id]");
+                            "[Door Manager] Group id set to " + groupid + " for door id:" + door.Id);
                     }
-                    break;
+                    else
+                    {
+                        API.SendChatMessageToPlayer(sender, "Invalid group id.");
+                    }
+                }
+            }
+        }
 
-                case "doormanager_locknearestdoor":
-                    float distance = -1.0f;
-                    var cdoor = new Door(0, new Vector3(0, 0, 0), "NULL", false, false);
-                    Vector3 playerPos = API.GetEntityPosition(sender.Handle);
-                    foreach(Door d in Door.Doors)
+        [RemoteEvent("doormanager_setproperty")]
+        public void DoorManagerSetProperty(Client sender, params object[] arguments)
+        {
+            if (sender.GetAccount().AdminLevel >= 5)
+            {
+                var id = Convert.ToInt32(arguments[0]);
+                var door = Door.Doors.SingleOrDefault(x => x.Id == id);
+                if (door == null)
+                {
+                    API.SendChatMessageToPlayer(sender, "[Door Manager] That ID doesn't exist.");
+                    return;
+                }
+                int prop;
+                if (int.TryParse((string)arguments[1], out prop))
+                {
+                    if (Door.Doors.Exists(x => x.Id == prop))
                     {
-                        if(playerPos.DistanceTo(d.Position) < distance || distance == -1.0f)
-                        {
-                            cdoor = d;
-                            distance = playerPos.DistanceTo(d.Position);
-                        }
+                        door.PropertyId = prop;
+                        door.Save();
+                        API.SendChatMessageToPlayer(sender,
+                            "[Door Manager] PropertyID set to " + prop + " for door id:" + door.Id);
                     }
-                    if(cdoor != null)
+                    else
                     {
-                        if(DoesPlayerHaveDoorAccess(sender, cdoor))
-                        {
-                            if(distance <= 10.0f)
-                            {
-                                if(cdoor.Locked)
-                                {
-                                    cdoor.Locked = false;
-                                    API.SendChatMessageToPlayer(sender, "Door " + cdoor.Id + " ~g~Unlocked!");
-                                }
-                                else
-                                {
-                                    cdoor.Locked = true;
-                                    API.SendChatMessageToPlayer(sender, "Door " + cdoor.Id + " ~r~Locked!");
-                                }
-                                cdoor.RefreshDoor();
-                                cdoor.Save();
-                            }
-                        }
+                        API.SendChatMessageToPlayer(sender, "Invalid door id.");
                     }
-                    break;
+                }
+            }
+        }
+
+        [RemoteEvent("doormanager_hide")]
+        public void DoorManagerHide(Client sender, params object[] arguments)
+        {
+            if (sender.GetAccount().AdminLevel >= 5)
+            {
+                var id = Convert.ToInt32(arguments[0]);
+                var door = Door.Doors.SingleOrDefault(x => x.Id == id);
+                if (door == null)
+                {
+                    API.SendChatMessageToPlayer(sender, "[Door Manager] That ID doesn't exist.");
+                    return;
+                }
+                door.DoesShowInAdmin = !door.DoesShowInAdmin;
+                door.Save();
+                API.SendChatMessageToPlayer(sender,
+                    "[Door Manager] Door was " + (door.DoesShowInAdmin ? "unhidden" : "hidden") +
+                    " from /managedoors.");
+                API.SendChatMessageToPlayer(sender, "Could edit the door with /editdoor [id]");
+            }
+        }
+
+        [RemoteEvent("doormanager_locknearestdoor")]
+        public void DoorManagerLockNearestDoor(Client sender, params object[] arguments)
+        {
+            float distance = -1.0f;
+            var cdoor = new Door(0, new Vector3(0, 0, 0), "NULL", false, false);
+            Vector3 playerPos = API.GetEntityPosition(sender.Handle);
+            foreach (Door d in Door.Doors)
+            {
+                if (playerPos.DistanceTo(d.Position) < distance || distance == -1.0f)
+                {
+                    cdoor = d;
+                    distance = playerPos.DistanceTo(d.Position);
+                }
+            }
+            if (cdoor != null)
+            {
+                if (DoesPlayerHaveDoorAccess(sender, cdoor))
+                {
+                    if (distance <= 10.0f)
+                    {
+                        if (cdoor.Locked)
+                        {
+                            cdoor.Locked = false;
+                            API.SendChatMessageToPlayer(sender, "Door " + cdoor.Id + " ~g~Unlocked!");
+                        }
+                        else
+                        {
+                            cdoor.Locked = true;
+                            API.SendChatMessageToPlayer(sender, "Door " + cdoor.Id + " ~r~Locked!");
+                        }
+                        cdoor.RefreshDoor();
+                        cdoor.Save();
+                    }
+                }
             }
         }
 

@@ -28,111 +28,104 @@ namespace mtgvrp.vehicle_manager.modding
         public ModdingManager()
         {
             Event.OnResourceStart += API_onResourceStart;
-            Event.OnClientEventTrigger += API_onClientEventTrigger;
         }
 
-        private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
+        [RemoteEvent("MODDING_GETMODS")]
+        private void ModdingGetMods(Client sender, params object[] arguments)
         {
-            switch (eventName)
+            var modsList = new List<string[]>();
+
+            var modType = ModTypes.First(x => x.Value == (string)arguments[0]).Key;
+            var manifest = VehicleInfo.Get(sender.Vehicle);
+            foreach (var modid in manifest.ModIds(modType))
             {
-                case "MODDING_GETMODS":
+                var price = GetModPrice(modType, modid);
+                if (price == -1)
+                    continue;
+
+                var m = manifest.Mod(modType, modid);
+                bool isVip = _vipMods.ContainsKey(modType) &&
+                             (_vipMods[modType] == -1 || _vipMods[modType] == modid);
+
+                modsList.Add(new string[]
                 {
-                    var modsList = new List<string[]>();
-
-                    var modType = ModTypes.First(x => x.Value == (string) arguments[0]).Key;
-                    var manifest = VehicleInfo.Get(sender.Vehicle);
-                    foreach (var modid in manifest.ModIds(modType))
-                    {
-                        var price = GetModPrice(modType, modid);
-                        if (price == -1)
-                            continue;
-
-                        var m = manifest.Mod(modType, modid);
-                        bool isVip = _vipMods.ContainsKey(modType) &&
-                                     (_vipMods[modType] == -1 || _vipMods[modType] == modid);
-
-                        modsList.Add(new string[]
-                        {
                             m.localizedName == "" ? "No Name" : (m.HasFlag("chrome") ? "CHROME - " + m.localizedName : m.localizedName) , modType.ToString(), modid.ToString(), price.ToString(),
                             isVip == true ? "true" : "false"
-                        });
-                    }
-                    API.TriggerClientEvent(sender, "MODDING_FILL_MODS", API.ToJson(modsList.ToArray()));
-                    break;
-                }
-
-                case "MODDING_EXITMENU":
-                {
-                    var Vehicle = sender.Vehicle;
-                    ClearVehicleMods(Vehicle.Handle.GetVehicle());
-                    ApplyVehicleMods(Vehicle.Handle.GetVehicle());
-                    API.SetEntityPosition(sender.Vehicle, sender.GetData("ModLastPos"));
-                    API.SetEntityDimension(sender.Vehicle, 0);
-                    API.SetEntityDimension(sender, 0);
-                    if (sender.GetAccount().IsSpeedoOn)
-                        API.TriggerClientEvent(sender, "TOGGLE_SPEEDO");
-                        break;
-                }
-
-                case "MODDONG_PURCHASE_ITEMS":
-                {
-                    dynamic items = JsonConvert.DeserializeObject((string) arguments[0]);
-                    int allPrices = 0;
-                    int itemCount = 0;
-                    foreach (var itm in items)
-                    {
-                        var modType = int.Parse(itm[0].ToString().Trim());
-                        int modId;
-                        int.TryParse(itm[1].ToString().Trim(), out modId);
-
-                        var price = GetModPrice(modType, modId);
-                        allPrices += price;
-                        itemCount++;
-                    }
-                    var prop = PropertyManager.Properties.First(x => x.Id == API.GetEntityData(sender, "MOD_ID"));
-                    if (prop.Supplies != -1 && prop.Supplies < itemCount * 5)
-                    {
-                        API.TriggerClientEvent(sender, "MODDING_ERROR",
-                            "This modshop doesn't have enough supplies.");
-                        return;
-                    }
-
-                    var c = sender.GetCharacter();
-                    if (Money.GetCharacterMoney(c) < allPrices)
-                    {
-                        API.TriggerClientEvent(sender, "MODDING_ERROR",
-                            "You don't have enough money to purchase these mods. Your balance: " +
-                            Money.GetCharacterMoney(c));
-                        return;
-                    }
-
-                    InventoryManager.DeleteInventoryItem<Money>(c, allPrices);
-                    InventoryManager.GiveInventoryItem(prop, new Money(), allPrices);
-
-                    if (prop.Supplies != -1)
-                        prop.Supplies -= itemCount * 5;
-
-                    var veh = sender.Vehicle.Handle.GetVehicle();
-                    foreach (var itm in items)
-                    {
-                        var modType = int.Parse(itm[0].ToString().Trim());
-                        AddVehicleMod(veh, modType, itm[1].ToString().Trim());
-                    }
-                    ClearVehicleMods(veh);
-                    ApplyVehicleMods(veh);
-                    veh.Save();
-                    API.TriggerClientEvent(sender, "MODDING_CLOSE");
-                    API.SendChatMessageToPlayer(sender,
-                        "You have successfully purchased some Vehicle mods for a total of ~g~" +
-                        allPrices.ToString("C"));
-                    API.SetEntityPosition(sender.Vehicle, sender.GetData("ModLastPos"));
-                    API.SetEntityDimension(sender.Vehicle, 0);
-                    API.SetEntityDimension(sender, 0);
-                    if (sender.GetAccount().IsSpeedoOn)
-                        API.TriggerClientEvent(sender, "TOGGLE_SPEEDO");
-                    break;
-                }
+                });
             }
+            API.TriggerClientEvent(sender, "MODDING_FILL_MODS", API.ToJson(modsList.ToArray()));
+        }
+
+        [RemoteEvent("MODDING_EXITMENU")]
+        private void ModdingExitMenu(Client sender, params object[] arguments)
+        {
+            var Vehicle = sender.Vehicle;
+            ClearVehicleMods(Vehicle.Handle.GetVehicle());
+            ApplyVehicleMods(Vehicle.Handle.GetVehicle());
+            API.SetEntityPosition(sender.Vehicle, sender.GetData("ModLastPos"));
+            API.SetEntityDimension(sender.Vehicle, 0);
+            API.SetEntityDimension(sender, 0);
+            if (sender.GetAccount().IsSpeedoOn)
+                API.TriggerClientEvent(sender, "TOGGLE_SPEEDO");
+        }
+
+        [RemoteEvent("MODDONG_PURCHASE_ITEMS")]
+        private void ModdingPurchaseItems(Client sender, params object[] arguments)
+        {
+            dynamic items = JsonConvert.DeserializeObject((string)arguments[0]);
+            int allPrices = 0;
+            int itemCount = 0;
+            foreach (var itm in items)
+            {
+                var modType = int.Parse(itm[0].ToString().Trim());
+                int modId;
+                int.TryParse(itm[1].ToString().Trim(), out modId);
+
+                var price = GetModPrice(modType, modId);
+                allPrices += price;
+                itemCount++;
+            }
+            var prop = PropertyManager.Properties.First(x => x.Id == API.GetEntityData(sender, "MOD_ID"));
+            if (prop.Supplies != -1 && prop.Supplies < itemCount * 5)
+            {
+                API.TriggerClientEvent(sender, "MODDING_ERROR",
+                    "This modshop doesn't have enough supplies.");
+                return;
+            }
+
+            var c = sender.GetCharacter();
+            if (Money.GetCharacterMoney(c) < allPrices)
+            {
+                API.TriggerClientEvent(sender, "MODDING_ERROR",
+                    "You don't have enough money to purchase these mods. Your balance: " +
+                    Money.GetCharacterMoney(c));
+                return;
+            }
+
+            InventoryManager.DeleteInventoryItem<Money>(c, allPrices);
+            InventoryManager.GiveInventoryItem(prop, new Money(), allPrices);
+
+            if (prop.Supplies != -1)
+                prop.Supplies -= itemCount * 5;
+
+            var veh = sender.Vehicle.Handle.GetVehicle();
+            foreach (var itm in items)
+            {
+                var modType = int.Parse(itm[0].ToString().Trim());
+                AddVehicleMod(veh, modType, itm[1].ToString().Trim());
+            }
+            ClearVehicleMods(veh);
+            ApplyVehicleMods(veh);
+            veh.Save();
+            API.TriggerClientEvent(sender, "MODDING_CLOSE");
+            API.SendChatMessageToPlayer(sender,
+                "You have successfully purchased some Vehicle mods for a total of ~g~" +
+                allPrices.ToString("C"));
+            API.SetEntityPosition(sender.Vehicle, sender.GetData("ModLastPos"));
+            API.SetEntityDimension(sender.Vehicle, 0);
+            API.SetEntityDimension(sender, 0);
+            if (sender.GetAccount().IsSpeedoOn)
+                API.TriggerClientEvent(sender, "TOGGLE_SPEEDO");
         }
 
         private void API_onResourceStart()
@@ -140,7 +133,7 @@ namespace mtgvrp.vehicle_manager.modding
             //VehicleInfo.Setup(Path.Combine(API.GetResourceFolder(), @"vehicle_manager/modding/modinfo"));
         }
 
-        void AddVehicleMod(Vehicle veh, int type, string mod)
+        void AddVehicleMod(GameVehicle veh, int type, string mod)
         {
             if(veh.VehMods == null)
                 veh.VehMods = new Dictionary<string, string>();
@@ -292,7 +285,7 @@ namespace mtgvrp.vehicle_manager.modding
         public const int NeonColorId = 103;
         public const int WindowTintId = 104;
 
-        public static void ClearVehicleMods(Vehicle veh)
+        public static void ClearVehicleMods(GameVehicle veh)
         {
             foreach (var type in ModTypes.Keys)
             {
@@ -305,7 +298,7 @@ namespace mtgvrp.vehicle_manager.modding
             API.Shared.SetVehicleWindowTint(veh.NetHandle, 0);
         }
 
-        public static void ApplyVehicleMods(Vehicle veh)
+        public static void ApplyVehicleMods(GameVehicle veh)
         {
             foreach (var mod in veh.VehMods ?? new Dictionary<string, string>())
             {

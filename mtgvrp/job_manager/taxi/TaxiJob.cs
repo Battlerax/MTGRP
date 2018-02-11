@@ -19,7 +19,7 @@ using mtgvrp.inventory;
 using mtgvrp.player_manager;
 using mtgvrp.vehicle_manager;
 using Color = mtgvrp.core.Color;
-using Vehicle = mtgvrp.vehicle_manager.Vehicle;
+using GameVehicle = mtgvrp.vehicle_manager.GameVehicle;
 
 namespace mtgvrp.job_manager.taxi
 {
@@ -35,7 +35,6 @@ namespace mtgvrp.job_manager.taxi
         {
             Event.OnPlayerEnterVehicle += API_onPlayerEnterVehicle;
             Event.OnPlayerExitVehicle += API_onPlayerExitVehicle;
-            Event.OnClientEventTrigger += API_onClientEventTrigger;
             Event.OnPlayerDisconnected += API_onPlayerDisconnected;
         }
 
@@ -54,21 +53,17 @@ namespace mtgvrp.job_manager.taxi
             }
         }
 
-        private void API_onClientEventTrigger(Client player, string eventName, params object[] arguments)
+        [RemoteEvent("update_taxi_destination")]
+        private void API_onClientEventTrigger(Client player, params object[] arguments)
         {
-            switch (eventName)
-            {
-                case "update_taxi_destination":
-                    Character character = player.GetCharacter();
-                    API.TriggerClientEvent(character.TaxiDriver.Client, "set_taxi_waypoint", (Vector3)arguments[0]);
+            Character character = player.GetCharacter();
+            API.TriggerClientEvent(character.TaxiDriver.Client, "set_taxi_waypoint", (Vector3)arguments[0]);
 
-                    API.SendChatMessageToPlayer(player, Color.Yellow, "[TAXI] You have successfully set your destination.");
-                    API.SendChatMessageToPlayer(character.TaxiDriver.Client, "[TAXI] " + character.rp_name() + " has set the destination.");
-                    break;
-            }
+            API.SendChatMessageToPlayer(player, Color.Yellow, "[TAXI] You have successfully set your destination.");
+            API.SendChatMessageToPlayer(character.TaxiDriver.Client, "[TAXI] " + character.rp_name() + " has set the destination.");
         }
 
-        private void API_onPlayerExitVehicle(Client player, NetHandle vehicle)
+        private void API_onPlayerExitVehicle(Client player, Vehicle vehicle)
         {
             Character character = player.GetCharacter();
             var veh = VehicleManager.GetVehFromNetHandle(vehicle);
@@ -115,7 +110,7 @@ namespace mtgvrp.job_manager.taxi
             }
         }
 
-        private void API_onPlayerEnterVehicle(Client player, NetHandle vehicle, byte seat)
+        private void API_onPlayerEnterVehicle(Client player, Vehicle vehicle, sbyte seat)
         {
             Character character = player.GetCharacter();
             var veh = VehicleManager.GetVehFromNetHandle(vehicle);
@@ -192,7 +187,7 @@ namespace mtgvrp.job_manager.taxi
             }
         }
 
-        public void RespawnTaxi(Character character, Vehicle veh)
+        public void RespawnTaxi(Character character, GameVehicle veh)
         {
             if (API.IsPlayerConnected(character.Client))
             {

@@ -19,7 +19,6 @@ namespace mtgvrp.group_manager.lspd
         public Lspd()
         {
             Event.OnResourceStart += StartLspd;
-            Event.OnClientEventTrigger += API_onClientEventTrigger;
             Event.OnPlayerDisconnected += API_onPlayerDisconnected;
         }
 
@@ -41,82 +40,74 @@ namespace mtgvrp.group_manager.lspd
         public readonly Vector3 JailPosTwo = new Vector3(461.8065, -997.6583, 25.06443);
         public readonly Vector3 JailPosThree = new Vector3(461.8065, -1001.302, 25.06443);
 
-
         public LinkedList<Object> Objects = new LinkedList<Object>();
-
 
         private void StartLspd()
         {
             Crime.LoadCrimes();
         }
 
-
-        private void API_onClientEventTrigger(Client player, string eventName, params object[] arguments)
+        [RemoteEvent("LSPD_Menu_Change_Clothes")]
+        private void LSPDMenuChangeClothes(Client player, params object[] arguments)
         {
-            switch (eventName)
+            Character c = player.GetCharacter();
+
+            if (c.Group.CommandType != Group.CommandTypeLspd)
             {
-                case "LSPD_Menu_Change_Clothes":
-                    {
-                        Character c = player.GetCharacter();
-                        
-                        if (c.Group.CommandType != Group.CommandTypeLspd)
-                        {
-                            return;
-                        }
-
-                        c.IsInPoliceUniform = !c.IsInPoliceUniform;
-                        ChatManager.AmeLabelMessage(player,
-                            "changes into their " + (c.IsInPoliceUniform ? "police uniform." : "civilian clothing."), 8000);
-                        c.update_ped();
-                        c.Save();
-
-                        break;
-                    }
-                case "LSPD_Menu_Toggle_Duty":
-                    {
-                        Character c = player.GetCharacter();
-
-                        if (c.Group.CommandType != Group.CommandTypeLspd)
-                        {
-                            return;
-                        }
-
-                        c.IsOnPoliceDuty = !c.IsOnPoliceDuty;
-                        GroupManager.SendGroupMessage(player,
-                            c.rp_name() + " is now " + (c.IsOnPoliceDuty ? "on" : "off") + " police duty.");
-                        c.Save();
-
-                        break;
-                    }
-                case "LSPD_Menu_Equip_Standard_Equipment":
-                    {
-                        Character c = player.GetCharacter();
-
-                        if (c.Group.CommandType != Group.CommandTypeLspd)
-                        {
-                            return;
-                        }
-
-                        GiveLspdEquipment(player);
-                        API.SendChatMessageToPlayer(player, Color.White, "You have been given the standard LSPD equipment.");
-
-                        break;
-                    }
-                case "LSPD_Menu_Equip_SWAT_Equipment":
-                    {
-                        Character c = player.GetCharacter();
-
-                        if (c.Group.CommandType != Group.CommandTypeLspd)
-                        {
-                            return;
-                        }
-
-                        GiveLspdEquipment(player, 1);
-                        API.SendChatMessageToPlayer(player, Color.White, "You have been given the standard SWAT equipment.");
-                        break;
-                    }
+                return;
             }
+
+            c.IsInPoliceUniform = !c.IsInPoliceUniform;
+            ChatManager.AmeLabelMessage(player,
+                "changes into their " + (c.IsInPoliceUniform ? "police uniform." : "civilian clothing."), 8000);
+            c.update_ped();
+            c.Save();
         }
+
+        [RemoteEvent("LSPD_Menu_Toggle_Duty")]
+        private void LSPDMenuToggleDuty(Client player, params object[] arguments)
+        {
+            Character c = player.GetCharacter();
+
+            if (c.Group.CommandType != Group.CommandTypeLspd)
+            {
+                return;
+            }
+
+            c.IsOnPoliceDuty = !c.IsOnPoliceDuty;
+            GroupManager.SendGroupMessage(player,
+                c.rp_name() + " is now " + (c.IsOnPoliceDuty ? "on" : "off") + " police duty.");
+            c.Save();
+        }
+
+        [RemoteEvent("LSPD_Menu_Equip_Standard_Equipment")]
+        private void LSPDMenuEquipStandardEquipment(Client player, params object[] arguments)
+        {
+            Character c = player.GetCharacter();
+
+            if (c.Group.CommandType != Group.CommandTypeLspd)
+            {
+                return;
+            }
+
+            GiveLspdEquipment(player);
+            API.SendChatMessageToPlayer(player, Color.White, "You have been given the standard LSPD equipment.");
+        }
+
+        [RemoteEvent("LSPD_Menu_Equip_SWAT_Equipment")]
+        private void LSPDMenuEquipSWATEquipment(Client player, params object[] arguments)
+        {
+            Character c = player.GetCharacter();
+
+            if (c.Group.CommandType != Group.CommandTypeLspd)
+            {
+                return;
+            }
+
+            GiveLspdEquipment(player, 1);
+            API.SendChatMessageToPlayer(player, Color.White, "You have been given the standard SWAT equipment.");
+        }
+
         [Command("recordcrime", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Record a player's crime, adding them to the wanted list.", new[] { "The target player ID.", "The crime ID" })]
         public void recordcrimes_cmd(Client player, string id, string type, string crimename, string jailTime, string fine)
         {
@@ -885,32 +876,32 @@ namespace mtgvrp.group_manager.lspd
             {
                 case "1":
                     {
-                        var item = API.CreateObject(API.GetHashKey("prop_mp_barrier_01"), playerpos - new Vector3(0, 0, 1f), playerrot, playerDimension);
+                        var item = API.CreateObject((int)API.GetHashKey("prop_mp_barrier_01"), playerpos - new Vector3(0, 0, 1f), new Quaternion(playerrot.X, playerrot.Y, playerrot.Z, 0), playerDimension);
                         Objects.AddLast(item);
                         break;
                     }
 
                 case "2":
                     {
-                        var item = API.CreateObject(API.GetHashKey("prop_barrier_wat_03b"), playerpos - new Vector3(0, 0, 1f), playerrot, playerDimension);
+                        var item = API.CreateObject((int)API.GetHashKey("prop_barrier_wat_03b"), playerpos - new Vector3(0, 0, 1f), new Quaternion(playerrot.X, playerrot.Y, playerrot.Z, 0), playerDimension);
                         Objects.AddLast(item);
                         break;
                     }
                 case "3":
                     {
-                        var item = API.CreateObject(API.GetHashKey("prop_barrier_work04a"), playerpos - new Vector3(0, 0, 1f), playerrot, playerDimension);
+                        var item = API.CreateObject((int)API.GetHashKey("prop_barrier_work04a"), playerpos - new Vector3(0, 0, 1f), new Quaternion(playerrot.X, playerrot.Y, playerrot.Z, 0), playerDimension);
                         Objects.AddLast(item);
                         break;
                     }
                 case "4":
                     {
-                        var item = API.CreateObject(API.GetHashKey("prop_mp_conc_barrier_01"), playerpos - new Vector3(0, 0, 1f), playerrot, playerDimension);
+                        var item = API.CreateObject((int)API.GetHashKey("prop_mp_conc_barrier_01"), playerpos - new Vector3(0, 0, 1f), new Quaternion(playerrot.X, playerrot.Y, playerrot.Z, 0), playerDimension);
                         Objects.AddLast(item);
                         break;
                     }
                 case "5":
                     {
-                        var item = API.CreateObject(API.GetHashKey("prop_barrier_work05"), playerpos - new Vector3(0, 0, 1f), playerrot, playerDimension);
+                        var item = API.CreateObject((int)API.GetHashKey("prop_barrier_work05"), playerpos - new Vector3(0, 0, 1f), new Quaternion(playerrot.X, playerrot.Y, playerrot.Z, 0), playerDimension);
                         Objects.AddLast(item);
                         break;
                     }

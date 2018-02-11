@@ -32,7 +32,7 @@ using VehicleInfoLoader;
 
 namespace mtgvrp.vehicle_manager
 {
-    public class Vehicle : IStorage
+    public class GameVehicle : IStorage
     {
 
         //Inventory System
@@ -134,7 +134,7 @@ namespace mtgvrp.vehicle_manager
         [BsonIgnore]
         public DateTime LastOccupied { get; set; }
 
-        public Vehicle()
+        public GameVehicle()
         {
             Id = 0;
             OwnerId = 0;
@@ -261,13 +261,13 @@ namespace mtgvrp.vehicle_manager
 
         public void Save()
         {
-            var filter = Builders<Vehicle>.Filter.Eq("_id", Id);
+            var filter = Builders<GameVehicle>.Filter.Eq("_id", Id);
             DatabaseManager.VehicleTable.ReplaceOne(filter, this);
         }
 
         public void Delete()
         {
-            var filter = Builders<Vehicle>.Filter.Eq("_id", Id);
+            var filter = Builders<GameVehicle>.Filter.Eq("_id", Id);
             DatabaseManager.VehicleTable.DeleteOne(filter);
         }
 
@@ -276,7 +276,7 @@ namespace mtgvrp.vehicle_manager
             if (Id == 0)
                 return false;
 
-            var filter = Builders<Vehicle>.Filter.Eq("_id", Id);
+            var filter = Builders<GameVehicle>.Filter.Eq("_id", Id);
 
             if (DatabaseManager.VehicleTable.Find(filter).Count() > 0)
             {

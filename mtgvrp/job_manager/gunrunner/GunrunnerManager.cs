@@ -122,7 +122,6 @@ namespace mtgvrp.job_manager.gunrunner
 
         public GunrunnerManager()
         {
-            Event.OnClientEventTrigger += API_onClientEventTrigger;
             Event.OnResourceStart += API_onResourceStart;
             CharacterMenu.OnCharacterLogin += CharacterMenu_OnCharacterLogin;
 
@@ -184,89 +183,88 @@ namespace mtgvrp.job_manager.gunrunner
                 e.Character.Container = cnt;
         }
 
-        private void API_onClientEventTrigger(Client player, string eventName, params object[] arguments)
+        [RemoteEvent("update_location")]
+        private void UpdateLocation(Client player, params object[] arguments)
         {
-            switch (eventName)
+            CurrentStreet = (string)arguments[0];
+            CurrentZone = (string)arguments[1];
+        }
+
+        [RemoteEvent("gunrun_menu_closed")]
+        private void GunRunMenuClosed(Client player, params object[] arguments)
+        {
+            if ((int)arguments[0] != 0)
             {
-                case "update_location":
-                    CurrentStreet = (string)arguments[0];
-                    CurrentZone = (string)arguments[1];
-                    break;
 
-                case "gunrun_menu_closed":
+                dynamic weapons = JsonConvert.DeserializeObject((string)arguments[1]);
+                if (Money.GetCharacterMoney(player.GetCharacter()) < (int)arguments[0])
+                {
+                    player.SendChatMessage("Yuri Orlov says: Not enough money? Come back when you have enough.");
+                    return;
+                }
 
-                    if ((int)arguments[0] != 0)
+                InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(Money), FlatRate + (int)arguments[0]);
+
+                foreach (var w in weapons)
+                {
+                    string weapon = w.ToString().Trim();
+
+                    switch (InventoryManager.GiveInventoryItem(player.GetCharacter(), new WeaponCase(API.WeaponNameToModel(weapon), player.GetCharacter())))
                     {
-                        
-                        dynamic weapons = JsonConvert.DeserializeObject((string)arguments[1]);
-                        if (Money.GetCharacterMoney(player.GetCharacter()) < (int)arguments[0])
-                        {
-                            player.SendChatMessage("Yuri Orlov says: Not enough money? Come back when you have enough.");
-                            return;
-                        }
+                        case InventoryManager.GiveItemErrors.Success:
+                            player.GetCharacter().WeaponsBought++;
+                            break;
 
-                        InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(Money), FlatRate + (int)arguments[0]);
-                        
-                        foreach (var w in weapons)
-                        {
-                            string weapon = w.ToString().Trim();
-
-                            switch (InventoryManager.GiveInventoryItem(player.GetCharacter(), new WeaponCase(API.WeaponNameToModel(weapon), player.GetCharacter())))
-                            {
-                                case InventoryManager.GiveItemErrors.Success:
-                                    player.GetCharacter().WeaponsBought++;
-                                    break;
-
-                                case InventoryManager.GiveItemErrors.NotEnoughSpace:
-                                    API.SendChatMessageToPlayer(player,
-                                        $"[BUSINESS] You dont have enough space for that item.");
-                                    break;
-                            }
-                        }
-                        ChatManager.RoleplayMessage(player.GetCharacter(), "has bought some weapons from Yuri_Orlov.", ChatManager.RoleplayMe);
-                        player.SendChatMessage("~r~You have bought some weapons. Sell them within the next 24 hours or risk losing renown!");
-                        player.SendChatMessage("Yuri Orlov says: Keep those safe, sell them soon and I'll have more for you when you're done.");
-                        player.GetCharacter().WeaponSellTimeLimit = TimeManager.GetTimeStampPlus(TimeSpan.FromHours(24));
-                        if (!player.GetCharacter().IsGunrunner)
-                        {
-                            player.GetCharacter().IsGunrunner = true;
-                            player.SendNotification("You have become a gunrunner. Earn renown by selling weapons to other players.", true);
-                            player.SendChatMessage("~g~You have become a gunrunner. Earn renown by selling weapons to other players. You can deploy a headquarters once you've reached 500 renown.");
-                        }
+                        case InventoryManager.GiveItemErrors.NotEnoughSpace:
+                            API.SendChatMessageToPlayer(player,
+                                $"[BUSINESS] You dont have enough space for that item.");
+                            break;
                     }
-                    else
-                    {
-                        player.SendChatMessage("Yuri Orlov says: Not buying? No problem. Come back when you want some selling to do.");
-                    }
-                    break;
-
-                case "fetch_weapon_list":
-
-                    Account account = player.GetAccount();
-                    Character character = player.GetCharacter();
-
-                    if (character == null || account == null)
-                        return;
-                    
-                    int renown = character.Renown;
-                    API.TriggerClientEvent(player, "send_renown", renown);
-                    if (renown < 100) { API.TriggerClientEvent(player, "send_melee_list", API.ToJson(Weapon_Melee)); }
-                    if (renown < 300 && renown >= 100) { API.TriggerClientEvent(player, "send_pistol_list", API.ToJson(Weapon_Melee), API.ToJson(Weapon_Pistols)); }
-                    if (renown < 800 && renown >= 300) { API.TriggerClientEvent(player, "send_shotgun_list", API.ToJson(Weapon_Melee), API.ToJson(Weapon_Pistols), API.ToJson(Weapon_Shotguns)); }
-                    if (renown < 1100 && renown >= 800) { API.TriggerClientEvent(player, "send_machinegun_list", API.ToJson(Weapon_Melee), API.ToJson(Weapon_Pistols), API.ToJson(Weapon_Shotguns), API.ToJson(Weapon_Machineguns)); }
-                    if (renown < 2000 && renown >= 1100) { API.TriggerClientEvent(player, "send_assaultrifle_list", API.ToJson(Weapon_Melee), API.ToJson(Weapon_Pistols), API.ToJson(Weapon_Shotguns), API.ToJson(Weapon_Machineguns), API.ToJson(Weapon_Assaultrifles)); }
-                    if (renown >= 2000) { API.TriggerClientEvent(player, "send_sniper_list", API.ToJson(Weapon_Melee), API.ToJson(Weapon_Pistols), API.ToJson(Weapon_Shotguns), API.ToJson(Weapon_Machineguns), API.ToJson(Weapon_Assaultrifles), API.ToJson(Weapon_Snipers)); }
-
-                    break;
-
-                case "CONTAINER_PLACED":
-                    var obj = (NetHandle)arguments[0];
-                    var c = player.GetCharacter();
-                    c.Container.Position = API.GetEntityPosition(obj);
-                    c.Container.Rotation = API.GetEntityRotation(obj);
-                    c.Container.Save();
-                    break;
+                }
+                ChatManager.RoleplayMessage(player.GetCharacter(), "has bought some weapons from Yuri_Orlov.", ChatManager.RoleplayMe);
+                player.SendChatMessage("~r~You have bought some weapons. Sell them within the next 24 hours or risk losing renown!");
+                player.SendChatMessage("Yuri Orlov says: Keep those safe, sell them soon and I'll have more for you when you're done.");
+                player.GetCharacter().WeaponSellTimeLimit = TimeManager.GetTimeStampPlus(TimeSpan.FromHours(24));
+                if (!player.GetCharacter().IsGunrunner)
+                {
+                    player.GetCharacter().IsGunrunner = true;
+                    player.SendNotification("You have become a gunrunner. Earn renown by selling weapons to other players.", true);
+                    player.SendChatMessage("~g~You have become a gunrunner. Earn renown by selling weapons to other players. You can deploy a headquarters once you've reached 500 renown.");
+                }
             }
+            else
+            {
+                player.SendChatMessage("Yuri Orlov says: Not buying? No problem. Come back when you want some selling to do.");
+            }
+        }
+
+        [RemoteEvent("fetch_weapon_list")]
+        private void FetchWeaponList(Client player, params object[] arguments)
+        {
+            Account account = player.GetAccount();
+            Character character = player.GetCharacter();
+
+            if (character == null || account == null)
+                return;
+
+            int renown = character.Renown;
+            API.TriggerClientEvent(player, "send_renown", renown);
+            if (renown < 100) { API.TriggerClientEvent(player, "send_melee_list", API.ToJson(Weapon_Melee)); }
+            if (renown < 300 && renown >= 100) { API.TriggerClientEvent(player, "send_pistol_list", API.ToJson(Weapon_Melee), API.ToJson(Weapon_Pistols)); }
+            if (renown < 800 && renown >= 300) { API.TriggerClientEvent(player, "send_shotgun_list", API.ToJson(Weapon_Melee), API.ToJson(Weapon_Pistols), API.ToJson(Weapon_Shotguns)); }
+            if (renown < 1100 && renown >= 800) { API.TriggerClientEvent(player, "send_machinegun_list", API.ToJson(Weapon_Melee), API.ToJson(Weapon_Pistols), API.ToJson(Weapon_Shotguns), API.ToJson(Weapon_Machineguns)); }
+            if (renown < 2000 && renown >= 1100) { API.TriggerClientEvent(player, "send_assaultrifle_list", API.ToJson(Weapon_Melee), API.ToJson(Weapon_Pistols), API.ToJson(Weapon_Shotguns), API.ToJson(Weapon_Machineguns), API.ToJson(Weapon_Assaultrifles)); }
+            if (renown >= 2000) { API.TriggerClientEvent(player, "send_sniper_list", API.ToJson(Weapon_Melee), API.ToJson(Weapon_Pistols), API.ToJson(Weapon_Shotguns), API.ToJson(Weapon_Machineguns), API.ToJson(Weapon_Assaultrifles), API.ToJson(Weapon_Snipers)); }
+        }
+
+        [RemoteEvent("CONTAINER_PLACED")]
+        private void ContainerPlaced(Client player, params object[] arguments)
+        {
+            var obj = (NetHandle)arguments[0];
+            var c = player.GetCharacter();
+            c.Container.Position = API.GetEntityPosition(obj);
+            c.Container.Rotation = API.GetEntityRotation(obj);
+            c.Container.Save();
         }
 
         public static bool IsInContainerZone(Client player)
@@ -384,11 +382,11 @@ namespace mtgvrp.job_manager.gunrunner
             DealerLabel = API.Shared.CreateTextLabel("~g~/gunrun\n/intervene", DealerLocations[r], 25f, 1f, 1, new GTANetworkAPI.Color(1,1,1), true);
             DealerNameLabel = API.Shared.CreateTextLabel("Yuri_Orlov", DealerLocations[r] + new Vector3(0, 0, 1f), 25f, 0.5f, 1, new GTANetworkAPI.Color(1, 1, 1), true);
             CurrentDealer = API.Shared.CreatePed(PedHash.RoccoPelosi, DealerLocations[r], 180);
-            NetHandle WeaponCase = API.Shared.CreateObject(API.Shared.GetHashKey("prop_gun_case_01"), 
-                API.Shared.GetEntityPosition(CurrentDealer) - new Vector3(-1f, 0, 1f), API.Shared.GetEntityRotation(CurrentDealer), API.Shared.GetEntityDimension(CurrentDealer));
+            NetHandle WeaponCase = API.Shared.CreateObject((int)API.Shared.GetHashKey("prop_gun_case_01"), 
+                API.Shared.GetEntityPosition(CurrentDealer) - new Vector3(-1f, 0, 1f), API.Shared.GetEntityRotation(CurrentDealer).ToQuat(), API.Shared.GetEntityDimension(CurrentDealer));
             WeaponCases.Add(WeaponCase);
-            WeaponCase = API.Shared.CreateObject(API.Shared.GetHashKey("prop_idol_case_02"),
-                API.Shared.GetEntityPosition(CurrentDealer) - new Vector3(0.7f, 0, 1f), API.Shared.GetEntityRotation(CurrentDealer), API.Shared.GetEntityDimension(CurrentDealer));
+            WeaponCase = API.Shared.CreateObject((int)API.Shared.GetHashKey("prop_idol_case_02"),
+                API.Shared.GetEntityPosition(CurrentDealer) - new Vector3(0.7f, 0, 1f), API.Shared.GetEntityRotation(CurrentDealer).ToQuat(), API.Shared.GetEntityDimension(CurrentDealer));
             WeaponCases.Add(WeaponCase);
 
             foreach (var p in PlayerManager.Players)

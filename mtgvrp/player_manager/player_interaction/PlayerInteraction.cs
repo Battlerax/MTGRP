@@ -16,146 +16,140 @@ namespace mtgvrp.player_manager.player_interaction
     {
         public PlayerInteraction()
         {
-            Event.OnClientEventTrigger += (player, name, arguments) =>
+        }
+
+        [RemoteEvent("cancel_following")]
+        public void CancelFollowing(Client player, params object[] arguments)
+        {
+            Character character = player.GetCharacter();
+
+            if (character == null)
+                return;
+
+            if (character.FollowingPlayer != Character.None && character.IsBeingDragged == false)
             {
-                switch (name)
-                {
-                    case "player_interaction_menu":
+
+                character.FollowingTimer.Stop();
+                character.FollowingPlayer = Character.None;
+                API.SendChatMessageToPlayer(player, "You have stopped following your target.");
+            }
+        }
+
+        [RemoteEvent("player_interaction_menu")]
+        public void PlayerInteractionMenu(Client player, params object[] arguments)
+        {
+            var option = Convert.ToString(arguments[0]);
+            var interactHandle = (NetHandle)arguments[1];
+
+            Client interactClient = API.GetPlayerFromHandle(interactHandle);
+            Character interactCharacter = interactClient.GetCharacter();
+
+            Character character = player.GetCharacter();
+
+            switch (option)
+            {
+                case "follow":
                     {
-
-                        var option = Convert.ToString(arguments[0]);
-                        var interactHandle = (NetHandle) arguments[1];
-
-                        Client interactClient = API.GetPlayerFromHandle(interactHandle);
-                        Character interactCharacter = interactClient.GetCharacter();
-
-                        Character character = player.GetCharacter();
-
-                        switch (option)
+                        character.FollowingPlayer = interactCharacter;
+                        character.FollowingTimer = new Timer() { Interval = 1000 };
+                        character.FollowingTimer.Elapsed += delegate { FollowPlayer(character, false); };
+                        character.FollowingTimer.Start();
+                        break;
+                    }
+                case "view_description":
+                    {
+                        API.SendChatMessageToPlayer(player, "Not yet implemented. =(");
+                        break;
+                    }
+                case "cuff":
+                    {
+                        if (interactCharacter.IsCuffed == false)
                         {
-                            case "follow":
+
+                            var isStunned = API.FetchNativeFromPlayer<bool>(interactClient,
+                                Hash.IS_PED_BEING_STUNNED, interactHandle, 0);
+
+                            if (interactCharacter.AreHandsUp == false && isStunned == false)
                             {
-                                character.FollowingPlayer = interactCharacter;
-                                character.FollowingTimer = new Timer() { Interval = 1000 };
-                                character.FollowingTimer.Elapsed += delegate { FollowPlayer(character, false); };
-                                character.FollowingTimer.Start();
-                                break;
+                                API.SendChatMessageToPlayer(player, Color.White,
+                                    "You cannot cuff a player unless their hands are up or they are stunned.");
+                                return;
                             }
-                            case "view_description":
+
+                            if (player.Position.DistanceTo(interactCharacter.Client.Position) > 3)
                             {
-                                API.SendChatMessageToPlayer(player, "Not yet implemented. =(");
-                                break;
+                                API.SendChatMessageToPlayer(player, Color.White,
+                                    "You are too far away to handcuff that player.");
+                                return;
                             }
-                            case "cuff":
+
+                            API.GivePlayerWeapon(player, WeaponHash.Unarmed, 1);
+                            API.SendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, interactHandle, true);
+                            interactCharacter.IsCuffed = true;
+                            API.FreezePlayer(interactCharacter.Client, true);
+                            API.PlayPlayerAnimation(interactCharacter.Client, (int)(1 << 0 | 1 << 4 | 1 << 5),
+                                "mp_arresting", "idle");
+
+                            ChatManager.RoleplayMessage(player,
+                                "places handcuffs onto " + interactCharacter.rp_name(), ChatManager.RoleplayMe);
+
+                        }
+                        else
+                        {
+                            if (player.Position.DistanceTo(interactCharacter.Client.Position) > 3)
                             {
-                                if (interactCharacter.IsCuffed == false)
-                                {
-
-                                    var isStunned = API.FetchNativeFromPlayer<bool>(interactClient,
-                                        Hash.IS_PED_BEING_STUNNED, interactHandle, 0);
-                                   
-                                    if (interactCharacter.AreHandsUp == false && isStunned == false)
-                                    {
-                                        API.SendChatMessageToPlayer(player, Color.White,
-                                            "You cannot cuff a player unless their hands are up or they are stunned.");
-                                        return;
-                                    }
-
-                                    if (player.Position.DistanceTo(interactCharacter.Client.Position) > 3)
-                                    {
-                                        API.SendChatMessageToPlayer(player, Color.White,
-                                            "You are too far away to handcuff that player.");
-                                        return;
-                                    }
-
-                                    API.GivePlayerWeapon(player, WeaponHash.Unarmed, 1);
-                                    API.SendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, interactHandle, true);
-                                    interactCharacter.IsCuffed = true;
-                                    API.FreezePlayer(interactCharacter.Client, true);
-                                    API.PlayPlayerAnimation(interactCharacter.Client, (int)(1 << 0 | 1 << 4 | 1 << 5),
-                                        "mp_arresting", "idle");
-
-                                    ChatManager.RoleplayMessage(player,
-                                        "places handcuffs onto " + interactCharacter.rp_name(), ChatManager.RoleplayMe);
-
-                                }
-                                else
-                                {
-                                    if (player.Position.DistanceTo(interactCharacter.Client.Position) > 3)
-                                    {
-                                        API.SendChatMessageToPlayer(player, Color.White,
-                                            "You are too far away to unhandcuff that player.");
-                                        return;
-                                    }
-
-                                    API.FreezePlayer(interactCharacter.Client, false);
-                                    API.SendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, interactHandle, false);
-                                    interactCharacter.IsCuffed = false;
-                                    API.StopPlayerAnimation(interactCharacter.Client);
-
-                                    ChatManager.RoleplayMessage(player,
-                                        "removes the handcuffs from " + interactCharacter.rp_name(), ChatManager.RoleplayMe);
-                                }
-
-                                break;
+                                API.SendChatMessageToPlayer(player, Color.White,
+                                    "You are too far away to unhandcuff that player.");
+                                return;
                             }
-                            case "drag":
-                            {
-                                if (player.Position.DistanceTo(interactCharacter.Client.Position) > 3)
-                                {
-                                    API.SendChatMessageToPlayer(player, Color.White,
-                                        "You are too far away from that player.");
-                                    return;
-                                }
 
-                                if (interactCharacter.FollowingPlayer == Character.None)
-                                {
-                                    interactCharacter.FollowingPlayer = character;
-                                    interactCharacter.IsBeingDragged = true;
-                                    interactCharacter.FollowingTimer = new Timer() {Interval = 1000};
-                                    interactCharacter.FollowingTimer.Elapsed +=  delegate { FollowPlayer(interactCharacter, true); };
-                                    interactCharacter.FollowingTimer.Start();
+                            API.FreezePlayer(interactCharacter.Client, false);
+                            API.SendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, interactHandle, false);
+                            interactCharacter.IsCuffed = false;
+                            API.StopPlayerAnimation(interactCharacter.Client);
 
-                                    ChatManager.RoleplayMessage(player, "grabs " + interactCharacter.rp_name() + " and begins to drag them.", ChatManager.RoleplayMe);
-                                }
-                                else if (interactCharacter.FollowingPlayer == character)
-                                {
-                                    interactCharacter.FollowingTimer.Stop();
-                                    interactCharacter.IsBeingDragged = false;
-                                    interactCharacter.FollowingPlayer = Character.None;
-                                    ChatManager.RoleplayMessage(player, "lets go of " + interactCharacter.rp_name(),
-                                        ChatManager.RoleplayMe);
-                                    API.SendChatMessageToPlayer(player, "You have stopped dragging your target.");
-                                }
-                                else
-                                {
-                                    API.SendChatMessageToPlayer(player, Color.White,
-                                        "That player is already being dragged by someone else.");
-                                }
-                                break;
-                            }
+                            ChatManager.RoleplayMessage(player,
+                                "removes the handcuffs from " + interactCharacter.rp_name(), ChatManager.RoleplayMe);
                         }
 
                         break;
                     }
-                    case "cancel_following":
+                case "drag":
                     {
-                        Character character = player.GetCharacter();
-
-                            if (character == null)
+                        if (player.Position.DistanceTo(interactCharacter.Client.Position) > 3)
+                        {
+                            API.SendChatMessageToPlayer(player, Color.White,
+                                "You are too far away from that player.");
                             return;
+                        }
 
-                        if (character.FollowingPlayer != Character.None && character.IsBeingDragged == false)
+                        if (interactCharacter.FollowingPlayer == Character.None)
                         {
+                            interactCharacter.FollowingPlayer = character;
+                            interactCharacter.IsBeingDragged = true;
+                            interactCharacter.FollowingTimer = new Timer() { Interval = 1000 };
+                            interactCharacter.FollowingTimer.Elapsed += delegate { FollowPlayer(interactCharacter, true); };
+                            interactCharacter.FollowingTimer.Start();
 
-                            character.FollowingTimer.Stop();
-                            character.FollowingPlayer = Character.None;
-                            API.SendChatMessageToPlayer(player, "You have stopped following your target.");
+                            ChatManager.RoleplayMessage(player, "grabs " + interactCharacter.rp_name() + " and begins to drag them.", ChatManager.RoleplayMe);
+                        }
+                        else if (interactCharacter.FollowingPlayer == character)
+                        {
+                            interactCharacter.FollowingTimer.Stop();
+                            interactCharacter.IsBeingDragged = false;
+                            interactCharacter.FollowingPlayer = Character.None;
+                            ChatManager.RoleplayMessage(player, "lets go of " + interactCharacter.rp_name(),
+                                ChatManager.RoleplayMe);
+                            API.SendChatMessageToPlayer(player, "You have stopped dragging your target.");
+                        }
+                        else
+                        {
+                            API.SendChatMessageToPlayer(player, Color.White,
+                                "That player is already being dragged by someone else.");
                         }
                         break;
                     }
-                }
-            };
+            }
         }
 
         [Command("detain", GreedyArg = true), Help(HelpManager.CommandGroups.Vehicles, "Detain someone into your vehicle. (Must be inside the vehicle)", "The player id", "Seat number you'd like to detain to")]

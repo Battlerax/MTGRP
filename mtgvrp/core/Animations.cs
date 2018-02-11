@@ -17,7 +17,6 @@ namespace mtgvrp.core
     {
         public Animations()
         {
-            Event.OnClientEventTrigger += OnClientEventTrigger;
         }
 
         [Flags]
@@ -36,14 +35,10 @@ namespace mtgvrp.core
             API.PlayPlayerAnimation(player, flag, animDict, animName);
         }
 
-        public void OnClientEventTrigger(Client player, string eventId, params object[] arguments)
+        [RemoteEvent("stopPlayerAnims")]
+        public void StopPlayerAnims(Client player, params object[] arguments)
         {
-            switch (eventId)
-            {
-                case "stopPlayerAnims":
-                    stopanim(player);
-                    break;
-            }
+            stopanim(player);
         }
         
         [Command("stopanim")]

@@ -21,7 +21,7 @@ using mtgvrp.vehicle_manager;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using Object = GTANetworkAPI.Object;
-using Vehicle = mtgvrp.vehicle_manager.Vehicle;
+using GameVehicle = mtgvrp.vehicle_manager.GameVehicle;
 
 namespace mtgvrp.player_manager
 {
@@ -67,7 +67,7 @@ namespace mtgvrp.player_manager
         public Client Client { get; set; }
 
         [BsonIgnore]
-        public Vehicle LastVehicle { get; set; }
+        public GameVehicle LastVehicle { get; set; }
 
         [BsonIgnore]
         public bool TaxiDuty = false;
@@ -465,7 +465,7 @@ namespace mtgvrp.player_manager
                 TaskContinuationOptions.OnlyOnFaulted);
         }
 
-        public List<Vehicle> OwnedVehicles => VehicleManager.Vehicles.Where(x => x.OwnerId == Id).ToList();
+        public List<GameVehicle> OwnedVehicles => VehicleManager.Vehicles.Where(x => x.OwnerId == Id).ToList();
 
         public static bool IsCharacterRegistered(string name)
         {

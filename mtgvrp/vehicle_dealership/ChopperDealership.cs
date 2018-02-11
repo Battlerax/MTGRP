@@ -36,8 +36,6 @@ namespace mtgvrp.vehicle_dealership
         private List<MarkerZone> _markerZones = new List<MarkerZone>();
         public ChopperDealership()
         {
-            Event.OnClientEventTrigger += API_onClientEventTrigger;
-
             //Setup the blip.
             foreach (var loc in _dealershipsLocations)
             {
@@ -50,74 +48,67 @@ namespace mtgvrp.vehicle_dealership
             }
         }
 
-        private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
+        [RemoteEvent("chopperdealer_selectcar")]
+        private void ChoppDealerSelectCar(Client sender, params object[] arguments)
         {
-            if (eventName == "chopperdealer_selectcar")
+            Character character = sender.GetCharacter();
+
+            string[] selectedCar = null;
+            switch ((int) arguments[0])
             {
-                Character character = sender.GetCharacter();
-
-                string[] selectedCar = null;
-
-                #region Get Car Info.
-
-                switch ((int) arguments[0])
-                {
-                    case 0:
-                        selectedCar = _helicopters[(int) arguments[1]];
-                        break;
-                }
-
-                #endregion
-
-                if (selectedCar == null) return;
-
-                if (Money.GetCharacterMoney(character) >= Convert.ToInt32(selectedCar[2]))
-                {
-                    //Remove price.
-                    InventoryManager.DeleteInventoryItem(character, typeof(Money), Convert.ToInt32(selectedCar[2]));
-
-                    //Spawn positions.
-                    Vector3[] spawnPoss =
-                    {
-                        new Vector3(-1112.07, -2883.274, 13.94603),
-                        new Vector3(-1145.618, -2864.848, 13.94607),
-                        new Vector3(-1177.989, -2845.755, 13.94576),
-                    };
-                    var randomPos = new Random().Next(1, spawnPoss.Length) - 1;
-
-                    //Create the vehicle.
-                    var theVehicle = VehicleManager.CreateVehicle(
-                        (VehicleHash)Convert.ToInt32(selectedCar[1]),
-                        spawnPoss[randomPos],
-                        new Vector3(0.1917319, 0.1198539, -177.1394),
-                        "Unregistered",
-                        character.Id,
-                        vehicle_manager.Vehicle.VehTypePerm
-                    );
-                    //theVehicle.IsVip = true;
-                    theVehicle.OwnerName = character.CharacterName;
-                    //Add it to the players cars.
-                    theVehicle.Insert();
-
-                    //Spawn it.
-                    if (VehicleManager.spawn_vehicle(theVehicle) != 1)
-                        API.SendChatMessageToPlayer(sender, "An error occured while spawning your vehicle.");
-
-                    //Notify.
-                    API.SendChatMessageToPlayer(sender,
-                        $"You have sucessfully bought the ~g~{selectedCar[0]}~w~ for ${selectedCar[2]}.");
-                    API.SendChatMessageToPlayer(sender, "Use /myvehicles to manage it.");
-
-                    //Log it.
-                    LogManager.Log(LogManager.LogTypes.Stats, $"[Chopper Dealership] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a(n) {API.GetVehicleDisplayName(theVehicle.VehModel)} for ${selectedCar[2]}.");
-
-                    //Exit.
-                    API.TriggerClientEvent(sender, "chopperdealership_exitdealermenu");
-                }
-                else
-                    API.SendChatMessageToPlayer(sender,
-                        $"You don't have enough money to buy the ~g~{selectedCar[0]}~w~.");
+                case 0:
+                    selectedCar = _helicopters[(int) arguments[1]];
+                    break;
             }
+
+            if (selectedCar == null) return;
+
+            if (Money.GetCharacterMoney(character) >= Convert.ToInt32(selectedCar[2]))
+            {
+                //Remove price.
+                InventoryManager.DeleteInventoryItem(character, typeof(Money), Convert.ToInt32(selectedCar[2]));
+
+                //Spawn positions.
+                Vector3[] spawnPoss =
+                {
+                    new Vector3(-1112.07, -2883.274, 13.94603),
+                    new Vector3(-1145.618, -2864.848, 13.94607),
+                    new Vector3(-1177.989, -2845.755, 13.94576),
+                };
+                var randomPos = new Random().Next(1, spawnPoss.Length) - 1;
+
+                //Create the vehicle.
+                var theVehicle = VehicleManager.CreateVehicle(
+                    (VehicleHash)Convert.ToInt32(selectedCar[1]),
+                    spawnPoss[randomPos],
+                    new Vector3(0.1917319, 0.1198539, -177.1394),
+                    "Unregistered",
+                    character.Id,
+                    vehicle_manager.GameVehicle.VehTypePerm
+                );
+                //theVehicle.IsVip = true;
+                theVehicle.OwnerName = character.CharacterName;
+                //Add it to the players cars.
+                theVehicle.Insert();
+
+                //Spawn it.
+                if (VehicleManager.spawn_vehicle(theVehicle) != 1)
+                    API.SendChatMessageToPlayer(sender, "An error occured while spawning your vehicle.");
+
+                //Notify.
+                API.SendChatMessageToPlayer(sender,
+                    $"You have sucessfully bought the ~g~{selectedCar[0]}~w~ for ${selectedCar[2]}.");
+                API.SendChatMessageToPlayer(sender, "Use /myvehicles to manage it.");
+
+                //Log it.
+                LogManager.Log(LogManager.LogTypes.Stats, $"[Chopper Dealership] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a(n) {API.GetVehicleDisplayName(theVehicle.VehModel)} for ${selectedCar[2]}.");
+
+                //Exit.
+                API.TriggerClientEvent(sender, "chopperdealership_exitdealermenu");
+            }
+            else
+                API.SendChatMessageToPlayer(sender,
+                    $"You don't have enough money to buy the ~g~{selectedCar[0]}~w~.");
         }
 
         [Command("buychopper"), Help(HelpManager.CommandGroups.Vehicles, "Command used inside dealership to buy a helicopter.", null)]

@@ -29,7 +29,7 @@ namespace mtgvrp.job_manager.delivery
         {
             {typeof(Character), 10},
             {typeof(BagItem), 10},
-            {typeof(Vehicle), 0},
+            {typeof(GameVehicle), 0},
             {typeof(Property), 0},
         };
 

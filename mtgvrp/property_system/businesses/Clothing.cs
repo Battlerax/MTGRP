@@ -121,266 +121,270 @@ namespace mtgvrp.property_system.businesses
         {
 
             Event.OnResourceStart += API_onResourceStart;
-            Event.OnClientEventTrigger += API_onClientEventTrigger;
         }
 
-        private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
+        [RemoteEvent("closeclothingmenu")]
+        private void CloseClothingMenu(Client sender, params object[] arguments)
         {
-            if (eventName == "closeclothingmenu")
-            {
-                API.FreezePlayer(sender, false);
-                sender.Position = API.GetEntityData(sender, "clothing_lastpos");
-                sender.Rotation = API.GetEntityData(sender, "clothing_lastrot");
-                API.SetEntityDimension(sender, 0);
-                API.SendChatMessageToPlayer(sender, "You have exited the clothing menu.");
+            API.FreezePlayer(sender, false);
+            sender.Position = API.GetEntityData(sender, "clothing_lastpos");
+            sender.Rotation = API.GetEntityData(sender, "clothing_lastrot");
+            API.SetEntityDimension(sender, 0);
+            API.SendChatMessageToPlayer(sender, "You have exited the clothing menu.");
+        }
 
+        [RemoteEvent("returnPedGender")]
+        private void ReturnPedGender(Client sender, params object[] arguments)
+        {
+            setPlayerPedSkin(sender, (PedHash)arguments[0], (int)arguments[1]);
+        }
+
+        [RemoteEvent("clothing_buyclothe")]
+        private void ClothingBuyClothes(Client sender, params object[] arguments)
+        {
+            Character character = sender.GetCharacter();
+            int price = 0;
+            switch ((int)arguments[0])
+            {
+                case Component.ComponentTypeLegs:
+                    price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
+                        .ItemPrices["pants"];
+                    break;
+                case Component.ComponentTypeShoes:
+                    price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
+                        .ItemPrices["shoes"];
+                    break;
+                case Component.ComponentTypeAccessories:
+                    price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
+                        .ItemPrices["accessories"];
+                    break;
+                case Component.ComponentTypeUndershirt:
+                    price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
+                        .ItemPrices["undershirts"];
+                    break;
+                case Component.ComponentTypeTops:
+                    price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
+                        .ItemPrices["tops"];
+                    break;
+                case Component.ComponentTypeHats:
+                    price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
+                        .ItemPrices["hats"];
+                    break;
+                case Component.ComponentTypeGlasses:
+                    price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
+                        .ItemPrices["glasses"];
+                    break;
+                case Component.ComponentTypeEars:
+                    price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
+                        .ItemPrices["earrings"];
+                    break;
+                case Component.ComponentTypeTorso:
+                    price = 0;
+                    break;
+            }
+            var prop = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"));
+
+            if (prop.Supplies <= 0)
+            {
+                API.SendChatMessageToPlayer(sender, "The business is out of supplies.");
+                return;
             }
 
-            else if (eventName == "returnPedGender")
+            if (Money.GetCharacterMoney(character) < price)
             {
-                setPlayerPedSkin(sender,(PedHash) arguments[0],(int) arguments[1]);
+                API.SendChatMessageToPlayer(sender, "You don't have enough money.");
+                return;
             }
-            else if (eventName == "clothing_buyclothe")
+
+            API.ConsoleOutput($"CHARACTER BUY CLOTHES: {arguments[0]} | {arguments[1]} | {arguments[2]}");
+            if (character.Model.Gender == Character.GenderMale)
             {
-                Character character = sender.GetCharacter();
-                int price = 0;
-                switch ((int) arguments[0])
+                switch ((int)arguments[0])
                 {
                     case Component.ComponentTypeLegs:
-                        price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
-                            .ItemPrices["pants"];
+                        character.Model.PantsStyle = ComponentManager.ValidMaleLegs[(int)arguments[1]].ComponentId;
+                        character.Model.PantsVar = (int)ComponentManager.ValidMaleLegs[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
                         break;
                     case Component.ComponentTypeShoes:
-                        price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
-                            .ItemPrices["shoes"];
+                        character.Model.ShoeStyle = ComponentManager.ValidMaleShoes[(int)arguments[1]].ComponentId;
+                        character.Model.ShoeVar = (int)ComponentManager.ValidMaleShoes[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
                         break;
                     case Component.ComponentTypeAccessories:
-                        price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
-                            .ItemPrices["accessories"];
+                        character.Model.AccessoryStyle = ComponentManager.ValidMaleAccessories[(int)arguments[1]].ComponentId;
+                        character.Model.AccessoryVar = (int)ComponentManager.ValidMaleAccessories[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
+
+                        if ((int)arguments[1] == 0)
+                            price = 0;
                         break;
                     case Component.ComponentTypeUndershirt:
-                        price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
-                            .ItemPrices["undershirts"];
+                        character.Model.UndershirtStyle = ComponentManager.ValidMaleUndershirt[(int)arguments[1]].ComponentId;
+                        character.Model.UndershirtVar = (int)ComponentManager.ValidMaleUndershirt[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
+
+                        if ((int)arguments[1] == 0)
+                            price = 0;
                         break;
                     case Component.ComponentTypeTops:
-                        price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
-                            .ItemPrices["tops"];
+                        character.Model.TopStyle = ComponentManager.ValidMaleTops[(int)arguments[1]].ComponentId;
+                        character.Model.TopVar = (int)ComponentManager.ValidMaleTops[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
                         break;
                     case Component.ComponentTypeHats:
-                        price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
-                            .ItemPrices["hats"];
+                        character.Model.HatStyle = ComponentManager.ValidMaleHats[(int)arguments[1]].ComponentId;
+                        character.Model.HatVar = (int)ComponentManager.ValidMaleHats[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
+
+                        if ((int)arguments[1] == 0)
+                            price = 0;
                         break;
                     case Component.ComponentTypeGlasses:
-                        price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
-                            .ItemPrices["glasses"];
+                        character.Model.GlassesStyle = ComponentManager.ValidMaleGlasses[(int)arguments[1]].ComponentId;
+                        character.Model.GlassesVar = (int)ComponentManager.ValidMaleGlasses[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
+
+                        if ((int)arguments[1] == 0)
+                            price = 0;
                         break;
                     case Component.ComponentTypeEars:
-                        price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
-                            .ItemPrices["earrings"];
+                        character.Model.EarStyle = ComponentManager.ValidMaleEars[(int)arguments[1]].ComponentId;
+                        character.Model.EarVar = (int)ComponentManager.ValidMaleEars[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
+
+                        if ((int)arguments[1] == 0)
+                            price = 0;
                         break;
                     case Component.ComponentTypeTorso:
-                        price = 0;
+                        character.Model.TorsoStyle = (int)arguments[1];
+                        character.Model.TorsoVar = (int)arguments[2];
                         break;
                 }
-                var prop = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"));
-
-                if (prop.Supplies <= 0)
-                {
-                    API.SendChatMessageToPlayer(sender, "The business is out of supplies.");
-                    return;
-                }
-
-                if (Money.GetCharacterMoney(character) < price)
-                {
-                    API.SendChatMessageToPlayer(sender, "You don't have enough money.");
-                    return;
-                }
-
-                API.ConsoleOutput($"CHARACTER BUY CLOTHES: {arguments[0]} | {arguments[1]} | {arguments[2]}");
-                if (character.Model.Gender == Character.GenderMale)
-                {
-                    switch ((int)arguments[0])
-                    {
-                        case Component.ComponentTypeLegs:
-                            character.Model.PantsStyle = ComponentManager.ValidMaleLegs[(int)arguments[1]].ComponentId;
-                            character.Model.PantsVar = (int)ComponentManager.ValidMaleLegs[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                            break;
-                        case Component.ComponentTypeShoes:
-                            character.Model.ShoeStyle = ComponentManager.ValidMaleShoes[(int)arguments[1]].ComponentId;
-                            character.Model.ShoeVar = (int)ComponentManager.ValidMaleShoes[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                            break;
-                        case Component.ComponentTypeAccessories:
-                            character.Model.AccessoryStyle = ComponentManager.ValidMaleAccessories[(int)arguments[1]].ComponentId;
-                            character.Model.AccessoryVar = (int)ComponentManager.ValidMaleAccessories[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-
-                            if ((int)arguments[1] == 0)
-                                price = 0;
-                            break;
-                        case Component.ComponentTypeUndershirt:
-                            character.Model.UndershirtStyle = ComponentManager.ValidMaleUndershirt[(int)arguments[1]].ComponentId;
-                            character.Model.UndershirtVar = (int)ComponentManager.ValidMaleUndershirt[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-
-                            if ((int)arguments[1] == 0)
-                                price = 0;
-                            break;
-                        case Component.ComponentTypeTops:
-                            character.Model.TopStyle = ComponentManager.ValidMaleTops[(int)arguments[1]].ComponentId;
-                            character.Model.TopVar = (int)ComponentManager.ValidMaleTops[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                            break;
-                        case Component.ComponentTypeHats:
-                            character.Model.HatStyle = ComponentManager.ValidMaleHats[(int)arguments[1]].ComponentId;
-                            character.Model.HatVar = (int)ComponentManager.ValidMaleHats[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-
-                            if ((int)arguments[1] == 0)
-                                price = 0;
-                            break;
-                        case Component.ComponentTypeGlasses:
-                            character.Model.GlassesStyle = ComponentManager.ValidMaleGlasses[(int)arguments[1]].ComponentId;
-                            character.Model.GlassesVar = (int)ComponentManager.ValidMaleGlasses[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-
-                            if ((int)arguments[1] == 0)
-                                price = 0;
-                            break;
-                        case Component.ComponentTypeEars:
-                            character.Model.EarStyle = ComponentManager.ValidMaleEars[(int)arguments[1]].ComponentId;
-                            character.Model.EarVar = (int)ComponentManager.ValidMaleEars[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-
-                            if ((int) arguments[1] == 0)
-                                price = 0;
-                            break;
-                        case Component.ComponentTypeTorso:
-                            character.Model.TorsoStyle = (int)arguments[1];
-                            character.Model.TorsoVar = (int)arguments[2];
-                            break;
-                    }
-                }
-                else
-                {
-                    switch ((int)arguments[0])
-                    {
-                        case Component.ComponentTypeLegs:
-                            character.Model.PantsStyle = ComponentManager.ValidFemaleLegs[(int)arguments[1]].ComponentId;
-                            character.Model.PantsVar = (int)ComponentManager.ValidFemaleLegs[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                            break;
-                        case Component.ComponentTypeShoes:
-                            character.Model.ShoeStyle = ComponentManager.ValidFemaleShoes[(int)arguments[1]].ComponentId;
-                            character.Model.ShoeVar = (int)ComponentManager.ValidFemaleShoes[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                            break;
-                        case Component.ComponentTypeAccessories:
-                            character.Model.AccessoryStyle = ComponentManager.ValidFemaleAccessories[(int)arguments[1]].ComponentId;
-                            character.Model.AccessoryVar = (int)ComponentManager.ValidFemaleAccessories[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-
-                            if ((int)arguments[1] == 0)
-                                price = 0;
-                            break;
-                        case Component.ComponentTypeUndershirt:
-                            character.Model.UndershirtStyle = ComponentManager.ValidFemaleUndershirt[(int)arguments[1]].ComponentId;
-                            character.Model.UndershirtVar = (int)ComponentManager.ValidFemaleUndershirt[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-
-                            if ((int)arguments[1] == 0)
-                                price = 0;
-                            break;
-                        case Component.ComponentTypeTops:
-                            character.Model.TopStyle = ComponentManager.ValidFemaleTops[(int)arguments[1]].ComponentId;
-                            character.Model.TopVar = (int)ComponentManager.ValidFemaleTops[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-                            break;
-                        case Component.ComponentTypeHats:
-                            character.Model.HatStyle = ComponentManager.ValidFemaleHats[(int)arguments[1]].ComponentId;
-                            character.Model.HatVar = (int)ComponentManager.ValidFemaleHats[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-
-                            if ((int)arguments[1] == 0)
-                                price = 0;
-                            break;
-                        case Component.ComponentTypeGlasses:
-                            character.Model.GlassesStyle = ComponentManager.ValidFemaleGlasses[(int)arguments[1]].ComponentId;
-                            character.Model.GlassesVar = (int)ComponentManager.ValidFemaleGlasses[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-
-                            if ((int)arguments[1] == 0)
-                                price = 0;
-                            break;
-                        case Component.ComponentTypeEars:
-                            character.Model.EarStyle = ComponentManager.ValidFemaleEars[(int)arguments[1]].ComponentId;
-                            character.Model.EarVar = (int)ComponentManager.ValidFemaleEars[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
-
-                            if ((int)arguments[1] == 0)
-                                price = 0;
-                            break;
-                        case Component.ComponentTypeTorso:
-                            character.Model.TorsoStyle = (int)arguments[1];
-                            character.Model.TorsoVar = (int)arguments[2];
-                            break;
-                    }
-                }
-
-                InventoryManager.DeleteInventoryItem(character, typeof(Money), price);
-                InventoryManager.GiveInventoryItem(prop, new Money(), price);
-                prop.Supplies -= 1;
-
-                character.update_ped();
-                character.Save();
-
-                API.SendChatMessageToPlayer(sender, "You've successfully bought this.");
-                API.TriggerClientEvent(sender, "clothing_boughtsucess", arguments[0], arguments[1], arguments[2]);
-                LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought some clothing for {price} from property ID {prop.Id}.");
             }
-            else if (eventName == "clothing_bag_preview")
+            else
             {
-                var bagstyle = ComponentManager.ValidBags[(int)arguments[0]].ComponentId;
-                var bagvar = (int)ComponentManager.ValidBags[(int)arguments[0]].Variations.ToArray().GetValue((int)arguments[1]);
-                API.SetPlayerClothes(sender, 5, bagstyle, bagvar - 1);
-            }
-            else if(eventName == "clothing_bag_closed")
-            {
-                API.FreezePlayer(sender, false);
-                sender.Position = API.GetEntityData(sender, "clothing_lastpos");
-                sender.Rotation = API.GetEntityData(sender, "clothing_lastrot");
-                API.SetEntityDimension(sender, 0);
-
-                API.SetPlayerClothes(sender, 5, 0, 0);
-
-                var bag = InventoryManager.DoesInventoryHaveItem<BagItem>(sender.GetCharacter());
-                if (bag.Length > 0)
+                switch ((int)arguments[0])
                 {
-                    var bagg = (BagItem) bag[0];
-                    API.SetPlayerClothes(sender, 5, bagg.BagType, bagg.BagDesign);
+                    case Component.ComponentTypeLegs:
+                        character.Model.PantsStyle = ComponentManager.ValidFemaleLegs[(int)arguments[1]].ComponentId;
+                        character.Model.PantsVar = (int)ComponentManager.ValidFemaleLegs[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
+                        break;
+                    case Component.ComponentTypeShoes:
+                        character.Model.ShoeStyle = ComponentManager.ValidFemaleShoes[(int)arguments[1]].ComponentId;
+                        character.Model.ShoeVar = (int)ComponentManager.ValidFemaleShoes[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
+                        break;
+                    case Component.ComponentTypeAccessories:
+                        character.Model.AccessoryStyle = ComponentManager.ValidFemaleAccessories[(int)arguments[1]].ComponentId;
+                        character.Model.AccessoryVar = (int)ComponentManager.ValidFemaleAccessories[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
+
+                        if ((int)arguments[1] == 0)
+                            price = 0;
+                        break;
+                    case Component.ComponentTypeUndershirt:
+                        character.Model.UndershirtStyle = ComponentManager.ValidFemaleUndershirt[(int)arguments[1]].ComponentId;
+                        character.Model.UndershirtVar = (int)ComponentManager.ValidFemaleUndershirt[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
+
+                        if ((int)arguments[1] == 0)
+                            price = 0;
+                        break;
+                    case Component.ComponentTypeTops:
+                        character.Model.TopStyle = ComponentManager.ValidFemaleTops[(int)arguments[1]].ComponentId;
+                        character.Model.TopVar = (int)ComponentManager.ValidFemaleTops[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
+                        break;
+                    case Component.ComponentTypeHats:
+                        character.Model.HatStyle = ComponentManager.ValidFemaleHats[(int)arguments[1]].ComponentId;
+                        character.Model.HatVar = (int)ComponentManager.ValidFemaleHats[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
+
+                        if ((int)arguments[1] == 0)
+                            price = 0;
+                        break;
+                    case Component.ComponentTypeGlasses:
+                        character.Model.GlassesStyle = ComponentManager.ValidFemaleGlasses[(int)arguments[1]].ComponentId;
+                        character.Model.GlassesVar = (int)ComponentManager.ValidFemaleGlasses[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
+
+                        if ((int)arguments[1] == 0)
+                            price = 0;
+                        break;
+                    case Component.ComponentTypeEars:
+                        character.Model.EarStyle = ComponentManager.ValidFemaleEars[(int)arguments[1]].ComponentId;
+                        character.Model.EarVar = (int)ComponentManager.ValidFemaleEars[(int)arguments[1]].Variations.ToArray().GetValue((int)arguments[2]);
+
+                        if ((int)arguments[1] == 0)
+                            price = 0;
+                        break;
+                    case Component.ComponentTypeTorso:
+                        character.Model.TorsoStyle = (int)arguments[1];
+                        character.Model.TorsoVar = (int)arguments[2];
+                        break;
                 }
             }
-            else if (eventName == "clothing_buybag")
+
+            InventoryManager.DeleteInventoryItem(character, typeof(Money), price);
+            InventoryManager.GiveInventoryItem(prop, new Money(), price);
+            prop.Supplies -= 1;
+
+            character.update_ped();
+            character.Save();
+
+            API.SendChatMessageToPlayer(sender, "You've successfully bought this.");
+            API.TriggerClientEvent(sender, "clothing_boughtsucess", arguments[0], arguments[1], arguments[2]);
+            LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought some clothing for {price} from property ID {prop.Id}.");
+        }
+
+        [RemoteEvent("clothing_bag_preview")]
+        private void ClothingBagPreview(Client sender, params object[] arguments)
+        {
+            var bagstyle = ComponentManager.ValidBags[(int)arguments[0]].ComponentId;
+            var bagvar = (int)ComponentManager.ValidBags[(int)arguments[0]].Variations.ToArray().GetValue((int)arguments[1]);
+            API.SetPlayerClothes(sender, 5, bagstyle, bagvar - 1);
+        }
+
+        [RemoteEvent("clothing_bag_closed")]
+        private void ClothingBagClosed(Client sender, params object[] arguments)
+        {
+            API.FreezePlayer(sender, false);
+            sender.Position = API.GetEntityData(sender, "clothing_lastpos");
+            sender.Rotation = API.GetEntityData(sender, "clothing_lastrot");
+            API.SetEntityDimension(sender, 0);
+
+            API.SetPlayerClothes(sender, 5, 0, 0);
+
+            var bag = InventoryManager.DoesInventoryHaveItem<BagItem>(sender.GetCharacter());
+            if (bag.Length > 0)
             {
-                var price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
+                var bagg = (BagItem)bag[0];
+                API.SetPlayerClothes(sender, 5, bagg.BagType, bagg.BagDesign);
+            }
+        }
+
+        [RemoteEvent("clothing_buybag")]
+        private void ClothingBuyBag(Client sender, params object[] arguments)
+        {
+            var price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
                     .ItemPrices["8"];
 
-                if (Money.GetCharacterMoney(sender.GetCharacter()) < price)
-                {
-                    API.SendChatMessageToPlayer(sender, "You don't have enough money.");
-                    return;
-                }
+            if (Money.GetCharacterMoney(sender.GetCharacter()) < price)
+            {
+                API.SendChatMessageToPlayer(sender, "You don't have enough money.");
+                return;
+            }
 
-                var bagstyle = ComponentManager.ValidBags[(int)arguments[0]].ComponentId;
-                var bagvar = (int)ComponentManager.ValidBags[(int)arguments[0]].Variations.ToArray().GetValue((int)arguments[1]) - 1;
+            var bagstyle = ComponentManager.ValidBags[(int)arguments[0]].ComponentId;
+            var bagvar = (int)ComponentManager.ValidBags[(int)arguments[0]].Variations.ToArray().GetValue((int)arguments[1]) - 1;
 
-                var bag = new BagItem()
-                {
-                    BagType = bagstyle,
-                    BagDesign = bagvar,
-                    BagName = "default"
-                };
-                switch (InventoryManager.GiveInventoryItem(sender.GetCharacter(), bag))
-                {
-                    case InventoryManager.GiveItemErrors.Success:
-                        InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
-                        var prop = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"));
-                        InventoryManager.GiveInventoryItem(prop, new Money(), price);
-                        API.SendChatMessageToPlayer(sender, "You've successfully bought this.");
-                        break;
-                    case InventoryManager.GiveItemErrors.MaxAmountReached:
-                        API.SendChatMessageToPlayer(sender, "You have reached the maximum amount.");
-                        break;
-                    case InventoryManager.GiveItemErrors.NotEnoughSpace:
-                        API.SendChatMessageToPlayer(sender, "You don't have enough space for that item.");
-                        break;
-                }
-
+            var bag = new BagItem()
+            {
+                BagType = bagstyle,
+                BagDesign = bagvar,
+                BagName = "default"
+            };
+            switch (InventoryManager.GiveInventoryItem(sender.GetCharacter(), bag))
+            {
+                case InventoryManager.GiveItemErrors.Success:
+                    InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
+                    var prop = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"));
+                    InventoryManager.GiveInventoryItem(prop, new Money(), price);
+                    API.SendChatMessageToPlayer(sender, "You've successfully bought this.");
+                    break;
+                case InventoryManager.GiveItemErrors.MaxAmountReached:
+                    API.SendChatMessageToPlayer(sender, "You have reached the maximum amount.");
+                    break;
+                case InventoryManager.GiveItemErrors.NotEnoughSpace:
+                    API.SendChatMessageToPlayer(sender, "You don't have enough space for that item.");
+                    break;
             }
         }
 

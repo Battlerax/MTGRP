@@ -21,7 +21,7 @@ namespace mtgvrp.database_manager
         private static IMongoDatabase _database;
 
         private static IMongoCollection<BsonDocument> _countersTable;
-        public static IMongoCollection<Vehicle> VehicleTable;
+        public static IMongoCollection<GameVehicle> VehicleTable;
         public static IMongoCollection<Account> AccountTable; 
         public static IMongoCollection<Character> CharacterTable;
         public static IMongoCollection<Job> JobTable;
@@ -47,7 +47,7 @@ namespace mtgvrp.database_manager
             _database = MongoClient.GetDatabase("mtg_main");
 
             _countersTable = _database.GetCollection<BsonDocument>("counters");
-            VehicleTable = _database.GetCollection<Vehicle>("vehicles");
+            VehicleTable = _database.GetCollection<GameVehicle>("vehicles");
             AccountTable = _database.GetCollection<Account>("accounts");
             CharacterTable = _database.GetCollection<Character>("characters");
             JobTable = _database.GetCollection<Job>("jobs");

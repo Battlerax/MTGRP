@@ -24,7 +24,6 @@ namespace mtgvrp.phone_manager
         {
             DebugManager.DebugMessage("[PhoneM] Initalizing Phone Manager...");
 
-            Event.OnClientEventTrigger += API_onClientEventTrigger;
             CharacterMenu.OnCharacterLogin += CharacterMenu_OnCharacterLogin;
 
             DebugManager.DebugMessage("[PhoneM] Phone Manager initalized.");
@@ -56,157 +55,178 @@ namespace mtgvrp.phone_manager
             }
         }
 
-        private void API_onClientEventTrigger(Client sender, string eventName, params object[] arguments)
+        [RemoteEvent("phone_callphone")]
+        public void PhoneCallPhone(Client sender, params object[] arguments)
         {
-            switch (eventName)
+            string number = (string)arguments[0];
+            call_cmd(sender, number);
+        }
+
+        [RemoteEvent("phone_answercall")]
+        public void PhoneAnswerCall(Client sender, params object[] arguments)
+        {
+            pickup_cmd(sender);
+        }
+
+        [RemoteEvent("phone_hangout")]
+        public void PhoneHangOut(Client sender, params object[] arguments)
+        {
+            h_cmd(sender);
+        }
+
+        [RemoteEvent("phone_getallContacts")]
+        public void PhoneGetAllContacts(Client sender, params object[] arguments)
+        {
+            //Check if has phone.
+            var items = InventoryManager.DoesInventoryHaveItem(sender.GetCharacter(), typeof(Phone));
+            if (items.Length == 0)
             {
-                case "phone_callphone":
-                    string number = (string)arguments[0];
-                    call_cmd(sender, number);
-                    break;
+                API.SendChatMessageToPlayer(sender, "You don't have a phone.");
+                return;
+            }
+            var phone = (Phone)items[0];
 
-                case "phone_answercall":
-                    pickup_cmd(sender);
-                    break;
+            string[][] contacts = phone.Contacts.Select(x => new[] { x.Name, x.Number.ToString() }).ToArray();
+            API.TriggerClientEvent(sender, "phone_showContacts", API.ToJson(contacts));
+        }
 
-                case "phone_hangout":
-                    h_cmd(sender);
-                    break;
-
-                case "phone_getallContacts":
-                    //Check if has phone.
-                    var items = InventoryManager.DoesInventoryHaveItem(sender.GetCharacter(), typeof(Phone));
-                    if (items.Length == 0)
-                    {
-                        API.SendChatMessageToPlayer(sender, "You don't have a phone.");
-                        return;
-                    }
-                    var phone = (Phone) items[0];
-
-                    string[][] contacts = phone.Contacts.Select(x => new[] { x.Name, x.Number.ToString()}).ToArray();
-                    API.TriggerClientEvent(sender, "phone_showContacts", API.ToJson(contacts));
-                    break;
-
-                case "phone_saveContact":
-                    var name = arguments[0].ToString();
-                    string num = (string)arguments[1];
-                    if (IsDigitsOnly(num))
-                    {
-                        addcontact_cmd(sender, num, name);
-                    }
-                    else
-                    {
-                        API.SendNotificationToPlayer(sender, "Invalid number entered.");
-                    }
-                    break;
-
-                case "phone_editContact":
-                    string anum = (string)arguments[2];
-                    if (IsDigitsOnly(anum))
-                    {
-                        editcontact_cmd(sender, (string)arguments[0], (string)arguments[1], anum);
-                    }
-                    else
-                    {
-                        API.SendNotificationToPlayer(sender, "Invalid number entered.");
-                    }
-                    break;
-
-                case "phone_deleteContact":
-                    removecontact_cmd(sender, arguments[0].ToString());
-                    break;
-
-                case "phone_loadMessagesContacts":
-                    Character character = sender.GetCharacter();
-                    var lmcitems = InventoryManager.DoesInventoryHaveItem(character, typeof(Phone));
-                    if (lmcitems.Length == 0)
-                    {
-                        API.SendChatMessageToPlayer(sender, "You don't have a phone.");
-                        return;
-                    }
-                    var lmcphone = (Phone)lmcitems[0];
-
-                    //First get all messages for this phone.
-                    var cntcs = Phone.GetContactListOfMessages(lmcphone.PhoneNumber);
-                    
-                    //Now loop through them, substituting with name.
-                    var newContacts = cntcs.Select(x => new[] { lmcphone.Contacts.SingleOrDefault(y => y.Number.ToString() == x[0])?.Name ?? x[0], x[1], x[2], x[3]}).ToArray();
-                    API.TriggerClientEvent(sender, "phone_messageContactsLoaded", API.ToJson(newContacts));
-                    break;
-
-                case "phone_sendMessage":
-                    sms_cmd(sender, (string)arguments[0], (string)arguments[1]);
-                    break;
-
-                case "phone_loadMessages":
-                    var contact = (string)arguments[0];
-                    var toSkip = (int) arguments[1];
-
-                    Character lmcharacter = sender.GetCharacter();
-                    var lmitems = InventoryManager.DoesInventoryHaveItem(lmcharacter, typeof(Phone));
-                    if (lmitems.Length == 0)
-                    {
-                        API.SendChatMessageToPlayer(sender, "You don't have a phone.");
-                        return;
-                    }
-                    var lmphone = (Phone)lmitems[0];
-                    string numbera = IsDigitsOnly(contact) ? contact : lmphone.Contacts.FirstOrDefault(x => x.Name == contact)?.Number ?? contact;
-
-                    var returnMsgs = Phone.GetMessageLog(lmphone.PhoneNumber, numbera, 10, toSkip);
-                    var actualMsgs = returnMsgs.Select(x => new[] {x.SenderNumber, x.Message, x.DateSent.ToString(), x.IsRead.ToString()}).ToArray();
-                    API.TriggerClientEvent(sender, "phone_showMessages", lmphone.PhoneNumber, API.ToJson(actualMsgs),
-                        (Phone.GetMessageCount(lmphone.PhoneNumber, numbera) - (toSkip + 10)) > 0, toSkip == 0);
-
-                    Phone.MarkMessagesAsRead(lmphone.PhoneNumber); //Mark as read.
-                    break;
-
-                case "phone_getNotifications":
-                    Character gncharacter = sender.GetCharacter();
-                    var gnitems = InventoryManager.DoesInventoryHaveItem(gncharacter, typeof(Phone));
-                    if (gnitems.Length == 0)
-                    {
-                        API.SendChatMessageToPlayer(sender, "You don't have a phone.");
-                        return;
-                    }
-                    var gnphone = (Phone)gnitems[0];
-
-                    //Ready unread notification thing.
-                    var unreadMessages =
-                        DatabaseManager.MessagesTable.Count(x => x.ToNumber == gnphone.PhoneNumber && x.IsRead == false).ToString();
-                    
-                    API.TriggerClientEvent(sender, "phone_showNotifications", unreadMessages);
-                    break;
-
-                case "phone_markMessagesRead":
-                    Character mkcharacter = sender.GetCharacter();
-                    var mkitems = InventoryManager.DoesInventoryHaveItem(mkcharacter, typeof(Phone));
-                    if (mkitems.Length == 0)
-                    {
-                        API.SendChatMessageToPlayer(sender, "You don't have a phone.");
-                        return;
-                    }
-                    var mkphone = (Phone)mkitems[0];
-                    Phone.MarkMessagesAsRead(mkphone.PhoneNumber);
-                    break;
-
-                case "settings_getSettings":
-                    Character sscharacter = sender.GetCharacter();
-                    var ssitems = InventoryManager.DoesInventoryHaveItem(sscharacter, typeof(Phone));
-                    if (ssitems.Length == 0)
-                    {
-                        API.SendChatMessageToPlayer(sender, "You don't have a phone.");
-                        return;
-                    }
-                    var ssphone = (Phone)ssitems[0];
-                    API.TriggerClientEvent(sender, "phone_showSettings", ssphone.PhoneNumber, ssphone.IsOn.ToString());
-                    break;
-
-                case "settings_togPhone":
-                    togphone_cmd(sender);
-                    break;
+        [RemoteEvent("phone_saveContact")]
+        public void PhoneSaveContact(Client sender, params object[] arguments)
+        {
+            var name = arguments[0].ToString();
+            string num = (string)arguments[1];
+            if (IsDigitsOnly(num))
+            {
+                addcontact_cmd(sender, num, name);
+            }
+            else
+            {
+                API.SendNotificationToPlayer(sender, "Invalid number entered.");
             }
         }
 
+        [RemoteEvent("phone_editContact")]
+        public void PhoneEditContact(Client sender, params object[] arguments)
+        {
+            string anum = (string)arguments[2];
+            if (IsDigitsOnly(anum))
+            {
+                editcontact_cmd(sender, (string)arguments[0], (string)arguments[1], anum);
+            }
+            else
+            {
+                API.SendNotificationToPlayer(sender, "Invalid number entered.");
+            }
+        }
+
+        [RemoteEvent("phone_deleteContact")]
+        public void PhoneDeleteContact(Client sender, params object[] arguments)
+        {
+            removecontact_cmd(sender, arguments[0].ToString());
+        }
+
+        [RemoteEvent("phone_loadMessagesContacts")]
+        public void PhoneLoadMessagesContacts(Client sender, params object[] arguments)
+        {
+            Character character = sender.GetCharacter();
+            var lmcitems = InventoryManager.DoesInventoryHaveItem(character, typeof(Phone));
+            if (lmcitems.Length == 0)
+            {
+                API.SendChatMessageToPlayer(sender, "You don't have a phone.");
+                return;
+            }
+            var lmcphone = (Phone)lmcitems[0];
+
+            //First get all messages for this phone.
+            var cntcs = Phone.GetContactListOfMessages(lmcphone.PhoneNumber);
+
+            //Now loop through them, substituting with name.
+            var newContacts = cntcs.Select(x => new[] { lmcphone.Contacts.SingleOrDefault(y => y.Number.ToString() == x[0])?.Name ?? x[0], x[1], x[2], x[3] }).ToArray();
+            API.TriggerClientEvent(sender, "phone_messageContactsLoaded", API.ToJson(newContacts));
+        }
+
+        [RemoteEvent("phone_sendMessage")]
+        public void PhoneSendMessage(Client sender, params object[] arguments)
+        {
+            sms_cmd(sender, (string)arguments[0], (string)arguments[1]);
+        }
+
+        [RemoteEvent("phone_loadMessages")]
+        public void PhoneLoadMessages(Client sender, params object[] arguments)
+        {
+            var contact = (string)arguments[0];
+            var toSkip = (int)arguments[1];
+
+            Character lmcharacter = sender.GetCharacter();
+            var lmitems = InventoryManager.DoesInventoryHaveItem(lmcharacter, typeof(Phone));
+            if (lmitems.Length == 0)
+            {
+                API.SendChatMessageToPlayer(sender, "You don't have a phone.");
+                return;
+            }
+            var lmphone = (Phone)lmitems[0];
+            string numbera = IsDigitsOnly(contact) ? contact : lmphone.Contacts.FirstOrDefault(x => x.Name == contact)?.Number ?? contact;
+
+            var returnMsgs = Phone.GetMessageLog(lmphone.PhoneNumber, numbera, 10, toSkip);
+            var actualMsgs = returnMsgs.Select(x => new[] { x.SenderNumber, x.Message, x.DateSent.ToString(), x.IsRead.ToString() }).ToArray();
+            API.TriggerClientEvent(sender, "phone_showMessages", lmphone.PhoneNumber, API.ToJson(actualMsgs),
+                (Phone.GetMessageCount(lmphone.PhoneNumber, numbera) - (toSkip + 10)) > 0, toSkip == 0);
+
+            Phone.MarkMessagesAsRead(lmphone.PhoneNumber); //Mark as read.
+        }
+
+        [RemoteEvent("phone_getNotifications")]
+        public void PhoneGetNotifications(Client sender, params object[] arguments)
+        {
+            Character gncharacter = sender.GetCharacter();
+            var gnitems = InventoryManager.DoesInventoryHaveItem(gncharacter, typeof(Phone));
+            if (gnitems.Length == 0)
+            {
+                API.SendChatMessageToPlayer(sender, "You don't have a phone.");
+                return;
+            }
+            var gnphone = (Phone)gnitems[0];
+
+            //Ready unread notification thing.
+            var unreadMessages =
+                DatabaseManager.MessagesTable.Count(x => x.ToNumber == gnphone.PhoneNumber && x.IsRead == false).ToString();
+
+            API.TriggerClientEvent(sender, "phone_showNotifications", unreadMessages);
+        }
+
+        [RemoteEvent("phone_markMessagesRead")]
+        public void PhoneMarkMessageRead(Client sender, params object[] arguments)
+        {
+            Character mkcharacter = sender.GetCharacter();
+            var mkitems = InventoryManager.DoesInventoryHaveItem(mkcharacter, typeof(Phone));
+            if (mkitems.Length == 0)
+            {
+                API.SendChatMessageToPlayer(sender, "You don't have a phone.");
+                return;
+            }
+            var mkphone = (Phone)mkitems[0];
+            Phone.MarkMessagesAsRead(mkphone.PhoneNumber);
+        }
+
+        [RemoteEvent("settings_getSettings")]
+        public void SettingsGetSettings(Client sender, params object[] arguments)
+        {
+            Character sscharacter = sender.GetCharacter();
+            var ssitems = InventoryManager.DoesInventoryHaveItem(sscharacter, typeof(Phone));
+            if (ssitems.Length == 0)
+            {
+                API.SendChatMessageToPlayer(sender, "You don't have a phone.");
+                return;
+            }
+            var ssphone = (Phone)ssitems[0];
+            API.TriggerClientEvent(sender, "phone_showSettings", ssphone.PhoneNumber, ssphone.IsOn.ToString());
+        }
+
+        [RemoteEvent("settings_togPhone")]
+        public void SettingsTogPhone(Client sender, params object[] arguments)
+        {
+            togphone_cmd(sender);
+        }
 
         [Command("setphonename"), Help(HelpManager.CommandGroups.General, "To change your phone's name from being boring.", new[] { "Name of phone" })]
         public void setphonename_cmd(Client player, string name)

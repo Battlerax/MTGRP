@@ -3,6 +3,7 @@
 
 using GTANetworkAPI;
 using MongoDB.Bson.Serialization.Attributes;
+using mtgvrp.core;
 
 namespace mtgvrp.mapping_manager
 {
@@ -34,7 +35,7 @@ namespace mtgvrp.mapping_manager
         {
             if(Type == ObjectType.CreateObject)
             {
-                handle = API.Shared.CreateObject(Model, Pos, Rot, (uint)dim);
+                handle = API.Shared.CreateObject(Model, Pos, Rot.ToQuat(), (uint)dim);
             }
         }
 

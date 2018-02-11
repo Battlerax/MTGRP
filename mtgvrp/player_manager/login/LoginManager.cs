@@ -23,190 +23,185 @@ namespace mtgvrp.player_manager.login
             DebugManager.DebugMessage("[LoginM] Initalizing Login Manager...");
 
             Event.OnPlayerConnected += OnPlayerConnected;
-            Event.OnClientEventTrigger += API_onClientEventTrigger;
 
             DebugManager.DebugMessage("[LoginM] Login Manager initalized.");
         }
 
-        private void API_onClientEventTrigger(Client player, string eventName, params object[] arguments)
+        [RemoteEvent("create_admin_pin")]
+        public void CreateAdminPin(Client player, params object[] arguments)
         {
-            switch (eventName)
-            {
-                case "create_admin_pin":
-                {
-                    var adminPin = Convert.ToString(arguments[0]);
+            var adminPin = Convert.ToString(arguments[0]);
 
-                    if (adminPin.Length != 6)
+            if (adminPin.Length != 6)
+            {
+                API.SendChatMessageToPlayer(player, Color.AdminOrange,
+                    "Your pin must be exactly 6 characters long.");
+                API.TriggerClientEvent(player, "create_admin_pin");
+            }
+
+            Account account = player.GetAccount();
+
+            if (account.AdminLevel < 1)
+            {
+                API.SendChatMessageToPlayer(player, Color.AdminOrange, "You are not an admin anymore.");
+                prepare_character_menu(player);
+                return;
+            }
+
+            account.AdminPin = adminPin;
+            account.Save();
+            API.SendChatMessageToPlayer(player, Color.AdminOrange, "Admin pin successully set to: " + adminPin);
+            prepare_character_menu(player);
+        }
+
+        [RemoteEvent("admin_pin_check")]
+        public void AdminPinCheck(Client player, params object[] arguments)
+        {
+            var adminPin = Convert.ToString(arguments[0]);
+
+            Account account = player.GetAccount();
+
+            if (account.AdminLevel == 0)
+            {
+                API.SendChatMessageToPlayer(player, Color.AdminOrange, "You are not an admin anymore.");
+                prepare_character_menu(player);
+                return;
+            }
+
+            if (account.AdminPin.Equals(adminPin))
+            {
+                API.SendChatMessageToPlayer(player, Color.AdminOrange, "You have successfully logged in.");
+                prepare_character_menu(player);
+            }
+            else
+            {
+                API.SendChatMessageToPlayer(player, Color.AdminOrange, "Incorrect pin.");
+                //TODO: SEND TO OTHER ADMINS THEY GOT IT WRONG 
+                API.TriggerClientEvent(player, "admin_pin_check");
+            }
+        }
+
+        [RemoteEvent("attempt_login")]
+        public void AttemptLogin(Client player, params object[] arguments)
+        {
+            var inputPass = (string)arguments[0];
+
+
+            if (inputPass.Length < 8)
+            {
+                API.TriggerClientEvent(player, "login_error", "Password entered is too short.");
+                return;
+            }
+
+            Account account = player.GetAccount();
+
+            if (account.is_registered())
+            {
+                if (account.IsLoggedIn)
+                {
+                    API.TriggerClientEvent(player, "login_error", "You are already logged in.");
+                    return;
+                }
+
+                account.load_by_name();
+
+                inputPass = inputPass + account.Salt;
+
+                //Hash password
+                var password = System.Text.Encoding.UTF8.GetBytes(inputPass);
+                password = new SHA256Managed().ComputeHash(password);
+                var hashedPass = System.Text.Encoding.UTF8.GetString(password);
+
+                if (hashedPass == account.Password)
+                {
+                    if (account.IsTempbanned == true && account.TempBanExpiration < DateTime.Now)
+                    {
+                        API.SendChatMessageToPlayer(player, "~r~You are temp-banned from this server. You will be unbanned in " + (account.TempBanExpiration - DateTime.Now).TotalDays + " days.");
+                        API.SendNotificationToPlayer(player, "~r~You are temp-banned from this server. You will be unbanned in " + (account.TempBanExpiration - DateTime.Now).TotalDays + " days.");
+                        API.KickPlayer(player);
+                        AdminSystem.AdminCommands.SendtoAllAdmins(account.AccountName + "attempted to log in to a temp-banned account.");
+                        return;
+                    }
+                    if (account.IsBanned == true)
+                    {
+                        API.SendChatMessageToPlayer(player, "~r~You are banned from this server. Visit MT-Gaming.com to submit an unban appeal. ");
+                        API.SendNotificationToPlayer(player, "~r~You are banned from this server. Visit MT-Gaming.com to submit an unban appeal.");
+                        API.KickPlayer(player);
+                        AdminSystem.AdminCommands.SendtoAllAdmins(account.AccountName + "attempted to log in to a banned account.");
+                        return;
+                    }
+
+
+                    API.SendChatMessageToPlayer(player, "~g~ You have successfully logged in!");
+                    LogManager.Log(LogManager.LogTypes.Connection, player.SocialClubName + " has logged in to the server. (IP: " + player.Address + ")");
+
+                    account.IsLoggedIn = true;
+
+                    if (account.AdminLevel > 0)
                     {
                         API.SendChatMessageToPlayer(player, Color.AdminOrange,
-                            "Your pin must be exactly 6 characters long.");
-                        API.TriggerClientEvent(player, "create_admin_pin");
-                    }
+                            "Welcome back Admin " + account.AdminName);
+                        API.Shared.TriggerClientEvent(player, "hide_login_browser");
 
-                    Account account = player.GetAccount();
-
-                    if (account.AdminLevel < 1)
-                    {
-                        API.SendChatMessageToPlayer(player, Color.AdminOrange, "You are not an admin anymore.");
-                        prepare_character_menu(player);
-                        return;
-                    }
-
-                    account.AdminPin = adminPin;
-                    account.Save();
-                    API.SendChatMessageToPlayer(player, Color.AdminOrange, "Admin pin successully set to: " + adminPin);
-                    prepare_character_menu(player);
-                    break;
-                }
-                case "admin_pin_check":
-                {
-                    var adminPin = Convert.ToString(arguments[0]);
-
-                    Account account = player.GetAccount();
-
-                    if (account.AdminLevel == 0)
-                    {
-                        API.SendChatMessageToPlayer(player, Color.AdminOrange, "You are not an admin anymore.");
-                        prepare_character_menu(player);
-                        return;
-                    }
-
-                    if (account.AdminPin.Equals(adminPin))
-                    {
-                        API.SendChatMessageToPlayer(player, Color.AdminOrange, "You have successfully logged in.");
-                        prepare_character_menu(player);
-                    }
-                    else
-                    {
-                        API.SendChatMessageToPlayer(player, Color.AdminOrange, "Incorrect pin.");
-                        //TO DO: SEND TO ADMIN THEY GOT IT WRONG 
-                        API.TriggerClientEvent(player, "admin_pin_check");
-                    }
-                    break;
-                }
-                case "attempt_login":
-                {
-                    var inputPass = (string) arguments[0];
-
-
-                    if (inputPass.Length < 8)
-                    {
-                        API.TriggerClientEvent(player, "login_error", "Password entered is too short.");
-                        return;
-                    }
-
-                    Account account = player.GetAccount();
-
-                    if (account.is_registered())
-                    {
-                        if (account.IsLoggedIn)
+                        if (account.AdminPin.Equals(string.Empty))
                         {
-                            API.TriggerClientEvent(player, "login_error", "You are already logged in.");
-                            return;
-                        }
-
-                        account.load_by_name();
-
-                        inputPass = inputPass + account.Salt;
-
-                        //Hash password
-                        var password = System.Text.Encoding.UTF8.GetBytes(inputPass);
-                        password = new SHA256Managed().ComputeHash(password);
-                        var hashedPass = System.Text.Encoding.UTF8.GetString(password);
-
-                        if (hashedPass == account.Password)
-                        {
-                            if (account.IsTempbanned == true && account.TempBanExpiration < DateTime.Now)
-                            {
-                                API.SendChatMessageToPlayer(player, "~r~You are temp-banned from this server. You will be unbanned in " + (account.TempBanExpiration - DateTime.Now).TotalDays + " days.");
-                                API.SendNotificationToPlayer(player, "~r~You are temp-banned from this server. You will be unbanned in " + (account.TempBanExpiration - DateTime.Now).TotalDays + " days.");
-                                API.KickPlayer(player);
-                                AdminSystem.AdminCommands.SendtoAllAdmins(account.AccountName + "attempted to log in to a temp-banned account.");
-                                return;
-                            }
-                            if (account.IsBanned == true)
-                            {
-                                API.SendChatMessageToPlayer(player, "~r~You are banned from this server. Visit MT-Gaming.com to submit an unban appeal. ");
-                                API.SendNotificationToPlayer(player, "~r~You are banned from this server. Visit MT-Gaming.com to submit an unban appeal.");
-                                API.KickPlayer(player);
-                                AdminSystem.AdminCommands.SendtoAllAdmins(account.AccountName + "attempted to log in to a banned account.");
-                                return;
-                            }
-
-                               
-                            API.SendChatMessageToPlayer(player, "~g~ You have successfully logged in!");
-                            LogManager.Log(LogManager.LogTypes.Connection, player.SocialClubName + " has logged in to the server. (IP: " + player.Address + ")");
-
-                                account.IsLoggedIn = true;
-
-                            if (account.AdminLevel > 0)
-                            {
-                                API.SendChatMessageToPlayer(player, Color.AdminOrange,
-                                    "Welcome back Admin " + account.AdminName);
-                                API.Shared.TriggerClientEvent(player, "hide_login_browser");
-
-                                if (account.AdminPin.Equals(string.Empty))
-                                {
-                                    API.SendChatMessageToPlayer(player, Color.AdminOrange,
-                                        "You do not have an admin pin set. Please choose one now: ");
-                                    API.TriggerClientEvent(player, "create_admin_pin");
-                                }
-                                else
-                                {
-                                    API.SendChatMessageToPlayer(player, Color.AdminOrange,
-                                        "Pleae login with your admin pin to continue.");
-                                    API.TriggerClientEvent(player, "admin_pin_check");
-                                }
-                               
-                            }
-                            else
-                            {
-                                prepare_character_menu(player);
-                            }
+                            API.SendChatMessageToPlayer(player, Color.AdminOrange,
+                                "You do not have an admin pin set. Please choose one now: ");
+                            API.TriggerClientEvent(player, "create_admin_pin");
                         }
                         else
                         {
-                            API.TriggerClientEvent(player, "login_error", "Incorrect password");
+                            API.SendChatMessageToPlayer(player, Color.AdminOrange,
+                                "Pleae login with your admin pin to continue.");
+                            API.TriggerClientEvent(player, "admin_pin_check");
                         }
+
                     }
                     else
                     {
-                        if (inputPass.Length < 8)
-                        {
-                            API.TriggerClientEvent(player,
-                                "Please choose a password that is at least 8 characters long.");
-                            return;
-                        }
-
-                        if (account.IsLoggedIn)
-                        {
-                            API.TriggerClientEvent(player, "ERROR: You are already logged in!");
-                            return;
-                        }
-
-                        //Get a random salt
-                        var salt = new byte[32];
-                        Randomizer.GetBytes(salt);
-
-                        //Add salt to the end of input_pass
-                        inputPass = inputPass + System.Text.Encoding.UTF8.GetString(salt);
-
-                        //Convert inputted password to bytes
-                        var password = System.Text.Encoding.UTF8.GetBytes(inputPass);
-                        password = new SHA256Managed().ComputeHash(password);
-
-                        account.Password = System.Text.Encoding.UTF8.GetString(password);
-                        account.Salt = System.Text.Encoding.UTF8.GetString(salt);
-
-                        account.Register();
-
-                        API.SendChatMessageToPlayer(player,
-                            "You have successfully registered! Please select a character slot below to get started!");
-                        LogManager.Log(LogManager.LogTypes.Connection, player.SocialClubName + " has registered in to the server. (IP: " + player.Address + ")");
-                            prepare_character_menu(player);
+                        prepare_character_menu(player);
                     }
-                        break;
                 }
+                else
+                {
+                    API.TriggerClientEvent(player, "login_error", "Incorrect password");
+                }
+            }
+            else
+            {
+                if (inputPass.Length < 8)
+                {
+                    API.TriggerClientEvent(player,
+                        "Please choose a password that is at least 8 characters long.");
+                    return;
+                }
+
+                if (account.IsLoggedIn)
+                {
+                    API.TriggerClientEvent(player, "ERROR: You are already logged in!");
+                    return;
+                }
+
+                //Get a random salt
+                var salt = new byte[32];
+                Randomizer.GetBytes(salt);
+
+                //Add salt to the end of input_pass
+                inputPass = inputPass + System.Text.Encoding.UTF8.GetString(salt);
+
+                //Convert inputted password to bytes
+                var password = System.Text.Encoding.UTF8.GetBytes(inputPass);
+                password = new SHA256Managed().ComputeHash(password);
+
+                account.Password = System.Text.Encoding.UTF8.GetString(password);
+                account.Salt = System.Text.Encoding.UTF8.GetString(salt);
+
+                account.Register();
+
+                API.SendChatMessageToPlayer(player,
+                    "You have successfully registered! Please select a character slot below to get started!");
+                LogManager.Log(LogManager.LogTypes.Connection, player.SocialClubName + " has registered in to the server. (IP: " + player.Address + ")");
+                prepare_character_menu(player);
             }
         }
 
