@@ -59,7 +59,7 @@ namespace mtgvrp.inventory.bags
             IInventoryItem[] bag = InventoryManager.DoesInventoryHaveItem(character, typeof(BagItem));
             if (bag.Length != 1)
             {
-                API.SendNotificationToPlayer(player, "You don't have a bag.");
+                NAPI.Notification.SendNotificationToPlayer(player, "You don't have a bag.");
                 return;
             }
 
@@ -74,13 +74,13 @@ namespace mtgvrp.inventory.bags
             IInventoryItem[] bag = InventoryManager.DoesInventoryHaveItem(character, typeof(BagItem));
             if (bag.Length != 1)
             {
-                API.SendNotificationToPlayer(player, "You don't have a bag.");
+                NAPI.Notification.SendNotificationToPlayer(player, "You don't have a bag.");
                 return;
             }
             var bg = (BagItem) bag[0];
             bg.BagName = name;
 
-            API.SendChatMessageToPlayer(player, "Bag name was changed sucessfully.");
+            NAPI.Chat.SendChatMessageToPlayer(player, "Bag name was changed sucessfully.");
         }
     }
 }

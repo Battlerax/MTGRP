@@ -49,7 +49,7 @@ namespace mtgvrp.afk_system
                     c.AfkTimer++;
                     if (c.AfkTimer == WarningTimer)
                     {
-                        API.SendChatMessageToPlayer(p,"~r~[AFK WARNING] You will be kicked in one minute for being AFK!");
+                        NAPI.Chat.SendChatMessageToPlayer(p,"~r~[AFK WARNING] You will be kicked in one minute for being AFK!");
                     }
                     else if (c.AfkTimer >= KickInterval)
                     {

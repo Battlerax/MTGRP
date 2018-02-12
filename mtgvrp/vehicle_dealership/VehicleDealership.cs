@@ -253,21 +253,21 @@ namespace mtgvrp.vehicle_dealership
 
                 //Spawn it.
                 if (VehicleManager.spawn_vehicle(theVehicle) != 1)
-                    API.SendChatMessageToPlayer(sender, "An error occured while spawning your vehicle.");
+                    NAPI.Chat.SendChatMessageToPlayer(sender, "An error occured while spawning your vehicle.");
 
                 //Notify.
-                API.SendChatMessageToPlayer(sender,
+                NAPI.Chat.SendChatMessageToPlayer(sender,
                     $"You have sucessfully bought the ~g~{selectedCar[0]}~w~ for ${selectedCar[2]}.");
-                API.SendChatMessageToPlayer(sender, "Use /myvehicles to manage it.");
-
+                NAPI.Chat.SendChatMessageToPlayer(sender, "Use /myvehicles to manage it.");
+                
                 //Log it.
-                LogManager.Log(LogManager.LogTypes.Stats, $"[Vehicle Dealership] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a(n) {API.GetVehicleDisplayName(theVehicle.VehModel)} for ${selectedCar[2]}.");
+                LogManager.Log(LogManager.LogTypes.Stats, $"[Vehicle Dealership] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a(n) {NAPI.Vehicle.GetVehicleDisplayName(theVehicle.VehModel)} for ${selectedCar[2]}.");
 
                 //Exit.
-                API.TriggerClientEvent(sender, "dealership_exitdealermenu");
+                NAPI.ClientEvent.TriggerClientEvent(sender, "dealership_exitdealermenu");
             }
             else
-                API.SendChatMessageToPlayer(sender,
+                NAPI.Chat.SendChatMessageToPlayer(sender,
                     $"You don't have enough money to buy the ~g~{selectedCar[0]}~w~.");
         }
 
@@ -281,26 +281,26 @@ namespace mtgvrp.vehicle_dealership
 
             if (character.OwnedVehicles.Count >= VehicleManager.GetMaxOwnedVehicles(player))
             {
-                API.SendChatMessageToPlayer(player, "You can't own anymore vehicles.");
-                API.SendChatMessageToPlayer(player, "~g~NOTE: You can buy VIP to increase your vehicle slots.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You can't own anymore vehicles.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "~g~NOTE: You can buy VIP to increase your vehicle slots.");
                 return;
             }
 
-            var currentPos = API.GetEntityPosition(player);
+            var currentPos = NAPI.Entity.GetEntityPosition(player);
             if (_dealershipsLocations.Any(dealer => currentPos.DistanceTo(dealer) < 5F))
             {
-                if (API.IsPlayerInAnyVehicle(player))
+                if (NAPI.Player.IsPlayerInAnyVehicle(player))
                 {
-                    API.SendChatMessageToPlayer(player, "You're not able to buy a vehicle while in a vehicle!");
+                    NAPI.Chat.SendChatMessageToPlayer(player, "You're not able to buy a vehicle while in a vehicle!");
                     return;
                 }
-
-                API.TriggerClientEvent(player, "dealership_showbuyvehiclemenu", API.ToJson(_motorsycles),
-                    API.ToJson(_copues), API.ToJson(_trucksnvans), API.ToJson(_offroad), API.ToJson(_musclecars),
-                    API.ToJson(_suv), API.ToJson(_supercars), API.ToJson(_cycles),API.ToJson(_sedans),API.ToJson(_sportsCars),API.ToJson(_compactCars));
+                
+                NAPI.ClientEvent.TriggerClientEvent(player, "dealership_showbuyvehiclemenu", NAPI.Util.ToJson(_motorsycles),
+                    NAPI.Util.ToJson(_copues), NAPI.Util.ToJson(_trucksnvans), NAPI.Util.ToJson(_offroad), NAPI.Util.ToJson(_musclecars),
+                    NAPI.Util.ToJson(_suv), NAPI.Util.ToJson(_supercars), NAPI.Util.ToJson(_cycles),NAPI.Util.ToJson(_sedans),NAPI.Util.ToJson(_sportsCars),NAPI.Util.ToJson(_compactCars));
             }
             else
-                API.SendChatMessageToPlayer(player, "You aren't near any dealership.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You aren't near any dealership.");
         }
     }
 }

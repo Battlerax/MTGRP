@@ -22,26 +22,26 @@ namespace mtgvrp.job_manager.delivery
             Character c = player.GetCharacter();
             if (c.JobOne?.Type != JobManager.JobTypes.DeliveryMan)
             {
-                API.SendChatMessageToPlayer(player, "You must be a delivery man.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You must be a delivery man.");
                 return;
             }
 
             if (JobManager.GetJobById(c.JobZone)?.Type != JobManager.JobTypes.DeliveryMan || c.JobZoneType != 2)
             {
-                API.SendChatMessageToPlayer(player, "You aren't at the /getsupplies spot.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You aren't at the /getsupplies spot.");
                 return;
             }
 
             switch (InventoryManager.GiveInventoryItem(c, new SupplyItem(), amount))
             {
                 case InventoryManager.GiveItemErrors.MaxAmountReached:
-                    API.SendChatMessageToPlayer(player, "You have reached the max amount of that item.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, "You have reached the max amount of that item.");
                     break;
                 case InventoryManager.GiveItemErrors.NotEnoughSpace:
-                    API.SendChatMessageToPlayer(player, "You don't have enough space in your inventory.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, "You don't have enough space in your inventory.");
                     break;
                 case InventoryManager.GiveItemErrors.Success:
-                    API.SendChatMessageToPlayer(player, $"You have sucessfully bought {amount} Supplies.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, $"You have sucessfully bought {amount} Supplies.");
                     break;
             }
         }
@@ -52,7 +52,7 @@ namespace mtgvrp.job_manager.delivery
             var prop = PropertyManager.IsAtPropertyInteraction(player);
             if (prop == null)
             {
-                API.SendChatMessageToPlayer(player, "You aren't at an interaction point or entrance.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You aren't at an interaction point or entrance.");
                 return;
             }
 
@@ -63,19 +63,19 @@ namespace mtgvrp.job_manager.delivery
                 prop.Type == PropertyManager.PropertyTypes.VIPLounge || prop.DoesAcceptSupplies == false
             )
             {
-                API.SendChatMessageToPlayer(player, "This business doesnt buy supplies.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "This business doesnt buy supplies.");
                 return;
             }
 
             if (InventoryManager.GetItemCount<SupplyItem>(player.GetCharacter()) < amount || amount <= 0)
             {
-                API.SendChatMessageToPlayer(player, "You don't have that amount of supplies.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You don't have that amount of supplies.");
                 return;
             }
 
             if (Money.GetCharacterMoney(prop) < amount * prop.SupplyPrice)
             {
-                API.SendChatMessageToPlayer(player, "The business doesn't have enough money.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "The business doesn't have enough money.");
                 return;
             }
 
@@ -84,7 +84,7 @@ namespace mtgvrp.job_manager.delivery
             InventoryManager.DeleteInventoryItem<Money>(prop, amount * prop.SupplyPrice);
             InventoryManager.GiveInventoryItem(player.GetCharacter(), new Money(), amount * prop.SupplyPrice, true);
             LogManager.Log(LogManager.LogTypes.Stats, $"[Job] {player.GetCharacter().CharacterName}[{player.GetAccount().AccountName}] has earned ${amount * prop.SupplyPrice} from delivering supplies. (Prop: {prop.Id}.");
-            API.SendChatMessageToPlayer(player, $"You've successfully sold {amount} supplies to the property for a total of ${amount * prop.SupplyPrice}");
+            NAPI.Chat.SendChatMessageToPlayer(player, $"You've successfully sold {amount} supplies to the property for a total of ${amount * prop.SupplyPrice}");
         }
     }
 }

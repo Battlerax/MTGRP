@@ -126,11 +126,11 @@ namespace mtgvrp.property_system.businesses
         [RemoteEvent("closeclothingmenu")]
         private void CloseClothingMenu(Client sender, params object[] arguments)
         {
-            API.FreezePlayer(sender, false);
-            sender.Position = API.GetEntityData(sender, "clothing_lastpos");
-            sender.Rotation = API.GetEntityData(sender, "clothing_lastrot");
-            API.SetEntityDimension(sender, 0);
-            API.SendChatMessageToPlayer(sender, "You have exited the clothing menu.");
+            NAPI.Player.FreezePlayer(sender, false);
+            sender.Position = NAPI.Data.GetEntityData(sender, "clothing_lastpos");
+            sender.Rotation = NAPI.Data.GetEntityData(sender, "clothing_lastrot");
+            NAPI.Entity.SetEntityDimension(sender, 0);
+            NAPI.Chat.SendChatMessageToPlayer(sender, "You have exited the clothing menu.");
         }
 
         [RemoteEvent("returnPedGender")]
@@ -186,17 +186,17 @@ namespace mtgvrp.property_system.businesses
 
             if (prop.Supplies <= 0)
             {
-                API.SendChatMessageToPlayer(sender, "The business is out of supplies.");
+                NAPI.Chat.SendChatMessageToPlayer(sender, "The business is out of supplies.");
                 return;
             }
 
             if (Money.GetCharacterMoney(character) < price)
             {
-                API.SendChatMessageToPlayer(sender, "You don't have enough money.");
+                NAPI.Chat.SendChatMessageToPlayer(sender, "You don't have enough money.");
                 return;
             }
 
-            API.ConsoleOutput($"CHARACTER BUY CLOTHES: {arguments[0]} | {arguments[1]} | {arguments[2]}");
+            NAPI.Util.ConsoleOutput($"CHARACTER BUY CLOTHES: {arguments[0]} | {arguments[1]} | {arguments[2]}");
             if (character.Model.Gender == Character.GenderMale)
             {
                 switch ((int)arguments[0])
@@ -319,8 +319,8 @@ namespace mtgvrp.property_system.businesses
             character.update_ped();
             character.Save();
 
-            API.SendChatMessageToPlayer(sender, "You've successfully bought this.");
-            API.TriggerClientEvent(sender, "clothing_boughtsucess", arguments[0], arguments[1], arguments[2]);
+            NAPI.Chat.SendChatMessageToPlayer(sender, "You've successfully bought this.");
+            NAPI.ClientEvent.TriggerClientEvent(sender, "clothing_boughtsucess", arguments[0], arguments[1], arguments[2]);
             LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought some clothing for {price} from property ID {prop.Id}.");
         }
 
@@ -335,10 +335,10 @@ namespace mtgvrp.property_system.businesses
         [RemoteEvent("clothing_bag_closed")]
         private void ClothingBagClosed(Client sender, params object[] arguments)
         {
-            API.FreezePlayer(sender, false);
-            sender.Position = API.GetEntityData(sender, "clothing_lastpos");
-            sender.Rotation = API.GetEntityData(sender, "clothing_lastrot");
-            API.SetEntityDimension(sender, 0);
+            NAPI.Player.FreezePlayer(sender, false);
+            sender.Position = NAPI.Data.GetEntityData(sender, "clothing_lastpos");
+            sender.Rotation = NAPI.Data.GetEntityData(sender, "clothing_lastrot");
+            NAPI.Entity.SetEntityDimension(sender, 0);
 
             API.SetPlayerClothes(sender, 5, 0, 0);
 
@@ -358,7 +358,7 @@ namespace mtgvrp.property_system.businesses
 
             if (Money.GetCharacterMoney(sender.GetCharacter()) < price)
             {
-                API.SendChatMessageToPlayer(sender, "You don't have enough money.");
+                NAPI.Chat.SendChatMessageToPlayer(sender, "You don't have enough money.");
                 return;
             }
 
@@ -377,42 +377,42 @@ namespace mtgvrp.property_system.businesses
                     InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
                     var prop = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"));
                     InventoryManager.GiveInventoryItem(prop, new Money(), price);
-                    API.SendChatMessageToPlayer(sender, "You've successfully bought this.");
+                    NAPI.Chat.SendChatMessageToPlayer(sender, "You've successfully bought this.");
                     break;
                 case InventoryManager.GiveItemErrors.MaxAmountReached:
-                    API.SendChatMessageToPlayer(sender, "You have reached the maximum amount.");
+                    NAPI.Chat.SendChatMessageToPlayer(sender, "You have reached the maximum amount.");
                     break;
                 case InventoryManager.GiveItemErrors.NotEnoughSpace:
-                    API.SendChatMessageToPlayer(sender, "You don't have enough space for that item.");
+                    NAPI.Chat.SendChatMessageToPlayer(sender, "You don't have enough space for that item.");
                     break;
             }
         }
 
         private void API_onResourceStart()
         {
-            API.ConsoleOutput("Loading componentes into array for clothes.");
+            NAPI.Util.ConsoleOutput("Loading componentes into array for clothes.");
 
-            _maleComponents.Add("Legs", API.ToJson(ComponentManager.ValidMaleLegs.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.ToJson(x.Variations) }).ToArray()));
-            _maleComponents.Add("Shoes", API.ToJson(ComponentManager.ValidMaleShoes.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.ToJson(x.Variations) }).ToArray()));
-            _maleComponents.Add("Accessories", API.ToJson(ComponentManager.ValidMaleAccessories.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.ToJson(x.Variations) }).ToArray()));
-            _maleComponents.Add("Undershirts", API.ToJson(ComponentManager.ValidMaleUndershirt.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.ToJson(x.Variations) }).ToArray()));
-            _maleComponents.Add("Tops", API.ToJson(ComponentManager.ValidMaleTops.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.ToJson(x.Variations) }).ToArray()));
-            _maleComponents.Add("Hats", API.ToJson(ComponentManager.ValidMaleHats.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.ToJson(x.Variations) }).ToArray()));
-            _maleComponents.Add("Glasses", API.ToJson(ComponentManager.ValidMaleGlasses.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.ToJson(x.Variations) }).ToArray()));
-            _maleComponents.Add("Ears", API.ToJson(ComponentManager.ValidMaleEars.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.ToJson(x.Variations) }).ToArray()));
-            MaleComponents = API.ToJson(_maleComponents);
+            _maleComponents.Add("Legs", NAPI.Util.ToJson(ComponentManager.ValidMaleLegs.Select(x => new string[] { x.Name, x.ComponentId.ToString(), NAPI.Util.ToJson(x.Variations) }).ToArray()));
+            _maleComponents.Add("Shoes", NAPI.Util.ToJson(ComponentManager.ValidMaleShoes.Select(x => new string[] { x.Name, x.ComponentId.ToString(), NAPI.Util.ToJson(x.Variations) }).ToArray()));
+            _maleComponents.Add("Accessories", NAPI.Util.ToJson(ComponentManager.ValidMaleAccessories.Select(x => new string[] { x.Name, x.ComponentId.ToString(), NAPI.Util.ToJson(x.Variations) }).ToArray()));
+            _maleComponents.Add("Undershirts", NAPI.Util.ToJson(ComponentManager.ValidMaleUndershirt.Select(x => new string[] { x.Name, x.ComponentId.ToString(), NAPI.Util.ToJson(x.Variations) }).ToArray()));
+            _maleComponents.Add("Tops", NAPI.Util.ToJson(ComponentManager.ValidMaleTops.Select(x => new string[] { x.Name, x.ComponentId.ToString(), NAPI.Util.ToJson(x.Variations) }).ToArray()));
+            _maleComponents.Add("Hats", NAPI.Util.ToJson(ComponentManager.ValidMaleHats.Select(x => new string[] { x.Name, x.ComponentId.ToString(), NAPI.Util.ToJson(x.Variations) }).ToArray()));
+            _maleComponents.Add("Glasses", NAPI.Util.ToJson(ComponentManager.ValidMaleGlasses.Select(x => new string[] { x.Name, x.ComponentId.ToString(), NAPI.Util.ToJson(x.Variations) }).ToArray()));
+            _maleComponents.Add("Ears", NAPI.Util.ToJson(ComponentManager.ValidMaleEars.Select(x => new string[] { x.Name, x.ComponentId.ToString(), NAPI.Util.ToJson(x.Variations) }).ToArray()));
+            MaleComponents = NAPI.Util.ToJson(_maleComponents);
 
-            _femaleComponents.Add("Legs", API.ToJson(ComponentManager.ValidFemaleLegs.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.ToJson(x.Variations) }).ToArray()));
-            _femaleComponents.Add("Shoes", API.ToJson(ComponentManager.ValidFemaleShoes.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.ToJson(x.Variations) }).ToArray()));
-            _femaleComponents.Add("Accessories", API.ToJson(ComponentManager.ValidFemaleAccessories.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.ToJson(x.Variations) }).ToArray()));
-            _femaleComponents.Add("Undershirts", API.ToJson(ComponentManager.ValidFemaleUndershirt.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.ToJson(x.Variations) }).ToArray()));
-            _femaleComponents.Add("Tops", API.ToJson(ComponentManager.ValidFemaleTops.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.ToJson(x.Variations) }).ToArray()));
-            _femaleComponents.Add("Hats", API.ToJson(ComponentManager.ValidFemaleHats.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.ToJson(x.Variations) }).ToArray()));
-            _femaleComponents.Add("Glasses", API.ToJson(ComponentManager.ValidFemaleGlasses.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.ToJson(x.Variations) }).ToArray()));
-            _femaleComponents.Add("Ears", API.ToJson(ComponentManager.ValidFemaleEars.Select(x => new string[] { x.Name, x.ComponentId.ToString(), API.ToJson(x.Variations) }).ToArray()));
-            FemaleComponents = API.ToJson(_femaleComponents);
+            _femaleComponents.Add("Legs", NAPI.Util.ToJson(ComponentManager.ValidFemaleLegs.Select(x => new string[] { x.Name, x.ComponentId.ToString(), NAPI.Util.ToJson(x.Variations) }).ToArray()));
+            _femaleComponents.Add("Shoes", NAPI.Util.ToJson(ComponentManager.ValidFemaleShoes.Select(x => new string[] { x.Name, x.ComponentId.ToString(), NAPI.Util.ToJson(x.Variations) }).ToArray()));
+            _femaleComponents.Add("Accessories", NAPI.Util.ToJson(ComponentManager.ValidFemaleAccessories.Select(x => new string[] { x.Name, x.ComponentId.ToString(), NAPI.Util.ToJson(x.Variations) }).ToArray()));
+            _femaleComponents.Add("Undershirts", NAPI.Util.ToJson(ComponentManager.ValidFemaleUndershirt.Select(x => new string[] { x.Name, x.ComponentId.ToString(), NAPI.Util.ToJson(x.Variations) }).ToArray()));
+            _femaleComponents.Add("Tops", NAPI.Util.ToJson(ComponentManager.ValidFemaleTops.Select(x => new string[] { x.Name, x.ComponentId.ToString(), NAPI.Util.ToJson(x.Variations) }).ToArray()));
+            _femaleComponents.Add("Hats", NAPI.Util.ToJson(ComponentManager.ValidFemaleHats.Select(x => new string[] { x.Name, x.ComponentId.ToString(), NAPI.Util.ToJson(x.Variations) }).ToArray()));
+            _femaleComponents.Add("Glasses", NAPI.Util.ToJson(ComponentManager.ValidFemaleGlasses.Select(x => new string[] { x.Name, x.ComponentId.ToString(), NAPI.Util.ToJson(x.Variations) }).ToArray()));
+            _femaleComponents.Add("Ears", NAPI.Util.ToJson(ComponentManager.ValidFemaleEars.Select(x => new string[] { x.Name, x.ComponentId.ToString(), NAPI.Util.ToJson(x.Variations) }).ToArray()));
+            FemaleComponents = NAPI.Util.ToJson(_femaleComponents);
 
-            API.ConsoleOutput("Finished loading componentes into array for clothes.");
+            NAPI.Util.ConsoleOutput("Finished loading componentes into array for clothes.");
         }
 
         public void ResetSkin(Client player)
@@ -431,22 +431,22 @@ namespace mtgvrp.property_system.businesses
             var biz = PropertyManager.IsAtPropertyInteraction(player);
             if (biz?.Type != PropertyManager.PropertyTypes.Clothing)
             {
-                API.SendChatMessageToPlayer(player, "You aren't at a clothing interaction point.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You aren't at a clothing interaction point.");
                 return;
             }
 
             if (player.IsInVehicle)
             {
-                API.SendChatMessageToPlayer(player, "You cannot buy new clothes while in a vehicle.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You cannot buy new clothes while in a vehicle.");
                 return;
             }
 
-            API.SetEntityData(player, "clothing_lastpos", player.Position);
-            API.SetEntityData(player, "clothing_lastrot", player.Rotation);
-            API.SetEntityData(player, "clothing_id", biz.Id);
+            NAPI.Data.SetEntityData(player, "clothing_lastpos", player.Position);
+            NAPI.Data.SetEntityData(player, "clothing_lastrot", player.Rotation);
+            NAPI.Data.SetEntityData(player, "clothing_id", biz.Id);
 
-            API.FreezePlayer(player, true);
-            API.SetEntityDimension(player, (uint)player.GetCharacter().Id + 1000);
+            NAPI.Player.FreezePlayer(player, true);
+            NAPI.Entity.SetEntityDimension(player, (uint)player.GetCharacter().Id + 1000);
 
             var character = player.GetCharacter();
 
@@ -545,7 +545,7 @@ namespace mtgvrp.property_system.businesses
             }
 
             var prices = biz.ItemPrices.Select(x => x.Value).ToArray();
-            API.TriggerClientEvent(player, "properties_buyclothes", (character.Model.Gender == Character.GenderMale ? MaleComponents : FemaleComponents), API.ToJson(oldClothes), API.ToJson(prices));
+            NAPI.ClientEvent.TriggerClientEvent(player, "properties_buyclothes", (character.Model.Gender == Character.GenderMale ? MaleComponents : FemaleComponents), NAPI.Util.ToJson(oldClothes), NAPI.Util.ToJson(prices));
         }
 
         [Command("buybag"), Help(HelpManager.CommandGroups.General, "Used inside a clothing store to buy a bag.", null)]
@@ -554,26 +554,26 @@ namespace mtgvrp.property_system.businesses
             var biz = PropertyManager.IsAtPropertyInteraction(player);
             if (biz?.Type != PropertyManager.PropertyTypes.Clothing)
             {
-                API.SendChatMessageToPlayer(player, "You aren't at a clothing interaction point.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You aren't at a clothing interaction point.");
                 return;
             }
 
             if (player.IsInVehicle)
             {
-                API.SendChatMessageToPlayer(player, "You cannot buy new clothes while in a vehicle.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You cannot buy new clothes while in a vehicle.");
                 return;
             }
 
-            API.SetEntityData(player, "clothing_lastpos", player.Position);
-            API.SetEntityData(player, "clothing_lastrot", player.Rotation);
-            API.SetEntityData(player, "clothing_id", biz.Id);
+            NAPI.Data.SetEntityData(player, "clothing_lastpos", player.Position);
+            NAPI.Data.SetEntityData(player, "clothing_lastrot", player.Rotation);
+            NAPI.Data.SetEntityData(player, "clothing_id", biz.Id);
 
             //Setup bag list.
             var bagsList = ComponentManager.ValidBags.Select(x => new[] {x.Name, x.Variations.Count.ToString()}).ToArray();
 
-            API.FreezePlayer(player, true);
-            API.TriggerClientEvent(player, "properties_buybag", API.ToJson(bagsList), biz.ItemPrices["8"]);
-            API.SetEntityDimension(player, (uint)player.GetCharacter().Id + 1000);
+            NAPI.Player.FreezePlayer(player, true);
+            NAPI.ClientEvent.TriggerClientEvent(player, "properties_buybag", NAPI.Util.ToJson(bagsList), biz.ItemPrices["8"]);
+            NAPI.Entity.SetEntityDimension(player, (uint)player.GetCharacter().Id + 1000);
         }
 
         [Command("buyskin"), Help(HelpManager.CommandGroups.General, "Buy a pedestrian skin as a VIP.", new[] { "Item", "New name" })]
@@ -584,7 +584,7 @@ namespace mtgvrp.property_system.businesses
 
             if (biz?.Type != PropertyManager.PropertyTypes.Clothing)
             {
-                API.SendChatMessageToPlayer(player, "You aren't at a clothing interaction point.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You aren't at a clothing interaction point.");
                 return;
             }
 
@@ -596,7 +596,7 @@ namespace mtgvrp.property_system.businesses
 
             if (Money.GetCharacterMoney(player.GetCharacter()) < 250)
             {
-                API.SendChatMessageToPlayer(player, "Not Enough Money");
+                NAPI.Chat.SendChatMessageToPlayer(player, "Not Enough Money");
                 return;
             }
 
@@ -606,7 +606,7 @@ namespace mtgvrp.property_system.businesses
                 return;
             }
 
-            API.TriggerClientEvent(player,"checkPedGender",API.ToJson(hash));
+            NAPI.ClientEvent.TriggerClientEvent(player,"checkPedGender",NAPI.Util.ToJson(hash));
 
         }
 
@@ -617,7 +617,7 @@ namespace mtgvrp.property_system.businesses
             {
                 if (gender != 4)
                 {
-                    API.SendChatMessageToPlayer(player,"You're unable to use this skin.");
+                    NAPI.Chat.SendChatMessageToPlayer(player,"You're unable to use this skin.");
                     return;
                 }
             }
@@ -626,7 +626,7 @@ namespace mtgvrp.property_system.businesses
             {
                 if (gender != 5)
                 {
-                    API.SendChatMessageToPlayer(player,"You're unable to use this skin.");
+                    NAPI.Chat.SendChatMessageToPlayer(player,"You're unable to use this skin.");
                     return;
                 }
             }

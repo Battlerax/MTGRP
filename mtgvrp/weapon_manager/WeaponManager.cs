@@ -77,7 +77,7 @@ namespace mtgvrp.weapon_manager
             Character character = player.GetCharacter();
             Account playerAccount = player.GetAccount();
 
-            WeaponHash currentPlayerWeapon = API.GetPlayerCurrentWeapon(player);
+            WeaponHash currentPlayerWeapon = NAPI.Player.GetPlayerCurrentWeapon(player);
 
             if (character == null) { return; }
             if (currentPlayerWeapon == WeaponHash.Unarmed) { return; }

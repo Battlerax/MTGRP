@@ -18,7 +18,7 @@ namespace mtgvrp.core
         public Whitelist()
         {
             Event.OnPlayerConnected += WhiteList_OnPlayerConnect;
-            API.ConsoleOutput("[WHITELIST] Whitelist is " + ((_useWhitelist == true) ? ("Active") : ("Inactive")));
+            NAPI.Util.ConsoleOutput("[WHITELIST] Whitelist is " + ((_useWhitelist == true) ? ("Active") : ("Inactive")));
         }
 
         public void WhiteList_OnPlayerConnect(Client player, CancelEventArgs e)

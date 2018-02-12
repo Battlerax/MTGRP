@@ -152,18 +152,18 @@ namespace mtgvrp.vehicle_dealership
 
                 //Spawn it.
                 if (VehicleManager.spawn_vehicle(theVehicle) != 1)
-                    API.SendChatMessageToPlayer(sender, "An error occured while spawning your vehicle.");
+                    NAPI.Chat.SendChatMessageToPlayer(sender, "An error occured while spawning your vehicle.");
 
                 //Notify.
-                API.SendChatMessageToPlayer(sender,
+                NAPI.Chat.SendChatMessageToPlayer(sender,
                     $"You have sucessfully bought the ~g~{selectedCar[0]}~w~ for ${selectedCar[2]}.");
-                API.SendChatMessageToPlayer(sender, "Use /myvehicles to manage it.");
+                NAPI.Chat.SendChatMessageToPlayer(sender, "Use /myvehicles to manage it.");
 
                 //Exit.
-                API.TriggerClientEvent(sender, "vipdealership_exitdealermenu");
+                NAPI.ClientEvent.TriggerClientEvent(sender, "vipdealership_exitdealermenu");
             }
             else
-                API.SendChatMessageToPlayer(sender,
+                NAPI.Chat.SendChatMessageToPlayer(sender,
                     $"You don't have enough money to buy the ~g~{selectedCar[0]}~w~.");
         }
 
@@ -181,20 +181,20 @@ namespace mtgvrp.vehicle_dealership
             }
             if (character.OwnedVehicles.Count >= VehicleManager.GetMaxOwnedVehicles(player))
             {
-                API.SendChatMessageToPlayer(player, "You can't own anymore vehicles.");
-                API.SendChatMessageToPlayer(player, "~g~NOTE: You can upgrade your VIP to increase your vehicle slots.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You can't own anymore vehicles.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "~g~NOTE: You can upgrade your VIP to increase your vehicle slots.");
                 return;
             }
-
-            var currentPos = API.GetEntityPosition(player);
+            
+            var currentPos = NAPI.Entity.GetEntityPosition(player);
             if (_dealershipsLocations.Any(dealer => currentPos.DistanceTo(dealer) < 5F))
             {
-                API.TriggerClientEvent(player, "vipdealership_showbuyvehiclemenu", API.ToJson(_motorsycles),
-                    API.ToJson(_copues), API.ToJson(_trucksnvans), API.ToJson(_offroad), API.ToJson(_musclecars),
-                    API.ToJson(_suv), API.ToJson(_supercars));
+                NAPI.ClientEvent.TriggerClientEvent(player, "vipdealership_showbuyvehiclemenu", NAPI.Util.ToJson(_motorsycles),
+                    NAPI.Util.ToJson(_copues), NAPI.Util.ToJson(_trucksnvans), NAPI.Util.ToJson(_offroad), NAPI.Util.ToJson(_musclecars),
+                    NAPI.Util.ToJson(_suv), NAPI.Util.ToJson(_supercars));
             }
             else
-                API.SendChatMessageToPlayer(player, "You aren't near any dealership.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You aren't near any dealership.");
         }
     }
 }

@@ -35,16 +35,16 @@ namespace mtgvrp.group_manager
                 return;
 
             Groups = DatabaseManager.GroupTable.Find(Builders<Group>.Filter.Empty).ToList();
-            API.SendChatMessageToPlayer(player, "-----------------------------------------------------------------------------------");
+            NAPI.Chat.SendChatMessageToPlayer(player, "-----------------------------------------------------------------------------------");
             foreach (var g in Groups)
             {
                 switch(g.Type)
                 {
-                    case 1: API.SendChatMessageToPlayer(player, "Group Name: " + g.Name + " | Type: Faction | Command Type: " + g.CommandType + "."); break;
-                    case 2: API.SendChatMessageToPlayer(player, "Group Name: " + g.Name + " | Type: Gang | Command Type: " + g.CommandType + "."); break;
+                    case 1: NAPI.Chat.SendChatMessageToPlayer(player, "Group Name: " + g.Name + " | Type: Faction | Command Type: " + g.CommandType + "."); break;
+                    case 2: NAPI.Chat.SendChatMessageToPlayer(player, "Group Name: " + g.Name + " | Type: Gang | Command Type: " + g.CommandType + "."); break;
                 }
             }
-            API.SendChatMessageToPlayer(player, "---------------------------------------------------------------------------------- ");
+            NAPI.Chat.SendChatMessageToPlayer(player, "---------------------------------------------------------------------------------- ");
         }
 
         [Command("setgroupmapicon", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel5, "Sets the blip icon of a group.", "Group id", "Map icon id. Get this from wiki.", "Map icon text.")]
@@ -59,7 +59,7 @@ namespace mtgvrp.group_manager
             var group = GetGroupById(groupId);
             if (group == Group.None)
             {
-                API.SendChatMessageToPlayer(player, core.Color.White, "~r~[ERROR]~w~ No group found with ID " + groupId);
+                NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White, "~r~[ERROR]~w~ No group found with ID " + groupId);
                 return;
             }
 
@@ -68,7 +68,7 @@ namespace mtgvrp.group_manager
             group.MapIconText = mapIconText;
             group.Save();
             group.UpdateMapIcon();
-            API.SendChatMessageToPlayer(player, core.Color.Grey,
+            NAPI.Chat.SendChatMessageToPlayer(player, core.Color.Grey,
                 "You have updated " + group.Name + "'s map icon to sprite " + group.MapIconId + " and text: " +
                 group.MapIconText);
         }
@@ -86,7 +86,7 @@ namespace mtgvrp.group_manager
             var group = GetGroupById(groupId);
             if (group == Group.None)
             {
-                API.SendChatMessageToPlayer(player, core.Color.White, "~r~[ERROR]~w~ No group found with ID " + groupId);
+                NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White, "~r~[ERROR]~w~ No group found with ID " + groupId);
                 return;
             }
 
@@ -94,9 +94,9 @@ namespace mtgvrp.group_manager
             foreach(var v in vehiclesToRespawn)
             {
                 VehicleManager.respawn_vehicle(v);
-                API.SetVehicleEngineStatus(v.NetHandle, false);
+                NAPI.Vehicle.SetVehicleEngineStatus(v.NetHandle, false);
             }
-            API.SendChatMessageToPlayer(player,
+            NAPI.Chat.SendChatMessageToPlayer(player,
                 vehiclesToRespawn.Count + " vehicles have been respawned for group: " + group.Name);
         }
 
@@ -113,17 +113,17 @@ namespace mtgvrp.group_manager
                 return;
             }
 
-            API.SendChatMessageToPlayer(player, "======GROUP VEHICLES======");
+            NAPI.Chat.SendChatMessageToPlayer(player, "======GROUP VEHICLES======");
             var filter = Builders<vehicle_manager.GameVehicle>.Filter.Eq("GroupId", id);
             var groupVehicles = DatabaseManager.VehicleTable.Find(filter).ToList();
 
             int j = 0;
             foreach (var v in groupVehicles)
             {
-                    API.SendChatMessageToPlayer(player, "ID: " + v.Id + " Vehicle: " + v.VehModel);
+                    NAPI.Chat.SendChatMessageToPlayer(player, "ID: " + v.Id + " Vehicle: " + v.VehModel);
                     j++;
             }
-            API.SendChatMessageToPlayer(player, "There are " + j + " vehicles in this group.");
+            NAPI.Chat.SendChatMessageToPlayer(player, "There are " + j + " vehicles in this group.");
 
         }
 
@@ -146,7 +146,7 @@ namespace mtgvrp.group_manager
 
                 if (foundCharacters.Count == 0)
                 {
-                    API.SendChatMessageToPlayer(player, core.Color.White,
+                    NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White,
                         "~r~[ERROR]~w~ No player online or offline found with that name.");
                     return;
                 }
@@ -155,14 +155,14 @@ namespace mtgvrp.group_manager
                 {
                     if (c.GroupId != character.GroupId)
                     {
-                        API.SendChatMessageToPlayer(player, core.Color.White,
+                        NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White,
                             "~r~[ERROR]~w~ That player is not in the same group as you.");
                         return;
                     }
 
                     if (c.GroupRank >= character.GroupRank)
                     {
-                        API.SendChatMessageToPlayer(player, core.Color.White,
+                        NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White,
                             "~r~[ERROR]~w~ You cannot uninvite the same or higher rank.");
                         return;
                     }
@@ -171,7 +171,7 @@ namespace mtgvrp.group_manager
                     c.GroupRank = 0;
                     c.Save();
 
-                    API.SendChatMessageToPlayer(player, core.Color.White,
+                    NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White,
                         "You have uninvited " + c.rp_name() + " from your group: " + character.Group.Name);
 
                     SendGroupMessage(player,
@@ -184,14 +184,14 @@ namespace mtgvrp.group_manager
 
                 if (charToUninvite.Group != character.Group)
                 {
-                    API.SendChatMessageToPlayer(player, core.Color.White,
+                    NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White,
                         "~r~[ERROR]~w~ That player is not in the same group as you.");
                     return;
                 }
 
                 if (charToUninvite.GroupRank >= character.GroupRank)
                 {
-                    API.SendChatMessageToPlayer(player, core.Color.White,
+                    NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White,
                        "~r~[ERROR]~w~ You cannot uninvite the same or higher rank.");
                     return;
                 }
@@ -201,7 +201,7 @@ namespace mtgvrp.group_manager
                 charToUninvite.GroupRank = 0;
                 charToUninvite.Save();
 
-                API.SendChatMessageToPlayer(player, core.Color.White,
+                NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White,
                     "You have uninvited " + charToUninvite.rp_name() + " from your group: " + character.Group.Name);
 
                 SendGroupMessage(player,
@@ -221,13 +221,13 @@ namespace mtgvrp.group_manager
 
             if (receiver == null)
             {
-                API.SendChatMessageToPlayer(player, core.Color.White, "That player is not connected.");
+                NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White, "That player is not connected.");
                 return;
             }
 
             if (rank < 1 || rank > 10)
             {
-                API.SendChatMessageToPlayer(player, core.Color.White, "Valid ranks are between 1 and 10.");
+                NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White, "Valid ranks are between 1 and 10.");
                 return;
             }
 
@@ -237,23 +237,23 @@ namespace mtgvrp.group_manager
                 var oldRank = member.GroupRank;
                 if (oldRank > rank)
                 {
-                    API.SendChatMessageToPlayer(receiver,
+                    NAPI.Chat.SendChatMessageToPlayer(receiver,
                         "You have been demoted to " + member.Group.RankNames[rank - 1] + " by " + sender.rp_name() + ".");
                 }
                 else
                 {
-                    API.SendChatMessageToPlayer(receiver,
+                    NAPI.Chat.SendChatMessageToPlayer(receiver,
                         "You have been promoted to " + member.Group.RankNames[rank - 1] + " by " + sender.rp_name() +
                         ".");
                 }
-                API.SendChatMessageToPlayer(player,
+                NAPI.Chat.SendChatMessageToPlayer(player,
                     "You have changed " + member.rp_name() + "'s rank to " + (rank) + " (was " + (oldRank) + ").");
                 member.GroupRank = rank;
                 member.Save();
             }
             else
             {
-                API.SendChatMessageToPlayer(player, core.Color.White, "You cannot set the rank of a higher ranking member or set someone to a rank above yours.");
+                NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White, "You cannot set the rank of a higher ranking member or set someone to a rank above yours.");
             }
         }
 
@@ -314,13 +314,13 @@ namespace mtgvrp.group_manager
 
             if (receiver == null)
             {
-                API.SendChatMessageToPlayer(player, core.Color.White, "That player is not connected.");
+                NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White, "That player is not connected.");
                 return;
             }
 
             if (divId < 0 || divId > 5)
             {
-                API.SendChatMessageToPlayer(player, core.Color.White, "Valid division IDs are between 0 and 5.");
+                NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White, "Valid division IDs are between 0 and 5.");
                 return;
             }
 
@@ -332,20 +332,20 @@ namespace mtgvrp.group_manager
 
             if (divId != 0)
             {
-                API.SendChatMessageToPlayer(receiver, core.Color.White,
+                NAPI.Chat.SendChatMessageToPlayer(receiver, core.Color.White,
                     character.rp_name() + " has added you to the " + character.Group.Divisions[divId - 1] +
                     " division.");
 
-                API.SendChatMessageToPlayer(player, core.Color.White, "You have added " + receiverChar.rp_name() + " to the " + character.Group.Divisions[divId - 1] + " division.");
+                NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White, "You have added " + receiverChar.rp_name() + " to the " + character.Group.Divisions[divId - 1] + " division.");
             }
             else
             {
                 receiverChar.DivisionRank = 0;
                 receiverChar.Save();
-                API.SendChatMessageToPlayer(receiver, core.Color.White,
+                NAPI.Chat.SendChatMessageToPlayer(receiver, core.Color.White,
                     character.rp_name() + " has removed your position in a division.");
 
-                API.SendChatMessageToPlayer(player, core.Color.White, "You have removed " + receiverChar.rp_name() + " from a division.");
+                NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White, "You have removed " + receiverChar.rp_name() + " from a division.");
             }
         }
 
@@ -362,13 +362,13 @@ namespace mtgvrp.group_manager
 
             if (receiver == null)
             {
-                API.SendChatMessageToPlayer(player, core.Color.White, "That player is not connected.");
+                NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White, "That player is not connected.");
                 return;
             }
 
             if (rank < 1 || rank > 5)
             {
-                API.SendChatMessageToPlayer(player, core.Color.White, "Valid division ranks are between 1 and 5.");
+                NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White, "Valid division ranks are between 1 and 5.");
                 return;
             }
 
@@ -379,18 +379,18 @@ namespace mtgvrp.group_manager
 
                 if (rank > receiverChar.DivisionRank)
                 {
-                    API.SendChatMessageToPlayer(receiver, core.Color.White,
+                    NAPI.Chat.SendChatMessageToPlayer(receiver, core.Color.White,
                         "You have been promoted in your division to rank " + rank + " by " + character.rp_name());
 
-                    API.SendChatMessageToPlayer(player, core.Color.White,
+                    NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White,
                         "You have promoted " + receiverChar.rp_name() + " in their division to rank " + rank);
                 }
                 else if (rank <= receiverChar.DivisionRank)
                 {
-                    API.SendChatMessageToPlayer(receiver, core.Color.White,
+                    NAPI.Chat.SendChatMessageToPlayer(receiver, core.Color.White,
                         "You have been demoted in your division to rank " + rank + " by " + character.rp_name());
 
-                    API.SendChatMessageToPlayer(player, core.Color.White,
+                    NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White,
                         "You have demoted " + receiverChar.rp_name() + " in their division to rank " + rank);
                 }
 
@@ -399,7 +399,7 @@ namespace mtgvrp.group_manager
             }
             else
             {
-                API.SendChatMessageToPlayer(player, core.Color.White, "You cannot set the rank of a higher ranking member or set someone to a rank above yours.");
+                NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White, "You cannot set the rank of a higher ranking member or set someone to a rank above yours.");
             }
         }
 
@@ -407,7 +407,7 @@ namespace mtgvrp.group_manager
         public void group_cmd(Client player, string message)
         {
 
-            if (GroupCommandPermCheck(API.GetEntityData(player.Handle, "Character"), 1)){
+            if (GroupCommandPermCheck(NAPI.Data.GetEntityData(player.Handle, "Character"), 1)){
 
                 Character character = player.GetCharacter();
                 SendGroupMessage(player, "[G][" + character.GroupRank + "] " + GetRankName(character) + " #" + character.BadgeNumber + " " + character.rp_name() + " : " + " ~w~" + message);
@@ -419,14 +419,14 @@ namespace mtgvrp.group_manager
         public void radio_cmd(Client player, string message)
         {
 
-            if (GroupCommandPermCheck(API.GetEntityData(player.Handle, "Character"), 1))
+            if (GroupCommandPermCheck(NAPI.Data.GetEntityData(player.Handle, "Character"), 1))
             {
 
                 Character character = player.GetCharacter();
 
                 if (character.RadioToggle == false)
                 {
-                    API.SendChatMessageToPlayer(player, "~r~Your radio is off.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, "~r~Your radio is off.");
                     return;
                 }
 
@@ -447,12 +447,12 @@ namespace mtgvrp.group_manager
             if (character.RadioToggle == false)
             {
                 character.RadioToggle = true;
-                API.SendChatMessageToPlayer(player, "~p~You turn your radio on.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "~p~You turn your radio on.");
             }
             else
             {
                 character.RadioToggle = false;
-                API.SendChatMessageToPlayer(player, "~p~You turn your radio off.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "~p~You turn your radio off.");
             }
         }
 
@@ -462,11 +462,11 @@ namespace mtgvrp.group_manager
             if (option == "groupinvitation")
             {
                 Character character = player.GetCharacter();
-                Character inviteSender = API.GetEntityData(player.Handle, "GroupInvitation");
+                Character inviteSender = NAPI.Data.GetEntityData(player.Handle, "GroupInvitation");
 
                 if (inviteSender == null)
                 {
-                    API.SendChatMessageToPlayer(player, core.Color.White, "You do not have an active group invitiation.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White, "You do not have an active group invitiation.");
                     return;
                 }
 
@@ -476,7 +476,7 @@ namespace mtgvrp.group_manager
                 character.GroupRank = 1;
                 character.Save();
 
-                API.SendChatMessageToPlayer(player, "You have joined " + inviteSender.Group.Name + ".");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You have joined " + inviteSender.Group.Name + ".");
 
                 SendGroupMessage(player,
                     character.rp_name() + " has joined the group. (Invited by: " + inviteSender.rp_name() +
@@ -499,7 +499,7 @@ namespace mtgvrp.group_manager
             {
                 if (p.Group == sender.Group)
                 {
-                    API.SendChatMessageToPlayer(player, p.CharacterName + " | Rank: " + p.GroupRank + " | Division: " + p.Division + " | Division Rank: " + p.DivisionRank);
+                    NAPI.Chat.SendChatMessageToPlayer(player, p.CharacterName + " | Rank: " + p.GroupRank + " | Division: " + p.Division + " | Division Rank: " + p.DivisionRank);
                 }
             }
 
@@ -513,7 +513,7 @@ namespace mtgvrp.group_manager
 
             if(sender.GroupId == 0)
             {
-                API.SendChatMessageToPlayer(player, "You are not in any group.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You are not in any group.");
                 return;
             }
 
@@ -523,7 +523,7 @@ namespace mtgvrp.group_manager
             sender.Group = null;
             sender.GroupRank = 0;
             sender.Save();
-            API.SendChatMessageToPlayer(player, "You have left " + sender.Group?.Name + ".");
+            NAPI.Chat.SendChatMessageToPlayer(player, "You have left " + sender.Group?.Name + ".");
         }
         
         [Command("invite"), Help(HelpManager.CommandGroups.GroupGeneral, "Invite someone to your group.", "The player id")]
@@ -540,16 +540,16 @@ namespace mtgvrp.group_manager
 
             if (invited == null)
             {
-                API.SendChatMessageToPlayer(player, core.Color.White, "That player is not connected.");
+                NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White, "That player is not connected.");
                 return;
             }
 
 
             Character invitedchar = invited.GetCharacter();
-            API.SetEntityData(invited.Handle, "GroupInvitation", sender);
+            NAPI.Data.SetEntityData(invited.Handle, "GroupInvitation", sender);
 
-            API.SendChatMessageToPlayer(invited, core.Color.Pm, "You have been invited to " + sender.Group.Name + ". Type /accept groupinvitation.");
-            API.SendChatMessageToPlayer(player, "You sent a group invitation to " + invitedchar.rp_name() + ".");
+            NAPI.Chat.SendChatMessageToPlayer(invited, core.Color.Pm, "You have been invited to " + sender.Group.Name + ". Type /accept groupinvitation.");
+            NAPI.Chat.SendChatMessageToPlayer(player, "You sent a group invitation to " + invitedchar.rp_name() + ".");
             LogManager.Log(LogManager.LogTypes.GroupInvites, $"{sender.CharacterName}[{player.GetAccount().AccountName}] has invited {invitedchar.CharacterName}[{invitedchar.Client.GetAccount().AccountName}] to their group. ({sender.Group.Name})");
         }
 
@@ -566,13 +566,13 @@ namespace mtgvrp.group_manager
             
             if (rankId < 1 || rankId > 10)
             {
-                API.SendChatMessageToPlayer(player, core.Color.White, "Valid ranks are between 1 and 10.");
+                NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White, "Valid ranks are between 1 and 10.");
                 return; 
             }
 
             character.Group.RankNames.RemoveAt(rankId - 1);
             character.Group.RankNames.Insert(rankId - 1, rankname);
-            API.SendChatMessageToPlayer(player, "You have set Group ID " + character.Group.Id + " (" + character.Group.Name + ")'s Rank " + rankId + " to " + rankname + ".");
+            NAPI.Chat.SendChatMessageToPlayer(player, "You have set Group ID " + character.Group.Id + " (" + character.Group.Name + ")'s Rank " + rankId + " to " + rankname + ".");
             character.Group.Save();
         }
 
@@ -589,13 +589,13 @@ namespace mtgvrp.group_manager
           
             if (divId < 1 || divId > character.Group.Divisions.Count)
             {
-                API.SendChatMessageToPlayer(player, core.Color.White, "Valid division IDs are between 1 and 5.");
+                NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White, "Valid division IDs are between 1 and 5.");
                 return; 
             }
 
             character.Group.Divisions.RemoveAt(divId - 1);
             character.Group.Divisions.Insert(divId - 1, divname);
-            API.SendChatMessageToPlayer(player, "You have set Group ID " + character.Group.Id + " (" + character.Group.Name + ")'s Division " + divId + " to " + divname + ".");
+            NAPI.Chat.SendChatMessageToPlayer(player, "You have set Group ID " + character.Group.Id + " (" + character.Group.Name + ")'s Division " + divId + " to " + divname + ".");
             character.Group.Save();
         }
 
@@ -612,13 +612,13 @@ namespace mtgvrp.group_manager
 
             if (divId < 1 || divId > 5)
             {
-                API.SendChatMessageToPlayer(player, core.Color.White, "Valid divisions are between 1 and 5.");
+                NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White, "Valid divisions are between 1 and 5.");
                 return;
             }
 
             if (rankId < 1 || rankId > 5)
             {
-                API.SendChatMessageToPlayer(player, core.Color.White, "Valid division ranks are between 1 and 5.");
+                NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White, "Valid division ranks are between 1 and 5.");
                 return;
             }
 
@@ -630,7 +630,7 @@ namespace mtgvrp.group_manager
             character.Group.DivisionRanks[divId].Insert(rankId, rankName);
             character.Group.Save();
 
-            API.SendChatMessageToPlayer(player, core.Color.White, "You have changed rank " + (rankId + 1) + "'s name in the " + character.Group.Divisions[divId] + " division to " + rankName);
+            NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White, "You have changed rank " + (rankId + 1) + "'s name in the " + character.Group.Divisions[divId] + " division to " + rankName);
         }
 
         [Command("creategroup", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel5, "Creates a new group", "Group Type", "Group command type [LSPD/LSNN, etc..]", "Group name.")]
@@ -655,7 +655,7 @@ namespace mtgvrp.group_manager
             else { group.CommandType = commandtype; }
             group.Insert();
 
-            API.SendChatMessageToPlayer(player, core.Color.Grey, "You have created group " + group.Id + " ( " + group.Name + ", Type: " + group.Type + " ). Use /editgroup to edit it.");
+            NAPI.Chat.SendChatMessageToPlayer(player, core.Color.Grey, "You have created group " + group.Id + " ( " + group.Name + ", Type: " + group.Type + " ). Use /editgroup to edit it.");
             Groups = DatabaseManager.GroupTable.Find(Builders<Group>.Filter.Empty).ToList();
         }
 
@@ -672,7 +672,7 @@ namespace mtgvrp.group_manager
 
             character.Group.FactionPaycheckBonus = int.Parse(amount);
             character.Group.Save();
-            API.SendChatMessageToPlayer(player, "You have set your faction's paycheck bonus to $" + amount + ".");
+            NAPI.Chat.SendChatMessageToPlayer(player, "You have set your faction's paycheck bonus to $" + amount + ".");
         }
 
         [Command("groupbalance"), Help(HelpManager.CommandGroups.GroupGeneral, "Checks the balance of the group.")]

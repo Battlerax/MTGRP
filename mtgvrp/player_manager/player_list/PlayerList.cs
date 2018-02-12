@@ -27,7 +27,7 @@ namespace mtgvrp.player_manager.player_list
 
             if (character.GroupId == 0 && type == 2)
             {
-                API.SendNotificationToPlayer(player, "You aren't in any group");
+                NAPI.Notification.SendNotificationToPlayer(player, "You aren't in any group");
                 return;
             }
 
@@ -50,7 +50,7 @@ namespace mtgvrp.player_manager.player_list
                 playerList.Add(new[] { c.CharacterName, PlayerManager.GetPlayerId(c).ToString() });
             }
 
-            API.TriggerClientEvent(player, "send_player_list", API.ToJson(playerList.ToArray()), account.AdminLevel != 0);
+            NAPI.ClientEvent.TriggerClientEvent(player, "send_player_list", NAPI.Util.ToJson(playerList.ToArray()), account.AdminLevel != 0);
         }
 
         [RemoteEvent("player_list_pm")]

@@ -27,12 +27,12 @@ namespace mtgvrp.core
         private void API_onResourceStop()
         {
             _weatherTimeTimer.Stop();
-            API.ConsoleOutput("Unload Weather Module.");
+            NAPI.Util.ConsoleOutput("Unload Weather Module.");
         }
 
         private void API_onResourceStart()
         {
-            API.ConsoleOutput("Loading Weather Module.");
+            NAPI.Util.ConsoleOutput("Loading Weather Module.");
 
             //Set proper current time
             var time = CurrentTime;
@@ -46,7 +46,7 @@ namespace mtgvrp.core
             _weatherTimeTimer.AutoReset = true;
             _weatherTimeTimer.Start();
 
-            API.ConsoleOutput("Weather Updated To LA.");
+            NAPI.Util.ConsoleOutput("Weather Updated To LA.");
         }
 
         
@@ -85,7 +85,7 @@ namespace mtgvrp.core
                 }
                 catch (WebException ex)
                 {
-                    API.ConsoleOutput("Weather API Exception: " + ex.Status);
+                    NAPI.Util.ConsoleOutput("Weather API Exception: " + ex.Status);
                 }
                 Match result = Regex.Match(reply, "\\{.*\\\"code\\\":([0-9]+)\\}");
                 if (result.Success)
@@ -166,7 +166,7 @@ namespace mtgvrp.core
                             break;
                     }
 
-                    API.ConsoleOutput("Set Weather To " + API.GetWeather());
+                    NAPI.Util.ConsoleOutput("Set Weather To " + API.GetWeather());
                 }
             }
         }

@@ -56,7 +56,7 @@ namespace mtgvrp.AdminSystem
             AdminReports.InsertReport(3, player.Nametag, (string)arguments[0]);
             SendtoAllAdmins("~g~[REPORT]~w~ " + PlayerManager.GetName(player) + " (ID:" + playerid + "): " +
                             (string)arguments[0]);
-            API.SendChatMessageToPlayer(player, "Report submitted.");
+            NAPI.Chat.SendChatMessageToPlayer(player, "Report submitted.");
             startReportTimer(player);
             character.HasActiveReport = true;
         }
@@ -78,7 +78,7 @@ namespace mtgvrp.AdminSystem
             SendtoAllAdmins("~g~[REPORT]~w~ " + PlayerManager.GetName(player) + " (ID:" + senderid + ")" +
                             " reported " + PlayerManager.GetName(receiver) + " (ID:" + id + ") for " +
                             (string)arguments[0]);
-            API.SendChatMessageToPlayer(player, "Report submitted.");
+            NAPI.Chat.SendChatMessageToPlayer(player, "Report submitted.");
             startReportTimer(player);
             senderchar.HasActiveReport = true;
         }
@@ -86,8 +86,8 @@ namespace mtgvrp.AdminSystem
         [RemoteEvent("SET_PLAYER_CP")]
         public void SetPlayerCP(Client player, params object[] arguments)
         {
-            var p = API.GetPlayerFromHandle((NetHandle)arguments[0]);
-            API.TriggerClientEvent(p, "update_beacon", (Vector3)arguments[1]);
+            var p = NAPI.Player.GetPlayerFromHandle((NetHandle)arguments[0]);
+            NAPI.ClientEvent.TriggerClientEvent(p, "update_beacon", (Vector3)arguments[1]);
         }
 
         [RemoteEvent("teleport")]
@@ -109,7 +109,7 @@ namespace mtgvrp.AdminSystem
 
             if (!c.isAJailed)
             {
-                API.SendChatMessageToPlayer(sender,"That player is not admin jailed!");
+                NAPI.Chat.SendChatMessageToPlayer(sender,"That player is not admin jailed!");
                 return;
             }
 
@@ -133,7 +133,7 @@ namespace mtgvrp.AdminSystem
                         x.Supplies = supply;
                         x.Save();
                     });
-                API.SendChatMessageToPlayer(player, "Set all non gas station properties supplies to " + supply);
+                NAPI.Chat.SendChatMessageToPlayer(player, "Set all non gas station properties supplies to " + supply);
                 Log(LogTypes.AdminActions,
                     $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {acc.AdminName} has set all non gas station properties supplies to {supply}");
             }
@@ -149,7 +149,7 @@ namespace mtgvrp.AdminSystem
             {
                 PropertyManager.Properties.Where(y => y.Type == PropertyManager.PropertyTypes.GasStation).AsParallel()
                     .ForAll(x => { x.Supplies = supply; });
-                API.SendChatMessageToPlayer(player, "Set all gas station properties supplies to " + supply);
+                NAPI.Chat.SendChatMessageToPlayer(player, "Set all gas station properties supplies to " + supply);
                 Log(LogTypes.AdminActions,
                     $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {acc.AdminName} has set all gas station properties supplies to {supply}");
             }
@@ -183,7 +183,7 @@ namespace mtgvrp.AdminSystem
             var foundAccount = DatabaseManager.AccountTable.Find(x => x.AccountName == accountname).SingleOrDefault();
             if (foundAccount == null)
             {
-                API.SendChatMessageToPlayer(player, "No account with such name.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "No account with such name.");
                 return;
             }
 
@@ -234,19 +234,19 @@ namespace mtgvrp.AdminSystem
                 var receiver = PlayerManager.ParseClient(target);
                 if (receiver == null)
                 {
-                    API.SendChatMessageToPlayer(player, Color.White, "That player is not connected.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "That player is not connected.");
                     return;
                 }
 
                 if (level < 0)
                 {
-                    API.SendChatMessageToPlayer(player, "Level cant be under 0");
+                    NAPI.Chat.SendChatMessageToPlayer(player, "Level cant be under 0");
                     return;
                 }
 
                 receiver.GetAccount().DevLevel = level;
                 receiver.GetAccount().Save();
-                API.SendChatMessageToPlayer(player,
+                NAPI.Chat.SendChatMessageToPlayer(player,
                     $"You've successfully set {receiver.GetCharacter().CharacterName}[{receiver.SocialClubName}]'s dev level to " +
                     level);
                 Log(LogTypes.AdminActions,
@@ -267,7 +267,7 @@ namespace mtgvrp.AdminSystem
 
             if (receiver == null)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "That player is not connected.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "That player is not connected.");
                 return;
             }
 
@@ -286,7 +286,7 @@ namespace mtgvrp.AdminSystem
                 var receiver = PlayerManager.ParseClient(target);
                 if (receiver == null)
                 {
-                    API.SendChatMessageToPlayer(player, Color.White, "That player is not connected.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "That player is not connected.");
                     return;
                 }
 
@@ -294,7 +294,7 @@ namespace mtgvrp.AdminSystem
                 var prop = recChar.GetType().GetProperties().SingleOrDefault(x => x.Name == var);
                 if (prop == null)
                 {
-                    API.SendChatMessageToPlayer(player, Color.White, "There is no such property.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "There is no such property.");
                     return;
                 }
 
@@ -303,12 +303,12 @@ namespace mtgvrp.AdminSystem
                     int val;
                     if (!int.TryParse(value, out val))
                     {
-                        API.SendChatMessageToPlayer(player, "That property is an integer.");
+                        NAPI.Chat.SendChatMessageToPlayer(player, "That property is an integer.");
                         return;
                     }
 
                     prop.SetValue(recChar, val);
-                    API.SendChatMessageToPlayer(player, $"Sucessfully set {var} to the value: {value}");
+                    NAPI.Chat.SendChatMessageToPlayer(player, $"Sucessfully set {var} to the value: {value}");
                     recChar.Save();
                     Log(LogTypes.AdminActions,
                         $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {acc.AdminName} has set property {var} of {recChar.CharacterName}[{receiver.GetAccount().AccountName}] to {value}.");
@@ -318,12 +318,12 @@ namespace mtgvrp.AdminSystem
                     bool val;
                     if (!bool.TryParse(value, out val))
                     {
-                        API.SendChatMessageToPlayer(player, "That property is a bool.");
+                        NAPI.Chat.SendChatMessageToPlayer(player, "That property is a bool.");
                         return;
                     }
 
                     prop.SetValue(recChar, val);
-                    API.SendChatMessageToPlayer(player, $"Sucessfully set {var} to the value: {value}");
+                    NAPI.Chat.SendChatMessageToPlayer(player, $"Sucessfully set {var} to the value: {value}");
                     recChar.Save();
                     Log(LogTypes.AdminActions,
                         $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {acc.AdminName} has set property {var} of {recChar.CharacterName}[{receiver.GetAccount().AccountName}] to {value}.");
@@ -331,14 +331,14 @@ namespace mtgvrp.AdminSystem
                 else if (prop.PropertyType == typeof(bool))
                 {
                     prop.SetValue(recChar, value);
-                    API.SendChatMessageToPlayer(player, $"Sucessfully set {var} to the value: {value}");
+                    NAPI.Chat.SendChatMessageToPlayer(player, $"Sucessfully set {var} to the value: {value}");
                     recChar.Save();
                     Log(LogTypes.AdminActions,
                         $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {acc.AdminName} has set property {var} of {recChar.CharacterName}[{receiver.GetAccount().AccountName}] to {value}.");
                 }
                 else
                 {
-                    API.SendChatMessageToPlayer(player, "Unknown Type.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, "Unknown Type.");
                 }
             }
         }
@@ -360,7 +360,7 @@ namespace mtgvrp.AdminSystem
 
             if (receiver == null)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "That player is not connected.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "That player is not connected.");
                 return;
             }
 
@@ -369,15 +369,15 @@ namespace mtgvrp.AdminSystem
                 var oldLevel = receiverAccount.AdminLevel;
                 if (oldLevel > level)
                 {
-                    API.SendChatMessageToPlayer(receiver,
+                    NAPI.Chat.SendChatMessageToPlayer(receiver,
                         "You have been demoted to admin level " + level + " by " + character.CharacterName + ".");
                 }
                 else
                 {
-                    API.SendChatMessageToPlayer(receiver,
+                    NAPI.Chat.SendChatMessageToPlayer(receiver,
                         "You have been promoted to admin level " + level + " by " + character.CharacterName + ".");
                 }
-                API.SendChatMessageToPlayer(player,
+                NAPI.Chat.SendChatMessageToPlayer(player,
                     "You have changed " + receiverCharacter.CharacterName + "'s admin level to " + level + " (was " +
                     oldLevel + ").");
                 receiverAccount.AdminLevel = level;
@@ -387,7 +387,7 @@ namespace mtgvrp.AdminSystem
             }
             else
             {
-                API.SendChatMessageToPlayer(player, Color.White,
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White,
                     "You cannot set a higher admin level than yours or set someone to a level above yours.");
             }
         }
@@ -406,7 +406,7 @@ namespace mtgvrp.AdminSystem
             var leaderClient = PlayerManager.ParseClient(playerid);
             if (leaderClient == null)
             {
-                API.SendChatMessageToPlayer(player, Color.Grey, "~r~[ERROR]~w~ That player is not online.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.Grey, "~r~[ERROR]~w~ That player is not online.");
                 return;
             }
 
@@ -415,7 +415,7 @@ namespace mtgvrp.AdminSystem
             var group = GroupManager.GetGroupById(groupId);
             if (group == Group.None)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "~r~[ERROR]~w~ That group ID is not valid.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "~r~[ERROR]~w~ That group ID is not valid.");
                 return;
             }
 
@@ -424,8 +424,8 @@ namespace mtgvrp.AdminSystem
             leaderChar.GroupRank = 10;
             leaderChar.Save();
 
-            API.SendChatMessageToPlayer(leaderClient, Color.White, "You have been made the leader of " + group.Name);
-            API.SendChatMessageToPlayer(player, Color.Grey,
+            NAPI.Chat.SendChatMessageToPlayer(leaderClient, Color.White, "You have been made the leader of " + group.Name);
+            NAPI.Chat.SendChatMessageToPlayer(player, Color.Grey,
                 "You have made " + leaderChar.CharacterName + " the leader of " + group.Name);
 
             GroupManager.SendGroupMessage(player,
@@ -447,8 +447,8 @@ namespace mtgvrp.AdminSystem
                 return;
 
             var pos = new Vector3(x, y, z);
-            API.SetEntityPosition(player, pos);
-            API.SendChatMessageToPlayer(player, "Teleported");
+            NAPI.Entity.SetEntityPosition(player, pos);
+            NAPI.Chat.SendChatMessageToPlayer(player, "Teleported");
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} teleported to {x}, {y}, {z}");
         }
@@ -529,9 +529,9 @@ namespace mtgvrp.AdminSystem
                 return;
             }
             //WILL FINISH ONCE WE ARE SURE ON SPAWN POINTS ETC. FOR NOW IT'S THE TRAIN SPAWN:
-            API.SetEntityPosition(receiver, new Vector3(433.2354, -645.8408, 28.7263));
-            API.SendChatMessageToPlayer(receiver, "You have been admin warped to the spawn by an admin.");
-            API.SendChatMessageToPlayer(player, "You have admin warped " + receiver.Nametag + " to the spawn.");
+            NAPI.Entity.SetEntityPosition(receiver, new Vector3(433.2354, -645.8408, 28.7263));
+            NAPI.Chat.SendChatMessageToPlayer(receiver, "You have been admin warped to the spawn by an admin.");
+            NAPI.Chat.SendChatMessageToPlayer(player, "You have admin warped " + receiver.Nametag + " to the spawn.");
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has admin warped {receiver}");
         }
@@ -573,12 +573,12 @@ namespace mtgvrp.AdminSystem
 
             if (receiver == null)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
 
             WeaponManager.CreateWeapon(receiver, weaponHash, WeaponTint.Normal, false, true);
-            API.SendChatMessageToPlayer(player, "You have given Player ID: " + id + " a " + weaponHash);
+            NAPI.Chat.SendChatMessageToPlayer(player, "You have given Player ID: " + id + " a " + weaponHash);
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has given himself a {weaponHash}");
         }
@@ -596,11 +596,11 @@ namespace mtgvrp.AdminSystem
 
             if (receiver == null)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
             API.SetPlayerHealth(receiver, health);
-            API.SendChatMessageToPlayer(player, "You have set Player ID: " + id + "'s health to " + health + ".");
+            NAPI.Chat.SendChatMessageToPlayer(player, "You have set Player ID: " + id + "'s health to " + health + ".");
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has set {GetLogName(receiver)} health to {health}");
         }
@@ -618,11 +618,11 @@ namespace mtgvrp.AdminSystem
 
             if (receiver == null)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
             API.SetPlayerArmor(receiver, armour);
-            API.SendChatMessageToPlayer(player, "You have set Player ID: " + id + "'s armour to " + armour + ".");
+            NAPI.Chat.SendChatMessageToPlayer(player, "You have set Player ID: " + id + "'s armour to " + armour + ".");
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has set {GetLogName(receiver)} armour to {armour}");
         }
@@ -641,18 +641,18 @@ namespace mtgvrp.AdminSystem
 
             if (receiver == null)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid vehicleid entered.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid vehicleid entered.");
                 return;
             }
 
             if (receiver.IsSpawned == false)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ Vehicle not spawned.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ Vehicle not spawned.");
                 return;
             }
 
             API.SetVehicleHealth(receiver.NetHandle, health);
-            API.SendChatMessageToPlayer(player,
+            NAPI.Chat.SendChatMessageToPlayer(player,
                 "You have set Vehicle ID: " + receiver.Id + "'s health to " + health + ".");
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has set vehicleid {receiver.Id} health to {health}");
@@ -702,7 +702,7 @@ namespace mtgvrp.AdminSystem
 
             if (account.IsSpectating == false)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ You are not specing anyone.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ You are not specing anyone.");
                 return;
             }
             account.IsSpectating = false;
@@ -710,7 +710,7 @@ namespace mtgvrp.AdminSystem
             API.Shared.SetEntityPosition(player, player.GetCharacter().LastPos);
             API.Shared.SetPlayerNametagVisible(player, true);
             API.Shared.SetEntityTransparency(player, 255);
-            API.SendChatMessageToPlayer(player, "You are no longer spectating anyone.");
+            NAPI.Chat.SendChatMessageToPlayer(player, "You are no longer spectating anyone.");
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has stopped speccing.");
         }
@@ -728,13 +728,13 @@ namespace mtgvrp.AdminSystem
 
             if (receiver == null)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
-            var playerPos = API.GetEntityPosition(receiver);
-            API.SetEntityPosition(receiver, new Vector3(playerPos.X, playerPos.Y, playerPos.Z + 5));
-            API.SendChatMessageToPlayer(receiver, "You have been slapped by an admin");
-            API.SendChatMessageToPlayer(player,"You have slapped " + receiver.GetCharacter().rp_name());
+            var playerPos = NAPI.Entity.GetEntityPosition(receiver);
+            NAPI.Entity.SetEntityPosition(receiver, new Vector3(playerPos.X, playerPos.Y, playerPos.Z + 5));
+            NAPI.Chat.SendChatMessageToPlayer(receiver, "You have been slapped by an admin");
+            NAPI.Chat.SendChatMessageToPlayer(player,"You have slapped " + receiver.GetCharacter().rp_name());
             ChatManager.NearbyMessage(receiver, 10f,
                 $"{receiver.GetCharacter().rp_name()} has been slapped by an admin.");
             Log(LogTypes.AdminActions,
@@ -754,11 +754,11 @@ namespace mtgvrp.AdminSystem
 
             if (receiver == null)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
-            API.FreezePlayer(receiver, true);
-            API.SendChatMessageToPlayer(receiver, "You have been frozen by an admin");
+            NAPI.Player.FreezePlayer(receiver, true);
+            NAPI.Chat.SendChatMessageToPlayer(receiver, "You have been frozen by an admin");
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has frozen {GetLogName(receiver)}");
         }
@@ -771,7 +771,7 @@ namespace mtgvrp.AdminSystem
             if (account.AdminLevel < 2)
                 return;
 
-            API.TriggerClientEvent(player, "getwaypoint");
+            NAPI.ClientEvent.TriggerClientEvent(player, "getwaypoint");
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has went to their waypoint.");
         }
@@ -789,11 +789,11 @@ namespace mtgvrp.AdminSystem
 
             if (receiver == null)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
-            API.FreezePlayer(receiver, false);
-            API.SendChatMessageToPlayer(receiver, "You have been unfrozen by an admin");
+            NAPI.Player.FreezePlayer(receiver, false);
+            NAPI.Chat.SendChatMessageToPlayer(receiver, "You have been unfrozen by an admin");
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has unfrozen {GetLogName(receiver)}");
         }
@@ -810,7 +810,7 @@ namespace mtgvrp.AdminSystem
 
             account.AdminLevel = 0;
             account.Save();
-            API.SendChatMessageToPlayer(player, "You have quit the admin team.");
+            NAPI.Chat.SendChatMessageToPlayer(player, "You have quit the admin team.");
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has quit the admin name.");
         }
@@ -827,7 +827,7 @@ namespace mtgvrp.AdminSystem
                 return;
 
             InventoryManager.SetInventoryAmmount(character, typeof(Money), money);
-            API.SendChatMessageToPlayer(player, $"You have sucessfully changed your money to ${money}.");
+            NAPI.Chat.SendChatMessageToPlayer(player, $"You have sucessfully changed your money to ${money}.");
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has set his money to {money}");
         }
@@ -844,23 +844,23 @@ namespace mtgvrp.AdminSystem
             var receiver = PlayerManager.ParseClient(id);
             if (receiver == null)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
 
             Character character = receiver.GetCharacter();
-            API.SendChatMessageToPlayer(player, "----------------------------------------------");
-            API.SendChatMessageToPlayer(player, $"Vehicles Owned By {character.CharacterName}");
+            NAPI.Chat.SendChatMessageToPlayer(player, "----------------------------------------------");
+            NAPI.Chat.SendChatMessageToPlayer(player, $"Vehicles Owned By {character.CharacterName}");
             foreach (var carid in character.OwnedVehicles)
             {
                 if (carid == null)
                 {
-                    API.SendChatMessageToPlayer(player, $"(UNKNOWN VEHICLE) | ID ~r~{carid}~w~.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, $"(UNKNOWN VEHICLE) | ID ~r~{carid}~w~.");
                     continue;
                 }
-                API.SendChatMessageToPlayer(player, $"({VehicleOwnership.returnCorrDisplayName(carid.VehModel)}) | NetHandle ~r~{carid.NetHandle.Value}~w~ | ID ~r~{carid.Id}~w~.");
+                NAPI.Chat.SendChatMessageToPlayer(player, $"({VehicleOwnership.returnCorrDisplayName(carid.VehModel)}) | NetHandle ~r~{carid.NetHandle.Value}~w~ | ID ~r~{carid.Id}~w~.");
             }
-            API.SendChatMessageToPlayer(player, "----------------------------------------------");
+            NAPI.Chat.SendChatMessageToPlayer(player, "----------------------------------------------");
         }
 
         [Command("noobs"),
@@ -896,18 +896,18 @@ namespace mtgvrp.AdminSystem
 
             if (veh == null)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "That vehicle ID does not exist.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "That vehicle ID does not exist.");
                 return;
             }
 
             if (veh.IsSpawned == false)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "That vehicle is not spawned.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "That vehicle is not spawned.");
                 return;
             }
 
-            API.SetEntityPosition(player, API.GetEntityPosition(veh.NetHandle));
-            API.SendChatMessageToPlayer(player, "Sucessfully teleported to a vehicle.");
+            NAPI.Entity.SetEntityPosition(player, NAPI.Entity.GetEntityPosition(veh.NetHandle));
+            NAPI.Chat.SendChatMessageToPlayer(player, "Sucessfully teleported to a vehicle.");
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has teleported vehicle #{vID} to the Admin's position.");
         }
@@ -924,18 +924,18 @@ namespace mtgvrp.AdminSystem
 
             if (veh == null)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "That vehicle ID does not exist.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "That vehicle ID does not exist.");
                 return;
             }
 
             if (veh.IsSpawned == false)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "That vehicle is not spawned.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "That vehicle is not spawned.");
                 return;
             }
 
-            API.SetEntityPosition(veh.NetHandle, player.Position);
-            API.SendChatMessageToPlayer(player, "Sucessfully teleported the car to you.");
+            NAPI.Entity.SetEntityPosition(veh.NetHandle, player.Position);
+            NAPI.Chat.SendChatMessageToPlayer(player, "Sucessfully teleported the car to you.");
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has teleported vehicle #{vID} to the Admin's position.");
         }
@@ -953,14 +953,14 @@ namespace mtgvrp.AdminSystem
 
             if (receiverAccount.AdminLevel == 0)
             {
-                API.SendChatMessageToPlayer(player, "This player is not an admin.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "This player is not an admin.");
                 return;
             }
 
             receiverAccount.AdminName = name;
-            API.SendChatMessageToPlayer(player,
+            NAPI.Chat.SendChatMessageToPlayer(player,
                 "You have set " + receiver.Nametag + "'s admin name to '" + name + "'.");
-            API.SendChatMessageToPlayer(receiver, receiver.Nametag + " has set your admin name to '" + name + "'.");
+            NAPI.Chat.SendChatMessageToPlayer(receiver, receiver.Nametag + " has set your admin name to '" + name + "'.");
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has set {GetLogName(receiver)} Admin name to {name}");
         }
@@ -968,7 +968,7 @@ namespace mtgvrp.AdminSystem
         [Command("admins"), Help(HelpManager.CommandGroups.General, "A list of all admins online at the moment.", null)]
         public void admins_cmd(Client player)
         {
-            API.SendChatMessageToPlayer(player, "=====ADMINS ONLINE NOW=====");
+            NAPI.Chat.SendChatMessageToPlayer(player, "=====ADMINS ONLINE NOW=====");
             foreach (var c in API.GetAllPlayers())
             {
                 if (c == null)
@@ -980,12 +980,12 @@ namespace mtgvrp.AdminSystem
                 {
                     if (receiverAccount.AdminDuty)
                     {
-                        API.SendChatMessageToPlayer(player,
+                        NAPI.Chat.SendChatMessageToPlayer(player,
                             "~g~[ONDUTY] " + receiverAccount.AdminName + " | LEVEL " + receiverAccount.AdminLevel);
                     }
                     else
                     {
-                        API.SendChatMessageToPlayer(player,
+                        NAPI.Chat.SendChatMessageToPlayer(player,
                             "~r~[OFFDUTY] " + receiverAccount.AdminName + " | LEVEL " + receiverAccount.AdminLevel);
                     }
                 }
@@ -1008,7 +1008,7 @@ namespace mtgvrp.AdminSystem
                 account.AdminDuty = true;
                 API.SetPlayerNametagColor(player, 51, 102, 255);
                 API.SetPlayerNametag(player, account.AdminName + " (" + PlayerManager.GetPlayerId(character) + ")");
-                API.SendChatMessageToPlayer(player, "You are now on admin duty.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You are now on admin duty.");
                 SendtoAllAdmins($"{account.AdminName} has gone on admin duty.");
                 return;
             }
@@ -1016,7 +1016,7 @@ namespace mtgvrp.AdminSystem
             account.AdminDuty = false;
             API.SetPlayerNametag(player, character.CharacterName + " (" + PlayerManager.GetPlayerId(character) + ")");
             API.ResetPlayerNametagColor(player);
-            API.SendChatMessageToPlayer(player, "You are no longer on admin duty.");
+            NAPI.Chat.SendChatMessageToPlayer(player, "You are no longer on admin duty.");
             SendtoAllAdmins($"{account.AdminName} has gone off admin duty.");
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} became on admin duty.");
@@ -1032,16 +1032,16 @@ namespace mtgvrp.AdminSystem
             }
             else
             {
-                Vector3 CurrentPlayerPos = API.GetEntityPosition(player);
+                Vector3 CurrentPlayerPos = NAPI.Entity.GetEntityPosition(player);
                 Vector3 CurrentPlayerRot = API.GetEntityRotation(player);
                 uint playerDimension = API.GetEntityDimension(player);
-                API.SendChatMessageToPlayer(player, "-----Current Position-----");
-                API.SendChatMessageToPlayer(player,
+                NAPI.Chat.SendChatMessageToPlayer(player, "-----Current Position-----");
+                NAPI.Chat.SendChatMessageToPlayer(player,
                     "X: " + CurrentPlayerPos.X + " Y: " + CurrentPlayerPos.Y + " Z: " + CurrentPlayerPos.Z +
                     " Dimension: " + playerDimension);
-                API.ConsoleOutput(
+                NAPI.Util.ConsoleOutput(
                     $"POSITION: new Vector3({CurrentPlayerPos.X}, {CurrentPlayerPos.Y}, {CurrentPlayerPos.Z})");
-                API.ConsoleOutput(
+                NAPI.Util.ConsoleOutput(
                     $"ROTATION: new Vector3({CurrentPlayerRot.X}, {CurrentPlayerRot.Y}, {CurrentPlayerRot.Z})");
             }
 
@@ -1063,22 +1063,22 @@ namespace mtgvrp.AdminSystem
 
             if (character.ReportMuteExpires > TimeManager.GetTimeStamp)
             {
-                API.SendChatMessageToPlayer(player, "You are muted from creating reports/ask requests.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You are muted from creating reports/ask requests.");
                 return;
             }
 
             if (AdminReports.Reports.Count > 5)
             {
-                API.SendChatMessageToPlayer(player,
+                NAPI.Chat.SendChatMessageToPlayer(player,
                     "~r~We are experiencing a high volume of reports. Please only use the report feature if it is absolutely necessary.");
             }
 
             if (character.ReportCreated)
             {
-                API.SendChatMessageToPlayer(player, "Please wait 15 seconds before creating another report.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "Please wait 15 seconds before creating another report.");
                 return;
             }
-            API.TriggerClientEvent(player, "show_report_menu");
+            NAPI.ClientEvent.TriggerClientEvent(player, "show_report_menu");
         }
 
         [Command("reports", GreedyArg = true),
@@ -1090,7 +1090,7 @@ namespace mtgvrp.AdminSystem
                 return;
 
 
-            API.SendChatMessageToPlayer(player, "=======REPORTS=======");
+            NAPI.Chat.SendChatMessageToPlayer(player, "=======REPORTS=======");
             foreach (var i in AdminReports.Reports.ToList())
             {
                 if (i.Type == 1)
@@ -1100,11 +1100,11 @@ namespace mtgvrp.AdminSystem
 
                 if (i.Type == 2)
                 {
-                    API.SendChatMessageToPlayer(player,
+                    NAPI.Chat.SendChatMessageToPlayer(player,
                         "~b~" + i.Name + " reported ~r~" + i.Target + "~w~" + " | " + i.ReportMessage);
                     return;
                 }
-                API.SendChatMessageToPlayer(player, "~b~" + i.Name + "~w~" + " | " + i.ReportMessage);
+                NAPI.Chat.SendChatMessageToPlayer(player, "~b~" + i.Name + "~w~" + " | " + i.ReportMessage);
             }
         }
 
@@ -1124,13 +1124,13 @@ namespace mtgvrp.AdminSystem
 
             if (receiver == null)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
 
             if (receivercharacter.HasActiveReport == false)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ This player has no active reports.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ This player has no active reports.");
                 return;
             }
 
@@ -1143,8 +1143,8 @@ namespace mtgvrp.AdminSystem
             }
 
             receivercharacter.HasActiveReport = false;
-            API.SendChatMessageToPlayer(player, "Report accepted.");
-            API.SendChatMessageToPlayer(receiver, "Your report has been taken by ~b~" + player.Nametag + ".");
+            NAPI.Chat.SendChatMessageToPlayer(player, "Report accepted.");
+            NAPI.Chat.SendChatMessageToPlayer(receiver, "Your report has been taken by ~b~" + player.Nametag + ".");
             SendtoAllAdmins("[REPORT] " + player.Nametag + " has taken " + receiver.Nametag + "'s report.");
             account.AdminActions++;
             Log(LogTypes.AdminActions,
@@ -1166,13 +1166,13 @@ namespace mtgvrp.AdminSystem
 
             if (receiver == null)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
 
             if (receivercharacter.HasActiveReport == false || receivercharacter.HasActiveAsk)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ This player has no active reports.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ This player has no active reports.");
                 return;
             }
 
@@ -1184,8 +1184,8 @@ namespace mtgvrp.AdminSystem
                 }
             }
             receivercharacter.HasActiveReport = false;
-            API.SendChatMessageToPlayer(player, "Request trashed.");
-            API.SendChatMessageToPlayer(receiver, "Your admin/moderator request was trashed.");
+            NAPI.Chat.SendChatMessageToPlayer(player, "Request trashed.");
+            NAPI.Chat.SendChatMessageToPlayer(receiver, "Your admin/moderator request was trashed.");
             SendtoAllAdmins("[TRASHED] " + player.Nametag + " trashed " + receiver.Nametag + "'s report.");
             account.AdminActions++;
             Log(LogTypes.AdminActions,
@@ -1207,19 +1207,19 @@ namespace mtgvrp.AdminSystem
 
             if (character.IsOnAsk)
             {
-                API.SendChatMessageToPlayer(player, "You are already helping someone.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You are already helping someone.");
                 return;
             }
 
             if (receiver == null)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
 
             if (receivercharacter.HasActiveAsk == false)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ This player has no active help requests.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ This player has no active help requests.");
                 return;
             }
 
@@ -1233,14 +1233,14 @@ namespace mtgvrp.AdminSystem
 
             account.AdminDuty = true;
             character.IsOnAsk = true;
-            character.LastPos = API.GetEntityPosition(player);
+            character.LastPos = NAPI.Entity.GetEntityPosition(player);
             receivercharacter.HasActiveAsk = false;
-            API.SendChatMessageToPlayer(player, "Ask accepted.");
-            API.SendChatMessageToPlayer(receiver, "Your help request has been taken by ~b~" + player.Nametag + ".");
+            NAPI.Chat.SendChatMessageToPlayer(player, "Ask accepted.");
+            NAPI.Chat.SendChatMessageToPlayer(receiver, "Your help request has been taken by ~b~" + player.Nametag + ".");
             SendtoAllAdmins("[REPORT] " + player.Nametag + " has taken " + receiver.Nametag + "'s ask request.");
             player.SendChatMessage(
                 $"{receivercharacter.CharacterName}'s playing hours: ~g~{receivercharacter.GetPlayingHours()}.");
-            API.SetEntityPosition(player, API.GetEntityPosition(receiver));
+            NAPI.Entity.SetEntityPosition(player, NAPI.Entity.GetEntityPosition(receiver));
             API.SetPlayerNametagColor(player, 51, 102, 255);
             account.AdminActions++;
             Log(LogTypes.AdminActions,
@@ -1259,14 +1259,14 @@ namespace mtgvrp.AdminSystem
 
             if (character.IsOnAsk == false)
             {
-                API.SendChatMessageToPlayer(player, "You are not helping anyone.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You are not helping anyone.");
                 return;
             }
 
             account.AdminDuty = false;
             character.IsOnAsk = false;
-            API.SendChatMessageToPlayer(player, "Ask finished.");
-            API.SetEntityPosition(player, character.LastPos);
+            NAPI.Chat.SendChatMessageToPlayer(player, "Ask finished.");
+            NAPI.Entity.SetEntityPosition(player, character.LastPos);
             API.ResetPlayerNametagColor(player);
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has finished their /ask.");
@@ -1281,20 +1281,20 @@ namespace mtgvrp.AdminSystem
 
             if (character.ReportMuteExpires > TimeManager.GetTimeStamp)
             {
-                API.SendChatMessageToPlayer(player, "You are muted from creating reports/ask requests.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You are muted from creating reports/ask requests.");
                 return;
             }
 
             if (character.ReportCreated)
             {
-                API.SendChatMessageToPlayer(player, "Please wait 15 seconds before creating another request.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "Please wait 15 seconds before creating another request.");
                 return;
             }
 
             character.HasActiveAsk = true;
             AdminReports.InsertReport(1, player.Nametag, message);
             SendtoAllAdmins("~g~[ASK]~w~ " + PlayerManager.GetName(player) + ": " + message);
-            API.SendChatMessageToPlayer(player,
+            NAPI.Chat.SendChatMessageToPlayer(player,
                 "~b~Ask request submitted. ~w~Moderators have been informed and will be with you soon.");
             startReportTimer(player);
         }
@@ -1313,22 +1313,22 @@ namespace mtgvrp.AdminSystem
 
             if (receiver == null)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
 
             if (receivercharacter.NMutedExpiration < TimeManager.GetTimeStamp)
             {
-                API.SendChatMessageToPlayer(player,
+                NAPI.Chat.SendChatMessageToPlayer(player,
                     "You have muted ~b~" + receiver.Nametag + "~w~ from newbie chat for 1 hour.");
-                API.SendChatMessageToPlayer(receiver, "You have been ~r~muted ~w~from newbie chat for 1 hour.");
+                NAPI.Chat.SendChatMessageToPlayer(receiver, "You have been ~r~muted ~w~from newbie chat for 1 hour.");
                 SendtoAllAdmins($"{account.AdminName} has muted {receiver.Nametag} from /n.");
                 receivercharacter.NMutedExpiration = TimeManager.GetTimeStampPlus(TimeSpan.FromHours(1));
             }
             else
             {
-                API.SendChatMessageToPlayer(receiver, "You have been ~r~unmmuted ~w~from newbie chat.");
-                API.SendChatMessageToPlayer(player,
+                NAPI.Chat.SendChatMessageToPlayer(receiver, "You have been ~r~unmmuted ~w~from newbie chat.");
+                NAPI.Chat.SendChatMessageToPlayer(player,
                     "You have unmuted ~b~" + receiver.Nametag + "~w~ from newbie chat.");
                 SendtoAllAdmins($"{account.AdminName} has unmuted {receiver.Nametag} from /n.");
                 receivercharacter.NMutedExpiration = TimeManager.GetTimeStamp;
@@ -1352,22 +1352,22 @@ namespace mtgvrp.AdminSystem
 
             if (receiver == null)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
 
             if (receivercharacter.VMutedExpiration < TimeManager.GetTimeStamp)
             {
-                API.SendChatMessageToPlayer(player,
+                NAPI.Chat.SendChatMessageToPlayer(player,
                     "You have muted ~b~" + receiver.Nametag + "~w~ from VIP chat for 1 hour.");
-                API.SendChatMessageToPlayer(receiver, "You have been ~r~muted ~w~from VIP chat for 1 hour.");
+                NAPI.Chat.SendChatMessageToPlayer(receiver, "You have been ~r~muted ~w~from VIP chat for 1 hour.");
                 SendtoAllAdmins($"{account.AdminName} has muted {receiver.Nametag} from VIP chat.");
                 receivercharacter.VMutedExpiration = TimeManager.GetTimeStampPlus(TimeSpan.FromHours(1));
             }
             else
             {
-                API.SendChatMessageToPlayer(receiver, "You have been ~r~unmmuted ~w~from VIP chat.");
-                API.SendChatMessageToPlayer(player, "You have unmuted ~b~" + receiver.Nametag + "~w~ from VIP chat.");
+                NAPI.Chat.SendChatMessageToPlayer(receiver, "You have been ~r~unmmuted ~w~from VIP chat.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You have unmuted ~b~" + receiver.Nametag + "~w~ from VIP chat.");
                 SendtoAllAdmins($"{account.AdminName} has unmuted {receiver.Nametag} from VIP chat.");
                 receivercharacter.VMutedExpiration = TimeManager.GetTimeStamp;
             }
@@ -1390,23 +1390,23 @@ namespace mtgvrp.AdminSystem
 
             if (receiver == null)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
 
             if (receivercharacter.ReportMuteExpires < TimeManager.GetTimeStamp)
             {
-                API.SendChatMessageToPlayer(player,
+                NAPI.Chat.SendChatMessageToPlayer(player,
                     "You have muted ~b~" + receiver.Nametag + "~w~from creating reports.");
-                API.SendChatMessageToPlayer(receiver, "You have been ~r~muted ~w~from making reports.");
+                NAPI.Chat.SendChatMessageToPlayer(receiver, "You have been ~r~muted ~w~from making reports.");
                 SendtoAllAdmins($"{account.AdminName} has muted {receiver.Nametag} from making reports.");
                 receivercharacter.ReportMuteExpires = TimeManager.GetTimeStampPlus(TimeSpan.FromHours(1));
             }
             else
             {
-                API.SendChatMessageToPlayer(receiver, "You have been ~r~unmmuted ~w~from making reports.");
+                NAPI.Chat.SendChatMessageToPlayer(receiver, "You have been ~r~unmmuted ~w~from making reports.");
                 SendtoAllAdmins($"{account.AdminName} has unmuted {receiver.Nametag} from making reports.");
-                API.SendChatMessageToPlayer(player,
+                NAPI.Chat.SendChatMessageToPlayer(player,
                     "You have unmuted ~b~" + receiver.Nametag + "~w~from creating reports.");
                 receivercharacter.ReportMuteExpires = TimeManager.GetTimeStamp;
             }
@@ -1424,7 +1424,7 @@ namespace mtgvrp.AdminSystem
             if (account.AdminLevel < 1)
                 return;
 
-            API.SendChatMessageToPlayer(player, "=======ASK LIST=======");
+            NAPI.Chat.SendChatMessageToPlayer(player, "=======ASK LIST=======");
             foreach (var i in AdminReports.Reports)
             {
                 if (i.Type == 2 || i.Type == 3)
@@ -1432,7 +1432,7 @@ namespace mtgvrp.AdminSystem
                     return;
                 }
 
-                API.SendChatMessageToPlayer(player, "~b~" + i.Name + "~w~" + " | " + i.ReportMessage);
+                NAPI.Chat.SendChatMessageToPlayer(player, "~b~" + i.Name + "~w~" + " | " + i.ReportMessage);
             }
         }
 
@@ -1445,7 +1445,7 @@ namespace mtgvrp.AdminSystem
                 return;
 
             AdminReports.Reports.Clear();
-            API.SendChatMessageToPlayer(player, "All reports (including ask) have been cleared.");
+            NAPI.Chat.SendChatMessageToPlayer(player, "All reports (including ask) have been cleared.");
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has trashed all reports and asks.");
         }
@@ -1465,16 +1465,16 @@ namespace mtgvrp.AdminSystem
 
             if (receiver.GetCharacter().isAJailed)
             {
-                API.SendChatMessageToPlayer(player,"That player is already in Admin Jail!");
+                NAPI.Chat.SendChatMessageToPlayer(player,"That player is already in Admin Jail!");
                 return;
             }
 
             receiver.GetCharacter().JailTimeLeft = int.Parse(time) * 1000 * 60;
             API.Shared.SetEntityDimension(receiver, (uint)receiver.GetCharacter().Id + 1000);
             aJailControl(receiver, int.Parse(time));
-            API.SendChatMessageToPlayer(player,
+            NAPI.Chat.SendChatMessageToPlayer(player,
                 "You have jailed " + receiver.Nametag + " for " + time + " minutes. Reason: " + reason);
-            API.SendChatMessageToPlayer(receiver,
+            NAPI.Chat.SendChatMessageToPlayer(receiver,
                 "You have been jailed by " + player.Nametag + " for " + time + " minutes. Reason: " + reason);
             SendtoAllAdmins(account.AdminName + " has jailed " + receiver.Nametag + " for " + time +
                             " minutes. Reason: " + reason);
@@ -1535,7 +1535,7 @@ namespace mtgvrp.AdminSystem
                 return;
 
             receiver.JailTimeLeft = int.Parse(time) * 1000 * 60;
-            API.SendChatMessageToPlayer(player,
+            NAPI.Chat.SendChatMessageToPlayer(player,
                 "You have remote jailed " + receiver.CharacterName + " for " + time + " minutes. Reason: " + reason);
             SendtoAllAdmins(account.AdminName + " has remote jailed " + receiver.CharacterName + " for " + time +
                             " minutes. Reason: " + reason);
@@ -1647,12 +1647,12 @@ namespace mtgvrp.AdminSystem
             var targetClient = PlayerManager.ParseClient(target);
             if (targetClient == null)
             {
-                API.SendChatMessageToPlayer(player, "That player isn't online.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "That player isn't online.");
                 return;
             }
 
-            API.TriggerClientEvent(player, "GET_CP_TO_SEND", targetClient.Handle);
-            API.SendChatMessageToPlayer(player,
+            NAPI.ClientEvent.TriggerClientEvent(player, "GET_CP_TO_SEND", targetClient.Handle);
+            NAPI.Chat.SendChatMessageToPlayer(player,
                 "The checkpoint should be sent to " + targetClient.GetCharacter().CharacterName);
         }
 
@@ -1681,12 +1681,12 @@ namespace mtgvrp.AdminSystem
                 return;
             }
 
-            API.SendChatMessageToPlayer(player, $"***** Characters of {accname} *****");
+            NAPI.Chat.SendChatMessageToPlayer(player, $"***** Characters of {accname} *****");
             foreach (var chr in foundCharacters)
             {
-                API.SendChatMessageToPlayer(player, $"** " + chr);
+                NAPI.Chat.SendChatMessageToPlayer(player, $"** " + chr);
             }
-            API.SendChatMessageToPlayer(player, $"***********************************");
+            NAPI.Chat.SendChatMessageToPlayer(player, $"***********************************");
         }
 
         [Command("getaccountname", GreedyArg = true),
@@ -1715,7 +1715,7 @@ namespace mtgvrp.AdminSystem
                 return;
             }
 
-            API.SendChatMessageToPlayer(player,
+            NAPI.Chat.SendChatMessageToPlayer(player,
                 charactername + "'s account name is '" + foundAccount.AccountName + "'.");
         }
 
@@ -1951,7 +1951,7 @@ namespace mtgvrp.AdminSystem
                     if (account.AdminLevel >= c.AdminLevel && c.AdminLevel > level)
                     {
                         var oldLevel = c.AdminLevel;
-                        API.SendChatMessageToPlayer(player,
+                        NAPI.Chat.SendChatMessageToPlayer(player,
                             "You have changed " + c.AccountName + "'s admin level to " + level + " (was " + oldLevel +
                             ").");
                         c.AdminLevel = level;
@@ -1960,7 +1960,7 @@ namespace mtgvrp.AdminSystem
                     }
                     else
                     {
-                        API.SendChatMessageToPlayer(player, Color.White,
+                        NAPI.Chat.SendChatMessageToPlayer(player, Color.White,
                             "You cannot set a higher admin level than yours or set someone to a level above yours.");
                     }
 
@@ -2051,7 +2051,7 @@ namespace mtgvrp.AdminSystem
 
             if (player.IsInVehicle)
             {
-                veh = VehicleManager.GetVehFromNetHandle(API.GetPlayerVehicle(player));
+                veh = VehicleManager.GetVehFromNetHandle(NAPI.Player.GetPlayerVehicle(player));
             }
 
             if (veh == null)
@@ -2162,7 +2162,7 @@ namespace mtgvrp.AdminSystem
             var receiver = PlayerManager.ParseClient(id);
             if (receiver == null)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
 
@@ -2190,7 +2190,7 @@ namespace mtgvrp.AdminSystem
             var receiver = PlayerManager.ParseClient(id);
             if (receiver == null)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
 
@@ -2258,7 +2258,7 @@ namespace mtgvrp.AdminSystem
             var receiver = PlayerManager.ParseClient(id);
             if (receiver == null)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
 
@@ -2295,7 +2295,7 @@ namespace mtgvrp.AdminSystem
                 return;
             }
 
-            API.SetPlayerIntoVehicle(player, ClosestVeh, -1);
+            NAPI.Player.SetPlayerIntoVehicle(player, ClosestVeh, -1);
         }
 
         public void startReportTimer(Client player)
@@ -2340,7 +2340,7 @@ namespace mtgvrp.AdminSystem
             NetHandle closestveh = new NetHandle();
             foreach (var veh in API.GetAllVehicles())
             {
-                Vector3 Position = API.GetEntityPosition(veh);
+                Vector3 Position = NAPI.Entity.GetEntityPosition(veh);
                 var VehicleDistance = player.Position.DistanceTo(Position);
                 if (VehicleDistance < shortestDistance)
                 {
@@ -2363,11 +2363,11 @@ namespace mtgvrp.AdminSystem
                     return;
 
                 targetClient.SetData("REDOING_CHAR", true);
-                API.FreezePlayer(targetClient, true);
-                API.SetEntityDimension(targetClient, (uint)targetClient.GetCharacter().Id + 1000);
+                NAPI.Player.FreezePlayer(targetClient, true);
+                NAPI.Entity.SetEntityDimension(targetClient, (uint)targetClient.GetCharacter().Id + 1000);
                 API.SetEntitySharedData(targetClient, "REG_DIMENSION", targetClient.GetCharacter().Id + 1000);
                 targetClient.GetCharacter().Model.SetDefault();
-                API.TriggerClientEvent(targetClient, "show_character_creation_menu");
+                NAPI.ClientEvent.TriggerClientEvent(targetClient, "show_character_creation_menu");
             }
         }
 
@@ -2378,7 +2378,7 @@ namespace mtgvrp.AdminSystem
         {
             if (player.GetAccount().AdminLevel >= 3)
             {
-                API.TriggerClientEvent(player, "texttest_settext", text);
+                NAPI.ClientEvent.TriggerClientEvent(player, "texttest_settext", text);
             }
         }
 
@@ -2396,14 +2396,14 @@ namespace mtgvrp.AdminSystem
             var targetPlayer = PlayerManager.ParseClient(target);
             if (targetPlayer == null)
             {
-                API.SendChatMessageToPlayer(player, "That player is not online.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "That player is not online.");
                 return;
             }
 
             var type = InventoryManager.ParseInventoryItem(item);
             if (type == null)
             {
-                API.SendChatMessageToPlayer(player, "This item doesn't exist. Ask a dev if you're stuck!");
+                NAPI.Chat.SendChatMessageToPlayer(player, "This item doesn't exist. Ask a dev if you're stuck!");
                 return;
             }
 
@@ -2412,22 +2412,22 @@ namespace mtgvrp.AdminSystem
             switch (x)
             {
                 case InventoryManager.GiveItemErrors.NotEnoughSpace:
-                    API.SendChatMessageToPlayer(player,"Target player doesn't have space in their inventory for that.");
+                    NAPI.Chat.SendChatMessageToPlayer(player,"Target player doesn't have space in their inventory for that.");
                     return;
                 case InventoryManager.GiveItemErrors.MaxAmountReached:
-                    API.SendChatMessageToPlayer(player, "Target player will go past the max amount of " + item + "! Unable to give item.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, "Target player will go past the max amount of " + item + "! Unable to give item.");
                     return;
                 case InventoryManager.GiveItemErrors.HasSimilarItem:
-                    API.SendChatMessageToPlayer(player,"Target player alreadyy has one of these!");
+                    NAPI.Chat.SendChatMessageToPlayer(player,"Target player alreadyy has one of these!");
                     return;
                 case InventoryManager.GiveItemErrors.Success:
-                    API.SendChatMessageToPlayer(player, "Done.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, "Done.");
                     Log(LogTypes.AdminActions,
                         $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}]" +
                         $" Admin {player.GetAccount().AdminName} has given {GetLogName(targetPlayer)} an item {item}, amount: {amount}");
                     return;
                 default:
-                    API.SendChatMessageToPlayer(player,"An unknown error occured.");
+                    NAPI.Chat.SendChatMessageToPlayer(player,"An unknown error occured.");
                     return;
             }
         }

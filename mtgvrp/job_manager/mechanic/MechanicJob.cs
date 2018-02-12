@@ -21,24 +21,24 @@ namespace mtgvrp.job_manager.taxi
         public void fixcar_cmd(Client player)
         {
             Character character = player.GetCharacter();
-            var veh = VehicleManager.GetVehFromNetHandle(API.GetPlayerVehicle(player));
+            var veh = VehicleManager.GetVehFromNetHandle(NAPI.Player.GetPlayerVehicle(player));
 
             if (veh == null)
                 return;
 
             if (character?.JobOne?.Type != JobManager.JobTypes.Mechanic)
             {
-                API.SendPictureNotificationToPlayer(player, "You must be a mechanic to use this command.", "CHAR_BLOCKED", 0, 0, "Server", "~r~Command Error");
+                NAPI.Notification.SendPictureNotificationToPlayer(player, "You must be a mechanic to use this command.", "CHAR_BLOCKED", 0, 0, "Server", "~r~Command Error");
                 return;
             }
 
             if (veh == null)
             {
-                API.SendChatMessageToPlayer(player, "You must be inside of the vehicle to fix it.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You must be inside of the vehicle to fix it.");
                 return;
             }
 
-            if (API.GetVehicleEngineStatus(veh.NetHandle) == true)
+            if (NAPI.Vehicle.GetVehicleEngineStatus(veh.NetHandle) == true)
             {
                 player.SendChatMessage("You must turn the engine off before fixing it.");
                 return;
@@ -46,7 +46,7 @@ namespace mtgvrp.job_manager.taxi
 
             if (TimeManager.GetTimeStamp < character.FixcarPrevention)
             {
-                API.SendChatMessageToPlayer(player, $@"You must wait {character.FixcarPrevention - TimeManager.GetTimeStamp} more seconds before fixing another car.");
+                NAPI.Chat.SendChatMessageToPlayer(player, $@"You must wait {character.FixcarPrevention - TimeManager.GetTimeStamp} more seconds before fixing another car.");
                 return;
             }
 
@@ -69,14 +69,14 @@ namespace mtgvrp.job_manager.taxi
         public void paintcar_cmd(Client player, int col1, int col2)
         {
             Character character = player.GetCharacter();
-            var veh = VehicleManager.GetVehFromNetHandle(API.GetPlayerVehicle(player));
+            var veh = VehicleManager.GetVehFromNetHandle(NAPI.Player.GetPlayerVehicle(player));
 
             if (veh == null)
                 return;
 
             if (character?.JobOne?.Type != JobManager.JobTypes.Mechanic)
             {
-                API.SendPictureNotificationToPlayer(player, "You must be a mechanic to use this command.", "CHAR_BLOCKED", 0, 0, "Server", "~r~Command Error");
+                NAPI.Notification.SendPictureNotificationToPlayer(player, "You must be a mechanic to use this command.", "CHAR_BLOCKED", 0, 0, "Server", "~r~Command Error");
                 return;
             }
 
@@ -86,14 +86,14 @@ namespace mtgvrp.job_manager.taxi
                 return;
             }
 
-            if (API.GetVehicleEngineStatus(veh.NetHandle) == true)
+            if (NAPI.Vehicle.GetVehicleEngineStatus(veh.NetHandle) == true)
             {
                 player.SendChatMessage("You must turn the engine off before painting it.");
                 return;
             }
 
-            API.SetVehiclePrimaryColor(API.GetPlayerVehicle(player), col1);
-            API.SetVehicleSecondaryColor(API.GetPlayerVehicle(player), col2);
+            API.SetVehiclePrimaryColor(NAPI.Player.GetPlayerVehicle(player), col1);
+            API.SetVehicleSecondaryColor(NAPI.Player.GetPlayerVehicle(player), col2);
             veh.VehMods[ModdingManager.PrimaryColorId.ToString()] = col1.ToString();
             veh.VehMods[ModdingManager.SecondryColorId.ToString()] = col2.ToString();
             veh.Save();

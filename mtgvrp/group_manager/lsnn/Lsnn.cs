@@ -56,20 +56,20 @@ namespace mtgvrp.group_manager.lsnn
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLsnn)
             {
-                API.SendChatMessageToPlayer(player, core.Color.White, "You must be a member of the LSNN to use that command.");
+                NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White, "You must be a member of the LSNN to use that command.");
                 return;
             }
 
             if (CameraSet == false)
             {
-                API.SendChatMessageToPlayer(player, "You must place a camera before starting a broadcast.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You must place a camera before starting a broadcast.");
                 return;
             }
 
             if (IsBroadcasting == true)
             {
                 IsBroadcasting = false;
-                API.SendChatMessageToPlayer(player, "~p~The broadcast has been stopped.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "~p~The broadcast has been stopped.");
 
                 foreach (var c in API.GetAllPlayers())
                 {
@@ -84,20 +84,20 @@ namespace mtgvrp.group_manager.lsnn
                     if (receivercharacter.IsWatchingBroadcast)
                     {
 
-                        API.TriggerClientEvent(c, "unwatch_broadcast");
+                        NAPI.ClientEvent.TriggerClientEvent(c, "unwatch_broadcast");
                         receivercharacter.IsWatchingBroadcast = false;
-                        API.SendChatMessageToPlayer(player, "~p~" + character.rp_name() + " has stopped the broadcast.");
+                        NAPI.Chat.SendChatMessageToPlayer(player, "~p~" + character.rp_name() + " has stopped the broadcast.");
                     }
                     
                     if (receivercharacter.HasMic == true && receivercharacter.Group.CommandType != Group.CommandTypeLsnn)
                     {
                         receivercharacter.HasMic = false;
-                        API.SetEntityData(c, "MicStatus", false);
+                        NAPI.Data.SetEntityData(c, "MicStatus", false);
                     }
                 }
                 return;
             }
-            API.SendChatMessageToPlayer(player, "Broadcast started.");
+            NAPI.Chat.SendChatMessageToPlayer(player, "Broadcast started.");
             API.SendChatMessageToAll("~p~" + character.rp_name() + " has started a broadcast. /watchbroadcast to tune in!");
             IsBroadcasting = true;
 
@@ -110,12 +110,12 @@ namespace mtgvrp.group_manager.lsnn
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLsnn)
             {
-                API.SendChatMessageToPlayer(player, core.Color.White, "You must be a member of the LSNN to use that command.");
+                NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White, "You must be a member of the LSNN to use that command.");
                 return;
             }
 
             Headline = text;
-            API.SendChatMessageToPlayer(player, "Headline edited.");
+            NAPI.Chat.SendChatMessageToPlayer(player, "Headline edited.");
         }
 
         [Command("setcamera"), Help(HelpManager.CommandGroups.LSNN, "Set down a camera for broadcasting.", null)]
@@ -125,28 +125,28 @@ namespace mtgvrp.group_manager.lsnn
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLsnn)
             {
-                API.SendChatMessageToPlayer(player, core.Color.White, "You must be a member of the LSNN to use that command.");
+                NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White, "You must be a member of the LSNN to use that command.");
                 return;
             }
 
             if (character.HasCamera == false)
             {
-                API.SendChatMessageToPlayer(player, "You do not have a camera in your inventory.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You do not have a camera in your inventory.");
                 return;
             }
 
             if (CameraSet == true)
             {
-                API.SendChatMessageToPlayer(player, "A camera has already been set.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "A camera has already been set.");
                 return;
             }
 
-            var pos = API.GetEntityPosition(player.Handle);
+            var pos = NAPI.Entity.GetEntityPosition(player.Handle);
             var angle = API.GetEntityRotation(player.Handle).Z;
             CameraPosition = XyInFrontOfPoint(pos, angle, 1) - new Vector3(0, 0, 0.5);
             CameraRotation = API.GetEntityRotation(player.Handle) + new Vector3(0, 0, 180);
             CameraDimension = (int)API.GetEntityDimension(player);
-            API.SendNotificationToPlayer(player, "A camera has been placed on your position.");
+            NAPI.Notification.SendNotificationToPlayer(player, "A camera has been placed on your position.");
             ChatManager.NearbyMessage(player, 10, "~p~" + character.rp_name() + " sets down a news camera");
             API.CreateObject(API.GetHashKey("p_tv_cam_02_s"), CameraPosition, CameraRotation);
             character.HasCamera = false;
@@ -160,22 +160,22 @@ namespace mtgvrp.group_manager.lsnn
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLsnn)
             {
-                API.SendChatMessageToPlayer(player, core.Color.White, "You must be a member of the LSNN to use that command.");
+                NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White, "You must be a member of the LSNN to use that command.");
                 return;
             }
 
-            var vehicleHandle = API.GetPlayerVehicle(player);
+            var vehicleHandle = NAPI.Player.GetPlayerVehicle(player);
             var veh = VehicleManager.GetVehFromNetHandle(vehicleHandle);
 
             if (character.Group.Id != veh.GroupId && veh.VehModel != VehicleHash.Maverick)
             {
-                API.SendChatMessageToPlayer(player, "You must be in an LSNN chopper to use the chopper camera.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You must be in an LSNN chopper to use the chopper camera.");
                 return;
             }
 
             if (CameraSet == true && ChopperCamToggle == false)
             {
-                API.SendChatMessageToPlayer(player, "A camera has already been set. /pickupcamera before using the chopper cam.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "A camera has already been set. /pickupcamera before using the chopper cam.");
                 return;
             }
 
@@ -195,14 +195,14 @@ namespace mtgvrp.group_manager.lsnn
                         if (receivercharacter.IsWatchingBroadcast)
                         {
 
-                            API.TriggerClientEvent(c, "unwatch_broadcast");
+                            NAPI.ClientEvent.TriggerClientEvent(c, "unwatch_broadcast");
                             receivercharacter.IsWatchingBroadcast = false;
-                            API.SendChatMessageToPlayer(c, "~p~The LSNN camera has been turned off.");
+                            NAPI.Chat.SendChatMessageToPlayer(c, "~p~The LSNN camera has been turned off.");
                         }
                     }
                 }
 
-                API.SendNotificationToPlayer(player, "The chopper camera has been turned ~r~off~w~.");
+                NAPI.Notification.SendNotificationToPlayer(player, "The chopper camera has been turned ~r~off~w~.");
                 ChatManager.NearbyMessage(player, 10, "~p~" + character.rp_name() + " has turned off the chopper cam.");
                 CameraPosition = null;
                 CameraRotation = null;
@@ -214,10 +214,10 @@ namespace mtgvrp.group_manager.lsnn
 
             CameraSet = true;
             ChopperCamToggle = true;
-            Chopper = API.GetPlayerVehicle(player);
-            CameraPosition = API.GetEntityPosition(Chopper) - new Vector3(0, 0, 3);
+            Chopper = NAPI.Player.GetPlayerVehicle(player);
+            CameraPosition = NAPI.Entity.GetEntityPosition(Chopper) - new Vector3(0, 0, 3);
             CameraRotation = API.GetEntityRotation(Chopper);
-            API.SendNotificationToPlayer(player, "The chopper camera has been turned ~b~on~w~.");
+            NAPI.Notification.SendNotificationToPlayer(player, "The chopper camera has been turned ~b~on~w~.");
             ChatManager.NearbyMessage(player, 10, "~p~" + character.rp_name() + " has turned on the chopper cam.");
             ChopperRotation = new Timer { Interval = 3000 };
             ChopperRotation.Elapsed += delegate { UpdateChopperRotation(player); };
@@ -232,13 +232,13 @@ namespace mtgvrp.group_manager.lsnn
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLsnn)
             {
-                API.SendChatMessageToPlayer(player, core.Color.White, "You must be a member of the LSNN to use that command.");
+                NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White, "You must be a member of the LSNN to use that command.");
                 return;
             }
 
             if (IsBroadcasting == true)
             {
-                API.SendChatMessageToPlayer(player, "A broadcast is in progress.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "A broadcast is in progress.");
             }
 
             if (CameraSet == false)
@@ -251,7 +251,7 @@ namespace mtgvrp.group_manager.lsnn
                     Character c = p.GetCharacter();
                     if (c?.HasCamera == true)
                     {
-                        API.SendChatMessageToPlayer(player, "There are no cameras left to pick up.");
+                        NAPI.Chat.SendChatMessageToPlayer(player, "There are no cameras left to pick up.");
                         return;
                     }
 
@@ -260,27 +260,27 @@ namespace mtgvrp.group_manager.lsnn
                 {
                     if(v.GroupId == character.GroupId)
                     {
-                        if (CameraSet == true && player.Position.DistanceTo(CameraPosition) > 2f && player.Position.DistanceTo(API.GetEntityPosition(v.NetHandle)) < 3f)
+                        if (CameraSet == true && player.Position.DistanceTo(CameraPosition) > 2f && player.Position.DistanceTo(NAPI.Entity.GetEntityPosition(v.NetHandle)) < 3f)
                         {
-                            API.SendChatMessageToPlayer(player, "You can only have one camera.");
+                            NAPI.Chat.SendChatMessageToPlayer(player, "You can only have one camera.");
                             return;
                         }
 
-                        if (player.Position.DistanceTo(API.GetEntityPosition(v.NetHandle)) < 3f)
+                        if (player.Position.DistanceTo(NAPI.Entity.GetEntityPosition(v.NetHandle)) < 3f)
                         {
-                            API.SendChatMessageToPlayer(player, "You grabbed a camera from the news vehicle.");
+                            NAPI.Chat.SendChatMessageToPlayer(player, "You grabbed a camera from the news vehicle.");
                             ChatManager.NearbyMessage(player, 10, "~p~" + character.rp_name() + " reaches into the news vehicle, pulling out a camera.");
                             character.HasCamera = true;
                             return;
                         }
                     }
                 }
-                API.SendChatMessageToPlayer(player, "You are too far away from a news vehicle.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You are too far away from a news vehicle.");
                 return;
             }
 
-            var playerPos = API.GetEntityPosition(player);
-            API.SendNotificationToPlayer(player, "You are carrying a camera.", true);
+            var playerPos = NAPI.Entity.GetEntityPosition(player);
+            NAPI.Notification.SendNotificationToPlayer(player, "You are carrying a camera.", true);
             ChatManager.NearbyMessage(player, 10, "~p~" + character.rp_name() + " picks up the news camera.");
             API.DeletePlayerWorldProp(player, API.GetHashKey("p_tv_cam_02_s"), playerPos, 2.5f); // CONV NOTE: adjust radius value
             character.HasCamera = true;
@@ -302,7 +302,7 @@ namespace mtgvrp.group_manager.lsnn
                 }
 
             }
-            API.SendChatMessageToPlayer(player, count + " people are watching the broadcast.");
+            NAPI.Chat.SendChatMessageToPlayer(player, count + " people are watching the broadcast.");
         }
         
         [Command("lotto"), Help(HelpManager.CommandGroups.LSNN, "Throw a lotto and show the winner. Players must buy lotto tickets.", null)]
@@ -312,7 +312,7 @@ namespace mtgvrp.group_manager.lsnn
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLsnn)
             {
-                API.SendChatMessageToPlayer(player, core.Color.White, "You must be a member of the LSNN to use that command.");
+                NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White, "You must be a member of the LSNN to use that command.");
                 return;
             }
 
@@ -328,14 +328,14 @@ namespace mtgvrp.group_manager.lsnn
             }
             if (haveLottoTickets.Count <= 2)
             {
-                API.SendChatMessageToPlayer(player, "There are too few people taking part in the lottery!");
+                NAPI.Chat.SendChatMessageToPlayer(player, "There are too few people taking part in the lottery!");
                 return;
             }
 
             int index = random.Next(haveLottoTickets.Count);
 
             InventoryManager.GiveInventoryItem(haveLottoTickets[index], new Money(), character.Group.LottoSafe);
-            API.SendChatMessageToPlayer(player, "~p~ You pick a random name from the list of ticket owners..");
+            NAPI.Chat.SendChatMessageToPlayer(player, "~p~ You pick a random name from the list of ticket owners..");
             API.SendChatMessageToAll("~p~The winner of the lotto is ~y~" + haveLottoTickets[index].rp_name() + "~p~. They won " + character.Group.LottoSafe + "!");
 
         }
@@ -347,7 +347,7 @@ namespace mtgvrp.group_manager.lsnn
 
             if (CameraPosition == null || CameraRotation == null || IsBroadcasting == false && character.Group.CommandType != Group.CommandTypeLsnn)
             {
-                API.SendChatMessageToPlayer(player, "There is currently no live broadcast.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "There is currently no live broadcast.");
                 return;
             }
 
@@ -360,20 +360,20 @@ namespace mtgvrp.group_manager.lsnn
 
             if (character.IsWatchingBroadcast == true)
             {
-                API.SendChatMessageToPlayer(player, "You are already watching the broadcast.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You are already watching the broadcast.");
                 return;
             }
 
             if (character.Group.CommandType == Group.CommandTypeLsnn && ChopperCamToggle == true)
             {
-                API.TriggerClientEvent(player, "watch_chopper_broadcast", CameraPosition, CameraRotation, Headline, Chopper, OffSet, focusX, focusY, focusZ);
+                NAPI.ClientEvent.TriggerClientEvent(player, "watch_chopper_broadcast", CameraPosition, CameraRotation, Headline, Chopper, OffSet, focusX, focusY, focusZ);
                 character.IsWatchingBroadcast = true;
                 return;
             }
 
             if (character.Group.CommandType == Group.CommandTypeLsnn && CameraSet == true)
             {
-                API.TriggerClientEvent(player, "watch_broadcast", camPos, camRot, Headline, focusX, focusY, focusZ);
+                NAPI.ClientEvent.TriggerClientEvent(player, "watch_broadcast", camPos, camRot, Headline, focusX, focusY, focusZ);
                 character.IsWatchingBroadcast = true;
                 return;
             }
@@ -381,16 +381,16 @@ namespace mtgvrp.group_manager.lsnn
             if (ChopperCamToggle == true)
             {
                 
-                API.TriggerClientEvent(player, "watch_chopper_broadcast", CameraPosition, CameraRotation, Headline, Chopper, OffSet, focusX, focusY, focusZ);
-                API.FreezePlayer(player, true);
+                NAPI.ClientEvent.TriggerClientEvent(player, "watch_chopper_broadcast", CameraPosition, CameraRotation, Headline, Chopper, OffSet, focusX, focusY, focusZ);
+                NAPI.Player.FreezePlayer(player, true);
                 character.IsWatchingBroadcast = true;
                 return;
             }
 
-            API.SetEntityDimension(player, (uint)CameraDimension);
-            API.SendChatMessageToPlayer(player, "You are watching the broadcast. Use /stopwatching to stop watching .");
-            API.TriggerClientEvent(player, "watch_broadcast", camPos, camRot, Headline, focusX, focusY, focusZ);
-            API.FreezePlayer(player, true);
+            NAPI.Entity.SetEntityDimension(player, (uint)CameraDimension);
+            NAPI.Chat.SendChatMessageToPlayer(player, "You are watching the broadcast. Use /stopwatching to stop watching .");
+            NAPI.ClientEvent.TriggerClientEvent(player, "watch_broadcast", camPos, camRot, Headline, focusX, focusY, focusZ);
+            NAPI.Player.FreezePlayer(player, true);
             character.IsWatchingBroadcast = true;
         }
 
@@ -401,35 +401,35 @@ namespace mtgvrp.group_manager.lsnn
 
             if(character.IsWatchingBroadcast == false)
             {
-                API.SendChatMessageToPlayer(player, "You are not watching any broadcasts.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You are not watching any broadcasts.");
             }
-            API.TriggerClientEvent(player, "unwatch_broadcast");
-            API.FreezePlayer(player, false);
+            NAPI.ClientEvent.TriggerClientEvent(player, "unwatch_broadcast");
+            NAPI.Player.FreezePlayer(player, false);
             character.IsWatchingBroadcast = false;
         }
 
         [Command("mic"), Help(HelpManager.CommandGroups.LSNN | HelpManager.CommandGroups.General, "Toggle the use of a microphone. Speak normally to use it.", null)]
         public void mictoggle_cmd(Client player)
         {
-            var playerPos = API.GetEntityPosition(player);
+            var playerPos = NAPI.Entity.GetEntityPosition(player);
             Character character = player.GetCharacter();
 
             if (character.HasMic == false && character.Group.CommandType != Group.CommandTypeLsnn)
             {
-                API.SendChatMessageToPlayer(player, "You do not have a microphone.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You do not have a microphone.");
                 return;
             }
 
-            if (API.GetEntityData(player, "MicStatus") != true)
+            if (NAPI.Data.GetEntityData(player, "MicStatus") != true)
             {
-                API.SendNotificationToPlayer(player, "You are speaking through a microphone.", true);
-                API.SetEntityData(player, "MicStatus", true);
+                NAPI.Notification.SendNotificationToPlayer(player, "You are speaking through a microphone.", true);
+                NAPI.Data.SetEntityData(player, "MicStatus", true);
                 character.MicObject = API.CreateObject(API.GetHashKey("p_ing_microphonel_01"), playerPos, new Vector3());
                 API.AttachEntityToEntity(character.MicObject, player, "IK_R_Hand", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
                 return;
             }
-            API.SendNotificationToPlayer(player, "You are no longer speaking through a microphone.");
-            API.SetEntityData(player, "MicStatus", false);
+            NAPI.Notification.SendNotificationToPlayer(player, "You are no longer speaking through a microphone.");
+            NAPI.Data.SetEntityData(player, "MicStatus", false);
             if (character.MicObject != null && API.DoesEntityExist(character.MicObject))
                 API.DeleteEntity(character.MicObject);
             character.MicObject = null;
@@ -445,26 +445,26 @@ namespace mtgvrp.group_manager.lsnn
 
             if (sendercharacter.Group == Group.None || sendercharacter.Group.CommandType != Group.CommandTypeLsnn)
             {
-                API.SendChatMessageToPlayer(player, core.Color.White, "You must be a member of the LSNN to use that command.");
+                NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White, "You must be a member of the LSNN to use that command.");
                 return;
             }
 
             if (player.Position.DistanceTo(target.Position) > 2f)
             {
-                API.SendChatMessageToPlayer(player, "You are too far away from that player.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You are too far away from that player.");
                 return;
             }
 
             if (character.HasMic == false)
             {
                 character.HasMic = true;
-                API.SendChatMessageToPlayer(target, "You have been given a microphone. Use /mic to toggle it on/off.");
-                API.SendChatMessageToPlayer(player, "You have given a microphone to " + target.Name);
+                NAPI.Chat.SendChatMessageToPlayer(target, "You have been given a microphone. Use /mic to toggle it on/off.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You have given a microphone to " + target.Name);
                 return;
             }
             character.HasMic = false;
-            API.SendChatMessageToPlayer(target, "Microphone revoked. You can no longer use the microphone.");
-            API.SendChatMessageToPlayer(player, "Microphone removed from " + target.Name);
+            NAPI.Chat.SendChatMessageToPlayer(target, "Microphone revoked. You can no longer use the microphone.");
+            NAPI.Chat.SendChatMessageToPlayer(player, "Microphone removed from " + target.Name);
 
         }
 
@@ -475,11 +475,11 @@ namespace mtgvrp.group_manager.lsnn
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLsnn)
             {
-                API.SendChatMessageToPlayer(player, core.Color.White, "You must be a member of the LSNN to use that command.");
+                NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White, "You must be a member of the LSNN to use that command.");
                 return;
             }
 
-            API.SendChatMessageToPlayer(player, "Not yet implemented :(");
+            NAPI.Chat.SendChatMessageToPlayer(player, "Not yet implemented :(");
             //WILL BE IMPLEMENTING CEF UI FOR WRITING ARTICLES
             //OPTION TO INPUT TITLE AND TEXT
         }
@@ -502,8 +502,8 @@ namespace mtgvrp.group_manager.lsnn
 
         public void UpdateChopperRotation(Client player)
         {
-            Chopper = API.GetPlayerVehicle(player);
-            CameraPosition = API.GetEntityPosition(Chopper) - new Vector3(0, 0, 3);
+            Chopper = NAPI.Player.GetPlayerVehicle(player);
+            CameraPosition = NAPI.Entity.GetEntityPosition(Chopper) - new Vector3(0, 0, 3);
             CameraRotation = API.GetEntityRotation(Chopper);
             var focusX = CameraPosition.X;
             var focusY = CameraPosition.Y;
@@ -521,7 +521,7 @@ namespace mtgvrp.group_manager.lsnn
 
                 if (character.IsWatchingBroadcast)
                 {
-                    API.TriggerClientEvent(p, "update_chopper_cam", CameraPosition, CameraRotation, Headline, Chopper, OffSet, focusX, focusY, focusZ);
+                    NAPI.ClientEvent.TriggerClientEvent(p, "update_chopper_cam", CameraPosition, CameraRotation, Headline, Chopper, OffSet, focusX, focusY, focusZ);
                 }
             }
         }

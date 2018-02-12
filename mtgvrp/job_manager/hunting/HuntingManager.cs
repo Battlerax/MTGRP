@@ -83,7 +83,7 @@ namespace mtgvrp.job_manager.hunting
                 new HuntingAnimal(spawn, AnimalTypes.Deer, AnimalState.Wandering).UpdateState = true;
                 new HuntingAnimal(spawn, AnimalTypes.Boar, AnimalState.Wandering).UpdateState = true;
             }
-            API.ConsoleOutput("[HuntingManager] Created " + SpawnedAnimals.Count + " animals.");*/
+            NAPI.Util.ConsoleOutput("[HuntingManager] Created " + SpawnedAnimals.Count + " animals.");*/
         }
 
         public void OnPlayerWeaponSwitch(Client player, WeaponHash oldWeapon, WeaponHash newValue)
@@ -93,7 +93,7 @@ namespace mtgvrp.job_manager.hunting
                 foreach (var a in SpawnedAnimals)
                 {
                     if(API.DoesEntityExistForPlayer(player, a.handle))
-                        API.TriggerClientEvent(player, "toggle_animal_invincible", a.handle, true);
+                        NAPI.ClientEvent.TriggerClientEvent(player, "toggle_animal_invincible", a.handle, true);
                 }
             }
             else if (API.Shared.GetPlayerCurrentWeapon(player) == WeaponHash.SniperRifle)
@@ -101,7 +101,7 @@ namespace mtgvrp.job_manager.hunting
                 foreach (var a in SpawnedAnimals)
                 {
                     if (API.DoesEntityExistForPlayer(player, a.handle))
-                        API.TriggerClientEvent(player, "toggle_animal_invincible", a.handle, false);
+                        NAPI.ClientEvent.TriggerClientEvent(player, "toggle_animal_invincible", a.handle, false);
                 }
             }
         }
@@ -119,7 +119,7 @@ namespace mtgvrp.job_manager.hunting
 
                     if (ammo[0].Amount == 0)
                     {
-                        API.SendChatMessageToPlayer(player,
+                        NAPI.Chat.SendChatMessageToPlayer(player,
                         "~r~[ERROR]~w~ You've run out of 5.56 ammo and your gun was destroyed.");
                         InventoryManager.DeleteInventoryItem(c, typeof(Weapon), 1,
                             w => w.CommandFriendlyName == "SniperRifle");
@@ -128,7 +128,7 @@ namespace mtgvrp.job_manager.hunting
 
                 foreach (var a in SpawnedAnimals)
                 {
-                    if (player.Position.DistanceTo(API.GetEntityPosition(a.handle)) < 80f)
+                    if (player.Position.DistanceTo(NAPI.Entity.GetEntityPosition(a.handle)) < 80f)
                     {
                         a.State = AnimalState.Fleeing;
                         a.FleeingPed = player;
@@ -161,24 +161,24 @@ namespace mtgvrp.job_manager.hunting
 
             if (index > HuntingManager.SpawnedAnimals.Count)
             {
-                API.SendChatMessageToPlayer(player, "Invalid animal");
+                NAPI.Chat.SendChatMessageToPlayer(player, "Invalid animal");
                 return;
             }
 
             if (!API.DoesEntityExist(SpawnedAnimals[index].handle))
             {
-                API.SendChatMessageToPlayer(player, "That animal doesn't exist for the server.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "That animal doesn't exist for the server.");
                 return;
             }
 
             if (!API.DoesEntityExistForPlayer(player, SpawnedAnimals[index].handle))
             {
-                API.SendChatMessageToPlayer(player, "That animal doesn't exist for you.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "That animal doesn't exist for you.");
                 return;
             }
 
-            API.SetEntityPosition(player, API.GetEntityPosition(SpawnedAnimals[index].handle));
-            API.SendChatMessageToPlayer(player, "TPed");
+            NAPI.Entity.SetEntityPosition(player, NAPI.Entity.GetEntityPosition(SpawnedAnimals[index].handle));
+            NAPI.Chat.SendChatMessageToPlayer(player, "TPed");
             return;
         }
 
@@ -192,7 +192,7 @@ namespace mtgvrp.job_manager.hunting
             {
                 foreach (var a in SpawnedAnimals)
                 {
-                    if (player.Position.DistanceTo(API.GetEntityPosition(a.handle)) < 2.0)
+                    if (player.Position.DistanceTo(NAPI.Entity.GetEntityPosition(a.handle)) < 2.0)
                     {
                         bool isDead = API.FetchNativeFromPlayer<bool>(player, Hash.IS_PED_DEAD_OR_DYING, a.handle, 1);
                         if (isDead)
@@ -202,7 +202,7 @@ namespace mtgvrp.job_manager.hunting
                             switch (InventoryManager.GiveInventoryItem(character, animalItem, 1, false))
                             {
                                 case InventoryManager.GiveItemErrors.Success:
-                                    API.SendChatMessageToPlayer(player, Color.White,
+                                    NAPI.Chat.SendChatMessageToPlayer(player, Color.White,
                                         "You pickup the Deer carcass from the ground.");
                                     ChatManager.RoleplayMessage(character, "picks up the Deer carcass from the ground.",
                                         ChatManager.RoleplayMe);
@@ -210,20 +210,20 @@ namespace mtgvrp.job_manager.hunting
                                     break;
 
                                 case InventoryManager.GiveItemErrors.NotEnoughSpace:
-                                    API.SendChatMessageToPlayer(player, Color.White,
+                                    NAPI.Chat.SendChatMessageToPlayer(player, Color.White,
                                         "~r~[ERROR] You do not have enough inventory space for this. (Need " +
                                         animalItem.AmountOfSlots + ")");
                                     break;
 
                                 case InventoryManager.GiveItemErrors.MaxAmountReached:
-                                    API.SendChatMessageToPlayer(player, Color.White,
+                                    NAPI.Chat.SendChatMessageToPlayer(player, Color.White,
                                         "~r~[ERROR]~w~ You can only carry one of these at a time.");
                                     break;
                             }
                         }
                         else
                         {
-                            API.SendChatMessageToPlayer(player, Color.White, "~r~[ERROR]~w~ This dear is not dead!");
+                            NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "~r~[ERROR]~w~ This dear is not dead!");
                         }
                         return;
                     }
@@ -231,7 +231,7 @@ namespace mtgvrp.job_manager.hunting
             }
             else
             {
-                API.SendChatMessageToPlayer(player, Color.White, "~r~[ERROR]~w~ You don't have a valid Deer tag for today.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "~r~[ERROR]~w~ You don't have a valid Deer tag for today.");
             }
         }
 
@@ -245,7 +245,7 @@ namespace mtgvrp.job_manager.hunting
             {
                 foreach (var a in SpawnedAnimals)
                 {
-                    if (player.Position.DistanceTo(API.GetEntityPosition(a.handle)) < 2.0)
+                    if (player.Position.DistanceTo(NAPI.Entity.GetEntityPosition(a.handle)) < 2.0)
                     {
                         bool isDead = API.FetchNativeFromPlayer<bool>(player, Hash.IS_PED_DEAD_OR_DYING, a.handle, 1);
                         if (isDead)
@@ -255,7 +255,7 @@ namespace mtgvrp.job_manager.hunting
                             switch (InventoryManager.GiveInventoryItem(character, animalItem))
                             {
                                 case InventoryManager.GiveItemErrors.Success:
-                                    API.SendChatMessageToPlayer(player, Color.White,
+                                    NAPI.Chat.SendChatMessageToPlayer(player, Color.White,
                                         "You pickup the Boar carcass from the ground.");
                                     ChatManager.RoleplayMessage(character, "picks up the Boar carcass from the ground.",
                                         ChatManager.RoleplayMe);
@@ -263,20 +263,20 @@ namespace mtgvrp.job_manager.hunting
                                     break;
 
                                 case InventoryManager.GiveItemErrors.NotEnoughSpace:
-                                    API.SendChatMessageToPlayer(player, Color.White,
+                                    NAPI.Chat.SendChatMessageToPlayer(player, Color.White,
                                         "~r~[ERROR] You do not have enough inventory space for this. (Need " +
                                         animalItem.AmountOfSlots + ")");
                                     break;
 
                                 case InventoryManager.GiveItemErrors.MaxAmountReached:
-                                    API.SendChatMessageToPlayer(player, Color.White,
+                                    NAPI.Chat.SendChatMessageToPlayer(player, Color.White,
                                         "~r~[ERROR]~w~ You can only carry one of these at a time.");
                                     break;
                             }
                         }
                         else
                         {
-                            API.SendChatMessageToPlayer(player, Color.White, "~r~[ERROR]~w~ This Boar is not dead!");
+                            NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "~r~[ERROR]~w~ This Boar is not dead!");
                         }
                         return;
                     }
@@ -284,7 +284,7 @@ namespace mtgvrp.job_manager.hunting
             }
             else
             {
-                API.SendChatMessageToPlayer(player, Color.White, "~r~[ERROR]~w~ You don't have a valid Boar tag for today.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "~r~[ERROR]~w~ You don't have a valid Boar tag for today.");
             }
         }
 
@@ -294,14 +294,14 @@ namespace mtgvrp.job_manager.hunting
             var prop = PropertyManager.IsAtPropertyInteraction(player);
             if (prop == null || prop?.Type != PropertyManager.PropertyTypes.HuntingStation)
             {
-                API.SendChatMessageToPlayer(player, "You aren't at a hunting shop interaction point.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You aren't at a hunting shop interaction point.");
                 return;
             }
 
             var character = player.GetCharacter();
             if (character.LastRedeemedDeerTag == DateTime.Today.Date)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "~r~ERROR:~w~ You already redeemed a Deer tag today.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "~r~ERROR:~w~ You already redeemed a Deer tag today.");
                 return;
             }
 
@@ -317,14 +317,14 @@ namespace mtgvrp.job_manager.hunting
                         i => i.CommandFriendlyName == "Deer_Tag");
                     InventoryManager.GiveInventoryItem(character, new Money(), 2000);
                     character.LastRedeemedDeerTag = DateTime.Today.Date;
-                    API.SendChatMessageToPlayer(player, Color.White, "You redeemed your Deer carcass for ~g~$2500!");
+                    NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "You redeemed your Deer carcass for ~g~$2500!");
                     ChatManager.RoleplayMessage(character, "redeems their Deer carcass.", ChatManager.RoleplayMe);
 
                     LogManager.Log(LogManager.LogTypes.Stats, $"[Minigame] {character.CharacterName}[{player.GetAccount().AccountName}] has earned $2500 from a deer tag.");
                 }
-                else API.SendChatMessageToPlayer(player, Color.White, "~r~ERROR:~w~ You do not have a Deer to redeem.");
+                else NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "~r~ERROR:~w~ You do not have a Deer to redeem.");
             }
-            else API.SendChatMessageToPlayer(player, Color.White, "~r~ERROR:~w~ You do not have a Deer tag for today.");
+            else NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "~r~ERROR:~w~ You do not have a Deer tag for today.");
         }
 
         [Command("redeemboartag"), Help(HelpManager.CommandGroups.HuntingActivity, "Sells the boar you have in your hands.")]
@@ -333,14 +333,14 @@ namespace mtgvrp.job_manager.hunting
             var prop = PropertyManager.IsAtPropertyInteraction(player);
             if (prop == null || prop?.Type != PropertyManager.PropertyTypes.HuntingStation)
             {
-                API.SendChatMessageToPlayer(player, "You aren't at a hunting shop interaction point.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You aren't at a hunting shop interaction point.");
                 return;
             }
 
             var character = player.GetCharacter();
             if (character.LastRedeemedBoarTag == DateTime.Today.Date)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "~r~ERROR:~w~ You already redeemed a Boar tag today.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "~r~ERROR:~w~ You already redeemed a Boar tag today.");
                 return;
             }
 
@@ -356,14 +356,14 @@ namespace mtgvrp.job_manager.hunting
                         i => i.CommandFriendlyName == "Boar_Tag");
                     InventoryManager.GiveInventoryItem(character, new Money(), 2000);
                     character.LastRedeemedBoarTag = DateTime.Today.Date;
-                    API.SendChatMessageToPlayer(player, Color.White, "You redeemed your Boar carcass for ~g~$2500!");
+                    NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "You redeemed your Boar carcass for ~g~$2500!");
                     ChatManager.RoleplayMessage(character, "redeems their Boar carcass.", ChatManager.RoleplayMe);
 
                     LogManager.Log(LogManager.LogTypes.Stats, $"[Minigame] {character.CharacterName}[{player.GetAccount().AccountName}] has earned $2500 from a boar tag.");
                 }
-                else API.SendChatMessageToPlayer(player, Color.White, "~r~ERROR:~w~ You do not have a Boar to redeem.");
+                else NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "~r~ERROR:~w~ You do not have a Boar to redeem.");
             }
-            else API.SendChatMessageToPlayer(player, Color.White, "~r~ERROR:~w~ You do not have a Boar tag for today.");
+            else NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "~r~ERROR:~w~ You do not have a Boar tag for today.");
         }
     }
 

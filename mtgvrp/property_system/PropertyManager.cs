@@ -38,7 +38,7 @@ namespace mtgvrp.property_system
             {
                 prop.CreateProperty();
             }
-            API.ConsoleOutput("Created Properties.");
+            NAPI.Util.ConsoleOutput("Created Properties.");
         }
 
         //NEVER DELETE ANY PROPERTY TYPE FROM HERE, OR THE ONES UNDER WILL FUCK UP!!!!!!
@@ -68,33 +68,33 @@ namespace mtgvrp.property_system
         {
             if (API.GetEntityType(entity) == EntityType.Player && colshape.HasData("property_entrance"))
             {
-                if (API.GetEntityData(entity, "at_interance_property_id") == colshape.GetData("property_entrance"))
+                if (NAPI.Data.GetEntityData(entity, "at_interance_property_id") == colshape.GetData("property_entrance"))
                 {
-                    API.ResetEntityData(entity, "at_interance_property_id");
+                    NAPI.Data.ResetEntityData(entity, "at_interance_property_id");
                 }
             }
 
             if (API.GetEntityType(entity) == EntityType.Player && colshape.HasData("property_interaction"))
             {
-                if (API.GetEntityData(entity, "at_interaction_property_id") == colshape.GetData("property_interaction"))
+                if (NAPI.Data.GetEntityData(entity, "at_interaction_property_id") == colshape.GetData("property_interaction"))
                 {
-                    API.ResetEntityData(entity, "at_interaction_property_id");
+                    NAPI.Data.ResetEntityData(entity, "at_interaction_property_id");
                 }
             }
 
             if (API.GetEntityType(entity) == EntityType.Player && colshape.HasData("property_garbage"))
             {
-                if (API.GetEntityData(entity, "at_garbage_property_id") == colshape.GetData("property_garbage"))
+                if (NAPI.Data.GetEntityData(entity, "at_garbage_property_id") == colshape.GetData("property_garbage"))
                 {
-                    API.ResetEntityData(entity, "at_garbage_property_id");
+                    NAPI.Data.ResetEntityData(entity, "at_garbage_property_id");
                 }
             }
 
             if (API.GetEntityType(entity) == EntityType.Player && colshape.HasData("property_exit"))
             {
-                if (API.GetEntityData(entity, "at_exit_property_id") == colshape.GetData("property_exit"))
+                if (NAPI.Data.GetEntityData(entity, "at_exit_property_id") == colshape.GetData("property_exit"))
                 {
-                    API.ResetEntityData(entity, "at_exit_property_id");
+                    NAPI.Data.ResetEntityData(entity, "at_exit_property_id");
                 }
             }
         }
@@ -108,7 +108,7 @@ namespace mtgvrp.property_system
                 if(property.EntranceDimension != API.GetEntityDimension(entity))
                     return;
 
-                API.SetEntityData(entity, "at_interance_property_id", colshape.GetData("property_entrance"));
+                NAPI.Data.SetEntityData(entity, "at_interance_property_id", colshape.GetData("property_entrance"));
             }
 
             if (API.GetEntityType(entity) == EntityType.Player && colshape.HasData("property_interaction"))
@@ -118,7 +118,7 @@ namespace mtgvrp.property_system
                 if(property.InteractionDimension != API.GetEntityDimension(entity))
                     return;
 
-                API.SetEntityData(entity, "at_interaction_property_id", colshape.GetData("property_interaction"));
+                NAPI.Data.SetEntityData(entity, "at_interaction_property_id", colshape.GetData("property_interaction"));
             }
 
             if (API.GetEntityType(entity) == EntityType.Player && colshape.HasData("property_garbage"))
@@ -128,7 +128,7 @@ namespace mtgvrp.property_system
                 if(property.GarbageDimension != API.GetEntityDimension(entity))
                     return;
                 
-                API.SetEntityData(entity, "at_garbage_property_id", colshape.GetData("property_garbage"));
+                NAPI.Data.SetEntityData(entity, "at_garbage_property_id", colshape.GetData("property_garbage"));
             }
 
             if (API.GetEntityType(entity) == EntityType.Player && colshape.HasData("property_exit"))
@@ -138,7 +138,7 @@ namespace mtgvrp.property_system
                 if(property.TargetDimension != API.GetEntityDimension(entity))
                     return;
 
-                API.SetEntityData(entity, "at_exit_property_id", colshape.GetData("property_exit"));
+                NAPI.Data.SetEntityData(entity, "at_exit_property_id", colshape.GetData("property_exit"));
             }
         }
 
@@ -197,13 +197,13 @@ namespace mtgvrp.property_system
                 var prop = Properties.SingleOrDefault(x => x.Id == id);
                 if (prop == null)
                 {
-                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                    NAPI.Chat.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
                     return;
                 }
                 prop.PropertyName = (string)arguments[1];
                 prop.Save();
                 prop.UpdateMarkers();
-                API.SendChatMessageToPlayer(sender,
+                NAPI.Chat.SendChatMessageToPlayer(sender,
                     $"[Property Manager] Name of Property #{id} was changed to: '{arguments[1]}'");
             }
         }
@@ -217,7 +217,7 @@ namespace mtgvrp.property_system
                 var prop = Properties.SingleOrDefault(x => x.Id == id);
                 if (prop == null)
                 {
-                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                    NAPI.Chat.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
                     return;
                 }
                 PropertyTypes type;
@@ -227,12 +227,12 @@ namespace mtgvrp.property_system
                     ItemManager.SetDefaultPrices(prop);
                     prop.Save();
                     prop.UpdateMarkers();
-                    API.SendChatMessageToPlayer(sender,
+                    NAPI.Chat.SendChatMessageToPlayer(sender,
                         $"[Property Manager] Type of Property #{id} was changed to: '{prop.Type}'");
                 }
                 else
                 {
-                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Type Entered.");
+                    NAPI.Chat.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Type Entered.");
                 }
             }
         }
@@ -246,7 +246,7 @@ namespace mtgvrp.property_system
                 var prop = Properties.SingleOrDefault(x => x.Id == id);
                 if (prop == null)
                 {
-                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                    NAPI.Chat.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
                     return;
                 }
                 int sup;
@@ -254,12 +254,12 @@ namespace mtgvrp.property_system
                 {
                     prop.Supplies = sup;
                     prop.Save();
-                    API.SendChatMessageToPlayer(sender,
+                    NAPI.Chat.SendChatMessageToPlayer(sender,
                         $"[Property Manager] Supplies of Property #{id} was changed to: '{sup}'");
                 }
                 else
                 {
-                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Supplies Entered.");
+                    NAPI.Chat.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Supplies Entered.");
                 }
             }
         }
@@ -273,7 +273,7 @@ namespace mtgvrp.property_system
                 var prop = Properties.SingleOrDefault(x => x.Id == id);
                 if (prop == null)
                 {
-                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                    NAPI.Chat.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
                     return;
                 }
                 prop.EntrancePos = sender.Position;
@@ -281,7 +281,7 @@ namespace mtgvrp.property_system
                 prop.EntranceDimension = (int)sender.Dimension;
                 prop.Save();
                 prop.UpdateMarkers();
-                API.SendChatMessageToPlayer(sender,
+                NAPI.Chat.SendChatMessageToPlayer(sender,
                     $"[Property Manager] Entrance Position of property #{id} was changed.");
             }
         }
@@ -295,7 +295,7 @@ namespace mtgvrp.property_system
                 var prop = Properties.SingleOrDefault(x => x.Id == id);
                 if (prop == null)
                 {
-                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                    NAPI.Chat.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
                     return;
                 }
                 sender.Position = prop.EntrancePos;
@@ -313,7 +313,7 @@ namespace mtgvrp.property_system
                 var prop = Properties.SingleOrDefault(x => x.Id == id);
                 if (prop == null)
                 {
-                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                    NAPI.Chat.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
                     return;
                 }
                 int doorid;
@@ -323,17 +323,17 @@ namespace mtgvrp.property_system
                     {
                         prop.MainDoorId = doorid;
                         prop.Save();
-                        API.SendChatMessageToPlayer(sender,
+                        NAPI.Chat.SendChatMessageToPlayer(sender,
                             $"[Property Manager] Main Door of Property #{id} was changed to: '{doorid}'");
                     }
                     else
                     {
-                        API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid DoorId Entered.");
+                        NAPI.Chat.SendChatMessageToPlayer(sender, "[Property Manager] Invalid DoorId Entered.");
                     }
                 }
                 else
                 {
-                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid DoorId Entered.");
+                    NAPI.Chat.SendChatMessageToPlayer(sender, "[Property Manager] Invalid DoorId Entered.");
                 }
             }
         }
@@ -347,13 +347,13 @@ namespace mtgvrp.property_system
                 var prop = Properties.SingleOrDefault(x => x.Id == id);
                 if (prop == null)
                 {
-                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                    NAPI.Chat.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
                     return;
                 }
                 prop.IsTeleportable = !prop.IsTeleportable;
                 prop.Save();
                 prop.UpdateMarkers();
-                API.SendChatMessageToPlayer(sender,
+                NAPI.Chat.SendChatMessageToPlayer(sender,
                     $"[Property Manager] Property #{id} was made to be '" +
                     (prop.IsTeleportable ? "Teleportable" : "UnTeleportable") + "'");
             }
@@ -368,19 +368,19 @@ namespace mtgvrp.property_system
                 var prop = Properties.SingleOrDefault(x => x.Id == id);
                 if (prop == null)
                 {
-                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                    NAPI.Chat.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
                     return;
                 }
                 if (!prop.IsTeleportable)
                 {
-                    API.SendChatMessageToPlayer(sender, "[Property Manager] Property isn't teleportable.");
+                    NAPI.Chat.SendChatMessageToPlayer(sender, "[Property Manager] Property isn't teleportable.");
                     return;
                 }
                 prop.TargetPos = sender.Position;
                 prop.TargetRot = sender.Rotation;
                 prop.Save();
                 prop.UpdateMarkers();
-                API.SendChatMessageToPlayer(sender,
+                NAPI.Chat.SendChatMessageToPlayer(sender,
                     $"[Property Manager] Interior TP Position of property #{id} was changed.");
             }
         }
@@ -394,13 +394,13 @@ namespace mtgvrp.property_system
                 var prop = Properties.SingleOrDefault(x => x.Id == id);
                 if (prop == null)
                 {
-                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                    NAPI.Chat.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
                     return;
                 }
                 prop.IsInteractable = !prop.IsInteractable;
                 if (!prop.IsInteractable) { prop.UpdateMarkers(); }
                 prop.Save();
-                API.SendChatMessageToPlayer(sender,
+                NAPI.Chat.SendChatMessageToPlayer(sender,
                     $"[Property Manager] Property #{id} was made to be '" +
                     (prop.IsInteractable ? "Interactable" : "UnInteractable") + "'");
             }
@@ -415,12 +415,12 @@ namespace mtgvrp.property_system
                 var prop = Properties.SingleOrDefault(x => x.Id == id);
                 if (prop == null)
                 {
-                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                    NAPI.Chat.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
                     return;
                 }
                 if (!prop.IsInteractable)
                 {
-                    API.SendChatMessageToPlayer(sender, "[Property Manager] Property isn't interactable.");
+                    NAPI.Chat.SendChatMessageToPlayer(sender, "[Property Manager] Property isn't interactable.");
                     return;
                 }
                 prop.InteractionPos = sender.Position;
@@ -428,7 +428,7 @@ namespace mtgvrp.property_system
                 prop.InteractionDimension = (int)sender.Dimension;
                 prop.UpdateMarkers();
                 prop.Save();
-                API.SendChatMessageToPlayer(sender,
+                NAPI.Chat.SendChatMessageToPlayer(sender,
                     $"[Property Manager] Interaction Position of property #{id} was changed.");
             }
         }
@@ -442,13 +442,13 @@ namespace mtgvrp.property_system
                 var prop = Properties.SingleOrDefault(x => x.Id == id);
                 if (prop == null)
                 {
-                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                    NAPI.Chat.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
                     return;
                 }
                 prop.IsLocked = !prop.IsLocked;
                 prop.UpdateLockStatus();
                 prop.Save();
-                API.SendChatMessageToPlayer(sender,
+                NAPI.Chat.SendChatMessageToPlayer(sender,
                     $"[Property Manager] Property #{id} was made to be '" +
                     (prop.IsLocked ? "Locked" : "UnLocked") + "'");
             }
@@ -463,11 +463,11 @@ namespace mtgvrp.property_system
                 var prop = Properties.SingleOrDefault(x => x.Id == id);
                 if (prop == null)
                 {
-                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                    NAPI.Chat.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
                     return;
                 }
                 prop.Delete();
-                API.SendChatMessageToPlayer(sender, $"[Property Manager] Property #{id} was deleted.");
+                NAPI.Chat.SendChatMessageToPlayer(sender, $"[Property Manager] Property #{id} was deleted.");
             }
         }
 
@@ -480,7 +480,7 @@ namespace mtgvrp.property_system
                 var prop = Properties.SingleOrDefault(x => x.Id == id);
                 if (prop == null)
                 {
-                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                    NAPI.Chat.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
                     return;
                 }
                 int price;
@@ -489,12 +489,12 @@ namespace mtgvrp.property_system
                     prop.PropertyPrice = price;
                     prop.Save();
                     prop.UpdateMarkers();
-                    API.SendChatMessageToPlayer(sender,
+                    NAPI.Chat.SendChatMessageToPlayer(sender,
                         $"[Property Manager] Price of Property #{id} was changed to: '{price}'");
                 }
                 else
                 {
-                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Price Entered.");
+                    NAPI.Chat.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Price Entered.");
                 }
             }
         }
@@ -508,19 +508,19 @@ namespace mtgvrp.property_system
                 var prop = Properties.SingleOrDefault(x => x.Id == id);
                 if (prop == null)
                 {
-                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                    NAPI.Chat.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
                     return;
                 }
                 var player = PlayerManager.ParseClient((string)arguments[1]);
                 if (player == null)
                 {
-                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Player Entered.");
+                    NAPI.Chat.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Player Entered.");
                     return;
                 }
                 prop.OwnerId = player.GetCharacter().Id;
                 prop.Save();
                 prop.UpdateMarkers();
-                API.SendChatMessageToPlayer(sender,
+                NAPI.Chat.SendChatMessageToPlayer(sender,
                     $"[Property Manager] Owner of Property #{id} was changed to: '{player.GetCharacter().CharacterName}'");
             }
         }
@@ -534,12 +534,12 @@ namespace mtgvrp.property_system
                 var prop = Properties.SingleOrDefault(x => x.Id == id);
                 if (prop == null)
                 {
-                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                    NAPI.Chat.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
                     return;
                 }
                 prop.HasGarbagePoint = !prop.HasGarbagePoint;
                 prop.Save();
-                API.SendChatMessageToPlayer(sender,
+                NAPI.Chat.SendChatMessageToPlayer(sender,
                     $"[Property Manager] Property #{id} was made to '" +
                     (prop.HasGarbagePoint ? "have garbage" : "have no garbage") + "'");
             }
@@ -554,12 +554,12 @@ namespace mtgvrp.property_system
                 var prop = Properties.SingleOrDefault(x => x.Id == id);
                 if (prop == null)
                 {
-                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                    NAPI.Chat.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
                     return;
                 }
                 if (!prop.HasGarbagePoint)
                 {
-                    API.SendChatMessageToPlayer(sender, "[Property Manager] Property cannot have a garbage point.");
+                    NAPI.Chat.SendChatMessageToPlayer(sender, "[Property Manager] Property cannot have a garbage point.");
                     return;
                 }
                 prop.GarbagePoint = sender.Position;
@@ -567,7 +567,7 @@ namespace mtgvrp.property_system
                 prop.GarbageDimension = (int)sender.Dimension;
                 prop.UpdateMarkers();
                 prop.Save();
-                API.SendChatMessageToPlayer(sender,
+                NAPI.Chat.SendChatMessageToPlayer(sender,
                     $"[Property Manager] Garbage point of property #{id} was changed.");
             }
         }
@@ -588,14 +588,14 @@ namespace mtgvrp.property_system
                 var prop = Properties.SingleOrDefault(x => x.Id == id);
                 if (prop == null)
                 {
-                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                    NAPI.Chat.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
                     return;
                 }
                 prop.IPLs.Add(arguments[1].ToString());
                 prop.Save();
-                API.SendChatMessageToPlayer(sender,
+                NAPI.Chat.SendChatMessageToPlayer(sender,
                     $"[Property Manager] Added IPL {arguments[1]} to property #{id}.");
-                API.TriggerClientEvent(sender, "editproperty_showmenu", prop.Id, API.ToJson(prop.IPLs.ToArray()));
+                NAPI.ClientEvent.TriggerClientEvent(sender, "editproperty_showmenu", prop.Id, NAPI.Util.ToJson(prop.IPLs.ToArray()));
             }
         }
 
@@ -608,7 +608,7 @@ namespace mtgvrp.property_system
                 var prop = Properties.SingleOrDefault(x => x.Id == id);
                 if (prop == null)
                 {
-                    API.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
+                    NAPI.Chat.SendChatMessageToPlayer(sender, "[Property Manager] Invalid Property Id.");
                     return;
                 }
 
@@ -616,9 +616,9 @@ namespace mtgvrp.property_system
                 if (prop.IPLs.RemoveAll(x => x == ipl) > 0)
                 {
                     prop.Save();
-                    API.SendChatMessageToPlayer(sender,
+                    NAPI.Chat.SendChatMessageToPlayer(sender,
                         $"[Property Manager] Removed IPL {ipl} from property #{id}.");
-                    API.TriggerClientEvent(sender, "editproperty_showmenu", prop.Id, API.ToJson(prop.IPLs.ToArray()));
+                    NAPI.ClientEvent.TriggerClientEvent(sender, "editproperty_showmenu", prop.Id, NAPI.Util.ToJson(prop.IPLs.ToArray()));
                 }
             }
         }
@@ -663,7 +663,7 @@ namespace mtgvrp.property_system
             var prop = IsAtPropertyInteraction(player);
             if (prop == null)
             {
-                API.SendChatMessageToPlayer(player, "You aren't at an interaction point.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You aren't at an interaction point.");
                 return;
             }
 
@@ -676,13 +676,13 @@ namespace mtgvrp.property_system
                 prop.Type == PropertyTypes.Container
                 )
             {
-                API.SendChatMessageToPlayer(player, "You aren't the owner or the business doesnt support supplies.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You aren't the owner or the business doesnt support supplies.");
                 return;
             }
 
             prop.DoesAcceptSupplies = !prop.DoesAcceptSupplies;
 
-            API.SendChatMessageToPlayer(player,
+            NAPI.Chat.SendChatMessageToPlayer(player,
                 prop.DoesAcceptSupplies
                     ? "You are now ~g~accepting~w~ supplies."
                     : "You are now ~r~not accepting~w~ supplies.");
@@ -695,7 +695,7 @@ namespace mtgvrp.property_system
             var prop = IsAtPropertyInteraction(player);
             if (prop == null)
             {
-                API.SendChatMessageToPlayer(player, "You aren't at an interaction point.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You aren't at an interaction point.");
                 return;
             }
 
@@ -708,20 +708,20 @@ namespace mtgvrp.property_system
                 prop.Type == PropertyTypes.Container
             )
             {
-                API.SendChatMessageToPlayer(player, "You aren't the owner or the business doesnt support supplies.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You aren't the owner or the business doesnt support supplies.");
                 return;
             }
 
             if (amount <= 0)
             {
-                API.SendChatMessageToPlayer(player, "Price can't be below 0");
+                NAPI.Chat.SendChatMessageToPlayer(player, "Price can't be below 0");
                 return;
             }
 
             prop.SupplyPrice = amount;
 
-            API.SendChatMessageToPlayer(player, "You've set the supply price to: $" + amount);
-            API.SendChatMessageToPlayer(player, "Make sure you do have enough money in the business storage.");
+            NAPI.Chat.SendChatMessageToPlayer(player, "You've set the supply price to: $" + amount);
+            NAPI.Chat.SendChatMessageToPlayer(player, "Make sure you do have enough money in the business storage.");
             prop.Save();
         }
 
@@ -754,13 +754,13 @@ namespace mtgvrp.property_system
                         player.GetCharacter().JobOne?.Type == JobManager.JobTypes.DeliveryMan && InventoryManager
                             .DoesInventoryHaveItem<SupplyItem>(player.GetCharacter()).Length > 0)
                     {
-                        API.SendChatMessageToPlayer(player, "This business is selling supplies for $" + prop.SupplyPrice);
+                        NAPI.Chat.SendChatMessageToPlayer(player, "This business is selling supplies for $" + prop.SupplyPrice);
                     }
                     return true;
                 }
                 else
                 {
-                    API.SendNotificationToPlayer(player,
+                    NAPI.Notification.SendNotificationToPlayer(player,
                         prop.IsLocked ? "Property is locked." : "Property is not teleportable.");
                 }
             }
@@ -796,7 +796,7 @@ namespace mtgvrp.property_system
                 }
                 else
                 {
-                    API.SendNotificationToPlayer(player,
+                    NAPI.Notification.SendNotificationToPlayer(player,
                         prop.IsLocked ? "Property is locked." : "Property is not teleportable.");
                 }
             }
@@ -809,24 +809,24 @@ namespace mtgvrp.property_system
             var prop = IsAtPropertyEntrance(player) ?? IsAtPropertyInteraction(player);
             if (prop == null)
             {
-                API.SendChatMessageToPlayer(player, "You aren't at an interaction point or entrance.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You aren't at an interaction point or entrance.");
                 return;
             }
 
             if (prop.OwnerId != player.GetCharacter().Id || prop.Type != PropertyTypes.Restaurant)
             {
-                API.SendChatMessageToPlayer(player, "You aren't the owner or the business isn't a Restaurant.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You aren't the owner or the business isn't a Restaurant.");
                 return;
             }
 
             if (item == "")
             {
-                API.SendChatMessageToPlayer(player, "[ERROR] Choose one: [custom1,custom2,custom3,custom4]");
+                NAPI.Chat.SendChatMessageToPlayer(player, "[ERROR] Choose one: [custom1,custom2,custom3,custom4]");
                 return;
             }
             if (name == "")
             {
-                API.SendChatMessageToPlayer(player, "[ERROR] Name can't be nothing.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "[ERROR] Name can't be nothing.");
                 return;
             }
 
@@ -835,22 +835,22 @@ namespace mtgvrp.property_system
             {
                 case "custom1":
                     prop.RestaurantItems[0] = name;
-                    API.SendChatMessageToPlayer(player, $"Changed custom1 name to '{name}'.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, $"Changed custom1 name to '{name}'.");
                     break;
                 case "custom2":
                     prop.RestaurantItems[1] = name;
-                    API.SendChatMessageToPlayer(player, $"Changed custom2 name to '{name}'.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, $"Changed custom2 name to '{name}'.");
                     break;
                 case "custom3":
                     prop.RestaurantItems[2] = name;
-                    API.SendChatMessageToPlayer(player, $"Changed custom3 name to '{name}'.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, $"Changed custom3 name to '{name}'.");
                     break;
                 case "custom4":
                     prop.RestaurantItems[3] = name;
-                    API.SendChatMessageToPlayer(player, $"Changed custom4 name to '{name}'.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, $"Changed custom4 name to '{name}'.");
                     break;
                 default:
-                    API.SendChatMessageToPlayer(player, $"Invalid type.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, $"Invalid type.");
                     break;
             }
             prop.Save();
@@ -862,7 +862,7 @@ namespace mtgvrp.property_system
             var prop = IsAtPropertyEntrance(player) ?? IsAtPropertyInteraction(player);
             if (prop == null)
             {
-                API.SendChatMessageToPlayer(player, "You aren't at an interaction point or entrance.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You aren't at an interaction point or entrance.");
                 return;
             }
 
@@ -870,32 +870,32 @@ namespace mtgvrp.property_system
             {
                 if (price <= 0)
                 {
-                    API.SendChatMessageToPlayer(player, "[ERROR] Price can't be zero.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, "[ERROR] Price can't be zero.");
                     return;
                 }
 
                 if (item == "")
                 {
-                    API.SendChatMessageToPlayer(player, "Choose a type: ");
+                    NAPI.Chat.SendChatMessageToPlayer(player, "Choose a type: ");
                     string msg = prop.ItemPrices.Keys.Aggregate("", (current, key) => current + (key + ","));
                     msg = msg.Remove(msg.Length - 1, 1);
-                    API.SendChatMessageToPlayer(player, msg);
+                    NAPI.Chat.SendChatMessageToPlayer(player, msg);
                     return;
                 }
 
                 if (!prop.ItemPrices.ContainsKey(item))
                 {
-                    API.SendChatMessageToPlayer(player, "[ERROR] That type doesn't exist.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, "[ERROR] That type doesn't exist.");
                     return;
                 }
 
                 prop.ItemPrices[item] = price;
-                API.SendChatMessageToPlayer(player, $"Changed ~g~{item}~w~ price to {price}");
+                NAPI.Chat.SendChatMessageToPlayer(player, $"Changed ~g~{item}~w~ price to {price}");
                 prop.Save();
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You don't own that property.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You don't own that property.");
             }
         }
 
@@ -905,19 +905,19 @@ namespace mtgvrp.property_system
             var prop = IsAtPropertyEntrance(player);
             if (prop == null)
             {
-                API.SendChatMessageToPlayer(player, "You aren't at a property entrance.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You aren't at a property entrance.");
                 return;
             }
 
             if (prop.OwnerId != 0)
             {
-                API.SendChatMessageToPlayer(player, "That property isn't for sale.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "That property isn't for sale.");
                 return;
             }
 
             if (Money.GetCharacterMoney(player.GetCharacter()) < prop.PropertyPrice)
             {
-                API.SendChatMessageToPlayer(player, "You don't have enough money to buy this property.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You don't have enough money to buy this property.");
                 return;
             }
 
@@ -926,7 +926,7 @@ namespace mtgvrp.property_system
             prop.Save();
             prop.UpdateMarkers();
 
-            API.SendChatMessageToPlayer(player,
+            NAPI.Chat.SendChatMessageToPlayer(player,
                 $"You have sucessfully bought a ~r~{prop.Type}~w~ for ~g~{prop.PropertyPrice}~w~.");
         }
 
@@ -936,7 +936,7 @@ namespace mtgvrp.property_system
             var prop = IsAtPropertyEntrance(player) ?? IsAtPropertyInteraction(player);
             if (prop == null)
             {
-                API.SendChatMessageToPlayer(player, "You aren't at an interaction point or entrance.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You aren't at an interaction point or entrance.");
                 return;
             }
 
@@ -945,12 +945,12 @@ namespace mtgvrp.property_system
                 prop.IsLocked = !prop.IsLocked;
                 prop.UpdateLockStatus();
                 prop.Save();
-                API.SendNotificationToPlayer(player,
+                NAPI.Notification.SendNotificationToPlayer(player,
                     prop.IsLocked ? "Property has been ~g~locked." : "Property has been ~r~unlocked.");
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You don't own that property.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You don't own that property.");
             }
         }
 
@@ -960,7 +960,7 @@ namespace mtgvrp.property_system
             var prop = IsAtPropertyEntrance(player) ?? IsAtPropertyInteraction(player);
             if (prop == null)
             {
-                API.SendChatMessageToPlayer(player, "You aren't at an interaction point or entrance.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You aren't at an interaction point or entrance.");
                 return;
             }
 
@@ -969,11 +969,11 @@ namespace mtgvrp.property_system
                 prop.PropertyName = name;
                 prop.UpdateMarkers();
                 prop.Save();
-                API.SendNotificationToPlayer(player, "Property name has been changed.");
+                NAPI.Notification.SendNotificationToPlayer(player, "Property name has been changed.");
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You don't own that property.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You don't own that property.");
             }
         }
 
@@ -983,13 +983,13 @@ namespace mtgvrp.property_system
             var prop = IsAtPropertyEntrance(player) ?? IsAtPropertyInteraction(player);
             if (prop == null)
             {
-                API.SendChatMessageToPlayer(player, "You aren't at an interaction point or entrance.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You aren't at an interaction point or entrance.");
                 return;
             }
 
             if (prop.OwnerId != player.GetCharacter().Id || player.GetAccount().AdminLevel < 5)
             {
-                API.SendChatMessageToPlayer(player, "You don't own this property.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You don't own this property.");
                 return;
             }
 
@@ -1008,7 +1008,7 @@ namespace mtgvrp.property_system
                 property.Insert();
                 property.CreateProperty();
                 Properties.Add(property);
-                API.SendChatMessageToPlayer(player,
+                NAPI.Chat.SendChatMessageToPlayer(player,
                     "You have sucessfully create a property of type " + type.ToString());
             }
         }
@@ -1019,12 +1019,12 @@ namespace mtgvrp.property_system
             var account = player.GetAccount();
             if (account.AdminLevel >= 5)
             {
-                API.SendChatMessageToPlayer(player, "______ Listing Property Types ______");
+                NAPI.Chat.SendChatMessageToPlayer(player, "______ Listing Property Types ______");
                 foreach (var type in Enum.GetNames(typeof(PropertyTypes)))
                 {
-                    API.SendChatMessageToPlayer(player, "* " + type);
+                    NAPI.Chat.SendChatMessageToPlayer(player, "* " + type);
                 }
-                API.SendChatMessageToPlayer(player, "____________________________________");
+                NAPI.Chat.SendChatMessageToPlayer(player, "____________________________________");
             }
         }
 
@@ -1038,14 +1038,14 @@ namespace mtgvrp.property_system
                 var prop = Properties.SingleOrDefault(x => x.Id == id);
                 if (prop == null)
                 {
-                    API.SendChatMessageToPlayer(player, "Invalid Property Id.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, "Invalid Property Id.");
                     return;
                 }
                 
                 if(prop.IPLs == null)
                     prop.IPLs = new List<string>();
 
-                API.TriggerClientEvent(player, "editproperty_showmenu", prop.Id, API.ToJson(prop.IPLs.ToArray()));
+                NAPI.ClientEvent.TriggerClientEvent(player, "editproperty_showmenu", prop.Id, NAPI.Util.ToJson(prop.IPLs.ToArray()));
             }
         }
 
@@ -1056,12 +1056,12 @@ namespace mtgvrp.property_system
             var account = player.GetAccount();
             if (account.AdminLevel >= 5)
             {
-                API.SendChatMessageToPlayer(player, "______ Listing Property Types ______");
+                NAPI.Chat.SendChatMessageToPlayer(player, "______ Listing Property Types ______");
                 foreach (var prop in Properties.Where(x => x.Type == type))
                 {
-                    API.SendChatMessageToPlayer(player, $"* Property Id: ~g~{prop.Id}~w~ | Name: ~g~{prop.PropertyName}");
+                    NAPI.Chat.SendChatMessageToPlayer(player, $"* Property Id: ~g~{prop.Id}~w~ | Name: ~g~{prop.PropertyName}");
                 }
-                API.SendChatMessageToPlayer(player, "____________________________________");
+                NAPI.Chat.SendChatMessageToPlayer(player, "____________________________________");
             }
         }
     }

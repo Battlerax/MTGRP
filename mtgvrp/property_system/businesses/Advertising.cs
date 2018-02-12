@@ -47,7 +47,7 @@ namespace mtgvrp.property_system.businesses
             var biz = PropertyManager.IsAtPropertyInteraction(player);
             if (biz?.Type != PropertyManager.PropertyTypes.Advertising)
             {
-                API.SendChatMessageToPlayer(player, "You aren't at an advertising interaction point.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You aren't at an advertising interaction point.");
                 return;
             }
 
@@ -59,7 +59,7 @@ namespace mtgvrp.property_system.businesses
 
             if (Money.GetCharacterMoney(character) - price < 0)
             {
-                API.SendChatMessageToPlayer(player, "~r~Advertising costs " + price + "$. You don't have enough money.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "~r~Advertising costs " + price + "$. You don't have enough money.");
                 return;
             }
 

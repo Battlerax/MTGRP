@@ -81,7 +81,7 @@ namespace mtgvrp.dmv
             var prop = PropertyManager.IsAtPropertyInteraction(player);
             if (prop?.Type != PropertyManager.PropertyTypes.DMV)
             {
-                API.SendChatMessageToPlayer(player, "You need to be at a DMV.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You need to be at a DMV.");
                 return;
             }
 
@@ -89,39 +89,39 @@ namespace mtgvrp.dmv
 
             if (InventoryManager.DoesInventoryHaveItem<IdentificationItem>(c).Length == 0)
             {
-                API.SendChatMessageToPlayer(player, "You must have a valid identification.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You must have a valid identification.");
                 return;
             }
 
             if (InventoryManager.DoesInventoryHaveItem<DrivingLicenseItem>(c).Length == 0)
             {
-                API.SendChatMessageToPlayer(player, "You must have a valid driving license.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You must have a valid driving license.");
                 return;
             }
 
             int vehid = Convert.ToInt32(arguments[0]);
             if (!c.OwnedVehicles.Exists(x => x.Id == vehid))
             {
-                API.SendChatMessageToPlayer(player, "You don't own that vehicle!!!");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You don't own that vehicle!!!");
                 return;
             }
 
             var veh = VehicleManager.Vehicles.FirstOrDefault(x => x.Id == vehid);
             if (veh == null || veh.OwnerId != c.Id)
             {
-                API.SendChatMessageToPlayer(player, "You don't own that vehicle!!!");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You don't own that vehicle!!!");
                 return;
             }
 
             if (veh.IsRegistered)
             {
-                API.SendChatMessageToPlayer(player, "Vehicle is already registered!!!");
+                NAPI.Chat.SendChatMessageToPlayer(player, "Vehicle is already registered!!!");
                 return;
             }
 
             if (Money.GetCharacterMoney(c) < 100)
             {
-                API.SendChatMessageToPlayer(player, "You need $100 to register your vehicle.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You need $100 to register your vehicle.");
                 return;
             }
 
@@ -137,7 +137,7 @@ namespace mtgvrp.dmv
             //Remove money.
             InventoryManager.DeleteInventoryItem<Money>(c, 100);
 
-            API.SendChatMessageToPlayer(player, $"You've successfully registered your {VehicleOwnership.returnCorrDisplayName(veh.VehModel)}. License: {veh.LicensePlate}");
+            NAPI.Chat.SendChatMessageToPlayer(player, $"You've successfully registered your {VehicleOwnership.returnCorrDisplayName(veh.VehModel)}. License: {veh.LicensePlate}");
             veh.Save();
         }
 
@@ -151,18 +151,18 @@ namespace mtgvrp.dmv
             if (isOnTime && isOnHealth)
             {
                 InventoryManager.GiveInventoryItem(c, new DrivingLicenseItem(), 1, true);
-                API.SendChatMessageToPlayer(player, "You have ~g~COMPLETED~w~ your test.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You have ~g~COMPLETED~w~ your test.");
                 LogManager.Log(LogManager.LogTypes.Stats, $"[DMV] {c.CharacterName}[{player.GetAccount().AccountName}] has got his driving license in {DateTime.Now.Subtract(c.TimeStartedDmvTest).Minutes:D2}:{DateTime.Now.Subtract(c.TimeStartedDmvTest).Seconds:D2}");
             }
             else
-                API.SendChatMessageToPlayer(player, "You have ~r~FAILED~w~ your test.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You have ~r~FAILED~w~ your test.");
 
-            API.SendChatMessageToPlayer(player,
+            NAPI.Chat.SendChatMessageToPlayer(player,
                 isOnTime
                     ? $"* Time: ~g~ {DateTime.Now.Subtract(c.TimeStartedDmvTest).Minutes:D2}:{DateTime.Now.Subtract(c.TimeStartedDmvTest).Seconds:D2} / 05:00"
                     : $"* Time: ~r~ {DateTime.Now.Subtract(c.TimeStartedDmvTest).Minutes:D2}:{DateTime.Now.Subtract(c.TimeStartedDmvTest).Seconds:D2} / 05:00");
 
-            API.SendChatMessageToPlayer(player,
+            NAPI.Chat.SendChatMessageToPlayer(player,
                 isOnHealth
                     ? $"* Vehicle Health: ~g~ {player.Vehicle.Health} / 999"
                     : $"* Vehicle Health: ~r~ {player.Vehicle.Health} / 999");
@@ -225,9 +225,9 @@ namespace mtgvrp.dmv
 
             player.ResetData("DMV_VEHICLE");
             c.IsInDmvTest = false;
-            API.TriggerClientEvent(player, "DMV_CANCEL_TEST");
+            NAPI.ClientEvent.TriggerClientEvent(player, "DMV_CANCEL_TEST");
 
-            API.SendChatMessageToPlayer(player, "Test Cancelled.");
+            NAPI.Chat.SendChatMessageToPlayer(player, "Test Cancelled.");
         }
 
         private void API_onResourceStart()
@@ -244,7 +244,7 @@ namespace mtgvrp.dmv
             ObjectRemoval.RegisterObject(new Vector3(266.102691650391, -348.641571044922, 43.7301368713379), 242636620);
             ObjectRemoval.RegisterObject(new Vector3(285.719482421875, -356.067474365234, 44.1401863098145), 406416082);
 
-            API.ConsoleOutput("Spawned DMV Vehicles.");
+            NAPI.Util.ConsoleOutput("Spawned DMV Vehicles.");
         }
 
         private void OnVehicleEngineToggle(Client player, NetHandle vehicle, bool state)
@@ -262,16 +262,16 @@ namespace mtgvrp.dmv
                     {
                         c.TimeStartedDmvTest = DateTime.Now;
                         player.SetData("DMV_VEHICLE", vehicle);
-                        API.TriggerClientEvent(player, "DMV_STARTTEST", _testCheckpoints, vehicle);
-                        API.SendChatMessageToPlayer(player, "~y~** GO! You'll have to finish in less than or equal to 5 minutes and with more than 999 damage to the vehicle.");
-                        API.SendChatMessageToPlayer(player, "~y~** You have plently of time so drive safe and make sure you don't break your vehicle.");
+                        NAPI.ClientEvent.TriggerClientEvent(player, "DMV_STARTTEST", _testCheckpoints, vehicle);
+                        NAPI.Chat.SendChatMessageToPlayer(player, "~y~** GO! You'll have to finish in less than or equal to 5 minutes and with more than 999 damage to the vehicle.");
+                        NAPI.Chat.SendChatMessageToPlayer(player, "~y~** You have plently of time so drive safe and make sure you don't break your vehicle.");
                     }
                     else
                     {
                         if (!player.GetAccount().AdminDuty)
                         {
-                            API.SendChatMessageToPlayer(player, "You haven't started the driving test.");
-                            API.SetVehicleEngineStatus(vehicle, false);
+                            NAPI.Chat.SendChatMessageToPlayer(player, "You haven't started the driving test.");
+                            NAPI.Vehicle.SetVehicleEngineStatus(vehicle, false);
                             // CONV NOTE: proper delay needed probably
                             //API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));
                             Task.Delay(1000).ContinueWith(t => API.WarpPlayerOutOfVehicle(player));
@@ -288,7 +288,7 @@ namespace mtgvrp.dmv
             var prop = PropertyManager.IsAtPropertyInteraction(player);
             if (prop?.Type != PropertyManager.PropertyTypes.DMV)
             {
-                API.SendChatMessageToPlayer(player, "You need to be at a DMV.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You need to be at a DMV.");
                 return;
             }
 
@@ -296,25 +296,25 @@ namespace mtgvrp.dmv
 
             if (InventoryManager.DoesInventoryHaveItem<IdentificationItem>(c).Length == 0)
             {
-                API.SendChatMessageToPlayer(player, "You must have a valid identification to do your driving test.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You must have a valid identification to do your driving test.");
                 return;
             }
 
             if (InventoryManager.DoesInventoryHaveItem<DrivingLicenseItem>(c).Length > 0)
             {
-                API.SendChatMessageToPlayer(player, "You already have a valid driving license.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You already have a valid driving license.");
                 return;
             }
 
             if (c.IsInDmvTest)
             {
-                API.SendChatMessageToPlayer(player, "You already started the DMV test.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You already started the DMV test.");
                 return;
             }
 
             if (Money.GetCharacterMoney(c) < prop.ItemPrices["drivingtest"])
             {
-                API.SendChatMessageToPlayer(player, "You need $" + prop.ItemPrices["drivingtest"] + " to do the test.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You need $" + prop.ItemPrices["drivingtest"] + " to do the test.");
                 return;
             }
 
@@ -322,8 +322,8 @@ namespace mtgvrp.dmv
 
             c.IsInDmvTest = true;
 
-            API.SendChatMessageToPlayer(player, "You've started the driving test, please head to a DMV vehicle.");
-            API.SendChatMessageToPlayer(player, "~r~ The timer begins once you start the engine of the vehicle. Exit the vehicle to cancel the test.");
+            NAPI.Chat.SendChatMessageToPlayer(player, "You've started the driving test, please head to a DMV vehicle.");
+            NAPI.Chat.SendChatMessageToPlayer(player, "~r~ The timer begins once you start the engine of the vehicle. Exit the vehicle to cancel the test.");
         }
 
         [Command("registervehicle"), Help(HelpManager.CommandGroups.Vehicles, "Register your vehicle. (At DMV)")]
@@ -332,7 +332,7 @@ namespace mtgvrp.dmv
             var prop = PropertyManager.IsAtPropertyInteraction(player);
             if (prop?.Type != PropertyManager.PropertyTypes.DMV)
             {
-                API.SendChatMessageToPlayer(player, "You need to be at a DMV.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You need to be at a DMV.");
                 return;
             }
 
@@ -340,18 +340,18 @@ namespace mtgvrp.dmv
 
             if (InventoryManager.DoesInventoryHaveItem<IdentificationItem>(c).Length == 0)
             {
-                API.SendChatMessageToPlayer(player, "You must have a valid identification.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You must have a valid identification.");
                 return;
             }
 
             if (InventoryManager.DoesInventoryHaveItem<DrivingLicenseItem>(c).Length == 0)
             {
-                API.SendChatMessageToPlayer(player, "You must have a valid driving license.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You must have a valid driving license.");
                 return;
             }
 
             string[][] vehList = c.OwnedVehicles.Where(x => x.IsRegistered == false).Select(x => new[] {VehicleOwnership.returnCorrDisplayName(x.VehModel), x.Id.ToString() }).ToArray();
-            API.TriggerClientEvent(player, "DMV_SELECTVEHICLE", API.ToJson(vehList));
+            NAPI.ClientEvent.TriggerClientEvent(player, "DMV_SELECTVEHICLE", NAPI.Util.ToJson(vehList));
         }
 
         [Command("showlicense"), Help(HelpManager.CommandGroups.Vehicles, "Show your driving license to someone.", "Id of target.")]
@@ -360,7 +360,7 @@ namespace mtgvrp.dmv
             var targetPlayer = PlayerManager.ParseClient(target);
             if (targetPlayer == null)
             {
-                API.SendChatMessageToPlayer(player, "That player is not online.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "That player is not online.");
                 return;
             }
 
@@ -368,20 +368,20 @@ namespace mtgvrp.dmv
 
             if (InventoryManager.DoesInventoryHaveItem<DrivingLicenseItem>(c).Length == 0)
             {
-                API.SendChatMessageToPlayer(player, "You don't have a driving license.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You don't have a driving license.");
                 return;
             }
 
             if (targetPlayer.Position.DistanceTo(player.Position) > 3.0)
             {
-                API.SendChatMessageToPlayer(player, "The player must be near you.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "The player must be near you.");
                 return;
             }
 
-            API.SendChatMessageToPlayer(targetPlayer, " [************** Driving License ~g~VALID~w~ **************]");
-            API.SendChatMessageToPlayer(targetPlayer, $"* Name: ~h~{c.rp_name()}~h~ | Age: ~h~{c.Age}~h~");
-            API.SendChatMessageToPlayer(targetPlayer, $"* DOB: ~h~{c.Birthday}~h~ | Birth Place: ~h~{c.Birthplace}~h~");
-            API.SendChatMessageToPlayer(targetPlayer, " [**********************************************************]");
+            NAPI.Chat.SendChatMessageToPlayer(targetPlayer, " [************** Driving License ~g~VALID~w~ **************]");
+            NAPI.Chat.SendChatMessageToPlayer(targetPlayer, $"* Name: ~h~{c.rp_name()}~h~ | Age: ~h~{c.Age}~h~");
+            NAPI.Chat.SendChatMessageToPlayer(targetPlayer, $"* DOB: ~h~{c.Birthday}~h~ | Birth Place: ~h~{c.Birthplace}~h~");
+            NAPI.Chat.SendChatMessageToPlayer(targetPlayer, " [**********************************************************]");
 
             ChatManager.RoleplayMessage(player, "shows his driving license to " + targetPlayer.GetCharacter().rp_name(), ChatManager.RoleplayMe);
         }
@@ -392,7 +392,7 @@ namespace mtgvrp.dmv
             var targetPlayer = PlayerManager.ParseClient(target);
             if (targetPlayer == null)
             {
-                API.SendChatMessageToPlayer(player, "That player is not online.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "That player is not online.");
                 return;
             }
 
@@ -400,22 +400,22 @@ namespace mtgvrp.dmv
 
             if (!c.OwnedVehicles.Any(x => x.IsRegistered))
             {
-                API.SendChatMessageToPlayer(player, "You don't have any registered vehicles.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You don't have any registered vehicles.");
                 return;
             }
 
             if (targetPlayer.Position.DistanceTo(player.Position) > 3.0)
             {
-                API.SendChatMessageToPlayer(player, "The player must be near you.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "The player must be near you.");
                 return;
             }
 
-            API.SendChatMessageToPlayer(targetPlayer, $" [************** Vehicles Of {c.rp_name()} **************]");
+            NAPI.Chat.SendChatMessageToPlayer(targetPlayer, $" [************** Vehicles Of {c.rp_name()} **************]");
             foreach (var veh in c.OwnedVehicles.Where(x => x.IsRegistered))
             {
-                API.SendChatMessageToPlayer(targetPlayer, $"* Model: {VehicleOwnership.returnCorrDisplayName(veh.VehModel)} | Registration: {veh.LicensePlate}");
+                NAPI.Chat.SendChatMessageToPlayer(targetPlayer, $"* Model: {VehicleOwnership.returnCorrDisplayName(veh.VehModel)} | Registration: {veh.LicensePlate}");
             }
-            API.SendChatMessageToPlayer(targetPlayer, " [**********************************************************]");
+            NAPI.Chat.SendChatMessageToPlayer(targetPlayer, " [**********************************************************]");
 
             ChatManager.RoleplayMessage(player, "shows his vehicle registrations to " + targetPlayer.GetCharacter().rp_name(), ChatManager.RoleplayMe);
         }

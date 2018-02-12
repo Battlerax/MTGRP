@@ -31,7 +31,7 @@ namespace mtgvrp.core
 
         private void playPlayerAnimationEx(Client player, int flag, string animDict, string animName)
         {
-            API.TriggerClientEvent(player, "setPlayerIntoAnim");
+            NAPI.ClientEvent.TriggerClientEvent(player, "setPlayerIntoAnim");
             API.PlayPlayerAnimation(player, flag, animDict, animName);
         }
 
@@ -54,7 +54,7 @@ namespace mtgvrp.core
         [Command("hide", "~y~Syntax /Hide 1 - 13")]
         public void hide(Client player, int number)
         {           
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
                 player.SendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
@@ -104,19 +104,19 @@ namespace mtgvrp.core
                         playPlayerAnimationEx(player, (int)(AnimationFlags.Loop), "amb@code_human_cower_stand@male@react_cowering", "base_right");
                         break;
                     default:
-                        API.SendChatMessageToPlayer(player, "~y~Syntax /Hide 1 - 13");
+                        NAPI.Chat.SendChatMessageToPlayer(player, "~y~Syntax /Hide 1 - 13");
                         break;
                 }
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
         [Command("lookout", "~y~Syntax /lookout 1 - 4")]
         public void lookout(Client player, int number)
         {
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
                 player.SendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
@@ -139,20 +139,20 @@ namespace mtgvrp.core
                         playPlayerAnimationEx(player, (int)(AnimationFlags.Loop), "amb@code_human_cross_road@male@idle_a", "idle_e");
                         break;
                     default:
-                        API.SendChatMessageToPlayer(player, "~y~Syntax /lookout 1 - 4");
+                        NAPI.Chat.SendChatMessageToPlayer(player, "~y~Syntax /lookout 1 - 4");
                         break;
                 }
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
         
         [Command("investigate", "~y~Syntax /investigate 1 - 9")]
         public void investigate(Client player, int number)
         {
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
                 player.SendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
@@ -190,19 +190,19 @@ namespace mtgvrp.core
                         playPlayerAnimationEx(player, (int)(AnimationFlags.Loop), "amb@medic@standing@timeofdeath@idle_a", "idle_a");
                         break;
                     default:
-                        API.SendChatMessageToPlayer(player, "~y~Syntax /investigate 1 - 9");
+                        NAPI.Chat.SendChatMessageToPlayer(player, "~y~Syntax /investigate 1 - 9");
                         break;
                 }
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
         [Command("drink", "~y~Syntax /drink 1 - 12")]
         public void drink(Client player, int number)
         {
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
                 player.SendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
@@ -249,19 +249,19 @@ namespace mtgvrp.core
                         playPlayerAnimationEx(player, (int)(AnimationFlags.Loop), "amb@world_human_drinking@coffee@male@idle_a", "idle_a");
                         break;
                     default:
-                        API.SendChatMessageToPlayer(player, "~y~Syntax /drink 1 - 12");
+                        NAPI.Chat.SendChatMessageToPlayer(player, "~y~Syntax /drink 1 - 12");
                         break;
                 }
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
         [Command("crossarms", "~y~Syntax /crossarms 1 - 13")]
         public void crossarms(Client player, int number)
         {
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
                 player.SendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
@@ -311,19 +311,19 @@ namespace mtgvrp.core
                         playPlayerAnimationEx(player, (int)(AnimationFlags.Loop), "anim@heists@heist_corona@single_team", "single_team_loop_boss");
                         break;
                     default:
-                        API.SendChatMessageToPlayer(player, "~y~Syntax /crossarms 1 - 13");
+                        NAPI.Chat.SendChatMessageToPlayer(player, "~y~Syntax /crossarms 1 - 13");
                         break;
                 }
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
         [Command("idle", "~y~Syntax /idle 1 - 28")]
         public void idle(Client player, int number)
         {
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
                 player.SendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
@@ -419,19 +419,19 @@ namespace mtgvrp.core
                         break;
 
                     default:
-                        API.SendChatMessageToPlayer(player, "~y~Syntax /idle 1 - 28");
+                        NAPI.Chat.SendChatMessageToPlayer(player, "~y~Syntax /idle 1 - 28");
                         break;
                 }
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
         [Command("lean", "~y~Syntax /lean 1 - 38")]
         public void lean(Client player, int number)
         {
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
                 player.SendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
@@ -556,19 +556,19 @@ namespace mtgvrp.core
                         playPlayerAnimationEx(player, (int)(AnimationFlags.Loop), "amb@world_human_leaning@male@wall@back@texting@idle_a", "idle_b");
                         break;
                     default:
-                        API.SendChatMessageToPlayer(player, "~y~Syntax /lean 1 - 38");
+                        NAPI.Chat.SendChatMessageToPlayer(player, "~y~Syntax /lean 1 - 38");
                         break;
                 }
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
         [Command("reach", "~y~Syntax /reach 1 - 2")]
         public void reach(Client player, int number)
         {
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
                 player.SendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
@@ -585,19 +585,19 @@ namespace mtgvrp.core
                         playPlayerAnimationEx(player, (int)(AnimationFlags.Loop), "amb@prop_human_movie_bulb@bidle_a", "idle_a");
                         break;
                     default:
-                        API.SendChatMessageToPlayer(player, "~y~Syntax /reach 1 - 2");
+                        NAPI.Chat.SendChatMessageToPlayer(player, "~y~Syntax /reach 1 - 2");
                         break;
                 }
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
         [Command("workout", "~y~Syntax /workout 1 - 12")]
         public void workout(Client player, int number)
         {
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
                 player.SendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
@@ -644,19 +644,19 @@ namespace mtgvrp.core
                         playPlayerAnimationEx(player, (int)(AnimationFlags.Loop), "amb@world_human_sit_ups@male@idle_a", "idle_a");
                         break;
                     default:
-                        API.SendChatMessageToPlayer(player, "~y~Syntax /workout 1 - 12");
+                        NAPI.Chat.SendChatMessageToPlayer(player, "~y~Syntax /workout 1 - 12");
                         break;
                 }
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
         [Command("smoke", "~y~Syntax /smoke 1 - 13")]
         public void smoke(Client player, int number)
         {
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
                 player.SendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
@@ -706,19 +706,19 @@ namespace mtgvrp.core
                         playPlayerAnimationEx(player, (int)(AnimationFlags.Loop), "amb@world_human_smoking_pot@male@idle_a", "idle_c");
                         break;
                     default:
-                        API.SendChatMessageToPlayer(player, "~y~Syntax /smoke 1 - 13");
+                        NAPI.Chat.SendChatMessageToPlayer(player, "~y~Syntax /smoke 1 - 13");
                         break;
                 }
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
         [Command("binoculars", "~y~Syntax /binoculars 1 - 6")]
         public void binoculars(Client player, int number)
         {
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
                 player.SendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
@@ -747,19 +747,19 @@ namespace mtgvrp.core
                         playPlayerAnimationEx(player, (int)(AnimationFlags.Loop), "amb@world_human_binoculars@female@idle_b", "idle_f");
                         break;
                     default:
-                        API.SendChatMessageToPlayer(player, "~y~Syntax /binoculars 1 - 6");
+                        NAPI.Chat.SendChatMessageToPlayer(player, "~y~Syntax /binoculars 1 - 6");
                         break;
                 }
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
         [Command("hobo", "~y~Syntax /hobo 1 - 9")]
         public void hobo(Client player, int number)
         {
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
                 player.SendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
@@ -797,19 +797,19 @@ namespace mtgvrp.core
                         playPlayerAnimationEx(player, (int)(AnimationFlags.Loop), "amb@world_human_bum_wash@male@low@idle_a", "idle_a");
                         break;
                     default:
-                        API.SendChatMessageToPlayer(player, "~y~Syntax /hobo 1 - 9");
+                        NAPI.Chat.SendChatMessageToPlayer(player, "~y~Syntax /hobo 1 - 9");
                         break;
                 }
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
         [Command("fallover", "~y~Syntax /fallover 1 - 7")]
         public void fallover(Client player, int number)
         {
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
                 player.SendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
@@ -841,19 +841,19 @@ namespace mtgvrp.core
                         playPlayerAnimationEx(player, (int)(AnimationFlags.Loop), "combat@damage@writheidle_c", "writhe_idle_g");
                         break;
                     default:
-                        API.SendChatMessageToPlayer(player, "~y~Syntax /fallover 1 - 7");
+                        NAPI.Chat.SendChatMessageToPlayer(player, "~y~Syntax /fallover 1 - 7");
                         break;
                 }
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
         [Command("laydown", "~y~Syntax /laydown 1 - 12")]
         public void laydown(Client player, int number)
         {
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
                 player.SendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
@@ -900,19 +900,19 @@ namespace mtgvrp.core
                         playPlayerAnimationEx(player, (int)(AnimationFlags.Loop), "amb@world_human_sunbathe@male@front@idle_a", "idle_a");
                         break;
                     default:
-                        API.SendChatMessageToPlayer(player, "~y~Syntax /laydown 1 - 12");
+                        NAPI.Chat.SendChatMessageToPlayer(player, "~y~Syntax /laydown 1 - 12");
                         break;
                 }
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
         [Command("drunk", "~y~Syntax /drunk 1 - 2")]
         public void drunk(Client player, int number)
         {
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
                 player.SendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
@@ -929,19 +929,19 @@ namespace mtgvrp.core
                         playPlayerAnimationEx(player, (int)(AnimationFlags.Loop), "amb@world_human_bum_standing@drunk@idle_a", "idle_a");
                         break;
                     default:
-                        API.SendChatMessageToPlayer(player, "~y~Syntax /drunk 1 - 2");
+                        NAPI.Chat.SendChatMessageToPlayer(player, "~y~Syntax /drunk 1 - 2");
                         break;
                 }
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
         [Command("twitchy", "~y~Syntax /twitchy 1 - 4")]
         public void twitchy(Client player, int number)
         {
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
                 player.SendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
@@ -964,19 +964,19 @@ namespace mtgvrp.core
                         playPlayerAnimationEx(player, (int)(AnimationFlags.Loop), "amb@world_human_prostitute@crackhooker@base", "base");
                         break;
                     default:
-                        API.SendChatMessageToPlayer(player, "~y~Syntax /twitchy 1 - 4");
+                        NAPI.Chat.SendChatMessageToPlayer(player, "~y~Syntax /twitchy 1 - 4");
                         break;
                 }
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
         [Command("signal", "~y~Syntax /signal 1 - 3")]
         public void signal(Client player, int number)
         {
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
                 player.SendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
@@ -996,19 +996,19 @@ namespace mtgvrp.core
                         playPlayerAnimationEx(player, (int)(AnimationFlags.Loop), "amb@world_human_janitor@male@base", "base");
                         break;
                     default:
-                        API.SendChatMessageToPlayer(player, "~y~Syntax /signal 1 - 3");
+                        NAPI.Chat.SendChatMessageToPlayer(player, "~y~Syntax /signal 1 - 3");
                         break;
                 }
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
         [Command("cheer", "~y~Syntax /cheer 1 - 8")]
         public void cheer(Client player, int number)
         {
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
                 player.SendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
@@ -1043,19 +1043,19 @@ namespace mtgvrp.core
                         playPlayerAnimationEx(player, (int)(AnimationFlags.Loop), "amb@world_human_cheering@male_e", "base");
                         break;
                     default:
-                        API.SendChatMessageToPlayer(player, "~y~Syntax /cheer 1 - 8");
+                        NAPI.Chat.SendChatMessageToPlayer(player, "~y~Syntax /cheer 1 - 8");
                         break;
                 }
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
         [Command("clipboard", "~y~Syntax /clipboard 1 - 3")]
         public void clipboard(Client player, int number)
         {
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
                 player.SendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
@@ -1075,19 +1075,19 @@ namespace mtgvrp.core
                         playPlayerAnimationEx(player, (int)(AnimationFlags.Loop), "amb@world_human_clipboard@male@idle_b", "idle_d");
                         break;
                     default:
-                        API.SendChatMessageToPlayer(player, "~y~Syntax /clipboard 1 - 3");
+                        NAPI.Chat.SendChatMessageToPlayer(player, "~y~Syntax /clipboard 1 - 3");
                         break;
                 }
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
         [Command("drugdeal", "~y~Syntax /drugdeal 1 - 3")]
         public void drugdeal(Client player, int number)
         {
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
                 player.SendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
@@ -1107,19 +1107,19 @@ namespace mtgvrp.core
                         playPlayerAnimationEx(player, (int)(AnimationFlags.Loop), "amb@world_human_drug_dealer_hard@male@idle_b", "idle_d");
                         break;
                     default:
-                        API.SendChatMessageToPlayer(player, "~y~Syntax /drugdeal 1 - 3");
+                        NAPI.Chat.SendChatMessageToPlayer(player, "~y~Syntax /drugdeal 1 - 3");
                         break;
                 }
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
         [Command("gardening", "~y~Syntax /gardening 1 - 4")]
         public void gardening(Client player, int number)
         {
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
                 player.SendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
@@ -1142,19 +1142,19 @@ namespace mtgvrp.core
                         playPlayerAnimationEx(player, (int)(AnimationFlags.Loop), "amb@world_human_gardener_plant@male@idle_a", "idle_b");
                         break;
                     default:
-                        API.SendChatMessageToPlayer(player, "~y~Syntax /gardening 1 - 4");
+                        NAPI.Chat.SendChatMessageToPlayer(player, "~y~Syntax /gardening 1 - 4");
                         break;
                 }
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
         [Command("guard", "~y~Syntax /guard 1 - 9")]
         public void guard(Client player, int number)
         {
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
                 player.SendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
@@ -1192,19 +1192,19 @@ namespace mtgvrp.core
                         playPlayerAnimationEx(player, (int)(AnimationFlags.Loop), "anim@amb@code_human_patrol@male@2h@idle_a", "idle_c");
                         break;
                     default:
-                        API.SendChatMessageToPlayer(player, "~y~Syntax /guard 1 - 9");
+                        NAPI.Chat.SendChatMessageToPlayer(player, "~y~Syntax /guard 1 - 9");
                         break;
                 }
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
         [Command("hammer", "~y~Syntax /hammer 1 - 2")]
         public void hammer(Client player, int number)
         {
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
                 player.SendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
@@ -1221,19 +1221,19 @@ namespace mtgvrp.core
                         playPlayerAnimationEx(player, (int)(AnimationFlags.Loop), "amb@world_human_hammering@male@idle_a", "idle_a");
                         break;
                     default:
-                        API.SendChatMessageToPlayer(player, "~y~Syntax /hammer 1 - 2");
+                        NAPI.Chat.SendChatMessageToPlayer(player, "~y~Syntax /hammer 1 - 2");
                         break;
                 }
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
         [Command("jog", "~y~Syntax /jog 1 - 6")]
         public void jog(Client player, int number)
         {
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
                 player.SendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
@@ -1262,19 +1262,19 @@ namespace mtgvrp.core
                         playPlayerAnimationEx(player, (int)(AnimationFlags.Loop), "amb@world_human_jog_standing@male@idle_b", "idle_d");
                         break;
                     default:
-                        API.SendChatMessageToPlayer(player, "~y~Syntax /hammer 1 - 6");
+                        NAPI.Chat.SendChatMessageToPlayer(player, "~y~Syntax /hammer 1 - 6");
                         break;
                 }
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
         [Command("guitar", "~y~Syntax /guitar 1 - 3")]
         public void guitar(Client player, int number)
         {
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
                 player.SendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
@@ -1294,19 +1294,19 @@ namespace mtgvrp.core
                         playPlayerAnimationEx(player, (int)(AnimationFlags.Loop), "anim@mp_player_intcelebrationfemale@air_guitar", "air_guitar");
                         break;
                     default:
-                        API.SendChatMessageToPlayer(player, "~y~Syntax /guitar 1 - 3");
+                        NAPI.Chat.SendChatMessageToPlayer(player, "~y~Syntax /guitar 1 - 3");
                         break;
                 }
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
         [Command("getjiggy", "~y~Syntax /getjiggy 1 - 4")]
         public void getjiggy(Client player, int number)
         {
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
                 player.SendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
@@ -1329,19 +1329,19 @@ namespace mtgvrp.core
                         playPlayerAnimationEx(player, (int)(AnimationFlags.Loop), "amb@world_human_partying@male@partying_beer@idle_a", "idle_b");
                         break;
                     default:
-                        API.SendChatMessageToPlayer(player, "~y~Syntax /getjiggy 1 - 4");
+                        NAPI.Chat.SendChatMessageToPlayer(player, "~y~Syntax /getjiggy 1 - 4");
                         break;
                 }
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
         [Command("sit", "~y~Syntax /sit 1 - 9")]
         public void sit(Client player, int number)
         {
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
                 player.SendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
@@ -1379,19 +1379,19 @@ namespace mtgvrp.core
                         playPlayerAnimationEx(player, (int)(AnimationFlags.Loop), "anim@mp_rollarcoaster", "idle_b_player_two");
                         break;
                     default:
-                        API.SendChatMessageToPlayer(player, "~y~Syntax /sit 1 - 9");
+                        NAPI.Chat.SendChatMessageToPlayer(player, "~y~Syntax /sit 1 - 9");
                         break;
                 }
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
         [Command("mech", "~y~Syntax /mech 1 - 5")]
         public void mech(Client player, int number)
         {
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
                 player.SendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
@@ -1417,19 +1417,19 @@ namespace mtgvrp.core
                         playPlayerAnimationEx(player, (int)(AnimationFlags.Loop), "anim@heists@narcotics@funding@gang_idle", "gang_chatting_idle01");
                         break;
                     default:
-                        API.SendChatMessageToPlayer(player, "~y~Syntax /mech 1 - 5");
+                        NAPI.Chat.SendChatMessageToPlayer(player, "~y~Syntax /mech 1 - 5");
                         break;
                 }
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
         [Command("yoga", "~y~Syntax /yoga 1 - 2")]
         public void yoga(Client player, int number)
         {
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
                 player.SendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
@@ -1446,19 +1446,19 @@ namespace mtgvrp.core
                         playPlayerAnimationEx(player, (int)(AnimationFlags.Loop), "amb@world_human_yoga@male@base", "base_a");
                         break;
                     default:
-                        API.SendChatMessageToPlayer(player, "~y~Syntax /yoga 1 - 2");
+                        NAPI.Chat.SendChatMessageToPlayer(player, "~y~Syntax /yoga 1 - 2");
                         break;
                 }
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
         [Command("bonghit", "~y~Syntax /bonghit 1 - 4")]
         public void bonghit(Client player, int number)
         {
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
                 player.SendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
@@ -1481,20 +1481,20 @@ namespace mtgvrp.core
                         playPlayerAnimationEx(player, (int)(AnimationFlags.Loop), "anim@safehouse@bong", "bong_stage4");
                         break;
                     default:
-                        API.SendChatMessageToPlayer(player, "~y~Syntax /bonghit 1 - 4");
+                        NAPI.Chat.SendChatMessageToPlayer(player, "~y~Syntax /bonghit 1 - 4");
                         break;
                 }
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
 
         [Command("middlefinger")]
         public void middlefinger(Client player)
         {
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
                 player.SendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
@@ -1506,13 +1506,13 @@ namespace mtgvrp.core
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
         [Command("salute")]
         public void salute(Client player)
         {
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
                 player.SendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
@@ -1524,13 +1524,13 @@ namespace mtgvrp.core
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
         [Command("slowclap")]
         public void slowclap(Client player)
         {
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
                 player.SendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
@@ -1542,13 +1542,13 @@ namespace mtgvrp.core
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
         [Command("facepalm")]
         public void facepalm(Client player)
         {
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
                 player.SendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
@@ -1560,13 +1560,13 @@ namespace mtgvrp.core
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
         [Command("handsup")]// allowed tp be cuffed
         public void handsup(Client player)
         {
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
                 player.SendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
@@ -1579,13 +1579,13 @@ namespace mtgvrp.core
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
         [Command("restrained")]// allowed to be cuffed
         public void restrained(Client player)
         {
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
                 player.SendChatMessage("You can not do an animation whilst inside a vehicle.");
                 return;
@@ -1598,7 +1598,7 @@ namespace mtgvrp.core
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You're unable to do an animation right now.");
             }
         }
     }

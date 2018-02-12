@@ -17,12 +17,12 @@ namespace mtgvrp.core.Items
             Client target = PlayerManager.ParseClient(id);
             if (target == null)
             {
-                API.SendChatMessageToPlayer(player, "That target doesn't exist.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "That target doesn't exist.");
                 return;
             }
             if (target == player)
             {
-                API.SendChatMessageToPlayer(player, "You can't do that on yourself");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You can't do that on yourself");
                 return;
             }
             if (player.Position.DistanceTo(target.Position) <= 5.0)
@@ -30,19 +30,19 @@ namespace mtgvrp.core.Items
                 var tie = InventoryManager.DoesInventoryHaveItem<RopeItem>(player.GetCharacter());
                 if (tie.Length == 0)
                 {
-                    API.SendChatMessageToPlayer(player, "You don't have a rope.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, "You don't have a rope.");
                     return;
                 }
 
                 target.GetCharacter().IsTied = true;
-                API.FreezePlayer(target, true);
+                NAPI.Player.FreezePlayer(target, true);
                 ChatManager.RoleplayMessage(player, $"ties {target.GetCharacter().rp_name()}", ChatManager.RoleplayMe);
 
                 InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(RopeItem), 1);
             }
             else
             {
-                API.SendNotificationToPlayer(player, "You aren't near that player.");
+                NAPI.Notification.SendNotificationToPlayer(player, "You aren't near that player.");
             }
         }
 
@@ -52,28 +52,28 @@ namespace mtgvrp.core.Items
             Client target = PlayerManager.ParseClient(id);
             if (target == null)
             {
-                API.SendChatMessageToPlayer(player, "That target doesn't exist.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "That target doesn't exist.");
                 return;
             }
             if (target == player)
             {
-                API.SendChatMessageToPlayer(player, "You can't do that on yourself");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You can't do that on yourself");
                 return;
             }
             if (player.Position.DistanceTo(target.Position) <= 5.0)
             {
                 if (!target.GetCharacter().IsTied)
                 {
-                    API.SendChatMessageToPlayer(player, "That player isn't tied.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, "That player isn't tied.");
                     return;
                 }
-                API.FreezePlayer(target, false);
+                NAPI.Player.FreezePlayer(target, false);
                 target.GetCharacter().IsTied = false;
                 ChatManager.RoleplayMessage(player, $"unties {target.GetCharacter().rp_name()}", ChatManager.RoleplayMe);
             }
             else
             {
-                API.SendNotificationToPlayer(player, "You aren't near that player.");
+                NAPI.Notification.SendNotificationToPlayer(player, "You aren't near that player.");
             }
         }
 
@@ -83,12 +83,12 @@ namespace mtgvrp.core.Items
             Client target = PlayerManager.ParseClient(id);
             if (target == null)
             {
-                API.SendChatMessageToPlayer(player, "That target doesn't exist.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "That target doesn't exist.");
                 return;
             }
             if (target == player)
             {
-                API.SendChatMessageToPlayer(player, "You can't do that on yourself");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You can't do that on yourself");
                 return;
             }
             if (player.Position.DistanceTo(target.Position) <= 5.0)
@@ -96,19 +96,19 @@ namespace mtgvrp.core.Items
                 var rag = InventoryManager.DoesInventoryHaveItem<RagsItem>(player.GetCharacter());
                 if (rag.Length == 0)
                 {
-                    API.SendChatMessageToPlayer(player, "You don't have a rag.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, "You don't have a rag.");
                     return;
                 }
 
                 target.GetCharacter().IsBlindfolded = true;
-                API.TriggerClientEvent(target, "blindfold_intiate");
+                NAPI.ClientEvent.TriggerClientEvent(target, "blindfold_intiate");
                 ChatManager.RoleplayMessage(player, $"blindfolds {target.GetCharacter().rp_name()}", ChatManager.RoleplayMe);
 
                 InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(RagsItem), 1);
             }
             else
             {
-                API.SendNotificationToPlayer(player, "You aren't near that player.");
+                NAPI.Notification.SendNotificationToPlayer(player, "You aren't near that player.");
             }
         }
 
@@ -118,28 +118,28 @@ namespace mtgvrp.core.Items
             Client target = PlayerManager.ParseClient(id);
             if (target == null)
             {
-                API.SendChatMessageToPlayer(player, "That target doesn't exist.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "That target doesn't exist.");
                 return;
             }
             if (target == player)
             {
-                API.SendChatMessageToPlayer(player, "You can't do that on yourself");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You can't do that on yourself");
                 return;
             }
             if (player.Position.DistanceTo(target.Position) <= 5.0)
             {
                 if (!target.GetCharacter().IsBlindfolded)
                 {
-                    API.SendChatMessageToPlayer(player, "That player isn't blindfolded.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, "That player isn't blindfolded.");
                     return;
                 }
                 target.GetCharacter().IsBlindfolded = false;
-                API.TriggerClientEvent(target, "blindfold_cancel");
+                NAPI.ClientEvent.TriggerClientEvent(target, "blindfold_cancel");
                 ChatManager.RoleplayMessage(player, $"unblindfolds {target.GetCharacter().rp_name()}", ChatManager.RoleplayMe);
             }
             else
             {
-                API.SendNotificationToPlayer(player, "You aren't near that player.");
+                NAPI.Notification.SendNotificationToPlayer(player, "You aren't near that player.");
             }
         }
 
@@ -149,12 +149,12 @@ namespace mtgvrp.core.Items
             Client target = PlayerManager.ParseClient(id);
             if (target == null)
             {
-                API.SendChatMessageToPlayer(player, "That target doesn't exist.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "That target doesn't exist.");
                 return;
             }
             if (target == player)
             {
-                API.SendChatMessageToPlayer(player, "You can't do that on yourself");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You can't do that on yourself");
                 return;
             }
             if (player.Position.DistanceTo(target.Position) <= 5.0)
@@ -162,7 +162,7 @@ namespace mtgvrp.core.Items
                 var rag = InventoryManager.DoesInventoryHaveItem<RagsItem>(player.GetCharacter());
                 if (rag.Length == 0)
                 {
-                    API.SendChatMessageToPlayer(player, "You don't have a rag.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, "You don't have a rag.");
                     return;
                 }
 
@@ -173,7 +173,7 @@ namespace mtgvrp.core.Items
             }
             else
             {
-                API.SendNotificationToPlayer(player, "You aren't near that player.");
+                NAPI.Notification.SendNotificationToPlayer(player, "You aren't near that player.");
             }
         }
 
@@ -183,19 +183,19 @@ namespace mtgvrp.core.Items
             Client target = PlayerManager.ParseClient(id);
             if (target == null)
             {
-                API.SendChatMessageToPlayer(player, "That target doesn't exist.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "That target doesn't exist.");
                 return;
             }
             if (target == player)
             {
-                API.SendChatMessageToPlayer(player, "You can't do that on yourself");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You can't do that on yourself");
                 return;
             }
             if (player.Position.DistanceTo(target.Position) <= 5.0)
             {
                 if (!target.GetCharacter().IsRagged)
                 {
-                    API.SendChatMessageToPlayer(player, "That player isn't ragged.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, "That player isn't ragged.");
                     return;
                 }
                 target.GetCharacter().IsRagged = false;
@@ -203,7 +203,7 @@ namespace mtgvrp.core.Items
             }
             else
             {
-                API.SendNotificationToPlayer(player, "You aren't near that player.");
+                NAPI.Notification.SendNotificationToPlayer(player, "You aren't near that player.");
             }
         }
 
@@ -213,7 +213,7 @@ namespace mtgvrp.core.Items
             var rag = InventoryManager.DoesInventoryHaveItem<SprunkItem>(player.GetCharacter());
             if (rag.Length == 0)
             {
-                API.SendChatMessageToPlayer(player, "You don't have a sprunk.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You don't have a sprunk.");
                 return;
             }
 

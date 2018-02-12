@@ -216,7 +216,7 @@ namespace mtgvrp.job_manager.gunrunner
                             break;
 
                         case InventoryManager.GiveItemErrors.NotEnoughSpace:
-                            API.SendChatMessageToPlayer(player,
+                            NAPI.Chat.SendChatMessageToPlayer(player,
                                 $"[BUSINESS] You dont have enough space for that item.");
                             break;
                     }
@@ -248,13 +248,13 @@ namespace mtgvrp.job_manager.gunrunner
                 return;
 
             int renown = character.Renown;
-            API.TriggerClientEvent(player, "send_renown", renown);
-            if (renown < 100) { API.TriggerClientEvent(player, "send_melee_list", API.ToJson(Weapon_Melee)); }
-            if (renown < 300 && renown >= 100) { API.TriggerClientEvent(player, "send_pistol_list", API.ToJson(Weapon_Melee), API.ToJson(Weapon_Pistols)); }
-            if (renown < 800 && renown >= 300) { API.TriggerClientEvent(player, "send_shotgun_list", API.ToJson(Weapon_Melee), API.ToJson(Weapon_Pistols), API.ToJson(Weapon_Shotguns)); }
-            if (renown < 1100 && renown >= 800) { API.TriggerClientEvent(player, "send_machinegun_list", API.ToJson(Weapon_Melee), API.ToJson(Weapon_Pistols), API.ToJson(Weapon_Shotguns), API.ToJson(Weapon_Machineguns)); }
-            if (renown < 2000 && renown >= 1100) { API.TriggerClientEvent(player, "send_assaultrifle_list", API.ToJson(Weapon_Melee), API.ToJson(Weapon_Pistols), API.ToJson(Weapon_Shotguns), API.ToJson(Weapon_Machineguns), API.ToJson(Weapon_Assaultrifles)); }
-            if (renown >= 2000) { API.TriggerClientEvent(player, "send_sniper_list", API.ToJson(Weapon_Melee), API.ToJson(Weapon_Pistols), API.ToJson(Weapon_Shotguns), API.ToJson(Weapon_Machineguns), API.ToJson(Weapon_Assaultrifles), API.ToJson(Weapon_Snipers)); }
+            NAPI.ClientEvent.TriggerClientEvent(player, "send_renown", renown);
+            if (renown < 100) { NAPI.ClientEvent.TriggerClientEvent(player, "send_melee_list", NAPI.Util.ToJson(Weapon_Melee)); }
+            if (renown < 300 && renown >= 100) { NAPI.ClientEvent.TriggerClientEvent(player, "send_pistol_list", NAPI.Util.ToJson(Weapon_Melee), NAPI.Util.ToJson(Weapon_Pistols)); }
+            if (renown < 800 && renown >= 300) { NAPI.ClientEvent.TriggerClientEvent(player, "send_shotgun_list", NAPI.Util.ToJson(Weapon_Melee), NAPI.Util.ToJson(Weapon_Pistols), NAPI.Util.ToJson(Weapon_Shotguns)); }
+            if (renown < 1100 && renown >= 800) { NAPI.ClientEvent.TriggerClientEvent(player, "send_machinegun_list", NAPI.Util.ToJson(Weapon_Melee), NAPI.Util.ToJson(Weapon_Pistols), NAPI.Util.ToJson(Weapon_Shotguns), NAPI.Util.ToJson(Weapon_Machineguns)); }
+            if (renown < 2000 && renown >= 1100) { NAPI.ClientEvent.TriggerClientEvent(player, "send_assaultrifle_list", NAPI.Util.ToJson(Weapon_Melee), NAPI.Util.ToJson(Weapon_Pistols), NAPI.Util.ToJson(Weapon_Shotguns), NAPI.Util.ToJson(Weapon_Machineguns), NAPI.Util.ToJson(Weapon_Assaultrifles)); }
+            if (renown >= 2000) { NAPI.ClientEvent.TriggerClientEvent(player, "send_sniper_list", NAPI.Util.ToJson(Weapon_Melee), NAPI.Util.ToJson(Weapon_Pistols), NAPI.Util.ToJson(Weapon_Shotguns), NAPI.Util.ToJson(Weapon_Machineguns), NAPI.Util.ToJson(Weapon_Assaultrifles), NAPI.Util.ToJson(Weapon_Snipers)); }
         }
 
         [RemoteEvent("CONTAINER_PLACED")]
@@ -262,7 +262,7 @@ namespace mtgvrp.job_manager.gunrunner
         {
             var obj = (NetHandle)arguments[0];
             var c = player.GetCharacter();
-            c.Container.Position = API.GetEntityPosition(obj);
+            c.Container.Position = NAPI.Entity.GetEntityPosition(obj);
             c.Container.Rotation = API.GetEntityRotation(obj);
             c.Container.Save();
         }
@@ -309,7 +309,7 @@ namespace mtgvrp.job_manager.gunrunner
 
         private void DeleteZoneMarker(Client player)
         {
-            API.TriggerClientEvent(player, "delete_zone_marker");
+            NAPI.ClientEvent.TriggerClientEvent(player, "delete_zone_marker");
             ZoneTimer.Stop();
         }
 
@@ -437,7 +437,7 @@ namespace mtgvrp.job_manager.gunrunner
             player.SendChatMessage($"Buy weapons from Yuri to be sold on to other players using /give. ~r~You will be charged a flat rate of ${FlatRate}.");
             character.WeaponsBought = 0;
             character.WeaponsSold = 0;
-            API.TriggerClientEvent(player, "open_gunrun_menu");
+            NAPI.ClientEvent.TriggerClientEvent(player, "open_gunrun_menu");
         }
 
         [Command("gunrunstats"), Help(HelpManager.CommandGroups.JobsGeneral, "List your gunrunnning statistics.", null)]
@@ -541,7 +541,7 @@ namespace mtgvrp.job_manager.gunrunner
             {
                 player.SendChatMessage($"Yuri_Orlov says: {MostRenown.CharacterName} is doing quite well for themselves. Here's where they are..");
                 player.SendChatMessage("A waypoint has been set to the position of the current gun dealer with the most renown.");
-                API.TriggerClientEvent(player, "intervene_track_player", MostRenown.Client.Position);
+                NAPI.ClientEvent.TriggerClientEvent(player, "intervene_track_player", MostRenown.Client.Position);
                 character.InterveneTimeLimit = TimeManager.GetTimeStampPlus(TimeSpan.FromHours(12));
             }
         }
@@ -560,7 +560,7 @@ namespace mtgvrp.job_manager.gunrunner
             var prop = PropertyManager.IsAtPropertyInteraction(player);
             if (prop == null || prop?.Type != PropertyManager.PropertyTypes.Container || prop.OwnerId != character.Id)
             {
-                API.SendChatMessageToPlayer(player, "You aren't at a gunrunning headquarters or you are not the owner of these headquarters.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You aren't at a gunrunning headquarters or you are not the owner of these headquarters.");
                 return;
             }
 
@@ -612,7 +612,7 @@ namespace mtgvrp.job_manager.gunrunner
             var prop = PropertyManager.IsAtPropertyInteraction(player);
             if (prop == null || prop?.Type != PropertyManager.PropertyTypes.Container || prop.OwnerId != character.Id)
             {
-                API.SendChatMessageToPlayer(player, "You aren't at a gunrunning headquarters or you are not the owner of these headquarters.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You aren't at a gunrunning headquarters or you are not the owner of these headquarters.");
                 return;
             }
 
@@ -623,7 +623,7 @@ namespace mtgvrp.job_manager.gunrunner
             }
 
             player.SendChatMessage("Weapon dealer location tracked. A waypoint has been set on your map.");
-            API.TriggerClientEvent(player, "track_weapon_dealer", CurrentDealer.Position.X, CurrentDealer.Position.Y);
+            NAPI.ClientEvent.TriggerClientEvent(player, "track_weapon_dealer", CurrentDealer.Position.X, CurrentDealer.Position.Y);
         }
 
         [Command("movehq"), Help(HelpManager.CommandGroups.JobsGeneral, "Move your headquarters to your current location.", null)]
@@ -659,8 +659,8 @@ namespace mtgvrp.job_manager.gunrunner
             character.Container.Rotation = player.Rotation;
             character.Container.Respawn();
             character.Container.Save();
-            API.SetEntityPosition(player, player.Position + new Vector3(0, 0, 5));
-            API.TriggerClientEvent(player, "PLACE_OBJECT_ON_GROUND_PROPERLY", character.Container.ContainerObject, "CONTAINER_PLACED");
+            NAPI.Entity.SetEntityPosition(player, player.Position + new Vector3(0, 0, 5));
+            NAPI.ClientEvent.TriggerClientEvent(player, "PLACE_OBJECT_ON_GROUND_PROPERLY", character.Container.ContainerObject, "CONTAINER_PLACED");
             player.SendChatMessage("Container moved.");
         }
 
@@ -702,8 +702,8 @@ namespace mtgvrp.job_manager.gunrunner
             character.Container = new Container(character, player.Position, player.Rotation);
             character.Container.Deploy();
             character.Container.Insert();
-            API.SetEntityPosition(player, player.Position + new Vector3(0, 0, 5));
-            API.TriggerClientEvent(player, "PLACE_OBJECT_ON_GROUND_PROPERLY", character.Container.ContainerObject, "CONTAINER_PLACED");
+            NAPI.Entity.SetEntityPosition(player, player.Position + new Vector3(0, 0, 5));
+            NAPI.ClientEvent.TriggerClientEvent(player, "PLACE_OBJECT_ON_GROUND_PROPERLY", character.Container.ContainerObject, "CONTAINER_PLACED");
             player.SendChatMessage("Container placed. You now have your very own gun running headquarters.");
         }
 
@@ -769,7 +769,7 @@ namespace mtgvrp.job_manager.gunrunner
            var sendersItem = InventoryManager.DoesInventoryHaveItem(character, weaponcase);
            if (sendersItem.Length != 1 || sendersItem[0].Amount < 1 || 1 <= 0)
            {
-               API.SendNotificationToPlayer(player, "You don't have that weapon.");
+               NAPI.Notification.SendNotificationToPlayer(player, "You don't have that weapon.");
                return;
            }
 
@@ -799,9 +799,9 @@ namespace mtgvrp.job_manager.gunrunner
 
            player.SendChatMessage($"You have offered to sell a {weaponcase} to {receiver.GetCharacter().CharacterName} for ${price}");
            receiver.SendChatMessage($"{character.CharacterName} has offered to sell you a {weaponcase} for ${price}. /acceptweapon to accept.");
-           API.SetEntityData(receiver, "CAN_ACCEPT_WEAPON", character);
-           API.SetEntityData(receiver, "ACCEPT_WEAPON_PRICE", price);
-           API.SetEntityData(receiver, "WEAPON_BEING_GIVEN", sendersItem);
+           NAPI.Data.SetEntityData(receiver, "CAN_ACCEPT_WEAPON", character);
+           NAPI.Data.SetEntityData(receiver, "ACCEPT_WEAPON_PRICE", price);
+           NAPI.Data.SetEntityData(receiver, "WEAPON_BEING_GIVEN", sendersItem);
        }
 
        [Command("acceptweapon"), Help(HelpManager.CommandGroups.JobsGeneral, "Start a gun run.")]
@@ -810,9 +810,9 @@ namespace mtgvrp.job_manager.gunrunner
            var character = player.GetCharacter();
            var account = player.GetAccount();
 
-           var senderchar = API.GetEntityData(player, "CAN_ACCEPT_WEAPON");
-           var price = API.GetEntityData(player, "ACCEPT_WEAPON_PRICE");
-           var weapon = API.GetEntityData(player, "WEAPON_BEING_GIVEN");
+           var senderchar = NAPI.Data.GetEntityData(player, "CAN_ACCEPT_WEAPON");
+           var price = NAPI.Data.GetEntityData(player, "ACCEPT_WEAPON_PRICE");
+           var weapon = NAPI.Data.GetEntityData(player, "WEAPON_BEING_GIVEN");
 
            if (senderchar == null)
            {
@@ -840,7 +840,7 @@ namespace mtgvrp.job_manager.gunrunner
 
            if (Money.GetCharacterMoney(player.GetCharacter()) < price)
            {
-               API.SendChatMessageToPlayer(player, "You don't have enough money.");
+               NAPI.Chat.SendChatMessageToPlayer(player, "You don't have enough money.");
                return;
            }
 
@@ -872,7 +872,7 @@ namespace mtgvrp.job_manager.gunrunner
 
             if (receiver == null)
             {
-                API.SendChatMessageToPlayer(player, "That player is not connected.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "That player is not connected.");
                 return;
             }
 
@@ -896,7 +896,7 @@ namespace mtgvrp.job_manager.gunrunner
             var containerZone = new ContainerZone(player.Position, player.Rotation);
             containerZone.Insert();
             containerZone.Deploy();
-            API.TriggerClientEvent(player, "create_zone_marker", player.Position, 30);
+            NAPI.ClientEvent.TriggerClientEvent(player, "create_zone_marker", player.Position, 30);
             player.SendChatMessage("Container zone created. The radius is displayed for 2 seconds. Use /editcontainerradius to change it.");
             ZoneTimer = new Timer { Interval = 2000 };
             ZoneTimer.Elapsed += delegate { DeleteZoneMarker(player); };
@@ -917,7 +917,7 @@ namespace mtgvrp.job_manager.gunrunner
             var containerZone = ContainerZone.GetAllContainerZones()[int.Parse(containerid)];
             containerZone.Radius = int.Parse(radius);
             containerZone.Save();
-            API.TriggerClientEvent(player, "create_zone_marker", player.Position, int.Parse(radius));
+            NAPI.ClientEvent.TriggerClientEvent(player, "create_zone_marker", player.Position, int.Parse(radius));
             player.SendChatMessage("Container raidus edited. The radius will be displayed for 2 seconds.");
             ZoneTimer = new Timer { Interval = 2000 };
             ZoneTimer.Elapsed += delegate { DeleteZoneMarker(player); };
@@ -954,7 +954,7 @@ namespace mtgvrp.job_manager.gunrunner
 
             if (receiver == null)
             {
-                API.SendChatMessageToPlayer(player, "That player is not connected.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "That player is not connected.");
                 return;
             }
 

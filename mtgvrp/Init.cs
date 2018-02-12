@@ -57,7 +57,7 @@ namespace mtgvrp
             NetHandle obj = (NetHandle) arguments[0];
             Vector3 pos = (Vector3) arguments[1];
             Vector3 rot = (Vector3) arguments[2];
-            API.SetEntityPosition(obj,pos);
+            NAPI.Entity.SetEntityPosition(obj,pos);
             API.SetEntityRotation(obj,rot);
         }
 
@@ -82,7 +82,7 @@ namespace mtgvrp
             API.RemoveIpl("fakeint"); // remove the IPL "fakeint"
             API.RequestIpl("shr_int"); // Request the IPL "shr_int"
 
-            API.ConsoleOutput("[INIT] Unloaded fakeint IPL and loaded shr_int IPL.!");
+            NAPI.Util.ConsoleOutput("[INIT] Unloaded fakeint IPL and loaded shr_int IPL.!");
 
             VehicleManager.load_all_unowned_vehicles();
 
@@ -91,14 +91,14 @@ namespace mtgvrp
             GunrunnerManager.load_all_container_zones();
             GunrunnerManager.MoveDealer();
 
-            API.ConsoleOutput("[INIT] Script initalized!");
+            NAPI.Util.ConsoleOutput("[INIT] Script initalized!");
 
             LogManager.StartLogArchiveTimer();
 
             //Must be last to be called.
             /*if (IsRunningOnMono())
             {
-                API.ConsoleOutput("[INIT] Starting Discord Bot!");
+                NAPI.Util.ConsoleOutput("[INIT] Starting Discord Bot!");
                 DiscordManager.StartBot();
             }*/
         }

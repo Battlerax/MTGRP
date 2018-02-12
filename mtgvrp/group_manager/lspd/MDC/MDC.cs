@@ -62,21 +62,21 @@ namespace mtgvrp.group_manager.lspd.MDC
             var character = player.GetCharacter();
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
-                API.SendChatMessageToPlayer(player, core.Color.White, "You must be in the LSPD to use this command.");
+                NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White, "You must be in the LSPD to use this command.");
                 return;
             }
 
-            var vehHandle = API.GetPlayerVehicle(player);
+            var vehHandle = NAPI.Player.GetPlayerVehicle(player);
             var veh = VehicleManager.GetVehFromNetHandle(vehHandle);
             if(veh.Group.CommandType != Group.CommandTypeLspd)
             {
-                API.SendChatMessageToPlayer(player, core.Color.White, "This vehicle is not equipped with a Mobile Database Computer.");
+                NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White, "This vehicle is not equipped with a Mobile Database Computer.");
                 return;
             }
 
-            if(API.GetPlayerVehicleSeat(player) != -1 && API.GetPlayerVehicleSeat(player) != 0)
+            if(NAPI.Player.GetPlayerVehicleSeat(player) != -1 && NAPI.Player.GetPlayerVehicleSeat(player) != 0)
             {
-                API.SendChatMessageToPlayer(player, core.Color.White, "You can only access the Mobile Database Computer from the front seats.");
+                NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White, "You can only access the Mobile Database Computer from the front seats.");
                 return;
             }
 
@@ -105,7 +105,7 @@ namespace mtgvrp.group_manager.lspd.MDC
         private void RemoveBolo(Client player, params object[] arguments)
         {
             ActiveBolos.RemoveAt((int)arguments[0]);
-            API.SendChatMessageToPlayer(player, "You removed Bolo # " + (int)arguments[0]);
+            NAPI.Chat.SendChatMessageToPlayer(player, "You removed Bolo # " + (int)arguments[0]);
         }
 
         [RemoteEvent("server_createBolo")]
@@ -126,7 +126,7 @@ namespace mtgvrp.group_manager.lspd.MDC
                 }
             }
 
-            API.SendChatMessageToPlayer(player, "Successfully submitted Bolo #" + newBolo.Id);
+            NAPI.Chat.SendChatMessageToPlayer(player, "Successfully submitted Bolo #" + newBolo.Id);
         }
 
         [RemoteEvent("requestMdcInformation")]
@@ -189,7 +189,7 @@ namespace mtgvrp.group_manager.lspd.MDC
             //If still NULL
             if (foundPlayer == null)
             {
-                API.TriggerClientEvent(player, "MDC_SHOW_CITIZEN_INFO", "", "", "", "", "");
+                NAPI.ClientEvent.TriggerClientEvent(player, "MDC_SHOW_CITIZEN_INFO", "", "", "", "", "");
                 return;
             }
 
@@ -206,8 +206,8 @@ namespace mtgvrp.group_manager.lspd.MDC
             player.SetData("MDC_LAST_CHECKED", foundPlayer);
 
             //Send Event
-            API.TriggerClientEvent(player, "MDC_SHOW_CITIZEN_INFO", foundPlayer.rp_name(), foundPlayer.Birthday,
-            API.ToJson(vehiclesList), API.ToJson(crimes), amountOfPages);
+            NAPI.ClientEvent.TriggerClientEvent(player, "MDC_SHOW_CITIZEN_INFO", foundPlayer.rp_name(), foundPlayer.Birthday,
+            NAPI.Util.ToJson(vehiclesList), NAPI.Util.ToJson(crimes), amountOfPages);
         }
 
         [RemoteEvent("MDC_SearchForVehicle")]
@@ -220,11 +220,11 @@ namespace mtgvrp.group_manager.lspd.MDC
 
             if (veh == null)
             {
-                API.TriggerClientEvent(player, "MDC_SHOW_VEHICLE_INFO", "", "");
+                NAPI.ClientEvent.TriggerClientEvent(player, "MDC_SHOW_VEHICLE_INFO", "", "");
                 return;
             }
 
-            API.TriggerClientEvent(player, "MDC_SHOW_VEHICLE_INFO", VehicleOwnership.returnCorrDisplayName(veh.VehModel),
+            NAPI.ClientEvent.TriggerClientEvent(player, "MDC_SHOW_VEHICLE_INFO", VehicleOwnership.returnCorrDisplayName(veh.VehModel),
                 veh.OwnerName, API.GetVehicleClassName(API.GetVehicleClass(veh.VehModel)));
         }
 
@@ -238,7 +238,7 @@ namespace mtgvrp.group_manager.lspd.MDC
             var next = Convert.ToInt32(arguments[0]);
             var crimes = GetCrimeArray(p, next);
 
-            API.TriggerClientEvent(player, "MDC_UPDATE_CRIMES", API.ToJson(crimes));
+            NAPI.ClientEvent.TriggerClientEvent(player, "MDC_UPDATE_CRIMES", NAPI.Util.ToJson(crimes));
         }
 
         //Crime Type, Crime Name, DateTime String, OfficerIssued, IsActive
@@ -255,13 +255,13 @@ namespace mtgvrp.group_manager.lspd.MDC
         public void SendBoloToClient(Client player, Bolo bolo)
         {
             //boloId, officer, time, priority, info
-            API.TriggerClientEvent(player, "addBolo", bolo.Id, bolo.ReportingOfficer, bolo.Time.ToString(),
+            NAPI.ClientEvent.TriggerClientEvent(player, "addBolo", bolo.Id, bolo.ReportingOfficer, bolo.Time.ToString(),
                 bolo.Priority, bolo.Info);
         }
 
         public void Send911ToClient(Client player, EmergencyCall call)
         {
-            API.TriggerClientEvent(player, "add911", call.PhoneNumber, call.Time.ToString(), call.Info, call.Location);
+            NAPI.ClientEvent.TriggerClientEvent(player, "add911", call.PhoneNumber, call.Time.ToString(), call.Info, call.Location);
         }
 
         public static void Add911Call(string phoneNumber, string info, string location)

@@ -68,14 +68,14 @@ namespace mtgvrp.core
 
             if (character.IsRagged)
             {
-                API.SendChatMessageToPlayer(player, "You are ragged.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You are ragged.");
                 e.Cancel = true;
                 return;
             }
 
-            if (API.HasEntityData(player, "MegaphoneStatus"))
+            if (NAPI.Data.HasEntityData(player, "MegaphoneStatus"))
             {
-                if (API.GetEntityData(player, "MegaphoneStatus") == true)
+                if (NAPI.Data.GetEntityData(player, "MegaphoneStatus") == true)
                 {
                     msg = "~y~[MEGAPHONE] " + character.rp_name() + " says: " + msg;
                     NearbyMessage(player, 30, msg);
@@ -86,9 +86,9 @@ namespace mtgvrp.core
                 }
             }
 
-            if (API.HasEntityData(player, "MicStatus"))
+            if (NAPI.Data.HasEntityData(player, "MicStatus"))
             {
-                if (API.GetEntityData(player, "MicStatus") == true)
+                if (NAPI.Data.GetEntityData(player, "MicStatus") == true)
                 {
                     msg = "~p~ [BROADCAST] " + character.rp_name() + " : " + msg;
                     BroadcastMessage(msg);
@@ -119,7 +119,7 @@ namespace mtgvrp.core
                 {
                     phonemsg = "[" + charphone.PhoneNumber + "]" + character.rp_name() + " says: " + msg;
                 }
-                API.SendChatMessageToPlayer(talkingTo.Client, Color.Grey, phonemsg);
+                NAPI.Chat.SendChatMessageToPlayer(talkingTo.Client, Color.Grey, phonemsg);
                 e.Cancel = true;
                 //e.Reason = "Phone";
                 LogManager.Log(LogManager.LogTypes.Phone, $"[Phone] {character.CharacterName}[{account.AccountName}] To {talkingTo.CharacterName}[{talkingTo.Client.SocialClubName}]: {msg}");
@@ -137,7 +137,7 @@ namespace mtgvrp.core
                 var newmsg = "[Phone]" + character.rp_name() + " says: " + msg;
                 ChatManager.NearbyMessage(player, 15, newmsg, Color.Grey);
 
-                API.SendChatMessageToPlayer(player, Color.Grey, "911 Operator says: Thank you for reporting your emergency, a unit will be dispatched shortly.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.Grey, "911 Operator says: Thank you for reporting your emergency, a unit will be dispatched shortly.");
                 PhoneManager.h_cmd(player);
                 group_manager.lspd.Lspd.SendToCops(player, $"~r~911: #{charphone.PhoneNumber} reported a crime: {msg}");
                 e.Cancel = true;
@@ -171,7 +171,7 @@ namespace mtgvrp.core
             {
                 if(i.IsWatchingBroadcast == true)
                 {
-                    API.SendChatMessageToPlayer(i.Client, msg);
+                    NAPI.Chat.SendChatMessageToPlayer(i.Client, msg);
                 }
             }
         }
@@ -192,7 +192,7 @@ namespace mtgvrp.core
 
                 }
             }
-            API.SendChatMessageToPlayer(sender, "SYNTAX : /rand 1-" + maxLimit);
+            NAPI.Chat.SendChatMessageToPlayer(sender, "SYNTAX : /rand 1-" + maxLimit);
 
         }
 
@@ -208,7 +208,7 @@ namespace mtgvrp.core
             {
                 if (numOfDie > upperDiceLimit || numOfDie < 1)
                 {
-                    API.SendChatMessageToPlayer(player, "~y~SYNTAX: ~s~/roll 1 to " + upperDiceLimit);
+                    NAPI.Chat.SendChatMessageToPlayer(player, "~y~SYNTAX: ~s~/roll 1 to " + upperDiceLimit);
                     return;
                 }
 
@@ -293,26 +293,26 @@ namespace mtgvrp.core
 
             if (NewbieStatus == false && account.AdminLevel == 0)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~Newbie chat is currently disabled.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~Newbie chat is currently disabled.");
                 return;
             }
 
             if (character.NMutedExpiration > TimeManager.GetTimeStamp)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~You are muted from newbie chat.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~You are muted from newbie chat.");
                 return;
             }
 
             if (character.NewbieToggled)
             {
-                API.SendChatMessageToPlayer(player, "You have /n toggled off.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You have /n toggled off.");
             }
 
             Character c = player.GetCharacter();
 
             if (c.NewbieCooldown > new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds())
             {
-                API.SendNotificationToPlayer(player,
+                NAPI.Notification.SendNotificationToPlayer(player,
                     "~r~ERROR:~w~You must wait 60 seconds before using newbie chat again.");
                 return;
             }
@@ -335,7 +335,7 @@ namespace mtgvrp.core
             {
                 if (!p.NewbieToggled)
                 {
-                    API.SendChatMessageToPlayer(p.Client, Color.NewbieChat, $"[N] {rank} " + c.rp_name() + ": " + message);
+                    NAPI.Chat.SendChatMessageToPlayer(p.Client, Color.NewbieChat, $"[N] {rank} " + c.rp_name() + ": " + message);
                 }
             }
 
@@ -354,7 +354,7 @@ namespace mtgvrp.core
 
             if (OocStatus == false && account.AdminLevel == 0)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~Global OOC chat is currently disabled.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~Global OOC chat is currently disabled.");
                 return;
             }
 
@@ -362,7 +362,7 @@ namespace mtgvrp.core
 
             if (c.OocCooldown > new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds())
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~You must wait 5 seconds before using global OOC chat again.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~You must wait 5 seconds before using global OOC chat again.");
                 return;
             }
 
@@ -382,24 +382,24 @@ namespace mtgvrp.core
 
             if (VipStatus == false && account.AdminLevel == 0)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~VIP chat is currently disabled.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~VIP chat is currently disabled.");
                 return;
             }
 
             if (character.VIPToggled)
             {
-                API.SendChatMessageToPlayer(player, "You have /v toggled off.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You have /v toggled off.");
             }
 
             if (character.VMutedExpiration > TimeManager.GetTimeStamp)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~You are muted from VIP chat.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~You are muted from VIP chat.");
                 return;
             }
 
             if (account.VipLevel == 0)
             {
-                API.SendNotificationToPlayer(player, "~y~You must be a VIP to use VIP chat.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~y~You must be a VIP to use VIP chat.");
                 return;
             }
 
@@ -415,7 +415,7 @@ namespace mtgvrp.core
 
                 if(pAccount?.VipLevel > 0 && character.VIPToggled == false)
                 {
-                    API.SendChatMessageToPlayer(p, Color.VipChat, "[V] " + c.rp_name() + ": " + message);
+                    NAPI.Chat.SendChatMessageToPlayer(p, Color.VipChat, "[V] " + c.rp_name() + ": " + message);
                 }
             }
             DiscordManager.SendVIPMessage("[V] " + c.rp_name() + $"[{account.AccountName}]" + ": " + message);
@@ -484,9 +484,9 @@ namespace mtgvrp.core
         [Command("shout", Alias = "s", GreedyArg = true), Help.Help(HelpManager.CommandGroups.Chat, "Sends a mesage to nearby players but with a high range. (Shouts)", "The message")]
         public void shout_cmd(Client player, string text)
         {
-            if (API.HasEntityData(player, "IS_MOUTH_RAGGED"))
+            if (NAPI.Data.HasEntityData(player, "IS_MOUTH_RAGGED"))
             {
-                API.SendChatMessageToPlayer(player, "You are ragged.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You are ragged.");
                 return;
             }
             NearbyMessage(player, 25, PlayerManager.GetName(player) + " shouts: " + text);
@@ -495,9 +495,9 @@ namespace mtgvrp.core
         [Command("low", GreedyArg = true), Help.Help(HelpManager.CommandGroups.Chat, "Sends a message to nearby players with a low range.", "The message")]
         public void low_cmd(Client player, string text)
         {
-            if (API.HasEntityData(player, "IS_MOUTH_RAGGED"))
+            if (NAPI.Data.HasEntityData(player, "IS_MOUTH_RAGGED"))
             {
-                API.SendChatMessageToPlayer(player, "You are ragged.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You are ragged.");
                 return;
             }
             NearbyMessage(player, 5, PlayerManager.GetName(player) + " whispers: " + text, Color.Grey);
@@ -536,7 +536,7 @@ namespace mtgvrp.core
 
                     if (receiverAccount?.AdminLevel > 0)
                     {
-                        API.SendChatMessageToPlayer(c, Color.AdminChat, "[A] " + account.AdminName + ": " + text);
+                        NAPI.Chat.SendChatMessageToPlayer(c, Color.AdminChat, "[A] " + account.AdminName + ": " + text);
                     }
                 }
                 DiscordManager.SendAdminMessage("[A] " + account.AdminName + ": " + text);
@@ -550,20 +550,20 @@ namespace mtgvrp.core
 
             if (receiver == null)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
 
-            API.SendChatMessageToPlayer(player, Color.LongDistanceRoleplay, "RP to " + PlayerManager.GetName(receiver) + "(" + PlayerManager.GetPlayerId(receiver.GetCharacter()) + "): " + text);
-            API.SendChatMessageToPlayer(receiver, Color.LongDistanceRoleplay, "RP from " + PlayerManager.GetName(player) + "(" + PlayerManager.GetPlayerId(player.GetCharacter()) + "): " + text);
+            NAPI.Chat.SendChatMessageToPlayer(player, Color.LongDistanceRoleplay, "RP to " + PlayerManager.GetName(receiver) + "(" + PlayerManager.GetPlayerId(receiver.GetCharacter()) + "): " + text);
+            NAPI.Chat.SendChatMessageToPlayer(receiver, Color.LongDistanceRoleplay, "RP from " + PlayerManager.GetName(player) + "(" + PlayerManager.GetPlayerId(player.GetCharacter()) + "): " + text);
         }
 
         [Command("whisper", Alias = "w", GreedyArg = true), Help.Help(HelpManager.CommandGroups.Chat, "Simply whisper someone.", "Id of player", "The message to whisper")]
         public void w_cmd(Client player, string id, string text)
         {
-            if (API.HasEntityData(player, "IS_MOUTH_RAGGED"))
+            if (NAPI.Data.HasEntityData(player, "IS_MOUTH_RAGGED"))
             {
-                API.SendChatMessageToPlayer(player, "You are ragged.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You are ragged.");
                 return;
             }
 
@@ -571,18 +571,18 @@ namespace mtgvrp.core
 
             if (receiver == null)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
 
             if(GetDistanceBetweenPlayers(player, receiver) > 4)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ You are too far away from that player.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ You are too far away from that player.");
                 return;
             }
 
-            API.SendChatMessageToPlayer(player, Color.Whisper, "Whisper to " + PlayerManager.GetName(receiver) + ": " + text);
-            API.SendChatMessageToPlayer(receiver, Color.Whisper, "Whisper from " + PlayerManager.GetName(player) + ": " + text);
+            NAPI.Chat.SendChatMessageToPlayer(player, Color.Whisper, "Whisper to " + PlayerManager.GetName(receiver) + ": " + text);
+            NAPI.Chat.SendChatMessageToPlayer(receiver, Color.Whisper, "Whisper from " + PlayerManager.GetName(player) + ": " + text);
             RoleplayMessage(player, "whispers to " + PlayerManager.GetName(receiver), RoleplayMe);
         }
 

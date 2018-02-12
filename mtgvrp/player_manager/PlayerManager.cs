@@ -90,7 +90,7 @@ namespace mtgvrp.player_manager
 
         private void API_onPlayerHealthChange(Client entity, float lossFirst, float lossSecond)
         {
-            Client player = API.GetPlayerFromHandle(entity);
+            Client player = NAPI.Player.GetPlayerFromHandle(entity);
             var character = player.GetCharacter();
             Account account = player.GetAccount();
             if (account == null)
@@ -136,7 +136,7 @@ namespace mtgvrp.player_manager
                 InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(Money), 200);
             }
 
-            Client killer = API.GetPlayerFromHandle(entityKiller);
+            Client killer = NAPI.Player.GetPlayerFromHandle(entityKiller);
             if (killer != null)
             {
                 LogManager.Log(LogManager.LogTypes.Death, $"{character.CharacterName}[{player.SocialClubName}] has died. Killer: {killer.GetCharacter().rp_name()}[{killer.GetAccount().AccountName}]. Weapon: {((WeaponHash)weapon).ToString()}");
@@ -155,7 +155,7 @@ namespace mtgvrp.player_manager
         private void UpdatePedForClient(Client sender, params object[] arguments)
         {
             var player = (NetHandle)arguments[0];
-            Character c = API.GetEntityData(player, "Character");
+            Character c = NAPI.Data.GetEntityData(player, "Character");
             c?.update_ped(sender);
         }
 
@@ -164,7 +164,7 @@ namespace mtgvrp.player_manager
             var account = new Account();
             account.AccountName = player.SocialClubName;
 
-            API.SetEntityData(player, "Account", account);
+            NAPI.Data.SetEntityData(player, "Account", account);
         }
 
         public void OnPlayerDisconnected(Client player, byte type, string reason)
@@ -369,15 +369,15 @@ namespace mtgvrp.player_manager
         [Command("getid", GreedyArg = true, Alias = "id"), Help(HelpManager.CommandGroups.General, "Used to find the ID of specific player name.", new [] {"Name of the target character. (Partial name accepted)"})]
         public void getid_cmd(Client sender, string playerName)
         {
-            API.SendChatMessageToPlayer(sender, Color.White, "----------- Searching for: " + playerName + " -----------");
+            NAPI.Chat.SendChatMessageToPlayer(sender, Color.White, "----------- Searching for: " + playerName + " -----------");
             foreach(var c in Players)
             {
                 if(c.CharacterName.StartsWith(playerName, StringComparison.OrdinalIgnoreCase))
                 {
-                    API.SendChatMessageToPlayer(sender, Color.Grey, c.CharacterName + " - ID " + GetPlayerId(c));
+                    NAPI.Chat.SendChatMessageToPlayer(sender, Color.Grey, c.CharacterName + " - ID " + GetPlayerId(c));
                 }
             }
-            API.SendChatMessageToPlayer(sender, Color.White, "------------------------------------------------------------");
+            NAPI.Chat.SendChatMessageToPlayer(sender, Color.White, "------------------------------------------------------------");
         }
 
         [Command("stats"), Help(HelpManager.CommandGroups.General, "Used to find your character statistics", new []{"ID of target character. <strong>[ADMIN ONLY]</strong>"})]          //Stats command
@@ -409,18 +409,18 @@ namespace mtgvrp.player_manager
         {
             Character character = player.GetCharacter();
 
-            API.SendChatMessageToPlayer(player, Color.White, "__________________ TIME __________________");
-            API.SendChatMessageToPlayer(player, Color.Grey, "The current server time is: " + DateTime.Now.ToString("h:mm:ss tt"));
-            API.SendChatMessageToPlayer(player, Color.Grey, $"The current in-game time is: {TimeWeatherManager.Hours:D2}:{TimeWeatherManager.Minutes:D2}");
-            API.SendChatMessageToPlayer(player, Color.Grey,
+            NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "__________________ TIME __________________");
+            NAPI.Chat.SendChatMessageToPlayer(player, Color.Grey, "The current server time is: " + DateTime.Now.ToString("h:mm:ss tt"));
+            NAPI.Chat.SendChatMessageToPlayer(player, Color.Grey, $"The current in-game time is: {TimeWeatherManager.Hours:D2}:{TimeWeatherManager.Minutes:D2}");
+            NAPI.Chat.SendChatMessageToPlayer(player, Color.Grey,
                 $"Time until next paycheck: { (int)(3600 - (character.GetTimePlayed() % 3600)) / 60}" + " minutes.");
-            API.SendChatMessageToPlayer(player, Color.White, "__________________ TIME __________________");
+            NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "__________________ TIME __________________");
         }
 
         [Command("dimreset"), Help(HelpManager.CommandGroups.General, "Reset your dimension.", null)]
         public void dimreset_cmd(Client player)
         {
-            API.SetEntityDimension(player, 0);
+            NAPI.Entity.SetEntityDimension(player, 0);
             player.SendChatMessage("Dimension reset.");
         }
 
@@ -448,32 +448,32 @@ namespace mtgvrp.player_manager
             Character character = receiver.GetCharacter();
             Account account = receiver.GetAccount();
             Account senderAccount = sender.GetAccount();
-            var playerveh = VehicleManager.GetVehFromNetHandle(API.GetPlayerVehicle(receiver))?.Id.ToString() ?? "None";
+            var playerveh = VehicleManager.GetVehFromNetHandle(NAPI.Player.GetPlayerVehicle(receiver))?.Id.ToString() ?? "None";
 
-            API.SendChatMessageToPlayer(sender, "==============================================");
-            API.SendChatMessageToPlayer(sender, "Player statistics for " + character.CharacterName);
-            API.SendChatMessageToPlayer(sender, "==============================================");
-            API.SendChatMessageToPlayer(sender, "~g~General:~g~");
-            API.SendChatMessageToPlayer(sender,
+            NAPI.Chat.SendChatMessageToPlayer(sender, "==============================================");
+            NAPI.Chat.SendChatMessageToPlayer(sender, "Player statistics for " + character.CharacterName);
+            NAPI.Chat.SendChatMessageToPlayer(sender, "==============================================");
+            NAPI.Chat.SendChatMessageToPlayer(sender, "~g~General:~g~");
+            NAPI.Chat.SendChatMessageToPlayer(sender,
                 $"~h~Character name:~h~ {character.CharacterName} | ~h~ID:~h~ {character.Id} | ~h~Money:~h~ {Money.GetCharacterMoney(character)} | ~h~Bank balance:~h~ {character.BankBalance} | ~h~Playing hours:~h~ {character.GetPlayingHours()}  | ~h~Total hours:~h~ {account.TotalPlayingHours}");
 
-            API.SendChatMessageToPlayer(sender,
+            NAPI.Chat.SendChatMessageToPlayer(sender,
                 $"~h~Age:~h~ {character.Age} ~h~Birthplace:~h~ {character.Birthplace} ~h~Birthday:~h~ {character.Birthday} ~h~VIP level:~h~ {account.VipLevel} ~h~VIP expires:~h~ {account.VipExpirationDate}");
 
-            API.SendChatMessageToPlayer(sender, "~b~Faction/Jobs:~b~");
-            API.SendChatMessageToPlayer(sender,
+            NAPI.Chat.SendChatMessageToPlayer(sender, "~b~Faction/Jobs:~b~");
+            NAPI.Chat.SendChatMessageToPlayer(sender,
                 $"~h~Faction ID:~h~ {character.GroupId} ~h~Rank:~h~ {character.GroupRank} ~h~Group name:~h~ {character.Group.Name} ~h~Job 1:~h~ {character.JobOne.Name}");
 
-            API.SendChatMessageToPlayer(sender, "~r~Property:~r~");
-            API.SendChatMessageToPlayer(sender, $"~h~Owned vehicles:~h~ {character.OwnedVehicles.Count()}");
+            NAPI.Chat.SendChatMessageToPlayer(sender, "~r~Property:~r~");
+            NAPI.Chat.SendChatMessageToPlayer(sender, $"~h~Owned vehicles:~h~ {character.OwnedVehicles.Count()}");
 
             if (senderAccount.AdminLevel > 0)
             {
-                API.SendChatMessageToPlayer(sender, "~y~Admin:~y~");
-                API.SendChatMessageToPlayer(sender,
+                NAPI.Chat.SendChatMessageToPlayer(sender, "~y~Admin:~y~");
+                NAPI.Chat.SendChatMessageToPlayer(sender,
                     $"~h~Admin level:~h~ {account.AdminLevel} ~h~Admin name:~h~ {account.AdminName} ~h~Dimension:~h~ {API.GetEntityDimension(receiver)} ~h~Last IP:~h~ {account.LastIp}");
-                API.SendChatMessageToPlayer(sender, $"~h~Current vehicle:~h~{playerveh} ~h~Last vehicle: ~h~ { character?.LastVehicle?.Id}");
-                API.SendChatMessageToPlayer(sender,
+                NAPI.Chat.SendChatMessageToPlayer(sender, $"~h~Current vehicle:~h~{playerveh} ~h~Last vehicle: ~h~ { character?.LastVehicle?.Id}");
+                NAPI.Chat.SendChatMessageToPlayer(sender,
                     $"~h~Social Club Name:~h~ {account.AccountName} ~h~Admin actions: {account.AdminActions}");
             }
         }

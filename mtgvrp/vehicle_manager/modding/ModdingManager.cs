@@ -53,20 +53,21 @@ namespace mtgvrp.vehicle_manager.modding
                             isVip == true ? "true" : "false"
                 });
             }
-            API.TriggerClientEvent(sender, "MODDING_FILL_MODS", API.ToJson(modsList.ToArray()));
+            NAPI.ClientEvent.TriggerClientEvent(sender, "MODDING_FILL_MODS", NAPI.Util.ToJson(modsList.ToArray()));
         }
 
         [RemoteEvent("MODDING_EXITMENU")]
         private void ModdingExitMenu(Client sender, params object[] arguments)
         {
+            
             var Vehicle = sender.Vehicle;
             ClearVehicleMods(Vehicle.Handle.GetVehicle());
             ApplyVehicleMods(Vehicle.Handle.GetVehicle());
-            API.SetEntityPosition(sender.Vehicle, sender.GetData("ModLastPos"));
-            API.SetEntityDimension(sender.Vehicle, 0);
-            API.SetEntityDimension(sender, 0);
+            NAPI.Entity.SetEntityPosition(sender.Vehicle, sender.GetData("ModLastPos"));
+            NAPI.Entity.SetEntityDimension(sender.Vehicle, 0);
+            NAPI.Entity.SetEntityDimension(sender, 0);
             if (sender.GetAccount().IsSpeedoOn)
-                API.TriggerClientEvent(sender, "TOGGLE_SPEEDO");
+                NAPI.ClientEvent.TriggerClientEvent(sender, "TOGGLE_SPEEDO");
         }
 
         [RemoteEvent("MODDONG_PURCHASE_ITEMS")]
@@ -85,10 +86,10 @@ namespace mtgvrp.vehicle_manager.modding
                 allPrices += price;
                 itemCount++;
             }
-            var prop = PropertyManager.Properties.First(x => x.Id == API.GetEntityData(sender, "MOD_ID"));
+            var prop = PropertyManager.Properties.First(x => x.Id == NAPI.Data.GetEntityData(sender, "MOD_ID"));
             if (prop.Supplies != -1 && prop.Supplies < itemCount * 5)
             {
-                API.TriggerClientEvent(sender, "MODDING_ERROR",
+                NAPI.ClientEvent.TriggerClientEvent(sender, "MODDING_ERROR",
                     "This modshop doesn't have enough supplies.");
                 return;
             }
@@ -96,7 +97,7 @@ namespace mtgvrp.vehicle_manager.modding
             var c = sender.GetCharacter();
             if (Money.GetCharacterMoney(c) < allPrices)
             {
-                API.TriggerClientEvent(sender, "MODDING_ERROR",
+                NAPI.ClientEvent.TriggerClientEvent(sender, "MODDING_ERROR",
                     "You don't have enough money to purchase these mods. Your balance: " +
                     Money.GetCharacterMoney(c));
                 return;
@@ -117,15 +118,15 @@ namespace mtgvrp.vehicle_manager.modding
             ClearVehicleMods(veh);
             ApplyVehicleMods(veh);
             veh.Save();
-            API.TriggerClientEvent(sender, "MODDING_CLOSE");
-            API.SendChatMessageToPlayer(sender,
+            NAPI.ClientEvent.TriggerClientEvent(sender, "MODDING_CLOSE");
+            NAPI.Chat.SendChatMessageToPlayer(sender,
                 "You have successfully purchased some Vehicle mods for a total of ~g~" +
                 allPrices.ToString("C"));
-            API.SetEntityPosition(sender.Vehicle, sender.GetData("ModLastPos"));
-            API.SetEntityDimension(sender.Vehicle, 0);
-            API.SetEntityDimension(sender, 0);
+            NAPI.Entity.SetEntityPosition(sender.Vehicle, sender.GetData("ModLastPos"));
+            NAPI.Entity.SetEntityDimension(sender.Vehicle, 0);
+            NAPI.Entity.SetEntityDimension(sender, 0);
             if (sender.GetAccount().IsSpeedoOn)
-                API.TriggerClientEvent(sender, "TOGGLE_SPEEDO");
+                NAPI.ClientEvent.TriggerClientEvent(sender, "TOGGLE_SPEEDO");
         }
 
         private void API_onResourceStart()
@@ -386,26 +387,26 @@ namespace mtgvrp.vehicle_manager.modding
             var prop = PropertyManager.IsAtPropertyEntrance(player);
             if (prop?.Type != PropertyManager.PropertyTypes.ModdingShop || prop.OwnerId == 0)
             {
-                API.SendChatMessageToPlayer(player, "You must be at an owned modding shop to modify your Vehicle.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You must be at an owned modding shop to modify your Vehicle.");
                 return;
             }
 
             if (!player.IsInVehicle)
             {
-                API.SendChatMessageToPlayer(player, "You must be in a Vehicle to modify it.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You must be in a Vehicle to modify it.");
                 return;
             }
 
             if (!player.GetCharacter().OwnedVehicles.Contains(player.Vehicle.Handle.GetVehicle()) && player.GetAccount().AdminLevel == 0)
             {
-                API.SendChatMessageToPlayer(player, "You must own the Vehicle you're modifying");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You must own the Vehicle you're modifying");
                 return;
             }
 
             //Boats, Cycles, Helis, Planes, Trains
             if (player.Vehicle.Class == 14 || player.Vehicle.Class == 13 || player.Vehicle.Class == 15 || player.Vehicle.Class == 16 || player.Vehicle.Class == 21)
             {
-                API.SendChatMessageToPlayer(player, "You cannot modify this Vehicle.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You cannot modify this Vehicle.");
                 return;
             }
 
@@ -426,16 +427,16 @@ namespace mtgvrp.vehicle_manager.modding
                     });
             }
 
-            API.SetEntityData(player, "ModLastPos", player.Position.Copy());
-            API.SetEntityData(player, "MOD_ID", prop.Id);
-            API.SetEntityPosition(player.Vehicle, new Vector3(-335.8468, -138.2994, 38.43893));
+            NAPI.Data.SetEntityData(player, "ModLastPos", player.Position.Copy());
+            NAPI.Data.SetEntityData(player, "MOD_ID", prop.Id);
+            NAPI.Entity.SetEntityPosition(player.Vehicle, new Vector3(-335.8468, -138.2994, 38.43893));
             API.SetEntityRotation(player.Vehicle, new Vector3(0.1579523, 0.0001232202, -84.06439));
-            API.SetEntityDimension(player, (uint)player.GetCharacter().Id);
-            API.SetEntityDimension(player.Vehicle, (uint)player.GetCharacter().Id);
+            NAPI.Entity.SetEntityDimension(player, (uint)player.GetCharacter().Id);
+            NAPI.Entity.SetEntityDimension(player.Vehicle, (uint)player.GetCharacter().Id);
             
-            API.TriggerClientEvent(player, "SHOW_MODDING_GUI", API.ToJson(modList.ToArray()), player.GetAccount().VipLevel > 0);
+            NAPI.ClientEvent.TriggerClientEvent(player, "SHOW_MODDING_GUI", NAPI.Util.ToJson(modList.ToArray()), player.GetAccount().VipLevel > 0);
             if(player.GetAccount().IsSpeedoOn)
-                API.TriggerClientEvent(player, "TOGGLE_SPEEDO");
+                NAPI.ClientEvent.TriggerClientEvent(player, "TOGGLE_SPEEDO");
         }
 
 
@@ -445,23 +446,23 @@ namespace mtgvrp.vehicle_manager.modding
 
             if (!player.IsInVehicle)
             {
-                API.SendChatMessageToPlayer(player, "You aren't in a a Vehicle.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You aren't in a a Vehicle.");
                 return;
             }
 
             if (player.GetAccount().VipLevel == 0)
             {
-                API.SendChatMessageToPlayer(player, "You must be VIP to use neons.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You must be VIP to use neons.");
                 return;
             }
 
             if (slot > 3 || slot < 0 || slot == -1)
             {
-                API.SendChatMessageToPlayer(player, "USAGE: /toggleneon [0-3]");
-                API.SendChatMessageToPlayer(player, "* 0 -> Left Neon");
-                API.SendChatMessageToPlayer(player, "* 1 -> Right Neon");
-                API.SendChatMessageToPlayer(player, "* 2 -> Front Neon");
-                API.SendChatMessageToPlayer(player, "* 3 -> Back Neon");
+                NAPI.Chat.SendChatMessageToPlayer(player, "USAGE: /toggleneon [0-3]");
+                NAPI.Chat.SendChatMessageToPlayer(player, "* 0 -> Left Neon");
+                NAPI.Chat.SendChatMessageToPlayer(player, "* 1 -> Right Neon");
+                NAPI.Chat.SendChatMessageToPlayer(player, "* 2 -> Front Neon");
+                NAPI.Chat.SendChatMessageToPlayer(player, "* 3 -> Back Neon");
                 return;
             }
 

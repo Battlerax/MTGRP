@@ -61,7 +61,7 @@ namespace mtgvrp.group_manager.lsgov
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLSGov && character.GroupRank < 7) { return; }
             Settings.basepaycheck = int.Parse(amount);
-            API.SendChatMessageToPlayer(player, "Base paycheck set to $" + amount + ".");
+            NAPI.Chat.SendChatMessageToPlayer(player, "Base paycheck set to $" + amount + ".");
         }
 
         //GOVERNMENT ANNOUNCEMENT AS MAYOR OR HIGH RANKING LSPD
@@ -74,7 +74,7 @@ namespace mtgvrp.group_manager.lsgov
 
             foreach (var receiver in PlayerManager.Players)
             {
-                API.SendChatMessageToPlayer(receiver.Client, "[Government] " + character.rp_name() + " says: " + text);
+                NAPI.Chat.SendChatMessageToPlayer(receiver.Client, "[Government] " + character.rp_name() + " says: " + text);
             }
         }
 
@@ -168,7 +168,7 @@ namespace mtgvrp.group_manager.lsgov
             var targetPlayer = PlayerManager.ParseClient(target);
             if (targetPlayer == null)
             {
-                API.SendChatMessageToPlayer(player, "That player is not online.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "That player is not online.");
                 return;
             }
 
@@ -176,20 +176,20 @@ namespace mtgvrp.group_manager.lsgov
 
             if (InventoryManager.DoesInventoryHaveItem<IdentificationItem>(c).Length == 0)
             {
-                API.SendChatMessageToPlayer(player, "You don't have an identification.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You don't have an identification.");
                 return;
             }
 
             if (targetPlayer.Position.DistanceTo(player.Position) > 3.0)
             {
-                API.SendChatMessageToPlayer(player, "The player must be near you.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "The player must be near you.");
                 return;
             }
 
-            API.SendChatMessageToPlayer(targetPlayer, " [************** Identification **************]");
-            API.SendChatMessageToPlayer(targetPlayer, $"* Name: ~h~{c.rp_name()}~h~ | Age: ~h~{c.Age}~h~");
-            API.SendChatMessageToPlayer(targetPlayer, $"* DOB: ~h~{c.Birthday}~h~ | Birth Place: ~h~{c.Birthplace}~h~");
-            API.SendChatMessageToPlayer(targetPlayer, " [********************************************]");
+            NAPI.Chat.SendChatMessageToPlayer(targetPlayer, " [************** Identification **************]");
+            NAPI.Chat.SendChatMessageToPlayer(targetPlayer, $"* Name: ~h~{c.rp_name()}~h~ | Age: ~h~{c.Age}~h~");
+            NAPI.Chat.SendChatMessageToPlayer(targetPlayer, $"* DOB: ~h~{c.Birthday}~h~ | Birth Place: ~h~{c.Birthplace}~h~");
+            NAPI.Chat.SendChatMessageToPlayer(targetPlayer, " [********************************************]");
 
             ChatManager.RoleplayMessage(player, "shows his id to " + targetPlayer.GetCharacter().rp_name(), ChatManager.RoleplayMe);
         }

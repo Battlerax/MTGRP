@@ -98,18 +98,18 @@ namespace mtgvrp.vehicle_dealership
 
                 //Spawn it.
                 if (VehicleManager.spawn_vehicle(theVehicle) != 1)
-                    API.SendChatMessageToPlayer(sender, "An error occured while spawning your vehicle.");
+                    NAPI.Chat.SendChatMessageToPlayer(sender, "An error occured while spawning your vehicle.");
 
                 //Notify.
-                API.SendChatMessageToPlayer(sender,
+                NAPI.Chat.SendChatMessageToPlayer(sender,
                     $"You have sucessfully bought the ~g~{selectedCar[0]}~w~ for ${selectedCar[2]}.");
-                API.SendChatMessageToPlayer(sender, "Use /myvehicles to manage it.");
+                NAPI.Chat.SendChatMessageToPlayer(sender, "Use /myvehicles to manage it.");
 
                 //Exit.
-                API.TriggerClientEvent(sender, "dealership_exitdealermenu");
+                NAPI.ClientEvent.TriggerClientEvent(sender, "dealership_exitdealermenu");
             }
             else
-                API.SendChatMessageToPlayer(sender,
+                NAPI.Chat.SendChatMessageToPlayer(sender,
                     $"You don't have enough money to buy the ~g~{selectedCar[0]}~w~.");
         }
 
@@ -118,13 +118,13 @@ namespace mtgvrp.vehicle_dealership
         {
 
             var character = player.GetCharacter();
-            var currentPos = API.GetEntityPosition(player);
+            var currentPos = NAPI.Entity.GetEntityPosition(player);
             if (_dealershipsLocations.Any(dealer => currentPos.DistanceTo(dealer) < 5F))
             {
 
-                if (API.IsPlayerInAnyVehicle(player))
+                if (NAPI.Player.IsPlayerInAnyVehicle(player))
                 {
-                    API.SendChatMessageToPlayer(player, "You're not able to buy a rod while in a vehicle!");
+                    NAPI.Chat.SendChatMessageToPlayer(player, "You're not able to buy a rod while in a vehicle!");
                     return;
                 }
 
@@ -147,13 +147,13 @@ namespace mtgvrp.vehicle_dealership
                         player.SendChatMessage("You have purchased a fishing rod. Use /fish to begin fishing!"); break;
 
                     case InventoryManager.GiveItemErrors.NotEnoughSpace:
-                        API.SendChatMessageToPlayer(player,
+                        NAPI.Chat.SendChatMessageToPlayer(player,
                             $"[BUSINESS] You dont have enough space for that item. You need {new FishingRod().AmountOfSlots} Slots.");
                         break;
                 }
             }
             else
-                API.SendChatMessageToPlayer(player, "You aren't near the boat dealership.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You aren't near the boat dealership.");
         }
 
         [Command("buyboat"), Help(HelpManager.CommandGroups.Vehicles, "Command used inside dealership to buy a vehicle.", null)]
@@ -161,26 +161,26 @@ namespace mtgvrp.vehicle_dealership
         {
             //Check if can buy more cars.
             Character character = player.GetCharacter();
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
-                API.SendChatMessageToPlayer(player,"You're not able to buy a boat while in a vehicle!");
+                NAPI.Chat.SendChatMessageToPlayer(player,"You're not able to buy a boat while in a vehicle!");
                 return;
             }
 
             if (character.OwnedVehicles.Count >= VehicleManager.GetMaxOwnedVehicles(player))
             {
-                API.SendChatMessageToPlayer(player, "You can't own anymore vehicles.");
-                API.SendChatMessageToPlayer(player, "~g~NOTE: You can buy VIP to increase your vehicle slots.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You can't own anymore vehicles.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "~g~NOTE: You can buy VIP to increase your vehicle slots.");
                 return;
             }
 
-            var currentPos = API.GetEntityPosition(player);
+            var currentPos = NAPI.Entity.GetEntityPosition(player);
             if (_dealershipsLocations.Any(dealer => currentPos.DistanceTo(dealer) < 5F))
             {
-                API.TriggerClientEvent(player, "dealership_showbuyboatmenu", API.ToJson(_boats));
+                NAPI.ClientEvent.TriggerClientEvent(player, "dealership_showbuyboatmenu", NAPI.Util.ToJson(_boats));
             }
             else
-                API.SendChatMessageToPlayer(player, "You aren't near any dealership.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You aren't near any dealership.");
         }
     }
 }

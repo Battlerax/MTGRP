@@ -31,36 +31,36 @@ namespace mtgvrp.job_manager.lumberjack
 
             if (API.GetEntityModel(vehicle) == (int)VehicleHash.Flatbed && player.GetCharacter().JobOne.Type == JobManager.JobTypes.Lumberjack)
             {
-                GameVehicle veh = API.GetEntityData(vehicle, "Vehicle");
+                GameVehicle veh = NAPI.Data.GetEntityData(vehicle, "Vehicle");
                 if (veh.Job?.Type != JobManager.JobTypes.Lumberjack)
                 {
                     return;
                 }
 
-                Tree tree = API.GetEntityData(vehicle, "TREE_OBJ");
+                Tree tree = NAPI.Data.GetEntityData(vehicle, "TREE_OBJ");
                 if (tree == null)
                 {
                     return;
                 }
 
-                if(API.HasEntityData(vehicle, "TREE_DRIVER"))
+                if(NAPI.Data.HasEntityData(vehicle, "TREE_DRIVER"))
                 {
-                    int id = API.GetEntityData(vehicle, "TREE_DRIVER");
+                    int id = NAPI.Data.GetEntityData(vehicle, "TREE_DRIVER");
                     if (id != player.GetCharacter().Id)
                     {
                         //API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));
                         Task.Delay(1000).ContinueWith(t => API.WarpPlayerOutOfVehicle(player)); // CONV NOTE: delay fixme
-                        API.SendChatMessageToPlayer(player, "This is not yours.");
+                        NAPI.Chat.SendChatMessageToPlayer(player, "This is not yours.");
                         return;
                     }
                 }
 
-                if (API.HasEntityData(vehicle, "Tree_Cancel_Timer"))
+                if (NAPI.Data.HasEntityData(vehicle, "Tree_Cancel_Timer"))
                 {
-                    System.Threading.Timer timer = API.GetEntityData(vehicle, "Tree_Cancel_Timer");
+                    System.Threading.Timer timer = NAPI.Data.GetEntityData(vehicle, "Tree_Cancel_Timer");
                     timer.Dispose();
-                    API.ResetEntityData(vehicle, "Tree_Cancel_Timer");
-                    API.SendChatMessageToPlayer(player, "You've got back into your vehicle.");
+                    NAPI.Data.ResetEntityData(vehicle, "Tree_Cancel_Timer");
+                    NAPI.Chat.SendChatMessageToPlayer(player, "You've got back into your vehicle.");
                 }
             }
         }
@@ -69,22 +69,22 @@ namespace mtgvrp.job_manager.lumberjack
         {
             if (API.GetEntityModel(vehicle) == (int) VehicleHash.Flatbed && player.GetCharacter().JobOne.Type == JobManager.JobTypes.Lumberjack)
             {
-                GameVehicle veh = API.GetEntityData(vehicle, "Vehicle");
+                GameVehicle veh = NAPI.Data.GetEntityData(vehicle, "Vehicle");
                 if (veh.Job.Type != JobManager.JobTypes.Lumberjack)
                 {
                     return;
                 }
 
-                Tree tree = API.GetEntityData(vehicle, "TREE_OBJ");
+                Tree tree = NAPI.Data.GetEntityData(vehicle, "TREE_OBJ");
                 if (tree == null)
                 {
                     return;
                 }
 
-                API.SetEntityData(vehicle, "Tree_Cancel_Timer", new System.Threading.Timer(state =>
+                NAPI.Data.SetEntityData(vehicle, "Tree_Cancel_Timer", new System.Threading.Timer(state =>
                 {
-                    GameVehicle vehN = API.GetEntityData(vehicle, "Vehicle");
-                    Tree ttree = API.GetEntityData(vehicle, "TREE_OBJ");
+                    GameVehicle vehN = NAPI.Data.GetEntityData(vehicle, "Vehicle");
+                    Tree ttree = NAPI.Data.GetEntityData(vehicle, "TREE_OBJ");
                     if (ttree == null)
                     {
                         return;
@@ -92,15 +92,15 @@ namespace mtgvrp.job_manager.lumberjack
                     ttree.Stage = Tree.Stages.Cutting;
                     ttree.UpdateAllTree();
 
-                    API.ResetEntityData(vehicle, "TREE_OBJ");
+                    NAPI.Data.ResetEntityData(vehicle, "TREE_OBJ");
                     vehN.Respawn();
-                    API.ResetEntityData(vehicle, "Tree_Cancel_Timer");
-                    API.ResetEntityData(vehicle, "TREE_DRIVER");
-                    API.SendChatMessageToPlayer(player, "Wood run cancelled.");
-                    API.TriggerClientEvent(player, "update_beacon", new Vector3());
+                    NAPI.Data.ResetEntityData(vehicle, "Tree_Cancel_Timer");
+                    NAPI.Data.ResetEntityData(vehicle, "TREE_DRIVER");
+                    NAPI.Chat.SendChatMessageToPlayer(player, "Wood run cancelled.");
+                    NAPI.ClientEvent.TriggerClientEvent(player, "update_beacon", new Vector3());
 
                 }, null, 60000, Timeout.Infinite));
-                API.SendChatMessageToPlayer(player, "You've got 1 minute to get back to your vehicle or the wood will be reset.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You've got 1 minute to get back to your vehicle or the wood will be reset.");
             }
         }
 
@@ -131,7 +131,7 @@ namespace mtgvrp.job_manager.lumberjack
                     var rnd = new Random();
                     if (rnd.Next(0, 1000) <= 0)
                     {
-                        API.SendChatMessageToPlayer(sender, "~r~* Your axe would break.");
+                        NAPI.Chat.SendChatMessageToPlayer(sender, "~r~* Your axe would break.");
                         InventoryManager.DeleteInventoryItem<Weapon>(character, 1,
                             x => x.CommandFriendlyName == "Hatchet");
                         API.StopPlayerAnimation(sender);
@@ -154,7 +154,7 @@ namespace mtgvrp.job_manager.lumberjack
                     var rnd = new Random();
                     if (rnd.Next(0, 1000) <= 0)
                     {
-                        API.SendChatMessageToPlayer(sender, "~r~* Your axe would break.");
+                        NAPI.Chat.SendChatMessageToPlayer(sender, "~r~* Your axe would break.");
                         InventoryManager.DeleteInventoryItem<Weapon>(character, 1,
                             x => x.CommandFriendlyName == "Hatchet");
                         API.StopPlayerAnimation(sender);
@@ -182,7 +182,7 @@ namespace mtgvrp.job_manager.lumberjack
             tree.CreateTree();
             tree.Insert();
             API.SetEntitySharedData(tree.TreeObj, "TargetObj", tree.Id.ToString());
-            API.TriggerClientEvent(player, "PLACE_OBJECT_ON_GROUND_PROPERLY", tree.TreeObj.Handle, "TreePlaced");
+            NAPI.ClientEvent.TriggerClientEvent(player, "PLACE_OBJECT_ON_GROUND_PROPERLY", tree.TreeObj.Handle, "TreePlaced");
         }
 
         [Command("deletetree"), Help(HelpManager.CommandGroups.LumberJob, "Delete the nearest lumberjack tree to you.")]
@@ -194,7 +194,7 @@ namespace mtgvrp.job_manager.lumberjack
             var tree = Tree.Trees.FirstOrDefault(x => x.TreeMarker?.Location.DistanceTo(player.Position) <= 1.5);
             if (tree == null)
             {
-                API.SendChatMessageToPlayer(player, "You aren't near a tree.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You aren't near a tree.");
                 return;
             }
 
@@ -207,47 +207,47 @@ namespace mtgvrp.job_manager.lumberjack
             var character = player.GetCharacter();
             if (character.JobOne.Type != JobManager.JobTypes.Lumberjack)
             {
-                API.SendNotificationToPlayer(player, "You must be a lumberjack.");
+                NAPI.Notification.SendNotificationToPlayer(player, "You must be a lumberjack.");
                 return;
             }
 
-            if (API.IsPlayerInAnyVehicle(player) && API.GetEntityModel(API.GetPlayerVehicle(player)) == (int)VehicleHash.Flatbed)
+            if (NAPI.Player.IsPlayerInAnyVehicle(player) && API.GetEntityModel(NAPI.Player.GetPlayerVehicle(player)) == (int)VehicleHash.Flatbed)
             {
-                GameVehicle vehicle = API.GetEntityData(API.GetPlayerVehicle(player), "Vehicle");
+                GameVehicle vehicle = NAPI.Data.GetEntityData(NAPI.Player.GetPlayerVehicle(player), "Vehicle");
                 if (vehicle.Job.Type != JobManager.JobTypes.Lumberjack)
                 {
-                    API.SendChatMessageToPlayer(player, "This is not a Lumberjack vehicle.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, "This is not a Lumberjack vehicle.");
                     return;
                 }
 
-                if (API.HasEntityData(vehicle.NetHandle, "TREE_OBJ"))
+                if (NAPI.Data.HasEntityData(vehicle.NetHandle, "TREE_OBJ"))
                 {
-                    API.SendChatMessageToPlayer(player, "This vehicle is already holding some logs.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, "This vehicle is already holding some logs.");
                     return;
                 }
 
                 var tree = Tree.Trees.FirstOrDefault(x => x.TreeObj?.Position?.DistanceTo(player.Position) <= 10.0f && x.Stage == Tree.Stages.Waiting);
                 if (tree == null || tree?.Stage != Tree.Stages.Waiting)
                 {
-                    API.SendChatMessageToPlayer(player, "You aren't near a tree.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, "You aren't near a tree.");
                     return;
                 }
 
                 tree.Stage = Tree.Stages.Moving;
                 tree.UpdateTreeText();
-                API.AttachEntityToEntity(tree.TreeObj, API.GetPlayerVehicle(player), "bodyshell", new Vector3(0, -1.5, 0.3), new Vector3(0, 0, 0));
+                API.AttachEntityToEntity(tree.TreeObj, NAPI.Player.GetPlayerVehicle(player), "bodyshell", new Vector3(0, -1.5, 0.3), new Vector3(0, 0, 0));
 
                 ChatManager.RoleplayMessage(player, "picks up the woods into the truck.", ChatManager.RoleplayMe);
 
-                API.TriggerClientEvent(player, "update_beacon", character.JobOne.MiscOne.Location);
+                NAPI.ClientEvent.TriggerClientEvent(player, "update_beacon", character.JobOne.MiscOne.Location);
                 
 
-                API.SetEntityData(vehicle.NetHandle, "TREE_OBJ", tree);
-                API.SetEntityData(vehicle.NetHandle, "TREE_DRIVER", character.Id);
-                API.SendChatMessageToPlayer(player, "Go to the HQ to sell your wood.");
+                NAPI.Data.SetEntityData(vehicle.NetHandle, "TREE_OBJ", tree);
+                NAPI.Data.SetEntityData(vehicle.NetHandle, "TREE_DRIVER", character.Id);
+                NAPI.Chat.SendChatMessageToPlayer(player, "Go to the HQ to sell your wood.");
             }
             else
-                API.SendChatMessageToPlayer(player, "You have to be in a truck to pickup the wood.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You have to be in a truck to pickup the wood.");
         }
 
         [Command("sellwood"), Help(HelpManager.CommandGroups.LumberJob, "Sells the wood you currently have on the truck.")]
@@ -256,23 +256,23 @@ namespace mtgvrp.job_manager.lumberjack
             var character = player.GetCharacter();
             if (character.JobOne.Type != JobManager.JobTypes.Lumberjack)
             {
-                API.SendNotificationToPlayer(player, "You must be a lumberjack.");
+                NAPI.Notification.SendNotificationToPlayer(player, "You must be a lumberjack.");
                 return;
             }
 
             if (character.JobZoneType != 2 || JobManager.GetJobById(character.JobZone).Type != JobManager.JobTypes.Lumberjack)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "You are not near the sell wood point!");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "You are not near the sell wood point!");
                 return;
             }
 
-            if (API.IsPlayerInAnyVehicle(player) && API.GetEntityModel(API.GetPlayerVehicle(player)) ==
+            if (NAPI.Player.IsPlayerInAnyVehicle(player) && API.GetEntityModel(NAPI.Player.GetPlayerVehicle(player)) ==
                 (int) VehicleHash.Flatbed)
             {
-                Tree tree = API.GetEntityData(API.GetPlayerVehicle(player), "TREE_OBJ");
+                Tree tree = NAPI.Data.GetEntityData(NAPI.Player.GetPlayerVehicle(player), "TREE_OBJ");
                 if (tree == null)
                 {
-                    API.SendChatMessageToPlayer(player, "You dont have any wood on your vehicle.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, "You dont have any wood on your vehicle.");
                     return;
                 }
 
@@ -282,15 +282,15 @@ namespace mtgvrp.job_manager.lumberjack
                 tree.RespawnTimer.Elapsed += tree.RespawnTimer_Elapsed;
                 tree.RespawnTimer.Start();
 
-                GameVehicle vehicle = API.GetEntityData(API.GetPlayerVehicle(player), "Vehicle");
-                API.ResetEntityData(API.GetPlayerVehicle(player), "TREE_OBJ");
+                GameVehicle vehicle = NAPI.Data.GetEntityData(NAPI.Player.GetPlayerVehicle(player), "Vehicle");
+                NAPI.Data.ResetEntityData(NAPI.Player.GetPlayerVehicle(player), "TREE_OBJ");
                 Task.Delay(1000).ContinueWith(t => API.WarpPlayerOutOfVehicle(player)); // CONV NOTE: delay fixme
                 VehicleManager.respawn_vehicle(vehicle);
-                API.ResetEntityData(API.GetPlayerVehicle(player), "TREE_DRIVER");
-                API.TriggerClientEvent(player, "update_beacon", new Vector3());
+                NAPI.Data.ResetEntityData(NAPI.Player.GetPlayerVehicle(player), "TREE_DRIVER");
+                NAPI.ClientEvent.TriggerClientEvent(player, "update_beacon", new Vector3());
 
                 InventoryManager.GiveInventoryItem(player.GetCharacter(), new Money(), 350, true);
-                API.SendChatMessageToPlayer(player, "* You have sucessfully sold your wood for ~g~$350");
+                NAPI.Chat.SendChatMessageToPlayer(player, "* You have sucessfully sold your wood for ~g~$350");
                 LogManager.Log(LogManager.LogTypes.Stats, $"[Job] {character.CharacterName}[{player.GetAccount().AccountName}] has earned $200 from selling wood.");
 
                 SettingsManager.Settings.WoodSupplies += 50;

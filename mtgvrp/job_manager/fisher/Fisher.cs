@@ -51,19 +51,19 @@ namespace mtgvrp.job_manager.fisher
                 c.CatchingFish = Fish.None;
                 c.PerfectCatchStrength = 0;
 
-                API.SendChatMessageToPlayer(player, Color.AdminOrange, "The fish managed to get away...");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.AdminOrange, "The fish managed to get away...");
                 API.StopPlayerAnimation(player);
             }
             else if (strengthDifference > 30)
             {
-                API.SendChatMessageToPlayer(player, "You snapped your fishing rod!");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You snapped your fishing rod!");
                 API.StopPlayerAnimation(player);
             }
             else
             {
                 var weight = MapValue(0, 100, c.CatchingFish.MinWeight, c.CatchingFish.MaxWeight, catchStrength);
 
-                API.SendChatMessageToPlayer(player, Color.White,
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White,
                     "You caught a " + c.CatchingFish.Name + " that weighs " + weight + " pounds. It is worth about $" + c.CatchingFish.calculate_value(weight));
                 API.StopPlayerAnimation(player);
 
@@ -74,11 +74,11 @@ namespace mtgvrp.job_manager.fisher
                 switch (status)
                 {
                     case InventoryManager.GiveItemErrors.MaxAmountReached:
-                        API.SendChatMessageToPlayer(player, Color.White,
+                        NAPI.Chat.SendChatMessageToPlayer(player, Color.White,
                             "You have the max amount of this fish in your inventory.");
                         break;
                     case InventoryManager.GiveItemErrors.NotEnoughSpace:
-                        API.SendChatMessageToPlayer(player, Color.White,
+                        NAPI.Chat.SendChatMessageToPlayer(player, Color.White,
                             "Your inventory does not have enough space for another fish. You throw the fish back into the water.");
                         break;
                 }
@@ -88,7 +88,7 @@ namespace mtgvrp.job_manager.fisher
         [RemoteEvent("snapped_rod")]
         private void SnappedRod(Client player, params object[] arguments)
         {
-            API.SendChatMessageToPlayer(player, "You snapped your fishing rod!");
+            NAPI.Chat.SendChatMessageToPlayer(player, "You snapped your fishing rod!");
             InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(FishingRod), 1);
             API.StopPlayerAnimation(player);
         }
@@ -100,7 +100,7 @@ namespace mtgvrp.job_manager.fisher
 
             if (character.JobOne.Type != JobManager.JobTypes.Fisher)
             {
-                API.SendPictureNotificationToPlayer(player, "You must be a fisher man to use this command.",
+                NAPI.Notification.SendPictureNotificationToPlayer(player, "You must be a fisher man to use this command.",
                     "CHAR_BLOCKED", 0, 0, "Server", "~r~Command Error");
                 return;
             }
@@ -116,13 +116,13 @@ namespace mtgvrp.job_manager.fisher
 
             if (DateTime.Now < character.NextFishTime)
             {
-                API.SendChatMessageToPlayer(player, "Wait 5 seconds before doing this again.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "Wait 5 seconds before doing this again.");
                 return;
             }
 
-            if (API.IsPlayerInAnyVehicle(player))
+            if (NAPI.Player.IsPlayerInAnyVehicle(player))
             {
-                API.SendChatMessageToPlayer(player, "You can't fish while driving a vehicle.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You can't fish while driving a vehicle.");
                 return;
             }
 
@@ -135,7 +135,7 @@ namespace mtgvrp.job_manager.fisher
 
             if (character.IsInFishingZone == false && (isOnLastBoat == false || isLastVehicleBoat == false))
             {
-                API.SendPictureNotificationToPlayer(player,
+                NAPI.Notification.SendPictureNotificationToPlayer(player,
                     "You are not in a fishing zone or on the last boat you drove.", "CHAR_BLOCKED", 0, 0, "Server",
                     "~r~Command Error");
                 return;
@@ -159,16 +159,16 @@ namespace mtgvrp.job_manager.fisher
         {
             Character character = player.GetCharacter();
 
-            API.SendChatMessageToPlayer(player, Color.White, "----------------------------------------------");
+            NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "----------------------------------------------");
             foreach (var f in character.Inventory)
             {
                 if (f.GetType() == typeof(Fish))
                 {
                     var fish = (Fish) f;
-                    API.SendChatMessageToPlayer(player, Color.Grey, fish.LongName + " (" + fish.ActualWeight + " lbs)");
+                    NAPI.Chat.SendChatMessageToPlayer(player, Color.Grey, fish.LongName + " (" + fish.ActualWeight + " lbs)");
                 }
             }
-            API.SendChatMessageToPlayer(player, Color.White, "----------------------------------------------");
+            NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "----------------------------------------------");
         }
 
         [Command("sellfish"), Help(HelpManager.CommandGroups.FisherJob, "Sell the fish you currently have.")]
@@ -178,7 +178,7 @@ namespace mtgvrp.job_manager.fisher
 
             if (character.JobZoneType != 2)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "You are not near the sell fish point!");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "You are not near the sell fish point!");
                 return; 
             }
 
@@ -186,13 +186,13 @@ namespace mtgvrp.job_manager.fisher
 
             if (job == null)
             {
-                API.SendChatMessageToPlayer(player, "null job");
+                NAPI.Chat.SendChatMessageToPlayer(player, "null job");
                 return;
             }
 
             if (job.Type != JobManager.JobTypes.Fisher)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "You are not near the sell fish point!");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "You are not near the sell fish point!");
                 return;
             }
 
@@ -209,7 +209,7 @@ namespace mtgvrp.job_manager.fisher
 
             InventoryManager.DeleteInventoryItem(character, typeof(Fish));
             InventoryManager.GiveInventoryItem(character, new Money(), (int)Math.Round(totalValue));
-            API.SendChatMessageToPlayer(player, "You have sold all of your fish for $" + totalValue);
+            NAPI.Chat.SendChatMessageToPlayer(player, "You have sold all of your fish for $" + totalValue);
             LogManager.Log(LogManager.LogTypes.Stats, $"[Job] {character.CharacterName}[{player.GetAccount().AccountName}] has earned ${totalValue} from selling their fish.");
         }
 
@@ -219,9 +219,9 @@ namespace mtgvrp.job_manager.fisher
             c.CatchingFish = random_catch(boatFishing);
             c.PerfectCatchStrength = _random.Next(25, 95);
 
-            API.SendChatMessageToPlayer(c.Client, Color.AdminOrange,
+            NAPI.Chat.SendChatMessageToPlayer(c.Client, Color.AdminOrange,
                 "* You begin to feel a fish tugging at your line! Control your reeling strength by tapping space bar.");
-            API.TriggerClientEvent(c.Client, "start_fishing", c.PerfectCatchStrength);
+            NAPI.ClientEvent.TriggerClientEvent(c.Client, "start_fishing", c.PerfectCatchStrength);
         }
 
         public Fish random_catch(bool inBoat)

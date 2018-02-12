@@ -27,11 +27,11 @@ namespace mtgvrp.property_system.businesses
 
             if (biz?.Type != PropertyManager.PropertyTypes.VIPLounge)
             {
-                API.SendChatMessageToPlayer(player, "You aren't at the VIP interaction point.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You aren't at the VIP interaction point.");
                 return;
             }
 
-            API.FreezePlayer(player, true);
+            NAPI.Player.FreezePlayer(player, true);
             List<string[]> itemsWithPrices = new List<string[]>();
             foreach (var itm in ItemManager.VIPItems)
             {
@@ -41,7 +41,7 @@ namespace mtgvrp.property_system.businesses
                     biz.ItemPrices.SingleOrDefault(x => x.Key == itm[0]).Value.ToString()
                 });
             }
-            API.TriggerClientEvent(player, "property_buy", API.ToJson(itemsWithPrices.ToArray()),
+            NAPI.ClientEvent.TriggerClientEvent(player, "property_buy", NAPI.Util.ToJson(itemsWithPrices.ToArray()),
                 "VIP Weapon Tints",
                 biz.PropertyName);
 

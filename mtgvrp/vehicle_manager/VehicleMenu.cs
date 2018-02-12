@@ -78,7 +78,7 @@ namespace mtgvrp.vehicle_manager
                     break;
                 case "park":
 
-                    var pos = API.GetEntityPosition(vehicleHandle);
+                    var pos = NAPI.Entity.GetEntityPosition(vehicleHandle);
                     var rot = API.GetEntityRotation(vehicleHandle);
                     var dimension = API.GetEntityDimension(vehicleHandle);
 

@@ -65,13 +65,13 @@ namespace mtgvrp.core.Help
                 .SelectMany(t => t.GetMethods())
                 .Where(m => m.GetCustomAttributes(typeof(CommandAttribute), false).Length > 0).ToArray();
 
-            API.ConsoleOutput($"*** Intializing Help. [ {methods.Length + animCmds.Length} Commands Of {totalCommands.Length} ]");
+            NAPI.Util.ConsoleOutput($"*** Intializing Help. [ {methods.Length + animCmds.Length} Commands Of {totalCommands.Length} ]");
 
             //Show commands with no help.
             foreach (var missing in totalCommands.Except(animCmds).Except(methods))
             {
                 var info = missing.GetCustomAttribute<CommandAttribute>();
-                API.ConsoleOutput($"*** [ERROR] COMMAND `/{info.CommandString}` HAS NO HELP.");
+                NAPI.Util.ConsoleOutput($"*** [ERROR] COMMAND `/{info.CommandString}` HAS NO HELP.");
             }
 
             Dictionary<CommandGroups, List<string[]>> cmds = new Dictionary<CommandGroups, List<string[]>>();
@@ -82,7 +82,7 @@ namespace mtgvrp.core.Help
 
                 if (cmd.GetParameters().Skip(1).Select(x => x.Name).Count() != commandHelp.Parameters.Length)
                 {
-                    API.ConsoleOutput($"*** [ERROR] COMMAND `/{commandInfo.CommandString}` HAS AMOUNT OF PARAMETER DESCRIPTIONS NOT EQUAL TO ACTUAL PARAMETERS.");
+                    NAPI.Util.ConsoleOutput($"*** [ERROR] COMMAND `/{commandInfo.CommandString}` HAS AMOUNT OF PARAMETER DESCRIPTIONS NOT EQUAL TO ACTUAL PARAMETERS.");
                     continue;
                 }
 
@@ -104,9 +104,9 @@ namespace mtgvrp.core.Help
                 cmds[CommandGroups.Animation].Add(new[] { commandInfo.CommandString, string.Join("|", cmd.GetParameters().Skip(1).Select(x => x.Name)) /* Skip sender */ , "", ""});
             }
 
-            CommandStuff = API.ToJson(cmds);
+            CommandStuff = NAPI.Util.ToJson(cmds);
 
-            API.ConsoleOutput($"*** Help Done");
+            NAPI.Util.ConsoleOutput($"*** Help Done");
         }
 
         [Command("help"), Help(CommandGroups.General, "Shows the list of commands available.")]
@@ -132,7 +132,7 @@ namespace mtgvrp.core.Help
                     isGov = true;
             }
 
-            API.TriggerClientEvent(player, "help_showMenu", CommandStuff, player.GetAccount().AdminLevel, isPD, isLSNN, isGov);
+            NAPI.ClientEvent.TriggerClientEvent(player, "help_showMenu", CommandStuff, player.GetAccount().AdminLevel, isPD, isLSNN, isGov);
         }
     }
 }

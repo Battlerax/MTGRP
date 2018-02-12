@@ -91,7 +91,7 @@ namespace mtgvrp.group_manager.lspd
             }
 
             GiveLspdEquipment(player);
-            API.SendChatMessageToPlayer(player, Color.White, "You have been given the standard LSPD equipment.");
+            NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "You have been given the standard LSPD equipment.");
         }
 
         [RemoteEvent("LSPD_Menu_Equip_SWAT_Equipment")]
@@ -105,7 +105,7 @@ namespace mtgvrp.group_manager.lspd
             }
 
             GiveLspdEquipment(player, 1);
-            API.SendChatMessageToPlayer(player, Color.White, "You have been given the standard SWAT equipment.");
+            NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "You have been given the standard SWAT equipment.");
         }
 
         [Command("recordcrime", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Record a player's crime, adding them to the wanted list.", new[] { "The target player ID.", "The crime ID" })]
@@ -115,7 +115,7 @@ namespace mtgvrp.group_manager.lspd
 
             if (receiver == null)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
 
@@ -124,13 +124,13 @@ namespace mtgvrp.group_manager.lspd
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
                 return;
             }
 
             receiverCharacter.RecordCrime(character.CharacterName, new Crime(type, crimename, int.Parse(jailTime), int.Parse(fine)));
-            API.SendNotificationToPlayer(player, "You have recorded " + receiverCharacter.rp_name() + " for committing: " + crimename);
-            API.SendNotificationToPlayer(receiver, character.rp_name() + " has recorded a crime you committed: ~r~" + crimename + "~w~.");
+            NAPI.Notification.SendNotificationToPlayer(player, "You have recorded " + receiverCharacter.rp_name() + " for committing: " + crimename);
+            NAPI.Notification.SendNotificationToPlayer(receiver, character.rp_name() + " has recorded a crime you committed: ~r~" + crimename + "~w~.");
         }
 
         /*
@@ -141,7 +141,7 @@ namespace mtgvrp.group_manager.lspd
 
             if (receiver == null)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
 
@@ -150,7 +150,7 @@ namespace mtgvrp.group_manager.lspd
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
                 return;
             }
 
@@ -158,13 +158,13 @@ namespace mtgvrp.group_manager.lspd
 
             if (crime == null)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "No crime with that ID exists.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "No crime with that ID exists.");
                 return;
             }
 
             receiverCharacter.RecordCrime(character.CharacterName, crime);
-            API.SendNotificationToPlayer(player, "You have recorded " + receiverCharacter.CharacterName + " for committing: " + crime.Name);
-            API.SendNotificationToPlayer(receiver, character.CharacterName + " has recorded a crime you committed: ~r~" + crime.Name + "~w~.");
+            NAPI.Notification.SendNotificationToPlayer(player, "You have recorded " + receiverCharacter.CharacterName + " for committing: " + crime.Name);
+            NAPI.Notification.SendNotificationToPlayer(receiver, character.CharacterName + " has recorded a crime you committed: ~r~" + crime.Name + "~w~.");
         }
         */
 
@@ -174,7 +174,7 @@ namespace mtgvrp.group_manager.lspd
             var receiver = PlayerManager.ParseClient(id);
             if (receiver == null)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
 
@@ -183,21 +183,21 @@ namespace mtgvrp.group_manager.lspd
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
                 return;
             }
 
-            API.SendChatMessageToPlayer(player, "=======CRIMIMNAL RECORD FOR " + receiverCharacter.rp_name() + "=======");
+            NAPI.Chat.SendChatMessageToPlayer(player, "=======CRIMIMNAL RECORD FOR " + receiverCharacter.rp_name() + "=======");
             foreach (var i in receiverCharacter.GetCriminalRecord())
             {
                 if(i.ActiveCrime == true)
                 {
-                    API.SendChatMessageToPlayer(player, "~r~[ACTIVE] Type: " + i.Crime.Type + " Crime: " + i.Crime.Name + " Date issued: " + i.DateTime + " Recording officer: " + i.OfficerName);
+                    NAPI.Chat.SendChatMessageToPlayer(player, "~r~[ACTIVE] Type: " + i.Crime.Type + " Crime: " + i.Crime.Name + " Date issued: " + i.DateTime + " Recording officer: " + i.OfficerName);
                 }
 
                 else
                 {
-                    API.SendChatMessageToPlayer(player, "Type: " + i.Crime.Type + "Crime: " + i.Crime.Name + " Date issued: " + i.DateTime + " Recording officer: " + i.OfficerName);
+                    NAPI.Chat.SendChatMessageToPlayer(player, "Type: " + i.Crime.Type + "Crime: " + i.Crime.Name + " Date issued: " + i.DateTime + " Recording officer: " + i.OfficerName);
                 }
             }
         }
@@ -209,7 +209,7 @@ namespace mtgvrp.group_manager.lspd
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
                 return;
             }
 
@@ -219,7 +219,7 @@ namespace mtgvrp.group_manager.lspd
             int f = 0;
             foreach (var i in Crime.Crimes)
             {
-                API.SendChatMessageToPlayer(player, f + " | " + i.Type + " | " + i.Name + " | " + i.JailTime + " | " + i.Fine); //TODO: REPLACE WITH A MENU
+                NAPI.Chat.SendChatMessageToPlayer(player, f + " | " + i.Type + " | " + i.Name + " | " + i.JailTime + " | " + i.Fine); //TODO: REPLACE WITH A MENU
                 f++;
             }
         }
@@ -231,19 +231,19 @@ namespace mtgvrp.group_manager.lspd
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
                 return;
             }
 
 
             if (Crime.CrimeExists(crimeName))
             {
-                API.SendChatMessageToPlayer(player, "This crime already exists!");
+                NAPI.Chat.SendChatMessageToPlayer(player, "This crime already exists!");
                 return;
             }
 
             Crime.InsertCrime(type, crimeName, jailTime, fine);
-            API.SendChatMessageToPlayer(player, "Crime created and added to crime list.");
+            NAPI.Chat.SendChatMessageToPlayer(player, "Crime created and added to crime list.");
         }
 
         [Command("editcrime"), Help(HelpManager.CommandGroups.LSPD, "Edit a crime.", new[] { "Crime ID", "The crime type", "The crime name", "The jail time", "The fine for this crime" })]
@@ -253,20 +253,20 @@ namespace mtgvrp.group_manager.lspd
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
                 return;
             }
 
             if (Crime.CrimeExists(crimeName))
             {
-                API.SendChatMessageToPlayer(player, "This crime already exists!");
+                NAPI.Chat.SendChatMessageToPlayer(player, "This crime already exists!");
                 return;
             }
 
             Crime crime = Crime.Crimes[id];
             Crime.Crimes[id] = new Crime(type, crimeName, jailTime, fine);
             Crime.UpdateCrimes();
-            API.SendChatMessageToPlayer(player, "Crime edited.");
+            NAPI.Chat.SendChatMessageToPlayer(player, "Crime edited.");
         }
 
         [Command("deletecrime"), Help(HelpManager.CommandGroups.LSPD, "Delete a crime by its ID.", new[] { "The target crime ID." })]
@@ -276,7 +276,7 @@ namespace mtgvrp.group_manager.lspd
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
                 return;
             }
 
@@ -290,7 +290,7 @@ namespace mtgvrp.group_manager.lspd
 
 
             crimeDelete.Delete();
-            API.SendChatMessageToPlayer(player, "Crime deleted from crime list.");
+            NAPI.Chat.SendChatMessageToPlayer(player, "Crime deleted from crime list.");
         }
 
         [Command("wanted", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Show the wanted list.", null)]
@@ -299,20 +299,20 @@ namespace mtgvrp.group_manager.lspd
             Character character = player.GetCharacter();
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
                 return;
             }
 
             var players = API.GetAllPlayers();
 
-            API.SendChatMessageToPlayer(player, "---------------------WANTED LIST---------------------");
+            NAPI.Chat.SendChatMessageToPlayer(player, "---------------------WANTED LIST---------------------");
 
 
             foreach (var c in PlayerManager.Players)
             {
                 if (c.HasActiveCriminalRecord() > 0)
                 {
-                    API.SendChatMessageToPlayer(player, c.rp_name() + " is wanted with " + c.HasActiveCriminalRecord() + " crimes.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, c.rp_name() + " is wanted with " + c.HasActiveCriminalRecord() + " crimes.");
                 }
             }
         }
@@ -325,7 +325,7 @@ namespace mtgvrp.group_manager.lspd
             var receiver = PlayerManager.ParseClient(id);
             if (receiver == null)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
 
@@ -334,30 +334,30 @@ namespace mtgvrp.group_manager.lspd
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
                 return;
             }
 
             if (receiver == player)
             {
-                API.SendNotificationToPlayer(player, "~r~You can't arrest yourself!");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~You can't arrest yourself!");
                 return;
             }
 
             if (receiverCharacter.HasActiveCriminalRecord() == 0)
             {
-                API.SendChatMessageToPlayer(player, "This player has no active crimes.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "This player has no active crimes.");
             }
             
             if (character.GroupId == receiverCharacter.GroupId)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ You cannot arrest a member of the LSPD.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ You cannot arrest a member of the LSPD.");
                 return;
             }
 
             if (player.Position.DistanceTo(character.Group.ArrestLocation.Location) > 4)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "You are not at the arrest location.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "You are not at the arrest location.");
                 return;
             }
 
@@ -381,8 +381,8 @@ namespace mtgvrp.group_manager.lspd
             receiverCharacter.IsCuffed = false;
             API.StopPlayerAnimation(receiverCharacter.Client);
 
-            API.SendNotificationToPlayer(player, "You have arrested ~b~" + receiverCharacter.rp_name() + "~w~.");
-            API.SendNotificationToPlayer(receiver, "You have been arrested by ~b~" + character.rp_name() + "~w~.");
+            NAPI.Notification.SendNotificationToPlayer(player, "You have arrested ~b~" + receiverCharacter.rp_name() + "~w~.");
+            NAPI.Notification.SendNotificationToPlayer(receiver, "You have been arrested by ~b~" + character.rp_name() + "~w~.");
             InventoryManager.DeleteInventoryItem(receiverCharacter, typeof(Money), fine);
             receiverCharacter.JailTimeLeft = time * 1000 * 60;
             JailControl(receiver, time);
@@ -396,7 +396,7 @@ namespace mtgvrp.group_manager.lspd
             var receiver = PlayerManager.ParseClient(id);
             if (receiver == null)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
 
@@ -405,18 +405,18 @@ namespace mtgvrp.group_manager.lspd
 
             if ((character.GroupRank < 4 || character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd) && player.GetAccount().AdminLevel < 2)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "You don't have permission to use this command.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "You don't have permission to use this command.");
                 return;
             }
 
             if (receiverCharacter.IsJailed == false)
             {
-                API.SendChatMessageToPlayer(player, "This player is not jailed.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "This player is not jailed.");
                 return;
             }
 
-            API.SendNotificationToPlayer(player, "You have released ~b~" + receiverCharacter.rp_name() + "~w~ from prison.");
-            API.SendNotificationToPlayer(receiver, "You have been released from prison by ~b~" + character.rp_name() + "~w~.");
+            NAPI.Notification.SendNotificationToPlayer(player, "You have released ~b~" + receiverCharacter.rp_name() + "~w~ from prison.");
+            NAPI.Notification.SendNotificationToPlayer(receiver, "You have been released from prison by ~b~" + character.rp_name() + "~w~.");
 
             if (player.GetAccount().AdminLevel >= 2)
             {
@@ -436,7 +436,7 @@ namespace mtgvrp.group_manager.lspd
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
-                API.SendChatMessageToPlayer(player, "You are not in the LSPD.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You are not in the LSPD.");
                 return;
             }
 
@@ -448,13 +448,13 @@ namespace mtgvrp.group_manager.lspd
 
             if (receiver == null)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
 
-            if (API.GetEntityPosition(player).DistanceToSquared(API.GetEntityPosition(receiver)) > 16f)
+            if (NAPI.Entity.GetEntityPosition(player).DistanceToSquared(NAPI.Entity.GetEntityPosition(receiver)) > 16f)
             {
-                API.SendNotificationToPlayer(player, "~r~You're too far away!");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~You're too far away!");
                 return;
             }
 
@@ -480,19 +480,19 @@ namespace mtgvrp.group_manager.lspd
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
-                API.SendChatMessageToPlayer(player, "You are not in the LSPD.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You are not in the LSPD.");
                 return;
             }
 
             if (receiver == null)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
 
-            if (API.GetEntityPosition(player).DistanceToSquared(API.GetEntityPosition(receiver)) > 16f)
+            if (NAPI.Entity.GetEntityPosition(player).DistanceToSquared(NAPI.Entity.GetEntityPosition(receiver)) > 16f)
             {
-                API.SendNotificationToPlayer(player, "~r~You're too far away!");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~You're too far away!");
                 return;
             }
 
@@ -510,25 +510,25 @@ namespace mtgvrp.group_manager.lspd
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
-                API.SendChatMessageToPlayer(player, "You are not in the LSPD.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You are not in the LSPD.");
                 return;
             }
 
             if (receiver == null)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
 
             if (receiver == player)
             {
-                API.SendNotificationToPlayer(player, "~r~You can't cuff yourself!");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~You can't cuff yourself!");
                 return;
             }
 
-            if (API.GetEntityPosition(player).DistanceToSquared(API.GetEntityPosition(receiver)) > 16f)
+            if (NAPI.Entity.GetEntityPosition(player).DistanceToSquared(NAPI.Entity.GetEntityPosition(receiver)) > 16f)
             {
-                API.SendNotificationToPlayer(player, "~r~You're too far away!");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~You're too far away!");
                 return;
             }
 
@@ -544,7 +544,7 @@ namespace mtgvrp.group_manager.lspd
             API.SendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, receivercharacter, true);
             receivercharacter.IsCuffed = true;
             API.PlayPlayerAnimation(receiver, (1 << 0 | 1 << 4 | 1 << 5), "mp_arresting", "idle");
-            API.FreezePlayer(receiver, true);
+            NAPI.Player.FreezePlayer(receiver, true);
             ChatManager.RoleplayMessage(player, "places handcuffs onto " + receivercharacter.rp_name(), ChatManager.RoleplayMe);
         }
 
@@ -559,25 +559,25 @@ namespace mtgvrp.group_manager.lspd
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
-                API.SendChatMessageToPlayer(player, "You are not in the LSPD.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You are not in the LSPD.");
                 return;
             }
 
             if (receiver == null)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
 
             if (receivercharacter == character)
             {
-                API.SendChatMessageToPlayer(player,"You're not allowed to uncuff yourself.");
+                NAPI.Chat.SendChatMessageToPlayer(player,"You're not allowed to uncuff yourself.");
                 return;
             }
            
-            if (API.GetEntityPosition(player).DistanceToSquared(API.GetEntityPosition(receiver)) > 16f)
+            if (NAPI.Entity.GetEntityPosition(player).DistanceToSquared(NAPI.Entity.GetEntityPosition(receiver)) > 16f)
             {
-                API.SendNotificationToPlayer(player, "~r~You're too far away!");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~You're too far away!");
                 return;
             }
 
@@ -589,7 +589,7 @@ namespace mtgvrp.group_manager.lspd
 
             API.SendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, receivercharacter, false);
             receivercharacter.IsCuffed = false;
-            API.FreezePlayer(receiver, false);
+            NAPI.Player.FreezePlayer(receiver, false);
             ChatManager.RoleplayMessage(player, "removes handcuffs from " + receivercharacter.rp_name(), ChatManager.RoleplayMe);
         }
 
@@ -599,7 +599,7 @@ namespace mtgvrp.group_manager.lspd
             var receiver = PlayerManager.ParseClient(id);
             if (receiver == null)
             {
-                API.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
 
@@ -608,13 +608,13 @@ namespace mtgvrp.group_manager.lspd
                        
             if (receiver == player)
             {
-                API.SendNotificationToPlayer(player, "~r~You can't frisk yourself!");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~You can't frisk yourself!");
                 return;
             }
 
-            if (API.GetEntityPosition(player).DistanceToSquared(API.GetEntityPosition(receiver)) > 16f)
+            if (NAPI.Entity.GetEntityPosition(player).DistanceToSquared(NAPI.Entity.GetEntityPosition(receiver)) > 16f)
             {
-                API.SendNotificationToPlayer(player, "~r~You're too far away!");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~You're too far away!");
                 return;
             }
             
@@ -623,15 +623,15 @@ namespace mtgvrp.group_manager.lspd
             
                 ChatManager.RoleplayMessage(character, "pats down " + receivercharacter.rp_name() + " searching through their items.",ChatManager.RoleplayMe);
 
-                API.SendChatMessageToPlayer(player, "-------------PLAYER INVENTORY-------------");
+                NAPI.Chat.SendChatMessageToPlayer(player, "-------------PLAYER INVENTORY-------------");
                 foreach (var item in receivercharacter.Inventory)
                 {
-                    API.SendChatMessageToPlayer(player, $"* ~r~{item.LongName}~w~[{item.CommandFriendlyName}] ({item.Amount})");
+                    NAPI.Chat.SendChatMessageToPlayer(player, $"* ~r~{item.LongName}~w~[{item.CommandFriendlyName}] ({item.Amount})");
                 }
-                API.SendChatMessageToPlayer(player, "-------------PLAYER INVENTORY-------------");
+                NAPI.Chat.SendChatMessageToPlayer(player, "-------------PLAYER INVENTORY-------------");
                 return;
             }
-            API.SendChatMessageToPlayer(player, "Players must be cuffed or have their hands up before you can frisk them.");
+            NAPI.Chat.SendChatMessageToPlayer(player, "Players must be cuffed or have their hands up before you can frisk them.");
 
         }
 
@@ -642,11 +642,11 @@ namespace mtgvrp.group_manager.lspd
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
                 return;
             }
 
-            API.SendNotificationToPlayer(player, "~b~Backup beacon deployed~w~. Available officers have been notified.");
+            NAPI.Notification.SendNotificationToPlayer(player, "~b~Backup beacon deployed~w~. Available officers have been notified.");
             GroupManager.SendGroupMessage(player, character.rp_name() + " has deployed a backup beacon. Use /acceptbeacon to accept.");
 
             foreach(var c in PlayerManager.Players) { c.BeaconSet = false; }
@@ -665,7 +665,7 @@ namespace mtgvrp.group_manager.lspd
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
                 return;
             }
 
@@ -675,14 +675,14 @@ namespace mtgvrp.group_manager.lspd
                 if (c.BeaconSet == true)
                 {
                     beaconCreator = c.Client;
-                    API.SendNotificationToPlayer(player, "~b~Beacon accepted~w~. A waypoint has been added to your map.");
-                    API.TriggerClientEvent(player, "update_beacon", API.GetEntityPosition(beaconCreator));
+                    NAPI.Notification.SendNotificationToPlayer(player, "~b~Beacon accepted~w~. A waypoint has been added to your map.");
+                    NAPI.ClientEvent.TriggerClientEvent(player, "update_beacon", NAPI.Entity.GetEntityPosition(beaconCreator));
                     return;
                 }
                 i++;
                 if (i == PlayerManager.Players.Count())
                 {
-                    API.SendChatMessageToPlayer(player, "There are no active beacons.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, "There are no active beacons.");
                     return;
                 }
             }
@@ -691,24 +691,24 @@ namespace mtgvrp.group_manager.lspd
         [Command("megaphonetoggle", Alias = "mp", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Toggle the megaphone.", null)]
         public void megaphonetog_cmd(Client player)
         {
-            var playerPos = API.GetEntityPosition(player);
+            var playerPos = NAPI.Entity.GetEntityPosition(player);
             Character character = player.GetCharacter();
 
             if (character?.Group == Group.None || character?.Group.CommandType != Group.CommandTypeLspd)
             {
-                //API.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                //NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
                 return;
             }
-            if (API.GetEntityData(player, "MegaphoneStatus") != true)
+            if (NAPI.Data.GetEntityData(player, "MegaphoneStatus") != true)
             {
-                API.SendNotificationToPlayer(player, "You are speaking through a megaphone", true);
-                API.SetEntityData(player, "MegaphoneStatus", true);
+                NAPI.Notification.SendNotificationToPlayer(player, "You are speaking through a megaphone", true);
+                NAPI.Data.SetEntityData(player, "MegaphoneStatus", true);
                 character.MegaPhoneObject = API.CreateObject(API.GetHashKey("prop_megaphone_01"), playerPos, new Vector3());
                 API.AttachEntityToEntity(character.MegaPhoneObject, player, "IK_R_Hand", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
                 return;
             }
-            API.SendNotificationToPlayer(player, "You are no longer speaking through a megaphone.");
-            API.SetEntityData(player, "MegaphoneStatus", false);
+            NAPI.Notification.SendNotificationToPlayer(player, "You are no longer speaking through a megaphone.");
+            NAPI.Data.SetEntityData(player, "MegaphoneStatus", false);
             if(character.MegaPhoneObject != null && API.DoesEntityExist(character.MegaPhoneObject))
                 API.DeleteEntity(character.MegaPhoneObject);
             character.MegaPhoneObject = null;
@@ -722,17 +722,17 @@ namespace mtgvrp.group_manager.lspd
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
                 return;
             }
 
             if (player.Position.DistanceTo(character.Group.Locker.Location) > 8)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "You are not in the LSPD locker room.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "You are not in the LSPD locker room.");
                 return;
             }
 
-            API.TriggerClientEvent(player, "show_lspd_locker");
+            NAPI.ClientEvent.TriggerClientEvent(player, "show_lspd_locker");
         }
 
 
@@ -742,7 +742,7 @@ namespace mtgvrp.group_manager.lspd
             var target = PlayerManager.ParseClient(id);
             if (target == null)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "That player is not connected.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "That player is not connected.");
                 return;
             }
 
@@ -751,18 +751,18 @@ namespace mtgvrp.group_manager.lspd
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
                 return;
             }
 
-            if (API.GetEntityPosition(player).DistanceToSquared(API.GetEntityPosition(target)) > 16f)
+            if (NAPI.Entity.GetEntityPosition(player).DistanceToSquared(NAPI.Entity.GetEntityPosition(target)) > 16f)
             {
-                API.SendNotificationToPlayer(player, "~r~You're too far away!");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~You're too far away!");
                 return;
             }
 
-            API.SendChatMessageToPlayer(target, character.rp_name() + " is offering to hand you a ticket. Use /acceptcopticket to accept it.");
-            API.SendChatMessageToPlayer(player, "You offer to hand " + receiverCharacter.rp_name() + " a ticket.");
+            NAPI.Chat.SendChatMessageToPlayer(target, character.rp_name() + " is offering to hand you a ticket. Use /acceptcopticket to accept it.");
+            NAPI.Chat.SendChatMessageToPlayer(player, "You offer to hand " + receiverCharacter.rp_name() + " a ticket.");
             receiverCharacter.SentTicketAmount = amount;
             receiverCharacter.SentTicket = true;
             character.TicketTimer = new Timer { Interval = 10000 };
@@ -779,7 +779,7 @@ namespace mtgvrp.group_manager.lspd
 
             if (target == null)
             {
-                API.SendChatMessageToPlayer(player, "You have ~b~ " + character.UnpaidTickets + "~w~ unpaid tickets.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You have ~b~ " + character.UnpaidTickets + "~w~ unpaid tickets.");
                 return;
             }
 
@@ -787,11 +787,11 @@ namespace mtgvrp.group_manager.lspd
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
                 return;
             }
 
-            API.SendChatMessageToPlayer(player, receiverCharacter.rp_name() + " has ~b~ " + receiverCharacter.UnpaidTickets + "~w~ unpaid tickets.");
+            NAPI.Chat.SendChatMessageToPlayer(player, receiverCharacter.rp_name() + " has ~b~ " + receiverCharacter.UnpaidTickets + "~w~ unpaid tickets.");
         }
 
         [Command("acceptcopticket", GreedyArg = true), Help(HelpManager.CommandGroups.General, "Accept the cop ticket.", null)]
@@ -805,13 +805,13 @@ namespace mtgvrp.group_manager.lspd
                 character.TicketBalance += character.SentTicketAmount;
                 character.UnpaidTickets += 1;
                 character.Save();
-                API.SendChatMessageToPlayer(player, "Ticket accepted. Pay for this ticket at the main desk of the police station.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "Ticket accepted. Pay for this ticket at the main desk of the police station.");
                 ChatManager.RoleplayMessage(character, "has accepted a cop ticket", ChatManager.RoleplayMe);
 
             }
             else
             {
-                API.SendChatMessageToPlayer(player, Color.White, "There are no active tickets to accept.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "There are no active tickets to accept.");
             }
 
         }
@@ -827,7 +827,7 @@ namespace mtgvrp.group_manager.lspd
                 {
                     if (player.Position.DistanceTo(group.FrontDesk.Location) > 5)
                     {
-                        API.SendNotificationToPlayer(player, "~r~You are not at the front desk of the police station.");
+                        NAPI.Notification.SendNotificationToPlayer(player, "~r~You are not at the front desk of the police station.");
                         return;
                     }
                 }
@@ -835,17 +835,17 @@ namespace mtgvrp.group_manager.lspd
 
             if (character.UnpaidTickets == 0)
             {
-                API.SendNotificationToPlayer(player, "~r~You have no active tickets to pay for.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~You have no active tickets to pay for.");
                 return;
             }
 
             if (character.TicketBalance > Money.GetCharacterMoney(character))
             {
-                API.SendNotificationToPlayer(player, "~r~You cannot afford to pay for your tickets.");
+                NAPI.Notification.SendNotificationToPlayer(player, "~r~You cannot afford to pay for your tickets.");
                 return;
             }
 
-            API.SendNotificationToPlayer(player, "~r~Congratulations! Your tickets have been paid off.");
+            NAPI.Notification.SendNotificationToPlayer(player, "~r~Congratulations! Your tickets have been paid off.");
             InventoryManager.DeleteInventoryItem(character, typeof(Money), character.TicketBalance);
             character.Save();
             character.UnpaidTickets = 0;
@@ -858,7 +858,7 @@ namespace mtgvrp.group_manager.lspd
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
                 return;
             }
 
@@ -866,9 +866,9 @@ namespace mtgvrp.group_manager.lspd
 
             if (int.Parse(objectid) > 5)
             {
-                API.SendChatMessageToPlayer(player, "Deployable items are between 1-5");
+                NAPI.Chat.SendChatMessageToPlayer(player, "Deployable items are between 1-5");
             }
-            var playerpos = API.GetEntityPosition(player);
+            var playerpos = NAPI.Entity.GetEntityPosition(player);
             var playerrot = API.GetEntityRotation(player);
             var playerDimension = API.GetEntityDimension(player);
 
@@ -906,7 +906,7 @@ namespace mtgvrp.group_manager.lspd
                         break;
                     }
             }
-            API.SendNotificationToPlayer(player, "Object placed. There are now ~r~" + Objects.Count + "~w~ objects placed.");
+            NAPI.Notification.SendNotificationToPlayer(player, "Object placed. There are now ~r~" + Objects.Count + "~w~ objects placed.");
         }
 
 
@@ -917,19 +917,19 @@ namespace mtgvrp.group_manager.lspd
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
                 return;
             }
 
             if (Objects.Count() == 0)
             {
-                API.SendChatMessageToPlayer(player, "There are no more objects to remove.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "There are no more objects to remove.");
                 return;
             }
 
             API.DeleteEntity(Objects.Last());
             Objects.RemoveLast();
-            API.SendNotificationToPlayer(player, "Object removed. There are now ~r~" + Objects.Count + "~w~ placed.");
+            NAPI.Notification.SendNotificationToPlayer(player, "Object removed. There are now ~r~" + Objects.Count + "~w~ placed.");
         }
 
         [Command("removenearestobject")]
@@ -939,25 +939,25 @@ namespace mtgvrp.group_manager.lspd
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
                 return;
             }
 
             if (Objects.Count() == 0)
             {
-                API.SendChatMessageToPlayer(player, "There are no more objects to remove.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "There are no more objects to remove.");
                 return;
             }
 
             int id = -1;
             float distance = -1.0f;
-            Vector3 playerPos = API.GetEntityPosition(player.Handle);
+            Vector3 playerPos = NAPI.Entity.GetEntityPosition(player.Handle);
             Object currentObject = null;
             int cid = 0;
 
             foreach(Object o in Objects)
             {
-                Vector3 objectPos = API.GetEntityPosition(o.Handle);
+                Vector3 objectPos = NAPI.Entity.GetEntityPosition(o.Handle);
                 if(objectPos.DistanceTo(playerPos) < distance || distance == -1.0f)
                 {
                     id = cid;
@@ -968,20 +968,20 @@ namespace mtgvrp.group_manager.lspd
             }
             if(id != -1)
             {
-                if(API.GetEntityPosition(currentObject).DistanceTo(playerPos) <= 3.0f)
+                if(NAPI.Entity.GetEntityPosition(currentObject).DistanceTo(playerPos) <= 3.0f)
                 {
                     API.DeleteEntity(currentObject.Handle);
                     Objects.Remove(currentObject);
-                    API.SendNotificationToPlayer(player, "Object removed. There are now ~r~" + Objects.Count + "~w~ placed.");
+                    NAPI.Notification.SendNotificationToPlayer(player, "Object removed. There are now ~r~" + Objects.Count + "~w~ placed.");
                 }
                 else
                 {
-                    API.SendChatMessageToPlayer(player, "You aren't in range of any deployed objects.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, "You aren't in range of any deployed objects.");
                 }
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "There aren't any objects for you to remove.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "There aren't any objects for you to remove.");
             }
         }
 
@@ -992,13 +992,13 @@ namespace mtgvrp.group_manager.lspd
 
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "You must be in the LSPD to use this command.");
                 return;
             }
 
             if (Objects.Count() == 0)
             {
-                API.SendChatMessageToPlayer(player, "There are no more objects to remove.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "There are no more objects to remove.");
                 return;
             }
 
@@ -1018,7 +1018,7 @@ namespace mtgvrp.group_manager.lspd
                 j++;
             }
 
-            API.SendNotificationToPlayer(player, "~r~" + len + " objects removed.");
+            NAPI.Notification.SendNotificationToPlayer(player, "~r~" + len + " objects removed.");
         }
 
         [Command("setlockerpos"), Help(HelpManager.CommandGroups.LSPD, "Set the locker position.", null)]
@@ -1030,7 +1030,7 @@ namespace mtgvrp.group_manager.lspd
 
             if (character.Group.Type != Group.CommandTypeLspd)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "Only the LSPD may use this command.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "Only the LSPD may use this command.");
                 return;
             }
 
@@ -1052,7 +1052,7 @@ namespace mtgvrp.group_manager.lspd
                 character.Group.Save();
             }
 
-            API.SendChatMessageToPlayer(player, Color.White, "You have moved the LSPD locker location.");
+            NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "You have moved the LSPD locker location.");
             return;
         }
 
@@ -1065,7 +1065,7 @@ namespace mtgvrp.group_manager.lspd
 
             if (character.Group.Type != Group.CommandTypeLspd)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "Only the LSPD may use this command.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "Only the LSPD may use this command.");
                 return;
             }
 
@@ -1087,7 +1087,7 @@ namespace mtgvrp.group_manager.lspd
                 character.Group.Save();
             }
 
-            API.SendChatMessageToPlayer(player, Color.White, "You have moved the LSPD front desk location.");
+            NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "You have moved the LSPD front desk location.");
             return;
         }
 
@@ -1101,7 +1101,7 @@ namespace mtgvrp.group_manager.lspd
 
             if (character.Group.Type != Group.CommandTypeLspd)
             {
-                API.SendChatMessageToPlayer(player, Color.White, "Only the LSPD may use this command.");
+                NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "Only the LSPD may use this command.");
                 return;
             }
 
@@ -1122,7 +1122,7 @@ namespace mtgvrp.group_manager.lspd
                 character.Group.ArrestLocation.Refresh();
             }
 
-            API.SendChatMessageToPlayer(player, Color.White, "You have moved the LSPD arrest location.");
+            NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "You have moved the LSPD arrest location.");
         }
 
         public void GiveLspdEquipment(Client player, int type = 0)

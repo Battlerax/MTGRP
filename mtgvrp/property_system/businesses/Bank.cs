@@ -19,7 +19,7 @@ namespace mtgvrp.property_system.businesses
             var prop = PropertyManager.IsAtPropertyInteraction(player);
             if (prop == null || prop?.Type != PropertyManager.PropertyTypes.Bank)
             {
-                API.SendChatMessageToPlayer(player, "You aren't at a bank interaction.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You aren't at a bank interaction.");
                 return;
             }
 
@@ -34,7 +34,7 @@ namespace mtgvrp.property_system.businesses
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You don't have that amount.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You don't have that amount.");
             }
         }
 
@@ -44,7 +44,7 @@ namespace mtgvrp.property_system.businesses
             var prop = PropertyManager.IsAtPropertyInteraction(player);
             if (prop == null || prop?.Type != PropertyManager.PropertyTypes.Bank)
             {
-                API.SendChatMessageToPlayer(player, "You aren't at a bank interaction.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You aren't at a bank interaction.");
                 return;
             }
 
@@ -59,7 +59,7 @@ namespace mtgvrp.property_system.businesses
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You don't have that amount in your bank.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You don't have that amount in your bank.");
             }
         }
 
@@ -69,20 +69,20 @@ namespace mtgvrp.property_system.businesses
             var prop = PropertyManager.IsAtPropertyInteraction(player);
             if (prop == null || prop?.Type != PropertyManager.PropertyTypes.Bank)
             {
-                API.SendChatMessageToPlayer(player, "You aren't at a bank interaction.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You aren't at a bank interaction.");
                 return;
             }
 
             Client target = PlayerManager.ParseClient(id);
             if (target == null)
             {
-                API.SendChatMessageToPlayer(player, "That target doesn't exist.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "That target doesn't exist.");
                 return;
             }
 
             if (target == player)
             {
-                API.SendChatMessageToPlayer(player, "You cannot wire transfer to yourself.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You cannot wire transfer to yourself.");
                 return;
             }
 
@@ -93,13 +93,13 @@ namespace mtgvrp.property_system.businesses
                 character.BankBalance -= amount;
                 ChatManager.RoleplayMessage(player, "wire transfers some money from their bank account.",
                     ChatManager.RoleplayMe);
-                API.SendChatMessageToPlayer(target,
+                NAPI.Chat.SendChatMessageToPlayer(target,
                     $"~r~* {character.rp_name()}~w~ has sent you a wire transfer of ~g~${amount}");
                 LogManager.Log(LogManager.LogTypes.Stats, $"[Bank] {player.GetCharacter().CharacterName}[{player.GetAccount().AccountName}] has wire transferred ${amount} to {target.GetCharacter().CharacterName}[{target.GetAccount().AccountName}] into their bank account.");
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You don't have that amount in your bank.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You don't have that amount in your bank.");
             }
         }
 
@@ -109,11 +109,11 @@ namespace mtgvrp.property_system.businesses
             var prop = PropertyManager.IsAtPropertyInteraction(player);
             if (prop == null || prop?.Type != PropertyManager.PropertyTypes.Bank)
             {
-                API.SendChatMessageToPlayer(player, "You aren't at a bank interaction.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You aren't at a bank interaction.");
                 return;
             }
 
-            API.SendChatMessageToPlayer(player,
+            NAPI.Chat.SendChatMessageToPlayer(player,
                 $"You have ~g~${player.GetCharacter().BankBalance}~w~ in your account.");
         }
 
@@ -123,25 +123,25 @@ namespace mtgvrp.property_system.businesses
             Client target = PlayerManager.ParseClient(id);
             if (target == null)
             {
-                API.SendChatMessageToPlayer(player, "That target doesn't exist.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "That target doesn't exist.");
                 return;
             }
 
             if (target == player)
             {
-                API.SendChatMessageToPlayer(player, "You can't give a check to yourself.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You can't give a check to yourself.");
             }
 
             if (player.Position.DistanceTo(target.Position) > 5.0)
             {
-                API.SendChatMessageToPlayer(player, "Must be near the target.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "Must be near the target.");
                 return;
             }
             Character c = player.GetCharacter();
 
             if (c.BankBalance < amount || amount <= 0)
             {
-                API.SendChatMessageToPlayer(player, "You don't have that amount in your bank balance.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You don't have that amount in your bank balance.");
                 return;
             }
             
@@ -168,7 +168,7 @@ namespace mtgvrp.property_system.businesses
             var prop = PropertyManager.IsAtPropertyInteraction(player);
             if (prop == null || prop?.Type != PropertyManager.PropertyTypes.Bank)
             {
-                API.SendChatMessageToPlayer(player, "You aren't at a bank interaction.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You aren't at a bank interaction.");
                 return;
             }
 
@@ -177,13 +177,13 @@ namespace mtgvrp.property_system.businesses
             if (item.Length > 0)
             {
                 c.BankBalance += item[0].CheckAmount;
-                API.SendChatMessageToPlayer(player, $"You have redemeed ~g~${item[0].CheckAmount}~w~. Balance now is: ~g~${c.BankBalance}");
+                NAPI.Chat.SendChatMessageToPlayer(player, $"You have redemeed ~g~${item[0].CheckAmount}~w~. Balance now is: ~g~${c.BankBalance}");
                 InventoryManager.DeleteInventoryItem(c, typeof(CheckItem));
                 LogManager.Log(LogManager.LogTypes.Stats, $"[Bank] {player.GetCharacter().CharacterName}[{player.GetAccount().AccountName}] has redeemed a check worth ${item[0].CheckAmount}.");
             }
             else
             {
-                API.SendChatMessageToPlayer(player, "You don't have a check to redeem.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You don't have a check to redeem.");
             }
         }
     }

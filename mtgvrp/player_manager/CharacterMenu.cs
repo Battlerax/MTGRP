@@ -51,13 +51,13 @@ namespace mtgvrp.player_manager
             character.LastRot = new Vector3(0, 0, 90);
             character.update_ped();
             character.update_nametag();
-            API.SetEntityPosition(player.Handle, character.LastPos);
+            NAPI.Entity.SetEntityPosition(player.Handle, character.LastPos);
             API.SetEntityRotation(player.Handle, character.LastRot);
-            API.SetEntityDimension(player.Handle, 0);
-            API.FreezePlayer(player, false);
-            API.SendChatMessageToPlayer(player,
+            NAPI.Entity.SetEntityDimension(player.Handle, 0);
+            NAPI.Player.FreezePlayer(player, false);
+            NAPI.Chat.SendChatMessageToPlayer(player,
                 "~g~You have successfully created your character: " + character.CharacterName + "!");
-            API.SendChatMessageToPlayer(player,
+            NAPI.Chat.SendChatMessageToPlayer(player,
                 "~g~If you have any questions please use /n(ewbie) chat or /ask for moderator assitance.");
 
             //Startup money.
@@ -69,7 +69,7 @@ namespace mtgvrp.player_manager
             character.StartTrackingTimePlayed();
             character.Save();
 
-            API.TriggerClientEvent(player, "login_finished");
+            NAPI.ClientEvent.TriggerClientEvent(player, "login_finished");
         }
 
         [RemoteEvent("OnCharacterMenuSelect")]
@@ -96,13 +96,13 @@ namespace mtgvrp.player_manager
 
                 if (charName.Length < 1)
                 {
-                    API.SendChatMessageToPlayer(player, "~r~ERROR: The character name entered is too short.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, "~r~ERROR: The character name entered is too short.");
                     return;
                 }
 
                 if (Character.IsCharacterRegistered(charName))
                 {
-                    API.SendChatMessageToPlayer(player, "~r~ ERROR: That character name is already registered.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, "~r~ ERROR: That character name is already registered.");
                     return;
                 }
 
@@ -115,21 +115,21 @@ namespace mtgvrp.player_manager
 
                 character.Insert();
 
-                API.SetEntityData(player.Handle, "Character", character);
+                NAPI.Data.SetEntityData(player.Handle, "Character", character);
                 PlayerManager.AddPlayer(character);
 
-                API.SendChatMessageToPlayer(player, "Welcome to Los Santos, " + charName + "! Let's get started with what you look like!");
-                API.FreezePlayer(player, true);
-                API.SetEntityDimension(player, (uint)player.GetCharacter().Id + 1000);
+                NAPI.Chat.SendChatMessageToPlayer(player, "Welcome to Los Santos, " + charName + "! Let's get started with what you look like!");
+                NAPI.Player.FreezePlayer(player, true);
+                NAPI.Entity.SetEntityDimension(player, (uint)player.GetCharacter().Id + 1000);
                 API.SetEntitySharedData(player, "REG_DIMENSION", player.GetCharacter().Id + 1000);
                 character.Model.SetDefault();
-                API.TriggerClientEvent(player, "show_character_creation_menu");
+                NAPI.ClientEvent.TriggerClientEvent(player, "show_character_creation_menu");
             }
             else
             {
-                if (API.HasEntityData(player.Handle, "Character") == true)
+                if (NAPI.Data.HasEntityData(player.Handle, "Character") == true)
                 {
-                    API.SendChatMessageToPlayer(player, Color.Yellow,
+                    NAPI.Chat.SendChatMessageToPlayer(player, Color.Yellow,
                         "Your character is already loaded, please be patient.");
                     return;
                 }
@@ -139,19 +139,19 @@ namespace mtgvrp.player_manager
 
                 if (foundCharacters.Count > 1)
                 {
-                    API.SendChatMessageToPlayer(player, "~r~ERROR: More than one character found with that name.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, "~r~ERROR: More than one character found with that name.");
                     return;
                 }
 
                 if (foundCharacters.Count == 0)
                 {
-                    API.SendChatMessageToPlayer(player, "~r~ ERROR: No characters found with that name.");
+                    NAPI.Chat.SendChatMessageToPlayer(player, "~r~ ERROR: No characters found with that name.");
                     return;
                 }
 
                 foreach (var c in foundCharacters)
                 {
-                    API.SetEntityData(player.Handle, "Character", c);
+                    NAPI.Data.SetEntityData(player.Handle, "Character", c);
                     PlayerManager.AddPlayer(c);
                     break;
                 }
@@ -161,20 +161,20 @@ namespace mtgvrp.player_manager
 
                 if (character.AccountId != account.Id.ToString())
                 {
-                    API.SendChatMessageToPlayer(player, "~r~ ERROR: This character does not belong to this account!");
+                    NAPI.Chat.SendChatMessageToPlayer(player, "~r~ ERROR: This character does not belong to this account!");
                     API.KickPlayer(player);
                     return;
                 }
 
                 if (character.IsCreated == false)
                 {
-                    API.SendChatMessageToPlayer(player, "Welcome back, " + character.CharacterName + "! Let's finish figuring out what you look like!");
+                    NAPI.Chat.SendChatMessageToPlayer(player, "Welcome back, " + character.CharacterName + "! Let's finish figuring out what you look like!");
                     character.update_ped();
-                    API.FreezePlayer(player, true);
-                    API.SetEntityDimension(player, (uint)player.GetCharacter().Id + 1000);
+                    NAPI.Player.FreezePlayer(player, true);
+                    NAPI.Entity.SetEntityDimension(player, (uint)player.GetCharacter().Id + 1000);
                     API.SetEntitySharedData(player, "REG_DIMENSION", player.GetCharacter().Id + 1000);
                     character.Model.SetDefault();
-                    API.TriggerClientEvent(player, "show_character_creation_menu");
+                    NAPI.ClientEvent.TriggerClientEvent(player, "show_character_creation_menu");
                     return;
                 }
 
@@ -198,9 +198,9 @@ namespace mtgvrp.player_manager
                     lmcphone.LoadContacts();
                 }
 
-                API.SetEntityPosition(player.Handle, character.LastPos);
+                NAPI.Entity.SetEntityPosition(player.Handle, character.LastPos);
                 API.SetEntityRotation(player.Handle, character.LastRot);
-                API.SetEntityDimension(player.Handle, (uint)character.LastDimension);
+                NAPI.Entity.SetEntityDimension(player.Handle, (uint)character.LastDimension);
                 API.SetPlayerHealth(player, character.Health);
                 API.SetPlayerArmor(player, character.Armor);
 
@@ -237,10 +237,10 @@ namespace mtgvrp.player_manager
                 }
 
                 API.SetPlayerHealth(player, character.Health);
-                API.SendChatMessageToPlayer(player, "You have successfully loaded your character: " + charName);
+                NAPI.Chat.SendChatMessageToPlayer(player, "You have successfully loaded your character: " + charName);
                 LogManager.Log(LogManager.LogTypes.Connection, player.SocialClubName + $" has loaded the character {character.CharacterName}. (IP: " + player.Address + ")");
 
-                API.TriggerClientEvent(player, "login_finished");
+                NAPI.ClientEvent.TriggerClientEvent(player, "login_finished");
                 OnCharacterLogin(this, new CharacterLoginEventArgs(character));
             }
         }
@@ -420,7 +420,7 @@ namespace mtgvrp.player_manager
                 character.LastRot = new Vector3(0, 0, 90);
                 character.update_ped();
                 character.update_nametag();
-                API.TriggerClientEvent(player, "start_introduction");
+                NAPI.ClientEvent.TriggerClientEvent(player, "start_introduction");
             }
 
             else
@@ -429,10 +429,10 @@ namespace mtgvrp.player_manager
                 character.LastRot = new Vector3(0, 0, 90);
                 character.update_ped();
                 character.update_nametag();
-                API.SetEntityPosition(player, character.LastPos);
+                NAPI.Entity.SetEntityPosition(player, character.LastPos);
                 API.SetEntityRotation(player, character.LastRot);
-                API.SetEntityDimension(player, 0);
-                API.FreezePlayer(player, false);
+                NAPI.Entity.SetEntityDimension(player, 0);
+                NAPI.Player.FreezePlayer(player, false);
                 player.ResetData("REDOING_CHAR");
             }
         }
@@ -462,14 +462,14 @@ namespace mtgvrp.player_manager
             var hairstyleIdsString = String.Join(",", hairstyleIds);
             var maxHairStyles = (int)arguments[0] == Character.GenderMale ? ComponentManager.ValidMaleHair.Count : ComponentManager.ValidFemaleHair.Count;
 
-            API.TriggerClientEvent(player, "initialize_hair", maxHairStyles, hairstyleNamesString, hairstyleIdsString);
+            NAPI.ClientEvent.TriggerClientEvent(player, "initialize_hair", maxHairStyles, hairstyleNamesString, hairstyleIdsString);
         }
 
         [RemoteEvent("initiate_style_limits")]
         public void InitializeStyleLimits(Client player, params object[] arguments)
         {
             Character cha = player.GetCharacter();
-            API.TriggerClientEvent(player, "initialize_components", (cha.Model.Gender == Character.GenderMale ? Clothing.MaleComponents : Clothing.FemaleComponents));
+            NAPI.ClientEvent.TriggerClientEvent(player, "initialize_components", (cha.Model.Gender == Character.GenderMale ? Clothing.MaleComponents : Clothing.FemaleComponents));
         }
 
         // This stuff was commented out in the event handler, i just transferred them into events for now. idk. - austin
@@ -479,8 +479,8 @@ namespace mtgvrp.player_manager
             var vehicle = VehicleManager.CreateVehicle(VehicleHash.Bus, new Vector3(-276.1117, -2411.626, 59.68943), new Vector3(0, 0, 53.19402), "Unregistered", player.GetCharacter().Id, vehicle_manager.Vehicle.VehTypeTemp, 0, 0, API.GetEntityDimension(player));
             vehicle.Insert();
             VehicleManager.spawn_vehicle(vehicle);
-            API.SetPlayerIntoVehicle(player, vehicle.NetHandle, -1);
-            API.SetVehicleEngineStatus(vehicle.NetHandle, true);
+            NAPI.Player.SetPlayerIntoVehicle(player, vehicle.NetHandle, -1);
+            NAPI.Vehicle.SetVehicleEngineStatus(vehicle.NetHandle, true);
             SpawnedVehicles.Add(vehicle);
 
             API.SendNativeToAllPlayers(Hash.TASK_VEHICLE_DRIVE_TO_COORD, player.Handle, vehicle.NetHandle, -582.3301, -2201.367, 56.25008, 120f, 1f, vehicle.GetHashCode(), 16777216, 1f, true);
@@ -492,8 +492,8 @@ namespace mtgvrp.player_manager
             var vehicle = VehicleManager.CreateVehicle(VehicleHash.Bus, new Vector3(513.3119, -676.2706, 25.19653), new Vector3(0, 0, 85.25442), "Unregistered", player.GetCharacter().Id, vehicle_manager.Vehicle.VehTypeTemp, 0, 0, API.GetEntityDimension(player));
             vehicle.Insert();
             VehicleManager.spawn_vehicle(vehicle);
-            API.SetPlayerIntoVehicle(player, vehicle.NetHandle, -1);
-            API.SetVehicleEngineStatus(vehicle.NetHandle, true);
+            NAPI.Player.SetPlayerIntoVehicle(player, vehicle.NetHandle, -1);
+            NAPI.Vehicle.SetVehicleEngineStatus(vehicle.NetHandle, true);
             SpawnedVehicles.Add(vehicle);
 
             API.SendNativeToAllPlayers(Hash.TASK_VEHICLE_DRIVE_TO_COORD, player.Handle, vehicle.NetHandle, 464.645, -673.3629, 27.20791, 10f, 1f, vehicle.GetHashCode(), 16777216, 1f, true);
@@ -505,8 +505,8 @@ namespace mtgvrp.player_manager
             var vehicle = VehicleManager.CreateVehicle(VehicleHash.Bus, new Vector3(429.8345, -672.5932, 29.05217), new Vector3(0.9295838, 3.945374, 90.3828), "Unregistered", player.GetCharacter().Id, vehicle_manager.Vehicle.VehTypePerm, 0, 0, API.GetEntityDimension(player));
             vehicle.Insert();
             VehicleManager.spawn_vehicle(vehicle);
-            API.SetPlayerIntoVehicle(player, vehicle.NetHandle, -1);
-            API.SetVehicleEngineStatus(vehicle.NetHandle, true);
+            NAPI.Player.SetPlayerIntoVehicle(player, vehicle.NetHandle, -1);
+            NAPI.Vehicle.SetVehicleEngineStatus(vehicle.NetHandle, true);
             SpawnedVehicles.Add(vehicle);
 
             API.SendNativeToAllPlayers(Hash.TASK_LEAVE_VEHICLE, player.Handle, vehicle.NetHandle, 0);

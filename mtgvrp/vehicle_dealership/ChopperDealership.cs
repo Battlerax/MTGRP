@@ -93,21 +93,21 @@ namespace mtgvrp.vehicle_dealership
 
                 //Spawn it.
                 if (VehicleManager.spawn_vehicle(theVehicle) != 1)
-                    API.SendChatMessageToPlayer(sender, "An error occured while spawning your vehicle.");
+                    NAPI.Chat.SendChatMessageToPlayer(sender, "An error occured while spawning your vehicle.");
 
                 //Notify.
-                API.SendChatMessageToPlayer(sender,
+                NAPI.Chat.SendChatMessageToPlayer(sender,
                     $"You have sucessfully bought the ~g~{selectedCar[0]}~w~ for ${selectedCar[2]}.");
-                API.SendChatMessageToPlayer(sender, "Use /myvehicles to manage it.");
+                NAPI.Chat.SendChatMessageToPlayer(sender, "Use /myvehicles to manage it.");
 
                 //Log it.
-                LogManager.Log(LogManager.LogTypes.Stats, $"[Chopper Dealership] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a(n) {API.GetVehicleDisplayName(theVehicle.VehModel)} for ${selectedCar[2]}.");
+                LogManager.Log(LogManager.LogTypes.Stats, $"[Chopper Dealership] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a(n) {NAPI.Vehicle.GetVehicleDisplayName(theVehicle.VehModel)} for ${selectedCar[2]}.");
 
                 //Exit.
-                API.TriggerClientEvent(sender, "chopperdealership_exitdealermenu");
+                NAPI.ClientEvent.TriggerClientEvent(sender, "chopperdealership_exitdealermenu");
             }
             else
-                API.SendChatMessageToPlayer(sender,
+                NAPI.Chat.SendChatMessageToPlayer(sender,
                     $"You don't have enough money to buy the ~g~{selectedCar[0]}~w~.");
         }
 
@@ -129,24 +129,24 @@ namespace mtgvrp.vehicle_dealership
 
             if (character.OwnedVehicles.Count >= VehicleManager.GetMaxOwnedVehicles(player))
             {
-                API.SendChatMessageToPlayer(player, "You can't own anymore vehicles.");
-                API.SendChatMessageToPlayer(player, "~g~NOTE: You can upgrade your VIP to increase your vehicle slots.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You can't own anymore vehicles.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "~g~NOTE: You can upgrade your VIP to increase your vehicle slots.");
                 return;
             }
 
-            var currentPos = API.GetEntityPosition(player);
+            var currentPos = NAPI.Entity.GetEntityPosition(player);
             if (_dealershipsLocations.Any(dealer => currentPos.DistanceTo(dealer) < 5F))
             {
-                if (API.IsPlayerInAnyVehicle(player))
+                if (NAPI.Player.IsPlayerInAnyVehicle(player))
                 {
-                    API.SendChatMessageToPlayer(player, "You're not able to buy a chopper while in a vehicle!");
+                    NAPI.Chat.SendChatMessageToPlayer(player, "You're not able to buy a chopper while in a vehicle!");
                     return;
                 }
 
-                API.TriggerClientEvent(player, "chopperdealership_showbuyvehiclemenu", API.ToJson(_helicopters));
+                NAPI.ClientEvent.TriggerClientEvent(player, "chopperdealership_showbuyvehiclemenu", NAPI.Util.ToJson(_helicopters));
             }
             else
-                API.SendChatMessageToPlayer(player, "You aren't near any dealership.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "You aren't near any dealership.");
         }
     }
 }

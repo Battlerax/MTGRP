@@ -48,7 +48,7 @@ namespace mtgvrp.mapping_manager
 
             if (dimension < 0)
             {
-                API.TriggerClientEvent(player, "send_error", "The dimension entered is less than 0.");
+                NAPI.ClientEvent.TriggerClientEvent(player, "send_error", "The dimension entered is less than 0.");
                 return;
             }
 
@@ -56,7 +56,7 @@ namespace mtgvrp.mapping_manager
             {
                 if (PropertyManager.Properties.FindAll(p => p.Id == propLink).Count < 1)
                 {
-                    API.TriggerClientEvent(player, "send_error", "The property link ID you entered is invalid.");
+                    NAPI.ClientEvent.TriggerClientEvent(player, "send_error", "The property link ID you entered is invalid.");
                     return;
                 }
             }
@@ -75,14 +75,14 @@ namespace mtgvrp.mapping_manager
                 Mapping.Add(newMapping);
 
                 LogManager.Log(LogManager.LogTypes.MappingRequests, player.GetAccount().AccountName + " has created mapping request #" + newMapping.Id);
-                API.SendChatMessageToPlayer(player, core.Color.White, "You have successfully created and loaded mapping request #" + newMapping.Id);
+                NAPI.Chat.SendChatMessageToPlayer(player, core.Color.White, "You have successfully created and loaded mapping request #" + newMapping.Id);
                 return;
             }
             catch (WebException e)
             {
                 if (((HttpWebResponse)e.Response).StatusCode.ToString() == "NotFound")
                 {
-                    API.TriggerClientEvent(player, "send_error", "The pastebin link you entered does not exist.");
+                    NAPI.ClientEvent.TriggerClientEvent(player, "send_error", "The pastebin link you entered does not exist.");
                     return;
                 }
             }
@@ -97,12 +97,12 @@ namespace mtgvrp.mapping_manager
 
             if (foundRequest == null)
             {
-                API.TriggerClientEvent(player, "send_error", "The mapping request you searched for does not exist.");
+                NAPI.ClientEvent.TriggerClientEvent(player, "send_error", "The mapping request you searched for does not exist.");
                 return;
             }
 
             //id, createdBy, createdDate, propLink, dim, pastebinLink, description, isLoaded, isActive
-            API.TriggerClientEvent(player, "populateViewMappingRequest", foundRequest.Id, foundRequest.CreatedBy, foundRequest.CreatedDate.ToString(), foundRequest.PropertyLinkId, foundRequest.Dimension, foundRequest.PastebinLink, foundRequest.Description, foundRequest.IsSpawned, foundRequest.IsActive);
+            NAPI.ClientEvent.TriggerClientEvent(player, "populateViewMappingRequest", foundRequest.Id, foundRequest.CreatedBy, foundRequest.CreatedDate.ToString(), foundRequest.PropertyLinkId, foundRequest.Dimension, foundRequest.PastebinLink, foundRequest.Description, foundRequest.IsSpawned, foundRequest.IsActive);
             player.GetAccount().ViewingMappingRequest = foundRequest;
             player.SendChatMessage("You are now viewing mapping request #" + foundRequest.Id);
         }
@@ -119,7 +119,7 @@ namespace mtgvrp.mapping_manager
 
             if (editingRequest.Id != mappingId)
             {
-                API.TriggerClientEvent(player, "send_error", "The mapping ID you are saving does not match the one you are viewing. Please hit search first.");
+                NAPI.ClientEvent.TriggerClientEvent(player, "send_error", "The mapping ID you are saving does not match the one you are viewing. Please hit search first.");
                 return;
             }
 
@@ -139,7 +139,7 @@ namespace mtgvrp.mapping_manager
 
             if (editingRequest.Id != mappingId)
             {
-                API.TriggerClientEvent(player, "send_error", "The mapping ID you are saving does not match the one you are viewing. Please hit search first.");
+                NAPI.ClientEvent.TriggerClientEvent(player, "send_error", "The mapping ID you are saving does not match the one you are viewing. Please hit search first.");
                 return;
             }
 
@@ -158,7 +158,7 @@ namespace mtgvrp.mapping_manager
 
             if (editingRequest.Id != mappingId)
             {
-                API.TriggerClientEvent(player, "send_error", "The mapping ID you are saving does not match the one you are viewing. Please hit search first.");
+                NAPI.ClientEvent.TriggerClientEvent(player, "send_error", "The mapping ID you are saving does not match the one you are viewing. Please hit search first.");
                 return;
             }
 
@@ -186,7 +186,7 @@ namespace mtgvrp.mapping_manager
 
             if (editingRequest.Id != mappingId)
             {
-                API.TriggerClientEvent(player, "send_error", "The mapping ID you are saving does not match the one you are viewing. Please hit search first.");
+                NAPI.ClientEvent.TriggerClientEvent(player, "send_error", "The mapping ID you are saving does not match the one you are viewing. Please hit search first.");
                 return;
             }
 
@@ -210,7 +210,7 @@ namespace mtgvrp.mapping_manager
 
             if (editingRequest.Id != mappingId)
             {
-                API.TriggerClientEvent(player, "send_error", "The mapping ID you are saving does not match the one you are viewing. Please hit search first.");
+                NAPI.ClientEvent.TriggerClientEvent(player, "send_error", "The mapping ID you are saving does not match the one you are viewing. Please hit search first.");
                 return;
             }
 
@@ -232,7 +232,7 @@ namespace mtgvrp.mapping_manager
 
             }
 
-            API.TriggerClientEvent(player, "showRequestCode", mappingString);
+            NAPI.ClientEvent.TriggerClientEvent(player, "showRequestCode", mappingString);
         }
 
         [RemoteEvent("requestFirstMappingPage")]
@@ -241,7 +241,7 @@ namespace mtgvrp.mapping_manager
             var count = 0;
             foreach (var o in Mapping)
             {
-                API.TriggerClientEvent(player, "addMappingRequest", o.Id, o.Description, o.CreatedBy, o.IsActive);
+                NAPI.ClientEvent.TriggerClientEvent(player, "addMappingRequest", o.Id, o.Description, o.CreatedBy, o.IsActive);
                 count++;
                 if (count == 10)
                     break;
@@ -249,18 +249,18 @@ namespace mtgvrp.mapping_manager
 
             var numOfPages = (Mapping.Count() + 9) / 10;
             var middlePage = ((1 + numOfPages) / 2) - 1;
-            API.TriggerClientEvent(player, "createPagination", 1, middlePage, numOfPages);
+            NAPI.ClientEvent.TriggerClientEvent(player, "createPagination", 1, middlePage, numOfPages);
         }
 
         [RemoteEvent("requestMappingPage")]
         public void RequestMappingPage(Client player, params object[] arguments)
         {
             var page = Convert.ToInt32(arguments[0]);
-            API.TriggerClientEvent(player, "emptyMappingTable");
+            NAPI.ClientEvent.TriggerClientEvent(player, "emptyMappingTable");
             var count = 0;
             foreach (var o in Mapping.Skip(page * 10))
             {
-                API.TriggerClientEvent(player, "addMappingRequest", o.Id, o.Description, o.CreatedBy, o.IsActive);
+                NAPI.ClientEvent.TriggerClientEvent(player, "addMappingRequest", o.Id, o.Description, o.CreatedBy, o.IsActive);
                 count++;
 
                 if (count == 10)
@@ -305,7 +305,7 @@ namespace mtgvrp.mapping_manager
             }
 
             player.SendChatMessage("Mapping manager opened. Hit ~r~ESC~w~ to close it.");
-            API.TriggerClientEvent(player, "showMappingManager");
+            NAPI.ClientEvent.TriggerClientEvent(player, "showMappingManager");
             return;
         }
     }

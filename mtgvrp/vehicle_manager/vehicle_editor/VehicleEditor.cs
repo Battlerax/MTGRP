@@ -22,30 +22,30 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
         [RemoteEvent("vehicle_edit_change_spawn")]
         private void VehicleEditChangeSpawn(Client player, params object[] arguments)
         {
-            GameVehicle veh = API.GetEntityData(player.Handle, "EDIT_VEH");
+            GameVehicle veh = NAPI.Data.GetEntityData(player.Handle, "EDIT_VEH");
 
             if (veh == null)
             {
-                API.SendChatMessageToPlayer(player, "~r~Vehicle editor error. Null vehicle.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "~r~Vehicle editor error. Null vehicle.");
                 return;
             }
 
-            veh.SpawnPos = API.GetEntityPosition(veh.NetHandle);
+            veh.SpawnPos = NAPI.Entity.GetEntityPosition(veh.NetHandle);
             veh.SpawnRot = API.GetEntityRotation(veh.NetHandle);
             veh.SpawnDimension = (int)API.GetEntityDimension(veh.NetHandle);
             veh.Save();
 
-            API.SendChatMessageToPlayer(player, "Vehicle position spawn saved to current location.");
+            NAPI.Chat.SendChatMessageToPlayer(player, "Vehicle position spawn saved to current location.");
         }
 
         [RemoteEvent("vehicle_edit_save")]
         private void VehicleEditSave(Client player, params object[] arguments)
         {
-            GameVehicle veh = API.GetEntityData(player.Handle, "EDIT_VEH");
+            GameVehicle veh = NAPI.Data.GetEntityData(player.Handle, "EDIT_VEH");
 
             if (veh == null)
             {
-                API.SendChatMessageToPlayer(player, "~r~Vehicle editor error. Null vehicle.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "~r~Vehicle editor error. Null vehicle.");
                 return;
             }
 
@@ -61,34 +61,34 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
 
             if (veh.Id != vehId)
             {
-                API.SendChatMessageToPlayer(player, "~r~Vehicle editor error. Vehicle edit IDs are not equal.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "~r~Vehicle editor error. Vehicle edit IDs are not equal.");
                 return;
             }
-
-            var modelHash = API.VehicleNameToModel(model);
+            
+            var modelHash = NAPI.Util.VehicleNameToModel(model);
 
             if (modelHash == 0)
             {
-                API.TriggerClientEvent(player, "send_veh_edit_error", "Invalid vehicle model entered!");
+                NAPI.ClientEvent.TriggerClientEvent(player, "send_veh_edit_error", "Invalid vehicle model entered!");
                 return;
             }
 
             if (!Character.IsCharacterRegistered(owner) && owner != "NONE")
             {
-                API.TriggerClientEvent(player, "send_veh_edit_error",
+                NAPI.ClientEvent.TriggerClientEvent(player, "send_veh_edit_error",
                     "Invalid owner entered. (Character name does not exist.)");
                 return;
             }
 
             if (JobManager.GetJobById(jobId) == null && jobId != 0)
             {
-                API.TriggerClientEvent(player, "send_veh_edit_error", "Invalid job ID entered!");
+                NAPI.ClientEvent.TriggerClientEvent(player, "send_veh_edit_error", "Invalid job ID entered!");
                 return;
             }
 
             if (GroupManager.GetGroupById(groupId) == null && groupId != 0)
             {
-                API.TriggerClientEvent(player, "send_veh_edit_error", "Invalid group ID entered!");
+                NAPI.ClientEvent.TriggerClientEvent(player, "send_veh_edit_error", "Invalid group ID entered!");
                 return;
             }
 
@@ -111,54 +111,54 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
             veh.Group = GroupManager.GetGroupById(veh.GroupId);
             veh.GroupId = groupId;
 
-            VehicleManager.respawn_vehicle(veh, API.GetEntityPosition(veh.NetHandle));
-            API.SetPlayerIntoVehicle(player, veh.NetHandle, -1);
+            VehicleManager.respawn_vehicle(veh, NAPI.Entity.GetEntityPosition(veh.NetHandle));
+            NAPI.Player.SetPlayerIntoVehicle(player, veh.NetHandle, -1);
 
             veh.Save();
-            API.SendChatMessageToPlayer(player, "Vehicle editor changes saved!");
-            API.TriggerClientEvent(player, "finish_veh_edit");
+            NAPI.Chat.SendChatMessageToPlayer(player, "Vehicle editor changes saved!");
+            NAPI.ClientEvent.TriggerClientEvent(player, "finish_veh_edit");
         }
 
         [RemoteEvent("cancel_veh_edit")]
         private void CancelVehEdit(Client player, params object[] arguments)
         {
-            API.ResetEntityData(player, "EDIT_VEH");
-            API.SendChatMessageToPlayer(player, "~r~Vehicle editing canceled.");
+            NAPI.Data.ResetEntityData(player, "EDIT_VEH");
+            NAPI.Chat.SendChatMessageToPlayer(player, "~r~Vehicle editing canceled.");
         }
 
         [RemoteEvent("edit_veh_delete")]
         private void EditVehDelete(Client player, params object[] arguments)
         {
-            GameVehicle veh = API.GetEntityData(player.Handle, "EDIT_VEH");
+            GameVehicle veh = NAPI.Data.GetEntityData(player.Handle, "EDIT_VEH");
 
             if (veh == null)
             {
-                API.SendChatMessageToPlayer(player, "~r~Vehicle editor error. Null vehicle.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "~r~Vehicle editor error. Null vehicle.");
                 return;
             }
 
             VehicleManager.despawn_vehicle(veh);
             veh.Delete();
-            API.SendChatMessageToPlayer(player, "Vehicle deleted successfully!");
-            API.TriggerClientEvent(player, "finish_veh_edit");
-            API.ResetEntityData(player, "EDIT_VEH");
+            NAPI.Chat.SendChatMessageToPlayer(player, "Vehicle deleted successfully!");
+            NAPI.ClientEvent.TriggerClientEvent(player, "finish_veh_edit");
+            NAPI.Data.ResetEntityData(player, "EDIT_VEH");
         }
 
         [RemoteEvent("vehicle_edit_respawn")]
         private void VehicleEditRespawn(Client player, params object[] arguments)
         {
-            GameVehicle veh = API.GetEntityData(player.Handle, "EDIT_VEH");
+            GameVehicle veh = NAPI.Data.GetEntityData(player.Handle, "EDIT_VEH");
 
             if (veh == null)
             {
-                API.SendChatMessageToPlayer(player, "~r~Vehicle editor error. Null vehicle.");
+                NAPI.Chat.SendChatMessageToPlayer(player, "~r~Vehicle editor error. Null vehicle.");
                 return;
             }
 
             VehicleManager.respawn_vehicle(veh);
-            API.ResetEntityData(player, "EDIT_VEH");
-            API.SendChatMessageToPlayer(player, "~g~Vehicle respawned!");
-            API.TriggerClientEvent(player, "finish_veh_edit");
+            NAPI.Data.ResetEntityData(player, "EDIT_VEH");
+            NAPI.Chat.SendChatMessageToPlayer(player, "~g~Vehicle respawned!");
+            NAPI.ClientEvent.TriggerClientEvent(player, "finish_veh_edit");
         }
 
         [Command("editvehicle"), Help(HelpManager.CommandGroups.AdminLevel4, "Editing different stats of a vehicle", null)]
@@ -167,29 +167,29 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
             Account account = player.GetAccount();
             if (account.AdminLevel < 4)
                 return;
-
-            if (!API.IsPlayerInAnyVehicle(player))
+            
+            if (!NAPI.Player.IsPlayerInAnyVehicle(player))
             {
-                API.SendPictureNotificationToPlayer(player, "You must be in a vehicle to use this command.", "CHAR_BLOCKED", 0, 1, "Server", "~r~Command Error");
+                NAPI.Notification.SendPictureNotificationToPlayer(player, "You must be in a vehicle to use this command.", "CHAR_BLOCKED", 0, 1, "Server", "~r~Command Error");
                 return;
             }
-
-            var veh = VehicleManager.GetVehFromNetHandle(API.GetPlayerVehicle(player));
+            
+            var veh = VehicleManager.GetVehFromNetHandle(NAPI.Player.GetPlayerVehicle(player));
 
             if(veh == null)
             {
-                API.SendChatMessageToPlayer(player, "~r~Vehicle is null!");
+                NAPI.Chat.SendChatMessageToPlayer(player, "~r~Vehicle is null!");
                 return;
             }
 
             if(veh.is_saved() == false)
             {
-                API.SendPictureNotificationToPlayer(player, "Only a saved vehicle may be edited.", "CHAR_BLOCKED", 0, 1, "Server", "~r~Command Error");
+                NAPI.Notification.SendPictureNotificationToPlayer(player, "Only a saved vehicle may be edited.", "CHAR_BLOCKED", 0, 1, "Server", "~r~Command Error");
                 return;
             }
-
-            API.SetEntityData(player.Handle, "EDIT_VEH", veh);
-            API.TriggerClientEvent(player, "show_vehicle_edit_menu", veh.Id, veh.VehModel.ToString(), (veh.OwnerId == 0 ? "NONE" : PlayerManager.Players.Single(x => x.Id == veh.OwnerId).CharacterName), veh.LicensePlate, veh.VehMods[ModdingManager.PrimaryColorId.ToString()], veh.VehMods[ModdingManager.SecondryColorId.ToString()], veh.RespawnDelay.TotalMinutes.ToString("G"), veh.JobId, veh.GroupId);
+            
+            NAPI.Data.SetEntityData(player.Handle, "EDIT_VEH", veh);
+            NAPI.ClientEvent.TriggerClientEvent(player, "show_vehicle_edit_menu", veh.Id, veh.VehModel.ToString(), (veh.OwnerId == 0 ? "NONE" : PlayerManager.Players.Single(x => x.Id == veh.OwnerId).CharacterName), veh.LicensePlate, veh.VehMods[ModdingManager.PrimaryColorId.ToString()], veh.VehMods[ModdingManager.SecondryColorId.ToString()], veh.RespawnDelay.TotalMinutes.ToString("G"), veh.JobId, veh.GroupId);
         }
     }
 }
