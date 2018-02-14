@@ -86,7 +86,7 @@ namespace mtgvrp.speed_fuel_system
             {
                 if (NAPI.Player.IsPlayerInAnyVehicle(player) && NAPI.Player.GetPlayerVehicleSeat(player) == -1)
                 {
-                    var vehEntity = NAPI.Player.GetPlayerVehicle(player);
+                    var vehEntity = player.Vehicle;
                     GameVehicle veh = NAPI.Data.GetEntityData(vehEntity, "Vehicle");
 
                     if (NAPI.Vehicle.GetVehicleEngineStatus(vehEntity))
@@ -124,11 +124,11 @@ namespace mtgvrp.speed_fuel_system
                     NAPI.Player.FreezePlayer(player, true);
                     NAPI.Data.SetEntityData(vehEntity, "PENDING_FUEL", pendingFuel);
                     veh.RefuelProp = prop;
-                    FuelVeh(new object[] { player, vehEntity }); // I hope this is the right fix. /shrug - austin (from new[] to new object[])
+                    FuelVeh(player, vehEntity);
                     if (NAPI.Data.HasEntityData(vehEntity, "PENDING_FUEL"))
                     {
                         NAPI.Data.SetEntityData(player, "FUELING_VEHICLE", vehEntity);
-                        veh.FuelingTimer = new System.Threading.Timer(FuelVeh, new object[] { player, vehEntity }, 3000, 3000);
+                        veh.FuelingTimer = new System.Threading.Timer(FuelVehTimer, new object[] { player, vehEntity }, 3000, 3000);
                         return;
                     }
                 }
@@ -156,13 +156,15 @@ namespace mtgvrp.speed_fuel_system
             }
         }
 
-        private void FuelVeh(System.Object vars)
+        private void FuelVehTimer(object obj)
         {
-            var handles = (NetHandle[])vars;
-            
-            Client playerEntity = NAPI.Player.GetPlayerFromHandle(handles[0]);
-            NetHandle vehEntity = handles[1];
+            var t = (object[])obj;
+            FuelVeh((Client)t[0], (Vehicle)t[1]);
+        }
 
+        private void FuelVeh(Client playerEntity, Vehicle vehEntity)
+        {
+            
             if (vehEntity.IsNull)
             {
                 return;
