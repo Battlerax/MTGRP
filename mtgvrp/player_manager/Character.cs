@@ -235,6 +235,14 @@ namespace mtgvrp.player_manager
         public int Division { get; set; }
         public int DivisionRank { get; set; }
 
+        // NEW groups (keeping old for now)
+        public int DivisionId { get; set; }
+        public int RankId { get; set; }
+
+        // NEW Jail
+        public int InJailId { get; set; } // the jail id you are in. 
+        public int InJailCellPosition { get; set; } // the jail cell you are in. 
+
         [BsonIgnore]
         public Group Group { get; set; }
 
@@ -249,7 +257,7 @@ namespace mtgvrp.player_manager
         public bool BeaconSet { get; set; }
         [BsonIgnore] public Timer BeaconTimer { get; set; }
         [BsonIgnore] public Timer BeaconResetTimer { get; set; }
-        public Client BeaconCreator{ get; set; }
+        public Client BeaconCreator { get; set; }
 
 
         [BsonIgnore] public Timer aJailTimeLeftTimer { get; set; }
