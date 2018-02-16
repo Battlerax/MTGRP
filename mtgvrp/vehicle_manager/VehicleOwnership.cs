@@ -19,7 +19,7 @@ namespace mtgvrp.vehicle_manager
         }
 
         [RemoteEvent("myvehicles_locatecar")]
-        private void MyVehiclesLocateCar(Client sender, params object[] arguments)
+        public void MyVehiclesLocateCar(Client sender, params object[] arguments)
         {
             Character character = sender.GetCharacter();
             GameVehicle lcVeh =
@@ -31,7 +31,7 @@ namespace mtgvrp.vehicle_manager
         }
 
         [RemoteEvent("myvehicles_abandoncar")]
-        private void MyVehiclesAbandonCar(Client sender, params object[] arguments)
+        public void MyVehiclesAbandonCar(Client sender, params object[] arguments)
         {
             Character character = sender.GetCharacter();
             GameVehicle acVeh =
@@ -45,7 +45,7 @@ namespace mtgvrp.vehicle_manager
         }
 
         [RemoteEvent("myvehicles_sellcar")]
-        private void MyVehiclesSellCar(Client sender, params object[] arguments)
+        public void MyVehiclesSellCar(Client sender, params object[] arguments)
         {
             Character character = sender.GetCharacter();
             GameVehicle scVeh =
@@ -86,7 +86,7 @@ namespace mtgvrp.vehicle_manager
         }
 
         [RemoteEvent("groupvehicles_locatecar")]
-        private void GroupVehiclesLocateCar(Client sender, params object[] arguments)
+        public void GroupVehiclesLocateCar(Client sender, params object[] arguments)
         {
             Character character = sender.GetCharacter();
             GameVehicle gVeh =

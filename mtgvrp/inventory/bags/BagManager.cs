@@ -23,7 +23,7 @@ namespace mtgvrp.inventory.bags
             if (items.Length == 1)
             {
                 BagItem item = (BagItem)items[0];
-                API.SetPlayerClothes(e.Character.Client, 5, item.BagType, item.BagDesign);
+                NAPI.Player.SetPlayerClothes(e.Character.Client, 5, item.BagType, item.BagDesign);
             }
         }
 
@@ -34,7 +34,7 @@ namespace mtgvrp.inventory.bags
                 if (args.Item.GetType() == typeof(BagItem))
                 {
                     Character chr = (Character)sender;
-                    API.SetPlayerClothes(chr.Client, 5, 0, 0);
+                    NAPI.Player.SetPlayerClothes(chr.Client, 5, 0, 0);
                 }
             }
         }
@@ -47,7 +47,7 @@ namespace mtgvrp.inventory.bags
                 {
                     Character chr = (Character) sender;
                     BagItem item = (BagItem) args.Item;
-                    API.SetPlayerClothes(chr.Client, 5, item.BagType, item.BagDesign);
+                    NAPI.Player.SetPlayerClothes(chr.Client, 5, item.BagType, item.BagDesign);
                 }
             }
         }

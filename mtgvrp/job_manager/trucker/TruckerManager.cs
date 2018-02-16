@@ -18,18 +18,11 @@ namespace mtgvrp.job_manager.trucker
 {
     public class TruckerManager : Script
     {
-        public TruckerManager()
-        {
-            Event.OnPlayerEnterVehicle += API_onPlayerEnterVehicle;
-            Event.OnPlayerExitVehicle += API_onPlayerExitVehicle;
-            Event.OnPlayerEnterColShape += API_onEntityEnterColShape;
-            Event.OnPlayerDisconnected += API_onPlayerDisconnected;
-        }
-
         private static readonly Vector3 TruckerLocationCheck = new Vector3(979.6286,-2532.368, 28.30198);
         private const int PermittedDistance = 150;
 
-        private void API_onPlayerDisconnected(Client player, byte type, string reason)
+        [ServerEvent(Event.PlayerDisconnected)]
+        public void OnPlayerDisconnected(Client player, byte type, string reason)
         {
             Character c = player.GetCharacter();
 
@@ -42,7 +35,8 @@ namespace mtgvrp.job_manager.trucker
             }
         }
 
-        private void API_onPlayerExitVehicle(Client player, Vehicle vehicle)
+        [ServerEvent(Event.PlayerExitVehicle)]
+        public void OnPlayerExitVehicle(Client player, Vehicle vehicle)
         {
             Character c = player.GetCharacter();
             if (c == null)
@@ -56,9 +50,10 @@ namespace mtgvrp.job_manager.trucker
             }
         }
 
-        private void API_onEntityEnterColShape(ColShape colshape, Client entity)
+        [ServerEvent(Event.PlayerEnterColshape)]
+        public void OnPlayerEnterColShape(ColShape colshape, Client entity)
         {
-            if (API.GetEntityType(entity) != EntityType.Player)
+            if (NAPI.Entity.GetEntityType(entity) != EntityType.Player)
                 return;
 
             var player = NAPI.Player.GetPlayerFromHandle(entity);
@@ -339,7 +334,8 @@ namespace mtgvrp.job_manager.trucker
             }
         }
 
-        private void API_onPlayerEnterVehicle(Client player, Vehicle vehicle, sbyte seat)
+        [ServerEvent(Event.PlayerEnterVehicle)]
+        public void OnPlayerEnterVehicle(Client player, Vehicle vehicle, sbyte seat)
         {
             var veh = vehicle.GetVehicle();
             var character = player.GetCharacter();

@@ -13,7 +13,6 @@ namespace mtgvrp.weapon_manager
     {
         public WeaponManager()
         {
-            Event.OnPlayerWeaponSwitch += API_onPlayerWeaponSwitch;
             //Event.OnPlayerWeaponAmmoChange += API_onPlayerWeaponAmmoChange;
             CharacterMenu.OnCharacterLogin += CharacterMenu_OnCharacterLogin;
             InventoryManager.OnStorageGetItem += InventoryManager_OnStorageGetItem;
@@ -64,6 +63,7 @@ namespace mtgvrp.weapon_manager
             }
         }
 
+        // TODO: re-assess since this event died. (it can be done client-side if necessary)
         private void API_onPlayerWeaponAmmoChange(Client player, WeaponHash weapon, int ammo)
         {
             if (ammo <= 1)
@@ -72,7 +72,8 @@ namespace mtgvrp.weapon_manager
             }
         }
 
-        private void API_onPlayerWeaponSwitch(Client player, WeaponHash weapon, WeaponHash newhash)
+        [ServerEvent(Event.PlayerWeaponSwitch)]
+        public void OnPlayerWeaponSwitch(Client player, WeaponHash weapon, WeaponHash newhash)
         {
             Character character = player.GetCharacter();
             Account playerAccount = player.GetAccount();

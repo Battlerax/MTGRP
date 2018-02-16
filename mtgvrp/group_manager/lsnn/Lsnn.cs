@@ -12,28 +12,24 @@ namespace mtgvrp.group_manager.lsnn
 {
     class Lsnn : Script
     {
-        public Lsnn()
-        {
-            Event.OnResourceStart += StartLsnn;
-            Event.OnPlayerDisconnected += API_onPlayerDisconnected;
-        }
-
-        private void API_onPlayerDisconnected(Client player, byte type, string reason)
+        [ServerEvent(Event.PlayerDisconnected)]
+        public void OnPlayerDisconnected(Client player, byte type, string reason)
         {
             var character = player.GetCharacter();
             if (character == null) return;
 
-            if (character.MicObject != null && API.DoesEntityExist(character.MicObject))
-                API.DeleteEntity(character.MicObject);
+            if (character.MicObject != null && NAPI.Entity.DoesEntityExist(character.MicObject))
+                NAPI.Entity.DeleteEntity(character.MicObject);
         }
 
         public readonly Vector3 LsnnFrontDoor = new Vector3(-319.0662f, -609.8559f, 33.55819f);
 
-        public void StartLsnn()
+        [ServerEvent(Event.ResourceStart)]
+        public void OnResourceStart()
         {
-            LsnnFrontDoorShape = API.CreateCylinderColShape(LsnnFrontDoor, 2f, 3f);
+            LsnnFrontDoorShape = NAPI.ColShape.CreateCylinderColShape(LsnnFrontDoor, 2f, 3f);
 
-            API.CreateMarker(1, LsnnFrontDoor - new Vector3(0, 0, 1f), new Vector3(), new Vector3(),
+            NAPI.Marker.CreateMarker(1, LsnnFrontDoor - new Vector3(0, 0, 1f), new Vector3(), new Vector3(),
                 1f, new GTANetworkAPI.Color(100, 51, 153, 255), false);
         }
 

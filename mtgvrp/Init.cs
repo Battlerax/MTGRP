@@ -35,14 +35,11 @@ namespace mtgvrp
 
         public Init()
         {
-
             DebugManager.DebugMessage("[INIT] Initalizing script...");
 
             //API.SetServerName(SERVER_NAME + " ~b~| ~g~" + SERVER_WEBSITE);
             //API.SetGamemodeName("Arcadit V-RP " + SERVER_VERSION);
 
-            Event.OnResourceStart += OnResourceStartHandler;
-            Event.OnResourceStop += API_onResourceStop;
             InventoryManager.OnStorageItemUpdateAmount += InventoryManager_OnStorageItemUpdateAmount;
 
             SettingsManager.Load();
@@ -52,13 +49,13 @@ namespace mtgvrp
         }
 
         [RemoteEvent("OBJECT_PLACED_PROPERLY")]
-        private void ObjectPlacedProperly(Client sender, params object[] arguments)
+        public void ObjectPlacedProperly(Client sender, params object[] arguments)
         {
             NetHandle obj = (NetHandle) arguments[0];
             Vector3 pos = (Vector3) arguments[1];
             Vector3 rot = (Vector3) arguments[2];
             NAPI.Entity.SetEntityPosition(obj,pos);
-            API.SetEntityRotation(obj,rot);
+            NAPI.Entity.SetEntityRotation(obj,rot);
         }
 
         private void InventoryManager_OnStorageItemUpdateAmount(IStorage sender,
@@ -76,11 +73,12 @@ namespace mtgvrp
             return Type.GetType("Mono.Runtime") != null;
         }
 
-        public void OnResourceStartHandler()
+        [ServerEvent(Event.ResourceStart)]
+        public void OnResourceStart()
         {
             //For Dealership.
-            API.RemoveIpl("fakeint"); // remove the IPL "fakeint"
-            API.RequestIpl("shr_int"); // Request the IPL "shr_int"
+            NAPI.World.RemoveIpl("fakeint"); // remove the IPL "fakeint"
+            NAPI.World.RequestIpl("shr_int"); // Request the IPL "shr_int"
 
             NAPI.Util.ConsoleOutput("[INIT] Unloaded fakeint IPL and loaded shr_int IPL.!");
 
@@ -103,7 +101,8 @@ namespace mtgvrp
             }*/
         }
 
-        private void API_onResourceStop()
+        [ServerEvent(Event.ResourceStop)]
+        public void API_onResourceStop()
         {
             SettingsManager.Save();
         }

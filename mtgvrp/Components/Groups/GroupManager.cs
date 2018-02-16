@@ -7,12 +7,8 @@ namespace mtgvrp.Components.Groups
 {
     public class GroupManager : Script
     {
-        public GroupManager()
-        {
-            Event.OnResourceStart += OnResourceStart;
-        }
-
-        private void OnResourceStart()
+        [ServerEvent(Event.ResourceStart)]
+        public void OnResourceStart()
         {
             // Load All Groups @Dylan
         }

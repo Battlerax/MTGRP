@@ -95,21 +95,21 @@ namespace mtgvrp.group_manager.lspd.MDC
         }
 
         [RemoteEvent("server_updateMdcAnnouncement")]
-        private void UpdateMdcAnnouncement(Client player, params object[] arguments)
+        public void UpdateMdcAnnouncement(Client player, params object[] arguments)
         {
             // i guess there was no code written for this... - austin
             // TODO: find out what this needs and add it i guess
         }
 
         [RemoteEvent("server_removeBolo")]
-        private void RemoveBolo(Client player, params object[] arguments)
+        public void RemoveBolo(Client player, params object[] arguments)
         {
             ActiveBolos.RemoveAt((int)arguments[0]);
             NAPI.Chat.SendChatMessageToPlayer(player, "You removed Bolo # " + (int)arguments[0]);
         }
 
         [RemoteEvent("server_createBolo")]
-        private void CreateBolo(Client player, params object[] arguments)
+        public void CreateBolo(Client player, params object[] arguments)
         {
             Character character = player.GetCharacter();
             var newBolo = new Bolo(character.CharacterName, Convert.ToInt32(arguments[1]),
@@ -130,14 +130,14 @@ namespace mtgvrp.group_manager.lspd.MDC
         }
 
         [RemoteEvent("requestMdcInformation")]
-        private void RequestMdcInformation(Client player, params object[] arguments)
+        public void RequestMdcInformation(Client player, params object[] arguments)
         {
             SendAll911ToClient(player);
             SendAllBoloToClient(player);
         }
 
         [RemoteEvent("server_mdc_close")]
-        private void MdcClose(Client player, params object[] arguments)
+        public void MdcClose(Client player, params object[] arguments)
         {
             var character = player.GetCharacter();
             ChatManager.RoleplayMessage(character, "logs off of the MDC.", ChatManager.RoleplayMe);
@@ -145,7 +145,7 @@ namespace mtgvrp.group_manager.lspd.MDC
         }
 
         [RemoteEvent("MDC_SearchForCitizen")]
-        private void MDCSearchForCitizen(Client player, params object[] arguments)
+        public void MDCSearchForCitizen(Client player, params object[] arguments)
         {
             var name = (string)arguments[0];
             var phone = (string)arguments[1];
@@ -211,7 +211,7 @@ namespace mtgvrp.group_manager.lspd.MDC
         }
 
         [RemoteEvent("MDC_SearchForVehicle")]
-        private void MDCSearchForVehicle(Client player, params object[] arguments)
+        public void MDCSearchForVehicle(Client player, params object[] arguments)
         {
             var lic = (string)arguments[0];
             vehicle_manager.GameVehicle veh = VehicleManager.Vehicles.FirstOrDefault(x => x.LicensePlate == lic) ??
@@ -229,7 +229,7 @@ namespace mtgvrp.group_manager.lspd.MDC
         }
 
         [RemoteEvent("MDC_RequestNextCrimesPage")]
-        private void MDCRequestNextCrimesPage(Client player, params object[] arguments)
+        public void MDCRequestNextCrimesPage(Client player, params object[] arguments)
         {
             Character p = player.GetData("MDC_LAST_CHECKED");
             if (p == null)

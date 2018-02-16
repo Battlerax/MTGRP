@@ -32,17 +32,16 @@ namespace mtgvrp.AdminSystem
     {
         public AdminCommands()
         {
-            DebugManager.DebugMessage("[AdminSys] Initalizing Admin System...");
             DebugManager.DebugMessage("[AdminSys] Admin System initalized.");
-            Event.OnPlayerDamage += resetPlayerHealth;
         }
 
-        private void resetPlayerHealth(Client player, float lossFirst, float lossSecond)
+        [ServerEvent(Event.PlayerDamage)]
+        public void OnPlayerDamage(Client player, float lossFirst, float lossSecond)
         {
             Character c = player.GetCharacter();
             if (c.isAJailed || c.IsJailed)
             {
-                API.SetPlayerHealth(player, 100);
+                player.Health = 100;
             }
         }
 
@@ -2334,11 +2333,12 @@ namespace mtgvrp.AdminSystem
             character.ReportTimer.Stop();
         }
 
+        // TODO: convert to Vehicle instead of NetHandle
         public NetHandle GetClosestVeh(Client player)
         {
             var shortestDistance = 2000f;
             NetHandle closestveh = new NetHandle();
-            foreach (var veh in API.GetAllVehicles())
+            foreach (var veh in NAPI.Pools.GetAllVehicles())
             {
                 Vector3 Position = NAPI.Entity.GetEntityPosition(veh);
                 var VehicleDistance = player.Position.DistanceTo(Position);

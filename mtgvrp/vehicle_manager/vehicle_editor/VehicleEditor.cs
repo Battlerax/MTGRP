@@ -20,7 +20,7 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
         }
 
         [RemoteEvent("vehicle_edit_change_spawn")]
-        private void VehicleEditChangeSpawn(Client player, params object[] arguments)
+        public void VehicleEditChangeSpawn(Client player, params object[] arguments)
         {
             GameVehicle veh = NAPI.Data.GetEntityData(player.Handle, "EDIT_VEH");
 
@@ -39,7 +39,7 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
         }
 
         [RemoteEvent("vehicle_edit_save")]
-        private void VehicleEditSave(Client player, params object[] arguments)
+        public void VehicleEditSave(Client player, params object[] arguments)
         {
             GameVehicle veh = NAPI.Data.GetEntityData(player.Handle, "EDIT_VEH");
 
@@ -120,14 +120,14 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
         }
 
         [RemoteEvent("cancel_veh_edit")]
-        private void CancelVehEdit(Client player, params object[] arguments)
+        public void CancelVehEdit(Client player, params object[] arguments)
         {
             NAPI.Data.ResetEntityData(player, "EDIT_VEH");
             NAPI.Chat.SendChatMessageToPlayer(player, "~r~Vehicle editing canceled.");
         }
 
         [RemoteEvent("edit_veh_delete")]
-        private void EditVehDelete(Client player, params object[] arguments)
+        public void EditVehDelete(Client player, params object[] arguments)
         {
             GameVehicle veh = NAPI.Data.GetEntityData(player.Handle, "EDIT_VEH");
 
@@ -145,7 +145,7 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
         }
 
         [RemoteEvent("vehicle_edit_respawn")]
-        private void VehicleEditRespawn(Client player, params object[] arguments)
+        public void VehicleEditRespawn(Client player, params object[] arguments)
         {
             GameVehicle veh = NAPI.Data.GetEntityData(player.Handle, "EDIT_VEH");
 

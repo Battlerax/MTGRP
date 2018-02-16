@@ -49,7 +49,7 @@ namespace mtgvrp.vehicle_dealership
         }
 
         [RemoteEvent("chopperdealer_selectcar")]
-        private void ChoppDealerSelectCar(Client sender, params object[] arguments)
+        public void ChoppDealerSelectCar(Client sender, params object[] arguments)
         {
             Character character = sender.GetCharacter();
 

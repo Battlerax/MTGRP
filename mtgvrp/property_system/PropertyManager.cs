@@ -24,14 +24,8 @@ namespace mtgvrp.property_system
     {
         public static List<Property> Properties;
 
-        public PropertyManager()
-        {
-            Event.OnResourceStart += API_onResourceStart;
-            Event.OnPlayerEnterColShape += API_onEntityEnterColShape;
-            Event.OnPlayerExitColShape += API_onEntityExitColShape;
-        }
-
-        private void API_onResourceStart()
+        [ServerEvent(Event.ResourceStart)]
+        public void OnResourceStart()
         {
             Properties = DatabaseManager.PropertyTable.Find(FilterDefinition<Property>.Empty).ToList();
             foreach (var prop in Properties)
@@ -64,9 +58,10 @@ namespace mtgvrp.property_system
 
         #region ColShapeKnowing
 
-        private void API_onEntityExitColShape(ColShape colshape, Client entity)
+        [ServerEvent(Event.PlayerExitColshape)]
+        public void OnPlayerExitColShape(ColShape colshape, Client entity)
         {
-            if (API.GetEntityType(entity) == EntityType.Player && colshape.HasData("property_entrance"))
+            if (colshape.HasData("property_entrance"))
             {
                 if (NAPI.Data.GetEntityData(entity, "at_interance_property_id") == colshape.GetData("property_entrance"))
                 {
@@ -74,7 +69,7 @@ namespace mtgvrp.property_system
                 }
             }
 
-            if (API.GetEntityType(entity) == EntityType.Player && colshape.HasData("property_interaction"))
+            if (colshape.HasData("property_interaction"))
             {
                 if (NAPI.Data.GetEntityData(entity, "at_interaction_property_id") == colshape.GetData("property_interaction"))
                 {
@@ -82,7 +77,7 @@ namespace mtgvrp.property_system
                 }
             }
 
-            if (API.GetEntityType(entity) == EntityType.Player && colshape.HasData("property_garbage"))
+            if (colshape.HasData("property_garbage"))
             {
                 if (NAPI.Data.GetEntityData(entity, "at_garbage_property_id") == colshape.GetData("property_garbage"))
                 {
@@ -90,7 +85,7 @@ namespace mtgvrp.property_system
                 }
             }
 
-            if (API.GetEntityType(entity) == EntityType.Player && colshape.HasData("property_exit"))
+            if (colshape.HasData("property_exit"))
             {
                 if (NAPI.Data.GetEntityData(entity, "at_exit_property_id") == colshape.GetData("property_exit"))
                 {
@@ -99,9 +94,10 @@ namespace mtgvrp.property_system
             }
         }
 
-        private void API_onEntityEnterColShape(ColShape colshape, Client entity)
+        [ServerEvent(Event.PlayerEnterColshape)]
+        public void OnPlayterEnterColShape(ColShape colshape, Client entity)
         {
-            if (API.GetEntityType(entity) == EntityType.Player && colshape.HasData("property_entrance"))
+            if (colshape.HasData("property_entrance"))
             {
                 int id = colshape.GetData("property_entrance");
                 var property = Properties.SingleOrDefault(x => x.Id == id);
@@ -111,7 +107,7 @@ namespace mtgvrp.property_system
                 NAPI.Data.SetEntityData(entity, "at_interance_property_id", colshape.GetData("property_entrance"));
             }
 
-            if (API.GetEntityType(entity) == EntityType.Player && colshape.HasData("property_interaction"))
+            if (colshape.HasData("property_interaction"))
             {
                 int id = colshape.GetData("property_interaction");
                 var property = Properties.SingleOrDefault(x => x.Id == id);
@@ -121,7 +117,7 @@ namespace mtgvrp.property_system
                 NAPI.Data.SetEntityData(entity, "at_interaction_property_id", colshape.GetData("property_interaction"));
             }
 
-            if (API.GetEntityType(entity) == EntityType.Player && colshape.HasData("property_garbage"))
+            if (colshape.HasData("property_garbage"))
             {
                 int id = colshape.GetData("property_garbage");
                 var property = Properties.SingleOrDefault(x => x.Id == id);
@@ -131,7 +127,7 @@ namespace mtgvrp.property_system
                 NAPI.Data.SetEntityData(entity, "at_garbage_property_id", colshape.GetData("property_garbage"));
             }
 
-            if (API.GetEntityType(entity) == EntityType.Player && colshape.HasData("property_exit"))
+            if (colshape.HasData("property_exit"))
             {
                 int id = colshape.GetData("property_exit");
                 var property = Properties.SingleOrDefault(x => x.Id == id);
@@ -189,7 +185,7 @@ namespace mtgvrp.property_system
         #endregion
 
         [RemoteEvent("editproperty_setname")]
-        private void EditPropertySetName(Client sender, params object[] arguments)
+        public void EditPropertySetName(Client sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -209,7 +205,7 @@ namespace mtgvrp.property_system
         }
 
         [RemoteEvent("editproperty_settype")]
-        private void EditPropertySetType(Client sender, params object[] arguments)
+        public void EditPropertySetType(Client sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -238,7 +234,7 @@ namespace mtgvrp.property_system
         }
 
         [RemoteEvent("editproperty_setsupplies")]
-        private void EditPropertySetSupplies(Client sender, params object[] arguments)
+        public void EditPropertySetSupplies(Client sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -265,7 +261,7 @@ namespace mtgvrp.property_system
         }
 
         [RemoteEvent("editproperty_setentrancepos")]
-        private void EditPropertySetEntrancePos(Client sender, params object[] arguments)
+        public void EditPropertySetEntrancePos(Client sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -287,7 +283,7 @@ namespace mtgvrp.property_system
         }
 
         [RemoteEvent("editproperty_gotoentrance")]
-        private void EditPropertyGotoEntrance(Client sender, params object[] arguments)
+        public void EditPropertyGotoEntrance(Client sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -305,7 +301,7 @@ namespace mtgvrp.property_system
         }
 
         [RemoteEvent("editproperty_setmaindoor")]
-        private void EditPropertySetMainDoor(Client sender, params object[] arguments)
+        public void EditPropertySetMainDoor(Client sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -339,7 +335,7 @@ namespace mtgvrp.property_system
         }
 
         [RemoteEvent("editproperty_toggleteleportable")]
-        private void EditPropertyToggleTeleportable(Client sender, params object[] arguments)
+        public void EditPropertyToggleTeleportable(Client sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -360,7 +356,7 @@ namespace mtgvrp.property_system
         }
 
         [RemoteEvent("editproperty_setteleportpos")]
-        private void EditPropertySetTeleportPos(Client sender, params object[] arguments)
+        public void EditPropertySetTeleportPos(Client sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -386,7 +382,7 @@ namespace mtgvrp.property_system
         }
 
         [RemoteEvent("editproperty_toggleinteractable")]
-        private void EditPropertyToggleInteractable(Client sender, params object[] arguments)
+        public void EditPropertyToggleInteractable(Client sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -407,7 +403,7 @@ namespace mtgvrp.property_system
         }
 
         [RemoteEvent("editproperty_setinteractpos")]
-        private void EditPropertySetInteractPos(Client sender, params object[] arguments)
+        public void EditPropertySetInteractPos(Client sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -434,7 +430,7 @@ namespace mtgvrp.property_system
         }
 
         [RemoteEvent("editproperty_togglelock")]
-        private void EditPropertyToggleLock(Client sender, params object[] arguments)
+        public void EditPropertyToggleLock(Client sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -455,7 +451,7 @@ namespace mtgvrp.property_system
         }
 
         [RemoteEvent("editproperty_deleteproperty")]
-        private void EditPropertyDeleteProperty(Client sender, params object[] arguments)
+        public void EditPropertyDeleteProperty(Client sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -472,7 +468,7 @@ namespace mtgvrp.property_system
         }
 
         [RemoteEvent("editproperty_setprice")]
-        private void EditPropertySetPrice(Client sender, params object[] arguments)
+        public void EditPropertySetPrice(Client sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -500,7 +496,7 @@ namespace mtgvrp.property_system
         }
 
         [RemoteEvent("editproperty_setowner")]
-        private void EditPropertySetOwner(Client sender, params object[] arguments)
+        public void EditPropertySetOwner(Client sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -526,7 +522,7 @@ namespace mtgvrp.property_system
         }
 
         [RemoteEvent("editproperty_togglehasgarbage")]
-        private void EditPropertyToggleHasGarbage(Client sender, params object[] arguments)
+        public void EditPropertyToggleHasGarbage(Client sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -546,7 +542,7 @@ namespace mtgvrp.property_system
         }
 
         [RemoteEvent("editproperty_setgarbagepoint")]
-        private void EditPropertySetGarbagePoint(Client sender, params object[] arguments)
+        public void EditPropertySetGarbagePoint(Client sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -573,14 +569,14 @@ namespace mtgvrp.property_system
         }
 
         [RemoteEvent("attempt_enter_prop")]
-        private void AttemptEnterProp(Client sender, params object[] arguments)
+        public void AttemptEnterProp(Client sender, params object[] arguments)
         {
             if (Exitproperty(sender) == false)
                 Enterproperty(sender);
         }
 
         [RemoteEvent("editproperty_addipl")]
-        private void EditPropertyAddIpl(Client sender, params object[] arguments)
+        public void EditPropertyAddIpl(Client sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -600,7 +596,7 @@ namespace mtgvrp.property_system
         }
 
         [RemoteEvent("editproperty_deleteipl")]
-        private void EditPropertyDeleteIpl(Client sender, params object[] arguments)
+        public void EditPropertyDeleteIpl(Client sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {

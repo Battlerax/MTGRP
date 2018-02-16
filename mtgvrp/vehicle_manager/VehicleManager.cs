@@ -218,12 +218,6 @@ namespace mtgvrp.vehicle_manager
         {
             DebugManager.DebugMessage("[VehicleM] Initializing vehicle manager...");
 
-            // Register callbacks
-            Event.OnPlayerEnterVehicle += OnPlayerEnterVehicle;
-            Event.OnVehicleDeath += OnVehicleDeath;
-            Event.OnPlayerExitVehicle += OnPlayerExitVehicle;
-            Event.OnPlayerDisconnected += API_onPlayerDisconnected;
-
             //Setup respawn timer.
             VehicleRespawnTimer.Interval = 5000;
             VehicleRespawnTimer.Elapsed += VehicleRespawnTimer_Elapsed;
@@ -264,7 +258,7 @@ namespace mtgvrp.vehicle_manager
         }
 
         [RemoteEvent("VehicleStreamedForPlayer")]
-        private void API_onClientEventTrigger(Client sender, params object[] arguments)
+        public void VehicleStreamedForPlayer(Client sender, params object[] arguments)
         {
             var veh = (NetHandle)arguments[0];
 
@@ -667,7 +661,8 @@ namespace mtgvrp.vehicle_manager
             }
         }
 
-        private void API_onPlayerDisconnected(Client player, byte type, string reason)
+        [ServerEvent(Event.PlayerDisconnected)]
+        public void OnPlayerDisconnected(Client player, byte type, string reason)
         {
             //DeSpawn his cars.
             Character character = player.GetCharacter();
@@ -693,7 +688,8 @@ namespace mtgvrp.vehicle_manager
             }
         }
 
-        private void OnPlayerEnterVehicle(Client player, Vehicle vehicleHandle, sbyte seat)
+        [ServerEvent(Event.PlayerEnterVehicle)]
+        public void OnPlayerEnterVehicle(Client player, Vehicle vehicleHandle, sbyte seat)
         {
             // Admin check in future
 
@@ -702,7 +698,7 @@ namespace mtgvrp.vehicle_manager
             if (veh == null)
                 return;
 
-            API.SetBlipTransparency(veh.Blip, 0);
+            NAPI.Blip.SetBlipTransparency(veh.Blip, 0);
 
             Character character = player.GetCharacter();
             Account account = player.GetAccount();
@@ -768,6 +764,7 @@ namespace mtgvrp.vehicle_manager
             }
         }
 
+        [ServerEvent(Event.PlayerExitVehicle)]
         public void OnPlayerExitVehicle(Client player, Vehicle vehicleHandle)
         {
             var veh = GetVehFromNetHandle(vehicleHandle);
@@ -823,6 +820,7 @@ namespace mtgvrp.vehicle_manager
             }
         }
 
+        [ServerEvent(Event.VehicleDeath)]
         public void OnVehicleDeath(Vehicle vehicleHandle)
         {
             var veh = GetVehFromNetHandle(vehicleHandle);

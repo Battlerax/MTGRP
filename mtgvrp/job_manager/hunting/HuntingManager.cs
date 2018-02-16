@@ -1,25 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
-
 using System.Timers;
 
-
 using GTANetworkAPI;
-
-
 
 using mtgvrp.core;
 using mtgvrp.core.Help;
 using mtgvrp.inventory;
 using mtgvrp.property_system;
+
 using Color = mtgvrp.core.Color;
 
 namespace mtgvrp.job_manager.hunting
 {
-
-
     public class HuntingManager : Script
     {
         public static List<HuntingAnimal> SpawnedAnimals = new List<HuntingAnimal>();
@@ -71,11 +65,10 @@ namespace mtgvrp.job_manager.hunting
 
         public HuntingManager()
         {
-            Event.OnResourceStart += OnHuntingManagerStart;
             //Event.OnPlayerWeaponAmmoChange += OnPlayerWeaponAmmoChange;
-            Event.OnPlayerWeaponSwitch += OnPlayerWeaponSwitch;
         }
 
+        [ServerEvent(Event.ResourceStart)]
         public void OnHuntingManagerStart()
         {
             /*foreach (var spawn in AnimalSpawns)
@@ -86,6 +79,7 @@ namespace mtgvrp.job_manager.hunting
             NAPI.Util.ConsoleOutput("[HuntingManager] Created " + SpawnedAnimals.Count + " animals.");*/
         }
 
+        [ServerEvent(Event.PlayerWeaponSwitch)]
         public void OnPlayerWeaponSwitch(Client player, WeaponHash oldWeapon, WeaponHash newValue)
         {
             if (oldWeapon == WeaponHash.SniperRifle)

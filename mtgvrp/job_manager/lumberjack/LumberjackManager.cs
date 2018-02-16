@@ -20,11 +20,10 @@ namespace mtgvrp.job_manager.lumberjack
         {
             Tree.LoadTrees();
 
-            Event.OnPlayerExitVehicle += API_onPlayerExitVehicle;
-            Event.OnPlayerEnterVehicle += API_onPlayerEnterVehicle;
         }
 
-        private void API_onPlayerEnterVehicle(Client player, Vehicle vehicle, sbyte seat)
+        [ServerEvent(Event.PlayerEnterVehicle)]
+        public void OnPlayerEnterVehicle(Client player, Vehicle vehicle, sbyte seat)
         {
             if(vehicle.GetVehicle() == null)
                 return;
@@ -65,7 +64,8 @@ namespace mtgvrp.job_manager.lumberjack
             }
         }
 
-        private void API_onPlayerExitVehicle(Client player, Vehicle vehicle)
+        [ServerEvent(Event.PlayerExitVehicle)]
+        public void OnPlayerExitVehicle(Client player, Vehicle vehicle)
         {
             if (API.GetEntityModel(vehicle) == (int) VehicleHash.Flatbed && player.GetCharacter().JobOne.Type == JobManager.JobTypes.Lumberjack)
             {
@@ -105,7 +105,7 @@ namespace mtgvrp.job_manager.lumberjack
         }
 
         [RemoteEvent("lumberjack_hittree")]
-        private void LumberjackHittree(Client sender, params object[] arguments)
+        public void LumberjackHittree(Client sender, params object[] arguments)
         {
             var character = sender.GetCharacter();
             if (character.JobOne.Type == JobManager.JobTypes.Lumberjack)
@@ -165,7 +165,7 @@ namespace mtgvrp.job_manager.lumberjack
         }
 
         [RemoteEvent("TreePlaced")]
-        private void TreePlaced(Client sender, params object[] arguments)
+        public void TreePlaced(Client sender, params object[] arguments)
         {
             var tree = Tree.Trees.First(x => x.TreeObj == (NetHandle)arguments[0]);
             tree.TreePos = tree.TreeObj.Position;

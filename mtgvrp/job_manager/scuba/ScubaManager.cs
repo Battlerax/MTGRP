@@ -17,14 +17,8 @@ namespace mtgvrp.job_manager.scuba
 {
     class ScubaManager : Script
     {
-        public ScubaManager()
-        {
-            Event.OnPlayerDisconnected += API_onPlayerDisconnected;
-            Event.OnResourceStart += API_onResourceStart;
-        }
-
         [RemoteEvent("SCUBA_ISUNDERWATER")]
-        private void API_onClientEventTrigger(Client player, params object[] arguments)
+        public void ScubaIsUnderWater(Client player, params object[] arguments)
         {
             var character = player.GetCharacter();
             var scubaitem = InventoryManager.DoesInventoryHaveItem<ScubaItem>(character);
@@ -58,7 +52,8 @@ namespace mtgvrp.job_manager.scuba
                 "%");
         }
 
-        private void API_onResourceStart()
+        [ServerEvent(Event.ResourceStart)]
+        public void OnResourceStart()
         {
             //pick random 30 spots and spawn em there.
             var rnd = new Random();
@@ -183,7 +178,8 @@ namespace mtgvrp.job_manager.scuba
 
         private readonly List<GTANetworkAPI.Object> _treasureObjects = new List<GTANetworkAPI.Object>();
 
-        private void API_onPlayerDisconnected(Client player, byte type, string reason)
+        [ServerEvent(Event.PlayerDisconnected)]
+        public void API_onPlayerDisconnected(Client player, byte type, string reason)
         {
             Character c = player.GetCharacter();
 
@@ -270,19 +266,19 @@ namespace mtgvrp.job_manager.scuba
             //Set clothes.
             if (character.Model.Gender == 0)
             {
-                API.SetPlayerClothes(player, 4, 16, 0);   //Legs
-                API.SetPlayerClothes(player, 8, 57, 0);   //Undershirt
-                API.SetPlayerClothes(player, 11, 15, 0); //Tops
-                API.SetPlayerClothes(player, 3, 15, 0); //Torso
-                API.SetPlayerClothes(player, 6, 34, 0); //feet
+                NAPI.Player.SetPlayerClothes(player, 4, 16, 0);   //Legs
+                NAPI.Player.SetPlayerClothes(player, 8, 57, 0);   //Undershirt
+                NAPI.Player.SetPlayerClothes(player, 11, 15, 0); //Tops
+                NAPI.Player.SetPlayerClothes(player, 3, 15, 0); //Torso
+                NAPI.Player.SetPlayerClothes(player, 6, 34, 0); //feet
             }
             else
             {
-                API.SetPlayerClothes(player, 4, 15, 0);   //Legs
-                API.SetPlayerClothes(player, 8, 3, 0);   //Undershirt
-                API.SetPlayerClothes(player, 11, 101, 0); //Tops
-                API.SetPlayerClothes(player, 3, 15, 0); //Torso
-                API.SetPlayerClothes(player, 6, 35, 0); //feet
+                NAPI.Player.SetPlayerClothes(player, 4, 15, 0);   //Legs
+                NAPI.Player.SetPlayerClothes(player, 8, 3, 0);   //Undershirt
+                NAPI.Player.SetPlayerClothes(player, 11, 101, 0); //Tops
+                NAPI.Player.SetPlayerClothes(player, 3, 15, 0); //Torso
+                NAPI.Player.SetPlayerClothes(player, 6, 35, 0); //feet
             }
 
             //Create the objects for the player.

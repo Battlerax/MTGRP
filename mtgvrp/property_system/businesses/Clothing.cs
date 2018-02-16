@@ -15,10 +15,9 @@ using mtgvrp.core.Help;
 
 namespace mtgvrp.property_system.businesses
 {
-    class Clothing : Script
+    public class Clothing : Script
     {
         Dictionary<string, string> _maleComponents = new Dictionary<string, string>();
-
         Dictionary<string, string> _femaleComponents = new Dictionary<string, string>();
 
         PedHash[] illegalpeds = new PedHash[] {
@@ -107,24 +106,13 @@ namespace mtgvrp.property_system.businesses
             PedHash.Tranvest01AMM,
             PedHash.Tranvest02AMM,
             PedHash.Zombie01,
-
-
-
-
         };
-
 
         public static string MaleComponents;
         public static string FemaleComponents;
 
-        public Clothing()
-        {
-
-            Event.OnResourceStart += API_onResourceStart;
-        }
-
         [RemoteEvent("closeclothingmenu")]
-        private void CloseClothingMenu(Client sender, params object[] arguments)
+        public void CloseClothingMenu(Client sender, params object[] arguments)
         {
             NAPI.Player.FreezePlayer(sender, false);
             sender.Position = NAPI.Data.GetEntityData(sender, "clothing_lastpos");
@@ -134,13 +122,13 @@ namespace mtgvrp.property_system.businesses
         }
 
         [RemoteEvent("returnPedGender")]
-        private void ReturnPedGender(Client sender, params object[] arguments)
+        public void ReturnPedGender(Client sender, params object[] arguments)
         {
             setPlayerPedSkin(sender, (PedHash)arguments[0], (int)arguments[1]);
         }
 
         [RemoteEvent("clothing_buyclothe")]
-        private void ClothingBuyClothes(Client sender, params object[] arguments)
+        public void ClothingBuyClothes(Client sender, params object[] arguments)
         {
             Character character = sender.GetCharacter();
             int price = 0;
@@ -325,33 +313,33 @@ namespace mtgvrp.property_system.businesses
         }
 
         [RemoteEvent("clothing_bag_preview")]
-        private void ClothingBagPreview(Client sender, params object[] arguments)
+        public void ClothingBagPreview(Client sender, params object[] arguments)
         {
             var bagstyle = ComponentManager.ValidBags[(int)arguments[0]].ComponentId;
             var bagvar = (int)ComponentManager.ValidBags[(int)arguments[0]].Variations.ToArray().GetValue((int)arguments[1]);
-            API.SetPlayerClothes(sender, 5, bagstyle, bagvar - 1);
+            NAPI.Player.SetPlayerClothes(sender, 5, bagstyle, bagvar - 1);
         }
 
         [RemoteEvent("clothing_bag_closed")]
-        private void ClothingBagClosed(Client sender, params object[] arguments)
+        public void ClothingBagClosed(Client sender, params object[] arguments)
         {
             NAPI.Player.FreezePlayer(sender, false);
             sender.Position = NAPI.Data.GetEntityData(sender, "clothing_lastpos");
             sender.Rotation = NAPI.Data.GetEntityData(sender, "clothing_lastrot");
             NAPI.Entity.SetEntityDimension(sender, 0);
 
-            API.SetPlayerClothes(sender, 5, 0, 0);
+            NAPI.Player.SetPlayerClothes(sender, 5, 0, 0);
 
             var bag = InventoryManager.DoesInventoryHaveItem<BagItem>(sender.GetCharacter());
             if (bag.Length > 0)
             {
                 var bagg = (BagItem)bag[0];
-                API.SetPlayerClothes(sender, 5, bagg.BagType, bagg.BagDesign);
+                NAPI.Player.SetPlayerClothes(sender, 5, bagg.BagType, bagg.BagDesign);
             }
         }
 
         [RemoteEvent("clothing_buybag")]
-        private void ClothingBuyBag(Client sender, params object[] arguments)
+        public void ClothingBuyBag(Client sender, params object[] arguments)
         {
             var price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
                     .ItemPrices["8"];
@@ -388,7 +376,8 @@ namespace mtgvrp.property_system.businesses
             }
         }
 
-        private void API_onResourceStart()
+        [ServerEvent(Event.ResourceStart)]
+        public void OnResourceStart()
         {
             NAPI.Util.ConsoleOutput("Loading componentes into array for clothes.");
 

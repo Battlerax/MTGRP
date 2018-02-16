@@ -17,18 +17,17 @@ namespace mtgvrp.core
 
         public Whitelist()
         {
-            Event.OnPlayerConnected += WhiteList_OnPlayerConnect;
             NAPI.Util.ConsoleOutput("[WHITELIST] Whitelist is " + ((_useWhitelist == true) ? ("Active") : ("Inactive")));
         }
 
-        public void WhiteList_OnPlayerConnect(Client player, CancelEventArgs e)
+        [ServerEvent(Event.PlayerConnected)]
+        public void OnPlayerConnected(Client player)
         {
             if (_useWhitelist == true)
             {
                 if (!WhitelistedNames.Contains(player.SocialClubName))
                 {
-                    API.KickPlayer(player, "You are not whitelisted.");
-                    e.Cancel = true;
+                    NAPI.Player.KickPlayer(player, "You are not whitelisted.");
                 }
             }
         }

@@ -31,14 +31,8 @@ namespace mtgvrp.job_manager.taxi
         public static List<Character> OnDutyDrivers => PlayerManager.Players.Where(x => x.TaxiDuty == true).ToList();
         public static List<Character> TaxiRequests = new List<Character>();
 
-        public TaxiJob()
-        {
-            Event.OnPlayerEnterVehicle += API_onPlayerEnterVehicle;
-            Event.OnPlayerExitVehicle += API_onPlayerExitVehicle;
-            Event.OnPlayerDisconnected += API_onPlayerDisconnected;
-        }
-
-        private void API_onPlayerDisconnected(Client player, byte type, string reason)
+        [ServerEvent(Event.PlayerDisconnected)]
+        public void OnPlayerDisconnected(Client player, byte type, string reason)
         {
             var c = player.GetCharacter();
             if (c == null)
@@ -54,7 +48,7 @@ namespace mtgvrp.job_manager.taxi
         }
 
         [RemoteEvent("update_taxi_destination")]
-        private void API_onClientEventTrigger(Client player, params object[] arguments)
+        public void UpdateTaxiDestination(Client player, params object[] arguments)
         {
             Character character = player.GetCharacter();
             NAPI.ClientEvent.TriggerClientEvent(character.TaxiDriver.Client, "set_taxi_waypoint", (Vector3)arguments[0]);
@@ -63,7 +57,8 @@ namespace mtgvrp.job_manager.taxi
             NAPI.Chat.SendChatMessageToPlayer(character.TaxiDriver.Client, "[TAXI] " + character.rp_name() + " has set the destination.");
         }
 
-        private void API_onPlayerExitVehicle(Client player, Vehicle vehicle)
+        [ServerEvent(Event.PlayerExitVehicle)]
+        public void OnPlayerExitVehicle(Client player, Vehicle vehicle)
         {
             Character character = player.GetCharacter();
             var veh = VehicleManager.GetVehFromNetHandle(vehicle);
@@ -110,7 +105,8 @@ namespace mtgvrp.job_manager.taxi
             }
         }
 
-        private void API_onPlayerEnterVehicle(Client player, Vehicle vehicle, sbyte seat)
+        [ServerEvent(Event.PlayerEnterVehicle)]
+        public void OnPlayerEnterVehicle(Client player, Vehicle vehicle, sbyte seat)
         {
             Character character = player.GetCharacter();
             var veh = VehicleManager.GetVehFromNetHandle(vehicle);

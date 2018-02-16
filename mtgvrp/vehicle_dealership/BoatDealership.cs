@@ -52,7 +52,7 @@ namespace mtgvrp.vehicle_dealership
         }
 
         [RemoteEvent("boatdealer_selectcar")]
-        private void API_onClientEventTrigger(Client sender, params object[] arguments)
+        public void BoatDealerSelectCar(Client sender, params object[] arguments)
         {
             Character character = sender.GetCharacter();
 

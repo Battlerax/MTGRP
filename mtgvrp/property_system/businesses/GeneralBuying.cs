@@ -22,20 +22,16 @@ using Color = mtgvrp.core.Color;
 
 namespace mtgvrp.property_system.businesses
 {
-    class GeneralBuying : Script
+    public class GeneralBuying : Script
     {
-        public GeneralBuying()
-        {
-        }
-
         [RemoteEvent("property_exitbuy")]
-        private void PropertyExitBuy(Client sender, params object[] arguments)
+        public void PropertyExitBuy(Client sender, params object[] arguments)
         {
             NAPI.Player.FreezePlayer(sender, false);
         }
 
         [RemoteEvent("property_buyitem")]
-        private void PropertyBuyItem(Client sender, params object[] arguments)
+        public void PropertyBuyItem(Client sender, params object[] arguments)
         {
             Character character = sender.GetCharacter();
             var prop = PropertyManager.IsAtPropertyInteraction(sender);

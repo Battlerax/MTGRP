@@ -25,13 +25,8 @@ namespace mtgvrp.vehicle_manager.modding
 {
     public class ModdingManager : Script
     {
-        public ModdingManager()
-        {
-            Event.OnResourceStart += API_onResourceStart;
-        }
-
         [RemoteEvent("MODDING_GETMODS")]
-        private void ModdingGetMods(Client sender, params object[] arguments)
+        public void ModdingGetMods(Client sender, params object[] arguments)
         {
             var modsList = new List<string[]>();
 
@@ -57,7 +52,7 @@ namespace mtgvrp.vehicle_manager.modding
         }
 
         [RemoteEvent("MODDING_EXITMENU")]
-        private void ModdingExitMenu(Client sender, params object[] arguments)
+        public void ModdingExitMenu(Client sender, params object[] arguments)
         {
             
             var Vehicle = sender.Vehicle;
@@ -71,7 +66,7 @@ namespace mtgvrp.vehicle_manager.modding
         }
 
         [RemoteEvent("MODDONG_PURCHASE_ITEMS")]
-        private void ModdingPurchaseItems(Client sender, params object[] arguments)
+        public void ModdingPurchaseItems(Client sender, params object[] arguments)
         {
             dynamic items = JsonConvert.DeserializeObject((string)arguments[0]);
             int allPrices = 0;
@@ -129,7 +124,8 @@ namespace mtgvrp.vehicle_manager.modding
                 NAPI.ClientEvent.TriggerClientEvent(sender, "TOGGLE_SPEEDO");
         }
 
-        private void API_onResourceStart()
+        [ServerEvent(Event.ResourceStart)]
+        public void OnResourceStart()
         {
             //VehicleInfo.Setup(Path.Combine(API.GetResourceFolder(), @"vehicle_manager/modding/modinfo"));
         }

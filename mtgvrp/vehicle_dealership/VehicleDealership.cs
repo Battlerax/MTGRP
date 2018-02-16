@@ -175,7 +175,7 @@ namespace mtgvrp.vehicle_dealership
         }
 
         [RemoteEvent("vehicledealer_selectcar")]
-        private void VehicleDealerSelectCar(Client sender, params object[] arguments)
+        public void VehicleDealerSelectCar(Client sender, params object[] arguments)
         {
             Character character = sender.GetCharacter();
 

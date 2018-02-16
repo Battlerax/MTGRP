@@ -13,22 +13,16 @@ using Color = mtgvrp.core.Color;
 
 namespace mtgvrp.group_manager.lspd
 {
-    class Lspd : Script
+    public class Lspd : Script
     {
-
-        public Lspd()
-        {
-            Event.OnResourceStart += StartLspd;
-            Event.OnPlayerDisconnected += API_onPlayerDisconnected;
-        }
-
-        private void API_onPlayerDisconnected(Client player, byte type, string reason)
+        [ServerEvent(Event.PlayerDisconnected)]
+        public void OnPlayerDisconnected(Client player, byte type, string reason)
         {
             var character = player.GetCharacter();
             if (character == null) return;
 
-            if (character.MegaPhoneObject != null && API.DoesEntityExist(character.MegaPhoneObject))
-                API.DeleteEntity(character.MegaPhoneObject);
+            if (character.MegaPhoneObject != null && NAPI.Entity.DoesEntityExist(character.MegaPhoneObject))
+                NAPI.Entity.DeleteEntity(character.MegaPhoneObject);
         }
 
         //LSPD Locations. TODO: MAKE IT WORK WITH MARKERZONE!!!!
@@ -42,13 +36,14 @@ namespace mtgvrp.group_manager.lspd
 
         public LinkedList<Object> Objects = new LinkedList<Object>();
 
-        private void StartLspd()
+        [ServerEvent(Event.ResourceStart)]
+        public void StartLspd()
         {
             Crime.LoadCrimes();
         }
 
         [RemoteEvent("LSPD_Menu_Change_Clothes")]
-        private void LSPDMenuChangeClothes(Client player, params object[] arguments)
+        public void LSPDMenuChangeClothes(Client player, params object[] arguments)
         {
             Character c = player.GetCharacter();
 
@@ -65,7 +60,7 @@ namespace mtgvrp.group_manager.lspd
         }
 
         [RemoteEvent("LSPD_Menu_Toggle_Duty")]
-        private void LSPDMenuToggleDuty(Client player, params object[] arguments)
+        public void LSPDMenuToggleDuty(Client player, params object[] arguments)
         {
             Character c = player.GetCharacter();
 
@@ -81,7 +76,7 @@ namespace mtgvrp.group_manager.lspd
         }
 
         [RemoteEvent("LSPD_Menu_Equip_Standard_Equipment")]
-        private void LSPDMenuEquipStandardEquipment(Client player, params object[] arguments)
+        public void LSPDMenuEquipStandardEquipment(Client player, params object[] arguments)
         {
             Character c = player.GetCharacter();
 
@@ -95,7 +90,7 @@ namespace mtgvrp.group_manager.lspd
         }
 
         [RemoteEvent("LSPD_Menu_Equip_SWAT_Equipment")]
-        private void LSPDMenuEquipSWATEquipment(Client player, params object[] arguments)
+        public void LSPDMenuEquipSWATEquipment(Client player, params object[] arguments)
         {
             Character c = player.GetCharacter();
 

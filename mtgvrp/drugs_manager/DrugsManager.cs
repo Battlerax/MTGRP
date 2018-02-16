@@ -52,30 +52,26 @@ namespace mtgvrp.drugs_manager
 
         public DrugsManager()
         {
-            DebugManager.DebugMessage("[DrugsM]: Drugs are booting up.");
-            Event.OnResourceStart += StartTimer;
-            Event.OnPlayerDisconnected += ClearEffects;
-            DebugManager.DebugMessage("[DrugsM]: Drugs have successfully booted up.");
+            DebugManager.DebugMessage("[DrugsM]: Drugs system initialized.");
         }
 
-
-        private void ClearEffects(Client player, byte type, string reason)
+        [ServerEvent(Event.PlayerDisconnected)]
+        public void OnPlayerDisconnected(Client player, byte type, string reason)
         {
             NAPI.ClientEvent.TriggerClientEvent(player, "clearAllEffects");
         }
 
         // Ticks based on TempTime, reduces tempHealth of any player on server.
-
-        private void StartTimer()
+        [ServerEvent(Event.ResourceStart)]
+        public void StartTimer()
         {
             _lowerTempVals.Elapsed += ReducePlayerTempValues;
             _lowerTempVals.Enabled = true;
         }
-
        
         private void ReducePlayerTempValues(object sender, ElapsedEventArgs e)
         {
-            foreach (Client c in API.GetAllPlayers())
+            foreach (Client c in NAPI.Pools.GetAllPlayers())
             {
                 if(c == null) return;
 
@@ -88,22 +84,22 @@ namespace mtgvrp.drugs_manager
                 if (playerChar.TempHealth < TempHealthMultipler)
                 {
                     int amountToTake = TempHealthMultipler - playerChar.TempHealth;
-                    int playerRemHealth = API.GetPlayerHealth(c) - amountToTake;
+                    int playerRemHealth = c.Health - amountToTake;
 
                     // If a player is unable to "payback" their health, set them on 1 HP.
                     if (playerRemHealth <= 0)
                     {
-                        API.SetPlayerHealth(c, 1);
+                        c.Health = 1;
                         playerChar.TempHealth = 0;
                         return;
                     }
                     // If there's less than the Multiplier remaining, take that and set temphealth to 0.
-                    API.SetPlayerHealth(c, API.GetPlayerHealth(c) - amountToTake);
+                    c.Health -= amountToTake;
                     playerChar.TempHealth = 0;
                     return;
                 }
                 // Else, just take the health and remove the multipler from temphealth.
-                API.SetPlayerHealth(c, API.GetPlayerHealth(c) - TempHealthMultipler);
+                c.Health -= TempHealthMultipler;
                 playerChar.TempHealth = playerChar.TempHealth - TempHealthMultipler;
             }
         }

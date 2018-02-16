@@ -512,7 +512,7 @@ namespace mtgvrp.inventory
         }
 
         [RemoteEvent("invmanagement_cancelled")]
-        private void InvManagementCancelled(Client sender, params object[] arguments)
+        public void InvManagementCancelled(Client sender, params object[] arguments)
         {
             //Save
             _activeInvsBeingManaged[sender].Key.Save();
@@ -524,7 +524,7 @@ namespace mtgvrp.inventory
         }
 
         [RemoteEvent("invmanagement_moveFromLeftToRight")]
-        private void InvManagementMoveFromLeftToRight(Client sender, params object[] arguments)
+        public void InvManagementMoveFromLeftToRight(Client sender, params object[] arguments)
         {
             string shortname = (string)arguments[0];
             int amount;
@@ -592,7 +592,7 @@ namespace mtgvrp.inventory
         }
 
         [RemoteEvent("invmanagement_moveFromRightToLeft")]
-        private void InvManagementMoveFromRightToLeft(Client sender, params object[] arguments)
+        public void InvManagementMoveFromRightToLeft(Client sender, params object[] arguments)
         {
             string rlshortname = (string)arguments[0];
             int rlamount;

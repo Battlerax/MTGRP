@@ -39,15 +39,13 @@ namespace mtgvrp.job_manager
         {
             DebugManager.DebugMessage("[JobM] Initalizing job manager...");
 
-            Event.OnPlayerEnterVehicle += API_onPlayerEnterVehicle;
-
             load_jobs();
 
             DebugManager.DebugMessage("[JobM] Job Manager initalized!");
         }
 
         [RemoteEvent("finish_job_zone_create")]
-        private void FinishJobZoneCreate(Client player, params object[] arguments)
+        public void FinishJobZoneCreate(Client player, params object[] arguments)
         {
             Account account = player.GetAccount();
             if (account.AdminLevel < 4) { return; }
@@ -76,7 +74,8 @@ namespace mtgvrp.job_manager
             NAPI.Chat.SendChatMessageToPlayer(player, "You have successfully added Job Zone " + job.JobZones.Count + " to Job " + job.Id);
         }
 
-        private void API_onPlayerEnterVehicle(Client player, Vehicle vehicle, sbyte seat)
+        [ServerEvent(Event.PlayerEnterVehicle)]
+        public void OnPlayerEnterVehicle(Client player, Vehicle vehicle, sbyte seat)
         {
             Character character = player.GetCharacter();
             var veh = VehicleManager.GetVehFromNetHandle(vehicle);

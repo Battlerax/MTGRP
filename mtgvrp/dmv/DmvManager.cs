@@ -70,13 +70,11 @@ namespace mtgvrp.dmv
 
         public DmvManager()
         {
-            Event.OnResourceStart += API_onResourceStart;
             VehicleManager.OnVehicleEngineToggle += OnVehicleEngineToggle;
-            Event.OnPlayerExitVehicle += API_onPlayerExitVehicle;
         }
 
         [RemoteEvent("DMV_REGISTER_VEHICLE")]
-        private void DMVRegisterVehicle(Client player, params object[] arguments)
+        public void DMVRegisterVehicle(Client player, params object[] arguments)
         {
             var prop = PropertyManager.IsAtPropertyInteraction(player);
             if (prop?.Type != PropertyManager.PropertyTypes.DMV)
@@ -142,7 +140,7 @@ namespace mtgvrp.dmv
         }
 
         [RemoteEvent("DMV_TEST_FINISH")]
-        private void DMVTestFinish(Client player, params object[] arguments)
+        public void DMVTestFinish(Client player, params object[] arguments)
         {
             var c = player.GetCharacter();
             var isOnTime = DateTime.Now.Subtract(c.TimeStartedDmvTest) <= TimeSpan.FromMinutes(5);
@@ -207,7 +205,8 @@ namespace mtgvrp.dmv
             return plate;
         }
 
-        private void API_onPlayerExitVehicle(Client player, GTANetworkAPI.Vehicle vehicle)
+        [ServerEvent(Event.PlayerExitVehicle)]
+        public void API_onPlayerExitVehicle(Client player, Vehicle vehicle)
         {
             var c = player.GetCharacter();
 
@@ -230,7 +229,8 @@ namespace mtgvrp.dmv
             NAPI.Chat.SendChatMessageToPlayer(player, "Test Cancelled.");
         }
 
-        private void API_onResourceStart()
+        [ServerEvent(Event.ResourceStart)]
+        public void OnResourceStart()
         {
             //Creating the vehicles.
             foreach (var car in _testVehicles)

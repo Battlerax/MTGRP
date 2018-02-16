@@ -38,7 +38,7 @@ namespace mtgvrp.job_manager.fisher
         }
 
         [RemoteEvent("caught_fish")]
-        private void CaughtFish(Client player, params object[] arguments)
+        public void CaughtFish(Client player, params object[] arguments)
         {
             Character c = player.GetCharacter();
 
@@ -86,7 +86,7 @@ namespace mtgvrp.job_manager.fisher
         }
 
         [RemoteEvent("snapped_rod")]
-        private void SnappedRod(Client player, params object[] arguments)
+        public void SnappedRod(Client player, params object[] arguments)
         {
             NAPI.Chat.SendChatMessageToPlayer(player, "You snapped your fishing rod!");
             InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(FishingRod), 1);

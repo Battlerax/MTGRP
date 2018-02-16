@@ -18,20 +18,17 @@ namespace mtgvrp.core
         public bool NewbieStatus = true;
         public bool OocStatus = true;
         public bool VipStatus = true;
-
-
-        public ChatManager()
+        
+        [ServerEvent(Event.ResourceStart)]
+        public void OnResourceStart()
         {
-            DebugManager.DebugMessage("[ChatM] Initalizing chat manager...");
-
-            Event.OnChatMessage += OnChatMessage;
-            //Event.OnChatCommand += API_onChatCommand;
-            Event.OnPlayerDisconnected += API_onPlayerDisconnected;
-
             DebugManager.DebugMessage("[ChatM] Chat Manager initalized.");
+
+            NAPI.Server.SetGlobalServerChat(false);
         }
 
-        private void API_onPlayerDisconnected(Client player, byte type, string reason)
+        [ServerEvent(Event.PlayerDisconnected)]
+        public void OnPlayerDisconnected(Client player, byte type, string reason)
         {
             var c = player.GetCharacter();
             if (c != null)
@@ -41,15 +38,8 @@ namespace mtgvrp.core
             }
         }
 
-        private void API_onChatCommand(Client sender, string command, CancelEventArgs cancel)
-        {
-            if (command.EndsWith("login") || command.EndsWith("register"))
-                return;
-
-            LogManager.Log(LogManager.LogTypes.Commands, $"{sender.GetCharacter()?.CharacterName}[{sender.GetAccount()?.AccountName}] has executed: " + command);
-        }
-
-        public void OnChatMessage(Client player, string msg, CancelEventArgs e)
+        [ServerEvent(Event.ChatMessage)] // TODO: review cancel events
+        public void OnChatMessage(Client player, string msg)
         {
             if(msg.StartsWith('/'))
             {
@@ -62,14 +52,14 @@ namespace mtgvrp.core
 
             if (account == null || character == null || account.IsLoggedIn == false)
             {
-                e.Cancel = true;
+                //e.Cancel = true;
                 return;
             }
 
             if (character.IsRagged)
             {
                 NAPI.Chat.SendChatMessageToPlayer(player, "You are ragged.");
-                e.Cancel = true;
+                //e.Cancel = true;
                 return;
             }
 
@@ -79,7 +69,7 @@ namespace mtgvrp.core
                 {
                     msg = "~y~[MEGAPHONE] " + character.rp_name() + " says: " + msg;
                     NearbyMessage(player, 30, msg);
-                    e.Cancel = true;
+                    //e.Cancel = true;
                     LogManager.Log(LogManager.LogTypes.ICchat,
                         "[MEGAPHONE] " + character.CharacterName + $"[{account.AccountName}]" + " says: " + msg);
                     return;
@@ -93,7 +83,7 @@ namespace mtgvrp.core
                     msg = "~p~ [BROADCAST] " + character.rp_name() + " : " + msg;
                     BroadcastMessage(msg);
                     NearbyMessage(player, 30, msg);
-                    e.Cancel = true;
+                    //e.Cancel = true;
                     LogManager.Log(LogManager.LogTypes.ICchat, "[BROADCAST] " + character.CharacterName + $"[{account.AccountName}]" + " says: " + msg);
                     return;
                 }
@@ -120,7 +110,7 @@ namespace mtgvrp.core
                     phonemsg = "[" + charphone.PhoneNumber + "]" + character.rp_name() + " says: " + msg;
                 }
                 NAPI.Chat.SendChatMessageToPlayer(talkingTo.Client, Color.Grey, phonemsg);
-                e.Cancel = true;
+                //e.Cancel = true;
                 //e.Reason = "Phone";
                 LogManager.Log(LogManager.LogTypes.Phone, $"[Phone] {character.CharacterName}[{account.AccountName}] To {talkingTo.CharacterName}[{talkingTo.Client.SocialClubName}]: {msg}");
                 return;
@@ -140,7 +130,7 @@ namespace mtgvrp.core
                 NAPI.Chat.SendChatMessageToPlayer(player, Color.Grey, "911 Operator says: Thank you for reporting your emergency, a unit will be dispatched shortly.");
                 PhoneManager.h_cmd(player);
                 group_manager.lspd.Lspd.SendToCops(player, $"~r~911: #{charphone.PhoneNumber} reported a crime: {msg}");
-                e.Cancel = true;
+                //e.Cancel = true;
                 //e.Reason = "Phone";
                 LogManager.Log(LogManager.LogTypes.Phone, $"[Phone] {character.CharacterName}[{account.AccountName}] To LSPD(911): {msg}");
                 return;
@@ -151,7 +141,7 @@ namespace mtgvrp.core
                 msg = character.rp_name() + " says: " + msg;
                 NearbyMessage(player, 15, msg);
                 LogManager.Log(LogManager.LogTypes.ICchat, $"{character.CharacterName}[{account.AccountName}] says: {msg}");
-                e.Cancel = true;
+                //e.Cancel = true;
             }
             else
             {
@@ -161,7 +151,7 @@ namespace mtgvrp.core
                 LogManager.Log(LogManager.LogTypes.ICchat, $"((Admin {account.AdminName} says: {msg}))");
                 LogManager.Log(LogManager.LogTypes.OOCchat, $"((Admin {account.AdminName} says: {msg}))");
 
-                e.Cancel = true;
+                //e.Cancel = true;
             }
         }
 

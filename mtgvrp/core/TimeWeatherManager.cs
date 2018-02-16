@@ -14,23 +14,23 @@ namespace mtgvrp.core
 
         public TimeWeatherManager()
         {
-            Event.OnResourceStart += API_onResourceStart;
-            Event.OnResourceStop += API_onResourceStop;
-            Event.OnPlayerConnected += Event_OnPlayerConnected;
         }
 
-        private void Event_OnPlayerConnected(Client player, CancelEventArgs cancel)
+        [ServerEvent(Event.PlayerConnected)]
+        public void OnPlayerConnected(Client player)
         {
-            API.FreezePlayerTime(player, true);
+            NAPI.Player.FreezePlayerTime(player, true);
         }
 
-        private void API_onResourceStop()
+        [ServerEvent(Event.ResourceStop)]
+        public void OnResourceStop()
         {
             _weatherTimeTimer.Stop();
             NAPI.Util.ConsoleOutput("Unload Weather Module.");
         }
 
-        private void API_onResourceStart()
+        [ServerEvent(Event.ResourceStart)]
+        public void OnResourceStart()
         {
             NAPI.Util.ConsoleOutput("Loading Weather Module.");
 
@@ -48,8 +48,6 @@ namespace mtgvrp.core
 
             NAPI.Util.ConsoleOutput("Weather Updated To LA.");
         }
-
-        
 
         private int _elapsedMinutes = 30; //To update weather on launch.
         public static int Minutes;
@@ -69,7 +67,7 @@ namespace mtgvrp.core
                     Hours = 0;
                 }
             }
-            API.SetTime(Hours, Minutes, 0);
+            NAPI.World.SetTime(Hours, Minutes, 0);
 
             //Update weather
             if (_elapsedMinutes >= 30)
@@ -95,21 +93,21 @@ namespace mtgvrp.core
                     switch (code)
                     {
                         case 1000:
-                            API.SetWeather(0);
+                            NAPI.World.SetWeather(0);
                             break;
                         case 1003:
-                            API.SetWeather(1);
+                            NAPI.World.SetWeather((Weather)1);
                             break;
                         case 1006:
-                            API.SetWeather(2);
+                            NAPI.World.SetWeather((Weather)2);
                             break;
                         case 1009:
-                            API.SetWeather(5);
+                            NAPI.World.SetWeather((Weather)5);
                             break;
                         case 1030:
                         case 1135:
                         case 1147:
-                            API.SetWeather(4);
+                            NAPI.World.SetWeather((Weather)4);
                             break;
                         case 1063:
                         case 1072:
@@ -125,7 +123,7 @@ namespace mtgvrp.core
                         case 1204:
                         case 1240:
                         case 1249:
-                            API.SetWeather(8);
+                            NAPI.World.SetWeather((Weather)8);
                             break;
                         case 1066:
                         case 1069:
@@ -133,17 +131,17 @@ namespace mtgvrp.core
                         case 1216:
                         case 1255:
                         case 1261:
-                            API.SetWeather(10);
+                            NAPI.World.SetWeather((Weather)10);
                             break;
                         case 1087:
                         case 1273:
                         case 1276:
                         case 1279:
                         case 1282:
-                            API.SetWeather(7);
+                            NAPI.World.SetWeather((Weather)7);
                             break;
                         case 1114:
-                            API.SetWeather(11);
+                            NAPI.World.SetWeather((Weather)11);
                             break;
                         case 1117:
                         case 1213:
@@ -153,7 +151,7 @@ namespace mtgvrp.core
                         case 1237:
                         case 1258:
                         case 1264:
-                            API.SetWeather(12);
+                            NAPI.World.SetWeather((Weather)12);
                             break;
                         case 1192:
                         case 1195:
@@ -162,11 +160,10 @@ namespace mtgvrp.core
                         case 1243:
                         case 1246:
                         case 1252:
-                            API.SetWeather(6);
+                            NAPI.World.SetWeather((Weather)6);
                             break;
                     }
-
-                    NAPI.Util.ConsoleOutput("Set Weather To " + API.GetWeather());
+                    NAPI.Util.ConsoleOutput("Set Weather To " + NAPI.World.GetWeather());
                 }
             }
         }

@@ -53,11 +53,6 @@ namespace mtgvrp.player_manager
         {
             DebugManager.DebugMessage("[PlayerM] Initalizing player manager...");
 
-            Event.OnPlayerConnected += OnPlayerConnected;
-            Event.OnPlayerDisconnected += OnPlayerDisconnected;
-            Event.OnPlayerDeath += API_onPlayerDeath;
-            Event.OnPlayerDamage += API_onPlayerHealthChange;
-
             //Setup save timer.
             PlayerSaveTimer.Interval = 900000;
             PlayerSaveTimer.Elapsed += PlayerSaveTimer_Elapsed;
@@ -88,7 +83,8 @@ namespace mtgvrp.player_manager
             }
         }
 
-        private void API_onPlayerHealthChange(Client entity, float lossFirst, float lossSecond)
+        [ServerEvent(Event.PlayerDamage)]
+        public void OnPlayerDamage(Client entity, float lossFirst, float lossSecond)
         {
             Client player = NAPI.Player.GetPlayerFromHandle(entity);
             var character = player.GetCharacter();
@@ -98,16 +94,15 @@ namespace mtgvrp.player_manager
             if (character == null)
                 return;
 
-            if (API.GetPlayerHealth(player) < 100 && account.AdminDuty)
+            if (player.Health < 100 && account.AdminDuty)
             {
-                API.SetPlayerHealth(player, 100);
+                player.Health = 100;
             }
-
-            character.Health = API.GetPlayerHealth(player);
+            character.Health = player.Health;
         }
 
-
-        private void API_onPlayerDeath(Client player, Client entityKiller, uint weapon, CancelEventArgs cancel)
+        [ServerEvent(Event.PlayerDeath)]
+        public void OnPlayerDeath(Client player, Client entityKiller, uint weapon)
         {
             if (player.GetAccount().AdminDuty)
             {
@@ -152,14 +147,15 @@ namespace mtgvrp.player_manager
         public static int taxationAmount = Properties.Settings.taxationamount;
 
         [RemoteEvent("update_ped_for_client")]
-        private void UpdatePedForClient(Client sender, params object[] arguments)
+        public void UpdatePedForClient(Client sender, params object[] arguments)
         {
             var player = (NetHandle)arguments[0];
             Character c = NAPI.Data.GetEntityData(player, "Character");
             c?.update_ped(sender);
         }
 
-        public void OnPlayerConnected(Client player, CancelEventArgs e)
+        [ServerEvent(Event.PlayerConnected)]
+        public void OnPlayerConnected(Client player)
         {
             var account = new Account();
             account.AccountName = player.SocialClubName;
@@ -167,6 +163,7 @@ namespace mtgvrp.player_manager
             NAPI.Data.SetEntityData(player, "Account", account);
         }
 
+        [ServerEvent(Event.PlayerDisconnected)]
         public void OnPlayerDisconnected(Client player, byte type, string reason)
         {
             //Save data
@@ -178,7 +175,7 @@ namespace mtgvrp.player_manager
 
                 if (account.AdminLevel > 0)
                 {
-                    foreach (var p in PlayerManager.Players)
+                    foreach (var p in Players)
                     {
                         if (p.Client.GetAccount().AdminLevel > 0)
                         {

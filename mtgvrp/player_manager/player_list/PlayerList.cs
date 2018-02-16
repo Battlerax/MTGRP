@@ -14,7 +14,7 @@ namespace mtgvrp.player_manager.player_list
         }
 
         [RemoteEvent("fetch_player_list")]
-        private void FetchPlayerList(Client player, params object[] arguments)
+        public void FetchPlayerList(Client player, params object[] arguments)
         {
             Account account = player.GetAccount();
             Character character = player.GetCharacter();
@@ -54,25 +54,25 @@ namespace mtgvrp.player_manager.player_list
         }
 
         [RemoteEvent("player_list_pm")]
-        private void PlayerListPM(Client player, params object[] arguments)
+        public void PlayerListPM(Client player, params object[] arguments)
         {
             ChatManager.pm_cmd(player, Convert.ToString(arguments[0]), Convert.ToString(arguments[1]));
         }
 
         [RemoteEvent("player_list_teleport")]
-        private void PlayerListTeleport(Client player, params object[] arguments)
+        public void PlayerListTeleport(Client player, params object[] arguments)
         {
             AdminCommands.goto_cmd(player, Convert.ToString(arguments[0]));
         }
 
         [RemoteEvent("player_list_spectate")]
-        private void PlayerListSpectate(Client player, params object[] arguments)
+        public void PlayerListSpectate(Client player, params object[] arguments)
         {
             AdminCommands.spec_cmd(player, Convert.ToString(arguments[0]));
         }
 
         [RemoteEvent("player_list_kick")]
-        private void PlayerListKick(Client player, params object[] arguments)
+        public void PlayerListKick(Client player, params object[] arguments)
         {
             AdminCommands.kick_cmd(player, Convert.ToString(arguments[0]), "PlayerList");
         }

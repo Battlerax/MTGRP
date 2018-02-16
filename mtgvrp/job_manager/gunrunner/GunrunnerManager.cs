@@ -122,7 +122,6 @@ namespace mtgvrp.job_manager.gunrunner
 
         public GunrunnerManager()
         {
-            Event.OnResourceStart += API_onResourceStart;
             CharacterMenu.OnCharacterLogin += CharacterMenu_OnCharacterLogin;
 
             //Load all containers.
@@ -134,7 +133,8 @@ namespace mtgvrp.job_manager.gunrunner
             MoveDealerTimer.Start();
         }
 
-        private void API_onResourceStart()
+        [ServerEvent(Event.ResourceStart)]
+        public void OnResourceStart()
         {
             #region Mapping
             API.CreateObject(1670285818, new Vector3(-194.2142f, -739.0701f, 14.61313f), new Vector3(0f, 0f, 0f));
@@ -184,14 +184,14 @@ namespace mtgvrp.job_manager.gunrunner
         }
 
         [RemoteEvent("update_location")]
-        private void UpdateLocation(Client player, params object[] arguments)
+        public void UpdateLocation(Client player, params object[] arguments)
         {
             CurrentStreet = (string)arguments[0];
             CurrentZone = (string)arguments[1];
         }
 
         [RemoteEvent("gunrun_menu_closed")]
-        private void GunRunMenuClosed(Client player, params object[] arguments)
+        public void GunRunMenuClosed(Client player, params object[] arguments)
         {
             if ((int)arguments[0] != 0)
             {
@@ -239,7 +239,7 @@ namespace mtgvrp.job_manager.gunrunner
         }
 
         [RemoteEvent("fetch_weapon_list")]
-        private void FetchWeaponList(Client player, params object[] arguments)
+        public void FetchWeaponList(Client player, params object[] arguments)
         {
             Account account = player.GetAccount();
             Character character = player.GetCharacter();
@@ -258,7 +258,7 @@ namespace mtgvrp.job_manager.gunrunner
         }
 
         [RemoteEvent("CONTAINER_PLACED")]
-        private void ContainerPlaced(Client player, params object[] arguments)
+        public void ContainerPlaced(Client player, params object[] arguments)
         {
             var obj = (NetHandle)arguments[0];
             var c = player.GetCharacter();

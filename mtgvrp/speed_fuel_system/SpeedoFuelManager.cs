@@ -22,12 +22,10 @@ namespace mtgvrp.speed_fuel_system
             FuelTimer = new Timer(53000);
             FuelTimer.Elapsed += FuelTimer_Elapsed;
             FuelTimer.Start();
-
-            Event.OnPlayerExitVehicle += API_onPlayerExitVehicle;
         }
 
         [RemoteEvent("fuel_getvehiclefuel")]
-        private void API_onClientEventTrigger(Client sender, params object[] arguments)
+        public void FuelGetVehicleFuel(Client sender, params object[] arguments)
         {
             
             if (NAPI.Player.IsPlayerInAnyVehicle(sender) && NAPI.Player.GetPlayerVehicleSeat(sender) == -1)
@@ -143,7 +141,8 @@ namespace mtgvrp.speed_fuel_system
             }
         }
 
-        private void API_onPlayerExitVehicle(Client player, Vehicle vehicle)
+        [ServerEvent(Event.PlayerExitVehicle)]
+        public void OnPlayerExitVehicle(Client player, Vehicle vehicle)
         {
             if (NAPI.Data.HasEntityData(player, "FUELING_VEHICLE"))
             {
@@ -164,7 +163,6 @@ namespace mtgvrp.speed_fuel_system
 
         private void FuelVeh(Client playerEntity, Vehicle vehEntity)
         {
-            
             if (vehEntity.IsNull)
             {
                 return;

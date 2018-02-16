@@ -16,24 +16,18 @@ namespace mtgvrp.job_manager.garbageman
 {
     public class Garbageman : Script
     {
-
-        public Garbageman()
-        {
-            Event.OnPlayerEnterVehicle += API_onPlayerEnterVehicle;
-            Event.OnPlayerDisconnected += API_onPlayerDisconnected;
-        }
-
-        private void API_onPlayerDisconnected(Client player, byte type, string reason)
+        [ServerEvent(Event.PlayerDisconnected)]
+        public void OnPlayerDisconnected(Client player, byte type, string reason)
         {
             var c = player.GetCharacter();
             if (c?.GarbageBag != null)
             {
-                API.DeleteEntity(c.GarbageBag);
+                NAPI.Entity.DeleteEntity(c.GarbageBag);
             }
         }
 
         [RemoteEvent("garbage_throwbag")]
-        private void GarbageThrowBag(Client player, params object[] arguments)
+        public void GarbageThrowBag(Client player, params object[] arguments)
         {
             Character character = player.GetCharacter();
             API.DeleteEntity(character.GarbageBag);
@@ -72,7 +66,7 @@ namespace mtgvrp.job_manager.garbageman
         }
 
         [RemoteEvent("garbage_pickupbag")]
-        private void GarbagePickupBag(Client player, params object[] arguments)
+        public void GarbagePickupBag(Client player, params object[] arguments)
         {
             Character character = player.GetCharacter();
 
@@ -87,7 +81,8 @@ namespace mtgvrp.job_manager.garbageman
             pickuptrash_e(character.Client);
         }
 
-        private void API_onPlayerEnterVehicle(Client player, Vehicle vehicle, sbyte seat)
+        [ServerEvent(Event.PlayerEnterVehicle)]
+        public void OnPlayerEnterVehicle(Client player, Vehicle vehicle, sbyte seat)
         {
             Character character = player.GetCharacter();
             var veh = VehicleManager.GetVehFromNetHandle(vehicle);
