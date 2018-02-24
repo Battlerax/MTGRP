@@ -1,34 +1,54 @@
-﻿/// <reference path="../../types-gtanetwork/index.d.ts" />
-
 var myBrowser = null;
-mp.events.add(
-    {
-        "render": () => {
-            if (mp.players.local.getVariable('OVERWEIGHT')) {
-                mp.game.controls.disableControlAction(2, 25, true);
-                mp.game.controls.disableControlAction(2, 21, true);
-                mp.game.controls.disableControlAction(2, 24, true);
-                mp.game.controls.disableControlAction(2, 22, true);
-            }
-        },
-
-        "invmanagement_showmanager": () => {
-            if (myBrowser === null)
-            myBrowser = mp.browsers.new("inventory/ManageInv.html")
-            mp.gui.cursor.show(true)
-        },
-
-        "moveItemFromLeftToRightSuccess": (arg1, arg2, arg3, arg4) => {
-            mp.events.call("moveItemFromLeftToRightSuccess", arg1, arg2, arg3, arg4);
-        },
-
-        "moveItemFromRightToLeftSuccess": (arg1, arg2, arg3, arg4) => {
-            mp.events.call("moveItemFromRightToLeftSuccess", arg1, arg2, arg3, arg4);
+var newArgs = null;
+mp.events.add({
+    "render": () => {
+        if (mp.players.local.getVariable('OVERWEIGHT')) {
+            mp.game.controls.disableControlAction(2, 25, true);
+            mp.game.controls.disableControlAction(2, 21, true);
+            mp.game.controls.disableControlAction(2, 24, true);
+            mp.game.controls.disableControlAction(2, 22, true);
         }
+    },
 
-    })
+    "loaded": () => {
+        mp.events.call("fillItems", newArgs[0], newArgs[1], newArgs[2], newArgs[3], newArgs[4], newArgs[5]);
+    },
 
-    /*
+    "moveFromLeftToRight": (shortname, amount) => {
+        mp.events.callRemote("invmanagement_moveFromLeftToRight", shortname, amount);
+    },
+
+    "moveFromRightToLeft": (shortname, amount) => {
+        mp.events.callRemote("invmanagement_moveFromRightToLeft", shortname, amount);
+    },
+
+    "ExitWindow": () => {
+        if (myBrowser)
+            myBrowser.destroy();
+        mp.gui.chat.show(true)
+        mp.gui.cursor.show(false)
+        myBrowser = null;
+        mp.events.callRemote('invmanagement_cancelled')
+    },
+
+    "invmanagement_showmanager": (args) => {
+        if (myBrowser === null)
+            myBrowser = mp.browsers.new("inventory/ManageInv.html")
+        mp.gui.cursor.show(true)
+        newArgs = args;
+    },
+
+    "moveItemFromLeftToRightSuccess": () => {
+        mp.events.call("moveItemFromLeftToRightSuccess", newArgs[0], newArgs[1], newArgs[2], newArgs[3]);
+    },
+
+    "moveItemFromRightToLeftSuccess": () => {
+        mp.events.call("moveItemFromRightToLeftSuccess", newArgs[0], newArgs[1], newArgs[2], newArgs[3]);
+    }
+
+})
+
+/*
 Event.OnServerEventTrigger.connect((eventName, args) => {
     switch (eventName) {
         case 'invmanagement_showmanager':
@@ -51,30 +71,4 @@ Event.OnServerEventTrigger.connect((eventName, args) => {
             break;
     }
 });
-*/
-
-/* function loaded() {
-    mp.events.call("fillItems", newArgs[0], newArgs[1], newArgs[2], newArgs[3], newArgs[4], newArgs[5]);
-}
-
-*/
-
-/* function moveFromLeftToRight(shortname, amount) {
-    mp.events.callRemote("invmanagement_moveFromLeftToRight", shortname, amount);
-}
-*/
-
-/* function moveFromRightToLeft(shortname, amount) {
-    mp.events.callRemote("invmanagement_moveFromRightToLeft", shortname, amount);
-}
-*/
-
-/* function ExitWindow() {
-    if (myBrowser) 
-        myBrowser.destroy();
-    mp.gui.chat.show(true)
-    mp.gui.cursor.show(false)
-    myBrowser = null;
-    mp.events.callRemote('invmanagement_cancelled')
-}
 */
