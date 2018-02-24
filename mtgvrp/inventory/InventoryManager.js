@@ -1,7 +1,34 @@
 ﻿/// <reference path="../../types-gtanetwork/index.d.ts" />
 
 var myBrowser = null;
-var newArgs = null;
+mp.events.add(
+    {
+        "render": () => {
+            if (mp.players.local.getVariable('OVERWEIGHT')) {
+                mp.game.controls.disableControlAction(2, 25, true);
+                mp.game.controls.disableControlAction(2, 21, true);
+                mp.game.controls.disableControlAction(2, 24, true);
+                mp.game.controls.disableControlAction(2, 22, true);
+            }
+        },
+
+        "invmanagement_showmanager": () => {
+            if (myBrowser === null)
+            myBrowser = mp.browsers.new("inventory/ManageInv.html")
+            mp.gui.cursor.show(true)
+        },
+
+        "moveItemFromLeftToRightSuccess": (arg1, arg2, arg3, arg4) => {
+            mp.events.call("moveItemFromLeftToRightSuccess", arg1, arg2, arg3, arg4);
+        },
+
+        "moveItemFromRightToLeftSuccess": (arg1, arg2, arg3, arg4) => {
+            mp.events.call("moveItemFromRightToLeftSuccess", arg1, arg2, arg3, arg4);
+        }
+
+    })
+
+    /*
 Event.OnServerEventTrigger.connect((eventName, args) => {
     switch (eventName) {
         case 'invmanagement_showmanager':
@@ -17,40 +44,37 @@ Event.OnServerEventTrigger.connect((eventName, args) => {
             break;
 
         case 'moveItemFromLeftToRightSuccess': 
-            myBrowser.call("moveItemFromLeftToRightSuccess", args[0], args[1], args[2], args[3]);
+            mp.events.call("moveItemFromLeftToRightSuccess", args[0], args[1], args[2], args[3]);
             break;
         case 'moveItemFromRightToLeftSuccess':
-            myBrowser.call("moveItemFromRightToLeftSuccess", args[0], args[1], args[2], args[3]);
+            mp.events.call("moveItemFromRightToLeftSuccess", args[0], args[1], args[2], args[3]);
             break;
     }
 });
+*/
 
-function loaded() {
-    myBrowser.call("fillItems", newArgs[0], newArgs[1], newArgs[2], newArgs[3], newArgs[4], newArgs[5]);
+/* function loaded() {
+    mp.events.call("fillItems", newArgs[0], newArgs[1], newArgs[2], newArgs[3], newArgs[4], newArgs[5]);
 }
 
-function moveFromLeftToRight(shortname, amount) {
-    API.triggerServerEvent("invmanagement_moveFromLeftToRight", shortname, amount);
-}
+*/
 
-function moveFromRightToLeft(shortname, amount) {
-    API.triggerServerEvent("invmanagement_moveFromRightToLeft", shortname, amount);
+/* function moveFromLeftToRight(shortname, amount) {
+    mp.events.callRemote("invmanagement_moveFromLeftToRight", shortname, amount);
 }
+*/
 
-function ExitWindow() {
-    API.destroyCefBrowser(myBrowser);
-    //API.setCefDrawState(false);
-    API.showCursor(false);
-    API.setCanOpenChat(true);
+/* function moveFromRightToLeft(shortname, amount) {
+    mp.events.callRemote("invmanagement_moveFromRightToLeft", shortname, amount);
+}
+*/
+
+/* function ExitWindow() {
+    if (myBrowser) 
+        myBrowser.destroy();
+    mp.gui.chat.show(true)
+    mp.gui.cursor.show(false)
     myBrowser = null;
-    API.triggerServerEvent("invmanagement_cancelled");
+    mp.events.callRemote('invmanagement_cancelled')
 }
-
-Event.OnUpdate.connect(() => {
-    if (API.hasEntitySyncedData(API.getLocalPlayer(), "OVERWEIGHT")) {
-        API.disableControlThisFrame(25);
-        API.disableControlThisFrame(21);
-        API.disableControlThisFrame(24);
-        API.disableControlThisFrame(22);
-    }
-});
+*/
