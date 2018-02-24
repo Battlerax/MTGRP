@@ -11,7 +11,7 @@
     
     <script>
         $(document).ready(function() {
-            resourceCall("loaded");
+            mp.trigger("loaded");
         });
 
         function fillItems(leftJson, rightJson, titleLeft, titleRight, usedLeft, usedRight) {
@@ -119,7 +119,7 @@
         //Events.
         $(document).ready(function () {
             $("#ExitButton").click(function () {
-                resourceCall("ExitWindow");
+                mp.trigger("ExitWindow");
             });
 
             var currentStatus = 0;
@@ -144,13 +144,13 @@
                     //Get clicked one: 
                     var item = $("#LeftItems").find('div.active');
                     //Send event.
-                    resourceCall("moveFromLeftToRight", item.attr("shortname"), $('#amounttext').val());
+                    mp.trigger("moveFromLeftToRight", item.attr("shortname"), $('#amounttext').val());
                 }
                 else if (currentStatus === 2) {
                     //Get clicked one: 
                     var eitem = $("#RightItems").find('div.active');
                     //Send event.
-                    resourceCall("moveFromRightToLeft", eitem.attr("shortname"), $('#amounttext').val());
+                    mp.trigger("moveFromRightToLeft", eitem.attr("shortname"), $('#amounttext').val());
                 }
 
                 metroDialog.close('#amountDialog');
