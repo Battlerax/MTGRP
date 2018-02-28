@@ -1,5 +1,3 @@
-﻿<!DOCTYPE html>
-
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
@@ -14,7 +12,9 @@
             mp.trigger("loaded");
         });
 
-        function fillItems(leftJson, rightJson, titleLeft, titleRight, usedLeft, usedRight) {
+mp.events.add(
+    {
+         'fillItems': (leftJson, rightJson, titleLeft, titleRight, usedLeft, usedRight) => {
             var leftList = JSON.parse(leftJson);
             var rightList = JSON.parse(rightJson);
             //Loop in each.
@@ -50,9 +50,9 @@
             $('#form_content').css('display', 'block');
 
        
-        }
+        },
 
-        function moveItemFromLeftToRightSuccess(itemname, amount, usedLeft, usedRight) {
+         'moveItemFromLeftToRightSuccess': (itemname, amount, usedLeft, usedRight) => {
             //Get old item from inv.
             var item = $("#LeftItems").find(`.list[shortname='${itemname}']`);
 
@@ -82,9 +82,9 @@
 
             $('#LeftItemsUsed').text(usedLeft);
             $('#RightItemsUsed').text(usedRight);
-        }
+        },
 
-        function moveItemFromRightToLeftSuccess(itemname, amount, usedLeft, usedRight) {
+         'moveItemFromRightToLeftSuccess': (itemname, amount, usedLeft, usedRight) => {
             //Get old item from inv.
             var item = $("#RightItems").find(`.list[shortname='${itemname}']`);
 
@@ -115,6 +115,7 @@
             $('#LeftItemsUsed').text(usedLeft);
             $('#RightItemsUsed').text(usedRight);
         }
+    });
 
         //Events.
         $(document).ready(function () {
@@ -197,7 +198,7 @@
                     <div class="cell" style="margin-left: 5px; margin-right: 5px;">
                         <div style="text-align: center; margin-top: 200px;">
                             <button class="button primary" id="MoveFromLeftToRight" style="width: 100px; margin: auto; margin-bottom: 5px;">></button><br />
-                            <button class="button primary" id="MoveFromRightToLeft" style="width: 100px; margin: auto;"><</button>
+                            <button class="button primary" id="MoveFromRightToLeft" style="width: 100px; margin: auto;"></button>
                         </div>
                     </div>
 
