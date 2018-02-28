@@ -31,20 +31,17 @@ mp.events.add({
         mp.events.callRemote('invmanagement_cancelled')
     },
 
-    "invmanagement_showmanager": (args) => {
+    "invmanagement_showmanager": (a1, a2, a3, a4, a5, a6) => {
         if (myBrowser === null)
             myBrowser = mp.browsers.new("inventory/ManageInv.html")
         mp.gui.cursor.show(true)
-        newArgs = args;
+        newArgs.push(a1)
+        newArgs.push(a2)
+        newArgs.push(a3)
+        newArgs.push(a4)
+        newArgs.push(a5)
+        newArgs.push(a6)
     },
-
-    "moveItemFromLeftToRightSuccess": () => {
-        mp.events.call("moveItemFromLeftToRightSuccess", newArgs[0], newArgs[1], newArgs[2], newArgs[3]);
-    },
-
-    "moveItemFromRightToLeftSuccess": () => {
-        mp.events.call("moveItemFromRightToLeftSuccess", newArgs[0], newArgs[1], newArgs[2], newArgs[3]);
-    }
 
 })
 
