@@ -1,26 +1,26 @@
-﻿function getSafeResolution() {
+//Can't Be Converted due to missing functions in rage.
+
+function getSafeResolution() {
     let offsetX = 0;
-    const screen = API.getScreenResolutionMaintainRatio();
-    let screenX = screen.Width;
-    const screenY = screen.Height;
-    if (screenX / screenY > 1.7777) {
+    let {x, y} = mp.game.graphics.getScreenActiveResolution(x, y);
+    if (x / y > 1.7777) {
         // aspect ratio is larger than 16:9
-        const idealBox = Math.ceil(screenY * 1.7777);
+        const idealBox = Math.ceil(y * 1.7777);
         // ex: 2850 - 1920 == 660 / 2 == 330
-        offsetX = (screenX - idealBox) / 2;
+        offsetX = (x - idealBox) / 2;
         // and gotta set the ideal box to make it work
-        screenX = idealBox;
+        x = idealBox;
     }
 
-    return { offsetX, screenX, screenY }
+    return { offsetX, x, y }
 }
 
 function scaleCoordsToReal(point) {
     const ratioScreen = API.getScreenResolutionMaintainRatio();
-    const realScreen = API.getScreenResolution();
+    let {x2, y2} = mp.game.graphics.getScreenActiveResolution(x, y);
 
-    const widthDivisor = realScreen.Width / ratioScreen.Width;
-    const heightDivisor = realScreen.Height / ratioScreen.Height;
+    const widthDivisor = x / ratioScreen.Width;
+    const heightDivisor = y / ratioScreen.Height;
 
     return { X: point.X * widthDivisor, Y: point.Y * heightDivisor }
 }
