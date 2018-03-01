@@ -1,19 +1,25 @@
-﻿var isBlindfolded;
+var isBlindfolded, camera;
 
-Event.OnServerEventTrigger.connect((eventName, args) => {
-	if (eventName === "blindfold_intiate") {
-		var camera = API.createCamera(API.getEntityPosition(API.getLocalPlayer()).Add(new Vector3(0, 0, 1)), new Vector3(90, 0, 0));
-		API.setActiveCamera(camera);
-		isBlindfolded = true;
-	}
-	else if (eventName === "blindfold_cancel") {
-		API.setActiveCamera(null);
-		isBlindfolded = false;
-	}
-});
-
-Event.OnUpdate.connect(() => {
-	if (isBlindfolded) {
-		API.callNative("8187532053442985248"); //HIDE_HUD_AND_RADAR_THIS_FRAME
-	}
+mp.events.add({
+    'blindfold_intiate': () => {
+        camera = mp.cameras.new('default', mp.players.local.position, new mp.Vector3(90,0,0), 40);
+        camera.setActive(true);
+        mp.game.cam.renderScriptCams(true, false, 0, true, false);
+        isBlindfolded = true;
+    },
+    
+    'blindfold_cancel': () => {
+        if (camera !== null) {
+            camera.setActive(false);
+            camera = null;
+            isBlindfolded = false;
+        }
+    },
+    
+    'render': () => {
+        if (isBlindfolded) {
+            mp.game.ui.displayHud(false);
+            mp.game.ui.displayRadar(false);
+        }
+    }
 });
