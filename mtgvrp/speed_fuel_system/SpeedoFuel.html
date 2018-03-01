@@ -9,9 +9,10 @@
 
 		var $myFuelGauge;
 		var $mySpeedGauge;
+		var maxSpeed;
 
 		$(document).ready(function() {
-			resourceCall("loaded");
+		    mp.trigger("loaded");
 		});
 
 		$(document).ready(function() {
@@ -55,28 +56,28 @@
 			});
 
 		});
-
-		function setFuel(amount) {
+		
+		mp.events.add({
+		    'setFuel': (amount) => {
 			$myFuelGauge.refresh(amount);
-		}
-
-		var maxSpeed;
-
-		function setSpeed(amount) {
+		},
+		
+		    'setSpeed': (amount) => {
 			$mySpeedGauge.refresh(amount, maxSpeed);
-		}
-
-		function setupSpeed(max) {
+		},
+		
+		    'setupSpeed': (max) => {
 			maxSpeed = max;
-		}
-
-        function setZoneStreet(street, zone) {
+		},
+		
+		    'setZoneStreet': (street, zone) => {
 	        $("#zone").text(street + ", " + zone);
-        }
-
-    function setDirection(dir) {
+        },
+        
+            'setDirection': (dir) => {
 	    $("#direction").text(dir);
     }
+})
 	</script>
 
 	<style>
