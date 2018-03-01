@@ -1,5 +1,6 @@
 //Can't Be Converted due to missing functions in rage.
 
+/*
 function getSafeResolution() {
     let offsetX = 0;
     let {x, y} = mp.game.graphics.getScreenActiveResolution(x, y);
@@ -24,50 +25,50 @@ function scaleCoordsToReal(point) {
 
     return { X: point.X * widthDivisor, Y: point.Y * heightDivisor }
 }
+*/
 
+/*
 var mapMarginLeft = API.getScreenResolutionMaintainRatio().Width / 64;
 var mapMarginBottom = API.getScreenResolutionMaintainRatio().Height / 60;
 var mapWidth = API.getScreenResolutionMaintainRatio().Width / 7.11;
 var mapHeight = API.getScreenResolutionMaintainRatio().Height / 5.71;
 var mapX = mapMarginLeft + mapWidth + mapMarginLeft;
 var mapY = API.getScreenResolutionMaintainRatio().Height - mapHeight - mapMarginBottom;
-
+*/
 var lastObj;
-var lastEvent;
-Event.OnServerEventTrigger.connect((event, args) => {
-    if (event === "PLACE_OBJECT_ON_GROUND_PROPERLY") {
-        //0: Object
 
-        lastObj = args[0];
-
-        API.callNative("PLACE_OBJECT_ON_GROUND_PROPERLY", lastObj);
-        var pos = API.getEntityPosition(lastObj);
-        var rot = API.getEntityRotation(lastObj);
-        API.triggerServerEvent("OBJECT_PLACED_PROPERLY", args[0], pos, rot);
-        if (args[1] !== "")
-            API.triggerServerEvent(args[1], lastObj);
-    }
-    else if (event === "COMPLETE_FREEZE") {
-        var state = args[0];
-        var p = API.getLocalPlayer();
-
-        API.callNative("FREEZE_ENTITY_POSITION", p, state);
-        if (API.isPlayerInAnyVehicle(p)) {
-            API.callNative("FREEZE_ENTITY_POSITION", API.getPlayerVehicle(p), state);
-            if (state === true)
-                API.callNative("SET_VEHICLE_DOORS_LOCKED", API.getPlayerVehicle(p), 4);
+mp.events.add({
+    "PLACE_OBJECT_ON_GROUND_PROPERLY": (object, arg2) => {
+        lastObj = object;
+        // API.callNative("PLACE_OBJECT_ON_GROUND_PROPERLY", lastObj);
+        var pos = lastObj.getCoords(false);
+        var rot = lastObj.getRotation(2);
+        mp.events.callRemote("OBJECT_PLACED_PROPERLY", object, pos, rot);
+        if (arg2 !== "")
+            mp.events.callRemote(arg2, lastObj)
+    },
+    
+    "COMPLETE_FREEZE": (state) => {
+        let p = mp.players.local
+        p.freezePosition(state);
+        
+        if (p.vehicle) {
+            p.vehicle.freezePosition(state)
+            if (state === true) 
+            p.vehicle.setDoorsLocked(4);
             else
-                API.callNative("SET_VEHICLE_DOORS_LOCKED", API.getPlayerVehicle(p), 0);
+            p.vehicle.setDoorsLocked(0);
+        }
+    },
+    
+    'entityStreamIn': (entity) => {
+        if (entity.getVariable("TargetObj") === lastObj) {
+            // API.callNative("PLACE_OBJECT_ON_GROUND_PROPERLY", entity);
+            var pos = entity.getCoords(false);
+            var rot = entity.getRotation(2);
+            // API.triggerServerEvent(lastEvent, lastObj, pos, rot); ?? wat
+            mp.events.callRemote("OBJECT_PLACED_PROPERLY", lastObj, pos, rot);
+            return true;
         }
     }
-});
-
-Event.OnEntityStreamIn.connect((entity, entityType) => {
-    if (API.getEntitySyncedData(entity, "TargetObj") === lastObj) {
-        API.callNative("0x58A850EAEE20FAA3", entity);
-        var pos = API.getEntityPosition(entity);
-        var rot = API.getEntityRotation(entity);
-        API.triggerServerEvent(lastEvent, lastObj, pos, rot);
-        return;
-    }
-});
+})
