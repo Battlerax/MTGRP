@@ -1,8 +1,21 @@
 "use strict";
 var weedblip = null;
-var localPlayer = API.getLocalPlayer();
+var localPlayer = mp.players.local;
 var cam = API.getActiveCamera();
 var timer;
+
+mp.events.add({
+    "getClientGround": (arg1) => {
+        var clientLoc = API.getEntityPosition(API.getLocalPlayer());
+//      var ground = API.getGroundHeight(clientLoc);
+        mp.events.callRemote('findGround', ground, arg1)
+    },
+    
+    'weedVisual': (time) => {
+        timer = time
+    }
+})
+
 Event.OnServerEventTrigger.connect(function (eventName, args) {
     if (eventName === "getClientGround") {
         var clientLoc = API.getEntityPosition(API.getLocalPlayer());
