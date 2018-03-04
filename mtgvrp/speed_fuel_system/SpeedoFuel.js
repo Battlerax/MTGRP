@@ -1,5 +1,21 @@
-﻿var myBrowser = null;
+var myBrowser = null;
 var vehicleHandle = null;
+
+/* mp.events.add({
+    'fuel_updatevalue': (fuel) => {
+        if (myBrowser !== null) {
+          mp.events.call('setFuel', fuel)  
+        } else {
+            lastFuel = "~r~Fuel: ~w~" + fuel + "%";
+        }
+    },
+    
+    'speedo_entervehicle': () => {
+     
+        
+    }
+})
+*/
 
 Event.OnServerEventTrigger.connect((eventName, args) => {
 	switch (eventName) {
