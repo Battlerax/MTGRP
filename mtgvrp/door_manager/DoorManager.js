@@ -1,7 +1,51 @@
-﻿var gMenu = null;
+var gMenu = null;
 var actionMenu = null;
 
 var chosenDoor;
+
+
+/*
+mp.events.add("playerCommand", (player, command) => {
+	const args = command.split(/[ ]+/);
+	const commandName = args.splice(0, 1)[0];
+		
+	if (commandName === "door") {
+		if (args[1] === 'lock') mp.events.callRemote("doormanager_togglelock", chosenDoor)
+		else
+		if (args[1] === 'changedes') {
+		    var desc = args[2];
+		    if (desc === "") return mp.gui.chat.push(`[Door Manager] Description can't be empty.`)
+		    mp.events.callRemote("doormanager_changedesc", chosenDoor, desc);
+		}
+		else 
+		if (args[1] === 'goto') {
+		    mp.events.callRemote("doormanager_goto", chosenDoor);
+		}
+		else
+		if (args[1] === 'setgroup') {
+		    var groupid = args[2];
+		    if (groupid === "") return mp.gui.chat.push(`[Door Manager] GroupID can't be empty.`)
+	        mp.events.callRemote("doormanager_setgroup", chosenDoor, groupid);
+		}
+		
+		if (args[1] === 'setproperty') {
+		    var propid = args[2];
+		    if (propid === "") return mp.gui.chat.push(`[Door Manager] GroupID can't be empty.`)
+	        mp.events.callRemote("doormanager_setproperty", chosenDoor, propertyid);
+		} else
+		
+		if (args[1] === 'hidedoor') {
+		    var propid = args[2];
+		    if (propid === "") return mp.gui.chat.push(`[Door Manager] GroupID can't be empty.`)
+	        mp.events.callRemote("doormanager_hide", chosenDoor);
+		} else
+		
+		if (args[1] === 'delete') {
+		  mp.events.callRemote("doormanager_delete", chosenDoor);
+		}
+	};
+});
+
 function showEditMenu(id) {
     chosenDoor = id;
     actionMenu = API.createMenu("Door Actions", "", 0, 0, 6);
@@ -63,6 +107,7 @@ function showEditMenu(id) {
         }
     });
 }
+*/
 
 Event.OnServerEventTrigger.connect(function (eventName, args) {
     switch (eventName) {
