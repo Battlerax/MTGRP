@@ -1,21 +1,68 @@
 "use strict";
 var weedblip = null;
 var localPlayer = mp.players.local;
-var cam = API.getActiveCamera();
+// var cam = API.getActiveCamera();
 var timer;
 
 mp.events.add({
     "getClientGround": (arg1) => {
         var clientLoc = API.getEntityPosition(API.getLocalPlayer());
-//      var ground = API.getGroundHeight(clientLoc);
+        var ground = localPlayer.getHeightAboveGround();
         mp.events.callRemote('findGround', ground, arg1)
     },
     
     'weedVisual': (time) => {
         timer = time
-    }
+        mp.game.graphics.startScreenEffect("DrugsMichaelAliensFight", timer, false);
+        weedblip = mp.blips.new(496, new Vector3(-4583, 5638, -0.1), {
+        scale: 20,
+        color: 2,
+        shortRange: false,
+    });
+    },
+    
+    'speedVisual': (time) => {
+      mp.game.graphics.startScreenEffect("RaceTurbo", time, false);
+    },
+    
+    'heroinVisual': (time) => {
+      mp.game.graphics.startScreenEffect("DrugsTrevorClownsFight", time, false);
+    },
+    
+     'cokeVisual': (time) => {
+      mp.game.graphics.startScreenEffect("DMT_flight_intro", time, false);
+    },
+    
+    'clearWeed': () => {
+        if (weedblip !== null) {
+            weedblip.destroy();
+            weedblip = null;
+            mp.game.graphics.startScreenEffect("DrugsTrevorClownsFightOut", 1000, false);
+        }
+    },
+    
+    'clearCoke': () => {
+      mp.game.graphics.startScreenEffect("RampageOut", 1000, false);
+    },
+    
+    'clearHeroin': () => {
+      mp.game.graphics.startScreenEffect("DrugsTrevorClownsFightOut", 1000, false);
+    },
+    
+    'clearSpeed': () => {
+      mp.game.ui.displayHud(true);    
+      mp.game.graphics.startScreenEffect("DrugsTrevorClownsFightOut", 1000, false);
+    },
+    
+    'clearAllEffects': (time) => {
+      mp.game.graphics.startScreenEffect("DrugsTrevorClownsFightOut", 1000, false);
+    },
+    
+    
 })
 
+
+/*
 Event.OnServerEventTrigger.connect(function (eventName, args) {
     if (eventName === "getClientGround") {
         var clientLoc = API.getEntityPosition(API.getLocalPlayer());
@@ -25,7 +72,7 @@ Event.OnServerEventTrigger.connect(function (eventName, args) {
     else if (eventName === "weedVisual") {
         timer = args[0];
         API.playScreenEffect("DrugsMichaelAliensFight", timer, false);
-        weedblip = API.createBlip(new Vector3(-4583, 5638, -0.1));
+        weedblip = API.createBlip();
         API.setBlipSprite(weedblip, 496);
         API.setBlipScale(weedblip, 20);
         API.setBlipColor(weedblip, 2);
@@ -65,3 +112,4 @@ Event.OnServerEventTrigger.connect(function (eventName, args) {
         API.playScreenEffect("DrugsTrevorClownsFightOut", 1000, false);
     }
 });
+*/
