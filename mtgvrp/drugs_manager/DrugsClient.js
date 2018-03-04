@@ -6,8 +6,8 @@ var timer;
 
 mp.events.add({
     "getClientGround": (arg1) => {
-        var clientLoc = API.getEntityPosition(API.getLocalPlayer());
-        var ground = localPlayer.getHeightAboveGround();
+        var clientLoc = localPlayer.getCoords(alive);
+        var ground = localPlayer.getHeight(clientLoc, true, true);
         mp.events.callRemote('findGround', ground, arg1)
     },
     
