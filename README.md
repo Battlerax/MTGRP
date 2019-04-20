@@ -2,7 +2,7 @@
 
 Welcome to the Mafia City Roleplay development area. This is a public release of the Moving Target Gaming Roleplay script, originally purchased by Mafia City Roleplay that was oringally developed for Grand Theft Multiplayer.. This script is meant to be used with RAGE Multiplayer (https://rage.mp/). 
 
-##Important Contributors
+## Important Contributors
 - Ahmad45123 (MTGRP Developer)
 - AlexanderNorton (MTGRP Developer)
 - Chenkers (MTGRP Developer)
@@ -12,4 +12,4 @@ Welcome to the Mafia City Roleplay development area. This is a public release of
 
 You can view a full list of developers here: https://github.com/Battlerax/MTGRP/graphs/contributors
 
-##This release is covered by the MIT License agreement. 
+## This release is covered by the MIT License agreement. 
