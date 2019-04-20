@@ -1,6 +1,6 @@
 ## Introduction
 
-This is a public release of the Moving Target Gaming Roleplay script, which was transfered to [Mafia City Roleplay](https://mafiacity-rp.com)... This script is meant to be used with [RAGE Multiplayer](https://rage.mp/). 
+This is a public release of the Moving Target Gaming Roleplay script, which was transfered to [Mafia City Roleplay](https://mafiacity-rp.com)... This script is meant to be used with [RAGE Multiplayer](https://rage.mp/). This is **not** the primary Mafia City Roleplay script. 
 
 The script was originally targeting GTA:Network.
 
