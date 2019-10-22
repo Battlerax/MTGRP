@@ -2850,3 +2850,35 @@ Weather API Exception: ProtocolError
 Weather Updated To LA.
 -> Resource mtgvrp started!
 Started! Waiting for connections..
+Initializing Bootstrapper.dll (0.3.7.0)..
+-> SERVER STARTED AT 22-Oct-19 12:41:17 PM
+Loaded 451 entries from vehicleData.json
+Loading resources..
+-> Starting mtgvrp resource..
+mtgvrp: setting as Gamemode resource
+mtgvrp: loading scripts.. found 45 script(s)
+-> Error starting mtgvrp, resource(s) not found: D:\TestingRAGE\server-files\bridge\resources\mtgvrp\bin\Debug\netcoreapp2.0\publish\mtgvrp.dll
+WARNING: Some assemblies are not fully loaded from memory at runtime, you may have to copy your assembly into 'runtime\' folder.
+Started! Waiting for connections..
+Initializing Bootstrapper.dll (0.3.7.0)..
+-> SERVER STARTED AT 22-Oct-19 12:43:42 PM
+Loaded 451 entries from vehicleData.json
+Loading resources..
+-> Starting mtgvrp resource..
+mtgvrp: setting as Gamemode resource
+mtgvrp: loading scripts.. found 1 script(s)
+mtgvrp: instantiating mtgvrp.Init..
+-> Error starting 'mtgvrp'
+System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.MissingFieldException: Field not found: 'GTANetworkAPI.Script.Event'.
+   at new mtgvrp.Init()
+   --- End of inner exception stack trace ---
+   at System.RuntimeTypeHandle.CreateInstance(RuntimeType type, Boolean publicOnly, Boolean& canBeCached, RuntimeMethodHandleInternal& ctor)
+   at System.RuntimeType.CreateInstanceSlow(Boolean publicOnly, Boolean skipCheckThis, Boolean fillCache, StackCrawlMark& stackMark)
+   at System.Activator.CreateInstance(Type type, Boolean nonPublic)
+   at GTANetworkInternals.GameServer.<InstantiateScripts>d__61.MoveNext()
+   at System.Linq.Enumerable.SelectEnumerableIterator`2.MoveNext()
+   at System.Collections.Generic.List`1.AddEnumerable(IEnumerable`1 enumerable)
+   at System.Collections.Generic.List`1.InsertRange(Int32 index, IEnumerable`1 collection)
+   at GTANetworkInternals.GameServer.StartResource(String resourceName, String parent)
+
+Started! Waiting for connections..

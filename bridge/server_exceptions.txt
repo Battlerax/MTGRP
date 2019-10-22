@@ -5084,3 +5084,32 @@ System.Net.WebException: The remote server returned an error: (403) Forbidden.
    at byte[] System.Net.WebClient.DownloadBits(WebRequest request, Stream writeStream)
    at byte[] System.Net.WebClient.DownloadDataInternal(Uri address, out WebRequest request)
 =========================================================
+
+==================[22-Oct-19 12:41:25 PM]==================
+System.IO.FileNotFoundException: Could not load file or assembly 'D:\TestingRAGE\server-files\bridge\resources\mtgvrp\bin\Debug\netcoreapp2.0\publish\mtgvrp.dll'. The system cannot find the path specified.
+File name: 'D:\TestingRAGE\server-files\bridge\resources\mtgvrp\bin\Debug\netcoreapp2.0\publish\mtgvrp.dll'
+   at void System.Runtime.Loader.AssemblyLoadContext.LoadFromPath(IntPtr ptrNativeAssemblyLoadContext, string ilPath, string niPath, ObjectHandleOnStack retAssembly)
+   at Assembly System.Runtime.Loader.AssemblyLoadContext.LoadFromAssemblyPath(string assemblyPath)
+
+
+=========================================================
+
+==================[22-Oct-19 12:43:44 PM]==================
+System.IO.FileNotFoundException: Could not load the specified file.
+File name: 'MongoDB.Bson'
+   at Assembly System.Runtime.Loader.AssemblyLoadContext.ResolveUsingEvent(AssemblyName assemblyName)
+=========================================================
+
+==================[22-Oct-19 12:43:44 PM]==================
+System.IO.FileNotFoundException: Could not load the specified file.
+File name: 'DSharpPlus'
+   at Assembly System.Runtime.Loader.AssemblyLoadContext.ResolveUsingEvent(AssemblyName assemblyName)
+=========================================================
+
+==================[22-Oct-19 12:43:44 PM]==================
+System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.MissingFieldException: Field not found: 'GTANetworkAPI.Script.Event'.
+   at new mtgvrp.Init()
+   --- End of inner exception stack trace ---
+   at object RuntimeTypeHandle.CreateInstance(RuntimeType type, bool publicOnly, ref bool canBeCached, ref RuntimeMethodHandleInternal ctor)
+   at object RuntimeType.CreateInstanceSlow(bool publicOnly, bool skipCheckThis, bool fillCache, ref StackCrawlMark stackMark)
+=========================================================
