@@ -1,10 +1,5 @@
 /.vscode/*
 /node_modules/*
-/peerServer/node_modules/*
-/peerServer/config.json
-/client_packages/roleplay/vue
-/.idea/*
-/bridge/*
 /plugins/*
 /client_packages/.listcache
 bt.dat

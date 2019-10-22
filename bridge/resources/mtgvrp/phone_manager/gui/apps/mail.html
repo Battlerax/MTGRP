@@ -1,0 +1,254 @@
+﻿<html>
+<head>
+    <link href="../../../stylesheet/css/metro-icons.css" rel="stylesheet" type="text/css">
+    <link href="../../../stylesheet/css/metro.css" type="text/css" rel="stylesheet">
+    <script src="../../../jquery.js"></script>
+    <script src="../../../stylesheet/js/metro.js"></script>
+    <style>
+        .list-title {
+            color: white !important;
+        }
+
+        .list-subtitle {
+            color: #ce352c !important;
+            font-size: 20px;
+        }
+
+        .list-remark {
+            color: gray;
+        }
+
+        #contactsList {
+            height: 85%;
+        }
+        #footer {
+            height: 15%;
+            display:flex;
+            justify-content: center;
+            align-items: center;
+            background-color: gray;
+        }
+
+        #contactsList {
+            overflow: auto;
+        }
+
+        .popover {
+            width: 6.89%;
+            height: auto;
+            color: white;
+        }
+
+        .marker-on-right {
+            float: right;
+            margin-right: 3.22%;
+            background-color: gray !important;
+            margin-bottom: 1.61%;
+        }
+
+        .marker-on-left {
+            float: left;
+            margin-left: 3.22%;
+            background-color: #ce352c !important;
+            margin-bottom: 1.61%;
+        }
+
+        #messages {
+            overflow: auto;
+            height: 72.5%;
+        }
+        #messagesDiv { overflow: hidden; }
+    </style>
+    
+    <script>
+        // For todays date;
+        Date.prototype.today = function () {
+            return ((this.getDate() < 10) ? "0" : "") + this.getDate() + "/" + (((this.getMonth() + 1) < 10) ? "0" : "") + (this.getMonth() + 1) + "/" + this.getFullYear();
+        }
+
+        // For the time now
+        Date.prototype.timeNow = function () {
+            return ((this.getHours() < 10) ? "0" : "") + this.getHours() + ":" + ((this.getMinutes() < 10) ? "0" : "") + this.getMinutes() + ":" + ((this.getSeconds() < 10) ? "0" : "") + this.getSeconds();
+        }
+
+        function getCurrentDateTime() {
+            var newDate = new Date();
+            return newDate.today() + " " + newDate.timeNow();
+        }
+        function getDateTime(t) {
+            var newDate = new Date(t*1000);
+            return newDate.today() + " " + newDate.timeNow();
+        }
+
+        $(document).ready(function() {
+            resourceCall("callServerEvent", "phone_loadMessagesContacts");
+        });
+
+        $(document).ready(function () {
+
+            $('div').on('click', '.list', function () {
+                var name = $(this).find("span.list-title").text();
+                $("#contactName").text(name);
+                resourceCall("callServerEvent", "phone_loadMessages", name, 0);
+            });
+
+            $("#backButton").click(function () {
+                $("#messagesDiv").css("display", "none");
+                $("#messages").empty();
+                last = 0;
+                $("#contactsListDiv").css("display", "block");
+                resourceCall("callServerEvent", "phone_loadMessagesContacts");
+            });
+
+            $("#sendNewMessage").click(function () {
+                var msg = $("#message").val();
+                resourceCall("callServerEvent", "phone_sendMessage", $("#contactName").text(), msg);
+                var dateTime = getCurrentDateTime();
+                $("#messages").append(`<div class="popover marker-on-right"><small>${dateTime}</small><p>${msg}</p></div>`);
+                $("#message").val("");
+
+                //Scoll..
+                var d = $('#messages');
+                d.scrollTop(d.prop("scrollHeight"));
+            });
+
+            $("#message").keyup(function (event) {
+                if (event.keyCode === 13) {
+                    $("#sendNewMessage").click();
+                }
+            });
+        });
+
+        function messageContactsLoaded(contactsJson) {
+            $("#contactsList").empty();
+            var contacts = JSON.parse(contactsJson);
+            $.each(contacts, function (key, value) {
+                var isRead = "";
+                if (value[3] !== "0") {
+                    isRead = `<strong>${value[3]} UNREAD</strong>`;
+                }
+                var date = getDateTime(parseInt(value[2]));
+                $("#contactsList").append(`<div class="list">
+            <div class="list-content">
+                ${isRead}<span class ="list-title">${value[0]}</span>
+                <span class ="list-subtitle">${value[1]}</span>
+                <span class ="list-remark">${date}</span>
+            </div>
+        </div>`);
+            });
+        }
+
+        function messageSent() {
+            metroDialog.close('#sendMessageDialog');
+            resourceCall("callServerEvent", "phone_loadMessagesContacts");
+        }
+
+        function showMessages(number, msgsjson, remaining, isFirst) {
+            var msgs = JSON.parse(msgsjson);
+
+            $.each(msgs, function (key, value) {
+                var msgSender = value[0];
+                var message = value[1];
+                var dateSent = value[2];
+                var isRead = "";
+                if (value[3] === "False") {
+                    isRead = "* ";
+                }
+                var date = getDateTime(parseInt(dateSent));
+                if (msgSender === number) {
+                    $("#messages").prepend(`<div class="popover marker-on-right"><small>${date}</small><p>${message}</p></div>`);
+                } else {
+                    $("#messages").prepend(`<div class="popover marker-on-left"><small>${isRead}${date}</small><p>${message}</p></div>`);
+                }
+            });
+
+            if (remaining) {
+                $("#messages").prepend('<button class="button link" id="loadRemaingMessages" onclick="loadRemainingMessages()">Load More</button>');
+            }
+
+            if (isFirst) {
+                $("#messagesDiv").css("display", "block");
+                $("#contactsListDiv").css("display", "none");
+                window.getSelection().empty();
+
+                //Scroll.
+                var d = $('#messages');
+                d.scrollTop(d.prop("scrollHeight"));
+            }
+        }
+
+        var last = 0;
+        function loadRemainingMessages() {
+            $("#loadRemaingMessages").remove();
+            var name = $("#contactName").text();
+            last += 10;
+            resourceCall("callServerEvent", "phone_loadMessages", name, last);
+        }
+
+        function incomingMessage(number, msg) {
+            if (number === $("#contactName").text()) {
+                var dateTime = getCurrentDateTime();
+                $("#messages").append(`<div class="popover marker-on-left"><small>${dateTime}</small><p>${msg}</p></div>`);
+                resourceCall("callServerEvent", "phone_markMessagesRead");
+
+                //Scoll..
+                var d = $('#messages');
+                d.scrollTop(d.prop("scrollHeight"));
+            }
+        }
+
+        window.addEventListener("message", receiveMessage, false);
+        function receiveMessage(event) {
+            window[event.data[0]](...event.data[1]);
+        }
+    </script>
+</head>
+<body>
+    <div data-role="dialog" id="sendMessageDialog" class="padding5 dialog" data-close-button="true" data-overlay="true" data-overlay-color="op-dark" style="width: auto; height: auto;">
+        <h3>Compose Message</h3>
+        <div class="input-control text">
+            <input type="text" placeholder="Number" id="numberInput">
+        </div>
+        <div class="input-control number">
+            <input type="text" placeholder="Message" id="messageInput">
+        </div>
+        <button class="button success right-side" onclick='resourceCall("callServerEvent", "phone_sendMessage", $("#numberInput").val(), $("#messageInput").val());'>Send</button>
+    </div>
+
+<div id="contactsListDiv" style="display: block;">
+    <div class="listview-outlook" data-role="listview" id="contactsList">
+        <!-- <div class="list">
+            <div class="list-content">
+                <span class="list-title">Johnny</span>
+                <span class="list-subtitle">I steal cars haha..</span>
+                <span class="list-remark">11:16 PM</span>
+            </div>
+        </div> -->
+
+    </div>
+    <div id="footer">
+        <button class="button cycle-button" style="height: 2em; width: 2em; background-color: gray; color: white;" onclick="metroDialog.open('#sendMessageDialog');"><span class="mif-plus"></span></button>
+    </div>
+</div>
+
+<div id="messagesDiv" style="display: none;">
+    <h2 style="color: white; margin-bottom: 4.10%;"><button class="button cycle-button" id="backButton"><span class="mif-arrow-left"></span></button>
+        <span id="contactName"></span>
+    </h2>
+    <div id="messages">
+        <!-- <div class="popover marker-on-left">
+            <div>Hello, who are you ?</div>
+        </div>
+        <div class="popover marker-on-right">
+            <div>I am Ahmed, you ?</div>
+        </div> -->
+    </div>
+    <div id="newReplyDiv">
+        <div class="input-control text" style="width: 100%;" data-role="input">
+            <input type="text" id="message">
+            <button class="button" id="sendNewMessage"><span class="mif-paper-plane"></span></button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

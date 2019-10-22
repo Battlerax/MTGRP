@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="component_manager\**" />
+    <EmbeddedResource Remove="component_manager\**" />
+    <None Remove="component_manager\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="DSharpPlus" Version="3.2.3" />
+    <PackageReference Include="DSharpPlus.CommandsNext" Version="3.2.3" />
+    <PackageReference Include="DSharpPlus.Interactivity" Version="3.2.3" />
+    <PackageReference Include="MongoDB.Driver" Version="2.9.2" />
+    <PackageReference Include="NodaTime" Version="2.4.7" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Bootstrapper">
+      <HintPath>libs\bootstrapper.dll</HintPath>
+    </Reference>
+    <Reference Include="VehicleInfoLoader">
+      <HintPath>VehicleInfo.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+    </None>
+  </ItemGroup>
+</Project>

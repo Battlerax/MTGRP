@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "mtgvrp": {
+      "commandName": "Executable",
+      "executablePath": "D:\\TestingRAGE\\server-files\\server.exe",
+      "workingDirectory": "D:\\TestingRAGE\\server-files"
+    }
+  }
+}

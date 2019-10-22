@@ -1,0 +1,176 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link href="../../stylesheet/css/metro.css" rel="stylesheet" />
+    <link href="../../stylesheet/css/metro-icons.css" rel="stylesheet" />
+    <script src="../../jquery.js"></script>
+    <script src="../../stylesheet/js/metro.js"></script>
+
+    <style>
+        .main_container {
+            width: 250px;
+            height: 400px;
+            position: absolute;
+            margin: -100px 0 0 -200px;
+            top: 40%;
+            left: 15%;
+        }
+
+        .form_container{
+            font-family:House Script;
+            font-size:20px;
+            overflow:scroll;
+            margin-left:20px;
+            max-height: 400px;
+        }
+
+    </style>
+
+
+
+</head>
+
+
+<body>
+
+    <div class="main_container">
+
+        <div class="panel" data-role="panel">
+            <div class="heading">
+                <span class="icon mif-automobile"></span>
+                <span class="title" id="login_box_title" style="font-family:House Script;font-size:30px">Vehicle Editor</span>
+            </div>
+
+
+
+            <div class="content" >
+
+                <div id="loading_icon" class="cell padding20 bg-dark" style="color:white;font-family:House Script;font-size:25px;">
+                    <div data-role="preloader" data-type="metro" style="margin: 30px auto" class="preloader-metro"><div class="circle"></div><div class="circle"></div><div class="circle"></div><div class="circle"></div><div class="circle"></div></div>
+                </div>
+
+                <div id="form_content" class = "form_container" style="display: none">
+                    <br />
+                    SQL ID
+                    <div class="input-control text">
+                        <input type="text" id="id" value="Default" readonly>
+                    </div>
+
+                    <br />
+                    Vehicle Model
+                    <div class="input-control text">
+                        <input type="text" id="model" value="Default">
+                    </div>
+
+                    <br />
+                    Owner
+                    <div class="input-control text">
+                        <input type="text" id="owner" value="Default">
+                    </div>
+
+                    <br />
+                    License Plate
+                    <div class="input-control text">
+                        <input type="text" id="license_plate" value="Default">
+                    </div>
+
+                    <br />
+                    <div style="float:left">
+                        Color 1 Color 2
+                        <br />
+                        <div class="input-control text" style="width:25%">
+                            <input type="text" id="color_1" value="Default">
+                        </div>
+
+                        <div class="input-control text" style="width:25%">
+                            <input type="text" id="color_2" value="Default">
+                        </div>
+                    </div>
+
+                    <br />
+                    Respawn Delay (Minutes)
+                    <div class="input-control text">
+                        <input type="text" id="respawn_delay" value="Default">
+                    </div>
+
+                    <br />
+                    Job ID
+                    <div class="input-control text">
+                        <input type="text" id="job_id">
+                    </div>
+
+                    <br />
+                    Group ID
+                    <div class="input-control text">
+                        <input type="text" id="group_id">
+                    </div>
+
+                    <button class="button info" onclick="change_spawn()" style="margin-top:10px" data-role="hint" data-hint-background="bg-green" data-hint-color="fg-white" data-hint-mode="2" data-hint="Set Spawn|Set the vehicle spawn location to current spot"><span class="mif-location"></span> </button>
+                    <button class="button info" onclick="respawn_veh()" style="margin-top:10px" data-role="hint" data-hint-background="bg-green" data-hint-color="fg-white" data-hint-mode="2" data-hint="Respawn|Respawn the vehicle"><span class="mif-loop2"></span></button>
+                    <button class="button success" data-hotkey="Ctrl+S" onclick="save_vehicle()" style="margin-top:10px" data-role="hint" data-hint-background="bg-green" data-hint-color="fg-white" data-hint-mode="2" data-hint="Save|Save changes"><span class="mif-floppy-disk"></span> </button>
+                    <button class="button warning" onclick="cancel_veh_edit()" style="margin-top:10px"><span class="mif-cross" data-role="hint" data-hint-background="bg-red" data-hint-color="fg-white" data-hint-mode="2" data-hint="Cancel|Cancels changes"></span> </button>
+                    <button class="button alert" onclick="delete_veh()" style="margin-top:10px"><span class="mif-cross" data-role="hint" data-hint-background="bg-red" data-hint-color="fg-white" data-hint-mode="2" data-hint="Delete|Deletes vehicle"></span> </button>
+
+                </div>
+
+            </div>
+
+            <br />
+            <div id="error_box" class="popover marker-on-top bg-red" style="display: none" >
+                <div class="fg-white" id="error_msg">Default Text</div>
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+</body>
+</html>
+
+<script>
+
+    function populate_fields(vehicle_id, model, owner, license_plate, color_1, color_2, respawn_delay, job_id, group_id) {
+        $('#id').val(vehicle_id);
+        $('#model').val(model);
+        $('#owner').val(owner);
+        $('#license_plate').val(license_plate);
+        $('#color_1').val(color_1);
+        $('#color_2').val(color_2);
+        $('#respawn_delay').val(respawn_delay);
+        $('#job_id').val(job_id);
+        $('#group_id').val(group_id);
+
+
+        $('#loading_icon').css('display', 'none');
+        $('#form_content').css('display', 'block');
+    }
+
+    function change_spawn() {
+        resourceCall("change_spawn");
+    }
+
+    function cancel_veh_edit() {
+        resourceCall("cancel_veh_edit");
+    }
+
+    function save_vehicle() {
+        resourceCall("vehicle_edit_changes", $('#id').val(), $('#model').val(), $('#owner').val(), $('#license_plate').val(), $('#color_1').val(), $('#color_2').val(), $('#respawn_delay').val(), $('#job_id').val(), $('#group_id').val());
+    }
+
+    function respawn_veh() {
+        resourceCall("respawn_veh");
+    }
+
+    function send_error(error) {
+        $('#error_box').css("display", "block");
+        $('#error_msg').html(error);
+    }
+
+    function delete_veh() {
+        resourceCall("delete_veh");
+    }
+
+</script>

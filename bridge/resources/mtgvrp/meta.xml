@@ -1,0 +1,143 @@
+<meta>
+   <info name="Init" author="Ahmed" type="gamemode" async="true"/>
+
+	<!-- MAIN script with all *.cs files. -->
+	<script src="bin/Debug/netcoreapp2.0/mtgvrp.dll" type="server" lang="compiled"/>
+
+	<!-- BANK -->
+	<script src="rp_scripts/BankMenu.js" type="client" lang="javascript"/>
+
+	<!-- PLAYER -->
+	<script src="player_manager/PlayerManager.js" type="client" lang="javascript"/>
+	<script src="player_manager/player_interaction/PlayerInteraction.js" type="client" lang="javascript"/>
+	<file src="player_manager/player_interaction/PlayerInteraction.html"/>
+	<script src="player_manager/player_list/PlayerList.js" type="client" lang="javascript"/>
+	<file src="player_manager/player_list/PlayerList.html" />
+	<script src="player_manager/login/LoginManager.js" type="client" lang="javascript"/>
+	<file src="player_manager/login/Login.html"/>
+	<script src="player_manager/CharacterMenu.js" type="client" lang="javascript"/>
+  <script src="player_manager/Introduction.js" type="client" lang="javascript"/>
+
+	<!-- JOBS -->
+	<script src="job_manager/JobManager.js" type="client" lang="javascript"/>
+	<script src="job_manager/taxi/TaxiJob.js" type="client" lang="javascript"/>
+  <script src="job_manager/fisher/Fisher.js" type="client" lang="javascript"/>
+  <script src="job_manager/garbageman/Garbageman.js" type="client" lang="javascript"/>
+  <script src="job_manager/hunting/HuntingManager.js" type="client" lang="javascript"/>
+
+	<!-- VEHICLE -->
+	<script src="vehicle_manager/VehicleManager.js" type="client" lang="javascript"/>
+	<script src="vehicle_manager/VehicleMenu.js" type="client" lang="javascript"/>
+	<script src="vehicle_manager/vehicle_editor/VehicleEdit.js" type="client" lang="javascript"/>
+	<file src="vehicle_manager/vehicle_editor/VehicleEdit.html"/>
+	
+  
+  <!-- DRUGS -->
+  <script src="drugs_manager/DrugsClient.js" type="client" lang="javascript"/>
+  
+	<!-- MDC -->
+	<script src="group_manager/lspd/MDC/MDC.js" type="client" lang="javascript"/>
+	<file src="group_manager/lspd/MDC/MDC.html"/>
+  <file src="group_manager/lspd/MDC/LSPDMDC.png"/>
+	
+	<!-- Dealership/Ownership -->
+	<script src="vehicle_dealership/vehicledealer.js" type="client" lang="javascript"/>
+  <script src="vehicle_dealership/vipdealership.js" type="client" lang="javascript"/>
+  <script src="vehicle_dealership/chopperdealership.js" type="client" lang="javascript"/>
+	<script src="vehicle_manager/VehicleOwnership.js" type="client" lang="javascript"/>
+  <script src="vehicle_dealership/boatdealer.js" type="client" lang="javascript"/>
+
+  <!-- Bag System-->
+  <script src="inventory/InventoryManager.js" type="client" lang="javascript"/>
+  <file src="inventory/ManageInv.html"/>
+
+  <!--- GROUPS -->
+
+	<script src="group_manager/lspd/LspdLocker.js" type="client" lang="javascript"/>
+	<script src="group_manager/lspd/Lspd.js" type="client" lang="javascript"/>
+  <script src="group_manager/lsnn/Lsnn.js" type="client" lang="javascript"/>
+  <file src="group_manager/lsnn/LowerThird.html"/>
+  <file src="group_manager/lsnn/LowerThirdChopper.html"/>
+
+	<!-- CEF  -->
+	<file src="stylesheet/css/metro.css"/>
+	<file src="stylesheet/css/metro-schemes.css"/>
+	<file src="stylesheet/js/metro.js"/>
+	<file src="jquery.js"/>
+	<file src="stylesheet/fonts/metro.ttf"/>
+	<file src="stylesheet/fonts/housescript.woff"/>
+	<file src="stylesheet/fonts/housescript.woff2"/>
+  <file src="stylesheet/fonts/BebasKai-Regular.woff"/>
+	<file src="stylesheet/css/metro-icons.css"/>
+	<file src="stylesheet/css/bootstrap.min.css"/>
+	<file src="stylesheet/js/bootstrap.min.js"/>
+	<file src="stylesheet/js/jscolor.min.js"/>
+ 
+  <!-- Phone Files -->
+  <script src="phone_manager/PhoneManager.js" type="client" lang="javascript"/>
+  <file src="phone_manager/gui/main.html"/>
+	<file src="phone_manager/gui/main.css"/>
+	<file src="phone_manager/gui/main.js"/>
+  <!-- Apps -->
+  <file src="phone_manager/gui/apps/dialpad.html"/>
+  <file src="phone_manager/gui/apps/contacts.html"/>
+  <file src="phone_manager/gui/apps/mail.html"/>
+  <file src="phone_manager/gui/apps/settings.html"/>
+
+  <!-- Speedometer and Fuel -->
+  <file src="speed_fuel_system/SpeedoFuel.html"/>
+  <file src="stylesheet/js/justgage.js"/>
+  <file src="stylesheet/js/raphael-2.1.4.min.js"/>
+  <script src="speed_fuel_system/SpeedoFuel.js" type="client" lang="javascript"/>
+
+  <!-- CORE -->
+  <script src="core/JsFunctions.js" type="client" lang="javascript"/>
+  <script src="core/MarkerZone.js" type="client" lang="javascript"/>
+  <script src="core/Animations.js" type="client" lang="javascript"/>
+	<file src="cef_resources/MTGVRP_LOGO_BIG.png"/>
+	<file src="cef_resources/MTGVRP_LOGO_SMALL.png"/>
+
+	<script src="door_manager/DoorManager.js" type="client" lang="javascript"/>
+
+  <script src="core/Items/RagManager.js" type="client" lang="javascript"/>
+  
+  <!-- Property Manager-->
+  <script src="property_system/PropertyManager.js" type="client" lang="javascript"/>
+  <script src="property_system/businesses/Clothing.js" type="client" lang="javascript"/>
+  <script src="property_system/businesses/GeneralBuying.js" type="client" lang="javascript"/>
+
+  <!-- Help Manager-->
+  <script src="core/Help/HelpManager.js" type="client" lang="javascript"/>
+  <file src="core/Help/HelpMenu.html" />
+  
+  <!-- Lumberjack Job -->
+  <script src="job_manager/lumberjack/Lumberjack.js" type="client" lang="javascript"/>
+  
+  <!-- Scubadiving -->
+  <script src="job_manager/scuba/ScubaManager.js" type="client" lang="javascript"/>
+
+  <!-- Gunrunner -->
+  <script src="job_manager/gunrunner/GunrunnerManager.js" type="client" lang="javascript"/>
+  <file src="job_manager/gunrunner/gunrunnermenu.html" />
+  
+  <!-- ADMIN -->
+  <script src="AdminSystem/Reports.js" type="client" lang="javascript"/>
+  
+  <!--AUDIO-->
+  <file src="audio_resources/introduction.mp3" />
+         
+  <!--DMV-->
+  <script src="dmv/DmvManager.js" type="client" lang="javascript"/>
+
+  <!-- Mapping Manager -->
+  <script src="mapping_manager/MappingManager.js" type="client" lang="javascript"/>
+  <file src="mapping_manager/MappingManager.html"/>
+  
+  <!-- Modding Shop -->
+  <script src="vehicle_manager/modding/ModdingManager.js" type="client" lang="javascript"/>  
+  <file src="vehicle_manager/modding/gui/ModGui.html"/>
+  <file src="vehicle_manager/modding/gui/ModGui.js"/>
+  <file src="vehicle_manager/modding/gui/LSC.png"/>
+  
+  <file src="jquery.js" />
+</meta>

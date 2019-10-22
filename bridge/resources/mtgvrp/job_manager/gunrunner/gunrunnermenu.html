@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link href="../../stylesheet/css/metro.css" rel="stylesheet" />
+    <link href="../../stylesheet/css/metro-icons.css" rel="stylesheet" />
+    <script src="../../jquery.js"></script>
+    <script src="../../stylesheet/js/metro.js"></script>
+
+    <style>
+
+        .main_container {
+            width: 100%;
+            height: 100%;
+        }
+
+        .inner_menu {
+            font-family: BebasKai;
+            font-size: 30px;
+            color: white;
+            width: 100%;
+            height: 100%;
+        }
+
+        .menu_item {
+            padding: 5px;
+            user-select: none;
+            cursor: pointer;
+        }
+
+        .submenu_item {
+            padding: 5px;
+            user-select: none;
+            cursor: pointer;
+
+            font-size: 25px;
+            margin-left: 30px;
+        }
+
+        .menu_item:hover {
+            color: #01AAD4;
+        }
+
+        .active_item {
+            color: #01AAD4;
+        }
+
+        #weapon_list {
+            border: 1px solid #ccc;
+            height: 75%;
+            overflow: auto;
+            color: #01AAD4;
+            font-family: BebasKai;
+            font-size: 28px;
+            padding: 1%;
+        }
+
+        #exit_menu {
+            margin-top: 1%;
+        }
+    </style>
+
+</head>
+<body>
+
+<div class="panel main_container" id="main">
+
+
+    <div class="inner_menu" style="background-color: #001942; border: 5px solid #01AAD4; padding: 2%;">
+        
+        <a style="color: #01AAD4; font-family: BebasKai; font-size: 100%">Available weapons</a>
+        <div id="weapon_list">
+        </div>
+        
+        <button id="exit_menu" class="button success" onclick="exit_weapon_menu()"><span class="mif-checkmark"></span>Finished</button>
+        <a id="price_display" style="color: #01AAD4; font-family: BebasKai; font-size: 30px">Total: $0</a>
+        <br/>
+        <a id="renown_display" style="color: #30AC88; font-family: BebasKai; font-size: 40px"></a>
+    </div>
+    </div>
+
+</body>
+</html>
+
+<script>
+
+    var totalPrice = 0;
+    var totalWeapons = [];
+
+    $(document).ready(function() {
+        resourceCall("loaded");
+    });
+
+    function display_renown(Renown){
+        $('#renown_display').text("You have "+Renown+" renown");
+    }
+
+    function show_weapon_list(MeleeListJSON = null, PistolListJSON = null, ShotgunListJSON = null, MachinegunListJSON = null, AssaultrifleListJSON = null, SniperListJSON = null) {
+        
+        if (MeleeListJSON != null){
+	        var MeleeList = JSON.parse(MeleeListJSON);
+	        $.each(MeleeList , function(i, val) { 
+		        add_weapon(val[0], val[1]);
+	        });
+        }
+
+        if (PistolListJSON != null){
+	        var PistolList = JSON.parse(PistolListJSON);
+	        $.each(PistolList , function(i, val) { 
+		        add_weapon(val[0], val[1]);
+	        });
+        }
+
+        if (ShotgunListJSON != null){
+	        var ShotgunList = JSON.parse(ShotgunListJSON);
+	        $.each(ShotgunList , function(i, val) { 
+		        add_weapon(val[0], val[1]);
+	        });
+        }
+
+        if (MachinegunListJSON != null){
+	        var MachinegunList = JSON.parse(MachinegunListJSON);
+	        $.each(MachinegunList , function(i, val) { 
+		        add_weapon(val[0], val[1]);
+	        });
+        }
+
+        if (AssaultrifleListJSON != null){
+	        var AssaultrifleList = JSON.parse(AssaultrifleListJSON);
+	        $.each(AssaultrifleList , function(i, val) { 
+		        add_weapon(val[0], val[1]);
+	        });
+        }
+
+        if (SniperListJSON != null){
+	        var SniperList = JSON.parse(SniperListJSON);
+	        $.each(SniperList , function(i, val) { 
+		        add_weapon(val[0], val[1]);
+	        });
+        }
+    }
+
+    function add_weapon(weaponName, weaponPrice) {
+        
+        $('#weapon_list').append(
+            '<div style="padding:0px;"> \
+                  <input class="weaponticked" type="number" min="0" max="5" value="0" data-prevalue="0" data-weapon="'+weaponName+'" data-price="'+weaponPrice+'" />     '+weaponName+' \
+                  <a style="color: #30AC88;text-align:right;font-family: BebasKai;padding-left:30px;font-size:28px">$'+weaponPrice+'</a> \
+                  </input>\
+             </div> \
+             <hr class="bg-blue">'
+        );
+    }
+
+    function update_price(price){
+        $('#price_display').empty().append(
+            'Total: $'+price+''
+        );
+    }
+
+    $('#weapon_list').on('change', '.weaponticked', function () {
+        totalPrice = 0;
+        if(Number($(this).val()) < 0){
+            $(this).data("prevalue", 0)
+        }
+        else{
+            $(this).data("prevalue", Number($(this).val()) * $(this).data("price"))
+        }
+
+        totalPrice = get_totals();
+
+        if(Number($(this).val()) == 0){
+            var index = totalWeapons.indexOf($(this).data("weapon"));
+            if (index > -1){
+                totalWeapons.splice(index, 1);
+            }
+        }
+        else{
+            totalWeapons.push($(this).data("weapon"));
+        }
+        
+        update_price(totalPrice);
+           
+       
+    });
+
+    function get_totals(){
+        var total = 0;
+        $('.weaponticked').each(function(){total += $(this).data("prevalue");});
+        return total;
+    }
+
+    function exit_weapon_menu(){
+        resourceCall("finish_menu", totalPrice, JSON.stringify(totalWeapons));
+    }
+</script>

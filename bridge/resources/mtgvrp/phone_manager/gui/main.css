@@ -1,0 +1,79 @@
+#main {
+    background-color: black;
+    width: 100%;
+    height: 100%;
+	border-radius: 10px;
+	border: white solid 5px;
+}
+
+#notif-bar {
+    width: 100%;
+    height: 2em;
+}
+
+.notif-item {
+    display: inline-block;
+    vertical-align: middle;
+    float: right;
+    color: white;
+    margin: 0.1em;
+}
+
+#content {
+    width: 100%;
+    height: 90%;
+    overflow:hidden;
+}
+
+#child-content {
+	width: 108.6%;
+    height: 90%;
+	overflow:auto;
+	padding: 1em;
+}
+
+#navigation {
+	width: 100%;
+	height: 10%;
+	display:flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.tile {
+    color: white;
+    background-color: #ce352c !important;
+	width: 95% !important;
+	height: 10em !important;
+}
+
+#app-browser {
+    width: 90%;
+    height: 100%;
+	border: none;
+}
+
+#call-interface {
+	color: white;
+}
+
+#calling_header {
+    color: #ce352c;
+}
+
+#calling-actionbuttons {
+    margin-top: 46.5%;
+}
+
+#calling_answer,#calling_header,#caller_number,#caller_name { margin-left: 2.73%; }
+
+#calling_answer, #calling_ignore {
+    height: 12.5%;
+    width: 45.45%;
+}
+
+#calling_end-call {
+    height: 12.5%;
+    width: 91.81%;
+    margin-left: 2.73%;
+}

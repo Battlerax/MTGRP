@@ -1,0 +1,205 @@
+var gMenu = null;
+var actionMenu = null;
+
+var chosenDoor;
+
+
+/*
+mp.events.add("playerCommand", (player, command) => {
+	const args = command.split(/[ ]+/);
+	const commandName = args.splice(0, 1)[0];
+		
+	if (commandName === "door") {
+		if (args[1] === 'lock') mp.events.callRemote("doormanager_togglelock", chosenDoor)
+		else
+		if (args[1] === 'changedes') {
+		    var desc = args[2];
+		    if (desc === "") return mp.gui.chat.push(`[Door Manager] Description can't be empty.`)
+		    mp.events.callRemote("doormanager_changedesc", chosenDoor, desc);
+		}
+		else 
+		if (args[1] === 'goto') {
+		    mp.events.callRemote("doormanager_goto", chosenDoor);
+		}
+		else
+		if (args[1] === 'setgroup') {
+		    var groupid = args[2];
+		    if (groupid === "") return mp.gui.chat.push(`[Door Manager] GroupID can't be empty.`)
+	        mp.events.callRemote("doormanager_setgroup", chosenDoor, groupid);
+		}
+		
+		if (args[1] === 'setproperty') {
+		    var propid = args[2];
+		    if (propid === "") return mp.gui.chat.push(`[Door Manager] GroupID can't be empty.`)
+	        mp.events.callRemote("doormanager_setproperty", chosenDoor, propertyid);
+		} else
+		
+		if (args[1] === 'hidedoor') {
+		    var propid = args[2];
+		    if (propid === "") return mp.gui.chat.push(`[Door Manager] GroupID can't be empty.`)
+	        mp.events.callRemote("doormanager_hide", chosenDoor);
+		} else
+		
+		if (args[1] === 'delete') {
+		  mp.events.callRemote("doormanager_delete", chosenDoor);
+		}
+	};
+});
+
+function showEditMenu(id) {
+    chosenDoor = id;
+    actionMenu = API.createMenu("Door Actions", "", 0, 0, 6);
+    actionMenu.AddItem(API.createMenuItem("Toggle Lock", "Locks or unlocks door."));
+    actionMenu.AddItem(API.createMenuItem("Change Description", "Chnage door description."));
+    actionMenu.AddItem(API.createMenuItem("Goto", "Goto door."));
+    actionMenu.AddItem(API.createMenuItem("Set Group", "Set a group which has access to door."));
+    actionMenu.AddItem(API.createMenuItem("Set Property", "Set a property which has access to door."));
+    actionMenu.AddItem(API.createMenuItem("~r~Toggle Hide Door", "Toggles hide door from /managedoors."));
+    actionMenu.AddItem(API.createMenuItem("~r~Delete", "Deletes door."));
+
+    actionMenu.Visible = true;
+
+    actionMenu.OnItemSelect.connect(function (sender, item, index) {
+        switch (index) {
+            case 0:
+                API.triggerServerEvent("doormanager_togglelock", chosenDoor);
+                break;
+            case 1:
+                var desc = "";
+                while (desc === "") {
+                    desc = API.getUserInput("", 100);
+                    if (desc === "") {
+                        API.SendChatMessage("[Door Manager] Description can't be empty.");
+                    }
+                }
+                API.triggerServerEvent("doormanager_changedesc", chosenDoor, desc);
+                break;
+            case 2:
+                API.triggerServerEvent("doormanager_goto", chosenDoor);
+                break;
+            case 3:
+                var groupid = "";
+                while (groupid === "") {
+                    groupid = API.getUserInput("", 100);
+                    if (groupid === "") {
+                        API.SendChatMessage("[Door Manager] GroupID can't be empty.");
+                    }
+                }
+                API.triggerServerEvent("doormanager_setgroup", chosenDoor, groupid);
+                break;
+            case 4:
+                var propertyid = "";
+                while (propertyid === "") {
+                    propertyid = API.getUserInput("", 100);
+                    if (propertyid === "") {
+                        API.SendChatMessage("[Door Manager] PropertyID can't be empty.");
+                    }
+                }
+                API.triggerServerEvent("doormanager_setproperty", chosenDoor, propertyid);
+                break;
+            case 5:
+                API.triggerServerEvent("doormanager_hide", chosenDoor);
+                break;
+            case 6:
+                API.triggerServerEvent("doormanager_delete", chosenDoor);
+                actionMenu.Visible = false;
+                break;
+        }
+    });
+}
+*/
+
+Event.OnServerEventTrigger.connect(function (eventName, args) {
+    switch (eventName) {
+        case "doormanager_managedoors":
+            var doors = JSON.parse(args[0]);
+            gMenu = API.createMenu("Door Manager", "", 0, 0, 6);
+            var arrayLength = doors.length;
+            for (var i = 0; i < arrayLength; i++) {
+                gMenu.AddItem(API.createMenuItem(doors[i][0], doors[i][1]));
+            }
+            gMenu.AddItem(API.createMenuItem("Create New Door", "CreateDoor"));
+
+            gMenu.Visible = true;
+
+            gMenu.OnItemSelect.connect(function (sender, item, index) {
+                API.SendChatMessage("You selected: ~g~" + item.Text);
+                if (item.Description === "CreateDoor") {
+                    gMenu.Visible = false;
+                    API.showCursor(true);
+                    selectingDoor = true;
+                    API.SendChatMessage("[Door Manager] Select a door using your mouse.");
+                } else {
+                    gMenu.Visible = false;
+                    showEditMenu(item.Description);
+                }
+            });
+            break;
+
+        case "doormanager_editdoor":
+            showEditMenu(args[0]);
+            break;
+    }
+});
+
+var selectingDoor = false;
+var lastDoor = null;
+var lastDoorV = 0;
+
+Event.OnUpdate.connect(function () {
+    if (gMenu != null)
+        API.drawMenu(gMenu);
+    if (actionMenu != null)
+        API.drawMenu(actionMenu);
+
+    if (selectingDoor) {
+        var cursOp = API.getCursorPositionMaintainRatio();
+        var s2w = API.screenToWorldMaintainRatio(cursOp);
+        var rayCast = API.createRaycast(API.getGameplayCamPos(), s2w, -1, null);
+        var localH = null;
+        var localV = 0;
+        if (rayCast.didHitEntity) {
+            localH = rayCast.hitEntity;
+            localV = localH.Value;
+        }
+
+        API.displaySubtitle("Object Handle: " + localV);
+
+        if (localV != lastDoorV) {
+            if (localH != null) API.setEntityTransparency(localH, 50);
+            if (lastDoor != null) API.setEntityTransparency(lastDoor, 255);
+            lastDoor = localH;
+            lastDoorV = localV;
+        }
+
+        if (API.isDisabledControlJustPressed(24)) {
+            API.showCursor(false);
+            selectingDoor = false;
+
+            if (localH != null) {
+                API.SendChatMessage("Object model is " + API.getEntityModel(localH));
+                var model = API.getEntityModel(localH);
+                var pos = API.getEntityPosition(localH);
+                API.SendChatMessage("[Door Manager] Enter a description.");
+                var desc = "";
+                while (desc === "") {
+                    desc = API.getUserInput("", 100);
+                    if (desc === "") {
+                        API.SendChatMessage("[Door Manager] Description can't be empty.");
+                    }
+                }
+                API.triggerServerEvent("doormanager_createdoor", model, pos, desc);
+            }
+        }
+    }
+    else if (lastDoor != null) {
+        API.setEntityTransparency(lastDoor, 255);
+        lastDoor = null;
+    }
+});
+
+Event.OnKeyDown.connect(function (sender, e) {
+    if(e.KeyCode === Keys.L && !API.isChatOpen()) {
+        API.triggerServerEvent("doormanager_locknearestdoor");
+    }
+});

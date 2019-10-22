@@ -1,0 +1,220 @@
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link href="../stylesheet/css/metro.css" rel="stylesheet">
+    <script src="../jquery.js"></script>
+    <script src="../stylesheet/js/metro.js"></script>
+    <link href="../stylesheet/css/metro-icons.css" rel="stylesheet">
+    
+    <script>
+        $(document).ready(function() {
+            mp.trigger("loaded");
+        });
+
+mp.events.add(
+    {
+         'fillItems': (leftJson, rightJson, titleLeft, titleRight, usedLeft, usedRight) => {
+            var leftList = JSON.parse(leftJson);
+            var rightList = JSON.parse(rightJson);
+            //Loop in each.
+            $.each(leftList,
+                function (i, val) {
+                    $("#LeftItems").append(`<div class="list" shortname="${val[1]}">
+                    <div class="list-content">
+                        <span class="list-title">${val[0]}</span>
+                        <span class="list-subtitle">Short Name: ${val[1]}</span>
+                        <span class="list-remark" amount="${val[2]}">Amount: ${val[2]}</span>
+                    </div>
+                </div>`);
+                });
+
+            $.each(rightList,
+                function (i, val) {
+                    $("#RightItems").append(`<div class="list" shortname="${val[1]}">
+                    <div class="list-content">
+                        <span class="list-title">${val[0]}</span>
+                        <span class ="list-subtitle">Short Name: ${val[1]}</span>
+                        <span class ="list-remark" amount="${val[2]}">Amount: ${val[2]}</span>
+                    </div>
+                </div>`);
+                });
+
+            //Set titles.
+            $('#TitleLeft').text(titleLeft);
+            $('#TitleRight').text(titleRight);
+            $('#LeftItemsUsed').text(usedLeft);
+            $('#RightItemsUsed').text(usedRight);
+
+            $('#loading_icon').css('display', 'none');
+            $('#form_content').css('display', 'block');
+
+       
+        },
+
+         'moveItemFromLeftToRightSuccess': (itemname, amount, usedLeft, usedRight) => {
+            //Get old item from inv.
+            var item = $("#LeftItems").find(`.list[shortname='${itemname}']`);
+
+            //Add item.
+            var titem = $("#RightItems").find(`.list[shortname='${itemname}']`);
+            if (!!titem.length) { //If was found.
+                //Change amount of target.
+                var oldValue = parseInt(titem.find('span.list-remark').attr("amount"));
+                titem.find('span.list-remark').attr("amount", oldValue + amount);
+                titem.find('span.list-remark').text("Amount: " + (oldValue + amount));
+            } else {
+                //If not, add it with new value.
+                $("#RightItems").append(item.clone());
+                $("#RightItems").find(`.list[shortname='${itemname}']`).find('span.list-remark').attr("amount", amount);
+                $("#RightItems").find(`.list[shortname='${itemname}']`).find('span.list-remark').text("Amount: " + amount);
+            }
+
+            //If amount there is equal to what to be removed, we remove whole thing and then add to list.
+            if (parseInt(item.find('span.list-remark').attr("amount")) === amount) {
+                item.remove();
+            } else {
+                //Change amount of sender.
+                var ov = parseInt(item.find('span.list-remark').attr("amount"));
+                item.find('span.list-remark').attr("amount", ov - amount);
+                item.find('span.list-remark').text("Amount: " + (ov - amount));
+            }
+
+            $('#LeftItemsUsed').text(usedLeft);
+            $('#RightItemsUsed').text(usedRight);
+        },
+
+         'moveItemFromRightToLeftSuccess': (itemname, amount, usedLeft, usedRight) => {
+            //Get old item from inv.
+            var item = $("#RightItems").find(`.list[shortname='${itemname}']`);
+
+            //Add item.
+            var titem = $("#LeftItems").find(`.list[shortname='${itemname}']`);
+            if (!!titem.length) { //If was found.
+                //Change amount of target.
+                var oldValue = parseInt(titem.find('span.list-remark').attr("amount"));
+                titem.find('span.list-remark').attr("amount", oldValue + amount);
+                titem.find('span.list-remark').text("Amount: " + (oldValue + amount));
+            } else {
+                //If not, add it with new value.
+                $("#LeftItems").append(item.clone());
+                $("#LeftItems").find(`.list[shortname='${itemname}']`).find('span.list-remark').attr("amount", amount);
+                $("#LeftItems").find(`.list[shortname='${itemname}']`).find('span.list-remark').text("Amount: " + amount);
+            }
+
+            //If amount there is equal to what to be removed, we remove whole thing and then add to list.
+            if (parseInt(item.find('span.list-remark').attr("amount")) === amount) {
+                item.remove();
+            } else {
+                //Change amount of sender.
+                var ov = parseInt(item.find('span.list-remark').attr("amount"));
+                item.find('span.list-remark').attr("amount", ov - amount);
+                item.find('span.list-remark').text("Amount: " + (ov - amount));
+            }
+
+            $('#LeftItemsUsed').text(usedLeft);
+            $('#RightItemsUsed').text(usedRight);
+        }
+    });
+
+        //Events.
+        $(document).ready(function () {
+            $("#ExitButton").click(function () {
+                mp.trigger("ExitWindow");
+            });
+
+            var currentStatus = 0;
+            $("#MoveFromLeftToRight").click(function () {
+                var item = $("#LeftItems").find('div.active');
+                if (!!item.length) {
+                    currentStatus = 1;
+                    metroDialog.open('#amountDialog');
+                }
+            });
+
+            $("#MoveFromRightToLeft").click(function () {
+                var item = $("#RightItems").find('div.active');
+                if (!!item.length) {
+                    currentStatus = 2;
+                    metroDialog.open('#amountDialog');
+                }
+            });
+            
+            $("#MoveButton").click(function () {
+                if (currentStatus === 1) {
+                    //Get clicked one: 
+                    var item = $("#LeftItems").find('div.active');
+                    //Send event.
+                    mp.trigger("moveFromLeftToRight", item.attr("shortname"), $('#amounttext').val());
+                }
+                else if (currentStatus === 2) {
+                    //Get clicked one: 
+                    var eitem = $("#RightItems").find('div.active');
+                    //Send event.
+                    mp.trigger("moveFromRightToLeft", eitem.attr("shortname"), $('#amounttext').val());
+                }
+
+                metroDialog.close('#amountDialog');
+                currentStatus = 0;
+            });
+        });
+    </script>
+</head>
+<body>
+<div class="main_container">
+    <div class="panel" data-role="panel">
+        <div class="heading">
+            <span class="icon mif-database"></span>
+            <span class="title" style="font-family:House Script;font-size:30px">Inventory Manager</span>
+        </div>
+        <div class="content" style="overflow:hidden;">
+            <div id="loading_icon" class="cell padding20 bg-dark" style="color:white;font-family:House Script;font-size:25px;">
+                <div data-role="preloader" data-type="metro" style="margin: 30px auto" class="preloader-metro"><div class="circle"></div><div class="circle"></div><div class="circle"></div><div class="circle"></div><div class="circle"></div></div>
+            </div>
+            
+            <!-- Asking for amount dialog. -->
+            <div data-role="dialog" data-close-button="true" data-overlay="true" class="padding20 dialog" id="amountDialog">
+                <h1>Enter Amount</h1>
+                <input type="number" id="amounttext" value="1" style="width: 200px;" /><br />
+                <button class="button primary" id="MoveButton" style="width: 100px; margin-top: 5px;">Done</button>
+            </div>
+
+            <div id="form_content" class="flex-grid" style="margin: 5px; display: none;">
+                <div class="row cells3">
+                    <div class="cell">
+                        <h3 class="header" id="TitleLeft"></h3>
+                        <span style="float: right;" id="LeftItemsUsed"></span>
+                        <div class="listview-outlook" id="LeftItems" data-role="listview" style="width: 300px; height: 500px; overflow-y: auto; border: black solid 1px;">
+                            <!-- <div class="list">
+                        <div class="list-content">
+                            <span class="list-title">Miners Bag - (defaultname)</span>
+                            <span class="list-subtitle">Short Name: bag_defaultname</span>
+                            <span class="list-remark">Amount: 1</span>
+                        </div>
+                    </div>  -->
+                        </div>
+                    </div>
+
+                    <div class="cell" style="margin-left: 5px; margin-right: 5px;">
+                        <div style="text-align: center; margin-top: 200px;">
+                            <button class="button primary" id="MoveFromLeftToRight" style="width: 100px; margin: auto; margin-bottom: 5px;">></button><br />
+                            <button class="button primary" id="MoveFromRightToLeft" style="width: 100px; margin: auto;"></button>
+                        </div>
+                    </div>
+
+                    <div class="cell">
+                        <h3 class="header" id="TitleRight"></h3>
+                        <span style="float: right;" id="RightItemsUsed"></span>
+                        <div class="listview-outlook" id="RightItems" data-role="listview" style="width: 300px; height: 500px; overflow-y: auto; border: black solid 1px;">
+                            <!-- Add items. -->
+                        </div>
+                        <button class="button success" id="ExitButton" style="width: 100px; float: right;">Exit</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>  
+</div>
+</body>
+</html>
