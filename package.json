@@ -1,0 +1,53 @@
+{
+  "name": "mafiacityroleplay",
+  "version": "1.0.0",
+  "description": "Roleplay Gamemode",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/mcrp/gm"
+  },
+  "scripts": {
+    "cef": "cd vue && npm run build",
+    "launch": "yarn run cef && ./server",
+    "watch": "nodemon --watch ./vue --exec yarn run launch"
+  },
+  "keywords": [],
+  "contributors": [
+    "Dave",
+    "Austin",
+    "Rick",
+    "Lazzie",
+    "Steve",
+    "Wolfy_",
+    "StyledStrike",
+    "Dzeikob",
+    "Dylan",
+    "Bradley",
+    "Shane"
+  ],
+  "bugs": {
+    "url": "https://gitlab.com/mcrp/gm/issues"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "chalk": "^2.4.2",
+    "datejs": "^1.0.0-rc3",
+    "discord.js": "^11.5.1",
+    "eslint": "^5.16.0",
+    "fs": "^0.0.1-security",
+    "https": "^1.0.0",
+    "mysql": "^2.17.1",
+    "nodemon": "^1.19.1",
+    "path": "^0.12.7",
+    "peer": "^0.2.10",
+    "raven": "^2.6.4",
+    "readdir-recursive": "0.0.4",
+    "util": "^0.11.1"
+  },
+  "devDependencies": {
+    "@types/ragemp-c": "github:cocacolabear/types-ragemp-c#master",
+    "@types/ragemp-s": "github:cocacolabear/types-ragemp-s#master",
+    "javascript-obfuscator": "^0.18.1"
+  }
+}
