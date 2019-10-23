@@ -256,3 +256,5 @@ bridge/acl.xml
 bridge/server_logs.txt
 bridge/vehicleData.json
 bridge/vehicleData.json.README.txt
+bridge/server_exceptions.txt
+client_packages/.listcache

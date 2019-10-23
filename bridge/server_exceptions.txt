@@ -5113,3 +5113,27 @@ System.Reflection.TargetInvocationException: Exception has been thrown by the ta
    at object RuntimeTypeHandle.CreateInstance(RuntimeType type, bool publicOnly, ref bool canBeCached, ref RuntimeMethodHandleInternal ctor)
    at object RuntimeType.CreateInstanceSlow(bool publicOnly, bool skipCheckThis, bool fillCache, ref StackCrawlMark stackMark)
 =========================================================
+
+==================[23-Oct-19 1:38:11 PM]==================
+System.IO.FileNotFoundException: Could not load the specified file.
+File name: 'MongoDB.Bson'
+   at Assembly System.Runtime.Loader.AssemblyLoadContext.ResolveUsingEvent(AssemblyName assemblyName)
+=========================================================
+
+==================[23-Oct-19 1:38:11 PM]==================
+System.IO.FileNotFoundException: Could not load the specified file.
+File name: 'DSharpPlus'
+   at Assembly System.Runtime.Loader.AssemblyLoadContext.ResolveUsingEvent(AssemblyName assemblyName)
+=========================================================
+
+==================[23-Oct-19 1:38:11 PM]==================
+System.IO.FileNotFoundException: Could not load the specified file.
+File name: 'MongoDB.Driver'
+   at Assembly System.Runtime.Loader.AssemblyLoadContext.ResolveUsingEvent(AssemblyName assemblyName)
+=========================================================
+
+==================[23-Oct-19 1:38:11 PM]==================
+System.IO.FileNotFoundException: Could not load the specified file.
+File name: 'MongoDB.Driver.Core'
+   at Assembly System.Runtime.Loader.AssemblyLoadContext.ResolveUsingEvent(AssemblyName assemblyName)
+=========================================================
