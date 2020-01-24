@@ -1,14 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mtgvrp", "dotnet\resources\mtgvrp\mtgvrp.csproj", "{09075C29-31A7-4C4B-9095-0CF5E65DD723}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mtgvrp", "dotnet\resources\mtgvrp\mtgvrp.csproj", "{09075C29-31A7-4C4B-9095-0CF5E65DD723}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cs_packages", "client_packages\cs_packages\cs_packages.csproj", "{FC78FB17-63C4-4CC4-8C40-291E28EA0002}"
 EndProject
 Global
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -18,9 +17,19 @@ Global
 		{09075C29-31A7-4C4B-9095-0CF5E65DD723}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{09075C29-31A7-4C4B-9095-0CF5E65DD723}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{09075C29-31A7-4C4B-9095-0CF5E65DD723}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC78FB17-63C4-4CC4-8C40-291E28EA0002}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC78FB17-63C4-4CC4-8C40-291E28EA0002}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC78FB17-63C4-4CC4-8C40-291E28EA0002}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC78FB17-63C4-4CC4-8C40-291E28EA0002}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8FC314EB-9C89-4E13-811F-A9E998664A69}
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 	GlobalSection(Performance) = preSolution
 		HasPerformanceSessions = true
