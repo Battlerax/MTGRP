@@ -258,3 +258,8 @@ bridge/vehicleData.json
 bridge/vehicleData.json.README.txt
 bridge/server_exceptions.txt
 client_packages/.listcache
+/dotnet/server_exceptions.txt
+/dotnet/server_logs.txt
+/dotnet/runtime
+/dotnet/vehicleData.json
+/ragemp-server.exe
