@@ -214,11 +214,11 @@ namespace mtgvrp.vehicle_manager
             }
             switch(hash)
             {
-                case VehicleHash.RatBike:
+                case VehicleHash.Ratbike:
                     return "Ratbike";
                 case VehicleHash.Chimera:
                     return "Chimera";
-                case VehicleHash.ZombieA:
+                case VehicleHash.Zombiea:
                     return "Zombie";
                 case VehicleHash.Faggio:
                     return "Faggio Sport";
@@ -228,13 +228,13 @@ namespace mtgvrp.vehicle_manager
                     return "Santus";
                 case VehicleHash.Elegy:
                     return "Elegy";
-                case VehicleHash.SultanRS:
+                case VehicleHash.Sultanrs:
                     return "Sultan RS";
                 case VehicleHash.Zentorno:
                     return "Zentorno";
                 case VehicleHash.Turismo2:
                     return "Turismo";
-                case VehicleHash.ItaliGTB2:
+                case VehicleHash.Italigtb2:
                     return "Itali GTB";
                 case VehicleHash.Nero:
                     return "Nero";

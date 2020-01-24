@@ -67,7 +67,7 @@ namespace mtgvrp.job_manager.trucker
                 if (character.JobOne.MiscOne.ColZone == colshape) //Fuel load.
                 {
                     var veh = player.Vehicle;
-                    var vehicle = veh.Handle.GetVehicle();
+                    var vehicle = veh.GetVehicle();
 
                     if (vehicle.Job?.Type != JobManager.JobTypes.Trucker ||
                         character.JobOne?.Type != JobManager.JobTypes.Trucker) return;
@@ -123,7 +123,7 @@ namespace mtgvrp.job_manager.trucker
                     character.JobZoneType == 3)
                 {
                     var veh = player.Vehicle;
-                    var vehicle = veh.Handle.GetVehicle();
+                    var vehicle = veh.GetVehicle();
 
                     if (vehicle.Job?.Type != JobManager.JobTypes.Trucker ||
                         character.JobOne?.Type != JobManager.JobTypes.Trucker) return;
@@ -167,7 +167,7 @@ namespace mtgvrp.job_manager.trucker
                     character.JobZoneType == 3)
                 {
                     var veh = player.Vehicle;
-                    var vehicle = veh.Handle.GetVehicle();
+                    var vehicle = veh.GetVehicle();
 
                     if (vehicle.Job?.Type != JobManager.JobTypes.Trucker ||
                         character.JobOne?.Type != JobManager.JobTypes.Trucker) return;
@@ -209,7 +209,7 @@ namespace mtgvrp.job_manager.trucker
                 {
 
                     var veh = player.Vehicle;
-                    var vehicle = veh.Handle.GetVehicle();
+                    var vehicle = veh.GetVehicle();
 
                     if (vehicle.Job?.Type != JobManager.JobTypes.Trucker ||
                         character.JobOne?.Type != JobManager.JobTypes.Trucker) return;
@@ -245,7 +245,7 @@ namespace mtgvrp.job_manager.trucker
             else if (character.TruckingStage == Character.TruckingStages.HeadingBack && player.IsInVehicle && character.JobOne.JoinPos.ColZone == colshape)
             {
                 var veh = player.Vehicle;
-                var vehicle = veh.Handle.GetVehicle();
+                var vehicle = veh.GetVehicle();
 
                 if (vehicle.Job?.Type != JobManager.JobTypes.Trucker ||
                     character.JobOne?.Type != JobManager.JobTypes.Trucker) return;

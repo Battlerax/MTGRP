@@ -738,9 +738,9 @@ namespace mtgvrp.vehicle_manager
             
             //Vehicle Interaction Menu Setup
             var vehInfo = VehicleOwnership.returnCorrDisplayName(veh.VehModel) + " - " + veh.LicensePlate;
-            API.SetEntitySharedData(player.Handle, "CurrentVehicleInfo", vehInfo);
-            API.SetEntitySharedData(player.Handle, "OwnsVehicle", DoesPlayerHaveVehicleAccess(player, veh));
-            API.SetEntitySharedData(player.Handle, "CanParkCar", DoesPlayerHaveVehicleParkLockAccess(player, veh));
+            API.SetEntitySharedData(player, "CurrentVehicleInfo", vehInfo);
+            API.SetEntitySharedData(player, "OwnsVehicle", DoesPlayerHaveVehicleAccess(player, veh));
+            API.SetEntitySharedData(player, "CanParkCar", DoesPlayerHaveVehicleParkLockAccess(player, veh));
 
            NAPI.ClientEvent.TriggerClientEvent(player, "speedo_entervehicle", account.IsSpeedoOn);
 

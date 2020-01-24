@@ -183,14 +183,14 @@ namespace mtgvrp.property_system
             {
                 if (Type != PropertyManager.PropertyTypes.GasStation)
                 {
-                    InteractionMarker = new MarkerZone(InteractionPos ?? new Vector3(), InteractionRot ?? new Vector3(), InteractionDimension)
+                    InteractionMarker = new MarkerZone(InteractionPos, InteractionRot, InteractionDimension)
                     {
                         TextLabelText = PropertyManager.GetInteractText(Type)
                     };
                 }
                 else
                 {
-                    InteractionMarker = new MarkerZone(InteractionPos ?? new Vector3(), InteractionRot ?? new Vector3(), InteractionDimension)
+                    InteractionMarker = new MarkerZone(InteractionPos, InteractionRot, InteractionDimension)
                     {
                         ColZoneSize = 10f,
                         TextLabelText = PropertyManager.GetInteractText(Type)
@@ -202,7 +202,7 @@ namespace mtgvrp.property_system
 
             if (IsTeleportable && TargetPos != null && TargetPos != new Vector3())
             {
-                ExitMarker = new MarkerZone(TargetPos ?? new Vector3(), TargetRot ?? new Vector3(), TargetDimension) {TextLabelText = "/exit"};
+                ExitMarker = new MarkerZone(TargetPos, TargetRot, TargetDimension) {TextLabelText = "/exit"};
                 ExitMarker.Create();
                 ExitMarker.ColZone.SetData("property_exit", Id);
             }

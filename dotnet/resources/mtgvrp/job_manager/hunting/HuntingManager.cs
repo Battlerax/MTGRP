@@ -82,27 +82,27 @@ namespace mtgvrp.job_manager.hunting
         [ServerEvent(Event.PlayerWeaponSwitch)]
         public void OnPlayerWeaponSwitch(Client player, WeaponHash oldWeapon, WeaponHash newValue)
         {
-            if (oldWeapon == WeaponHash.SniperRifle)
+            if (oldWeapon == WeaponHash.Sniperrifle)
             {
                 foreach (var a in SpawnedAnimals)
                 {
-                    if(API.DoesEntityExistForPlayer(player, a.handle))
-                        NAPI.ClientEvent.TriggerClientEvent(player, "toggle_animal_invincible", a.handle, true);
+                    if(NAPI.Entity.DoesEntityExistForPlayer(player, a.handle))
+                        NAPI.ClientEvent.TriggerClientEvent(player, "toggle_animal_invincible", a, true);
                 }
             }
-            else if (API.Shared.GetPlayerCurrentWeapon(player) == WeaponHash.SniperRifle)
+            else if (API.Shared.GetPlayerCurrentWeapon(player) == WeaponHash.Sniperrifle)
             {
                 foreach (var a in SpawnedAnimals)
                 {
-                    if (API.DoesEntityExistForPlayer(player, a.handle))
-                        NAPI.ClientEvent.TriggerClientEvent(player, "toggle_animal_invincible", a.handle, false);
+                    if (NAPI.Entity.DoesEntityExistForPlayer(player, a.handle))
+                        NAPI.ClientEvent.TriggerClientEvent(player, "toggle_animal_invincible", a, false);
                 }
             }
         }
 
         public void OnPlayerWeaponAmmoChange(Client player, WeaponHash weapon, int oldAmmo)
         {
-            if (weapon == WeaponHash.SniperRifle)
+            if (weapon == WeaponHash.Sniperrifle)
             {
                 var c = player.GetCharacter();
                 var ammo = InventoryManager.DoesInventoryHaveItem(c, typeof(AmmoItem));
@@ -159,7 +159,7 @@ namespace mtgvrp.job_manager.hunting
                 return;
             }
 
-            if (!API.DoesEntityExist(SpawnedAnimals[index].handle))
+            if (!NAPI.Entity.DoesEntityExist(SpawnedAnimals[index].handle))
             {
                 NAPI.Chat.SendChatMessageToPlayer(player, "That animal doesn't exist for the server.");
                 return;
@@ -188,7 +188,7 @@ namespace mtgvrp.job_manager.hunting
                 {
                     if (player.Position.DistanceTo(NAPI.Entity.GetEntityPosition(a.handle)) < 2.0)
                     {
-                        bool isDead = API.FetchNativeFromPlayer<bool>(player, Hash.IS_PED_DEAD_OR_DYING, a.handle, 1);
+                        bool isDead = API.FetchNativeFromPlayer<bool>(player, Hash.IS_PED_DEAD_OR_DYING, a, 1);
                         if (isDead)
                         {
                             var animalItem = new AnimalItem();
@@ -241,7 +241,7 @@ namespace mtgvrp.job_manager.hunting
                 {
                     if (player.Position.DistanceTo(NAPI.Entity.GetEntityPosition(a.handle)) < 2.0)
                     {
-                        bool isDead = API.FetchNativeFromPlayer<bool>(player, Hash.IS_PED_DEAD_OR_DYING, a.handle, 1);
+                        bool isDead = API.FetchNativeFromPlayer<bool>(player, Hash.IS_PED_DEAD_OR_DYING, a, 1);
                         if (isDead)
                         {
                             var animalItem = new AnimalItem();
@@ -489,7 +489,7 @@ namespace mtgvrp.job_manager.hunting
                 case HuntingManager.AnimalState.Fleeing:
                     foreach (var p in playersInRadius)
                     {
-                        API.Shared.SendNativeToPlayer(p, Hash.TASK_SMART_FLEE_PED, handle, FleeingPed.Handle, 75f, 5000, 0, 0);
+                        API.Shared.SendNativeToPlayer(p, Hash.TASK_SMART_FLEE_PED, handle, FleeingPed, 75f, 5000, 0, 0);
                     }
                     break;
                 case HuntingManager.AnimalState.Grazing:

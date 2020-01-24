@@ -165,7 +165,7 @@ namespace mtgvrp.dmv
                     ? $"* Vehicle Health: ~g~ {player.Vehicle.Health} / 999"
                     : $"* Vehicle Health: ~r~ {player.Vehicle.Health} / 999");
 
-            VehicleManager.respawn_vehicle(player.Vehicle.Handle.GetVehicle());
+            VehicleManager.respawn_vehicle(player.Vehicle.GetVehicle());
             // CONV NOTE: proper delay needed probably
             //API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));
             Task.Delay(1000).ContinueWith(t => API.WarpPlayerOutOfVehicle(player));

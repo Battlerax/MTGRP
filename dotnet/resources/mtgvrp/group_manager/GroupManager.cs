@@ -407,7 +407,7 @@ namespace mtgvrp.group_manager
         public void group_cmd(Client player, string message)
         {
 
-            if (GroupCommandPermCheck(NAPI.Data.GetEntityData(player.Handle, "Character"), 1)){
+            if (GroupCommandPermCheck(NAPI.Data.GetEntityData(player, "Character"), 1)){
 
                 Character character = player.GetCharacter();
                 SendGroupMessage(player, "[G][" + character.GroupRank + "] " + GetRankName(character) + " #" + character.BadgeNumber + " " + character.rp_name() + " : " + " ~w~" + message);
@@ -419,7 +419,7 @@ namespace mtgvrp.group_manager
         public void radio_cmd(Client player, string message)
         {
 
-            if (GroupCommandPermCheck(NAPI.Data.GetEntityData(player.Handle, "Character"), 1))
+            if (GroupCommandPermCheck(NAPI.Data.GetEntityData(player, "Character"), 1))
             {
 
                 Character character = player.GetCharacter();
@@ -462,7 +462,7 @@ namespace mtgvrp.group_manager
             if (option == "groupinvitation")
             {
                 Character character = player.GetCharacter();
-                Character inviteSender = NAPI.Data.GetEntityData(player.Handle, "GroupInvitation");
+                Character inviteSender = NAPI.Data.GetEntityData(player, "GroupInvitation");
 
                 if (inviteSender == null)
                 {
@@ -546,7 +546,7 @@ namespace mtgvrp.group_manager
 
 
             Character invitedchar = invited.GetCharacter();
-            NAPI.Data.SetEntityData(invited.Handle, "GroupInvitation", sender);
+            NAPI.Data.SetEntityData(invited, "GroupInvitation", sender);
 
             NAPI.Chat.SendChatMessageToPlayer(invited, core.Color.Pm, "You have been invited to " + sender.Group.Name + ". Type /accept groupinvitation.");
             NAPI.Chat.SendChatMessageToPlayer(player, "You sent a group invitation to " + invitedchar.rp_name() + ".");

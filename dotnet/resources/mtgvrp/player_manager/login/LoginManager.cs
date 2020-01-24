@@ -371,16 +371,16 @@ namespace mtgvrp.player_manager.login
 
             foreach(var c in charactersFound)
             {
-                API.Shared.SetEntitySharedData(player.Handle, "char_name_" + charCount, c.CharacterName);
-                API.Shared.SetEntitySharedData(player.Handle, "char_info_" + charCount, "SQL: " + c.Id);
+                API.Shared.SetEntitySharedData(player, "char_name_" + charCount, c.CharacterName);
+                API.Shared.SetEntitySharedData(player, "char_info_" + charCount, "SQL: " + c.Id);
                 charCount++;
             }
 
-            API.Shared.SetEntitySharedData(player.Handle, "char_name_" + charCount, "Create new character");
-            API.Shared.SetEntitySharedData(player.Handle, "char_info_" + charCount, "Begin the creation of a new character");
+            API.Shared.SetEntitySharedData(player, "char_name_" + charCount, "Create new character");
+            API.Shared.SetEntitySharedData(player, "char_info_" + charCount, "Begin the creation of a new character");
             charCount++;
 
-            API.Shared.SetEntitySharedData(player.Handle, "char_count", charCount);
+            API.Shared.SetEntitySharedData(player, "char_count", charCount);
             API.Shared.TriggerClientEvent(player, "showCharacterSelection");
         }
     }

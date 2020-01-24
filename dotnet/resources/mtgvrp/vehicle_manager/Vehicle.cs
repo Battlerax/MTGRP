@@ -148,7 +148,7 @@ namespace mtgvrp.vehicle_manager
             RespawnDelay = TimeSpan.FromMinutes(15);
             VehType = VehTypeTemp;
 
-            Entity = new Entity();
+            Entity = null;
             OwnerClient = null;
             IsSpawned = false;
             Driver = null;

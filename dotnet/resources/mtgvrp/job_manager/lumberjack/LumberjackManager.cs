@@ -110,7 +110,7 @@ namespace mtgvrp.job_manager.lumberjack
             var character = sender.GetCharacter();
             if (character.JobOne.Type == JobManager.JobTypes.Lumberjack)
             {
-                var tree = Tree.Trees.FirstOrDefault(x => x.TreeObj?.Position?.DistanceTo(sender.Position) <= 3.0f);
+                var tree = Tree.Trees.FirstOrDefault(x => x.TreeObj.Position.DistanceTo(sender.Position) <= 3.0f);
                 if (tree == null)
                     return;
                 if (tree.Stage == Tree.Stages.Cutting)
@@ -182,7 +182,7 @@ namespace mtgvrp.job_manager.lumberjack
             tree.CreateTree();
             tree.Insert();
             API.SetEntitySharedData(tree.TreeObj, "TargetObj", tree.Id.ToString());
-            NAPI.ClientEvent.TriggerClientEvent(player, "PLACE_OBJECT_ON_GROUND_PROPERLY", tree.TreeObj.Handle, "TreePlaced");
+            NAPI.ClientEvent.TriggerClientEvent(player, "PLACE_OBJECT_ON_GROUND_PROPERLY", tree.TreeObj, "TreePlaced");
         }
 
         [Command("deletetree"), Help(HelpManager.CommandGroups.LumberJob, "Delete the nearest lumberjack tree to you.")]
@@ -226,7 +226,7 @@ namespace mtgvrp.job_manager.lumberjack
                     return;
                 }
 
-                var tree = Tree.Trees.FirstOrDefault(x => x.TreeObj?.Position?.DistanceTo(player.Position) <= 10.0f && x.Stage == Tree.Stages.Waiting);
+                var tree = Tree.Trees.FirstOrDefault(x => x.TreeObj.Position.DistanceTo(player.Position) <= 10.0f && x.Stage == Tree.Stages.Waiting);
                 if (tree == null || tree?.Stage != Tree.Stages.Waiting)
                 {
                     NAPI.Chat.SendChatMessageToPlayer(player, "You aren't near a tree.");

@@ -232,8 +232,8 @@ namespace mtgvrp.player_manager.player_interaction
  
         public void FollowPlayer(Character c, bool isDrag)
         {
-            API.SendNativeToAllPlayers(Hash.TASK_FOLLOW_TO_OFFSET_OF_ENTITY, c.Client.Handle,
-                                    c.FollowingPlayer.Client.Handle, -1.0, 0.0, 0.0, 1, 1050, 2, true);
+            API.SendNativeToAllPlayers(Hash.TASK_FOLLOW_TO_OFFSET_OF_ENTITY, c.Client,
+                                    c.FollowingPlayer.Client, -1.0, 0.0, 0.0, 1, 1050, 2, true);
             if (isDrag == false)
             {
                 NAPI.ClientEvent.TriggerClientEvent(c.Client, "player_interact_subtitle",

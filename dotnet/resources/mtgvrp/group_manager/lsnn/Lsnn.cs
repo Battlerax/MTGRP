@@ -39,8 +39,8 @@ namespace mtgvrp.group_manager.lsnn
         public bool CameraSet = false;
         public bool ChopperCamToggle = false;
         public Entity Chopper;
-        public Vector3 CameraPosition = null;
-        public Vector3 CameraRotation = null;
+        public Vector3 CameraPosition;
+        public Vector3 CameraRotation;
         public Vector3 OffSet = new Vector3(0, 0, -3);
         public Timer ChopperRotation = new Timer();
         public int CameraDimension = 0;
@@ -137,10 +137,10 @@ namespace mtgvrp.group_manager.lsnn
                 return;
             }
 
-            var pos = NAPI.Entity.GetEntityPosition(player.Handle);
-            var angle = API.GetEntityRotation(player.Handle).Z;
+            var pos = NAPI.Entity.GetEntityPosition(player);
+            var angle = API.GetEntityRotation(player).Z;
             CameraPosition = XyInFrontOfPoint(pos, angle, 1) - new Vector3(0, 0, 0.5);
-            CameraRotation = API.GetEntityRotation(player.Handle) + new Vector3(0, 0, 180);
+            CameraRotation = API.GetEntityRotation(player) + new Vector3(0, 0, 180);
             CameraDimension = (int)API.GetEntityDimension(player);
             NAPI.Notification.SendNotificationToPlayer(player, "A camera has been placed on your position.");
             ChatManager.NearbyMessage(player, 10, "~p~" + character.rp_name() + " sets down a news camera");
@@ -200,8 +200,8 @@ namespace mtgvrp.group_manager.lsnn
 
                 NAPI.Notification.SendNotificationToPlayer(player, "The chopper camera has been turned ~r~off~w~.");
                 ChatManager.NearbyMessage(player, 10, "~p~" + character.rp_name() + " has turned off the chopper cam.");
-                CameraPosition = null;
-                CameraRotation = null;
+                CameraPosition = new Vector3();
+                CameraRotation = new Vector3();
                 CameraSet = false;
                 ChopperCamToggle = false;
                 ChopperRotation.Stop();
@@ -280,8 +280,8 @@ namespace mtgvrp.group_manager.lsnn
             ChatManager.NearbyMessage(player, 10, "~p~" + character.rp_name() + " picks up the news camera.");
             API.DeletePlayerWorldProp(player, API.GetHashKey("p_tv_cam_02_s"), playerPos, 2.5f); // CONV NOTE: adjust radius value
             character.HasCamera = true;
-            CameraPosition = null;
-            CameraRotation = null;
+            CameraPosition = new Vector3();
+            CameraRotation = new Vector3();
             CameraDimension = 0;
             CameraSet = false;
             }

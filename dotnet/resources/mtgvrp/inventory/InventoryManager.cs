@@ -819,7 +819,7 @@ namespace mtgvrp.inventory
             var droppedObject = API.CreateObject(sendersItem[0].Object, player.Position, new Vector3());
             var itemaa = CloneItem(sendersItem[0], amount);
             _stashedItems.Add(droppedObject, new KeyValuePair<string[], IInventoryItem>(new []{character.CharacterName, player.GetAccount().AccountName}, itemaa));
-            NAPI.ClientEvent.TriggerClientEvent(player, "PLACE_OBJECT_ON_GROUND_PROPERLY", droppedObject.Handle, "");
+            NAPI.ClientEvent.TriggerClientEvent(player, "PLACE_OBJECT_ON_GROUND_PROPERLY", droppedObject, "");
 
             //Decrease.
             DeleteInventoryItem(character, sendersItem[0].GetType(), amount, x => x == sendersItem[0]);

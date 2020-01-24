@@ -372,7 +372,7 @@ namespace mtgvrp.group_manager.lspd
                 }
             }
 
-            API.SendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, receiverCharacter.Client.Handle, false);
+            API.SendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, receiverCharacter.Client, false);
             receiverCharacter.IsCuffed = false;
             API.StopPlayerAnimation(receiverCharacter.Client);
 
@@ -527,7 +527,7 @@ namespace mtgvrp.group_manager.lspd
                 return;
             }
 
-            var isStunned = API.FetchNativeFromPlayer<bool>(receiver, Hash.IS_PED_BEING_STUNNED, receiver.Handle, 0);
+            var isStunned = API.FetchNativeFromPlayer<bool>(receiver, Hash.IS_PED_BEING_STUNNED, receiver, 0);
 
             if (receivercharacter.AreHandsUp == false && isStunned == false)
             {
@@ -946,13 +946,13 @@ namespace mtgvrp.group_manager.lspd
 
             int id = -1;
             float distance = -1.0f;
-            Vector3 playerPos = NAPI.Entity.GetEntityPosition(player.Handle);
+            Vector3 playerPos = NAPI.Entity.GetEntityPosition(player);
             Object currentObject = null;
             int cid = 0;
 
             foreach(Object o in Objects)
             {
-                Vector3 objectPos = NAPI.Entity.GetEntityPosition(o.Handle);
+                Vector3 objectPos = NAPI.Entity.GetEntityPosition(o);
                 if(objectPos.DistanceTo(playerPos) < distance || distance == -1.0f)
                 {
                     id = cid;
@@ -965,7 +965,7 @@ namespace mtgvrp.group_manager.lspd
             {
                 if(NAPI.Entity.GetEntityPosition(currentObject).DistanceTo(playerPos) <= 3.0f)
                 {
-                    API.DeleteEntity(currentObject.Handle);
+                    API.DeleteEntity(currentObject);
                     Objects.Remove(currentObject);
                     NAPI.Notification.SendNotificationToPlayer(player, "Object removed. There are now ~r~" + Objects.Count + "~w~ placed.");
                 }
@@ -1127,16 +1127,16 @@ namespace mtgvrp.group_manager.lspd
             switch (type)
             {
                 case 0:
-                    WeaponManager.CreateWeapon(player, WeaponHash.StunGun, WeaponTint.Normal, false, false, true);
+                    WeaponManager.CreateWeapon(player, WeaponHash.Stungun, WeaponTint.Normal, false, false, true);
                     WeaponManager.CreateWeapon(player, WeaponHash.Nightstick, WeaponTint.Normal, false, false, true);
-                    WeaponManager.CreateWeapon(player, WeaponHash.CombatPistol, WeaponTint.Lspd, false, false, true);
+                    WeaponManager.CreateWeapon(player, WeaponHash.Combatpistol, WeaponTint.Lspd, false, false, true);
                     WeaponManager.CreateWeapon(player, WeaponHash.Flashlight, WeaponTint.Normal, false, false, true);
                     break;
                 case 1:
-                    WeaponManager.CreateWeapon(player, WeaponHash.CombatPistol, WeaponTint.Lspd, false, false, true);
-                    WeaponManager.CreateWeapon(player, WeaponHash.CombatPDW, WeaponTint.Lspd, false, false, true);
-                    WeaponManager.CreateWeapon(player, WeaponHash.SmokeGrenade, WeaponTint.Normal, false, false, true);
-                    WeaponManager.CreateWeapon(player, WeaponHash.BZGas, WeaponTint.Normal, false, false, true);
+                    WeaponManager.CreateWeapon(player, WeaponHash.Combatpistol, WeaponTint.Lspd, false, false, true);
+                    WeaponManager.CreateWeapon(player, WeaponHash.Combatpdw, WeaponTint.Lspd, false, false, true);
+                    WeaponManager.CreateWeapon(player, WeaponHash.Smokegrenade, WeaponTint.Normal, false, false, true);
+                    WeaponManager.CreateWeapon(player, WeaponHash.Bzgas, WeaponTint.Normal, false, false, true);
                     break;
             }
             API.SetPlayerHealth(player, 100);

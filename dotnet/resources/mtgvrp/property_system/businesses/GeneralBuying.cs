@@ -276,7 +276,7 @@ namespace mtgvrp.property_system.businesses
                                 ValidDate = DateTime.Today
                             };
                             name = "Deer Tag";
-                            WeaponManager.CreateWeapon(sender, WeaponHash.SniperRifle, WeaponTint.Normal, true);
+                            WeaponManager.CreateWeapon(sender, WeaponHash.Sniperrifle, WeaponTint.Normal, true);
                             break;
                         }
                     case "boar_tag":
@@ -302,7 +302,7 @@ namespace mtgvrp.property_system.businesses
                                 ValidDate = DateTime.Today
                             };
                             name = "Boar Tag";
-                            WeaponManager.CreateWeapon(sender, WeaponHash.SniperRifle, WeaponTint.Normal, true);
+                            WeaponManager.CreateWeapon(sender, WeaponHash.Sniperrifle, WeaponTint.Normal, true);
                             break;
                         }
                     case "ammo":
@@ -312,7 +312,7 @@ namespace mtgvrp.property_system.businesses
                                 case InventoryManager.GiveItemErrors.Success:
                                     InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
                                     prop.Supplies--;
-                                    WeaponManager.CreateWeapon(sender, WeaponHash.SniperRifle, WeaponTint.Normal, true);
+                                    WeaponManager.CreateWeapon(sender, WeaponHash.Sniperrifle, WeaponTint.Normal, true);
                                     NAPI.Chat.SendChatMessageToPlayer(sender,
                                         $"[BUSINESS] You have sucessfully bought a ~g~ 5.56 Bullet ~w~ for ~g~${price}.");
                                     LogManager.Log(LogManager.LogTypes.Stats, $"[Business] {sender.GetCharacter().CharacterName}[{sender.GetAccount().AccountName}] has bought a 5.56 Bullet for {price} from property ID {prop.Id}.");

@@ -22,7 +22,7 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
         [RemoteEvent("vehicle_edit_change_spawn")]
         public void VehicleEditChangeSpawn(Client player, params object[] arguments)
         {
-            GameVehicle veh = NAPI.Data.GetEntityData(player.Handle, "EDIT_VEH");
+            GameVehicle veh = NAPI.Data.GetEntityData(player, "EDIT_VEH");
 
             if (veh == null)
             {
@@ -41,7 +41,7 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
         [RemoteEvent("vehicle_edit_save")]
         public void VehicleEditSave(Client player, params object[] arguments)
         {
-            GameVehicle veh = NAPI.Data.GetEntityData(player.Handle, "EDIT_VEH");
+            GameVehicle veh = NAPI.Data.GetEntityData(player, "EDIT_VEH");
 
             if (veh == null)
             {
@@ -129,7 +129,7 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
         [RemoteEvent("edit_veh_delete")]
         public void EditVehDelete(Client player, params object[] arguments)
         {
-            GameVehicle veh = NAPI.Data.GetEntityData(player.Handle, "EDIT_VEH");
+            GameVehicle veh = NAPI.Data.GetEntityData(player, "EDIT_VEH");
 
             if (veh == null)
             {
@@ -147,7 +147,7 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
         [RemoteEvent("vehicle_edit_respawn")]
         public void VehicleEditRespawn(Client player, params object[] arguments)
         {
-            GameVehicle veh = NAPI.Data.GetEntityData(player.Handle, "EDIT_VEH");
+            GameVehicle veh = NAPI.Data.GetEntityData(player, "EDIT_VEH");
 
             if (veh == null)
             {
@@ -188,7 +188,7 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
                 return;
             }
             
-            NAPI.Data.SetEntityData(player.Handle, "EDIT_VEH", veh);
+            NAPI.Data.SetEntityData(player, "EDIT_VEH", veh);
             NAPI.ClientEvent.TriggerClientEvent(player, "show_vehicle_edit_menu", veh.Id, veh.VehModel.ToString(), (veh.OwnerId == 0 ? "NONE" : PlayerManager.Players.Single(x => x.Id == veh.OwnerId).CharacterName), veh.LicensePlate, veh.VehMods[ModdingManager.PrimaryColorId.ToString()], veh.VehMods[ModdingManager.SecondryColorId.ToString()], veh.RespawnDelay.TotalMinutes.ToString("G"), veh.JobId, veh.GroupId);
         }
     }

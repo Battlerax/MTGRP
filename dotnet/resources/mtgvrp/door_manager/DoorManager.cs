@@ -224,7 +224,7 @@ namespace mtgvrp.door_manager
         {
             float distance = -1.0f;
             var cdoor = new Door(0, new Vector3(0, 0, 0), "NULL", false, false);
-            Vector3 playerPos = NAPI.Entity.GetEntityPosition(sender.Handle);
+            Vector3 playerPos = NAPI.Entity.GetEntityPosition(sender);
             foreach (Door d in Door.Doors)
             {
                 if (playerPos.DistanceTo(d.Position) < distance || distance == -1.0f)

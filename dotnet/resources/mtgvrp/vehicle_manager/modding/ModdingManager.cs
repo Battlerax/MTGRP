@@ -56,9 +56,9 @@ namespace mtgvrp.vehicle_manager.modding
         {
             
             var Vehicle = sender.Vehicle;
-            ClearVehicleMods(Vehicle.Handle.GetVehicle());
-            ApplyVehicleMods(Vehicle.Handle.GetVehicle());
-            NAPI.Entity.SetEntityPosition(sender.Vehicle, sender.GetData("ModLastPos"));
+            ClearVehicleMods(Vehicle.GetVehicle());
+            ApplyVehicleMods(Vehicle.GetVehicle());
+            NAPI.Entity.SetEntityPosition(sender.Vehicle, sender.GetData<Vector3>("ModLastPos"));
             NAPI.Entity.SetEntityDimension(sender.Vehicle, 0);
             NAPI.Entity.SetEntityDimension(sender, 0);
             if (sender.GetAccount().IsSpeedoOn)
@@ -104,7 +104,7 @@ namespace mtgvrp.vehicle_manager.modding
             if (prop.Supplies != -1)
                 prop.Supplies -= itemCount * 5;
 
-            var veh = sender.Vehicle.Handle.GetVehicle();
+            var veh = sender.Vehicle.GetVehicle();
             foreach (var itm in items)
             {
                 var modType = int.Parse(itm[0].ToString().Trim());
@@ -117,7 +117,7 @@ namespace mtgvrp.vehicle_manager.modding
             NAPI.Chat.SendChatMessageToPlayer(sender,
                 "You have successfully purchased some Vehicle mods for a total of ~g~" +
                 allPrices.ToString("C"));
-            NAPI.Entity.SetEntityPosition(sender.Vehicle, sender.GetData("ModLastPos"));
+            NAPI.Entity.SetEntityPosition(sender.Vehicle, sender.GetData<Vector3>("ModLastPos"));
             NAPI.Entity.SetEntityDimension(sender.Vehicle, 0);
             NAPI.Entity.SetEntityDimension(sender, 0);
             if (sender.GetAccount().IsSpeedoOn)
@@ -393,7 +393,7 @@ namespace mtgvrp.vehicle_manager.modding
                 return;
             }
 
-            if (!player.GetCharacter().OwnedVehicles.Contains(player.Vehicle.Handle.GetVehicle()) && player.GetAccount().AdminLevel == 0)
+            if (!player.GetCharacter().OwnedVehicles.Contains(player.Vehicle.GetVehicle()) && player.GetAccount().AdminLevel == 0)
             {
                 NAPI.Chat.SendChatMessageToPlayer(player, "You must own the Vehicle you're modifying");
                 return;

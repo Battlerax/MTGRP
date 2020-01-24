@@ -44,7 +44,7 @@ namespace mtgvrp.drugs_manager
 
         public void Delete()
         {
-            this.Loc = null;
+            this.Loc = new Vector3();
             Inventory = null;
             marker.Destroy();
             marker = null;

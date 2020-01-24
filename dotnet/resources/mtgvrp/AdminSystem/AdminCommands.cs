@@ -1650,7 +1650,7 @@ namespace mtgvrp.AdminSystem
                 return;
             }
 
-            NAPI.ClientEvent.TriggerClientEvent(player, "GET_CP_TO_SEND", targetClient.Handle);
+            NAPI.ClientEvent.TriggerClientEvent(player, "GET_CP_TO_SEND", targetClient);
             NAPI.Chat.SendChatMessageToPlayer(player,
                 "The checkpoint should be sent to " + targetClient.GetCharacter().CharacterName);
         }
@@ -2333,11 +2333,10 @@ namespace mtgvrp.AdminSystem
             character.ReportTimer.Stop();
         }
 
-        // TODO: convert to Vehicle instead of Entity
-        public Entity GetClosestVeh(Client player)
+        public Vehicle GetClosestVeh(Client player)
         {
             var shortestDistance = 2000f;
-            Entity closestveh = new Entity();
+            Vehicle closestveh = null;
             foreach (var veh in NAPI.Pools.GetAllVehicles())
             {
                 Vector3 Position = NAPI.Entity.GetEntityPosition(veh);
