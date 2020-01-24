@@ -217,7 +217,7 @@ namespace mtgvrp.dmv
                 return;
 
             if (player.HasData("DMV_VEHICLE"))
-                VehicleManager.respawn_vehicle(((NetHandle)player.GetData("DMV_VEHICLE")).GetVehicle());
+                VehicleManager.respawn_vehicle(((NetHandle)player.GetData<NetHandle>("DMV_VEHICLE")).GetVehicle());
             // CONV NOTE: proper delay needed probably
             //API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));
             Task.Delay(1000).ContinueWith(t => API.WarpPlayerOutOfVehicle(player));

@@ -50,7 +50,7 @@ namespace mtgvrp.job_manager
             Account account = player.GetAccount();
             if (account.AdminLevel < 4) { return; }
 
-            Job job = NAPI.Data.GetEntityData(player.Handle, "JOB_ZONE_CREATE");
+            Job job = NAPI.Data.GetEntityData(player, "JOB_ZONE_CREATE");
 
             var cornerStartPos = (Vector3)arguments[0];
             var xAdd = Convert.ToSingle(arguments[1]);
@@ -355,7 +355,7 @@ namespace mtgvrp.job_manager
             {
                 case "start":
 
-                    NAPI.Data.SetEntityData(player.Handle, "JOB_ZONE_CREATE", job);
+                    NAPI.Data.SetEntityData(player, "JOB_ZONE_CREATE", job);
                     NAPI.ClientEvent.TriggerClientEvent(player, "create_job_zone");
                     NAPI.Chat.SendChatMessageToPlayer(player, "Creating zone...");
                     break;
@@ -417,26 +417,26 @@ namespace mtgvrp.job_manager
                 return;
             }
 
-            if (NAPI.Data.GetEntityData(player.Handle, "ZONE_MARKER_1") == null)
+            if (NAPI.Data.GetEntityData(player, "ZONE_MARKER_1") == null)
             {
-                float width = job.JobZones[zoneId - 1].GetData("Width");
-                float height = job.JobZones[zoneId - 1].GetData("Height");
+                float width = job.JobZones[zoneId - 1].GetData<float>("Width");
+                float height = job.JobZones[zoneId - 1].GetData<float>("Height");
                 var topLeft = new Vector3(job.JobZones[zoneId - 1].Position.X, job.JobZones[zoneId - 1].Position.Y, player.Position.Z);
                 var topRight = topLeft.Add(new Vector3(width, 0.0f, 0.0f));
                 var bottomLeft = topLeft.Add(new Vector3(0.0f, height, 0.0f));
                 var bottomRight =
                     topLeft.Add(new Vector3(width, height, 0.0f));
 
-                NAPI.Data.SetEntityData(player.Handle, "ZONE_MARKER_1",
+                NAPI.Data.SetEntityData(player, "ZONE_MARKER_1",
                     API.CreateMarker(0, topLeft, new Vector3(), new Vector3(), 1f, new GTANetworkAPI.Color(255, 255, 255, 0), false,
                         player.Dimension));
-                NAPI.Data.SetEntityData(player.Handle, "ZONE_MARKER_2",
+                NAPI.Data.SetEntityData(player, "ZONE_MARKER_2",
                     API.CreateMarker(0, topRight, new Vector3(), new Vector3(), 1f, new GTANetworkAPI.Color(255, 255, 255, 0), false,
                         player.Dimension));
-                NAPI.Data.SetEntityData(player.Handle, "ZONE_MARKER_3",
+                NAPI.Data.SetEntityData(player, "ZONE_MARKER_3",
                     API.CreateMarker(0, bottomLeft, new Vector3(), new Vector3(),1f, new GTANetworkAPI.Color(255, 255, 255, 0), false,
                         player.Dimension));
-                NAPI.Data.SetEntityData(player.Handle, "ZONE_MARKER_4",
+                NAPI.Data.SetEntityData(player, "ZONE_MARKER_4",
                     API.CreateMarker(0, bottomRight, new Vector3(), new Vector3(), 1f, new GTANetworkAPI.Color(255, 255, 255, 0), false,
                         player.Dimension));
 
@@ -444,14 +444,14 @@ namespace mtgvrp.job_manager
             }
             else
             {
-                API.DeleteEntity(NAPI.Data.GetEntityData(player.Handle, "ZONE_MARKER_1"));
-                API.DeleteEntity(NAPI.Data.GetEntityData(player.Handle, "ZONE_MARKER_2"));
-                API.DeleteEntity(NAPI.Data.GetEntityData(player.Handle, "ZONE_MARKER_3"));
-                API.DeleteEntity(NAPI.Data.GetEntityData(player.Handle, "ZONE_MARKER_4"));
-                NAPI.Data.ResetEntityData(player.Handle, "ZONE_MARKER_1");
-                NAPI.Data.ResetEntityData(player.Handle, "ZONE_MARKER_2");
-                NAPI.Data.ResetEntityData(player.Handle, "ZONE_MARKER_3");
-                NAPI.Data.ResetEntityData(player.Handle, "ZONE_MARKER_4");
+                API.DeleteEntity(NAPI.Data.GetEntityData(player, "ZONE_MARKER_1"));
+                API.DeleteEntity(NAPI.Data.GetEntityData(player, "ZONE_MARKER_2"));
+                API.DeleteEntity(NAPI.Data.GetEntityData(player, "ZONE_MARKER_3"));
+                API.DeleteEntity(NAPI.Data.GetEntityData(player, "ZONE_MARKER_4"));
+                NAPI.Data.ResetEntityData(player, "ZONE_MARKER_1");
+                NAPI.Data.ResetEntityData(player, "ZONE_MARKER_2");
+                NAPI.Data.ResetEntityData(player, "ZONE_MARKER_3");
+                NAPI.Data.ResetEntityData(player, "ZONE_MARKER_4");
                 NAPI.Chat.SendChatMessageToPlayer(player, "No longer viewing job zone.");
             }
         }
@@ -479,7 +479,7 @@ namespace mtgvrp.job_manager
 
             foreach(var j in Jobs)
             {
-                j.JoinPos = new MarkerZone(j.JoinPos?.Location, j.JoinPos?.Rotation, j.JoinPos.Dimension)
+                j.JoinPos = new MarkerZone(j.JoinPos.Location, j.JoinPos.Rotation, j.JoinPos.Dimension)
                 {
                     ColZoneSize = j.JoinPos.ColZoneSize,
                     ColZoneHeight = j.JoinPos.ColZoneHeight,
@@ -509,7 +509,7 @@ namespace mtgvrp.job_manager
 
                 if (j.MiscOne != MarkerZone.None)
                 {
-                    j.MiscOne = new MarkerZone(j.MiscOne?.Location, j.MiscOne?.Rotation, j.MiscOne.Dimension)
+                    j.MiscOne = new MarkerZone(j.MiscOne.Location, j.MiscOne.Rotation, j.MiscOne.Dimension)
                     {
                         ColZoneSize = j.MiscOne.ColZoneSize,
                         ColZoneHeight = j.MiscOne.ColZoneHeight,
@@ -540,7 +540,7 @@ namespace mtgvrp.job_manager
 
                 if (j.MiscTwo != MarkerZone.None)
                 {
-                    j.MiscTwo = new MarkerZone(j.MiscTwo?.Location, j.MiscTwo?.Rotation, j.MiscTwo.Dimension)
+                    j.MiscTwo = new MarkerZone(j.MiscTwo.Location, j.MiscTwo.Rotation, j.MiscTwo.Dimension)
                     {
                         ColZoneSize = j.MiscTwo.ColZoneSize,
                         ColZoneHeight = j.MiscTwo.ColZoneHeight,
@@ -571,8 +571,8 @@ namespace mtgvrp.job_manager
 
                 for(var i = 0; i < j.JobZones.Count; i++)
                 {
-                    float width = j.JobZones[i].GetData("Width");
-                    float height = j.JobZones[i].GetData("Height");
+                    float width = j.JobZones[i].GetData<float>("Width");
+                    float height = j.JobZones[i].GetData<float>("Height");
                     j.JobZones[i] = API.Create2DColShape(j.JobZones[i].Position.X, j.JobZones[i].Position.Y, width, height);
                     j.register_job_zone_events(i);  
                 }

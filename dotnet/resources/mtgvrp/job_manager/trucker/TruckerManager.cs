@@ -201,7 +201,7 @@ namespace mtgvrp.job_manager.trucker
             }
             else if (character.TruckingStage == Character.TruckingStages.DeliveringFuel && player.IsInVehicle)
             {
-                Property prop = player.GetData("TRUCKING_TARGETGAS");
+                Property prop = player.GetData<Property>("TRUCKING_TARGETGAS");
                 if (prop == null)
                     return;
 
@@ -256,13 +256,13 @@ namespace mtgvrp.job_manager.trucker
                     return;
                 }
 
-                if (player.GetData("TRUCKING_TYPE") == "supplies")
+                if (player.GetData<string>("TRUCKING_TYPE") == "supplies")
                 {
                     player.SendChatMessage("You have been paid ~g~$3000.");
                     InventoryManager.GiveInventoryItem(character, new Money(), 3000, true);
                     LogManager.Log(LogManager.LogTypes.Stats, $"[Job] {player.GetCharacter().CharacterName}[{player.GetAccount().AccountName}] has earned $2000 from a trucking run.");
                 }
-                else if (player.GetData("TRUCKING_TYPE") == "gas")
+                else if (player.GetData<string>("TRUCKING_TYPE") == "gas")
                 {
                     player.SendChatMessage("You have been paid ~g~$1000.");
                     InventoryManager.GiveInventoryItem(character, new Money(), 1000, true);

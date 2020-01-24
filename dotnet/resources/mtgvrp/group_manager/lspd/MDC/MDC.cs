@@ -231,7 +231,7 @@ namespace mtgvrp.group_manager.lspd.MDC
         [RemoteEvent("MDC_RequestNextCrimesPage")]
         public void MDCRequestNextCrimesPage(Client player, params object[] arguments)
         {
-            Character p = player.GetData("MDC_LAST_CHECKED");
+            Character p = player.GetData<Character>("MDC_LAST_CHECKED");
             if (p == null)
                 return;
 

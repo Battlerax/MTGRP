@@ -113,7 +113,7 @@ namespace mtgvrp.job_manager.lumberjack
                     TreeText = API.Shared.CreateTextLabel("~g~" + CutPercentage + "% Cut.~n~Tree", TreePos, 10f, 1f, 1, new GTANetworkAPI.Color(1, 1, 1), true);
                     TreeMarker.Location = TreePos;
                     TreeMarker.Refresh();
-                    API.Shared.AttachEntityToEntity(TreeText, TreeObj, "0", new Vector3(1, 0, 1), new Vector3());
+                    NAPI.Entity.AttachEntityToEntity(TreeText, TreeObj, "0", new Vector3(1, 0, 1), new Vector3());
                     API.Shared.AttachEntityToEntity(TreeMarker.Marker, TreeObj, "0", new Vector3(1, 0, 0), new Vector3());
                     break;
                 case Stages.Waiting:

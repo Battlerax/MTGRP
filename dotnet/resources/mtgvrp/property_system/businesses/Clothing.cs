@@ -135,42 +135,42 @@ namespace mtgvrp.property_system.businesses
             switch ((int)arguments[0])
             {
                 case Component.ComponentTypeLegs:
-                    price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
+                    price = PropertyManager.Properties.Single(x => x.Id == sender.GetData<int>("clothing_id"))
                         .ItemPrices["pants"];
                     break;
                 case Component.ComponentTypeShoes:
-                    price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
+                    price = PropertyManager.Properties.Single(x => x.Id == sender.GetData<int>("clothing_id"))
                         .ItemPrices["shoes"];
                     break;
                 case Component.ComponentTypeAccessories:
-                    price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
+                    price = PropertyManager.Properties.Single(x => x.Id == sender.GetData<int>("clothing_id"))
                         .ItemPrices["accessories"];
                     break;
                 case Component.ComponentTypeUndershirt:
-                    price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
+                    price = PropertyManager.Properties.Single(x => x.Id == sender.GetData<int>("clothing_id"))
                         .ItemPrices["undershirts"];
                     break;
                 case Component.ComponentTypeTops:
-                    price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
+                    price = PropertyManager.Properties.Single(x => x.Id == sender.GetData<int>("clothing_id"))
                         .ItemPrices["tops"];
                     break;
                 case Component.ComponentTypeHats:
-                    price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
+                    price = PropertyManager.Properties.Single(x => x.Id == sender.GetData<int>("clothing_id"))
                         .ItemPrices["hats"];
                     break;
                 case Component.ComponentTypeGlasses:
-                    price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
+                    price = PropertyManager.Properties.Single(x => x.Id == sender.GetData<int>("clothing_id"))
                         .ItemPrices["glasses"];
                     break;
                 case Component.ComponentTypeEars:
-                    price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
+                    price = PropertyManager.Properties.Single(x => x.Id == sender.GetData<int>("clothing_id"))
                         .ItemPrices["earrings"];
                     break;
                 case Component.ComponentTypeTorso:
                     price = 0;
                     break;
             }
-            var prop = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"));
+            var prop = PropertyManager.Properties.Single(x => x.Id == sender.GetData<int>("clothing_id"));
 
             if (prop.Supplies <= 0)
             {
@@ -341,7 +341,7 @@ namespace mtgvrp.property_system.businesses
         [RemoteEvent("clothing_buybag")]
         public void ClothingBuyBag(Client sender, params object[] arguments)
         {
-            var price = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"))
+            var price = PropertyManager.Properties.Single(x => x.Id == sender.GetData<int>("clothing_id"))
                     .ItemPrices["8"];
 
             if (Money.GetCharacterMoney(sender.GetCharacter()) < price)
@@ -363,7 +363,7 @@ namespace mtgvrp.property_system.businesses
             {
                 case InventoryManager.GiveItemErrors.Success:
                     InventoryManager.DeleteInventoryItem(sender.GetCharacter(), typeof(Money), price);
-                    var prop = PropertyManager.Properties.Single(x => x.Id == sender.GetData("clothing_id"));
+                    var prop = PropertyManager.Properties.Single(x => x.Id == sender.GetData<int>("clothing_id"));
                     InventoryManager.GiveInventoryItem(prop, new Money(), price);
                     NAPI.Chat.SendChatMessageToPlayer(sender, "You've successfully bought this.");
                     break;
@@ -409,7 +409,7 @@ namespace mtgvrp.property_system.businesses
             Character c = player.GetCharacter();
             c.HasSkin = false;
 
-            API.SetPlayerSkin(player, c.Model.Gender == Character.GenderFemale ? PedHash.FreemodeFemale01 : PedHash.FreemodeMale01);
+            NAPI.Player.SetPlayerSkin(player, c.Model.Gender == Character.GenderFemale ? PedHash.FreemodeFemale01 : PedHash.FreemodeMale01);
 
             player.GetCharacter().update_ped();
         }
@@ -621,7 +621,7 @@ namespace mtgvrp.property_system.businesses
             }
 
             InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(Money), 250);
-            API.SetPlayerSkin(player, hash);
+            NAPI.Player.SetPlayerSkin(player, hash);
             player.GetCharacter().Skin = hash;
             player.GetCharacter().HasSkin = true;
             player.GetCharacter().Save();

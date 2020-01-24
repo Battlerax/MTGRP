@@ -15,13 +15,13 @@ namespace mtgvrp.core
         {
             if (!API.Shared.HasEntityData(player, "Character")) return null;
 
-            return (Character) player.GetData("Character");
+            return (Character) player.GetData<Character>("Character");
         }
         public static Account GetAccount(this Client player)
         {
             if (!API.Shared.HasEntityData(player, "Account")) return null;
 
-            return (Account)player.GetData("Account");
+            return (Account)player.GetData<Account>("Account");
         }
 
         public static vehicle_manager.GameVehicle GetVehicle(this NetHandle veh)

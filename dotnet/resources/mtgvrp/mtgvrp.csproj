@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
   <ItemGroup>
@@ -12,12 +12,15 @@
     <PackageReference Include="DSharpPlus" Version="3.2.3" />
     <PackageReference Include="DSharpPlus.CommandsNext" Version="3.2.3" />
     <PackageReference Include="DSharpPlus.Interactivity" Version="3.2.3" />
-    <PackageReference Include="MongoDB.Driver" Version="2.9.2" />
+    <PackageReference Include="MongoDB.Driver" Version="2.10.1" />
     <PackageReference Include="NodaTime" Version="2.4.7" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Bootstrapper">
-      <HintPath>libs\bootstrapper.dll</HintPath>
+      <HintPath>..\..\runtime\Bootstrapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\runtime\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="VehicleInfoLoader">
       <HintPath>VehicleInfo.dll</HintPath>
