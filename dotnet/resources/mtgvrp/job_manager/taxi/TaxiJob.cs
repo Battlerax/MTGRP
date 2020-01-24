@@ -196,7 +196,7 @@ namespace mtgvrp.job_manager.taxi
                 SendMessageToOnDutyDrivers(character.rp_name() + " has gone off of taxi duty.");
             }
 
-            NAPI.Vehicle.SetVehicleEngineStatus(veh.NetHandle, false);
+            NAPI.Vehicle.SetVehicleEngineStatus(veh.Entity, false);
             veh.CustomRespawnTimer.Stop();
             VehicleManager.respawn_vehicle(veh);
         }

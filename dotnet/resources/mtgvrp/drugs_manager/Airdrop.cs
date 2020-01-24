@@ -20,7 +20,7 @@ namespace mtgvrp.drugs_manager
         public bool IsOpen { get; set; }
         public DrugTypes DrugName { get; private set; }
         public Guid id { get;}
-        public NetHandle prop { get; set; }
+        public Entity prop { get; set; }
         public MarkerZone marker { get; set; }
 
         // Inv for airdrops.

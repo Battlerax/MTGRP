@@ -21,7 +21,7 @@ namespace mtgvrp.mapping_manager
         public Vector3 Rot;
 
         [BsonIgnore]
-        public NetHandle handle;
+        public Entity handle;
 
         public MappingObject(ObjectType type, int model, Vector3 pos, Vector3 rot)
         {

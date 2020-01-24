@@ -51,11 +51,11 @@ namespace mtgvrp.core
         public float ColZoneSize { get; set; } = 5f;
 
         [BsonIgnore]
-        public NetHandle Marker { get; set; }
+        public Entity Marker { get; set; }
         [BsonIgnore]
-        public NetHandle Label { get; set; }
+        public Entity Label { get; set; }
         [BsonIgnore]
-        public NetHandle Blip { get; set; }
+        public Entity Blip { get; set; }
         [BsonIgnore]
         public ColShape ColZone { get; set; }
 
@@ -162,7 +162,7 @@ namespace mtgvrp.core
             Refresh(ColZone);
         }
 
-        public void Refresh(NetHandle type)
+        public void Refresh(Entity type)
         {
             if (_fullRefreshRequired)
             {

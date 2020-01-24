@@ -38,7 +38,7 @@ namespace mtgvrp.job_manager.taxi
                 return;
             }
 
-            if (NAPI.Vehicle.GetVehicleEngineStatus(veh.NetHandle) == true)
+            if (NAPI.Vehicle.GetVehicleEngineStatus(veh.Entity) == true)
             {
                 player.SendChatMessage("You must turn the engine off before fixing it.");
                 return;
@@ -57,8 +57,8 @@ namespace mtgvrp.job_manager.taxi
                 return;
             }
 
-            API.SetVehicleHealth(veh.NetHandle, 1000);
-            API.RepairVehicle(veh.NetHandle);
+            API.SetVehicleHealth(veh.Entity, 1000);
+            API.RepairVehicle(veh.Entity);
             InventoryManager.DeleteInventoryItem(character, typeof(EngineParts), 1);
             player.SendChatMessage("Vehicle repaired.");
             LogManager.Log(LogManager.LogTypes.Stats, $"[Vehicle] {character.CharacterName}[{player.GetAccount().AccountName}] has fixed vehicle #{veh.Id}.");
@@ -86,7 +86,7 @@ namespace mtgvrp.job_manager.taxi
                 return;
             }
 
-            if (NAPI.Vehicle.GetVehicleEngineStatus(veh.NetHandle) == true)
+            if (NAPI.Vehicle.GetVehicleEngineStatus(veh.Entity) == true)
             {
                 player.SendChatMessage("You must turn the engine off before painting it.");
                 return;

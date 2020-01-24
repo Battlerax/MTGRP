@@ -85,7 +85,7 @@ namespace mtgvrp.AdminSystem
         [RemoteEvent("SET_PLAYER_CP")]
         public void SetPlayerCP(Client player, params object[] arguments)
         {
-            var p = NAPI.Player.GetPlayerFromHandle((NetHandle)arguments[0]);
+            var p = NAPI.Player.GetPlayerFromHandle((Entity)arguments[0]);
             NAPI.ClientEvent.TriggerClientEvent(p, "update_beacon", (Vector3)arguments[1]);
         }
 
@@ -650,7 +650,7 @@ namespace mtgvrp.AdminSystem
                 return;
             }
 
-            API.SetVehicleHealth(receiver.NetHandle, health);
+            API.SetVehicleHealth(receiver.Entity, health);
             NAPI.Chat.SendChatMessageToPlayer(player,
                 "You have set Vehicle ID: " + receiver.Id + "'s health to " + health + ".");
             Log(LogTypes.AdminActions,
@@ -857,7 +857,7 @@ namespace mtgvrp.AdminSystem
                     NAPI.Chat.SendChatMessageToPlayer(player, $"(UNKNOWN VEHICLE) | ID ~r~{carid}~w~.");
                     continue;
                 }
-                NAPI.Chat.SendChatMessageToPlayer(player, $"({VehicleOwnership.returnCorrDisplayName(carid.VehModel)}) | NetHandle ~r~{carid.NetHandle.Value}~w~ | ID ~r~{carid.Id}~w~.");
+                NAPI.Chat.SendChatMessageToPlayer(player, $"({VehicleOwnership.returnCorrDisplayName(carid.VehModel)}) | Entity ~r~{carid.Entity.Value}~w~ | ID ~r~{carid.Id}~w~.");
             }
             NAPI.Chat.SendChatMessageToPlayer(player, "----------------------------------------------");
         }
@@ -905,7 +905,7 @@ namespace mtgvrp.AdminSystem
                 return;
             }
 
-            NAPI.Entity.SetEntityPosition(player, NAPI.Entity.GetEntityPosition(veh.NetHandle));
+            NAPI.Entity.SetEntityPosition(player, NAPI.Entity.GetEntityPosition(veh.Entity));
             NAPI.Chat.SendChatMessageToPlayer(player, "Sucessfully teleported to a vehicle.");
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has teleported vehicle #{vID} to the Admin's position.");
@@ -933,7 +933,7 @@ namespace mtgvrp.AdminSystem
                 return;
             }
 
-            NAPI.Entity.SetEntityPosition(veh.NetHandle, player.Position);
+            NAPI.Entity.SetEntityPosition(veh.Entity, player.Position);
             NAPI.Chat.SendChatMessageToPlayer(player, "Sucessfully teleported the car to you.");
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has teleported vehicle #{vID} to the Admin's position.");
@@ -2333,11 +2333,11 @@ namespace mtgvrp.AdminSystem
             character.ReportTimer.Stop();
         }
 
-        // TODO: convert to Vehicle instead of NetHandle
-        public NetHandle GetClosestVeh(Client player)
+        // TODO: convert to Vehicle instead of Entity
+        public Entity GetClosestVeh(Client player)
         {
             var shortestDistance = 2000f;
-            NetHandle closestveh = new NetHandle();
+            Entity closestveh = new Entity();
             foreach (var veh in NAPI.Pools.GetAllVehicles())
             {
                 Vector3 Position = NAPI.Entity.GetEntityPosition(veh);

@@ -42,7 +42,7 @@ namespace mtgvrp.job_manager.gunrunner
 
 
         public WeaponHash WeaponHash { get; set; }
-        public NetHandle WeaponObject { get; set; }
+        public Entity WeaponObject { get; set; }
         public int OwnerId { get; set; }
 
         public WeaponCase()

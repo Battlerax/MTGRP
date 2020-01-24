@@ -24,8 +24,8 @@ namespace mtgvrp.vehicle_manager
             Character character = sender.GetCharacter();
             GameVehicle lcVeh =
                         VehicleManager.Vehicles.Single(
-                            x => x.NetHandle.Value == Convert.ToInt32(arguments[0]) && x.OwnerId == character.Id);
-            Vector3 loc = NAPI.Entity.GetEntityPosition(lcVeh.NetHandle);
+                            x => x.Entity.Value == Convert.ToInt32(arguments[0]) && x.OwnerId == character.Id);
+            Vector3 loc = NAPI.Entity.GetEntityPosition(lcVeh.Entity);
             NAPI.ClientEvent.TriggerClientEvent(sender, "myvehicles_setCheckpointToCar", loc.X, loc.Y, loc.Z);
             NAPI.Chat.SendChatMessageToPlayer(sender, "A checkpoint has been set to the vehicle.");
         }
@@ -91,8 +91,8 @@ namespace mtgvrp.vehicle_manager
             Character character = sender.GetCharacter();
             GameVehicle gVeh =
                         VehicleManager.Vehicles.Single(
-                            x => x.NetHandle.Value == Convert.ToInt32(arguments[0]) && x.GroupId == character.GroupId);
-            Vector3 location = NAPI.Entity.GetEntityPosition(gVeh.NetHandle);
+                            x => x.Entity.Value == Convert.ToInt32(arguments[0]) && x.GroupId == character.GroupId);
+            Vector3 location = NAPI.Entity.GetEntityPosition(gVeh.Entity);
             NAPI.ClientEvent.TriggerClientEvent(sender, "myvehicles_setCheckpointToCar", location.X, location.Y, location.Z);
             NAPI.Chat.SendChatMessageToPlayer(sender, "A checkpoint has been set to the vehicle.");
         }
@@ -109,7 +109,7 @@ namespace mtgvrp.vehicle_manager
             }
             string[][] cars = character.OwnedVehicles
                 .Select(x => new[]
-                    {returnCorrDisplayName(x.VehModel), x.Id.ToString(), x.NetHandle.Value.ToString()})
+                    {returnCorrDisplayName(x.VehModel), x.Id.ToString(), x.Entity.Value.ToString()})
                 .ToArray();
 
             NAPI.ClientEvent.TriggerClientEvent(player, "myvehicles_showmenu", NAPI.Util.ToJson(cars));

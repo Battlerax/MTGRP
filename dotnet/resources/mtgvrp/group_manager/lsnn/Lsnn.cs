@@ -38,7 +38,7 @@ namespace mtgvrp.group_manager.lsnn
         public bool IsBroadcasting = false;
         public bool CameraSet = false;
         public bool ChopperCamToggle = false;
-        public NetHandle Chopper;
+        public Entity Chopper;
         public Vector3 CameraPosition = null;
         public Vector3 CameraRotation = null;
         public Vector3 OffSet = new Vector3(0, 0, -3);
@@ -256,13 +256,13 @@ namespace mtgvrp.group_manager.lsnn
                 {
                     if(v.GroupId == character.GroupId)
                     {
-                        if (CameraSet == true && player.Position.DistanceTo(CameraPosition) > 2f && player.Position.DistanceTo(NAPI.Entity.GetEntityPosition(v.NetHandle)) < 3f)
+                        if (CameraSet == true && player.Position.DistanceTo(CameraPosition) > 2f && player.Position.DistanceTo(NAPI.Entity.GetEntityPosition(v.Entity)) < 3f)
                         {
                             NAPI.Chat.SendChatMessageToPlayer(player, "You can only have one camera.");
                             return;
                         }
 
-                        if (player.Position.DistanceTo(NAPI.Entity.GetEntityPosition(v.NetHandle)) < 3f)
+                        if (player.Position.DistanceTo(NAPI.Entity.GetEntityPosition(v.Entity)) < 3f)
                         {
                             NAPI.Chat.SendChatMessageToPlayer(player, "You grabbed a camera from the news vehicle.");
                             ChatManager.NearbyMessage(player, 10, "~p~" + character.rp_name() + " reaches into the news vehicle, pulling out a camera.");

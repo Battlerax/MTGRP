@@ -149,7 +149,7 @@ namespace mtgvrp.player_manager
         [RemoteEvent("update_ped_for_client")]
         public void UpdatePedForClient(Client sender, params object[] arguments)
         {
-            var player = (NetHandle)arguments[0];
+            var player = (Entity)arguments[0];
             Character c = NAPI.Data.GetEntityData(player, "Character");
             c?.update_ped(sender);
         }

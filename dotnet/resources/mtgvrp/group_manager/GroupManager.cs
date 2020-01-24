@@ -94,7 +94,7 @@ namespace mtgvrp.group_manager
             foreach(var v in vehiclesToRespawn)
             {
                 VehicleManager.respawn_vehicle(v);
-                NAPI.Vehicle.SetVehicleEngineStatus(v.NetHandle, false);
+                NAPI.Vehicle.SetVehicleEngineStatus(v.Entity, false);
             }
             NAPI.Chat.SendChatMessageToPlayer(player,
                 vehiclesToRespawn.Count + " vehicles have been respawned for group: " + group.Name);

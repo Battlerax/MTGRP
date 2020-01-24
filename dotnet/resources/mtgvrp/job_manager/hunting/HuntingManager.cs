@@ -136,7 +136,7 @@ namespace mtgvrp.job_manager.hunting
         [RemoteEvent("update_animal_position")]
         public void UpdateAnimalPosition(Client player, params object[] arguments)
         {
-            API.Shared.SetEntityPosition((NetHandle)arguments[0], (Vector3)arguments[1]);
+            API.Shared.SetEntityPosition((Entity)arguments[0], (Vector3)arguments[1]);
         }
 
         public static Vector3 RandomFarawayDestination(Vector3 currentPos)
@@ -365,7 +365,7 @@ namespace mtgvrp.job_manager.hunting
 
     public class HuntingAnimal
     {
-        public NetHandle handle;
+        public Entity handle;
         public Vector3 Spawn;
         public HuntingManager.AnimalTypes Type;
         public HuntingManager.AnimalState State;

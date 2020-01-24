@@ -24,7 +24,7 @@ namespace mtgvrp.core
             return (Account)player.GetData<Account>("Account");
         }
 
-        public static vehicle_manager.GameVehicle GetVehicle(this NetHandle veh)
+        public static vehicle_manager.GameVehicle GetVehicle(this Entity veh)
         {
             if (!API.Shared.HasEntityData(veh, "Vehicle")) return null;
 

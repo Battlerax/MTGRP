@@ -167,7 +167,7 @@ namespace mtgvrp.job_manager.lumberjack
         [RemoteEvent("TreePlaced")]
         public void TreePlaced(Client sender, params object[] arguments)
         {
-            var tree = Tree.Trees.First(x => x.TreeObj == (NetHandle)arguments[0]);
+            var tree = Tree.Trees.First(x => x.TreeObj == (Entity)arguments[0]);
             tree.TreePos = tree.TreeObj.Position;
             tree.TreePos = tree.TreeObj.Position;
         }
@@ -220,7 +220,7 @@ namespace mtgvrp.job_manager.lumberjack
                     return;
                 }
 
-                if (NAPI.Data.HasEntityData(vehicle.NetHandle, "TREE_OBJ"))
+                if (NAPI.Data.HasEntityData(vehicle.Entity, "TREE_OBJ"))
                 {
                     NAPI.Chat.SendChatMessageToPlayer(player, "This vehicle is already holding some logs.");
                     return;
@@ -242,8 +242,8 @@ namespace mtgvrp.job_manager.lumberjack
                 NAPI.ClientEvent.TriggerClientEvent(player, "update_beacon", character.JobOne.MiscOne.Location);
                 
 
-                NAPI.Data.SetEntityData(vehicle.NetHandle, "TREE_OBJ", tree);
-                NAPI.Data.SetEntityData(vehicle.NetHandle, "TREE_DRIVER", character.Id);
+                NAPI.Data.SetEntityData(vehicle.Entity, "TREE_OBJ", tree);
+                NAPI.Data.SetEntityData(vehicle.Entity, "TREE_DRIVER", character.Id);
                 NAPI.Chat.SendChatMessageToPlayer(player, "Go to the HQ to sell your wood.");
             }
             else

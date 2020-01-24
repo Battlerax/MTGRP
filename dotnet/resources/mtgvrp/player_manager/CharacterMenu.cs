@@ -248,8 +248,8 @@ namespace mtgvrp.player_manager
         [RemoteEvent("change_parent_info")]
         public void ChangeParentInfo(Client player, params object[] arguments)
         {
-            var fatherPed = (NetHandle)arguments[0];
-            var motherPed = (NetHandle)arguments[1];
+            var fatherPed = (Entity)arguments[0];
+            var motherPed = (Entity)arguments[1];
             var fatherIntId = (int)arguments[2];
             var motherIntId = (int)arguments[3];
             var parentLean = (float)arguments[4];
@@ -479,11 +479,11 @@ namespace mtgvrp.player_manager
             var vehicle = VehicleManager.CreateVehicle(VehicleHash.Bus, new Vector3(-276.1117, -2411.626, 59.68943), new Vector3(0, 0, 53.19402), "Unregistered", player.GetCharacter().Id, vehicle_manager.Vehicle.VehTypeTemp, 0, 0, API.GetEntityDimension(player));
             vehicle.Insert();
             VehicleManager.spawn_vehicle(vehicle);
-            NAPI.Player.SetPlayerIntoVehicle(player, vehicle.NetHandle, -1);
-            NAPI.Vehicle.SetVehicleEngineStatus(vehicle.NetHandle, true);
+            NAPI.Player.SetPlayerIntoVehicle(player, vehicle.Entity, -1);
+            NAPI.Vehicle.SetVehicleEngineStatus(vehicle.Entity, true);
             SpawnedVehicles.Add(vehicle);
 
-            API.SendNativeToAllPlayers(Hash.TASK_VEHICLE_DRIVE_TO_COORD, player.Handle, vehicle.NetHandle, -582.3301, -2201.367, 56.25008, 120f, 1f, vehicle.GetHashCode(), 16777216, 1f, true);
+            API.SendNativeToAllPlayers(Hash.TASK_VEHICLE_DRIVE_TO_COORD, player.Handle, vehicle.Entity, -582.3301, -2201.367, 56.25008, 120f, 1f, vehicle.GetHashCode(), 16777216, 1f, true);
         }
 
         [RemoteEvent("bus_driving_station")]
@@ -492,11 +492,11 @@ namespace mtgvrp.player_manager
             var vehicle = VehicleManager.CreateVehicle(VehicleHash.Bus, new Vector3(513.3119, -676.2706, 25.19653), new Vector3(0, 0, 85.25442), "Unregistered", player.GetCharacter().Id, vehicle_manager.Vehicle.VehTypeTemp, 0, 0, API.GetEntityDimension(player));
             vehicle.Insert();
             VehicleManager.spawn_vehicle(vehicle);
-            NAPI.Player.SetPlayerIntoVehicle(player, vehicle.NetHandle, -1);
-            NAPI.Vehicle.SetVehicleEngineStatus(vehicle.NetHandle, true);
+            NAPI.Player.SetPlayerIntoVehicle(player, vehicle.Entity, -1);
+            NAPI.Vehicle.SetVehicleEngineStatus(vehicle.Entity, true);
             SpawnedVehicles.Add(vehicle);
 
-            API.SendNativeToAllPlayers(Hash.TASK_VEHICLE_DRIVE_TO_COORD, player.Handle, vehicle.NetHandle, 464.645, -673.3629, 27.20791, 10f, 1f, vehicle.GetHashCode(), 16777216, 1f, true);
+            API.SendNativeToAllPlayers(Hash.TASK_VEHICLE_DRIVE_TO_COORD, player.Handle, vehicle.Entity, 464.645, -673.3629, 27.20791, 10f, 1f, vehicle.GetHashCode(), 16777216, 1f, true);
         }
 
         [RemoteEvent("player_exiting_bus")]
@@ -505,11 +505,11 @@ namespace mtgvrp.player_manager
             var vehicle = VehicleManager.CreateVehicle(VehicleHash.Bus, new Vector3(429.8345, -672.5932, 29.05217), new Vector3(0.9295838, 3.945374, 90.3828), "Unregistered", player.GetCharacter().Id, vehicle_manager.Vehicle.VehTypePerm, 0, 0, API.GetEntityDimension(player));
             vehicle.Insert();
             VehicleManager.spawn_vehicle(vehicle);
-            NAPI.Player.SetPlayerIntoVehicle(player, vehicle.NetHandle, -1);
-            NAPI.Vehicle.SetVehicleEngineStatus(vehicle.NetHandle, true);
+            NAPI.Player.SetPlayerIntoVehicle(player, vehicle.Entity, -1);
+            NAPI.Vehicle.SetVehicleEngineStatus(vehicle.Entity, true);
             SpawnedVehicles.Add(vehicle);
 
-            API.SendNativeToAllPlayers(Hash.TASK_LEAVE_VEHICLE, player.Handle, vehicle.NetHandle, 0);
+            API.SendNativeToAllPlayers(Hash.TASK_LEAVE_VEHICLE, player.Handle, vehicle.Entity, 0);
         }*/
 
         [RemoteEvent("finish_intro")]

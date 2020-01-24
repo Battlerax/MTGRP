@@ -96,7 +96,7 @@ namespace mtgvrp.player_manager
 
         //AME 
         [BsonIgnore]
-        public NetHandle AmeText { get; set; }
+        public Entity AmeText { get; set; }
 
         [BsonIgnore]
         public Timer AmeTimer { get; set; }

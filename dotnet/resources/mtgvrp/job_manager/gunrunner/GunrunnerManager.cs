@@ -52,7 +52,7 @@ namespace mtgvrp.job_manager.gunrunner
         public static string CurrentStreet = String.Empty;
         public static string CurrentZone = String.Empty;
         public static int FlatRate = 200;
-        public static List<NetHandle> WeaponCases = new List<NetHandle>();
+        public static List<Entity> WeaponCases = new List<Entity>();
         public Timer MoveDealerTimer = new Timer();
         public Timer ZoneTimer = new Timer();
 
@@ -260,7 +260,7 @@ namespace mtgvrp.job_manager.gunrunner
         [RemoteEvent("CONTAINER_PLACED")]
         public void ContainerPlaced(Client player, params object[] arguments)
         {
-            var obj = (NetHandle)arguments[0];
+            var obj = (Entity)arguments[0];
             var c = player.GetCharacter();
             c.Container.Position = NAPI.Entity.GetEntityPosition(obj);
             c.Container.Rotation = API.GetEntityRotation(obj);
@@ -382,7 +382,7 @@ namespace mtgvrp.job_manager.gunrunner
             DealerLabel = API.Shared.CreateTextLabel("~g~/gunrun\n/intervene", DealerLocations[r], 25f, 1f, 1, new GTANetworkAPI.Color(1,1,1), true);
             DealerNameLabel = API.Shared.CreateTextLabel("Yuri_Orlov", DealerLocations[r] + new Vector3(0, 0, 1f), 25f, 0.5f, 1, new GTANetworkAPI.Color(1, 1, 1), true);
             CurrentDealer = API.Shared.CreatePed(PedHash.RoccoPelosi, DealerLocations[r], 180);
-            NetHandle WeaponCase = API.Shared.CreateObject((int)API.Shared.GetHashKey("prop_gun_case_01"), 
+            Entity WeaponCase = API.Shared.CreateObject((int)API.Shared.GetHashKey("prop_gun_case_01"), 
                 DealerLocations[r] - new Vector3(-1f, 0, 1f), new Vector3(0, 0, 180));
             WeaponCases.Add(WeaponCase);
             WeaponCase = API.Shared.CreateObject((int)API.Shared.GetHashKey("prop_idol_case_02"),

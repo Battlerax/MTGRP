@@ -129,7 +129,7 @@ namespace mtgvrp.dmv
 
             if (veh.IsSpawned)
             {
-                API.SetVehicleNumberPlate(veh.NetHandle, veh.LicensePlate);
+                API.SetVehicleNumberPlate(veh.Entity, veh.LicensePlate);
             }
 
             //Remove money.
@@ -217,7 +217,7 @@ namespace mtgvrp.dmv
                 return;
 
             if (player.HasData("DMV_VEHICLE"))
-                VehicleManager.respawn_vehicle(((NetHandle)player.GetData<NetHandle>("DMV_VEHICLE")).GetVehicle());
+                VehicleManager.respawn_vehicle(((Entity)player.GetData<Entity>("DMV_VEHICLE")).GetVehicle());
             // CONV NOTE: proper delay needed probably
             //API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));
             Task.Delay(1000).ContinueWith(t => API.WarpPlayerOutOfVehicle(player));
@@ -247,7 +247,7 @@ namespace mtgvrp.dmv
             NAPI.Util.ConsoleOutput("Spawned DMV Vehicles.");
         }
 
-        private void OnVehicleEngineToggle(Client player, NetHandle vehicle, bool state)
+        private void OnVehicleEngineToggle(Client player, Entity vehicle, bool state)
         {
             if (state == true)
             {

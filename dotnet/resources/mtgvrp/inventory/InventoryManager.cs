@@ -794,7 +794,7 @@ namespace mtgvrp.inventory
         }
 
         #region Stashing System: 
-        private Dictionary<NetHandle, KeyValuePair<string[], IInventoryItem>> _stashedItems = new Dictionary<NetHandle, KeyValuePair<string[], IInventoryItem>>();
+        private Dictionary<Entity, KeyValuePair<string[], IInventoryItem>> _stashedItems = new Dictionary<Entity, KeyValuePair<string[], IInventoryItem>>();
 
         [Command("stash"), Help(HelpManager.CommandGroups.Inventory, "Stashes an item on the ground for someone else to /pickupstash", "Name of the item", "Amount to stash.")]
         public void stash_cmd(Client player, string item, int amount)

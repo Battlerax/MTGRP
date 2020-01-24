@@ -40,16 +40,16 @@ namespace mtgvrp.speed_fuel_system
             foreach (var veh in VehicleManager.Vehicles)
             {
                 if (!veh.IsSpawned) continue;
-                if (NAPI.Vehicle.GetVehicleEngineStatus(veh.NetHandle) != true || veh.Fuel <= 0) continue;
+                if (NAPI.Vehicle.GetVehicleEngineStatus(veh.Entity) != true || veh.Fuel <= 0) continue;
                 if (API.Shared.GetVehicleClass(veh.VehModel) == 13) continue; //Skip cycles
                 
-                var ocups = NAPI.Vehicle.GetVehicleOccupants(veh.NetHandle);
+                var ocups = NAPI.Vehicle.GetVehicleOccupants(veh.Entity);
 
                 //Reduce fuel by one.
                 veh.Fuel -= 1;
                 if (veh.Fuel <= 0)
                 {
-                    NAPI.Vehicle.SetVehicleEngineStatus(veh.NetHandle, false);
+                    NAPI.Vehicle.SetVehicleEngineStatus(veh.Entity, false);
                     if (ocups.Count > 0)
                         NAPI.Chat.SendChatMessageToPlayer(ocups[0], "~y~The vehicle fuel has finished.");
                 }

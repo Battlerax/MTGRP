@@ -286,13 +286,13 @@ namespace mtgvrp.vehicle_manager.modding
         {
             foreach (var type in ModTypes.Keys)
             {
-                API.Shared.RemoveVehicleMod(veh.NetHandle, type);
+                API.Shared.RemoveVehicleMod(veh.Entity, type);
             }
-            API.Shared.SetVehicleCustomPrimaryColor(veh.NetHandle, 0, 0, 0);
-            API.Shared.SetVehicleCustomSecondaryColor(veh.NetHandle, 0, 0, 0);
-            API.Shared.SetVehicleTyreSmokeColor(veh.NetHandle, new GTANetworkAPI.Color(0, 0, 0));
-            API.Shared.SetVehicleNeonColor(veh.NetHandle, 0, 0, 0);
-            API.Shared.SetVehicleWindowTint(veh.NetHandle, 0);
+            API.Shared.SetVehicleCustomPrimaryColor(veh.Entity, 0, 0, 0);
+            API.Shared.SetVehicleCustomSecondaryColor(veh.Entity, 0, 0, 0);
+            API.Shared.SetVehicleTyreSmokeColor(veh.Entity, new GTANetworkAPI.Color(0, 0, 0));
+            API.Shared.SetVehicleNeonColor(veh.Entity, 0, 0, 0);
+            API.Shared.SetVehicleWindowTint(veh.Entity, 0);
         }
 
         public static void ApplyVehicleMods(GameVehicle veh)
@@ -304,22 +304,22 @@ namespace mtgvrp.vehicle_manager.modding
                 {
                     var clrs = ((string) mod.Value).Split('|');
                     if(clrs.Length == 1)
-                        API.Shared.SetVehiclePrimaryColor(veh.NetHandle, Convert.ToInt32(clrs[0]));
+                        API.Shared.SetVehiclePrimaryColor(veh.Entity, Convert.ToInt32(clrs[0]));
                     else
-                        API.Shared.SetVehicleCustomPrimaryColor(veh.NetHandle, Convert.ToInt32(clrs[0]), Convert.ToInt32(clrs[1]), Convert.ToInt32(clrs[2]));
+                        API.Shared.SetVehicleCustomPrimaryColor(veh.Entity, Convert.ToInt32(clrs[0]), Convert.ToInt32(clrs[1]), Convert.ToInt32(clrs[2]));
                 }
                 else if (modid == SecondryColorId)
                 {
                     var clrs = ((string)mod.Value).Split('|');
                     if (clrs.Length == 1)
-                        API.Shared.SetVehicleSecondaryColor(veh.NetHandle, Convert.ToInt32(clrs[0]));
+                        API.Shared.SetVehicleSecondaryColor(veh.Entity, Convert.ToInt32(clrs[0]));
                     else
-                        API.Shared.SetVehicleCustomSecondaryColor(veh.NetHandle, Convert.ToInt32(clrs[0]), Convert.ToInt32(clrs[1]), Convert.ToInt32(clrs[2]));
+                        API.Shared.SetVehicleCustomSecondaryColor(veh.Entity, Convert.ToInt32(clrs[0]), Convert.ToInt32(clrs[1]), Convert.ToInt32(clrs[2]));
                 }
                 else if (modid == TyresSmokeColorId)
                 {
                     var clrs = ((string) mod.Value).Split('|');
-                    API.Shared.SetVehicleTyreSmokeColor(veh.NetHandle, new GTANetworkAPI.Color(Convert.ToInt32(clrs[0]),
+                    API.Shared.SetVehicleTyreSmokeColor(veh.Entity, new GTANetworkAPI.Color(Convert.ToInt32(clrs[0]),
                         Convert.ToInt32(clrs[1]), Convert.ToInt32(clrs[2])));
 
                     foreach (var p in API.Shared.GetAllPlayers())
@@ -327,19 +327,19 @@ namespace mtgvrp.vehicle_manager.modding
                         if (p == null)
                             continue;
 
-                        if (API.Shared.GetEntityPosition(veh.NetHandle)
+                        if (API.Shared.GetEntityPosition(veh.Entity)
                                 .DistanceTo(p.Position) <= 500)
                         {
                             if (Convert.ToInt32(clrs[1]) == 0 && Convert.ToInt32(clrs[1]) == 0 &&
                                 Convert.ToInt32(clrs[1]) == 0)
                             {
                                 API.Shared.SendNativeToPlayer(p,
-                                    Hash.TOGGLE_VEHICLE_MOD, veh.NetHandle, 20, false);
+                                    Hash.TOGGLE_VEHICLE_MOD, veh.Entity, 20, false);
                             }
                             else
                             {
                                 API.Shared.SendNativeToPlayer(p,
-                                    Hash.TOGGLE_VEHICLE_MOD, veh.NetHandle, 20, true);
+                                    Hash.TOGGLE_VEHICLE_MOD, veh.Entity, 20, true);
                             }
                         }
                     }
@@ -347,16 +347,16 @@ namespace mtgvrp.vehicle_manager.modding
                 else if (modid == NeonColorId)
                 {
                     var clrs = ((string) mod.Value).Split('|');
-                    API.Shared.SetVehicleNeonColor(veh.NetHandle, Convert.ToInt32(clrs[0]), Convert.ToInt32(clrs[1]),
+                    API.Shared.SetVehicleNeonColor(veh.Entity, Convert.ToInt32(clrs[0]), Convert.ToInt32(clrs[1]),
                         Convert.ToInt32(clrs[2]));
                 }
                 else if (modid == WindowTintId)
                 {
-                    API.Shared.SetVehicleWindowTint(veh.NetHandle, Convert.ToInt32(mod.Value));
+                    API.Shared.SetVehicleWindowTint(veh.Entity, Convert.ToInt32(mod.Value));
                 }
                 else
                 {
-                    API.Shared.SetVehicleMod(veh.NetHandle, modid, Convert.ToInt32(mod.Value));
+                    API.Shared.SetVehicleMod(veh.Entity, modid, Convert.ToInt32(mod.Value));
 
                     if (modid == 14) //Horns
                     {
@@ -365,11 +365,11 @@ namespace mtgvrp.vehicle_manager.modding
                             if (p == null)
                                 continue;
 
-                            if (API.Shared.GetEntityPosition(veh.NetHandle)
+                            if (API.Shared.GetEntityPosition(veh.Entity)
                                     .DistanceTo(p.Position) <= 500)
                             {
                                 API.Shared.SendNativeToPlayer(p,
-                                    Hash.SET_VEHICLE_MOD, veh.NetHandle, 14, Convert.ToInt32(mod.Value));
+                                    Hash.SET_VEHICLE_MOD, veh.Entity, 14, Convert.ToInt32(mod.Value));
                             }
                         }
                     }

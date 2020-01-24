@@ -30,9 +30,9 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
                 return;
             }
 
-            veh.SpawnPos = NAPI.Entity.GetEntityPosition(veh.NetHandle);
-            veh.SpawnRot = API.GetEntityRotation(veh.NetHandle);
-            veh.SpawnDimension = (int)API.GetEntityDimension(veh.NetHandle);
+            veh.SpawnPos = NAPI.Entity.GetEntityPosition(veh.Entity);
+            veh.SpawnRot = API.GetEntityRotation(veh.Entity);
+            veh.SpawnDimension = (int)API.GetEntityDimension(veh.Entity);
             veh.Save();
 
             NAPI.Chat.SendChatMessageToPlayer(player, "Vehicle position spawn saved to current location.");
@@ -111,8 +111,8 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
             veh.Group = GroupManager.GetGroupById(veh.GroupId);
             veh.GroupId = groupId;
 
-            VehicleManager.respawn_vehicle(veh, NAPI.Entity.GetEntityPosition(veh.NetHandle));
-            NAPI.Player.SetPlayerIntoVehicle(player, veh.NetHandle, -1);
+            VehicleManager.respawn_vehicle(veh, NAPI.Entity.GetEntityPosition(veh.Entity));
+            NAPI.Player.SetPlayerIntoVehicle(player, veh.Entity, -1);
 
             veh.Save();
             NAPI.Chat.SendChatMessageToPlayer(player, "Vehicle editor changes saved!");

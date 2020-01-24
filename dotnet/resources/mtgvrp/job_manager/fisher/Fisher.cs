@@ -129,7 +129,7 @@ namespace mtgvrp.job_manager.fisher
             if (character.LastVehicle != null)
             {
                 isOnLastBoat = API.FetchNativeFromPlayer<bool>(player, Hash.IS_PED_ON_SPECIFIC_VEHICLE, player,
-                    character.LastVehicle.NetHandle);
+                    character.LastVehicle.Entity);
                 isLastVehicleBoat = API.GetVehicleClass(character.LastVehicle.VehModel) == 14;
             }
 

@@ -19,7 +19,7 @@ public class ContainerZone
     public Vector3 Rotation { get; set; }
 
     [BsonIgnore] //This stuff cant be saved to DB
-    public NetHandle Blip { get; set; }
+    public Entity Blip { get; set; }
     [BsonIgnore]
     public ColShape ColShape { get; set; }
 

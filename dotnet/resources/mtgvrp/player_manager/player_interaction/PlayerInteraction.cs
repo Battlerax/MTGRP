@@ -39,7 +39,7 @@ namespace mtgvrp.player_manager.player_interaction
         public void PlayerInteractionMenu(Client player, params object[] arguments)
         {
             var option = Convert.ToString(arguments[0]);
-            var interactHandle = (NetHandle)arguments[1];
+            var interactHandle = (Entity)arguments[1];
 
             Client interactClient = NAPI.Player.GetPlayerFromHandle(interactHandle);
             Character interactCharacter = interactClient.GetCharacter();

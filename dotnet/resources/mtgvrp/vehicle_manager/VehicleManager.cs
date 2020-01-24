@@ -245,7 +245,7 @@ namespace mtgvrp.vehicle_manager
                     var veh = GetVehFromNetHandle(NAPI.Player.GetPlayerVehicle(player));
                     float payment = API.GetVehicleHealth(NAPI.Player.GetPlayerVehicle(player)) / 2;
                     VehicleManager.respawn_vehicle(veh);
-                    API.Shared.SetVehicleEngineStatus(veh.NetHandle, false);
+                    API.Shared.SetVehicleEngineStatus(veh.Entity, false);
                     inventory.InventoryManager.GiveInventoryItem(character, new Money(), (int) payment);
                     character.IsOnDropcar = false;
                     NAPI.ClientEvent.TriggerClientEvent(player, "dropcar_removewaypoint");
@@ -260,7 +260,7 @@ namespace mtgvrp.vehicle_manager
         [RemoteEvent("VehicleStreamedForPlayer")]
         public void VehicleStreamedForPlayer(Client sender, params object[] arguments)
         {
-            var veh = (NetHandle)arguments[0];
+            var veh = (Entity)arguments[0];
 
             //Sync horns
             if (veh.GetVehicle()?.VehMods?.ContainsKey("14") ?? false)
@@ -284,7 +284,7 @@ namespace mtgvrp.vehicle_manager
         {
             foreach (var x in Vehicles)
             {
-                if (x.IsSpawned && NAPI.Vehicle.GetVehicleOccupants(x.NetHandle).Count == 0 && x.OwnerId == 0 && x.LastOccupied != new DateTime() && (DateTime.Now - x.LastOccupied) >= x.RespawnDelay)
+                if (x.IsSpawned && NAPI.Vehicle.GetVehicleOccupants(x.Entity).Count == 0 && x.OwnerId == 0 && x.LastOccupied != new DateTime() && (DateTime.Now - x.LastOccupied) >= x.RespawnDelay)
                 {
                     x.LastOccupied = new DateTime();
                     respawn_vehicle(x);
@@ -312,10 +312,10 @@ namespace mtgvrp.vehicle_manager
             var veh = CreateVehicle(model, pos, rot, "ABC123", 0, GameVehicle.VehTypeTemp, color1, color2, dimension);
             spawn_vehicle(veh);
             
-            NAPI.Player.SetPlayerIntoVehicle(player, veh.NetHandle, -1);
+            NAPI.Player.SetPlayerIntoVehicle(player, veh.Entity, -1);
 
             if (API.Shared.GetVehicleClass(veh.VehModel) != 13) //If not cycle
-                NAPI.Vehicle.SetVehicleEngineStatus(veh.NetHandle, true);
+                NAPI.Vehicle.SetVehicleEngineStatus(veh.Entity, true);
 
             NAPI.Chat.SendChatMessageToPlayer(player, "You have spawned a " + model);
             NAPI.Chat.SendChatMessageToPlayer(player, "This vehicle is unsaved and may behave incorrectly.");
@@ -373,7 +373,7 @@ namespace mtgvrp.vehicle_manager
                 return;
             }
 
-            if (!API.GetVehicleDoorState(lastVeh.NetHandle, 5))
+            if (!API.GetVehicleDoorState(lastVeh.Entity, 5))
             {
                 NAPI.Chat.SendChatMessageToPlayer(player, "Trunk must be open to access the storage.");
                 return;
@@ -383,7 +383,7 @@ namespace mtgvrp.vehicle_manager
             InventoryManager.ShowInventoryManager(player, player.GetCharacter(), lastVeh, "Inventory: ", "Vehicle: ");
         }
 
-        public delegate void OnVehicleEngineToggleHandle(Client player, NetHandle vehicle, bool state);
+        public delegate void OnVehicleEngineToggleHandle(Client player, Entity vehicle, bool state);
         public static event OnVehicleEngineToggleHandle OnVehicleEngineToggle;
 
         [Command("engine", Alias = "e"), Help(HelpManager.CommandGroups.Vehicles, "Turning on and off your vehicle.", null)]
@@ -543,15 +543,15 @@ namespace mtgvrp.vehicle_manager
             if (lastVeh == null) return;
             if (!DoesPlayerHaveVehicleAccess(player, lastVeh)) return;
 
-            var lockState = API.GetVehicleLocked(lastVeh.NetHandle);
+            var lockState = API.GetVehicleLocked(lastVeh.Entity);
             if (lockState)
             {
-                API.SetVehicleLocked(lastVeh.NetHandle, false);
+                API.SetVehicleLocked(lastVeh.Entity, false);
                 ChatManager.RoleplayMessage(player, "unlocks the doors of the vehicle.", ChatManager.RoleplayMe);
             }
             else
             {
-                API.SetVehicleLocked(lastVeh.NetHandle, true);
+                API.SetVehicleLocked(lastVeh.Entity, true);
                 ChatManager.RoleplayMessage(player, "locks the doors of the vehicle.", ChatManager.RoleplayMe);
             }
         }
@@ -594,7 +594,7 @@ namespace mtgvrp.vehicle_manager
             {
                 if (v.Driver == null)
                 {
-                    if (player.Position.DistanceTo(NAPI.Entity.GetEntityPosition(v.NetHandle)) <= radius)
+                    if (player.Position.DistanceTo(NAPI.Entity.GetEntityPosition(v.Entity)) <= radius)
                     {
                         VehicleManager.respawn_vehicle(v);
                     }
@@ -624,7 +624,7 @@ namespace mtgvrp.vehicle_manager
                         .Select(x => new[]
                         {
                             VehicleOwnership.returnCorrDisplayName(x.VehModel), x.Id.ToString(),
-                            x.NetHandle.Value.ToString(), x.LicensePlate
+                            x.Entity.Value.ToString(), x.LicensePlate
                         })
                         .ToArray();
                     NAPI.ClientEvent.TriggerClientEvent(player, "groupvehicles_showmenu", NAPI.Util.ToJson(cars.ToArray()));
@@ -901,7 +901,7 @@ namespace mtgvrp.vehicle_manager
             Vehicles.Remove(veh);
         }
 
-        public static GameVehicle GetVehFromNetHandle(NetHandle Handle)
+        public static GameVehicle GetVehFromNetHandle(Entity Handle)
         {
             return API.Shared.GetEntityData(Handle, "Vehicle") ?? null;
         }
@@ -912,25 +912,25 @@ namespace mtgvrp.vehicle_manager
 
             if (returnCode == 1)
             {
-                API.Shared.SetEntityData(veh.NetHandle, "Vehicle", veh);
+                API.Shared.SetEntityData(veh.Entity, "Vehicle", veh);
             }
 
-            API.Shared.SetVehicleEngineStatus(veh.NetHandle, false);
+            API.Shared.SetVehicleEngineStatus(veh.Entity, false);
             if (veh.OwnerId != 0)
             {
-                API.Shared.SetVehicleLocked(veh.NetHandle, true);
+                API.Shared.SetVehicleLocked(veh.Entity, true);
             }
 
             if (veh.Group.CommandType == Group.CommandTypeLspd)
             {
-                API.Shared.SetVehicleEnginePowerMultiplier(veh.NetHandle, 4);
+                API.Shared.SetVehicleEnginePowerMultiplier(veh.Entity, 4);
             }
 
             //Install modifications.
             ModdingManager.ApplyVehicleMods(veh);
 
             //Set wheel type. CONV NOTE: ERROR
-            //API.SetVehicleWheelType(veh.NetHandle, VehicleInfo.Get(veh.VehModel).wheelType);
+            //API.SetVehicleWheelType(veh.Entity, VehicleInfo.Get(veh.VehModel).wheelType);
             return returnCode;
         }
 
@@ -945,7 +945,7 @@ namespace mtgvrp.vehicle_manager
 
             if (returnCode == 1)
             {
-                API.Shared.ResetEntityData(veh.NetHandle, "Vehicle");
+                API.Shared.ResetEntityData(veh.Entity, "Vehicle");
             }
 
             return returnCode;
@@ -953,7 +953,7 @@ namespace mtgvrp.vehicle_manager
 
         public static int respawn_vehicle(GameVehicle veh, Vector3 pos)
         {
-            if (API.Shared.HasEntityData(veh.NetHandle, "Vehicle"))
+            if (API.Shared.HasEntityData(veh.Entity, "Vehicle"))
             {
                 despawn_vehicle(veh);
             }

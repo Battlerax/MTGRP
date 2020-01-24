@@ -19,7 +19,7 @@ public class Container
     public Vector3 Position { get; set; }
     public Vector3 Rotation { get; set; }
     [BsonIgnore]
-    public NetHandle ContainerObject { get; set; }
+    public Entity ContainerObject { get; set; }
     [BsonIgnore]
     public Property property { get; set; }
     public bool CanBeMoved { get; set; }

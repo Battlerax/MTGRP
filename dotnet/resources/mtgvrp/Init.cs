@@ -46,7 +46,7 @@ namespace mtgvrp
         [RemoteEvent("OBJECT_PLACED_PROPERLY")]
         public void ObjectPlacedProperly(Client sender, params object[] arguments)
         {
-            NetHandle obj = (NetHandle) arguments[0];
+            Entity obj = (Entity) arguments[0];
             Vector3 pos = (Vector3) arguments[1];
             Vector3 rot = (Vector3) arguments[2];
             NAPI.Entity.SetEntityPosition(obj,pos);
