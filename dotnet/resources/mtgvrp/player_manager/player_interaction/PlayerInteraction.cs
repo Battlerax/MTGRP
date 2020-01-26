@@ -86,7 +86,7 @@ namespace mtgvrp.player_manager.player_interaction
                             API.GivePlayerWeapon(player, WeaponHash.Unarmed, 1);
                             API.SendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, interactHandle, true);
                             interactCharacter.IsCuffed = true;
-                            NAPI.Player.FreezePlayer(interactCharacter.Client, true);
+                            interactCharacter.Client.TriggerEvent("freezePlayer", true);
                             API.PlayPlayerAnimation(interactCharacter.Client, (int)(1 << 0 | 1 << 4 | 1 << 5),
                                 "mp_arresting", "idle");
 
@@ -103,7 +103,7 @@ namespace mtgvrp.player_manager.player_interaction
                                 return;
                             }
 
-                            NAPI.Player.FreezePlayer(interactCharacter.Client, false);
+                            interactCharacter.Client.TriggerEvent("freezePlayer", false);
                             API.SendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, interactHandle, false);
                             interactCharacter.IsCuffed = false;
                             API.StopPlayerAnimation(interactCharacter.Client);

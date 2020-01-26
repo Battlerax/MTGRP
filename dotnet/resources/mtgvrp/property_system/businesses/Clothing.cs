@@ -114,7 +114,7 @@ namespace mtgvrp.property_system.businesses
         [RemoteEvent("closeclothingmenu")]
         public void CloseClothingMenu(Client sender, params object[] arguments)
         {
-            NAPI.Player.FreezePlayer(sender, false);
+            sender.TriggerEvent("freezePlayer", false);
             sender.Position = NAPI.Data.GetEntityData(sender, "clothing_lastpos");
             sender.Rotation = NAPI.Data.GetEntityData(sender, "clothing_lastrot");
             NAPI.Entity.SetEntityDimension(sender, 0);
@@ -323,7 +323,7 @@ namespace mtgvrp.property_system.businesses
         [RemoteEvent("clothing_bag_closed")]
         public void ClothingBagClosed(Client sender, params object[] arguments)
         {
-            NAPI.Player.FreezePlayer(sender, false);
+            sender.TriggerEvent("freezePlayer", false);
             sender.Position = NAPI.Data.GetEntityData(sender, "clothing_lastpos");
             sender.Rotation = NAPI.Data.GetEntityData(sender, "clothing_lastrot");
             NAPI.Entity.SetEntityDimension(sender, 0);
@@ -434,7 +434,7 @@ namespace mtgvrp.property_system.businesses
             NAPI.Data.SetEntityData(player, "clothing_lastrot", player.Rotation);
             NAPI.Data.SetEntityData(player, "clothing_id", biz.Id);
 
-            NAPI.Player.FreezePlayer(player, true);
+            player.TriggerEvent("freezePlayer", true);
             NAPI.Entity.SetEntityDimension(player, (uint)player.GetCharacter().Id + 1000);
 
             var character = player.GetCharacter();
@@ -560,7 +560,7 @@ namespace mtgvrp.property_system.businesses
             //Setup bag list.
             var bagsList = ComponentManager.ValidBags.Select(x => new[] {x.Name, x.Variations.Count.ToString()}).ToArray();
 
-            NAPI.Player.FreezePlayer(player, true);
+            player.TriggerEvent("freezePlayer", true);
             NAPI.ClientEvent.TriggerClientEvent(player, "properties_buybag", NAPI.Util.ToJson(bagsList), biz.ItemPrices["8"]);
             NAPI.Entity.SetEntityDimension(player, (uint)player.GetCharacter().Id + 1000);
         }

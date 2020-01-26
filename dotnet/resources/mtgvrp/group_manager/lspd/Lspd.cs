@@ -539,7 +539,7 @@ namespace mtgvrp.group_manager.lspd
             API.SendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, receivercharacter, true);
             receivercharacter.IsCuffed = true;
             API.PlayPlayerAnimation(receiver, (1 << 0 | 1 << 4 | 1 << 5), "mp_arresting", "idle");
-            NAPI.Player.FreezePlayer(receiver, true);
+            receiver.TriggerEvent("freezePlayer", true);
             ChatManager.RoleplayMessage(player, "places handcuffs onto " + receivercharacter.rp_name(), ChatManager.RoleplayMe);
         }
 
@@ -584,7 +584,7 @@ namespace mtgvrp.group_manager.lspd
 
             API.SendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, receivercharacter, false);
             receivercharacter.IsCuffed = false;
-            NAPI.Player.FreezePlayer(receiver, false);
+            receiver.TriggerEvent("freezePlayer", false);
             ChatManager.RoleplayMessage(player, "removes handcuffs from " + receivercharacter.rp_name(), ChatManager.RoleplayMe);
         }
 

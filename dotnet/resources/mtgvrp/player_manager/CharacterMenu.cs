@@ -54,7 +54,7 @@ namespace mtgvrp.player_manager
             NAPI.Entity.SetEntityPosition(player, character.LastPos);
             API.SetEntityRotation(player, character.LastRot);
             NAPI.Entity.SetEntityDimension(player, 0);
-            NAPI.Player.FreezePlayer(player, false);
+            player.TriggerEvent("freezePlayer", false);
             NAPI.Chat.SendChatMessageToPlayer(player,
                 "~g~You have successfully created your character: " + character.CharacterName + "!");
             NAPI.Chat.SendChatMessageToPlayer(player,
@@ -119,7 +119,7 @@ namespace mtgvrp.player_manager
                 PlayerManager.AddPlayer(character);
 
                 NAPI.Chat.SendChatMessageToPlayer(player, "Welcome to Los Santos, " + charName + "! Let's get started with what you look like!");
-                NAPI.Player.FreezePlayer(player, true);
+                player.TriggerEvent("freezePlayer", true);
                 NAPI.Entity.SetEntityDimension(player, (uint)player.GetCharacter().Id + 1000);
                 API.SetEntitySharedData(player, "REG_DIMENSION", player.GetCharacter().Id + 1000);
                 character.Model.SetDefault();
@@ -170,7 +170,7 @@ namespace mtgvrp.player_manager
                 {
                     NAPI.Chat.SendChatMessageToPlayer(player, "Welcome back, " + character.CharacterName + "! Let's finish figuring out what you look like!");
                     character.update_ped();
-                    NAPI.Player.FreezePlayer(player, true);
+                    player.TriggerEvent("freezePlayer", true);
                     NAPI.Entity.SetEntityDimension(player, (uint)player.GetCharacter().Id + 1000);
                     API.SetEntitySharedData(player, "REG_DIMENSION", player.GetCharacter().Id + 1000);
                     character.Model.SetDefault();
@@ -432,7 +432,7 @@ namespace mtgvrp.player_manager
                 NAPI.Entity.SetEntityPosition(player, character.LastPos);
                 API.SetEntityRotation(player, character.LastRot);
                 NAPI.Entity.SetEntityDimension(player, 0);
-                NAPI.Player.FreezePlayer(player, false);
+                player.TriggerEvent("freezePlayer", false);
                 player.ResetData("REDOING_CHAR");
             }
         }

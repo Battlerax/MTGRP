@@ -119,7 +119,7 @@ namespace mtgvrp.speed_fuel_system
                     
                     NAPI.Chat.SendChatMessageToPlayer(player,
                         $"You will be charged ~g~${pendingFuel * prop.ItemPrices["gas"]}~w~ for ~r~{pendingFuel}~w~ units of fuel.");
-                    NAPI.Player.FreezePlayer(player, true);
+                    player.TriggerEvent("freezePlayer", true);
                     NAPI.Data.SetEntityData(vehEntity, "PENDING_FUEL", pendingFuel);
                     veh.RefuelProp = prop;
                     FuelVeh(player, vehEntity);
@@ -150,7 +150,7 @@ namespace mtgvrp.speed_fuel_system
                 NAPI.Chat.SendChatMessageToPlayer(player, "Refuel ended.");
                 GameVehicle veh = NAPI.Data.GetEntityData(vehEntity, "Vehicle");
                 veh.FuelingTimer?.Dispose();
-                NAPI.Player.FreezePlayer(player, false);
+                player.TriggerEvent("freezePlayer", false);
                 veh.Save();
             }
         }
@@ -196,7 +196,7 @@ namespace mtgvrp.speed_fuel_system
                 veh.FuelingTimer?.Dispose();
                 NAPI.Data.ResetEntityData(vehEntity, "PENDING_FUEL");
                 NAPI.Data.ResetEntityData(playerEntity, "FUELING_VEHICLE");
-                NAPI.Player.FreezePlayer(playerEntity, false);
+                playerEntity.TriggerEvent("freezePlayer", false);
                 NAPI.Chat.SendChatMessageToPlayer(playerEntity, "Refuel has been cancelled cause the engine has turned on.");
                 veh.Save();
                 return;
@@ -210,7 +210,7 @@ namespace mtgvrp.speed_fuel_system
                 veh.FuelingTimer?.Dispose();
                 NAPI.Data.ResetEntityData(vehEntity, "PENDING_FUEL");
                 NAPI.Data.ResetEntityData(playerEntity, "FUELING_VEHICLE");
-                NAPI.Player.FreezePlayer(playerEntity, false);
+                playerEntity.TriggerEvent("freezePlayer", false);
 
                 if(veh.RefuelProp.Supplies <= 0)
                     NAPI.Chat.SendChatMessageToPlayer(playerEntity, "The gas station ran out of gas.");

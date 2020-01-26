@@ -31,7 +31,7 @@ namespace mtgvrp.property_system.businesses
                 return;
             }
 
-            NAPI.Player.FreezePlayer(player, true);
+            player.TriggerEvent("freezePlayer", true);
             List<string[]> itemsWithPrices = new List<string[]>();
             foreach (var itm in ItemManager.VIPItems)
             {

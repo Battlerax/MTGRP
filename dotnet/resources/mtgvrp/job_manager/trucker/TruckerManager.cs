@@ -404,7 +404,7 @@ namespace mtgvrp.job_manager.trucker
             NAPI.Data.ResetEntityData(veh, "TRUCKER_DRIVER");
 
             //Unfreeze and send message.
-            NAPI.Player.FreezePlayer(player, false);
+            player.TriggerEvent("freezePlayer", false);
             NAPI.Chat.SendChatMessageToPlayer(player, "The trucking run has been done or cancelled.");
         }
 

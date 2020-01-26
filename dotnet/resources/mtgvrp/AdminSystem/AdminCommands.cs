@@ -19,12 +19,15 @@ using mtgvrp.player_manager.login;
 using mtgvrp.property_system;
 using mtgvrp.vehicle_manager;
 using System.Security.Cryptography;
+using GTANetworkMethods;
 using mtgvrp.weapon_manager;
 using MongoDB.Driver;
 using static mtgvrp.core.LogManager;
 using Color = mtgvrp.core.Color;
 using GameVehicle = mtgvrp.vehicle_manager.GameVehicle;
 using MongoDB.Bson;
+using Entity = GTANetworkAPI.Entity;
+using Vehicle = GTANetworkAPI.Vehicle;
 
 namespace mtgvrp.AdminSystem
 {
@@ -756,7 +759,7 @@ namespace mtgvrp.AdminSystem
                 NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
-            NAPI.Player.FreezePlayer(receiver, true);
+            receiver.TriggerEvent("freezePlayer", true);
             NAPI.Chat.SendChatMessageToPlayer(receiver, "You have been frozen by an admin");
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has frozen {GetLogName(receiver)}");
@@ -791,7 +794,7 @@ namespace mtgvrp.AdminSystem
                 NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
-            NAPI.Player.FreezePlayer(receiver, false);
+            receiver.TriggerEvent("freezePlayer", false);
             NAPI.Chat.SendChatMessageToPlayer(receiver, "You have been unfrozen by an admin");
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has unfrozen {GetLogName(receiver)}");
@@ -2362,7 +2365,7 @@ namespace mtgvrp.AdminSystem
                     return;
 
                 targetClient.SetData("REDOING_CHAR", true);
-                NAPI.Player.FreezePlayer(targetClient, true);
+                targetClient.TriggerEvent("freezePlayer", true);
                 NAPI.Entity.SetEntityDimension(targetClient, (uint)targetClient.GetCharacter().Id + 1000);
                 API.SetEntitySharedData(targetClient, "REG_DIMENSION", targetClient.GetCharacter().Id + 1000);
                 targetClient.GetCharacter().Model.SetDefault();

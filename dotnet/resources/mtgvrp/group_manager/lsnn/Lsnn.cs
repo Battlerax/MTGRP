@@ -378,7 +378,7 @@ namespace mtgvrp.group_manager.lsnn
             {
                 
                 NAPI.ClientEvent.TriggerClientEvent(player, "watch_chopper_broadcast", CameraPosition, CameraRotation, Headline, Chopper, OffSet, focusX, focusY, focusZ);
-                NAPI.Player.FreezePlayer(player, true);
+                player.TriggerEvent("freezePlayer", true);
                 character.IsWatchingBroadcast = true;
                 return;
             }
@@ -386,7 +386,7 @@ namespace mtgvrp.group_manager.lsnn
             NAPI.Entity.SetEntityDimension(player, (uint)CameraDimension);
             NAPI.Chat.SendChatMessageToPlayer(player, "You are watching the broadcast. Use /stopwatching to stop watching .");
             NAPI.ClientEvent.TriggerClientEvent(player, "watch_broadcast", camPos, camRot, Headline, focusX, focusY, focusZ);
-            NAPI.Player.FreezePlayer(player, true);
+            player.TriggerEvent("freezePlayer", true);
             character.IsWatchingBroadcast = true;
         }
 
@@ -400,7 +400,7 @@ namespace mtgvrp.group_manager.lsnn
                 NAPI.Chat.SendChatMessageToPlayer(player, "You are not watching any broadcasts.");
             }
             NAPI.ClientEvent.TriggerClientEvent(player, "unwatch_broadcast");
-            NAPI.Player.FreezePlayer(player, false);
+            player.TriggerEvent("freezePlayer", false);
             character.IsWatchingBroadcast = false;
         }
 

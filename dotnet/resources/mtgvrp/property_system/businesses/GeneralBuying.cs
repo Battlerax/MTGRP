@@ -27,7 +27,7 @@ namespace mtgvrp.property_system.businesses
         [RemoteEvent("property_exitbuy")]
         public void PropertyExitBuy(Client sender, params object[] arguments)
         {
-            NAPI.Player.FreezePlayer(sender, false);
+            sender.TriggerEvent("freezePlayer", false);
         }
 
         [RemoteEvent("property_buyitem")]
@@ -440,7 +440,7 @@ namespace mtgvrp.property_system.businesses
             {
                 case PropertyManager.PropertyTypes.Hardware:
                 {
-                    NAPI.Player.FreezePlayer(player, true);
+                    player.TriggerEvent("freezePlayer", true);
                     List<string[]> itemsWithPrices = new List<string[]>();
                     foreach (var itm in ItemManager.HardwareItems)
                     {
@@ -456,7 +456,7 @@ namespace mtgvrp.property_system.businesses
                     break;
                 case PropertyManager.PropertyTypes.TwentyFourSeven:
                 {
-                    NAPI.Player.FreezePlayer(player, true);
+                    player.TriggerEvent("freezePlayer", true);
                     List<string[]> itemsWithPrices = new List<string[]>();
                     foreach (var itm in ItemManager.TwentyFourSevenItems)
                     {
@@ -472,7 +472,7 @@ namespace mtgvrp.property_system.businesses
                     break;
                 case PropertyManager.PropertyTypes.Restaurant:
                 {
-                    NAPI.Player.FreezePlayer(player, true);
+                    player.TriggerEvent("freezePlayer", true);
                     List<string[]> itemsWithPrices = new List<string[]>();
                     for (int i = 0; i < 5; i++)
                     {
@@ -497,7 +497,7 @@ namespace mtgvrp.property_system.businesses
 
                 case PropertyManager.PropertyTypes.LSNN:
                 {
-                    NAPI.Player.FreezePlayer(player, true);
+                    player.TriggerEvent("freezePlayer", true);
                     List<string[]> itemsWithPrices = new List<string[]>();
                     foreach (var itm in ItemManager.LSNNItems)
                     {
@@ -514,7 +514,7 @@ namespace mtgvrp.property_system.businesses
                     break;
                 case PropertyManager.PropertyTypes.HuntingStation:
                 {
-                    NAPI.Player.FreezePlayer(player, true);
+                    player.TriggerEvent("freezePlayer", true);
                     List<string[]> itemsWithPrices = new List<string[]>();
                     foreach (var itm in ItemManager.HuntingItems)
                     {
@@ -532,7 +532,7 @@ namespace mtgvrp.property_system.businesses
 
                 case PropertyManager.PropertyTypes.Government:
                 {
-                    NAPI.Player.FreezePlayer(player, true);
+                    player.TriggerEvent("freezePlayer", true);
                     List<string[]> itemsWithPrices = new List<string[]>();
                     foreach (var itm in ItemManager.GovItems)
                     {

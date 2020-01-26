@@ -35,7 +35,7 @@ namespace mtgvrp.core.Items
                 }
 
                 target.GetCharacter().IsTied = true;
-                NAPI.Player.FreezePlayer(target, true);
+                target.TriggerEvent("freezePlayer", true);
                 ChatManager.RoleplayMessage(player, $"ties {target.GetCharacter().rp_name()}", ChatManager.RoleplayMe);
 
                 InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(RopeItem), 1);
@@ -67,7 +67,7 @@ namespace mtgvrp.core.Items
                     NAPI.Chat.SendChatMessageToPlayer(player, "That player isn't tied.");
                     return;
                 }
-                NAPI.Player.FreezePlayer(target, false);
+                target.TriggerEvent("freezePlayer", false);
                 target.GetCharacter().IsTied = false;
                 ChatManager.RoleplayMessage(player, $"unties {target.GetCharacter().rp_name()}", ChatManager.RoleplayMe);
             }
