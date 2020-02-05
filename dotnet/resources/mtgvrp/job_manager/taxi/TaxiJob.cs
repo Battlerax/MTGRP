@@ -32,7 +32,7 @@ namespace mtgvrp.job_manager.taxi
         public static List<Character> TaxiRequests = new List<Character>();
 
         [ServerEvent(Event.PlayerDisconnected)]
-        public void OnPlayerDisconnected(Client player, byte type, string reason)
+        public void OnPlayerDisconnected(Player player, byte type, string reason)
         {
             var c = player.GetCharacter();
             if (c == null)
@@ -48,17 +48,17 @@ namespace mtgvrp.job_manager.taxi
         }
 
         [RemoteEvent("update_taxi_destination")]
-        public void UpdateTaxiDestination(Client player, params object[] arguments)
+        public void UpdateTaxiDestination(Player player, params object[] arguments)
         {
             Character character = player.GetCharacter();
-            NAPI.ClientEvent.TriggerClientEvent(character.TaxiDriver.Client, "set_taxi_waypoint", (Vector3)arguments[0]);
+            NAPI.ClientEvent.TriggerClientEvent(character.TaxiDriver.Player, "set_taxi_waypoint", (Vector3)arguments[0]);
 
             NAPI.Chat.SendChatMessageToPlayer(player, Color.Yellow, "[TAXI] You have successfully set your destination.");
-            NAPI.Chat.SendChatMessageToPlayer(character.TaxiDriver.Client, "[TAXI] " + character.rp_name() + " has set the destination.");
+            NAPI.Chat.SendChatMessageToPlayer(character.TaxiDriver.Player, "[TAXI] " + character.rp_name() + " has set the destination.");
         }
 
         [ServerEvent(Event.PlayerExitVehicle)]
-        public void OnPlayerExitVehicle(Client player, Vehicle vehicle)
+        public void OnPlayerExitVehicle(Player player, Vehicle vehicle)
         {
             Character character = player.GetCharacter();
             var veh = VehicleManager.GetVehFromNetHandle(vehicle);
@@ -88,12 +88,12 @@ namespace mtgvrp.job_manager.taxi
                         character.Save();
 
                         NAPI.Chat.SendChatMessageToPlayer(player, "~y~[TAXI] You have been charged $" + character.TotalFare + " for your taxi ride.");
-                        NAPI.Chat.SendChatMessageToPlayer(veh.Driver.Client, "~y~[TAXI] You have been paid $" + character.TotalFare + " for your services.");
+                        NAPI.Chat.SendChatMessageToPlayer(veh.Driver.Player, "~y~[TAXI] You have been paid $" + character.TotalFare + " for your services.");
 
                         NAPI.ClientEvent.TriggerClientEvent(player, "update_fare_display", 0, 0, "");
-                        NAPI.ClientEvent.TriggerClientEvent(veh.Driver.Client, "update_fare_display", 0, 0, "");
+                        NAPI.ClientEvent.TriggerClientEvent(veh.Driver.Player, "update_fare_display", 0, 0, "");
 
-                        LogManager.Log(LogManager.LogTypes.Stats, $"[Job] {veh.Driver.CharacterName}[{veh.Driver.Client.GetAccount().AccountName}] has earned ${character.TotalFare} from a taxi fare. (Fare: {character.CharacterName})");
+                        LogManager.Log(LogManager.LogTypes.Stats, $"[Job] {veh.Driver.CharacterName}[{veh.Driver.Player.GetAccount().AccountName}] has earned ${character.TotalFare} from a taxi fare. (Fare: {character.CharacterName})");
                         LogManager.Log(LogManager.LogTypes.Stats, $"[Job] {character.CharacterName}[{player.GetAccount().AccountName}] has paided ${character.TotalFare} for a taxi fare. (Driver: {veh.Driver.CharacterName})");
 
                         veh.Driver.TaxiPassenger = null;
@@ -106,7 +106,7 @@ namespace mtgvrp.job_manager.taxi
         }
 
         [ServerEvent(Event.PlayerEnterVehicle)]
-        public void OnPlayerEnterVehicle(Client player, Vehicle vehicle, sbyte seat)
+        public void OnPlayerEnterVehicle(Player player, Vehicle vehicle, sbyte seat)
         {
             Character character = player.GetCharacter();
             var veh = VehicleManager.GetVehFromNetHandle(vehicle);
@@ -129,7 +129,7 @@ namespace mtgvrp.job_manager.taxi
             {
                 if (veh.Job?.Type == JobManager.JobTypes.Taxi)
                 {
-                    if (veh.Driver.Client == player)
+                    if (veh.Driver.Player == player)
                     {
                         player.SendChatMessage("You cannot enter your own taxi.");
                         API.WarpPlayerOutOfVehicle(player);
@@ -170,12 +170,12 @@ namespace mtgvrp.job_manager.taxi
                         player.SendChatMessage("[TAXI] Please set a destination on your map and then type: /setdestination");
 
                         NAPI.ClientEvent.TriggerClientEvent(player, "update_fare_display", veh.Driver.TaxiFare, 0, "");
-                        NAPI.ClientEvent.TriggerClientEvent(veh.Driver.Client, "update_fare_display", veh.Driver.TaxiFare, 0, "");
+                        NAPI.ClientEvent.TriggerClientEvent(veh.Driver.Player, "update_fare_display", veh.Driver.TaxiFare, 0, "");
                     }
                     else if(veh.Driver.TaxiPassenger == character)
                     {
                         NAPI.ClientEvent.TriggerClientEvent(player, "update_fare_display", veh.Driver.TaxiFare, 0, "");
-                        NAPI.ClientEvent.TriggerClientEvent(veh.Driver.Client, "update_fare_display", veh.Driver.TaxiFare, 0, "");
+                        NAPI.ClientEvent.TriggerClientEvent(veh.Driver.Player, "update_fare_display", veh.Driver.TaxiFare, 0, "");
 
                         NAPI.Chat.SendChatMessageToPlayer(player, "[TAXI] Please set a destination on your map and then type: /setdestination");
                     }
@@ -185,9 +185,9 @@ namespace mtgvrp.job_manager.taxi
 
         public void RespawnTaxi(Character character, GameVehicle veh)
         {
-            if (API.IsPlayerConnected(character.Client))
+            if (API.IsPlayerConnected(character.Player))
             {
-                NAPI.Chat.SendChatMessageToPlayer(character.Client, Color.Yellow, "[TAXI] You were out of your taxi for too long and have taken off-duty. The taxi has been respawned.");
+                NAPI.Chat.SendChatMessageToPlayer(character.Player, Color.Yellow, "[TAXI] You were out of your taxi for too long and have taken off-duty. The taxi has been respawned.");
 
                 if (OnDutyDrivers.Contains(character))
                 {
@@ -202,7 +202,7 @@ namespace mtgvrp.job_manager.taxi
         }
 
         [Command("canceltaxi"), Help(HelpManager.CommandGroups.TaxiJob, "Cancel your taxi request.")]
-        public void canceltaxi_cmd(Client player)
+        public void canceltaxi_cmd(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -217,7 +217,7 @@ namespace mtgvrp.job_manager.taxi
         }
 
         [Command("taxiduty"), Help(HelpManager.CommandGroups.TaxiJob, "Toggle taxi duty.")]
-        public void taxiduty_cmd(Client player)
+        public void taxiduty_cmd(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -268,7 +268,7 @@ namespace mtgvrp.job_manager.taxi
         }
 
         [Command("setfare"), Help(HelpManager.CommandGroups.TaxiJob, "Sets your taxi fare.", "The price you'd like to set as the fare.")]
-        public void setfare_cmd(Client player, int farePrice)
+        public void setfare_cmd(Player player, int farePrice)
         {
             Character character = player.GetCharacter();
 
@@ -296,7 +296,7 @@ namespace mtgvrp.job_manager.taxi
         }
 
         [Command("requesttaxi"), Help(HelpManager.CommandGroups.TaxiJob, "Request a taxi.")]
-        public void requesttaxi_cmd(Client player)
+        public void requesttaxi_cmd(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -330,13 +330,13 @@ namespace mtgvrp.job_manager.taxi
             
             foreach(var c in OnDutyDrivers)
             {
-                TaxiPictureNotification(c.Client, character.rp_name() + " has requested a taxi. (" +  (c.Client.Position.DistanceTo(character.Client.Position) / 1000)+ "KM away) ((ID: " + PlayerManager.GetPlayerId(character) + "))");
-                player.SendChatMessage(character.rp_name() + " has requested a taxi. (" + (c.Client.Position.DistanceTo(character.Client.Position) / 1000) + "KM away. /acceptfare to accept.");
+                TaxiPictureNotification(c.Player, character.rp_name() + " has requested a taxi. (" +  (c.Player.Position.DistanceTo(character.Player.Position) / 1000)+ "KM away) ((ID: " + PlayerManager.GetPlayerId(character) + "))");
+                player.SendChatMessage(character.rp_name() + " has requested a taxi. (" + (c.Player.Position.DistanceTo(character.Player.Position) / 1000) + "KM away. /acceptfare to accept.");
             }
         }
 
         [Command("setdestination"), Help(HelpManager.CommandGroups.TaxiJob, "Sets the taxi destintion, after you get in.")]
-        public void setdestination_cmd(Client player)
+        public void setdestination_cmd(Player player)
         {
             if (!NAPI.Player.IsPlayerInAnyVehicle(player))
             {
@@ -355,7 +355,7 @@ namespace mtgvrp.job_manager.taxi
 
             NAPI.ClientEvent.TriggerClientEvent(player, "get_waypoint_position");
 
-            character.TaxiStart = character.Client.Position;
+            character.TaxiStart = character.Player.Position;
 
             character.TaxiTimer = new Timer {Interval = 2000};
             character.TaxiTimer.Elapsed += delegate { TaxiMeterTimer(character); };
@@ -364,21 +364,21 @@ namespace mtgvrp.job_manager.taxi
 
         public void TaxiMeterTimer(Character c)
         {
-            c.TotalFare = (int)Math.Round(c.Client.Position.DistanceTo(c.TaxiStart) / 100) * c.TaxiDriver.TaxiFare;
+            c.TotalFare = (int)Math.Round(c.Player.Position.DistanceTo(c.TaxiStart) / 100) * c.TaxiDriver.TaxiFare;
             var fareMsg = "";
 
             if(c.TotalFare > Money.GetCharacterMoney(c))
             {
                 c.TotalFare = Money.GetCharacterMoney(c);
-                fareMsg = "(Client money maxed out)";
+                fareMsg = "(Player money maxed out)";
             }
 
-            NAPI.ClientEvent.TriggerClientEvent(c.Client, "update_fare_display", c.TaxiDriver.TaxiFare, c.TotalFare, fareMsg);
-            NAPI.ClientEvent.TriggerClientEvent(c.TaxiDriver.Client, "update_fare_display", c.TaxiDriver.TaxiFare, c.TotalFare, fareMsg);
+            NAPI.ClientEvent.TriggerClientEvent(c.Player, "update_fare_display", c.TaxiDriver.TaxiFare, c.TotalFare, fareMsg);
+            NAPI.ClientEvent.TriggerClientEvent(c.TaxiDriver.Player, "update_fare_display", c.TaxiDriver.TaxiFare, c.TotalFare, fareMsg);
         }
 
         [Command("acceptfare"), Help(HelpManager.CommandGroups.TaxiJob, "Accepts a taxi fare.", "Id of the player you'd like to accept.")]
-        public void acceptfare_cmd(Client player, string id)
+        public void acceptfare_cmd(Player player, string id)
         {
             Character character = player.GetCharacter();
             if(character.JobOne.Type != JobManager.JobTypes.Taxi)
@@ -413,12 +413,12 @@ namespace mtgvrp.job_manager.taxi
             passenger.TaxiDriver = character;
             TaxiRequests.Remove(passenger);
 
-            TaxiPictureNotification(passenger.Client, character.rp_name() + " has accepted your taxi request. Please stay at your current location.");
+            TaxiPictureNotification(passenger.Player, character.rp_name() + " has accepted your taxi request. Please stay at your current location.");
             TaxiPictureNotification(player, "You have accepted " + passenger.rp_name() + "'s taxi request. Follow your waypoint to their location.");
             player.SendChatMessage("You have accepted " + passenger.rp_name() + "'s taxi request. Follow your waypoint to their location.");
-            passenger.Client.SendChatMessage(character.rp_name() + " has accepted your taxi request. Please stay at your current location.");
+            passenger.Player.SendChatMessage(character.rp_name() + " has accepted your taxi request. Please stay at your current location.");
             
-            NAPI.ClientEvent.TriggerClientEvent(player, "set_taxi_waypoint", passenger.Client.Position);
+            NAPI.ClientEvent.TriggerClientEvent(player, "set_taxi_waypoint", passenger.Player.Position);
         }
 
         public static bool IsOnTaxiDuty(Character c)
@@ -426,7 +426,7 @@ namespace mtgvrp.job_manager.taxi
             return OnDutyDrivers.Contains(c);
         }
 
-        public void TaxiPictureNotification(Client player, string body, string sender = "Downton Cab Co", string subject = "Dispatch Message")
+        public void TaxiPictureNotification(Player player, string body, string sender = "Downton Cab Co", string subject = "Dispatch Message")
         {
             NAPI.Notification.SendPictureNotificationToPlayer(player, body, "CHAR_TAXI", 0, 1, sender, subject);
         }
@@ -435,7 +435,7 @@ namespace mtgvrp.job_manager.taxi
         {
             foreach(var c in OnDutyDrivers)
             {
-                TaxiPictureNotification(c.Client, body, sender, subject);
+                TaxiPictureNotification(c.Player, body, sender, subject);
             }
         }
     }

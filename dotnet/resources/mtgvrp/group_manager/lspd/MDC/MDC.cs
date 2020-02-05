@@ -57,7 +57,7 @@ namespace mtgvrp.group_manager.lspd.MDC
         }
 
         [Command("mdc"), Help(HelpManager.CommandGroups.LSPD, "Open the MDC. Must be in vehicle.")]
-        public void mdc_cmd(Client player)
+        public void mdc_cmd(Player player)
         {
             var character = player.GetCharacter();
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
@@ -82,34 +82,34 @@ namespace mtgvrp.group_manager.lspd.MDC
 
             if (character.IsViewingMdc)
             {
-                API.Shared.TriggerClientEvent(character.Client, "hideMDC");
+                API.Shared.TriggerClientEvent(character.Player, "hideMDC");
                 ChatManager.RoleplayMessage(character, "logs off of the MDC.", ChatManager.RoleplayMe);
                 character.IsViewingMdc = false;
             }
             else
             {
-                API.Shared.TriggerClientEvent(character.Client, "showMDC");
+                API.Shared.TriggerClientEvent(character.Player, "showMDC");
                 ChatManager.RoleplayMessage(character, "logs into the MDC.", ChatManager.RoleplayMe);
                 character.IsViewingMdc = true;
             }
         }
 
         [RemoteEvent("server_updateMdcAnnouncement")]
-        public void UpdateMdcAnnouncement(Client player, params object[] arguments)
+        public void UpdateMdcAnnouncement(Player player, params object[] arguments)
         {
             // i guess there was no code written for this... - austin
             // TODO: find out what this needs and add it i guess
         }
 
         [RemoteEvent("server_removeBolo")]
-        public void RemoveBolo(Client player, params object[] arguments)
+        public void RemoveBolo(Player player, params object[] arguments)
         {
             ActiveBolos.RemoveAt((int)arguments[0]);
             NAPI.Chat.SendChatMessageToPlayer(player, "You removed Bolo # " + (int)arguments[0]);
         }
 
         [RemoteEvent("server_createBolo")]
-        public void CreateBolo(Client player, params object[] arguments)
+        public void CreateBolo(Player player, params object[] arguments)
         {
             Character character = player.GetCharacter();
             var newBolo = new Bolo(character.CharacterName, Convert.ToInt32(arguments[1]),
@@ -122,7 +122,7 @@ namespace mtgvrp.group_manager.lspd.MDC
             {
                 if (c.IsViewingMdc)
                 {
-                    SendBoloToClient(c.Client, newBolo);
+                    SendBoloToClient(c.Player, newBolo);
                 }
             }
 
@@ -130,14 +130,14 @@ namespace mtgvrp.group_manager.lspd.MDC
         }
 
         [RemoteEvent("requestMdcInformation")]
-        public void RequestMdcInformation(Client player, params object[] arguments)
+        public void RequestMdcInformation(Player player, params object[] arguments)
         {
             SendAll911ToClient(player);
             SendAllBoloToClient(player);
         }
 
         [RemoteEvent("server_mdc_close")]
-        public void MdcClose(Client player, params object[] arguments)
+        public void MdcClose(Player player, params object[] arguments)
         {
             var character = player.GetCharacter();
             ChatManager.RoleplayMessage(character, "logs off of the MDC.", ChatManager.RoleplayMe);
@@ -145,7 +145,7 @@ namespace mtgvrp.group_manager.lspd.MDC
         }
 
         [RemoteEvent("MDC_SearchForCitizen")]
-        public void MDCSearchForCitizen(Client player, params object[] arguments)
+        public void MDCSearchForCitizen(Player player, params object[] arguments)
         {
             var name = (string)arguments[0];
             var phone = (string)arguments[1];
@@ -211,7 +211,7 @@ namespace mtgvrp.group_manager.lspd.MDC
         }
 
         [RemoteEvent("MDC_SearchForVehicle")]
-        public void MDCSearchForVehicle(Client player, params object[] arguments)
+        public void MDCSearchForVehicle(Player player, params object[] arguments)
         {
             var lic = (string)arguments[0];
             vehicle_manager.GameVehicle veh = VehicleManager.Vehicles.FirstOrDefault(x => x.LicensePlate == lic) ??
@@ -229,7 +229,7 @@ namespace mtgvrp.group_manager.lspd.MDC
         }
 
         [RemoteEvent("MDC_RequestNextCrimesPage")]
-        public void MDCRequestNextCrimesPage(Client player, params object[] arguments)
+        public void MDCRequestNextCrimesPage(Player player, params object[] arguments)
         {
             Character p = player.GetData<Character>("MDC_LAST_CHECKED");
             if (p == null)
@@ -252,14 +252,14 @@ namespace mtgvrp.group_manager.lspd.MDC
             return crimesArray;
         }
 
-        public void SendBoloToClient(Client player, Bolo bolo)
+        public void SendBoloToClient(Player player, Bolo bolo)
         {
             //boloId, officer, time, priority, info
             NAPI.ClientEvent.TriggerClientEvent(player, "addBolo", bolo.Id, bolo.ReportingOfficer, bolo.Time.ToString(),
                 bolo.Priority, bolo.Info);
         }
 
-        public void Send911ToClient(Client player, EmergencyCall call)
+        public void Send911ToClient(Player player, EmergencyCall call)
         {
             NAPI.ClientEvent.TriggerClientEvent(player, "add911", call.PhoneNumber, call.Time.ToString(), call.Info, call.Location);
         }
@@ -270,7 +270,7 @@ namespace mtgvrp.group_manager.lspd.MDC
             Active911S.Add(emergencyCall);
         }
 
-        public void SendAllBoloToClient(Client player)
+        public void SendAllBoloToClient(Player player)
         {
             var orderedBolo = ActiveBolos.OrderByDescending(b => b.Time);
 
@@ -280,7 +280,7 @@ namespace mtgvrp.group_manager.lspd.MDC
             }
         }
 
-        public void SendAll911ToClient(Client player)
+        public void SendAll911ToClient(Player player)
         {
             var ordered911 = Active911S.OrderByDescending(c => c.Time).Take(20);
             foreach (var c in ordered911.Reverse())

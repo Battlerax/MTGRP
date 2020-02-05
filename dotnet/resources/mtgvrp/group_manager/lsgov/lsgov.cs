@@ -18,7 +18,7 @@ namespace mtgvrp.group_manager.lsgov
 
         //SET VIP BONUS PERCENTAGE (ONLY FOR ADMINS)
         [Command("setvipbonus"), Help(HelpManager.CommandGroups.Gov, "Set the VIP bonus for paychecks.", new[] { "The VIP level being changed.", "VIP bonus percentage"})]
-        public void setvipbonus_cmd(Client player, string viplevel, string percentage)
+        public void setvipbonus_cmd(Player player, string viplevel, string percentage)
         {
             Account account = player.GetAccount();
             Character character = player.GetCharacter();
@@ -44,7 +44,7 @@ namespace mtgvrp.group_manager.lsgov
 
         //SET TAXATION FOR PAYCHECKS AS MAYOR/OFFICIAL
         [Command("settax"), Help(HelpManager.CommandGroups.Gov, "Set the tax percentage for paychecks.", new[] { "Percentage being deducted from paychecks." })]
-        public void settax_cmd(Client player, string percentage)
+        public void settax_cmd(Player player, string percentage)
         {
 
             Character character = player.GetCharacter();
@@ -55,7 +55,7 @@ namespace mtgvrp.group_manager.lsgov
 
         //SET BASE PAYCHECK AS MAYOR/OFFICIAL
         [Command("setbasepaycheck", GreedyArg = true), Help(HelpManager.CommandGroups.Gov, "Set the base paycheck.", new[] { "Base paycheck amount." })]
-        public void setbasepaycheck_cmd(Client player, string amount)
+        public void setbasepaycheck_cmd(Player player, string amount)
         {
             Character character = player.GetCharacter();
 
@@ -66,7 +66,7 @@ namespace mtgvrp.group_manager.lsgov
 
         //GOVERNMENT ANNOUNCEMENT AS MAYOR OR HIGH RANKING LSPD
         [Command("gov", GreedyArg = true), Help(HelpManager.CommandGroups.Gov, "Speak publically to everyone as the government.", new[] { "Message to be sent" })]
-        public void gov_cmd(Client player, string text)
+        public void gov_cmd(Player player, string text)
         {
             Character character = player.GetCharacter();
 
@@ -74,12 +74,12 @@ namespace mtgvrp.group_manager.lsgov
 
             foreach (var receiver in PlayerManager.Players)
             {
-                NAPI.Chat.SendChatMessageToPlayer(receiver.Client, "[Government] " + character.rp_name() + " says: " + text);
+                NAPI.Chat.SendChatMessageToPlayer(receiver.Player, "[Government] " + character.rp_name() + " says: " + text);
             }
         }
 
         [Command("managebudget"), Help(HelpManager.CommandGroups.Gov, "Manage the government budget (factions, stores, etc.)", null)]
-        public void managebudget_cmd(Client player)
+        public void managebudget_cmd(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -101,7 +101,7 @@ namespace mtgvrp.group_manager.lsgov
         }
 
         [Command("setfunding"), Help(HelpManager.CommandGroups.Gov, "Set the funding for a specific group.", new[] { "Target group ID", "Percentage of funds being given." })]
-        public void setfunding_cmd(Client player, string groupid, string percentage)
+        public void setfunding_cmd(Player player, string groupid, string percentage)
         {
             Character character = player.GetCharacter();
             Account account = player.GetAccount();
@@ -130,7 +130,7 @@ namespace mtgvrp.group_manager.lsgov
         }
 
         [Command("setgovbalance"), Help(HelpManager.CommandGroups.Gov, "Set the government balance (Admin only)", new[] { "The amount being set." })]
-        public void setgovbalance_cmd(Client player, string amount)
+        public void setgovbalance_cmd(Player player, string amount)
         {
             Account account = player.GetAccount();
 
@@ -142,7 +142,7 @@ namespace mtgvrp.group_manager.lsgov
 
         //DEPLOY A PODIUM AS MAYOR OR HIGH RANKING LSPD
         [Command("deploypodium"), Help(HelpManager.CommandGroups.Gov, "Deploy a podium outside the city hall.", null)]
-        public void deploypodium_cmd(Client player)
+        public void deploypodium_cmd(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -152,7 +152,7 @@ namespace mtgvrp.group_manager.lsgov
         }
 
         [Command("pickuppodium"), Help(HelpManager.CommandGroups.Gov, "Remove the podium from outside the city hall.", null)]
-        public void pickuppodium_cmd(Client player)
+        public void pickuppodium_cmd(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -163,7 +163,7 @@ namespace mtgvrp.group_manager.lsgov
 
 
         [Command("showid"), Help(HelpManager.CommandGroups.Gov, "Show your ID to a player.", new [] {"Target player ID or name." })]
-        public void ShowId(Client player, string target)
+        public void ShowId(Player player, string target)
         {
             var targetPlayer = PlayerManager.ParseClient(target);
             if (targetPlayer == null)

@@ -16,7 +16,7 @@ namespace mtgvrp.vehicle_manager
         }
 
         [RemoteEvent("OnVehicleMenuTrigger")]
-        public void OnVehicleMenuTrigger(Client player, params object[] arguments)
+        public void OnVehicleMenuTrigger(Player player, params object[] arguments)
         {
             var vehicleHandle = (Entity)arguments[0];
             var option = (string)arguments[1];

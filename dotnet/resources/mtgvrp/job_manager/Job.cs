@@ -85,7 +85,7 @@ namespace mtgvrp.job_manager
 
         public void register_job_marker_events()
         {
-            void ColShapeEvent(ColShape shape, Client entity)
+            void ColShapeEvent(ColShape shape, Player entity)
             {
                 var c = API.Shared.GetEntityData(entity, "Character");
                 c.JobZone = Id;
@@ -100,7 +100,7 @@ namespace mtgvrp.job_manager
                     c.JobZoneType = 0;
             }
 
-            void OnExitColShape(ColShape shape, Client entity)
+            void OnExitColShape(ColShape shape, Player entity)
             {
                 var c = API.Shared.GetPlayerFromHandle(entity).GetCharacter();
                 c.JobZone = 0;

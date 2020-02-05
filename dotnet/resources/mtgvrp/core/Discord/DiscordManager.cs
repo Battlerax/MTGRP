@@ -197,21 +197,21 @@ namespace mtgvrp.core.Discord
 
                     if (receiverAccount?.AdminLevel > 0)
                     {
-                        API.Shared.SendChatMessageToPlayer(c, Color.AdminChat, "[Discord A] " + ctx.Member.DisplayName + ": " + ctx.RawArgumentString);
+                        c.SendChatMessage($"!{{{Color.AdminChat}}}" + "[Discord A] " + ctx.Member.DisplayName + ": " + ctx.RawArgumentString);
                     }
                 }
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(DiscordManager.Client, ":white_check_mark:"));
             }
         }
 
-        [DSharpPlus.CommandsNext.Attributes.Command("igplayers")] // let's define this method as a command
-        [Description("Shgows list of IG players.")] // this will be displayed to tell users what this command does when they invoke help
-        public async Task GetPlayers(CommandContext ctx) // this command takes no arguments
+        [DSharpPlus.CommandsNext.Attributes.Command("igClients")] // let's define this method as a command
+        [Description("Shgows list of IG Clients.")] // this will be displayed to tell users what this command does when they invoke help
+        public async Task GetClients(CommandContext ctx) // this command takes no arguments
         {
             if (ctx.Channel.Name != DiscordManager.AdminChannel)
                 return;
 
-            var players = "";
+            var Clients = "";
             if (ctx.Member.Roles.Any(x => x.Name == DiscordManager.AdminRole || x.Name == "V-RP Developer"))
             {
                 foreach (var c in PlayerManager.Players)
@@ -219,13 +219,13 @@ namespace mtgvrp.core.Discord
                     if (c == null)
                         continue;
 
-                    Account receiverAccount = c.Client.GetAccount();
+                    Account receiverAccount = c.Player.GetAccount();
 
-                    players += $"[{PlayerManager.GetPlayerId(c)}] {c.rp_name()} - {receiverAccount.AccountName}" + "\n";
+                    Clients += $"[{PlayerManager.GetPlayerId(c)}] {c.rp_name()} - {receiverAccount.AccountName}" + "\n";
                 }
                 var interactivity = ctx.Client.GetInteractivityModule();
-                var playersPages = interactivity.GeneratePagesInEmbeds(players);
-                await interactivity.SendPaginatedMessage(ctx.Channel, ctx.User, playersPages, TimeSpan.FromMinutes(5), TimeoutBehaviour.Delete);
+                var ClientsPages = interactivity.GeneratePagesInEmbeds(Clients);
+                await interactivity.SendPaginatedMessage(ctx.Channel, ctx.User, ClientsPages, TimeSpan.FromMinutes(5), TimeoutBehaviour.Delete);
             }
         }
 
@@ -237,8 +237,8 @@ namespace mtgvrp.core.Discord
             if (ctx.Channel.Name != DiscordManager.VIPChannel)
                 return;
 
-            var players = API.Shared.GetAllPlayers();
-            foreach (var p in players)
+            var Clients = API.Shared.GetAllPlayers();
+            foreach (var p in Clients)
             {
                 if(p == null)
                     continue;
@@ -246,23 +246,23 @@ namespace mtgvrp.core.Discord
                 Account pAccount = p.GetAccount();
                 if (pAccount?.VipLevel > 0)
                 {
-                    API.Shared.SendChatMessageToPlayer(p, Color.VipChat, "[Discord V] " + ctx.Member.DisplayName + ": " + ctx.RawArgumentString);
+                    p.SendChatMessage($"!{{{Color.VipChat}}}", "[Discord V] " + ctx.Member.DisplayName + ": " + ctx.RawArgumentString);
                 }
             }
             await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(DiscordManager.Client, ":white_check_mark:"));
         }
 
-        [DSharpPlus.CommandsNext.Attributes.Command("players")] // let's define this method as a command
+        [DSharpPlus.CommandsNext.Attributes.Command("Clients")] // let's define this method as a command
         [Description(
-            "Views players online.")] // this will be displayed to tell users what this command does when they invoke help
-        public async Task PlayersCount(CommandContext ctx) // this command takes no arguments
+            "Views Clients online.")] // this will be displayed to tell users what this command does when they invoke help
+        public async Task ClientsCount(CommandContext ctx) // this command takes no arguments
         {
             if(!ctx.Channel.IsPrivate)
                 return;
 
             await ctx.TriggerTypingAsync();
             int count = PlayerManager.Players.SkipWhile(x => x == null).Count();
-            var msg = "Players Online: " + count;
+            var msg = "Clients Online: " + count;
             await ctx.RespondAsync(msg);
         }
 
@@ -321,12 +321,12 @@ namespace mtgvrp.core.Discord
 
             if (ctx.Member.Roles.Any(x => x.Name == "V-RP Developer"))
             {
-                foreach (var player in API.Shared.GetAllPlayers())
+                foreach (var Client in API.Shared.GetAllPlayers())
                 {
-                    if(player == null)
+                    if(Client == null)
                         continue;
                     
-                    API.Shared.SendChatMessageToPlayer(player, "~r~" + ctx.RawArgumentString);
+                    Client.SendChatMessage("~r~" + ctx.RawArgumentString);
                 }
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(DiscordManager.Client, ":white_check_mark:"));
             }
@@ -341,17 +341,17 @@ namespace mtgvrp.core.Discord
 
             if (ctx.Member.Roles.Any(x => x.Name == "V-RP Developer"))
             {
-                foreach (var player in API.Shared.GetAllPlayers())
+                foreach (var Client in API.Shared.GetAllPlayers())
                 {
-                    if (player == null)
+                    if (Client == null)
                         continue;
 
-                    var character = player.GetCharacter();
+                    var character = Client.GetCharacter();
                     if (character == null)
                         continue;
 
                     character.Save();
-                    character.Client?.Kick(ctx.RawArgumentString);
+                    character.Player?.Kick(ctx.RawArgumentString);
                 }
                 await ctx.Message.CreateReactionAsync(DiscordEmoji.FromName(DiscordManager.Client, ":white_check_mark:"));
             }

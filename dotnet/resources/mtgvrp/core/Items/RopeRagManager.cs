@@ -12,9 +12,9 @@ namespace mtgvrp.core.Items
     class RopeRagManager : Script
     {
         [Command("tie"), Help.Help(HelpManager.CommandGroups.General, "Tie someone so he can't move.", "The plauyerid")]
-        public void tie_cmd(Client player, string id)
+        public void tie_cmd(Player player, string id)
         {
-            Client target = PlayerManager.ParseClient(id);
+            Player target = PlayerManager.ParseClient(id);
             if (target == null)
             {
                 NAPI.Chat.SendChatMessageToPlayer(player, "That target doesn't exist.");
@@ -47,9 +47,9 @@ namespace mtgvrp.core.Items
         }
 
         [Command("untie"), Help.Help(HelpManager.CommandGroups.General, "Untie someone so can move again.", "The playerid")]
-        public void untie_cmd(Client player, string id)
+        public void untie_cmd(Player player, string id)
         {
-            Client target = PlayerManager.ParseClient(id);
+            Player target = PlayerManager.ParseClient(id);
             if (target == null)
             {
                 NAPI.Chat.SendChatMessageToPlayer(player, "That target doesn't exist.");
@@ -78,9 +78,9 @@ namespace mtgvrp.core.Items
         }
 
         [Command("blindfold"), Help.Help(HelpManager.CommandGroups.General, "Blindfold someone so he couldn't see.", "The player id")]
-        public void blindfold_cmd(Client player, string id)
+        public void blindfold_cmd(Player player, string id)
         {
-            Client target = PlayerManager.ParseClient(id);
+            Player target = PlayerManager.ParseClient(id);
             if (target == null)
             {
                 NAPI.Chat.SendChatMessageToPlayer(player, "That target doesn't exist.");
@@ -113,9 +113,9 @@ namespace mtgvrp.core.Items
         }
 
         [Command("unblindfold"), Help.Help(HelpManager.CommandGroups.General, "Unlindfold someone so he could see again.", "The player id")]
-        public void unblindfold_cmd(Client player, string id)
+        public void unblindfold_cmd(Player player, string id)
         {
-            Client target = PlayerManager.ParseClient(id);
+            Player target = PlayerManager.ParseClient(id);
             if (target == null)
             {
                 NAPI.Chat.SendChatMessageToPlayer(player, "That target doesn't exist.");
@@ -144,9 +144,9 @@ namespace mtgvrp.core.Items
         }
 
         [Command("rag"), Help.Help(HelpManager.CommandGroups.General, "Rag someone so he couldn't talk.", "The player id")]
-        public void rag_cmd(Client player, string id)
+        public void rag_cmd(Player player, string id)
         {
-            Client target = PlayerManager.ParseClient(id);
+            Player target = PlayerManager.ParseClient(id);
             if (target == null)
             {
                 NAPI.Chat.SendChatMessageToPlayer(player, "That target doesn't exist.");
@@ -178,9 +178,9 @@ namespace mtgvrp.core.Items
         }
 
         [Command("unrag"), Help.Help(HelpManager.CommandGroups.General, "Unrag someone so he couldn talk again.", "The player id")]
-        public void unrag_cmd(Client player, string id)
+        public void unrag_cmd(Player player, string id)
         {
-            Client target = PlayerManager.ParseClient(id);
+            Player target = PlayerManager.ParseClient(id);
             if (target == null)
             {
                 NAPI.Chat.SendChatMessageToPlayer(player, "That target doesn't exist.");
@@ -208,7 +208,7 @@ namespace mtgvrp.core.Items
         }
 
         [Command("usesprunk"), Help.Help(HelpManager.CommandGroups.General, "Use a sprunk item. Gets you +5 health.")]
-        public void usesprunk_cmd(Client player)
+        public void usesprunk_cmd(Player player)
         {
             var rag = InventoryManager.DoesInventoryHaveItem<SprunkItem>(player.GetCharacter());
             if (rag.Length == 0)

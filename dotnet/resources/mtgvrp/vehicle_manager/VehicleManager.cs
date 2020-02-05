@@ -232,7 +232,7 @@ namespace mtgvrp.vehicle_manager
 
             dropcarShape.OnEntityEnterColShape += (shape, entity) =>
             {
-                Client player;
+                Player player;
                 if ((player = NAPI.Player.GetPlayerFromHandle(entity)) != null)
                 {
                     Character character = player.GetCharacter();
@@ -258,7 +258,7 @@ namespace mtgvrp.vehicle_manager
         }
 
         [RemoteEvent("VehicleStreamedForPlayer")]
-        public void VehicleStreamedForPlayer(Client sender, params object[] arguments)
+        public void VehicleStreamedForPlayer(Player sender, params object[] arguments)
         {
             var veh = (Entity)arguments[0];
 
@@ -299,7 +299,7 @@ namespace mtgvrp.vehicle_manager
         */
 
         [Command("spawnveh"), Help(HelpManager.CommandGroups.AdminLevel4, "To spawn only the sickiest of rides for you to use.", new[] { "Vehiclehash model/name", "Colour 1", "Colour 2", "Dimension" })]
-        public void spawnveh_cmd(Client player, VehicleHash model, int color1 = 0, int color2 = 0, int dimension = 0)
+        public void spawnveh_cmd(Player player, VehicleHash model, int color1 = 0, int color2 = 0, int dimension = 0)
         {
             var account = player.GetAccount();
             if (account.AdminLevel < 4)
@@ -323,7 +323,7 @@ namespace mtgvrp.vehicle_manager
         }
 
         [Command("savevehicle"), Help(HelpManager.CommandGroups.AdminLevel4, "Save a vehicle to the database", null)]
-        public void savevehicle_cmd(Client player)
+        public void savevehicle_cmd(Player player)
         {
             var account = player.GetAccount();
             if (account.AdminLevel < 4)
@@ -361,7 +361,7 @@ namespace mtgvrp.vehicle_manager
         }
 
         [Command("vstorage"), Help(HelpManager.CommandGroups.Vehicles, "Used to use your vehicles boot.", null)]
-        public void VehicleStorage(Client player)
+        public void VehicleStorage(Player player)
         {
             var lastVehNetHandle = GetClosestVehicle(player, 10f);
             var lastVeh = lastVehNetHandle.GetVehicle();
@@ -383,11 +383,11 @@ namespace mtgvrp.vehicle_manager
             InventoryManager.ShowInventoryManager(player, player.GetCharacter(), lastVeh, "Inventory: ", "Vehicle: ");
         }
 
-        public delegate void OnVehicleEngineToggleHandle(Client player, Entity vehicle, bool state);
+        public delegate void OnVehicleEngineToggleHandle(Player player, Entity vehicle, bool state);
         public static event OnVehicleEngineToggleHandle OnVehicleEngineToggle;
 
         [Command("engine", Alias = "e"), Help(HelpManager.CommandGroups.Vehicles, "Turning on and off your vehicle.", null)]
-        public static void engine_cmd(Client player)
+        public static void engine_cmd(Player player)
         {
             Character character = player.GetCharacter();
             var vehicleHandle = API.Shared.GetPlayerVehicle(player);
@@ -440,7 +440,7 @@ namespace mtgvrp.vehicle_manager
         }
 
         [Command("hotwire"), Help(HelpManager.CommandGroups.Vehicles, "Used to turn on a vehicle when you don't have keys to it", null)]
-        public static void hotwire_cmd(Client player)
+        public static void hotwire_cmd(Player player)
         {
             if (player.IsInVehicle == false)
             {
@@ -504,7 +504,7 @@ namespace mtgvrp.vehicle_manager
         }
 
         [Command("dropcar"), Help(HelpManager.CommandGroups.Vehicles, "Use this to sell a vehicle that is unowned by a player for some quick cash.", null)]
-        public void dropcar_cmd(Client player)
+        public void dropcar_cmd(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -535,7 +535,7 @@ namespace mtgvrp.vehicle_manager
         }
 
         [Command("lock"), Help(HelpManager.CommandGroups.Vehicles, "How to lock and unlock your vehicle.", null)]
-        public void Lockvehicle_cmd(Client player)
+        public void Lockvehicle_cmd(Player player)
         {
             var lastVehNetHandle = GetClosestVehicle(player, 10f);
             var lastVeh = lastVehNetHandle.GetVehicle();
@@ -557,7 +557,7 @@ namespace mtgvrp.vehicle_manager
         }
 
         [Command("respawnunownedcars"), Help(HelpManager.CommandGroups.AdminLevel4, "Used to find your character statistics", null)]
-        public void respawnallcars_cmd(Client player)
+        public void respawnallcars_cmd(Player player)
         {
             var account = player.GetAccount();
             if (account.AdminLevel < 4)
@@ -577,7 +577,7 @@ namespace mtgvrp.vehicle_manager
         }
 
         [Command("respawnnearbycars"), Help(HelpManager.CommandGroups.AdminLevel4, "Respawns all the vehicles near you to their original pos.", new [] {"The radius around you where the vehicles will get respawned."})]
-        public void respawnnearbycars_cmd(Client player, int radius = 15)
+        public void respawnnearbycars_cmd(Player player, int radius = 15)
         {
             var account = player.GetAccount();
             if (account.AdminLevel < 4)
@@ -604,7 +604,7 @@ namespace mtgvrp.vehicle_manager
         }
 
         [Command("groupvehicles", Alias = "gvehicles"), Help(HelpManager.CommandGroups.Vehicles, "Used to locate vehicles owned by your group.", null)]
-        public void commandGroupVehicles(Client player)
+        public void commandGroupVehicles(Player player)
         {
             Character character = player.GetCharacter();
             var group = character.Group;
@@ -648,7 +648,7 @@ namespace mtgvrp.vehicle_manager
             Vehicles.AddRange(DatabaseManager.VehicleTable.Find(x => x.OwnerId == e.Character.Id).ToList());
 
             //Spawn his cars.
-            var maxVehs = GetMaxOwnedVehicles(e.Character.Client);
+            var maxVehs = GetMaxOwnedVehicles(e.Character.Player);
             if (maxVehs > e.Character.OwnedVehicles.Count) maxVehs = e.Character.OwnedVehicles.Count;
             for (int i = 0; i < maxVehs; i++)
             {
@@ -662,13 +662,13 @@ namespace mtgvrp.vehicle_manager
         }
 
         [ServerEvent(Event.PlayerDisconnected)]
-        public void OnPlayerDisconnected(Client player, byte type, string reason)
+        public void OnPlayerDisconnected(Player player, byte type, string reason)
         {
             //DeSpawn his cars.
             Character character = player.GetCharacter();
             if (character == null)
                 return;
-            var maxVehs = GetMaxOwnedVehicles(character.Client);
+            var maxVehs = GetMaxOwnedVehicles(character.Player);
             if (maxVehs > character.OwnedVehicles.Count) maxVehs = character.OwnedVehicles.Count;
             for (int i = 0; i < maxVehs; i++)
             {
@@ -689,7 +689,7 @@ namespace mtgvrp.vehicle_manager
         }
 
         [ServerEvent(Event.PlayerEnterVehicle)]
-        public void OnPlayerEnterVehicle(Client player, Vehicle vehicleHandle, sbyte seat)
+        public void OnPlayerEnterVehicle(Player player, Vehicle vehicleHandle, sbyte seat)
         {
             // Admin check in future
 
@@ -765,7 +765,7 @@ namespace mtgvrp.vehicle_manager
         }
 
         [ServerEvent(Event.PlayerExitVehicle)]
-        public void OnPlayerExitVehicle(Client player, Vehicle vehicleHandle)
+        public void OnPlayerExitVehicle(Player player, Vehicle vehicleHandle)
         {
             var veh = GetVehFromNetHandle(vehicleHandle);
 
@@ -835,7 +835,7 @@ namespace mtgvrp.vehicle_manager
         * 
         */
 
-        public static Vehicle GetClosestVehicle(Client sender, float distance = 1000.0f)
+        public static Vehicle GetClosestVehicle(Player sender, float distance = 1000.0f)
         {
             foreach (var veh in NAPI.Pools.GetAllVehicles())
             {
@@ -861,7 +861,7 @@ namespace mtgvrp.vehicle_manager
             return null;
         }
 
-        public static int GetMaxOwnedVehicles(Client chr)
+        public static int GetMaxOwnedVehicles(Player chr)
         {
             Account acc = chr.GetAccount();
             switch (acc.VipLevel)
@@ -968,7 +968,7 @@ namespace mtgvrp.vehicle_manager
             return respawn_vehicle(veh, veh.SpawnPos);
         }
 
-        public static bool DoesPlayerHaveVehicleAccess(Client player, GameVehicle vehicle)
+        public static bool DoesPlayerHaveVehicleAccess(Player player, GameVehicle vehicle)
         {
             Account account = player.GetAccount();
             Character character = player.GetCharacter();
@@ -986,7 +986,7 @@ namespace mtgvrp.vehicle_manager
             return false;
         }
 
-        public static bool DoesPlayerHaveVehicleParkLockAccess(Client player, GameVehicle vehicle)
+        public static bool DoesPlayerHaveVehicleParkLockAccess(Player player, GameVehicle vehicle)
         {
             Account account = player.GetAccount();
             Character character = player.GetCharacter();

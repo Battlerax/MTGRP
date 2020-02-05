@@ -33,7 +33,7 @@ namespace mtgvrp.inventory
     {
         public InventoryManager()
         {
-            _activeInvsBeingManaged = new Dictionary<Client, KeyValuePair<IStorage, IStorage>>();
+            _activeInvsBeingManaged = new Dictionary<Player, KeyValuePair<IStorage, IStorage>>();
 
             #region Inventory Items
 
@@ -73,9 +73,9 @@ namespace mtgvrp.inventory
         {
             if (GetInventoryFilledSlots(e.Character) > e.Character.MaxInvStorage)
             {
-                API.Shared.SendChatMessageToPlayer(e.Character.Client,
+                API.Shared.SendChatMessageToPlayer(e.Character.Player,
                     "You are overweight. You won't be able to sprint or jump.");
-                API.Shared.SetEntitySharedData(e.Character.Client, "OVERWEIGHT", true);
+                API.Shared.SetEntitySharedData(e.Character.Player, "OVERWEIGHT", true);
             }
         }
     
@@ -216,8 +216,8 @@ namespace mtgvrp.inventory
 
                     if (GetInventoryFilledSlots(storage) > storage.MaxInvStorage && storage.GetType() == typeof(Character))
                     {
-                        API.Shared.SendChatMessageToPlayer(((Character)storage).Client, "You have gone overweight. You'll no longer be able to sprint or jump.");
-                        API.Shared.SetEntitySharedData(((Character) storage).Client,
+                        API.Shared.SendChatMessageToPlayer(((Character)storage).Player, "You have gone overweight. You'll no longer be able to sprint or jump.");
+                        API.Shared.SetEntitySharedData(((Character) storage).Player,
                             "OVERWEIGHT", true);
                     }
                     return GiveItemErrors.Success;
@@ -248,8 +248,8 @@ namespace mtgvrp.inventory
 
                     if (GetInventoryFilledSlots(storage) > storage.MaxInvStorage && storage.GetType() == typeof(Character))
                     {
-                        API.Shared.SendChatMessageToPlayer(((Character)storage).Client, "You have gone overweight. You'll no longer be able to sprint or jump.");
-                        API.Shared.SetEntitySharedData(((Character)storage).Client,
+                        API.Shared.SendChatMessageToPlayer(((Character)storage).Player, "You have gone overweight. You'll no longer be able to sprint or jump.");
+                        API.Shared.SetEntitySharedData(((Character)storage).Player,
                             "OVERWEIGHT", true);
                     }
                     return GiveItemErrors.Success;
@@ -365,9 +365,9 @@ namespace mtgvrp.inventory
                 OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item, 0));
                 LogManager.Log(LogManager.LogTypes.Storage, $"[{GetStorageInfo(storage)}] Removed Item '{ItemTypeToNewObject(item).LongName}', Amount: '{amount}'");
 
-                if (GetInventoryFilledSlots(storage) <= storage.MaxInvStorage && storage.GetType() == typeof(Character) && ((Character)storage).Client.HasSharedData("OVERWEIGHT"))
+                if (GetInventoryFilledSlots(storage) <= storage.MaxInvStorage && storage.GetType() == typeof(Character) && ((Character)storage).Player.HasSharedData("OVERWEIGHT"))
                 {
-                    API.Shared.ResetEntitySharedData(((Character)storage).Client,
+                    API.Shared.ResetEntitySharedData(((Character)storage).Player,
                         "OVERWEIGHT");
                 }
                 return true;
@@ -384,9 +384,9 @@ namespace mtgvrp.inventory
             OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item, itm.Amount));
             LogManager.Log(LogManager.LogTypes.Storage, $"[{GetStorageInfo(storage)}] Removed Item '{ItemTypeToNewObject(item).LongName}', Amount: '{amount}'");
 
-            if (GetInventoryFilledSlots(storage) <= storage.MaxInvStorage && storage.GetType() == typeof(Character) && ((Character)storage).Client.HasSharedData("OVERWEIGHT"))
+            if (GetInventoryFilledSlots(storage) <= storage.MaxInvStorage && storage.GetType() == typeof(Character) && ((Character)storage).Player.HasSharedData("OVERWEIGHT"))
             {
-                API.Shared.ResetEntitySharedData(((Character)storage).Client,
+                API.Shared.ResetEntitySharedData(((Character)storage).Player,
                     "OVERWEIGHT");
             }
             return true;
@@ -415,9 +415,9 @@ namespace mtgvrp.inventory
                 }
                 OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item, 0));
 
-                if (GetInventoryFilledSlots(storage) <= storage.MaxInvStorage && storage.GetType() == typeof(Character) && ((Character)storage).Client.HasSharedData("OVERWEIGHT"))
+                if (GetInventoryFilledSlots(storage) <= storage.MaxInvStorage && storage.GetType() == typeof(Character) && ((Character)storage).Player.HasSharedData("OVERWEIGHT"))
                 {
-                    API.Shared.ResetEntitySharedData(((Character)storage).Client,
+                    API.Shared.ResetEntitySharedData(((Character)storage).Player,
                         "OVERWEIGHT");
                 }
                 return true;
@@ -433,9 +433,9 @@ namespace mtgvrp.inventory
             OnStorageLoseItem?.Invoke(storage, new OnLoseItemEventArgs(itm, amount));
             OnStorageItemUpdateAmount?.Invoke(storage, new OnItemAmountUpdatedEventArgs(item, itm.Amount));
 
-            if (GetInventoryFilledSlots(storage) <= storage.MaxInvStorage && storage.GetType() == typeof(Character) && ((Character)storage).Client.HasSharedData("OVERWEIGHT"))
+            if (GetInventoryFilledSlots(storage) <= storage.MaxInvStorage && storage.GetType() == typeof(Character) && ((Character)storage).Player.HasSharedData("OVERWEIGHT"))
             {
-                API.Shared.ResetEntitySharedData(((Character)storage).Client,
+                API.Shared.ResetEntitySharedData(((Character)storage).Player,
                     "OVERWEIGHT");
             }
             return true;
@@ -487,8 +487,8 @@ namespace mtgvrp.inventory
 
         #region InventoryMovingManagement
 
-        private static Dictionary<Client, KeyValuePair<IStorage, IStorage>> _activeInvsBeingManaged;
-        public static void ShowInventoryManager(Client player, IStorage activeLeft, IStorage activeRight, string leftTitle, string rightTitle)
+        private static Dictionary<Player, KeyValuePair<IStorage, IStorage>> _activeInvsBeingManaged;
+        public static void ShowInventoryManager(Player player, IStorage activeLeft, IStorage activeRight, string leftTitle, string rightTitle)
         {
             if (_activeInvsBeingManaged.ContainsKey(player))
             {
@@ -512,7 +512,7 @@ namespace mtgvrp.inventory
         }
 
         [RemoteEvent("invmanagement_cancelled")]
-        public void InvManagementCancelled(Client sender, params object[] arguments)
+        public void InvManagementCancelled(Player sender, params object[] arguments)
         {
             //Save
             _activeInvsBeingManaged[sender].Key.Save();
@@ -524,7 +524,7 @@ namespace mtgvrp.inventory
         }
 
         [RemoteEvent("invmanagement_moveFromLeftToRight")]
-        public void InvManagementMoveFromLeftToRight(Client sender, params object[] arguments)
+        public void InvManagementMoveFromLeftToRight(Player sender, params object[] arguments)
         {
             string shortname = (string)arguments[0];
             int amount;
@@ -592,7 +592,7 @@ namespace mtgvrp.inventory
         }
 
         [RemoteEvent("invmanagement_moveFromRightToLeft")]
-        public void InvManagementMoveFromRightToLeft(Client sender, params object[] arguments)
+        public void InvManagementMoveFromRightToLeft(Player sender, params object[] arguments)
         {
             string rlshortname = (string)arguments[0];
             int rlamount;
@@ -662,7 +662,7 @@ namespace mtgvrp.inventory
         #endregion
 
         [Command("give"), Help(HelpManager.CommandGroups.Inventory, "Give an item to a player near you.", "id or name of the target player.", "Short name of the item.", "The amount you'd like to give.")]
-        public void give_cmd(Client player, string id, string item, int amount)
+        public void give_cmd(Player player, string id, string item, int amount)
         {
             var targetClient = PlayerManager.ParseClient(id);
             if (targetClient == null)
@@ -750,7 +750,7 @@ namespace mtgvrp.inventory
         }
 
         [Command("drop"), Help(HelpManager.CommandGroups.Inventory, "Drop an item to the void where no one will ever find..", "Name of the item", "Amount you'd like to drop.")]
-        public void drop_cmd(Client player, string item, int amount)
+        public void drop_cmd(Player player, string item, int amount)
         {
             Character character = player.GetCharacter();
 
@@ -797,7 +797,7 @@ namespace mtgvrp.inventory
         private Dictionary<Entity, KeyValuePair<string[], IInventoryItem>> _stashedItems = new Dictionary<Entity, KeyValuePair<string[], IInventoryItem>>();
 
         [Command("stash"), Help(HelpManager.CommandGroups.Inventory, "Stashes an item on the ground for someone else to /pickupstash", "Name of the item", "Amount to stash.")]
-        public void stash_cmd(Client player, string item, int amount)
+        public void stash_cmd(Player player, string item, int amount)
         {
             Character character = player.GetCharacter();
 
@@ -833,7 +833,7 @@ namespace mtgvrp.inventory
         }
 
         [Command("pickupstash"), Help(HelpManager.CommandGroups.Inventory, "Picks up a stash from the ground near you.")]
-        public void pickupstash_cmd(Client player)
+        public void pickupstash_cmd(Player player)
         {
             //Check if near any stash.
             var items = _stashedItems.Where(x => NAPI.Entity.GetEntityPosition(x.Key).DistanceTo(player.Position) <= 3).ToArray();
@@ -885,7 +885,7 @@ namespace mtgvrp.inventory
         #endregion
 
         [Command("inventory", Alias = "inv"), Help(HelpManager.CommandGroups.Inventory, "See your inventory items.")]
-        public void showinventory_cmd(Client player)
+        public void showinventory_cmd(Player player)
         {
             //TODO: For now can be just text-based even though I'd recommend it to be a CEF.
             Character character = player.GetCharacter();

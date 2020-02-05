@@ -80,7 +80,7 @@ namespace mtgvrp.job_manager.hunting
         }
 
         [ServerEvent(Event.PlayerWeaponSwitch)]
-        public void OnPlayerWeaponSwitch(Client player, WeaponHash oldWeapon, WeaponHash newValue)
+        public void OnPlayerWeaponSwitch(Player player, WeaponHash oldWeapon, WeaponHash newValue)
         {
             if (oldWeapon == WeaponHash.Sniperrifle)
             {
@@ -100,7 +100,7 @@ namespace mtgvrp.job_manager.hunting
             }
         }
 
-        public void OnPlayerWeaponAmmoChange(Client player, WeaponHash weapon, int oldAmmo)
+        public void OnPlayerWeaponAmmoChange(Player player, WeaponHash weapon, int oldAmmo)
         {
             if (weapon == WeaponHash.Sniperrifle)
             {
@@ -134,7 +134,7 @@ namespace mtgvrp.job_manager.hunting
         }
 
         [RemoteEvent("update_animal_position")]
-        public void UpdateAnimalPosition(Client player, params object[] arguments)
+        public void UpdateAnimalPosition(Player player, params object[] arguments)
         {
             API.Shared.SetEntityPosition((Entity)arguments[0], (Vector3)arguments[1]);
         }
@@ -146,7 +146,7 @@ namespace mtgvrp.job_manager.hunting
         }
 
         [Command("gotoanimal"), Help(HelpManager.CommandGroups.AdminLevel2, "Goto an animal", "Id of the animal you'd like to TP to.")]
-        public void gotoanimal_cmd(Client player, int index)
+        public void gotoanimal_cmd(Player player, int index)
         {
             if (player.GetAccount().AdminLevel < 1)
             {
@@ -177,7 +177,7 @@ namespace mtgvrp.job_manager.hunting
         }
 
         [Command("pickupdeer"), Help(HelpManager.CommandGroups.HuntingActivity, "Picks up the deer from the ground so you could sell it.")]
-        public void pickupdeer_cmd(Client player)
+        public void pickupdeer_cmd(Player player)
         {
             var character = player.GetCharacter();
       
@@ -230,7 +230,7 @@ namespace mtgvrp.job_manager.hunting
         }
 
         [Command("pickupboar"), Help(HelpManager.CommandGroups.HuntingActivity, "Picks up the boar from the ground so you could sell it.")]
-        public void pickupboar_cmd(Client player)
+        public void pickupboar_cmd(Player player)
         {
             var character = player.GetCharacter();
 
@@ -283,7 +283,7 @@ namespace mtgvrp.job_manager.hunting
         }
 
         [Command("redeemdeertag"), Help(HelpManager.CommandGroups.HuntingActivity, "Sells the deer you have in your hands.")]
-        public void redeemdeertag_cmd(Client player)
+        public void redeemdeertag_cmd(Player player)
         {
             var prop = PropertyManager.IsAtPropertyInteraction(player);
             if (prop == null || prop?.Type != PropertyManager.PropertyTypes.HuntingStation)
@@ -322,7 +322,7 @@ namespace mtgvrp.job_manager.hunting
         }
 
         [Command("redeemboartag"), Help(HelpManager.CommandGroups.HuntingActivity, "Sells the boar you have in your hands.")]
-        public void redeemboartag_cmd(Client player)
+        public void redeemboartag_cmd(Player player)
         {
             var prop = PropertyManager.IsAtPropertyInteraction(player);
             if (prop == null || prop?.Type != PropertyManager.PropertyTypes.HuntingStation)
@@ -374,7 +374,7 @@ namespace mtgvrp.job_manager.hunting
         public int StateChangeTick;
         public Vector3 Destination;
         public bool UpdateState;
-        public Client FleeingPed;
+        public Player FleeingPed;
 
         public HuntingAnimal(Vector3 spawn, HuntingManager.AnimalTypes type, HuntingManager.AnimalState state)
         {
@@ -402,7 +402,7 @@ namespace mtgvrp.job_manager.hunting
         {
             API.Shared.SetEntityPositionFrozen(handle, false);
 
-            List<Client> playersInRadius = new List<Client>();
+            List<Player> playersInRadius = new List<Player>();
 
             foreach (var player in API.Shared.GetAllPlayers())
             {
@@ -419,7 +419,7 @@ namespace mtgvrp.job_manager.hunting
             {
                 API.Shared.TriggerClientEvent(playersInRadius[0], "update_animal_position", handle);
 
-                var tooClosePlayers = new List<Client>();
+                var tooClosePlayers = new List<Player>();
                 foreach (var player in API.Shared.GetAllPlayers())
                 {
                     if (player == null)

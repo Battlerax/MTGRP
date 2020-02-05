@@ -42,7 +42,7 @@ namespace mtgvrp.phone_manager
                     if (dbNumber.First().PhoneId != item[0].Id)
                     {
                         InventoryManager.DeleteInventoryItem<Phone>(e.Character);
-                        NAPI.Chat.SendChatMessageToPlayer(e.Character.Client, "Your phone has been removed due to the number being used already, you've been refunded.");
+                        NAPI.Chat.SendChatMessageToPlayer(e.Character.Player, "Your phone has been removed due to the number being used already, you've been refunded.");
                         InventoryManager.GiveInventoryItem(e.Character, new Money(), 500);
                         e.Character.Save();
                         return;
@@ -56,26 +56,26 @@ namespace mtgvrp.phone_manager
         }
 
         [RemoteEvent("phone_callphone")]
-        public void PhoneCallPhone(Client sender, params object[] arguments)
+        public void PhoneCallPhone(Player sender, params object[] arguments)
         {
             string number = (string)arguments[0];
             call_cmd(sender, number);
         }
 
         [RemoteEvent("phone_answercall")]
-        public void PhoneAnswerCall(Client sender, params object[] arguments)
+        public void PhoneAnswerCall(Player sender, params object[] arguments)
         {
             pickup_cmd(sender);
         }
 
         [RemoteEvent("phone_hangout")]
-        public void PhoneHangOut(Client sender, params object[] arguments)
+        public void PhoneHangOut(Player sender, params object[] arguments)
         {
             h_cmd(sender);
         }
 
         [RemoteEvent("phone_getallContacts")]
-        public void PhoneGetAllContacts(Client sender, params object[] arguments)
+        public void PhoneGetAllContacts(Player sender, params object[] arguments)
         {
             //Check if has phone.
             var items = InventoryManager.DoesInventoryHaveItem(sender.GetCharacter(), typeof(Phone));
@@ -91,7 +91,7 @@ namespace mtgvrp.phone_manager
         }
 
         [RemoteEvent("phone_saveContact")]
-        public void PhoneSaveContact(Client sender, params object[] arguments)
+        public void PhoneSaveContact(Player sender, params object[] arguments)
         {
             var name = arguments[0].ToString();
             string num = (string)arguments[1];
@@ -106,7 +106,7 @@ namespace mtgvrp.phone_manager
         }
 
         [RemoteEvent("phone_editContact")]
-        public void PhoneEditContact(Client sender, params object[] arguments)
+        public void PhoneEditContact(Player sender, params object[] arguments)
         {
             string anum = (string)arguments[2];
             if (IsDigitsOnly(anum))
@@ -120,13 +120,13 @@ namespace mtgvrp.phone_manager
         }
 
         [RemoteEvent("phone_deleteContact")]
-        public void PhoneDeleteContact(Client sender, params object[] arguments)
+        public void PhoneDeleteContact(Player sender, params object[] arguments)
         {
             removecontact_cmd(sender, arguments[0].ToString());
         }
 
         [RemoteEvent("phone_loadMessagesContacts")]
-        public void PhoneLoadMessagesContacts(Client sender, params object[] arguments)
+        public void PhoneLoadMessagesContacts(Player sender, params object[] arguments)
         {
             Character character = sender.GetCharacter();
             var lmcitems = InventoryManager.DoesInventoryHaveItem(character, typeof(Phone));
@@ -146,13 +146,13 @@ namespace mtgvrp.phone_manager
         }
 
         [RemoteEvent("phone_sendMessage")]
-        public void PhoneSendMessage(Client sender, params object[] arguments)
+        public void PhoneSendMessage(Player sender, params object[] arguments)
         {
             sms_cmd(sender, (string)arguments[0], (string)arguments[1]);
         }
 
         [RemoteEvent("phone_loadMessages")]
-        public void PhoneLoadMessages(Client sender, params object[] arguments)
+        public void PhoneLoadMessages(Player sender, params object[] arguments)
         {
             var contact = (string)arguments[0];
             var toSkip = (int)arguments[1];
@@ -176,7 +176,7 @@ namespace mtgvrp.phone_manager
         }
 
         [RemoteEvent("phone_getNotifications")]
-        public void PhoneGetNotifications(Client sender, params object[] arguments)
+        public void PhoneGetNotifications(Player sender, params object[] arguments)
         {
             Character gncharacter = sender.GetCharacter();
             var gnitems = InventoryManager.DoesInventoryHaveItem(gncharacter, typeof(Phone));
@@ -195,7 +195,7 @@ namespace mtgvrp.phone_manager
         }
 
         [RemoteEvent("phone_markMessagesRead")]
-        public void PhoneMarkMessageRead(Client sender, params object[] arguments)
+        public void PhoneMarkMessageRead(Player sender, params object[] arguments)
         {
             Character mkcharacter = sender.GetCharacter();
             var mkitems = InventoryManager.DoesInventoryHaveItem(mkcharacter, typeof(Phone));
@@ -209,7 +209,7 @@ namespace mtgvrp.phone_manager
         }
 
         [RemoteEvent("settings_getSettings")]
-        public void SettingsGetSettings(Client sender, params object[] arguments)
+        public void SettingsGetSettings(Player sender, params object[] arguments)
         {
             Character sscharacter = sender.GetCharacter();
             var ssitems = InventoryManager.DoesInventoryHaveItem(sscharacter, typeof(Phone));
@@ -223,13 +223,13 @@ namespace mtgvrp.phone_manager
         }
 
         [RemoteEvent("settings_togPhone")]
-        public void SettingsTogPhone(Client sender, params object[] arguments)
+        public void SettingsTogPhone(Player sender, params object[] arguments)
         {
             togphone_cmd(sender);
         }
 
         [Command("setphonename"), Help(HelpManager.CommandGroups.General, "To change your phone's name from being boring.", new[] { "Name of phone" })]
-        public void setphonename_cmd(Client player, string name)
+        public void setphonename_cmd(Player player, string name)
         {
             Character character = player.GetCharacter();
             var targetitems = InventoryManager.DoesInventoryHaveItem(character, typeof(Phone));
@@ -245,7 +245,7 @@ namespace mtgvrp.phone_manager
         }
 
         [Command("pickup"), Help(HelpManager.CommandGroups.General, "To answer a call.", null)]
-        public void pickup_cmd(Client player)
+        public void pickup_cmd(Player player)
         {
             Character character = player.GetCharacter();
             if (character.InCallWith != Character.None)
@@ -261,7 +261,7 @@ namespace mtgvrp.phone_manager
             }
 
             NAPI.Chat.SendChatMessageToPlayer(player, "You have answered the phone call.");
-            NAPI.Chat.SendChatMessageToPlayer(character.BeingCalledBy.Client, "The other party have answered the phone.");
+            NAPI.Chat.SendChatMessageToPlayer(character.BeingCalledBy.Player, "The other party have answered the phone.");
             character.BeingCalledBy.CallingPlayer = Character.None;
             character.BeingCalledBy.InCallWith = character;
             character.InCallWith = character.BeingCalledBy;
@@ -276,7 +276,7 @@ namespace mtgvrp.phone_manager
         }
 
         [Command("h"), Help(HelpManager.CommandGroups.General, "Hangup.", null)]
-        public static void h_cmd(Client player)
+        public static void h_cmd(Player player)
         {
             Character character = player.GetCharacter();
             Character talkingTo;
@@ -293,9 +293,9 @@ namespace mtgvrp.phone_manager
                 talkingTo.BeingCalledBy = Character.None;
                 character.CallingPlayer = Character.None;
                 API.Shared.SendChatMessageToPlayer(player, "You have terminated the call.");
-                API.Shared.SendChatMessageToPlayer(talkingTo.Client, "The other party has ended the call.");
+                API.Shared.SendChatMessageToPlayer(talkingTo.Player, "The other party has ended the call.");
                 API.Shared.TriggerClientEvent(player, "phone_call-closed");
-                API.Shared.TriggerClientEvent(talkingTo.Client, "phone_call-closed");
+                API.Shared.TriggerClientEvent(talkingTo.Player, "phone_call-closed");
             }
             else if(character.InCallWith != Character.None)
             {
@@ -303,9 +303,9 @@ namespace mtgvrp.phone_manager
                 talkingTo.InCallWith = Character.None;
                 character.InCallWith = Character.None;
                 API.Shared.SendChatMessageToPlayer(player, "You have terminated the call.");
-                API.Shared.SendChatMessageToPlayer(talkingTo.Client, "The other party has ended the call.");
+                API.Shared.SendChatMessageToPlayer(talkingTo.Player, "The other party has ended the call.");
                 API.Shared.TriggerClientEvent(player, "phone_call-closed");
-                API.Shared.TriggerClientEvent(talkingTo.Client, "phone_call-closed");
+                API.Shared.TriggerClientEvent(talkingTo.Player, "phone_call-closed");
             }
             else if (character.Calling911 == true)
             {
@@ -315,7 +315,7 @@ namespace mtgvrp.phone_manager
             }
         }
 
-        public void togphone_cmd(Client player)
+        public void togphone_cmd(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -360,13 +360,13 @@ namespace mtgvrp.phone_manager
                 character.BeingCalledBy = Character.None;
                 sender.CallingPlayer = Character.None;
                 sender.CallingTimer.Dispose();
-                NAPI.Chat.SendChatMessageToPlayer(sender.Client, "Call hanged up with no answer.");
-                ChatManager.RoleplayMessage(character.Client, "'s phone stops to ring.", ChatManager.RoleplayMe);
-                NAPI.ClientEvent.TriggerClientEvent(character.Client, "phone_call-closed");
-                NAPI.ClientEvent.TriggerClientEvent(sender.Client, "phone_call-closed");
+                NAPI.Chat.SendChatMessageToPlayer(sender.Player, "Call hanged up with no answer.");
+                ChatManager.RoleplayMessage(character.Player, "'s phone stops to ring.", ChatManager.RoleplayMe);
+                NAPI.ClientEvent.TriggerClientEvent(character.Player, "phone_call-closed");
+                NAPI.ClientEvent.TriggerClientEvent(sender.Player, "phone_call-closed");
             }
         }
-        public void call_cmd(Client player, string input)
+        public void call_cmd(Player player, string input)
         {
             Character sender = player.GetCharacter();
 
@@ -426,7 +426,7 @@ namespace mtgvrp.phone_manager
                 }
 
                 ChatManager.AmeLabelMessage(player, "takes out their phone and presses a few numbers..", 4000);
-                NAPI.Chat.SendChatMessageToPlayer(character.Client, "Incoming call from " + senderphone.PhoneNumber + "...");
+                NAPI.Chat.SendChatMessageToPlayer(character.Player, "Incoming call from " + senderphone.PhoneNumber + "...");
                 ChatManager.RoleplayMessage(character, "'s phone starts to ring...", ChatManager.RoleplayMe);
                 sender.CallingPlayer = character;
                 character.BeingCalledBy = sender;
@@ -435,7 +435,7 @@ namespace mtgvrp.phone_manager
                 var targetContact = charphone.Contacts.Find(pc => pc.Number == senderphone.PhoneNumber);
 
                 NAPI.ClientEvent.TriggerClientEvent(player, "phone_calling", contact?.Name ?? "Unknown", input);
-                NAPI.ClientEvent.TriggerClientEvent(character.Client, "phone_incoming-call", targetContact?.Name ?? "Unknown", senderphone.PhoneNumber);
+                NAPI.ClientEvent.TriggerClientEvent(character.Player, "phone_incoming-call", targetContact?.Name ?? "Unknown", senderphone.PhoneNumber);
 
 
                 sender.CallingTimer = new System.Threading.Timer(OnCallSemiEnd, new[] {character, sender}, 30000, -1);
@@ -473,20 +473,20 @@ namespace mtgvrp.phone_manager
                 }
 
                 ChatManager.AmeLabelMessage(player, "takes out their phone and presses a few numbers..", 4000);
-                NAPI.Chat.SendChatMessageToPlayer(character.Client, "Incoming call from" + senderphone + "...");
+                NAPI.Chat.SendChatMessageToPlayer(character.Player, "Incoming call from" + senderphone + "...");
                 ChatManager.RoleplayMessage(character, "'s phone starts to ring...", ChatManager.RoleplayMe);
                 sender.CallingPlayer = character;
                 character.BeingCalledBy = sender;
                 NAPI.ClientEvent.TriggerClientEvent(player, "phone_calling", contact.Name, contact.Number);
                 var targetContact = charphone.Contacts.Find(pc => pc.Number == senderphone.PhoneNumber);
-                NAPI.ClientEvent.TriggerClientEvent(character.Client, "phone_incoming-call", targetContact?.Name ?? "Unknown", senderphone.PhoneNumber);
+                NAPI.ClientEvent.TriggerClientEvent(character.Player, "phone_incoming-call", targetContact?.Name ?? "Unknown", senderphone.PhoneNumber);
 
                 //Function to hangup after 30 seconds with no answer.
                 sender.CallingTimer = new System.Threading.Timer(OnCallSemiEnd, new[] { character, sender }, 30000, -1);
             }
         }
 
-        public void editcontact_cmd(Client player, string oldname, string newname, string number)
+        public void editcontact_cmd(Player player, string oldname, string newname, string number)
         {
             Character c = player.GetCharacter();
 
@@ -512,7 +512,7 @@ namespace mtgvrp.phone_manager
             }
         }
 
-        public void addcontact_cmd(Client player, string number, string name)
+        public void addcontact_cmd(Player player, string number, string name)
         {
             Character c = player.GetCharacter();
             var targetitems = InventoryManager.DoesInventoryHaveItem(c, typeof(Phone));
@@ -535,7 +535,7 @@ namespace mtgvrp.phone_manager
             NAPI.ClientEvent.TriggerClientEvent(player, "phone_contactAdded", name, number);
         }
 
-        public void removecontact_cmd(Client player, string name)
+        public void removecontact_cmd(Player player, string name)
         {
             Character c = player.GetCharacter();
             var targetitems = InventoryManager.DoesInventoryHaveItem(c, typeof(Phone));
@@ -566,7 +566,7 @@ namespace mtgvrp.phone_manager
             }
         }
 
-        public static void sms_cmd(Client player, string input, string message)
+        public static void sms_cmd(Player player, string input, string message)
         {
             Character sender = player.GetCharacter();
 
@@ -603,11 +603,11 @@ namespace mtgvrp.phone_manager
                             "The text message failed to send. That number is switched off. Please try again later.");
                         return;
                     }
-                    API.Shared.TriggerClientEvent(character.Client, "phone_incomingMessage",
+                    API.Shared.TriggerClientEvent(character.Player, "phone_incomingMessage",
                         charphone.HasContactWithNumber(senderphone.PhoneNumber)
                             ? charphone.Contacts.Find(pc => pc.Number == senderphone.PhoneNumber).Name
                             : senderphone.PhoneNumber, message);
-                    API.Shared.SendChatMessageToPlayer(character.Client, Color.Sms, "You've received an SMS.");
+                    API.Shared.SendChatMessageToPlayer(character.Player, Color.Sms, "You've received an SMS.");
                     ChatManager.RoleplayMessage(character, "'s phone vibrates..", ChatManager.RoleplayMe);
                 }
                 else
@@ -629,7 +629,7 @@ namespace mtgvrp.phone_manager
                     toMsg = "SMS to " + input + ": " +
                             message;
                 }
-                API.Shared.SendChatMessageToPlayer(sender.Client, Color.Sms, toMsg);
+                API.Shared.SendChatMessageToPlayer(sender.Player, Color.Sms, toMsg);
                 ChatManager.AmeLabelMessage(player, "presses a few buttons on their phone, sending a message.", 4000);
 
                 Phone.LogMessage(senderphone.PhoneNumber, input, message);
@@ -662,15 +662,15 @@ namespace mtgvrp.phone_manager
                             "The text message failed to send. That number is switched off. Please try again later.");
                         return;
                     }
-                    API.Shared.TriggerClientEvent(character.Client, "phone_incomingMessage",
+                    API.Shared.TriggerClientEvent(character.Player, "phone_incomingMessage",
                         charphone.HasContactWithNumber(senderphone.PhoneNumber)
                             ? charphone.Contacts.Find(pc => pc.Number == senderphone.PhoneNumber).Name
                             : senderphone.PhoneNumber, message);
-                    API.Shared.SendChatMessageToPlayer(character.Client, Color.Sms, "You've received an SMS.");
+                    API.Shared.SendChatMessageToPlayer(character.Player, Color.Sms, "You've received an SMS.");
                     ChatManager.RoleplayMessage(character, "'s phone vibrates..", ChatManager.RoleplayMe);
 
                     var toMsg = "SMS to " + contact.Name + ": " + message;
-                    API.Shared.SendChatMessageToPlayer(sender.Client, Color.Sms, toMsg);
+                    API.Shared.SendChatMessageToPlayer(sender.Player, Color.Sms, toMsg);
                     ChatManager.AmeLabelMessage(player, "presses a few buttons on their phone, sending a message.",
                         4000);
 
@@ -686,7 +686,7 @@ namespace mtgvrp.phone_manager
         }
 
         [Command("phone"), Help(HelpManager.CommandGroups.General, "How to view your phone.", null)]
-        public void ShowPhone(Client player)
+        public void ShowPhone(Player player)
         {
             Character character = player.GetCharacter();
             var targetitems = InventoryManager.DoesInventoryHaveItem(character, typeof(Phone));

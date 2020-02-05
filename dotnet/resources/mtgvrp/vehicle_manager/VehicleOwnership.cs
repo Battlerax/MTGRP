@@ -19,7 +19,7 @@ namespace mtgvrp.vehicle_manager
         }
 
         [RemoteEvent("myvehicles_locatecar")]
-        public void MyVehiclesLocateCar(Client sender, params object[] arguments)
+        public void MyVehiclesLocateCar(Player sender, params object[] arguments)
         {
             Character character = sender.GetCharacter();
             GameVehicle lcVeh =
@@ -31,7 +31,7 @@ namespace mtgvrp.vehicle_manager
         }
 
         [RemoteEvent("myvehicles_abandoncar")]
-        public void MyVehiclesAbandonCar(Client sender, params object[] arguments)
+        public void MyVehiclesAbandonCar(Player sender, params object[] arguments)
         {
             Character character = sender.GetCharacter();
             GameVehicle acVeh =
@@ -45,7 +45,7 @@ namespace mtgvrp.vehicle_manager
         }
 
         [RemoteEvent("myvehicles_sellcar")]
-        public void MyVehiclesSellCar(Client sender, params object[] arguments)
+        public void MyVehiclesSellCar(Player sender, params object[] arguments)
         {
             Character character = sender.GetCharacter();
             GameVehicle scVeh =
@@ -73,7 +73,7 @@ namespace mtgvrp.vehicle_manager
                 return;
             }
 
-            if (targetChar.OwnedVehicles.Count >= VehicleManager.GetMaxOwnedVehicles(targetChar.Client))
+            if (targetChar.OwnedVehicles.Count >= VehicleManager.GetMaxOwnedVehicles(targetChar.Player))
             {
                 NAPI.Chat.SendChatMessageToPlayer(sender, "This player cannot own any more vehicles.");
                 return;
@@ -86,7 +86,7 @@ namespace mtgvrp.vehicle_manager
         }
 
         [RemoteEvent("groupvehicles_locatecar")]
-        public void GroupVehiclesLocateCar(Client sender, params object[] arguments)
+        public void GroupVehiclesLocateCar(Player sender, params object[] arguments)
         {
             Character character = sender.GetCharacter();
             GameVehicle gVeh =
@@ -98,7 +98,7 @@ namespace mtgvrp.vehicle_manager
         }
 
         [Command("myvehicles"), Help(HelpManager.CommandGroups.Vehicles, "Lists the vehicles you own.", null)]
-        public void myvehicles_cmd(Client player)
+        public void myvehicles_cmd(Player player)
         {
             //Get all owned vehicles and send them.
             Character character = player.GetCharacter();
@@ -117,7 +117,7 @@ namespace mtgvrp.vehicle_manager
 
         [Command("confirmsellvehicle"),
          Help(HelpManager.CommandGroups.Vehicles, "To confirm that you want to sell your vehicle.", null)]
-        public void confirmsellvehicle_cmd(Client player)
+        public void confirmsellvehicle_cmd(Player player)
         {
             Character character = player.GetCharacter();
             var data = NAPI.Data.GetEntityData(player, "sellcar_selling");
@@ -126,11 +126,11 @@ namespace mtgvrp.vehicle_manager
                 GameVehicle veh = data[0];
                 Character target = data[1];
                 int price = data[2];
-                NAPI.Data.SetEntityData(target.Client, "sellcar_buying", new dynamic[] {character, veh, price});
+                NAPI.Data.SetEntityData(target.Player, "sellcar_buying", new dynamic[] {character, veh, price});
                 NAPI.Data.SetEntityData(player, "sellcar_selling", null);
-                NAPI.Chat.SendChatMessageToPlayer(target.Client,
+                NAPI.Chat.SendChatMessageToPlayer(target.Player,
                     $"~r~{character.rp_name()}~w~ has offered to sell you a ~r~{returnCorrDisplayName(veh.VehModel)}~w~ for ~r~${price}~w~.");
-                NAPI.Chat.SendChatMessageToPlayer(target.Client, "Use /confirmbuyvehicle to buy it.");
+                NAPI.Chat.SendChatMessageToPlayer(target.Player, "Use /confirmbuyvehicle to buy it.");
                 NAPI.Chat.SendChatMessageToPlayer(player, "Request sent.");
             }
             else
@@ -139,7 +139,7 @@ namespace mtgvrp.vehicle_manager
 
         [Command("confirmbuyvehicle"),
          Help(HelpManager.CommandGroups.Vehicles, "To confirm that you want to buy a vehicle.", null)]
-        public void confirmbuyvehicle_cmd(Client player)
+        public void confirmbuyvehicle_cmd(Player player)
         {
             Character character = player.GetCharacter();
             Account account = player.GetAccount();
@@ -150,11 +150,11 @@ namespace mtgvrp.vehicle_manager
                 GameVehicle veh = data[1];
                 int price = data[2];
                 //Make sure near him.
-                var buyingPos = buyingFrom.Client.Position;
+                var buyingPos = buyingFrom.Player.Position;
                 if (player.Position.DistanceTo(buyingPos) <= 5f)
                 {
                     //make sure still have slots.
-                    if (character.OwnedVehicles.Count < VehicleManager.GetMaxOwnedVehicles(character.Client))
+                    if (character.OwnedVehicles.Count < VehicleManager.GetMaxOwnedVehicles(character.Player))
                     {
                         //make sure have money.
                         if (Money.GetCharacterMoney(character) >= price)
@@ -177,27 +177,27 @@ namespace mtgvrp.vehicle_manager
 
                             //Tell.
                             NAPI.Chat.SendChatMessageToPlayer(player, "You have sucessfully bought the car.");
-                            NAPI.Chat.SendChatMessageToPlayer(buyingFrom.Client, "You have successfully sold the car.");
+                            NAPI.Chat.SendChatMessageToPlayer(buyingFrom.Player, "You have successfully sold the car.");
                             NAPI.Data.SetEntityData(player, "sellcar_buying", null);
                         }
                         else
                         {
                             NAPI.Chat.SendChatMessageToPlayer(player, "You don't have enough money.");
-                            NAPI.Chat.SendChatMessageToPlayer(buyingFrom.Client, "The buyer doesn't have enough money.");
+                            NAPI.Chat.SendChatMessageToPlayer(buyingFrom.Player, "The buyer doesn't have enough money.");
                             NAPI.Data.SetEntityData(player, "sellcar_buying", null);
                         }
                     }
                     else
                     {
                         NAPI.Chat.SendChatMessageToPlayer(player, "You can't own anymore vehicles.");
-                        NAPI.Chat.SendChatMessageToPlayer(buyingFrom.Client, "The buyer can't own anymore vehicles.");
+                        NAPI.Chat.SendChatMessageToPlayer(buyingFrom.Player, "The buyer can't own anymore vehicles.");
                         NAPI.Data.SetEntityData(player, "sellcar_buying", null);
                     }
                 }
                 else
                 {
                     NAPI.Chat.SendChatMessageToPlayer(player, "You must be near the buyer.");
-                    NAPI.Chat.SendChatMessageToPlayer(buyingFrom.Client, "The buyer must be near you.");
+                    NAPI.Chat.SendChatMessageToPlayer(buyingFrom.Player, "The buyer must be near you.");
                     NAPI.Data.SetEntityData(player, "sellcar_buying", null);
                 }
             }

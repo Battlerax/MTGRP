@@ -28,7 +28,7 @@ namespace mtgvrp.core
         }
 
         [ServerEvent(Event.PlayerDisconnected)]
-        public void OnPlayerDisconnected(Client player, byte type, string reason)
+        public void OnPlayerDisconnected(Player player, byte type, string reason)
         {
             var c = player.GetCharacter();
             if (c != null)
@@ -39,7 +39,7 @@ namespace mtgvrp.core
         }
 
         [ServerEvent(Event.ChatMessage)] // TODO: review cancel events
-        public void OnChatMessage(Client player, string msg)
+        public void OnChatMessage(Player player, string msg)
         {
             if(msg.StartsWith('/'))
             {
@@ -109,10 +109,10 @@ namespace mtgvrp.core
                 {
                     phonemsg = "[" + charphone.PhoneNumber + "]" + character.rp_name() + " says: " + msg;
                 }
-                NAPI.Chat.SendChatMessageToPlayer(talkingTo.Client, Color.Grey, phonemsg);
+                NAPI.Chat.SendChatMessageToPlayer(talkingTo.Player, Color.Grey, phonemsg);
                 //e.Cancel = true;
                 //e.Reason = "Phone";
-                LogManager.Log(LogManager.LogTypes.Phone, $"[Phone] {character.CharacterName}[{account.AccountName}] To {talkingTo.CharacterName}[{talkingTo.Client.SocialClubName}]: {msg}");
+                LogManager.Log(LogManager.LogTypes.Phone, $"[Phone] {character.CharacterName}[{account.AccountName}] To {talkingTo.CharacterName}[{talkingTo.Player.SocialClubName}]: {msg}");
                 return;
             }
             else if (account.AdminDuty == false && character.Calling911 == true)
@@ -161,13 +161,13 @@ namespace mtgvrp.core
             {
                 if(i.IsWatchingBroadcast == true)
                 {
-                    NAPI.Chat.SendChatMessageToPlayer(i.Client, msg);
+                    NAPI.Chat.SendChatMessageToPlayer(i.Player, msg);
                 }
             }
         }
 
         [Command("rand", GreedyArg = true), Help.Help(HelpManager.CommandGroups.General, "Generate a random number.", "The upper limit")]
-        public void startRand(Client sender, String upperBoundary)
+        public void startRand(Player sender, String upperBoundary)
         {
             const int maxLimit = 100;
             int upperlimit;
@@ -187,7 +187,7 @@ namespace mtgvrp.core
         }
 
         [Command("dice", GreedyArg = true), Help.Help(HelpManager.CommandGroups.General, "Roll multiple dice.", "The number of dice")]
-        public void Dice(Client player, string diceNo)
+        public void Dice(Player player, string diceNo)
         {
             const int upperDiceLimit = 2;
             int numOfDie;
@@ -215,7 +215,7 @@ namespace mtgvrp.core
         }
 
         [Command("togn"), Help.Help(HelpManager.CommandGroups.General, "Used to toggle newbie chat on and off.", null)]
-        public void togn_cmd(Client player)
+        public void togn_cmd(Player player)
         {
             var character = player.GetCharacter();
 
@@ -224,7 +224,7 @@ namespace mtgvrp.core
         }
 
         [Command("togv"), Help.Help(HelpManager.CommandGroups.General, "Used to toggle VIP chat on and off.", null)]
-        public void togv_cmd(Client player)
+        public void togv_cmd(Player player)
         {
             var character = player.GetCharacter();
 
@@ -233,7 +233,7 @@ namespace mtgvrp.core
         }
 
         [Command("togglenewbie"), Help.Help(HelpManager.CommandGroups.AdminLevel2, "Used to toggle newbie chat on and off.", null)]
-        public void togglenewbie_cmd(Client player)
+        public void togglenewbie_cmd(Player player)
         {
             if(player.GetAccount().AdminLevel < 2)
             {
@@ -248,7 +248,7 @@ namespace mtgvrp.core
 
 
         [Command("toggleooc"), Help.Help(HelpManager.CommandGroups.AdminLevel2, "Used to toggle ooc chat on and off.", null)]
-        public void toggleooc_cmd(Client player)
+        public void toggleooc_cmd(Player player)
         {
             if (player.GetAccount().AdminLevel < 2)
             {
@@ -262,7 +262,7 @@ namespace mtgvrp.core
         }
 
         [Command("togglevip"), Help.Help(HelpManager.CommandGroups.AdminLevel2, "Used to toggle VIP chat on and off.", null)]
-        public void togglevip_cmd(Client player)
+        public void togglevip_cmd(Player player)
         {
             if (player.GetAccount().AdminLevel < 2)
             {
@@ -276,7 +276,7 @@ namespace mtgvrp.core
         }
 
         [Command("newbiechat", Alias = "n", GreedyArg = true), Help.Help(HelpManager.CommandGroups.Chat, "Talk in the newbie chat to get help.", "Your question")]
-        public void newbie_cmd(Client player, string message)
+        public void newbie_cmd(Player player, string message)
         {
             Account account = player.GetAccount();
             Character character = player.GetCharacter();
@@ -325,7 +325,7 @@ namespace mtgvrp.core
             {
                 if (!p.NewbieToggled)
                 {
-                    NAPI.Chat.SendChatMessageToPlayer(p.Client, Color.NewbieChat, $"[N] {rank} " + c.rp_name() + ": " + message);
+                    NAPI.Chat.SendChatMessageToPlayer(p.Player, Color.NewbieChat, $"[N] {rank} " + c.rp_name() + ": " + message);
                 }
             }
 
@@ -338,7 +338,7 @@ namespace mtgvrp.core
 
 
         [Command("ooc", Alias = "o", GreedyArg = true), Help.Help(HelpManager.CommandGroups.Chat, "Talk on the global OOC channel.", "The message")]
-        public void ooc_cmd(Client player, string message)
+        public void ooc_cmd(Player player, string message)
         {
             Account account = player.GetAccount();
 
@@ -365,7 +365,7 @@ namespace mtgvrp.core
         }
 
         [Command("vip", Alias ="v", GreedyArg =true), Help.Help(HelpManager.CommandGroups.Chat, "Talk in the VIP channel.", "The message")]
-        public void vip_chat(Client player, string message)
+        public void vip_chat(Player player, string message)
         {
             Account account = player.GetAccount();
             Character character = player.GetCharacter();
@@ -412,12 +412,12 @@ namespace mtgvrp.core
         }
 
         [RemoteEvent("NearbyMessage")]
-        public void NearbyMessage(Client player, params object[] arguments)
+        public void NearbyMessage(Player player, params object[] arguments)
         {
             NearbyMessage(player, (float)arguments[0], (string)arguments[1]);
         }
 
-        public static void NearbyMessage(Client player, float radius, string msg, string color)
+        public static void NearbyMessage(Player player, float radius, string msg, string color)
         {
             foreach(var i in API.Shared.GetAllPlayers())
             {
@@ -431,7 +431,7 @@ namespace mtgvrp.core
             }
         }
 
-        public static void NearbyMessage(Client player, float radius, string msg)
+        public static void NearbyMessage(Player player, float radius, string msg)
         {   
             foreach (var i in API.Shared.GetAllPlayers())
             {
@@ -445,34 +445,34 @@ namespace mtgvrp.core
             }
         }
 
-        public float GetDistanceBetweenPlayers(Client player1, Client player2)
+        public float GetDistanceBetweenPlayers(Player player1, Player player2)
         {
             return player1.Position.DistanceTo(player2.Position);
         }
 
         [Command("me", GreedyArg = true), Help.Help(HelpManager.CommandGroups.Roleplay, "Descrive an action you're doing.", "The action")]
-        public void me_cmd(Client player, string action)
+        public void me_cmd(Player player, string action)
         {
             Character playerchar = player.GetCharacter();
             RoleplayMessage(playerchar, action, RoleplayMe, 10, 0);
         }
 
         [Command("ame", GreedyArg = true), Help.Help(HelpManager.CommandGroups.Roleplay, "Describe an action you're doing, shows on top of your head.", "The action")]
-        public void ame_cmd(Client player, string action)
+        public void ame_cmd(Player player, string action)
         {
             Character character = player.GetCharacter();
             AmeLabelMessage(player, action, 8000);
         }
 
         [Command("do", GreedyArg = true), Help.Help(HelpManager.CommandGroups.Roleplay, "Describe an event that's occuring near you.", "The action")]
-        public void do_cmd(Client player, string action)
+        public void do_cmd(Player player, string action)
         {
             Character playerchar = player.GetCharacter();
             RoleplayMessage(playerchar, action, RoleplayDo, 10, 0);
         }
 
         [Command("shout", Alias = "s", GreedyArg = true), Help.Help(HelpManager.CommandGroups.Chat, "Sends a mesage to nearby players but with a high range. (Shouts)", "The message")]
-        public void shout_cmd(Client player, string text)
+        public void shout_cmd(Player player, string text)
         {
             if (NAPI.Data.HasEntityData(player, "IS_MOUTH_RAGGED"))
             {
@@ -483,7 +483,7 @@ namespace mtgvrp.core
         }
 
         [Command("low", GreedyArg = true), Help.Help(HelpManager.CommandGroups.Chat, "Sends a message to nearby players with a low range.", "The message")]
-        public void low_cmd(Client player, string text)
+        public void low_cmd(Player player, string text)
         {
             if (NAPI.Data.HasEntityData(player, "IS_MOUTH_RAGGED"))
             {
@@ -494,7 +494,7 @@ namespace mtgvrp.core
         }
 
         [Command("b", GreedyArg = true), Help.Help(HelpManager.CommandGroups.Chat, "Sends a local OOC chat.", "The message")]
-        public void b_cmd(Client player, string text)
+        public void b_cmd(Player player, string text)
         {
             Account account = player.GetAccount();
             if(account.AdminDuty == false)
@@ -511,7 +511,7 @@ namespace mtgvrp.core
         }
         
         [Command("admin", Alias = "a", GreedyArg = true), Help.Help(HelpManager.CommandGroups.AdminLevel1, "Talk in admin channel.", "The message")]
-        public void admin_cmd(Client player,  string text)
+        public void admin_cmd(Player player,  string text)
         {
             Account account = player.GetAccount();
 
@@ -534,7 +534,7 @@ namespace mtgvrp.core
         }
 
         [Command("rp", GreedyArg = true), Help.Help(HelpManager.CommandGroups.Roleplay, "Send an RP message to someone far away not in range of /me or /do", "Id of player", "The RP")]
-        public void rp_cmd(Client player, string id, string text)
+        public void rp_cmd(Player player, string id, string text)
         {
             var receiver = PlayerManager.ParseClient(id);
 
@@ -549,7 +549,7 @@ namespace mtgvrp.core
         }
 
         [Command("whisper", Alias = "w", GreedyArg = true), Help.Help(HelpManager.CommandGroups.Chat, "Simply whisper someone.", "Id of player", "The message to whisper")]
-        public void w_cmd(Client player, string id, string text)
+        public void w_cmd(Player player, string id, string text)
         {
             if (NAPI.Data.HasEntityData(player, "IS_MOUTH_RAGGED"))
             {
@@ -578,7 +578,7 @@ namespace mtgvrp.core
 
 
         [Command("pm", GreedyArg = true), Help.Help(HelpManager.CommandGroups.Chat, "PM/DM a player.", "Id of player", "PM text")]
-        public static void pm_cmd(Client player, string id, string text)
+        public static void pm_cmd(Player player, string id, string text)
         {
             var receiver = PlayerManager.ParseClient(id);
 
@@ -612,10 +612,10 @@ namespace mtgvrp.core
 
             var color = auto == 1 ? Color.AutoRoleplay : Color.PlayerRoleplay;
 
-            NearbyMessage(character.Client, radius, roleplayMsg, color);
+            NearbyMessage(character.Player, radius, roleplayMsg, color);
         }
 
-        public static void RoleplayMessage(Client player, string action, int type, float radius = 10, int auto = 1)
+        public static void RoleplayMessage(Player player, string action, int type, float radius = 10, int auto = 1)
         {
             string roleplayMsg = null;
             Character currChar = player.GetCharacter();
@@ -639,7 +639,7 @@ namespace mtgvrp.core
             NearbyMessage(player, radius, roleplayMsg, color);
         }
 
-        public static void AmeLabelMessage(Client player, string action, int time)
+        public static void AmeLabelMessage(Player player, string action, int time)
         {
             Character character = player.GetCharacter();
             if (API.Shared.DoesEntityExist(character.AmeText))

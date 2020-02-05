@@ -22,7 +22,7 @@ namespace mtgvrp.job_manager.trucker
         private const int PermittedDistance = 150;
 
         [ServerEvent(Event.PlayerDisconnected)]
-        public void OnPlayerDisconnected(Client player, byte type, string reason)
+        public void OnPlayerDisconnected(Player player, byte type, string reason)
         {
             Character c = player.GetCharacter();
 
@@ -36,7 +36,7 @@ namespace mtgvrp.job_manager.trucker
         }
 
         [ServerEvent(Event.PlayerExitVehicle)]
-        public void OnPlayerExitVehicle(Client player, Vehicle vehicle)
+        public void OnPlayerExitVehicle(Player player, Vehicle vehicle)
         {
             Character c = player.GetCharacter();
             if (c == null)
@@ -51,7 +51,7 @@ namespace mtgvrp.job_manager.trucker
         }
 
         [ServerEvent(Event.PlayerEnterColshape)]
-        public void OnPlayerEnterColShape(ColShape colshape, Client entity)
+        public void OnPlayerEnterColShape(ColShape colshape, Player entity)
         {
             if (NAPI.Entity.GetEntityType(entity) != EntityType.Player)
                 return;
@@ -276,7 +276,7 @@ namespace mtgvrp.job_manager.trucker
         }
 
         [Command("startrun"), Help(HelpManager.CommandGroups.TruckerJob, "Start a trucker run.", "Run type [gas/supplies]")]
-        public void StartRun(Client player, string type)
+        public void StartRun(Player player, string type)
         {
             var character = player.GetCharacter();
             
@@ -335,7 +335,7 @@ namespace mtgvrp.job_manager.trucker
         }
 
         [ServerEvent(Event.PlayerEnterVehicle)]
-        public void OnPlayerEnterVehicle(Client player, Vehicle vehicle, sbyte seat)
+        public void OnPlayerEnterVehicle(Player player, Vehicle vehicle, sbyte seat)
         {
             var veh = vehicle.GetVehicle();
             var character = player.GetCharacter();
@@ -370,7 +370,7 @@ namespace mtgvrp.job_manager.trucker
         }
 
         [Command("canceltruck"), Help(HelpManager.CommandGroups.TruckerJob, "Cancels the current trucker run")]
-        public void CancelRun(Client player)
+        public void CancelRun(Player player)
         {
             if (player.GetCharacter().TruckingStage == Character.TruckingStages.None)
                 return;
@@ -409,7 +409,7 @@ namespace mtgvrp.job_manager.trucker
         }
 
         [Command("supplydemand"), Help(HelpManager.CommandGroups.TruckerJob, "Check the current supply and gas status.")]
-        public void CheckDemand(Client player)
+        public void CheckDemand(Player player)
         {
 
             double fuel = 0;

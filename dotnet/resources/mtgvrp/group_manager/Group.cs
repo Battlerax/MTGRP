@@ -119,7 +119,7 @@ namespace mtgvrp.group_manager
                     }
                     foreach (var c in PlayerManager.Players)
                     {
-                        if (c.Client != entity) { continue; }
+                        if (c.Player != entity) { continue; }
                         c.LockerZoneGroup = this;
                     }
                 };
@@ -131,7 +131,7 @@ namespace mtgvrp.group_manager
                     }
                     foreach (var c in PlayerManager.Players)
                     {
-                        if (c.Client != entity)
+                        if (c.Player != entity)
                         {
                             continue;
                         }
@@ -153,7 +153,7 @@ namespace mtgvrp.group_manager
                     }
                     foreach (var c in PlayerManager.Players)
                     {
-                        if (c.Client != entity) { continue; }
+                        if (c.Player != entity) { continue; }
                     }
                 };
                 FrontDesk.ColZone.OnEntityEnterColShape += (shape, entity) =>
@@ -164,7 +164,7 @@ namespace mtgvrp.group_manager
                     }
                     foreach (var c in PlayerManager.Players)
                     {
-                        if (c.Client != entity)
+                        if (c.Player != entity)
                         {
                             continue;
                         }
@@ -185,7 +185,7 @@ namespace mtgvrp.group_manager
                     }
                     foreach (var c in PlayerManager.Players)
                     {
-                        if (c.Client != entity) { continue; }
+                        if (c.Player != entity) { continue; }
                     }
                 };
                 ArrestLocation.ColZone.OnEntityEnterColShape += (shape, entity) =>
@@ -196,7 +196,7 @@ namespace mtgvrp.group_manager
                     }
                     foreach (var c in PlayerManager.Players)
                     {
-                        if (c.Client != entity)
+                        if (c.Player != entity)
                         {
                             continue;
                         }

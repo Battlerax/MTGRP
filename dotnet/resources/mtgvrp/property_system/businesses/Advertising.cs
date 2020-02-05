@@ -41,7 +41,7 @@ namespace mtgvrp.property_system.businesses
         // Commands
 
         [Command("advertise", Alias = "ad", GreedyArg = true), Help(HelpManager.CommandGroups.General, "To create an IC advertisment for everyone with a phone to see.", new[] { "Text for your ad." })]
-        public void advertisement_cmd(Client player, string text)
+        public void advertisement_cmd(Player player, string text)
         {
 
             var biz = PropertyManager.IsAtPropertyInteraction(player);
@@ -93,7 +93,7 @@ namespace mtgvrp.property_system.businesses
 
                 if (receiverPhone[0].IsOn)
                 {
-                    receiver.Client.SendChatMessage("~g~[AD] (#" + senderPhone.PhoneNumber + "): " + text);
+                    receiver.Player.SendChatMessage("~g~[AD] (#" + senderPhone.PhoneNumber + "): " + text);
                 }
             }
 

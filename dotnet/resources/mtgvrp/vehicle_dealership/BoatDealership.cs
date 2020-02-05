@@ -52,7 +52,7 @@ namespace mtgvrp.vehicle_dealership
         }
 
         [RemoteEvent("boatdealer_selectcar")]
-        public void BoatDealerSelectCar(Client sender, params object[] arguments)
+        public void BoatDealerSelectCar(Player sender, params object[] arguments)
         {
             Character character = sender.GetCharacter();
 
@@ -114,7 +114,7 @@ namespace mtgvrp.vehicle_dealership
         }
 
         [Command("buyrod")]
-        public void buyrod_cmd(Client player)
+        public void buyrod_cmd(Player player)
         {
 
             var character = player.GetCharacter();
@@ -157,7 +157,7 @@ namespace mtgvrp.vehicle_dealership
         }
 
         [Command("buyboat"), Help(HelpManager.CommandGroups.Vehicles, "Command used inside dealership to buy a vehicle.", null)]
-        public void BuyVehicle(Client player)
+        public void BuyVehicle(Player player)
         {
             //Check if can buy more cars.
             Character character = player.GetCharacter();

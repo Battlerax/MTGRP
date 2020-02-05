@@ -13,7 +13,7 @@ namespace mtgvrp.property_system.businesses
     {
 
         [Command("buyweapontint"), Help(HelpManager.CommandGroups.General, "Used to buy a weapon tint as a VIP", null)]
-        public void buyweapontint_cmd(Client player)
+        public void buyweapontint_cmd(Player player)
         {
             Account account = player.GetAccount();
 

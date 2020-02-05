@@ -2,12 +2,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.Timers;
-
-
 using GTANetworkAPI;
-
-
-
 using mtgvrp.core;
 using mtgvrp.core.Help;
 using mtgvrp.database_manager;
@@ -19,7 +14,6 @@ using mtgvrp.player_manager.login;
 using mtgvrp.property_system;
 using mtgvrp.vehicle_manager;
 using System.Security.Cryptography;
-using GTANetworkMethods;
 using mtgvrp.weapon_manager;
 using MongoDB.Driver;
 using static mtgvrp.core.LogManager;
@@ -39,7 +33,7 @@ namespace mtgvrp.AdminSystem
         }
 
         [ServerEvent(Event.PlayerDamage)]
-        public void OnPlayerDamage(Client player, float lossFirst, float lossSecond)
+        public void OnPlayerDamage(Player player, float lossFirst, float lossSecond)
         {
             Character c = player.GetCharacter();
             if (c.isAJailed || c.IsJailed)
@@ -51,7 +45,7 @@ namespace mtgvrp.AdminSystem
         private static readonly Vector3 aJailLoc = new Vector3(136.5146, -2203.149, 7.30914);
 
         [RemoteEvent("OnRequestSubmitted")]
-        public void OnRequestSubmitted(Client player, params object[] arguments)
+        public void OnRequestSubmitted(Player player, params object[] arguments)
         {
             Character character = player.GetCharacter();
             int playerid = PlayerManager.GetPlayerId(character);
@@ -64,7 +58,7 @@ namespace mtgvrp.AdminSystem
         }
 
         [RemoteEvent("OnReportMade")]
-        public void OnReportMade(Client player, params object[] arguments)
+        public void OnReportMade(Player player, params object[] arguments)
         {
             Character senderchar = player.GetCharacter();
             int senderid = PlayerManager.GetPlayerId(senderchar);
@@ -86,14 +80,14 @@ namespace mtgvrp.AdminSystem
         }
 
         [RemoteEvent("SET_PLAYER_CP")]
-        public void SetPlayerCP(Client player, params object[] arguments)
+        public void SetPlayerCP(Player player, params object[] arguments)
         {
             var p = NAPI.Player.GetPlayerFromHandle((Entity)arguments[0]);
             NAPI.ClientEvent.TriggerClientEvent(p, "update_beacon", (Vector3)arguments[1]);
         }
 
         [RemoteEvent("teleport")]
-        public void Teleport(Client player, params object[] arguments)
+        public void Teleport(Player player, params object[] arguments)
         {
             Vector3 pos = (Vector3)arguments[0];
             player.Position = new Vector3(pos.X, pos.Y, pos.Z);
@@ -101,7 +95,7 @@ namespace mtgvrp.AdminSystem
 
         [Command("arelease")]
         [Help(HelpManager.CommandGroups.AdminLevel2, "Release a player from admin prison.", "Player to free.")]
-        public void arelease_cmd(Client sender, string id)
+        public void arelease_cmd(Player sender, string id)
         {
             Account a = sender.GetAccount();
             if (a.AdminLevel < 2) return;
@@ -124,7 +118,7 @@ namespace mtgvrp.AdminSystem
         [Command("setallsupplies"), Help(HelpManager.CommandGroups.AdminLevel5,
              "Used to set all non gas station properties' supplies.",
              new[] {"Amount of supplies to set."})]
-        public void SetAllSupplies(Client player, int supply)
+        public void SetAllSupplies(Player player, int supply)
         {
             var acc = player.GetAccount();
             if (acc.AdminLevel >= 5)
@@ -144,7 +138,7 @@ namespace mtgvrp.AdminSystem
         [Command("setgassupplies"), Help(HelpManager.CommandGroups.AdminLevel5,
              "Used to set all gas station properties' supplies.",
              new[] {"Amount of supplies to set."})]
-        public void SetGasSupplies(Client player, int supply)
+        public void SetGasSupplies(Player player, int supply)
         {
             var acc = player.GetAccount();
             if (acc.AdminLevel >= 5)
@@ -159,7 +153,7 @@ namespace mtgvrp.AdminSystem
 
         [Command("resetpassword"), Help(HelpManager.CommandGroups.AdminLevel5, "Reset a player's password.",
              new[] {"The player", "The new passsword."})]
-        public void resetpassword_cmd(Client player, string accountname, string newpass)
+        public void resetpassword_cmd(Player player, string accountname, string newpass)
         {
             Account account = player.GetAccount();
 
@@ -198,7 +192,7 @@ namespace mtgvrp.AdminSystem
 
         [Command("resetmypass"), Help(HelpManager.CommandGroups.AdminLevel5, "Reset your own password.",
              new[] {"Your new password."})]
-        public void resetmypass_cmd(Client player, string newpass)
+        public void resetmypass_cmd(Player player, string newpass)
         {
             if (newpass.Length < 8)
             {
@@ -228,7 +222,7 @@ namespace mtgvrp.AdminSystem
         [Command("makedev"),
          Help(HelpManager.CommandGroups.AdminLevel6, "Used to set a player as a developer.",
              new[] {"The id of target player.", "Dev level, 0 = none."})]
-        public void SetDevLevel(Client player, string target, int level)
+        public void SetDevLevel(Player player, string target, int level)
         {
             var acc = player.GetAccount();
             if (acc.AdminLevel >= 6)
@@ -258,7 +252,7 @@ namespace mtgvrp.AdminSystem
 
         [Command("resetcharacterjob"),
          Help(HelpManager.CommandGroups.AdminLevel5, "Used to reset a player's job.", new[] {"The target player"})]
-        public void resetcharacterjob_cmd(Client player, string target)
+        public void resetcharacterjob_cmd(Player player, string target)
         {
             Account account = player.GetAccount();
 
@@ -280,7 +274,7 @@ namespace mtgvrp.AdminSystem
         [Command("set", GreedyArg = true),
          Help(HelpManager.CommandGroups.AdminLevel5, "Used to set items/settings of a player.", new[]
              {"Id: The id of target player.", "Item: Name of the variable.", "Amount: New value of the variable."})]
-        public void SetCharacterData(Client player, string target, string var, string value)
+        public void SetCharacterData(Player player, string target, string var, string value)
         {
             var acc = player.GetAccount();
             if (acc.AdminLevel >= 5)
@@ -349,7 +343,7 @@ namespace mtgvrp.AdminSystem
          Help(HelpManager.CommandGroups.AdminLevel7,
              "Setting the admin level of admins, don't know how you made it to level 7 without knowing this honestly.",
              new[] {"Id: The id of target player.", "Rank set to"})]
-        public void setrank_cmd(Client player, string id, int level)
+        public void setrank_cmd(Player player, string id, int level)
         {
             var receiver = PlayerManager.ParseClient(id);
             Account account = player.GetAccount();
@@ -397,7 +391,7 @@ namespace mtgvrp.AdminSystem
         [Command("makeleader"),
          Help(HelpManager.CommandGroups.AdminLevel5, "Making someone the leader of a group.",
              new[] {"The id of target player.", "Group ID of the group."})]
-        public void makeleader(Client player, string playerid, int groupId)
+        public void makeleader(Player player, string playerid, int groupId)
         {
             var account = player.GetAccount();
             if (account.AdminLevel < 5)
@@ -434,7 +428,7 @@ namespace mtgvrp.AdminSystem
                 leaderChar.rp_name() + " has joined the group. (Made leader by " + player.GetCharacter().rp_name() +
                 ")");
             Log(LogTypes.GroupInvites,
-                $"{leaderChar.CharacterName}[{leaderChar.Client.GetAccount().AccountName}] has joined the group. (Made leader by {player.GetAccount().AdminName}[{player.GetAccount().AccountName}])");
+                $"{leaderChar.CharacterName}[{leaderChar.Player.GetAccount().AccountName}] has joined the group. (Made leader by {player.GetAccount().AdminName}[{player.GetAccount().AccountName}])");
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has set {GetLogName(leaderClient)} as group loader of Group {leaderChar.Group.Name}");
         }
@@ -442,7 +436,7 @@ namespace mtgvrp.AdminSystem
         [Command("gotopos"),
          Help(HelpManager.CommandGroups.AdminLevel2, "Teleports you to the given coordinates",
              new[] {"X coordinate", "Y coordinate", "Z coordinate"})]
-        public void gotopos_cmd(Client player, double x, double y, double z)
+        public void gotopos_cmd(Player player, double x, double y, double z)
         {
             Account account = player.GetAccount();
             if (account.AdminLevel < 2)
@@ -459,7 +453,7 @@ namespace mtgvrp.AdminSystem
          Help(HelpManager.CommandGroups.AdminLevel2,
              "Sends a player to their original position before being teleported",
              new[] {"Id: The id of target player."})]
-        public static void sendback_cmd(Client player, string id)
+        public static void sendback_cmd(Player player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
             Account account = player.GetAccount();
@@ -488,7 +482,7 @@ namespace mtgvrp.AdminSystem
         [Command("get"),
          Help(HelpManager.CommandGroups.AdminLevel2, "Used to TP a player to you.",
              new[] {"Id: The id of target player."})]
-        public static void get_cmd(Client player, string id)
+        public static void get_cmd(Player player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
             Account account = player.GetAccount();
@@ -517,7 +511,7 @@ namespace mtgvrp.AdminSystem
         [Command("adminwarp", Alias = "aw", GreedyArg = true),
          Help(HelpManager.CommandGroups.AdminLevel2, "Used to TP a player to the player spawn.",
              new[] {"Id: The id of target player."})]
-        public void adminwarp_cmd(Client player, string id)
+        public void adminwarp_cmd(Player player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
             Account account = player.GetAccount();
@@ -541,7 +535,7 @@ namespace mtgvrp.AdminSystem
         [Command("goto"),
          Help(HelpManager.CommandGroups.AdminLevel2, "Teleports you to the selected player.",
              new[] {"Id: The id of target player."})]
-        public static void goto_cmd(Client player, string id)
+        public static void goto_cmd(Player player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
             Account account = player.GetAccount();
@@ -565,7 +559,7 @@ namespace mtgvrp.AdminSystem
         [Command("agiveweapon"),
          Help(HelpManager.CommandGroups.AdminLevel3, "Gives a weapon to a player", new[]
              {"Id: The id of target player.", "Weapon Hash (Can use name or number)"})]
-        public void agiveweapon_cmd(Client player, string id, WeaponHash weaponHash)
+        public void agiveweapon_cmd(Player player, string id, WeaponHash weaponHash)
         {
             var receiver = PlayerManager.ParseClient(id);
             Account account = player.GetAccount();
@@ -588,7 +582,7 @@ namespace mtgvrp.AdminSystem
         [Command("sethealth"),
          Help(HelpManager.CommandGroups.AdminLevel3, "Set the health of a player",
              new[] {"Id: The id of target player.", "Health amount"})]
-        public void sethealth_cmd(Client player, string id, int health)
+        public void sethealth_cmd(Player player, string id, int health)
         {
             var receiver = PlayerManager.ParseClient(id);
             Account account = player.GetAccount();
@@ -610,7 +604,7 @@ namespace mtgvrp.AdminSystem
         [Command("setarmour"),
          Help(HelpManager.CommandGroups.AdminLevel3, "Set the armour of a player.",
              new[] {"Id: The id of target player.", "Armour amount"})]
-        public void setarmour_cmd(Client player, string id, int armour)
+        public void setarmour_cmd(Player player, string id, int armour)
         {
             var receiver = PlayerManager.ParseClient(id);
             Account account = player.GetAccount();
@@ -632,7 +626,7 @@ namespace mtgvrp.AdminSystem
         [Command("setvehiclehp"),
          Help(HelpManager.CommandGroups.AdminLevel3, "Set a vehicles health.",
              new[] {"Id: The id of Vehicle.", "Health amount"})]
-        public void SetVehHP_cmd(Client player, int vehid, int health)
+        public void SetVehHP_cmd(Player player, int vehid, int health)
         {
             Account account = player.GetAccount();
 
@@ -663,7 +657,7 @@ namespace mtgvrp.AdminSystem
         [Command("spec"),
          Help(HelpManager.CommandGroups.AdminLevel2, "View a player without them seeing you. Sneaky stuff.",
              new[] {"Id: The id of player."})]
-        public static void spec_cmd(Client player, string id)
+        public static void spec_cmd(Player player, string id)
         {
             var target = PlayerManager.ParseClient(id);
             Account account = player.GetAccount();
@@ -695,7 +689,7 @@ namespace mtgvrp.AdminSystem
         }
 
         [Command("specoff"), Help(HelpManager.CommandGroups.AdminLevel2, "Stop spectating.", null)]
-        public void specoff_cmd(Client player)
+        public void specoff_cmd(Player player)
         {
             Account account = player.GetAccount();
 
@@ -720,7 +714,7 @@ namespace mtgvrp.AdminSystem
         [Command("slap"),
          Help(HelpManager.CommandGroups.AdminLevel2, "Slaps the given player into the air.",
              new[] {"Id: The id of player."})]
-        public void slap_cmd(Client player, string id)
+        public void slap_cmd(Player player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
             Account account = player.GetAccount();
@@ -746,7 +740,7 @@ namespace mtgvrp.AdminSystem
         [Command("freeze"),
          Help(HelpManager.CommandGroups.AdminLevel2, "Stops the player from being able to move.",
              new[] {"Id: The id of player."})]
-        public void freeze_cmd(Client player, string id)
+        public void freeze_cmd(Player player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
             Account account = player.GetAccount();
@@ -766,7 +760,7 @@ namespace mtgvrp.AdminSystem
         }
 
         [Command("gotowaypoint"), Help(HelpManager.CommandGroups.AdminLevel2, "Teleports you to your waypoint.", null)]
-        public void gotowaypoint_cmd(Client player)
+        public void gotowaypoint_cmd(Player player)
         {
             Account account = player.GetAccount();
 
@@ -781,7 +775,7 @@ namespace mtgvrp.AdminSystem
         [Command("unfreeze"),
          Help(HelpManager.CommandGroups.AdminLevel2, "Allows the player to move once again.",
              new[] {"Id: The id of player."})]
-        public void unfreeze_cmd(Client player, string id)
+        public void unfreeze_cmd(Player player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
             Account account = player.GetAccount();
@@ -803,7 +797,7 @@ namespace mtgvrp.AdminSystem
         [Command("quitadmin"),
          Help(HelpManager.CommandGroups.AdminLevel1,
              "This will remove you from the team, thank you for helping out the team. o7", null)]
-        public void QuitAdmin_cmd(Client player)
+        public void QuitAdmin_cmd(Player player)
         {
             Account account = player.GetAccount();
 
@@ -820,7 +814,7 @@ namespace mtgvrp.AdminSystem
         [Command("setmymoney"),
          Help(HelpManager.CommandGroups.AdminLevel7, "Sets your money to the specificed amount.",
              new[] {"The amount of money you want."})]
-        public void setmymoney_cmd(Client player, int money)
+        public void setmymoney_cmd(Player player, int money)
         {
             Account account = player.GetAccount();
             Character character = player.GetCharacter();
@@ -837,7 +831,7 @@ namespace mtgvrp.AdminSystem
         [Command("showplayercars"),
          Help(HelpManager.CommandGroups.AdminLevel2, "Give you a list of the vehicles a player owns.",
              new[] {"Id: The id of player."})]
-        public void showplayercars_cmd(Client player, string id)
+        public void showplayercars_cmd(Player player, string id)
         {
             Account account = player.GetAccount();
             if (account.AdminLevel < 2)
@@ -867,7 +861,7 @@ namespace mtgvrp.AdminSystem
 
         [Command("noobs"),
          Help(HelpManager.CommandGroups.AdminLevel2, "List of players with less than 4 playing hours.", null)]
-        public void noobs_cmd(Client player)
+        public void noobs_cmd(Player player)
         {
             Account account = player.GetAccount();
             if (account.AdminLevel < 2)
@@ -888,7 +882,7 @@ namespace mtgvrp.AdminSystem
 
         [Command("gotocar"),
          Help(HelpManager.CommandGroups.AdminLevel2, "Teleport to a vehicle.", new[] {"Vehicle ID"})]
-        public void gotocar_cmd(Client player, int vID)
+        public void gotocar_cmd(Player player, int vID)
         {
             Account account = player.GetAccount();
             if (account.AdminLevel < 2)
@@ -916,7 +910,7 @@ namespace mtgvrp.AdminSystem
 
         [Command("getcar"),
          Help(HelpManager.CommandGroups.AdminLevel2, "Teleports a vehicle to you.", new[] {"Vehicle ID"})]
-        public void getplayercar_cmd(Client player, int vID)
+        public void getplayercar_cmd(Player player, int vID)
         {
             Account account = player.GetAccount();
             if (account.AdminLevel < 2)
@@ -945,7 +939,7 @@ namespace mtgvrp.AdminSystem
         [Command("setadminname"),
          Help(HelpManager.CommandGroups.AdminLevel6, "Can set the admin name for admins.",
              new[] {"Id: The id of player.", "Desired name they want."})]
-        public void setadminname_cmd(Client player, string id, string name)
+        public void setadminname_cmd(Player player, string id, string name)
         {
             var receiver = PlayerManager.ParseClient(id);
             Account account = player.GetAccount();
@@ -968,7 +962,7 @@ namespace mtgvrp.AdminSystem
         }
 
         [Command("admins"), Help(HelpManager.CommandGroups.General, "A list of all admins online at the moment.", null)]
-        public void admins_cmd(Client player)
+        public void admins_cmd(Player player)
         {
             NAPI.Chat.SendChatMessageToPlayer(player, "=====ADMINS ONLINE NOW=====");
             foreach (var c in API.GetAllPlayers())
@@ -996,7 +990,7 @@ namespace mtgvrp.AdminSystem
 
         [Command("adminduty"),
          Help(HelpManager.CommandGroups.AdminLevel1, "Can go on and off of admin duty with this.", null)]
-        public void adminduty_cmd(Client player)
+        public void adminduty_cmd(Player player)
         {
             Account account = player.GetAccount();
 
@@ -1026,7 +1020,7 @@ namespace mtgvrp.AdminSystem
 
         [Command("whereami"),
          Help(HelpManager.CommandGroups.General, "Give you your current location in X,Y,Z format.", null)]
-        public void GetPlayerLocation(Client player)
+        public void GetPlayerLocation(Player player)
         {
             Account account = player.GetAccount();
             if (account.AdminLevel == 0)
@@ -1059,7 +1053,7 @@ namespace mtgvrp.AdminSystem
         [Command("report", Alias = "re", GreedyArg = true),
          Help(HelpManager.CommandGroups.General,
              "Use this to make an ingame report for an admin to sort or to speak to an admin about an issue.", null)]
-        public void report_cmd(Client player)
+        public void report_cmd(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -1085,7 +1079,7 @@ namespace mtgvrp.AdminSystem
 
         [Command("reports", GreedyArg = true),
          Help(HelpManager.CommandGroups.AdminLevel2, "View all current ingame reports made.", null)]
-        public void reports_cmd(Client player)
+        public void reports_cmd(Player player)
         {
             Account account = player.GetAccount();
             if (account.AdminLevel < 2)
@@ -1113,7 +1107,7 @@ namespace mtgvrp.AdminSystem
         [Command("acceptreport", GreedyArg = true),
          Help(HelpManager.CommandGroups.AdminLevel2, "For you to take on a report.",
              new[] {"Id: The id of target player."})]
-        public void acceptreport_cmd(Client player, string id)
+        public void acceptreport_cmd(Player player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
             Account account = player.GetAccount();
@@ -1156,7 +1150,7 @@ namespace mtgvrp.AdminSystem
         [Command("trashreport", GreedyArg = true),
          Help(HelpManager.CommandGroups.AdminLevel1, "For you to get rid of a report.",
              new[] {"Id: The id of target player."})]
-        public void trashreport_cmd(Client player, string id)
+        public void trashreport_cmd(Player player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
             Account account = player.GetAccount();
@@ -1197,7 +1191,7 @@ namespace mtgvrp.AdminSystem
         [Command("maccept", GreedyArg = true),
          Help(HelpManager.CommandGroups.AdminLevel2, "For you to take on an ask.",
              new[] {"Id: The id of target player."})]
-        public void maccept_cmd(Client player, string id)
+        public void maccept_cmd(Player player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
             Account account = player.GetAccount();
@@ -1251,7 +1245,7 @@ namespace mtgvrp.AdminSystem
 
         [Command("mfinish", GreedyArg = true),
          Help(HelpManager.CommandGroups.AdminLevel1, "When you're done with the player hit em with this.", null)]
-        public void mfinish_cmd(Client player)
+        public void mfinish_cmd(Player player)
         {
             Account account = player.GetAccount();
             Character character = player.GetCharacter();
@@ -1277,7 +1271,7 @@ namespace mtgvrp.AdminSystem
         [Command("ask", GreedyArg = true),
          Help(HelpManager.CommandGroups.General, "To ask a mod/admin a question. Also useful for a checkpoint.",
              new[] {"Question for moderators"})]
-        public void ask_cmd(Client player, string message)
+        public void ask_cmd(Player player, string message)
         {
             Character character = player.GetCharacter();
 
@@ -1304,7 +1298,7 @@ namespace mtgvrp.AdminSystem
         [Command("nmute", GreedyArg = true),
          Help(HelpManager.CommandGroups.AdminLevel1, "Used to mute players in /n.",
              new[] {"Id: The id of target player."})]
-        public void nmute_cmd(Client player, string id)
+        public void nmute_cmd(Player player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
             Account account = player.GetAccount();
@@ -1343,7 +1337,7 @@ namespace mtgvrp.AdminSystem
         [Command("vmute", GreedyArg = true),
          Help(HelpManager.CommandGroups.AdminLevel1, "Used to mute people in /v.",
              new[] {"Id: The id of target player."})]
-        public void vmute_cmd(Client player, string id)
+        public void vmute_cmd(Player player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
             Account account = player.GetAccount();
@@ -1381,7 +1375,7 @@ namespace mtgvrp.AdminSystem
         [Command("reportmute", GreedyArg = true),
          Help(HelpManager.CommandGroups.AdminLevel1, "Used to stop people from making reports.",
              new[] {"Id: The id of target player."})]
-        public void reportmute_cmd(Client player, string id)
+        public void reportmute_cmd(Player player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
             Account account = player.GetAccount();
@@ -1420,7 +1414,7 @@ namespace mtgvrp.AdminSystem
         //here toro
         [Command("mlist", GreedyArg = true),
          Help(HelpManager.CommandGroups.AdminLevel1, "Used to list the active moderator reques.", null)]
-        public void asklist_cmd(Client player)
+        public void asklist_cmd(Player player)
         {
             Account account = player.GetAccount();
             if (account.AdminLevel < 1)
@@ -1440,7 +1434,7 @@ namespace mtgvrp.AdminSystem
 
         [Command("clearreports", GreedyArg = true),
          Help(HelpManager.CommandGroups.AdminLevel3, "Clears all of the curren reports and asks", null)]
-        public void clearreports_cmd(Client player)
+        public void clearreports_cmd(Player player)
         {
             Account account = player.GetAccount();
             if (account.AdminLevel < 3)
@@ -1457,7 +1451,7 @@ namespace mtgvrp.AdminSystem
         [Command("prison", GreedyArg = true),
          Help(HelpManager.CommandGroups.AdminLevel2, "Places a player into prison for the specificed amount of time.",
              new[] {"ID of the target player", "Time in minutes.", "Reason for prison"})]
-        public void prison_cmd(Client player, string id, string time, string reason)
+        public void prison_cmd(Player player, string id, string time, string reason)
         {
             Account account = player.GetAccount();
             if (account.AdminLevel < 2)
@@ -1488,7 +1482,7 @@ namespace mtgvrp.AdminSystem
         [Command("kickplayer", GreedyArg = true),
          Help(HelpManager.CommandGroups.AdminLevel2, "Kicks a player from the server",
              new[] {"ID of the target player", "The kick reason."})]
-        public static void kick_cmd(Client player, string id, string reason)
+        public static void kick_cmd(Player player, string id, string reason)
         {
             var receiver = PlayerManager.ParseClient(id);
 
@@ -1505,7 +1499,7 @@ namespace mtgvrp.AdminSystem
         }
 
         [Command("remoteaw", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel2, "Admin warps a player remotely", new[] { "Character name of player"})]
-        public void remoteaw_cmd(Client player, string charactername)
+        public void remoteaw_cmd(Player player, string charactername)
         {
             Account account = player.GetAccount();
             if (account.AdminLevel < 2)
@@ -1526,7 +1520,7 @@ namespace mtgvrp.AdminSystem
         [Command("remoteprison", GreedyArg = true),
          Help(HelpManager.CommandGroups.AdminLevel2, "Places a player into prison for the specificed amount of time.",
              new[] {"ID of the target player", "Time in minutes.", "Reason for prison"})]
-        public void remoteprison_cmd(Client player, string charactername, string time, string reason)
+        public void remoteprison_cmd(Player player, string charactername, string time, string reason)
         {
             Account account = player.GetAccount();
             if (account.AdminLevel < 2)
@@ -1549,7 +1543,7 @@ namespace mtgvrp.AdminSystem
         [Command("remotewarn", GreedyArg = true),
          Help(HelpManager.CommandGroups.AdminLevel3, "Applies a player warning to an offline player", new[]
              {"Account name of the target player", "The warning reason"})]
-        public static void remotewarn_cmd(Client player, string accountname, string reason)
+        public static void remotewarn_cmd(Player player, string accountname, string reason)
         {
             Account account = player.GetAccount();
             Character character = player.GetCharacter();
@@ -1614,7 +1608,7 @@ namespace mtgvrp.AdminSystem
         [Command("remoteban", GreedyArg = true),
          Help(HelpManager.CommandGroups.AdminLevel3, "Bans an offline player",
              new[] {"Account name of the target player", "The ban reason"})]
-        public static void remoteban_cmd(Client player, string accountname, string reason)
+        public static void remoteban_cmd(Player player, string accountname, string reason)
         {
             var filter = Builders<Account>.Filter.Eq("AccountName", accountname);
             var foundAccount = DatabaseManager.AccountTable.Find(filter).ToList();
@@ -1644,7 +1638,7 @@ namespace mtgvrp.AdminSystem
 
         [Command("setcp"),
          Help(HelpManager.CommandGroups.AdminLevel1, "Sends a checkpoint to a player.", "The target name or id")]
-        public void sendwaypoint_cmd(Client player, string target)
+        public void sendwaypoint_cmd(Player player, string target)
         {
             var targetClient = PlayerManager.ParseClient(target);
             if (targetClient == null)
@@ -1660,7 +1654,7 @@ namespace mtgvrp.AdminSystem
 
         [Command("getcharacters", Alias = "getchars"),
          Help(HelpManager.CommandGroups.AdminLevel4, "Gets the characters of an account", new[] {"Soical club name"})]
-        public void getcharacters_cmd(Client player, string accname)
+        public void getcharacters_cmd(Player player, string accname)
         {
             Account account = player.GetAccount();
 
@@ -1694,7 +1688,7 @@ namespace mtgvrp.AdminSystem
         [Command("getaccountname", GreedyArg = true),
          Help(HelpManager.CommandGroups.AdminLevel4, "Gets the account name of a character",
              new[] {"Character name for the account"})]
-        public void getaccountname_cmd(Client player, string charactername)
+        public void getaccountname_cmd(Player player, string charactername)
         {
             Account account = player.GetAccount();
 
@@ -1723,7 +1717,7 @@ namespace mtgvrp.AdminSystem
 
         [Command("remotestats", GreedyArg = true),
          Help(HelpManager.CommandGroups.AdminLevel3, "Gets the stats of a character", new[] {"Character name"})]
-        public void remotestats_cmd(Client player, string charactername)
+        public void remotestats_cmd(Player player, string charactername)
         {
             Account account = player.GetAccount();
 
@@ -1752,7 +1746,7 @@ namespace mtgvrp.AdminSystem
         [Command("changename", GreedyArg = false),
          Help(HelpManager.CommandGroups.AdminLevel2, "Change a player's character name.",
              new[] {"ID of the target player", "New name"})]
-        public static void forcechangename_cmd(Client player, string id, string name)
+        public static void forcechangename_cmd(Player player, string id, string name)
         {
             Account account = player.GetAccount();
 
@@ -1777,7 +1771,7 @@ namespace mtgvrp.AdminSystem
         [Command("unban", GreedyArg = true),
          Help(HelpManager.CommandGroups.AdminLevel3, "Unbans an account from the server",
              new[] {"Account name of the target player"})]
-        public static void unban_cmd(Client player, string accountname)
+        public static void unban_cmd(Player player, string accountname)
         {
             var filter = Builders<Account>.Filter.Eq("AccountName", accountname);
             var foundAccount = DatabaseManager.AccountTable.Find(filter).ToList();
@@ -1807,7 +1801,7 @@ namespace mtgvrp.AdminSystem
 
         [Command("untempban", GreedyArg = true),
          Help(HelpManager.CommandGroups.AdminLevel3, "Removes an accouns tempban", new[] {"ID of the target player"})]
-        public static void untempban_cmd(Client player, string accountname)
+        public static void untempban_cmd(Player player, string accountname)
         {
             var filter = Builders<Account>.Filter.Eq("AccountName", accountname);
             var foundAccount = DatabaseManager.AccountTable.Find(filter).ToList();
@@ -1837,7 +1831,7 @@ namespace mtgvrp.AdminSystem
         [Command("banplayer", GreedyArg = true),
          Help(HelpManager.CommandGroups.AdminLevel2, "Bans a player from the server",
              new[] {"ID of the target player", "Ban reason"})]
-        public static void ban_cmd(Client player, string id, string reason)
+        public static void ban_cmd(Player player, string id, string reason)
         {
             Account account = player.GetAccount();
 
@@ -1859,7 +1853,7 @@ namespace mtgvrp.AdminSystem
         [Command("warn", GreedyArg = false),
          Help(HelpManager.CommandGroups.AdminLevel2, "Applies a player warning to a player", new[]
              {"ID of the target player", "The reason for the warning"})]
-        public static void warn_cmd(Client player, string id, string reason)
+        public static void warn_cmd(Player player, string id, string reason)
         {
             Account account = player.GetAccount();
 
@@ -1904,7 +1898,7 @@ namespace mtgvrp.AdminSystem
         [Command("removewarns", GreedyArg = false),
          Help(HelpManager.CommandGroups.AdminLevel2, "Removes all of a players warns", new[]
              {"ID of the target player", "The reason for removing them"})]
-        public static void removewarns_cmd(Client player, string id, string reason)
+        public static void removewarns_cmd(Player player, string id, string reason)
         {
             var receiver = PlayerManager.ParseClient(id);
 
@@ -1936,7 +1930,7 @@ namespace mtgvrp.AdminSystem
         [Command("remotesetadminlevel"),
          Help(HelpManager.CommandGroups.AdminLevel2, "Change an offline player's admin level.",
              new[] {"Account name of the player"})]
-        public void remotesetadminlevel_cmd(Client player, string accountname, int level)
+        public void remotesetadminlevel_cmd(Player player, string accountname, int level)
         {
             Account account = player.GetAccount();
 
@@ -1974,7 +1968,7 @@ namespace mtgvrp.AdminSystem
         [Command("remoteplayerwarns"),
          Help(HelpManager.CommandGroups.AdminLevel2, "View an offline player's warnings",
              new[] {"Account name of the player"})]
-        public static void remoteplayerwarns_cmd(Client player, string accountname)
+        public static void remoteplayerwarns_cmd(Player player, string accountname)
         {
             Account account = player.GetAccount();
 
@@ -2011,7 +2005,7 @@ namespace mtgvrp.AdminSystem
         [Command("playerwarns", GreedyArg = false),
          Help(HelpManager.CommandGroups.General, "View your player warnings",
              new[] {"ID of the target player <strong>[ADMIN ONLY]</strong>"})]
-        public static void playerwarns_cmd(Client player, string id = null)
+        public static void playerwarns_cmd(Player player, string id = null)
         {
             var receiver = PlayerManager.ParseClient(id);
 
@@ -2034,7 +2028,7 @@ namespace mtgvrp.AdminSystem
 
         [Command("respawnveh", GreedyArg = false),
          Help(HelpManager.CommandGroups.AdminLevel4, "Respawns a vehicle.", "Id of vehicle to respawn. (OPTIONAL)")]
-        public void respawnveh_cmd(Client player, int id = 0)
+        public void respawnveh_cmd(Player player, int id = 0)
         {
             Account account = player.GetAccount();
 
@@ -2073,7 +2067,7 @@ namespace mtgvrp.AdminSystem
         }
 
 
-        public static void ShowWarns(Client player, Client receiver = null)
+        public static void ShowWarns(Player player, Player receiver = null)
         {
 
             Account account = player.GetAccount();
@@ -2097,7 +2091,7 @@ namespace mtgvrp.AdminSystem
             API.Shared.SendChatMessageToPlayer(player, "~r~Tempban level:~w~ " + account.TempbanLevel);
         }
 
-        public static void AddTempBanLevel(Client player)
+        public static void AddTempBanLevel(Player player)
         {
             Character character = player.GetCharacter();
             Account account = player.GetAccount();
@@ -2109,7 +2103,7 @@ namespace mtgvrp.AdminSystem
             }
         }
 
-        public static void TempBanPlayer(Client player)
+        public static void TempBanPlayer(Player player)
         {
             Character character = player.GetCharacter();
             Account account = player.GetAccount();
@@ -2131,14 +2125,14 @@ namespace mtgvrp.AdminSystem
             }
         }
 
-        public static void KickPlayer(Client player, string reason)
+        public static void KickPlayer(Player player, string reason)
         {
             API.Shared.KickPlayer(player);
             API.Shared.SendNotificationToPlayer(player, "You were kicked from the server for ~r~'" + reason + "~w~'.");
             API.Shared.SendChatMessageToPlayer(player, "You were kicked from the server for ~r~'" + reason + "~w~'.");
         }
 
-        public static void BanPlayer(Client player, string reason)
+        public static void BanPlayer(Player player, string reason)
         {
             Account account = player.GetAccount();
 
@@ -2149,7 +2143,7 @@ namespace mtgvrp.AdminSystem
             API.Shared.KickPlayer(player);
         }
 
-        public static void UnbanPlayer(Client player)
+        public static void UnbanPlayer(Player player)
         {
             Account account = player.GetAccount();
 
@@ -2159,7 +2153,7 @@ namespace mtgvrp.AdminSystem
         [Command("setcharacterslots"),
          Help(HelpManager.CommandGroups.AdminLevel3, "Set the amount of character slots a player may have", new[]
              {"ID of the target player", "The amount of character slots permitted"})]
-        public void setcharacterslots(Client player, string id, int slots)
+        public void setcharacterslots(Player player, string id, int slots)
         {
             var receiver = PlayerManager.ParseClient(id);
             if (receiver == null)
@@ -2187,7 +2181,7 @@ namespace mtgvrp.AdminSystem
         [Command("changeviplevel"),
          Help(HelpManager.CommandGroups.AdminLevel3, "Change a players VIP level", new[]
              {"ID of the target player", "The VIP level to change to", "The VIP amount in days"})]
-        public void changeviplevel_cmd(Client player, string id, int level, int days)
+        public void changeviplevel_cmd(Player player, string id, int level, int days)
         {
             var receiver = PlayerManager.ParseClient(id);
             if (receiver == null)
@@ -2255,7 +2249,7 @@ namespace mtgvrp.AdminSystem
         [Command("addviptime", GreedyArg = true),
          Help(HelpManager.CommandGroups.AdminLevel3, "Adds VIP time to a specific players VIP", new[]
              {"ID of the target player", "The amount to add in days"})]
-        public void addviptime_cmd(Client player, string id, string days)
+        public void addviptime_cmd(Player player, string id, string days)
         {
             var receiver = PlayerManager.ParseClient(id);
             if (receiver == null)
@@ -2283,7 +2277,7 @@ namespace mtgvrp.AdminSystem
         }
 
         [Command("closestveh"), Help(HelpManager.CommandGroups.AdminLevel3, "Sets you into the closest vehicle.")]
-        public void closestveh_cmd(Client player)
+        public void closestveh_cmd(Player player)
         {
             Account account = player.GetAccount();
 
@@ -2300,7 +2294,7 @@ namespace mtgvrp.AdminSystem
             NAPI.Player.SetPlayerIntoVehicle(player, ClosestVeh, -1);
         }
 
-        public void startReportTimer(Client player)
+        public void startReportTimer(Player player)
         {
             Character senderchar = player.GetCharacter();
             senderchar.ReportCreated = true;
@@ -2328,7 +2322,7 @@ namespace mtgvrp.AdminSystem
             }
         }
 
-        public void ReportTimer(Client player)
+        public void ReportTimer(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -2336,7 +2330,7 @@ namespace mtgvrp.AdminSystem
             character.ReportTimer.Stop();
         }
 
-        public Vehicle GetClosestVeh(Client player)
+        public Vehicle GetClosestVeh(Player player)
         {
             var shortestDistance = 2000f;
             Vehicle closestveh = null;
@@ -2356,7 +2350,7 @@ namespace mtgvrp.AdminSystem
         [Command("forceredochar"),
          Help(HelpManager.CommandGroups.AdminLevel3, "Force someone to redo character creation.",
              new[] {"Target player id."})]
-        public void RedoCharacterSelection(Client player, string target)
+        public void RedoCharacterSelection(Player player, string target)
         {
             if (player.GetAccount().AdminLevel >= 2)
             {
@@ -2376,7 +2370,7 @@ namespace mtgvrp.AdminSystem
         [Command("testtext"),
          Help(HelpManager.CommandGroups.AdminLevel3, "Goes into testing on-screen text position.",
              new[] {"Text to display."})]
-        public void TestText(Client player, string text = "")
+        public void TestText(Player player, string text = "")
         {
             if (player.GetAccount().AdminLevel >= 3)
             {
@@ -2388,7 +2382,7 @@ namespace mtgvrp.AdminSystem
          Help(HelpManager.CommandGroups.AdminLevel4,
              "Gives an inventory item to a player.<br/> <strong>This could cause problems with the player, use with caution.</strong>",
              new[] {"Target ID or name.", "Item name, you can get this from a dev.", "Amount to give."})]
-        public void GiveItem(Client player, string target, string item, int amount)
+        public void GiveItem(Player player, string target, string item, int amount)
         {
             if (player.GetAccount().AdminLevel < 4)
             {
@@ -2435,7 +2429,7 @@ namespace mtgvrp.AdminSystem
         }
 
 
-        public static void aJailControl(Client target, int seconds)
+        public static void aJailControl(Player target, int seconds)
         {
             Character targetChar = target.GetCharacter();
             WeaponManager.RemoveAllPlayerWeapons(target);
@@ -2453,13 +2447,13 @@ namespace mtgvrp.AdminSystem
 
         }
 
-        private static void aUpdateTimer(Client sender)
+        private static void aUpdateTimer(Player sender)
         {
             Character c = sender.GetCharacter();
             c.aJailTimeLeft -= 1000;
         }
 
-        private static void aSetFree(Client sender)
+        private static void aSetFree(Player sender)
         {
             Character c = sender.GetCharacter();
             if (!c.isAJailed) return;

@@ -13,7 +13,7 @@ namespace mtgvrp.group_manager.lsnn
     class Lsnn : Script
     {
         [ServerEvent(Event.PlayerDisconnected)]
-        public void OnPlayerDisconnected(Client player, byte type, string reason)
+        public void OnPlayerDisconnected(Player player, byte type, string reason)
         {
             var character = player.GetCharacter();
             if (character == null) return;
@@ -46,7 +46,7 @@ namespace mtgvrp.group_manager.lsnn
         public int CameraDimension = 0;
 
         [Command("broadcast"), Help(HelpManager.CommandGroups.LSNN, "Start a broadcast.", null)]
-        public void broadcast_cmd(Client player)
+        public void broadcast_cmd(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -100,7 +100,7 @@ namespace mtgvrp.group_manager.lsnn
         }
 
         [Command("editheadline", GreedyArg = true), Help(HelpManager.CommandGroups.LSNN, "Edit the broadcast headline text.", new[] { "Text being displayed on the broadcast." })]
-        public void editbanner_cmd(Client player, string text)
+        public void editbanner_cmd(Player player, string text)
         {
             Character character = player.GetCharacter();
 
@@ -115,7 +115,7 @@ namespace mtgvrp.group_manager.lsnn
         }
 
         [Command("setcamera"), Help(HelpManager.CommandGroups.LSNN, "Set down a camera for broadcasting.", null)]
-        public void setcamera_cmd(Client player)
+        public void setcamera_cmd(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -150,7 +150,7 @@ namespace mtgvrp.group_manager.lsnn
         }
 
         [Command("choppercam"), Help(HelpManager.CommandGroups.LSNN, "Toggle the chopper cam on/off", null )]
-        public void choppercam_cmd(Client player)
+        public void choppercam_cmd(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -222,7 +222,7 @@ namespace mtgvrp.group_manager.lsnn
 
 
         [Command("pickupcamera"), Help(HelpManager.CommandGroups.LSNN, "Pick up the a broadcast camera.", null)]
-        public void pickupcamera_cmd(Client player)
+        public void pickupcamera_cmd(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -287,7 +287,7 @@ namespace mtgvrp.group_manager.lsnn
             }
 
         [Command("viewercount"), Help(HelpManager.CommandGroups.LSNN | HelpManager.CommandGroups.General, "Show the amount of viewers currently watching the broadcast.", null)]
-        public void viewercount_cmd(Client player)
+        public void viewercount_cmd(Player player)
         {
             var count = 0;
             foreach (var c in PlayerManager.Players)
@@ -302,7 +302,7 @@ namespace mtgvrp.group_manager.lsnn
         }
         
         [Command("lotto"), Help(HelpManager.CommandGroups.LSNN, "Throw a lotto and show the winner. Players must buy lotto tickets.", null)]
-        public void lotto_cmd(Client player)
+        public void lotto_cmd(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -337,7 +337,7 @@ namespace mtgvrp.group_manager.lsnn
         }
 
         [Command("watchbroadcast"), Help(HelpManager.CommandGroups.LSNN | HelpManager.CommandGroups.General, "Start watching the broadcast.", null)]
-        public void watchbroadcast_cmd(Client player)
+        public void watchbroadcast_cmd(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -391,7 +391,7 @@ namespace mtgvrp.group_manager.lsnn
         }
 
         [Command("stopwatching"), Help(HelpManager.CommandGroups.LSNN | HelpManager.CommandGroups.General, "Stop watching the broadcast.", null)]
-        public void stopwatching_cmd(Client player)
+        public void stopwatching_cmd(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -405,7 +405,7 @@ namespace mtgvrp.group_manager.lsnn
         }
 
         [Command("mic"), Help(HelpManager.CommandGroups.LSNN | HelpManager.CommandGroups.General, "Toggle the use of a microphone. Speak normally to use it.", null)]
-        public void mictoggle_cmd(Client player)
+        public void mictoggle_cmd(Player player)
         {
             var playerPos = NAPI.Entity.GetEntityPosition(player);
             Character character = player.GetCharacter();
@@ -432,7 +432,7 @@ namespace mtgvrp.group_manager.lsnn
         }
 
         [Command("givemic"), Help(HelpManager.CommandGroups.LSNN, "Give a microphone to a player.", new[] { "The target player ID." })]
-        public void micpower_cmd(Client player, string id)
+        public void micpower_cmd(Player player, string id)
         {
             var target = PlayerManager.ParseClient(id);
 
@@ -465,7 +465,7 @@ namespace mtgvrp.group_manager.lsnn
         }
 
         [Command("createarticle"), Help(HelpManager.CommandGroups.LSNN, "Start making an article.", null)]
-        public void createarticle_cmd(Client player)
+        public void createarticle_cmd(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -480,7 +480,7 @@ namespace mtgvrp.group_manager.lsnn
             //OPTION TO INPUT TITLE AND TEXT
         }
 
-        public void GetPositionInfrontOfEntity(Client player, double x, double y, double distance)
+        public void GetPositionInfrontOfEntity(Player player, double x, double y, double distance)
         {
             var playerRot = API.GetEntityRotation(player);
             x += (distance * Math.Sin(playerRot.Y));
@@ -496,7 +496,7 @@ namespace mtgvrp.group_manager.lsnn
 
         }
 
-        public void UpdateChopperRotation(Client player)
+        public void UpdateChopperRotation(Player player)
         {
             Chopper = NAPI.Player.GetPlayerVehicle(player);
             CameraPosition = NAPI.Entity.GetEntityPosition(Chopper) - new Vector3(0, 0, 3);

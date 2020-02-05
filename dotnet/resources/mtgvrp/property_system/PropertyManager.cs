@@ -59,7 +59,7 @@ namespace mtgvrp.property_system
         #region ColShapeKnowing
 
         [ServerEvent(Event.PlayerExitColshape)]
-        public void OnPlayerExitColShape(ColShape colshape, Client entity)
+        public void OnPlayerExitColShape(ColShape colshape, Player entity)
         {
             if (colshape.HasData("property_entrance"))
             {
@@ -95,7 +95,7 @@ namespace mtgvrp.property_system
         }
 
         [ServerEvent(Event.PlayerEnterColshape)]
-        public void OnPlayterEnterColShape(ColShape colshape, Client entity)
+        public void OnPlayterEnterColShape(ColShape colshape, Player entity)
         {
             if (colshape.HasData("property_entrance"))
             {
@@ -138,7 +138,7 @@ namespace mtgvrp.property_system
             }
         }
 
-        public static Property IsAtPropertyEntrance(Client player)
+        public static Property IsAtPropertyEntrance(Player player)
         {
             if (API.Shared.HasEntityData(player, "at_interance_property_id"))
             {
@@ -149,7 +149,7 @@ namespace mtgvrp.property_system
             return null;
         }
 
-        public static Property IsAtPropertyExit(Client player)
+        public static Property IsAtPropertyExit(Player player)
         {
             if (API.Shared.HasEntityData(player, "at_exit_property_id"))
             {
@@ -160,7 +160,7 @@ namespace mtgvrp.property_system
             return null;
         }
 
-        public static Property IsAtPropertyInteraction(Client player)
+        public static Property IsAtPropertyInteraction(Player player)
         {
             if (API.Shared.HasEntityData(player, "at_interaction_property_id"))
             {
@@ -171,7 +171,7 @@ namespace mtgvrp.property_system
             return null;
         }
 
-        public static Property IsAtPropertyGarbagePoint(Client player)
+        public static Property IsAtPropertyGarbagePoint(Player player)
         {
             if (API.Shared.HasEntityData(player, "at_garbage_property_id"))
             {
@@ -185,7 +185,7 @@ namespace mtgvrp.property_system
         #endregion
 
         [RemoteEvent("editproperty_setname")]
-        public void EditPropertySetName(Client sender, params object[] arguments)
+        public void EditPropertySetName(Player sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -205,7 +205,7 @@ namespace mtgvrp.property_system
         }
 
         [RemoteEvent("editproperty_settype")]
-        public void EditPropertySetType(Client sender, params object[] arguments)
+        public void EditPropertySetType(Player sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -234,7 +234,7 @@ namespace mtgvrp.property_system
         }
 
         [RemoteEvent("editproperty_setsupplies")]
-        public void EditPropertySetSupplies(Client sender, params object[] arguments)
+        public void EditPropertySetSupplies(Player sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -261,7 +261,7 @@ namespace mtgvrp.property_system
         }
 
         [RemoteEvent("editproperty_setentrancepos")]
-        public void EditPropertySetEntrancePos(Client sender, params object[] arguments)
+        public void EditPropertySetEntrancePos(Player sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -283,7 +283,7 @@ namespace mtgvrp.property_system
         }
 
         [RemoteEvent("editproperty_gotoentrance")]
-        public void EditPropertyGotoEntrance(Client sender, params object[] arguments)
+        public void EditPropertyGotoEntrance(Player sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -301,7 +301,7 @@ namespace mtgvrp.property_system
         }
 
         [RemoteEvent("editproperty_setmaindoor")]
-        public void EditPropertySetMainDoor(Client sender, params object[] arguments)
+        public void EditPropertySetMainDoor(Player sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -335,7 +335,7 @@ namespace mtgvrp.property_system
         }
 
         [RemoteEvent("editproperty_toggleteleportable")]
-        public void EditPropertyToggleTeleportable(Client sender, params object[] arguments)
+        public void EditPropertyToggleTeleportable(Player sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -356,7 +356,7 @@ namespace mtgvrp.property_system
         }
 
         [RemoteEvent("editproperty_setteleportpos")]
-        public void EditPropertySetTeleportPos(Client sender, params object[] arguments)
+        public void EditPropertySetTeleportPos(Player sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -382,7 +382,7 @@ namespace mtgvrp.property_system
         }
 
         [RemoteEvent("editproperty_toggleinteractable")]
-        public void EditPropertyToggleInteractable(Client sender, params object[] arguments)
+        public void EditPropertyToggleInteractable(Player sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -403,7 +403,7 @@ namespace mtgvrp.property_system
         }
 
         [RemoteEvent("editproperty_setinteractpos")]
-        public void EditPropertySetInteractPos(Client sender, params object[] arguments)
+        public void EditPropertySetInteractPos(Player sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -430,7 +430,7 @@ namespace mtgvrp.property_system
         }
 
         [RemoteEvent("editproperty_togglelock")]
-        public void EditPropertyToggleLock(Client sender, params object[] arguments)
+        public void EditPropertyToggleLock(Player sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -451,7 +451,7 @@ namespace mtgvrp.property_system
         }
 
         [RemoteEvent("editproperty_deleteproperty")]
-        public void EditPropertyDeleteProperty(Client sender, params object[] arguments)
+        public void EditPropertyDeleteProperty(Player sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -468,7 +468,7 @@ namespace mtgvrp.property_system
         }
 
         [RemoteEvent("editproperty_setprice")]
-        public void EditPropertySetPrice(Client sender, params object[] arguments)
+        public void EditPropertySetPrice(Player sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -496,7 +496,7 @@ namespace mtgvrp.property_system
         }
 
         [RemoteEvent("editproperty_setowner")]
-        public void EditPropertySetOwner(Client sender, params object[] arguments)
+        public void EditPropertySetOwner(Player sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -522,7 +522,7 @@ namespace mtgvrp.property_system
         }
 
         [RemoteEvent("editproperty_togglehasgarbage")]
-        public void EditPropertyToggleHasGarbage(Client sender, params object[] arguments)
+        public void EditPropertyToggleHasGarbage(Player sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -542,7 +542,7 @@ namespace mtgvrp.property_system
         }
 
         [RemoteEvent("editproperty_setgarbagepoint")]
-        public void EditPropertySetGarbagePoint(Client sender, params object[] arguments)
+        public void EditPropertySetGarbagePoint(Player sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -569,14 +569,14 @@ namespace mtgvrp.property_system
         }
 
         [RemoteEvent("attempt_enter_prop")]
-        public void AttemptEnterProp(Client sender, params object[] arguments)
+        public void AttemptEnterProp(Player sender, params object[] arguments)
         {
             if (Exitproperty(sender) == false)
                 Enterproperty(sender);
         }
 
         [RemoteEvent("editproperty_addipl")]
-        public void EditPropertyAddIpl(Client sender, params object[] arguments)
+        public void EditPropertyAddIpl(Player sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -596,7 +596,7 @@ namespace mtgvrp.property_system
         }
 
         [RemoteEvent("editproperty_deleteipl")]
-        public void EditPropertyDeleteIpl(Client sender, params object[] arguments)
+        public void EditPropertyDeleteIpl(Player sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -654,7 +654,7 @@ namespace mtgvrp.property_system
         }
 
         [Command("togacceptsupplies", Alias = "togas"), Help(HelpManager.CommandGroups.Bussiness, "Used to toggle accepting supplies for your business.", null)]
-        public void TogSupplies(Client player)
+        public void TogSupplies(Player player)
         {
             var prop = IsAtPropertyInteraction(player);
             if (prop == null)
@@ -686,7 +686,7 @@ namespace mtgvrp.property_system
         }
 
         [Command("setsupplyprice", Alias = "setsp"), Help(HelpManager.CommandGroups.Bussiness, "Setting the price you pay per delivery of supplies.", new[] { "Price per supply." })]
-        public void SetSupplyPrice(Client player, int amount)
+        public void SetSupplyPrice(Player player, int amount)
         {
             var prop = IsAtPropertyInteraction(player);
             if (prop == null)
@@ -722,7 +722,7 @@ namespace mtgvrp.property_system
         }
 
         [Command("enter"), Help(HelpManager.CommandGroups.General, "How to enter buildings, there is marker on the door for ones that work.", null)]
-        public bool Enterproperty(Client player)
+        public bool Enterproperty(Player player)
         {
             var prop = IsAtPropertyEntrance(player);
             if (prop != null)
@@ -764,7 +764,7 @@ namespace mtgvrp.property_system
         }
 
         [Command("exit"), Help(HelpManager.CommandGroups.General, "How to exit buildings, there is marker on the door for ones that work.", null)]
-        public bool Exitproperty(Client player)
+        public bool Exitproperty(Player player)
         {
             var prop = IsAtPropertyExit(player);
             if (prop != null)
@@ -800,7 +800,7 @@ namespace mtgvrp.property_system
         }
 
         [Command("changefoodname", GreedyArg = true), Help(HelpManager.CommandGroups.Bussiness, "Changing the name of items in your restaurant.", new[] { "Item", "New name"})]
-        public void Changefoodname_cmd(Client player, string item = "", string name = "")
+        public void Changefoodname_cmd(Player player, string item = "", string name = "")
         {
             var prop = IsAtPropertyEntrance(player) ?? IsAtPropertyInteraction(player);
             if (prop == null)
@@ -853,7 +853,7 @@ namespace mtgvrp.property_system
         }
 
         [Command("manageprices"), Help(HelpManager.CommandGroups.Bussiness, "Setting prices of items inside your business.", new[] { "Item", "Price" })]
-        public void Manageprices(Client player, string item = "", int price = 0)
+        public void Manageprices(Player player, string item = "", int price = 0)
         {
             var prop = IsAtPropertyEntrance(player) ?? IsAtPropertyInteraction(player);
             if (prop == null)
@@ -896,7 +896,7 @@ namespace mtgvrp.property_system
         }
 
         [Command("buyproperty"), Help(HelpManager.CommandGroups.PropertyGeneral, "Command to purchause property when near it.", null)]
-        public void Buyproperty(Client player)
+        public void Buyproperty(Player player)
         {
             var prop = IsAtPropertyEntrance(player);
             if (prop == null)
@@ -927,7 +927,7 @@ namespace mtgvrp.property_system
         }
 
         [Command("lockproperty"), Help(HelpManager.CommandGroups.PropertyGeneral, "Locking your business/house.", null)]
-        public void LockProperty(Client player)
+        public void LockProperty(Player player)
         {
             var prop = IsAtPropertyEntrance(player) ?? IsAtPropertyInteraction(player);
             if (prop == null)
@@ -951,7 +951,7 @@ namespace mtgvrp.property_system
         }
 
         [Command("propertyname", GreedyArg = true), Help(HelpManager.CommandGroups.PropertyGeneral, "Changing the name of your property.", new[] { "Name" })]
-        public void PropertyName(Client player, string name)
+        public void PropertyName(Player player, string name)
         {
             var prop = IsAtPropertyEntrance(player) ?? IsAtPropertyInteraction(player);
             if (prop == null)
@@ -974,7 +974,7 @@ namespace mtgvrp.property_system
         }
 
         [Command("propertystorage"), Help(HelpManager.CommandGroups.PropertyGeneral, "Command to access the storage inside your property.", null)]
-        public void PropertyStorage(Client player)
+        public void PropertyStorage(Player player)
         {
             var prop = IsAtPropertyEntrance(player) ?? IsAtPropertyInteraction(player);
             if (prop == null)
@@ -994,7 +994,7 @@ namespace mtgvrp.property_system
         }
 
         [Command("createproperty"), Help(HelpManager.CommandGroups.AdminLevel5, "To create a new business/house.", new[] { "Property type." })]
-        public void create_property(Client player, PropertyTypes type)
+        public void create_property(Player player, PropertyTypes type)
         {
             var account = player.GetAccount();
             if (account.AdminLevel >= 5)
@@ -1010,7 +1010,7 @@ namespace mtgvrp.property_system
         }
 
         [Command("propertytypes"), Help(HelpManager.CommandGroups.AdminLevel5, "Lists all property types.", null)]
-        public void Propertytypes(Client player)
+        public void Propertytypes(Player player)
         {
             var account = player.GetAccount();
             if (account.AdminLevel >= 5)
@@ -1026,7 +1026,7 @@ namespace mtgvrp.property_system
 
         [Command("editproperty"), Help(HelpManager.CommandGroups.AdminLevel5, "Edit any information about a property", new[] { "ID of property." })]
 
-        public void edit_property(Client player, int id)
+        public void edit_property(Player player, int id)
         {
             var account = player.GetAccount();
             if (account.AdminLevel >= 5)
@@ -1047,7 +1047,7 @@ namespace mtgvrp.property_system
 
         [Command("listproperties"), Help(HelpManager.CommandGroups.AdminLevel5, "Lists all properties.", new[] { "The type." })]
 
-        public void listprops_cmd(Client player, PropertyTypes type)
+        public void listprops_cmd(Player player, PropertyTypes type)
         {
             var account = player.GetAccount();
             if (account.AdminLevel >= 5)

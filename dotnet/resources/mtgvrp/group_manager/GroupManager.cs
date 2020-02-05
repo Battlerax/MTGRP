@@ -27,7 +27,7 @@ namespace mtgvrp.group_manager
         }
 
         [Command("listgroups"), Help(HelpManager.CommandGroups.AdminLevel5, "List all groups in the server.")]
-        public void listgroups_cmd(Client player)
+        public void listgroups_cmd(Player player)
         {
             Account acc = player.GetAccount();
 
@@ -48,7 +48,7 @@ namespace mtgvrp.group_manager
         }
 
         [Command("setgroupmapicon", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel5, "Sets the blip icon of a group.", "Group id", "Map icon id. Get this from wiki.", "Map icon text.")]
-        public void setgroupmapicon_cmd(Client player, int groupId, int mapIconType, string mapIconText = "")
+        public void setgroupmapicon_cmd(Player player, int groupId, int mapIconType, string mapIconText = "")
         {
             var account = player.GetAccount();
             if (account.AdminLevel < 5)
@@ -74,7 +74,7 @@ namespace mtgvrp.group_manager
         }
 
         [Command("respawngroupvehicles"), Help(HelpManager.CommandGroups.AdminLevel5, "Respawns group vehicles of a group.", "Group id.")]
-        public void respawngroupvehicles_cmd(Client player, int groupId)
+        public void respawngroupvehicles_cmd(Player player, int groupId)
         {
             var account = player.GetAccount();
 
@@ -103,7 +103,7 @@ namespace mtgvrp.group_manager
  
 
         [Command("listgroupvehicles"), Help(HelpManager.CommandGroups.AdminLevel5, "List all group vehicles in a group.", "Group id")]
-        public void listgroupvehicles_cmd(Client player, string id)
+        public void listgroupvehicles_cmd(Player player, string id)
         {
             Character character = player.GetCharacter();
             Account account = player.GetAccount();
@@ -128,7 +128,7 @@ namespace mtgvrp.group_manager
         }
 
         [Command("uninvite"), Help(HelpManager.CommandGroups.GroupGeneral, "Cancel your group invite to someone.", "Id or name of player")]
-        public void uninvite_cmd(Client player, string nameToFind)
+        public void uninvite_cmd(Player player, string nameToFind)
         {
             var character = player.GetCharacter();
 
@@ -210,7 +210,7 @@ namespace mtgvrp.group_manager
         }
 
         [Command("setrank"), Help(HelpManager.CommandGroups.GroupGeneral, "Set someones rank in the group.", "Player id", "The rank you'd like to give.")]
-        public void setrank_cmd(Client player, string id, int rank)
+        public void setrank_cmd(Player player, string id, int rank)
         {
             Character sender = player.GetCharacter();
             var  receiver = PlayerManager.ParseClient(id);
@@ -258,7 +258,7 @@ namespace mtgvrp.group_manager
         }
 
         [Command("listranks"), Help(HelpManager.CommandGroups.GroupGeneral, "View all ranks in the group.")]
-        public void listranks_cmd(Client player)
+        public void listranks_cmd(Player player)
         {
             Character sender = player.GetCharacter();
 
@@ -280,7 +280,7 @@ namespace mtgvrp.group_manager
         }
 
         [Command("listdivisions"), Help(HelpManager.CommandGroups.GroupGeneral, "View all divisions in the group.")]
-        public void listdivisions_cmd(Client player)
+        public void listdivisions_cmd(Player player)
         {
             Character sender = player.GetCharacter();
 
@@ -302,7 +302,7 @@ namespace mtgvrp.group_manager
         }
 
         [Command("setdivision"), Help(HelpManager.CommandGroups.GroupGeneral, "Set someone in the group into a division.", "Player id", "Division id")]
-        public void setdivision_cmd(Client player, string id, int divId)
+        public void setdivision_cmd(Player player, string id, int divId)
         {
             Character character = player.GetCharacter();
             var receiver = PlayerManager.ParseClient(id);
@@ -350,7 +350,7 @@ namespace mtgvrp.group_manager
         }
 
         [Command("setdivisionrank"), Help(HelpManager.CommandGroups.GroupGeneral, "Set someones division rank.", "Player id", "Rank")]
-        public void setdivisionrank_cmd(Client player, string id, int rank)
+        public void setdivisionrank_cmd(Player player, string id, int rank)
         {
             var receiver = PlayerManager.ParseClient(id);
             Character character = player.GetCharacter();
@@ -404,7 +404,7 @@ namespace mtgvrp.group_manager
         }
 
         [Command("group", Alias = "g", GreedyArg = true), Help(HelpManager.CommandGroups.Chat | HelpManager.CommandGroups.GroupGeneral, "Talk in group OOC chat.", "The message")]
-        public void group_cmd(Client player, string message)
+        public void group_cmd(Player player, string message)
         {
 
             if (GroupCommandPermCheck(NAPI.Data.GetEntityData(player, "Character"), 1)){
@@ -416,7 +416,7 @@ namespace mtgvrp.group_manager
         }
 
         [Command("radio", Alias = "r", GreedyArg = true), Help(HelpManager.CommandGroups.Chat | HelpManager.CommandGroups.GroupGeneral, "Talk in group radio IC chat.", "The message")]
-        public void radio_cmd(Client player, string message)
+        public void radio_cmd(Player player, string message)
         {
 
             if (GroupCommandPermCheck(NAPI.Data.GetEntityData(player, "Character"), 1))
@@ -440,7 +440,7 @@ namespace mtgvrp.group_manager
         }
 
         [Command("toggleradio", GreedyArg = true), Help(HelpManager.CommandGroups.GroupGeneral, "Toggle the IC radio on/off")]
-        public void toggleradio_cmd(Client player)
+        public void toggleradio_cmd(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -457,7 +457,7 @@ namespace mtgvrp.group_manager
         }
 
         [Command("accept"), Help(HelpManager.CommandGroups.GroupGeneral, "Accepts a group invitation", "Option: groupinvitation")]
-        public void accept_cmd(Client player, string option)
+        public void accept_cmd(Player player, string option)
         {
             if (option == "groupinvitation")
             {
@@ -481,12 +481,12 @@ namespace mtgvrp.group_manager
                 SendGroupMessage(player,
                     character.rp_name() + " has joined the group. (Invited by: " + inviteSender.rp_name() +
                     ")");
-                LogManager.Log(LogManager.LogTypes.GroupInvites, $"{character.CharacterName}[{player.GetAccount().AccountName}] has joined the group {character.Group.Name}. (Invited by: {inviteSender.CharacterName}[{inviteSender.Client.GetAccount().AccountName}])");
+                LogManager.Log(LogManager.LogTypes.GroupInvites, $"{character.CharacterName}[{player.GetAccount().AccountName}] has joined the group {character.Group.Name}. (Invited by: {inviteSender.CharacterName}[{inviteSender.Player.GetAccount().AccountName}])");
             }
         }
         
         [Command("listgroup"), Help(HelpManager.CommandGroups.GroupGeneral, "Lists current players online in the group.")]
-        public void listgroup_cmd(Client player)
+        public void listgroup_cmd(Player player)
         {
             Character sender = player.GetCharacter();
 
@@ -507,7 +507,7 @@ namespace mtgvrp.group_manager
         }
 
         [Command("quitgroup"), Help(HelpManager.CommandGroups.GroupGeneral, "Quits your current group.")]
-        public void quitgroup_cmd(Client player)
+        public void quitgroup_cmd(Player player)
         {
             Character sender = player.GetCharacter();
 
@@ -527,7 +527,7 @@ namespace mtgvrp.group_manager
         }
         
         [Command("invite"), Help(HelpManager.CommandGroups.GroupGeneral, "Invite someone to your group.", "The player id")]
-        public void invite_cmd(Client player, string id)
+        public void invite_cmd(Player player, string id)
         {
             Character sender = player.GetCharacter();
 
@@ -550,11 +550,11 @@ namespace mtgvrp.group_manager
 
             NAPI.Chat.SendChatMessageToPlayer(invited, core.Color.Pm, "You have been invited to " + sender.Group.Name + ". Type /accept groupinvitation.");
             NAPI.Chat.SendChatMessageToPlayer(player, "You sent a group invitation to " + invitedchar.rp_name() + ".");
-            LogManager.Log(LogManager.LogTypes.GroupInvites, $"{sender.CharacterName}[{player.GetAccount().AccountName}] has invited {invitedchar.CharacterName}[{invitedchar.Client.GetAccount().AccountName}] to their group. ({sender.Group.Name})");
+            LogManager.Log(LogManager.LogTypes.GroupInvites, $"{sender.CharacterName}[{player.GetAccount().AccountName}] has invited {invitedchar.CharacterName}[{invitedchar.Player.GetAccount().AccountName}] to their group. ({sender.Group.Name})");
         }
 
         [Command("setrankname", GreedyArg = true), Help(HelpManager.CommandGroups.GroupGeneral, "Sets the name of a rank in the group.", "Rank id", "The name of the rank")]
-        public void setrankname_cmd(Client player, int rankId, string rankname)
+        public void setrankname_cmd(Player player, int rankId, string rankname)
         {
             Character character = player.GetCharacter();
 
@@ -577,7 +577,7 @@ namespace mtgvrp.group_manager
         }
 
         [Command("setdivisionname", GreedyArg = true), Help(HelpManager.CommandGroups.GroupGeneral, "Changes a division name.", "Div Id", "The name.")]
-        public void setdivisionname_cmd(Client player, int divId, string divname)
+        public void setdivisionname_cmd(Player player, int divId, string divname)
         {
             Character character = player.GetCharacter();
 
@@ -600,7 +600,7 @@ namespace mtgvrp.group_manager
         }
 
         [Command("setdivisionrankname", GreedyArg = true), Help(HelpManager.CommandGroups.GroupGeneral, "Set division rank name", "Dev id", "Rank id", "Rank name")]
-        public void setdivisonrankname_cmd(Client player, int divId, int rankId, string rankName)
+        public void setdivisonrankname_cmd(Player player, int divId, int rankId, string rankName)
         {
             Character character = player.GetCharacter();
 
@@ -634,7 +634,7 @@ namespace mtgvrp.group_manager
         }
 
         [Command("creategroup", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel5, "Creates a new group", "Group Type", "Group command type [LSPD/LSNN, etc..]", "Group name.")]
-        public void creategroup_cmd(Client player, int type, int commandtype, string name)
+        public void creategroup_cmd(Player player, int type, int commandtype, string name)
         {
 
             Account account = player.GetAccount();
@@ -660,7 +660,7 @@ namespace mtgvrp.group_manager
         }
 
         [Command("setpaycheckbonus", GreedyArg = true), Help(HelpManager.CommandGroups.GroupGeneral, "Sets the paycheck bonus of group memebers", "The bonus")]
-        public void setpaycheckbonus_cmd(Client player, string amount)
+        public void setpaycheckbonus_cmd(Player player, string amount)
         {
 
             Character character = player.GetCharacter();
@@ -676,7 +676,7 @@ namespace mtgvrp.group_manager
         }
 
         [Command("groupbalance"), Help(HelpManager.CommandGroups.GroupGeneral, "Checks the balance of the group.")]
-        public void groupbalance_cmd(Client player)
+        public void groupbalance_cmd(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -697,26 +697,26 @@ namespace mtgvrp.group_manager
             return (Group)Groups.ToArray().GetValue(id - 1);
         }
 
-        public static void SendGroupMessage(Client player, string message, string color = core.Color.GroupChat)
+        public static void SendGroupMessage(Player player, string message, string color = core.Color.GroupChat)
         {
             Character sender = player.GetCharacter();
             foreach (var c in PlayerManager.Players)
             {
                 if(c.GroupId == sender.GroupId)
                 {
-                    API.Shared.SendChatMessageToPlayer(c.Client, color, message);
+                    API.Shared.SendChatMessageToPlayer(c.Player, color, message);
                 }
             }
         }
 
-        public static void SendRadioMessage(Client player, string message, string color = core.Color.GroupChat)
+        public static void SendRadioMessage(Player player, string message, string color = core.Color.GroupChat)
         {
             Character sender = player.GetCharacter();
             foreach (var c in PlayerManager.Players)
             {
                 if (c.GroupId == sender.GroupId && c.RadioToggle == true)
                 {
-                    API.Shared.SendChatMessageToPlayer(c.Client, color, message);
+                    API.Shared.SendChatMessageToPlayer(c.Player, color, message);
                 }
             }
         }
@@ -742,7 +742,7 @@ namespace mtgvrp.group_manager
 
             if (c.Group != Group.None) return c.DivisionRank >= divisionRank || c.GroupRank >= rank;
 
-            API.Shared.SendChatMessageToPlayer(c.Client, "You do not have permission to perform this command.");
+            API.Shared.SendChatMessageToPlayer(c.Player, "You do not have permission to perform this command.");
             return false;
         }
 

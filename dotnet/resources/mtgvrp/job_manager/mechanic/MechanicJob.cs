@@ -18,7 +18,7 @@ namespace mtgvrp.job_manager.taxi
     {
 
         [Command("fixcar"), Help(HelpManager.CommandGroups.MechanicJob, "Used to fix the car you're inside.")]
-        public void fixcar_cmd(Client player)
+        public void fixcar_cmd(Player player)
         {
             Character character = player.GetCharacter();
             var veh = VehicleManager.GetVehFromNetHandle(NAPI.Player.GetPlayerVehicle(player));
@@ -66,7 +66,7 @@ namespace mtgvrp.job_manager.taxi
         }
 
         [Command("paintcar"), Help(HelpManager.CommandGroups.MechanicJob, "Used to paint the car you're inside. <br/> Use the wiki to get the color ids.", "The primary color.", "The secondary color.")]
-        public void paintcar_cmd(Client player, int col1, int col2)
+        public void paintcar_cmd(Player player, int col1, int col2)
         {
             Character character = player.GetCharacter();
             var veh = VehicleManager.GetVehFromNetHandle(NAPI.Player.GetPlayerVehicle(player));

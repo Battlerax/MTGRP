@@ -23,7 +23,7 @@ namespace mtgvrp.inventory.bags
             if (items.Length == 1)
             {
                 BagItem item = (BagItem)items[0];
-                NAPI.Player.SetPlayerClothes(e.Character.Client, 5, item.BagType, item.BagDesign);
+                NAPI.Player.SetPlayerClothes(e.Character.Player, 5, item.BagType, item.BagDesign);
             }
         }
 
@@ -34,7 +34,7 @@ namespace mtgvrp.inventory.bags
                 if (args.Item.GetType() == typeof(BagItem))
                 {
                     Character chr = (Character)sender;
-                    NAPI.Player.SetPlayerClothes(chr.Client, 5, 0, 0);
+                    NAPI.Player.SetPlayerClothes(chr.Player, 5, 0, 0);
                 }
             }
         }
@@ -47,13 +47,13 @@ namespace mtgvrp.inventory.bags
                 {
                     Character chr = (Character) sender;
                     BagItem item = (BagItem) args.Item;
-                    NAPI.Player.SetPlayerClothes(chr.Client, 5, item.BagType, item.BagDesign);
+                    NAPI.Player.SetPlayerClothes(chr.Player, 5, item.BagType, item.BagDesign);
                 }
             }
         }
 
         [Command("managebag"), Help(HelpManager.CommandGroups.Inventory, "Manages your backpack.")]
-        public void Managebag(Client player)
+        public void Managebag(Player player)
         {
             Character character = player.GetCharacter();
             IInventoryItem[] bag = InventoryManager.DoesInventoryHaveItem(character, typeof(BagItem));
@@ -68,7 +68,7 @@ namespace mtgvrp.inventory.bags
         }
 
         [Command("bagname"), Help(HelpManager.CommandGroups.Inventory, "Changes your bag name.", "The name")]
-        public void BagName(Client player, string name)
+        public void BagName(Player player, string name)
         {
             Character character = player.GetCharacter();
             IInventoryItem[] bag = InventoryManager.DoesInventoryHaveItem(character, typeof(BagItem));

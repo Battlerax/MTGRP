@@ -45,7 +45,7 @@ namespace mtgvrp.job_manager
         }
 
         [RemoteEvent("finish_job_zone_create")]
-        public void FinishJobZoneCreate(Client player, params object[] arguments)
+        public void FinishJobZoneCreate(Player player, params object[] arguments)
         {
             Account account = player.GetAccount();
             if (account.AdminLevel < 4) { return; }
@@ -75,7 +75,7 @@ namespace mtgvrp.job_manager
         }
 
         [ServerEvent(Event.PlayerEnterVehicle)]
-        public void OnPlayerEnterVehicle(Client player, Vehicle vehicle, sbyte seat)
+        public void OnPlayerEnterVehicle(Player player, Vehicle vehicle, sbyte seat)
         {
             Character character = player.GetCharacter();
             var veh = VehicleManager.GetVehFromNetHandle(vehicle);
@@ -92,7 +92,7 @@ namespace mtgvrp.job_manager
         }
 
         [Command("joinjob"), Help(HelpManager.CommandGroups.JobsGeneral, "Joins a new job, must be near joinjob location.")]
-        public void joinjob_cmd(Client player)
+        public void joinjob_cmd(Player player)
         {
             Character character = player.GetCharacter();
             if(character.JobZoneType != 1)
@@ -122,7 +122,7 @@ namespace mtgvrp.job_manager
         }
 
         [Command("quitjob"), Help(HelpManager.CommandGroups.JobsGeneral, "Exits your current job.")]
-        public void quitjob_cmd(Client player)
+        public void quitjob_cmd(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -139,7 +139,7 @@ namespace mtgvrp.job_manager
         }
 
         [Command("jobtypes"), Help(HelpManager.CommandGroups.AdminLevel5, "View all available jobs.")]
-        public void jobtypes_cmd(Client player)
+        public void jobtypes_cmd(Player player)
         {
             Account account = player.GetAccount();
             if (account.AdminLevel < 4)
@@ -154,7 +154,7 @@ namespace mtgvrp.job_manager
         }
 
         [Command("createjob", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel5, "Creates a job in your position.", "The job type", "Name of the job")]
-        public void createjob_cmd(Client player, JobTypes type, string name)
+        public void createjob_cmd(Player player, JobTypes type, string name)
         {
             Account account = player.GetAccount();
             if (account.AdminLevel < 4)
@@ -184,7 +184,7 @@ namespace mtgvrp.job_manager
         }
 
         [Command("editjob", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel5, "Edit an existing job.", "The id of the job", "Edit option", "Value")]
-        public void editjob_cmd(Client player, int jobId, string option, string value = "None")
+        public void editjob_cmd(Player player, int jobId, string option, string value = "None")
         {
             Account account = player.GetAccount();
             if(account.AdminLevel < 4)
@@ -338,7 +338,7 @@ namespace mtgvrp.job_manager
         }
 
         [Command("createjobzone"), Help(HelpManager.CommandGroups.AdminLevel5, "Create a jobzone, for example where Fishermen do /fish", "Job Id", "Option to do")]
-        public void createjobzone_cmd(Client player, int jobId, string option)
+        public void createjobzone_cmd(Player player, int jobId, string option)
         {
             Account account = player.GetAccount();
             if (account.AdminLevel < 4)
@@ -373,7 +373,7 @@ namespace mtgvrp.job_manager
         }
 
         [Command("deletejobzone"), Help(HelpManager.CommandGroups.AdminLevel5, "Deletes a jobzone.", "The jobid", "The zoneid")]
-        public void deletejobzone_cmd(Client player, int jobId, int zoneId)
+        public void deletejobzone_cmd(Player player, int jobId, int zoneId)
         {
             Account account = player.GetAccount();
             if (account.AdminLevel < 4)
@@ -398,7 +398,7 @@ namespace mtgvrp.job_manager
         }
 
         [Command("viewjobzone"), Help(HelpManager.CommandGroups.AdminLevel5, "View a jobzone", "Job Id", "Zone ID")]
-        public void viewjobzone_cmd(Client player, int jobId, int zoneId)
+        public void viewjobzone_cmd(Player player, int jobId, int zoneId)
         {
             Account account = player.GetAccount();
             if (account.AdminLevel < 4)
@@ -468,7 +468,7 @@ namespace mtgvrp.job_manager
             {
                 if(c.JobOne == job)
                 {
-                    API.Shared.SendPictureNotificationToPlayer(c.Client, body, pic, flash, iconType, sender, subject);
+                    API.Shared.SendPictureNotificationToPlayer(c.Player, body, pic, flash, iconType, sender, subject);
                 }
             }
         }

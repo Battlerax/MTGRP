@@ -39,7 +39,7 @@ namespace mtgvrp.mapping_manager
         }
 
         [RemoteEvent("requestCreateMapping")]
-        public void RequestCreateMapping(Client player, params object[] arguments)
+        public void RequestCreateMapping(Player player, params object[] arguments)
         {
             var propLink = Convert.ToInt32(arguments[0]);
             var dimension = Convert.ToInt32(arguments[1]);
@@ -89,7 +89,7 @@ namespace mtgvrp.mapping_manager
         }
 
         [RemoteEvent("searchForMappingRequest")]
-        public void SearchForMappingRequest(Client player, params object[] arguments)
+        public void SearchForMappingRequest(Player player, params object[] arguments)
         {
             var searchForId = Convert.ToInt32(arguments[0]);
 
@@ -108,7 +108,7 @@ namespace mtgvrp.mapping_manager
         }
 
         [RemoteEvent("saveMappingRequest")]
-        public void SaveMappingRequest(Client player, params object[] arguments)
+        public void SaveMappingRequest(Player player, params object[] arguments)
         {
             var mappingId = Convert.ToInt32(arguments[0]);
             var newPropLink = Convert.ToInt32(arguments[1]);
@@ -132,7 +132,7 @@ namespace mtgvrp.mapping_manager
         }
 
         [RemoteEvent("deleteMappingRequest")]
-        public void DeleteMappingRequest(Client player, params object[] arguments)
+        public void DeleteMappingRequest(Player player, params object[] arguments)
         {
             var mappingId = Convert.ToInt32(arguments[0]);
             var editingRequest = player.GetAccount().ViewingMappingRequest;
@@ -151,7 +151,7 @@ namespace mtgvrp.mapping_manager
         }
 
         [RemoteEvent("toggleMappingLoaded")]
-        public void ToggleMappingLoaded(Client player, params object[] arguments)
+        public void ToggleMappingLoaded(Player player, params object[] arguments)
         {
             var mappingId = Convert.ToInt32(arguments[0]);
             var editingRequest = player.GetAccount().ViewingMappingRequest;
@@ -179,7 +179,7 @@ namespace mtgvrp.mapping_manager
         }
 
         [RemoteEvent("toggleMappingActive")]
-        public void ToggleMappingActive(Client player, params object[] arguments)
+        public void ToggleMappingActive(Player player, params object[] arguments)
         {
             var mappingId = Convert.ToInt32(arguments[0]);
             var editingRequest = player.GetAccount().ViewingMappingRequest;
@@ -203,7 +203,7 @@ namespace mtgvrp.mapping_manager
         }
 
         [RemoteEvent("requestMappingCode")]
-        public void RequestMappingCode(Client player, params object[] arguments)
+        public void RequestMappingCode(Player player, params object[] arguments)
         {
             var mappingId = Convert.ToInt32(arguments[0]);
             var editingRequest = player.GetAccount().ViewingMappingRequest;
@@ -226,7 +226,7 @@ namespace mtgvrp.mapping_manager
                 }
                 else
                 {
-                    //API.DeleteObject(Client client, Vector3 position, int modelHash);
+                    //API.DeleteObject(Player client, Vector3 position, int modelHash);
                     mappingString += string.Format("API.DeleteObject(player, new Vector3({0}, {1}, {2}), {4});\n", o.Pos.X, o.Pos.Y, o.Pos.Z, o.Model);
                 }
 
@@ -236,7 +236,7 @@ namespace mtgvrp.mapping_manager
         }
 
         [RemoteEvent("requestFirstMappingPage")]
-        public void RequestFirstMappingPage(Client player, params object[] arguments)
+        public void RequestFirstMappingPage(Player player, params object[] arguments)
         {
             var count = 0;
             foreach (var o in Mapping)
@@ -253,7 +253,7 @@ namespace mtgvrp.mapping_manager
         }
 
         [RemoteEvent("requestMappingPage")]
-        public void RequestMappingPage(Client player, params object[] arguments)
+        public void RequestMappingPage(Player player, params object[] arguments)
         {
             var page = Convert.ToInt32(arguments[0]);
             NAPI.ClientEvent.TriggerClientEvent(player, "emptyMappingTable");
@@ -297,7 +297,7 @@ namespace mtgvrp.mapping_manager
         }
 
         [Command("mappingmanager"), Help(HelpManager.CommandGroups.AdminLevel5, "Used to manage the server mapping. Do not play around with this.", null)]
-        public void mappingmanager_cmd(Client player)
+        public void mappingmanager_cmd(Player player)
         {
             if(player.GetAccount().AdminLevel < 5)
             {

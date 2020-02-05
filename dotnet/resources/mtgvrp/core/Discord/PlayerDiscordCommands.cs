@@ -20,7 +20,7 @@ namespace mtgvrp.core.Discord
             }
 
             //Check if already in-game.
-            if (PlayerManager.Players.Any(x => x.Client.socialClubName == name))
+            if (PlayerManager.Players.Any(x => x.Player.socialClubName == name))
             {
                 await ctx.RespondAsync("Please log out from Ingame first.");
                 return;

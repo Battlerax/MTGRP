@@ -44,7 +44,7 @@ namespace mtgvrp
         }
 
         [RemoteEvent("OBJECT_PLACED_PROPERLY")]
-        public void ObjectPlacedProperly(Client sender, params object[] arguments)
+        public void ObjectPlacedProperly(Player sender, params object[] arguments)
         {
             Entity obj = (Entity) arguments[0];
             Vector3 pos = (Vector3) arguments[1];
@@ -59,7 +59,7 @@ namespace mtgvrp
             if (sender.GetType() == typeof(Character) && args.Item == typeof(Money))
             {
                 Character c = (Character) sender;
-                API.Shared.TriggerClientEvent(c.Client, "update_money_display", args.Amount);
+                API.Shared.TriggerClientEvent(c.Player, "update_money_display", args.Amount);
             }
         }
 

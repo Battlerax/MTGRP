@@ -17,7 +17,7 @@ namespace mtgvrp.core
         }
 
         [ServerEvent(Event.PlayerConnected)]
-        public void OnPlayerConnected(Client player)
+        public void OnPlayerConnected(Player player)
         {
             NAPI.Player.FreezePlayerTime(player, true);
         }

@@ -89,7 +89,7 @@ namespace mtgvrp.vehicle_dealership
         }
 
         [RemoteEvent("vipdealer_selectcar")]
-        public void VIPDealerSelectCar(Client sender, params object[] arguments)
+        public void VIPDealerSelectCar(Player sender, params object[] arguments)
         {
             Character character = sender.GetCharacter();
 
@@ -168,7 +168,7 @@ namespace mtgvrp.vehicle_dealership
         }
 
         //[Command("buyvipvehicle"), Help(HelpManager.CommandGroups.Vehicles, "Command used inside dealership to buy a vehicle.", null)]
-        public void BuyVehicle(Client player)
+        public void BuyVehicle(Player player)
         {
             //Check if can buy more cars.
             Character character = player.GetCharacter();

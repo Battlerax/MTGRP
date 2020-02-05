@@ -11,13 +11,13 @@ namespace mtgvrp.core
 {
     public static class Ex
     {
-        public static Character GetCharacter(this Client player)
+        public static Character GetCharacter(this Player player)
         {
             if (!API.Shared.HasEntityData(player, "Character")) return null;
 
             return (Character) player.GetData<Character>("Character");
         }
-        public static Account GetAccount(this Client player)
+        public static Account GetAccount(this Player player)
         {
             if (!API.Shared.HasEntityData(player, "Account")) return null;
 

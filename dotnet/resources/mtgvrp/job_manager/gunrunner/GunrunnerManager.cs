@@ -184,14 +184,14 @@ namespace mtgvrp.job_manager.gunrunner
         }
 
         [RemoteEvent("update_location")]
-        public void UpdateLocation(Client player, params object[] arguments)
+        public void UpdateLocation(Player player, params object[] arguments)
         {
             CurrentStreet = (string)arguments[0];
             CurrentZone = (string)arguments[1];
         }
 
         [RemoteEvent("gunrun_menu_closed")]
-        public void GunRunMenuClosed(Client player, params object[] arguments)
+        public void GunRunMenuClosed(Player player, params object[] arguments)
         {
             if ((int)arguments[0] != 0)
             {
@@ -239,7 +239,7 @@ namespace mtgvrp.job_manager.gunrunner
         }
 
         [RemoteEvent("fetch_weapon_list")]
-        public void FetchWeaponList(Client player, params object[] arguments)
+        public void FetchWeaponList(Player player, params object[] arguments)
         {
             Account account = player.GetAccount();
             Character character = player.GetCharacter();
@@ -258,7 +258,7 @@ namespace mtgvrp.job_manager.gunrunner
         }
 
         [RemoteEvent("CONTAINER_PLACED")]
-        public void ContainerPlaced(Client player, params object[] arguments)
+        public void ContainerPlaced(Player player, params object[] arguments)
         {
             var obj = (Entity)arguments[0];
             var c = player.GetCharacter();
@@ -267,7 +267,7 @@ namespace mtgvrp.job_manager.gunrunner
             c.Container.Save();
         }
 
-        public static bool IsInContainerZone(Client player)
+        public static bool IsInContainerZone(Player player)
         {
             foreach (var c in ContainerZone.GetAllContainerZones())
             {
@@ -307,7 +307,7 @@ namespace mtgvrp.job_manager.gunrunner
             }
         }
 
-        private void DeleteZoneMarker(Client player)
+        private void DeleteZoneMarker(Player player)
         {
             NAPI.ClientEvent.TriggerClientEvent(player, "delete_zone_marker");
             ZoneTimer.Stop();
@@ -323,7 +323,7 @@ namespace mtgvrp.job_manager.gunrunner
             foreach (var p in PlayerManager.Players)
             {
                 if (!p.IsGunrunner) { return; }
-                API.Shared.SendChatMessageToPlayer(p.Client, $"{message}");
+                API.Shared.SendChatMessageToPlayer(p.Player, $"{message}");
             }
         }
 
@@ -333,12 +333,12 @@ namespace mtgvrp.job_manager.gunrunner
             {
                 if (p.IsGunrunner)
                 {
-                    SendTextToRunner(p.Client, $"{message}");
+                    SendTextToRunner(p.Player, $"{message}");
                 }
             }
         }
 
-        public static void SendTextToRunner(Client player, string message)
+        public static void SendTextToRunner(Player player, string message)
         {
             var p = player.GetCharacter();
             var playerPhone = InventoryManager.DoesInventoryHaveItem<Phone>(p);
@@ -351,7 +351,7 @@ namespace mtgvrp.job_manager.gunrunner
             }
         }
 
-        public static void CreateMovingMessage(Client player, Vector3 newLoc)
+        public static void CreateMovingMessage(Player player, Vector3 newLoc)
         {
             var p = player.GetCharacter();
 
@@ -391,14 +391,14 @@ namespace mtgvrp.job_manager.gunrunner
 
             foreach (var p in PlayerManager.Players)
             {
-                CreateMovingMessage(p.Client, DealerLocations[r]);
+                CreateMovingMessage(p.Player, DealerLocations[r]);
             }
         }
         #endregion
 
         #region Player Commands
         [Command("gunrun"), Help(HelpManager.CommandGroups.JobsGeneral, "Start a gun run.", null)]
-        public void gunrun_cmd(Client player)
+        public void gunrun_cmd(Player player)
         {
             var character = player.GetCharacter();
             var account = player.GetAccount();
@@ -441,7 +441,7 @@ namespace mtgvrp.job_manager.gunrunner
         }
 
         [Command("gunrunstats"), Help(HelpManager.CommandGroups.JobsGeneral, "List your gunrunnning statistics.", null)]
-        public void gunrunstats_cmd(Client player)
+        public void gunrunstats_cmd(Player player)
         {
             var character = player.GetCharacter();
 
@@ -461,7 +461,7 @@ namespace mtgvrp.job_manager.gunrunner
         }
 
         [Command("forgetallweapons"), Help(HelpManager.CommandGroups.JobsGeneral, "Forget all of your gunrunning weapons if you've somehow lost them.", null)]
-        public void forgetallweapons_cmd(Client player)
+        public void forgetallweapons_cmd(Player player)
         {
             var character = player.GetCharacter();
             
@@ -491,7 +491,7 @@ namespace mtgvrp.job_manager.gunrunner
         }
 
         [Command("intervene"), Help(HelpManager.CommandGroups.JobsGeneral, "Intervene with the top gunrunner by finding their current location.", null)]
-        public void intervene_cmd(Client player)
+        public void intervene_cmd(Player player)
         {
             var character = player.GetCharacter();
             
@@ -541,13 +541,13 @@ namespace mtgvrp.job_manager.gunrunner
             {
                 player.SendChatMessage($"Yuri_Orlov says: {MostRenown.CharacterName} is doing quite well for themselves. Here's where they are..");
                 player.SendChatMessage("A waypoint has been set to the position of the current gun dealer with the most renown.");
-                NAPI.ClientEvent.TriggerClientEvent(player, "intervene_track_player", MostRenown.Client.Position);
+                NAPI.ClientEvent.TriggerClientEvent(player, "intervene_track_player", MostRenown.Player.Position);
                 character.InterveneTimeLimit = TimeManager.GetTimeStampPlus(TimeSpan.FromHours(12));
             }
         }
 
         [Command("upgradehq"), Help(HelpManager.CommandGroups.JobsGeneral, "Upgrade your HQ.", new[] { "Option: 'dealertracker', 'movelocation', 'intervene'" })]
-        public void upgradehq_cmd(Client player, string option)
+        public void upgradehq_cmd(Player player, string option)
         {
             var character = player.GetCharacter();
 
@@ -599,7 +599,7 @@ namespace mtgvrp.job_manager.gunrunner
         }
 
         [Command("trackdealer"), Help(HelpManager.CommandGroups.JobsGeneral, "Track the current location of Yuri_Orlov, the gun dealer.", null)]
-        public void trackdealer_cmd(Client player)
+        public void trackdealer_cmd(Player player)
         {
             var character = player.GetCharacter();
 
@@ -627,7 +627,7 @@ namespace mtgvrp.job_manager.gunrunner
         }
 
         [Command("movehq"), Help(HelpManager.CommandGroups.JobsGeneral, "Move your headquarters to your current location.", null)]
-        public void movehq_cmd(Client player)
+        public void movehq_cmd(Player player)
         {
             var character = player.GetCharacter();
 
@@ -665,7 +665,7 @@ namespace mtgvrp.job_manager.gunrunner
         }
 
         [Command("deployhq"), Help(HelpManager.CommandGroups.JobsGeneral, "Place the gunrunning container HQ.")]
-        public void deployhq_cmd(Client player)
+        public void deployhq_cmd(Player player)
         {
             var character = player.GetCharacter();
             
@@ -710,7 +710,7 @@ namespace mtgvrp.job_manager.gunrunner
 
         [Command("openweaponcase"), Help(HelpManager.CommandGroups.JobsGeneral, "Open a weapon case. NOTE: Opening your own weapon case will cause you to lose renown.",
             new[] { "The /inv command name of the weapon case you want to open." })]
-        public void openweaponcase_cmd(Client player, string weaponcase)
+        public void openweaponcase_cmd(Player player, string weaponcase)
         {
             var character = player.GetCharacter();
             WeaponCase item;
@@ -757,7 +757,7 @@ namespace mtgvrp.job_manager.gunrunner
 
         /*
        [Command("sellweapon"), Help(HelpManager.CommandGroups.JobsGeneral, "Start a gun run.", new[] { "Target player.", "The weapon case to sell", "Amount being sold for" })]
-       public void sellcase_cmd(Client player, string target, string weaponcase, string price)
+       public void sellcase_cmd(Player player, string target, string weaponcase, string price)
        {
            var character = player.GetCharacter();
            var account = player.GetAccount();
@@ -805,7 +805,7 @@ namespace mtgvrp.job_manager.gunrunner
        }
 
        [Command("acceptweapon"), Help(HelpManager.CommandGroups.JobsGeneral, "Start a gun run.")]
-       public void acceptweapon_cmd(Client player)
+       public void acceptweapon_cmd(Player player)
        {
            var character = player.GetCharacter();
            var account = player.GetAccount();
@@ -858,7 +858,7 @@ namespace mtgvrp.job_manager.gunrunner
 
         #region Admin Commands
         [Command("removehq"), Help(HelpManager.CommandGroups.AdminLevel5, "Remove a players gunrunning HQ.", new[] { "Target player." })]
-        public void removehq_cmd(Client player, string target)
+        public void removehq_cmd(Player player, string target)
         {
             var account = player.GetAccount();
 
@@ -883,7 +883,7 @@ namespace mtgvrp.job_manager.gunrunner
         }
 
         [Command("createcontainerzone"), Help(HelpManager.CommandGroups.AdminLevel5, "Create a container zone where containers are permitted to be placed.", null)]
-        public void createcontainerzone_cmd(Client player)
+        public void createcontainerzone_cmd(Player player)
         {
             var account = player.GetAccount();
 
@@ -904,7 +904,7 @@ namespace mtgvrp.job_manager.gunrunner
         }
 
         [Command("editcontainerradius"), Help(HelpManager.CommandGroups.AdminLevel5, "Edit a container zone radius", new[] { "Radius to be set." })]
-        public void editcontainerradius_cmd(Client player, string containerid, string radius)
+        public void editcontainerradius_cmd(Player player, string containerid, string radius)
         {
             var account = player.GetAccount();
 
@@ -925,7 +925,7 @@ namespace mtgvrp.job_manager.gunrunner
         }
 
         [Command("removecontainerzone"), Help(HelpManager.CommandGroups.AdminLevel5, "Remove a container zone.", new[] { "Target container ID." })]
-        public void removecontainerzone_cmd(Client player, string containerid)
+        public void removecontainerzone_cmd(Player player, string containerid)
         {
             var account = player.GetAccount();
 
@@ -941,7 +941,7 @@ namespace mtgvrp.job_manager.gunrunner
         }
 
         [Command("setplayerrenown"), Help(HelpManager.CommandGroups.AdminLevel5, "Set a player's renown.", new[] { "Target player ID." })]
-        public void setplayerrenown_cmd(Client player, string target, int amount)
+        public void setplayerrenown_cmd(Player player, string target, int amount)
         {
             var account = player.GetAccount();
 

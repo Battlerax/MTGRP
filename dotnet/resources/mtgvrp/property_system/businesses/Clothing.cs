@@ -112,7 +112,7 @@ namespace mtgvrp.property_system.businesses
         public static string FemaleComponents;
 
         [RemoteEvent("closeclothingmenu")]
-        public void CloseClothingMenu(Client sender, params object[] arguments)
+        public void CloseClothingMenu(Player sender, params object[] arguments)
         {
             sender.TriggerEvent("freezePlayer", false);
             sender.Position = NAPI.Data.GetEntityData(sender, "clothing_lastpos");
@@ -122,13 +122,13 @@ namespace mtgvrp.property_system.businesses
         }
 
         [RemoteEvent("returnPedGender")]
-        public void ReturnPedGender(Client sender, params object[] arguments)
+        public void ReturnPedGender(Player sender, params object[] arguments)
         {
             setPlayerPedSkin(sender, (PedHash)arguments[0], (int)arguments[1]);
         }
 
         [RemoteEvent("clothing_buyclothe")]
-        public void ClothingBuyClothes(Client sender, params object[] arguments)
+        public void ClothingBuyClothes(Player sender, params object[] arguments)
         {
             Character character = sender.GetCharacter();
             int price = 0;
@@ -313,7 +313,7 @@ namespace mtgvrp.property_system.businesses
         }
 
         [RemoteEvent("clothing_bag_preview")]
-        public void ClothingBagPreview(Client sender, params object[] arguments)
+        public void ClothingBagPreview(Player sender, params object[] arguments)
         {
             var bagstyle = ComponentManager.ValidBags[(int)arguments[0]].ComponentId;
             var bagvar = (int)ComponentManager.ValidBags[(int)arguments[0]].Variations.ToArray().GetValue((int)arguments[1]);
@@ -321,7 +321,7 @@ namespace mtgvrp.property_system.businesses
         }
 
         [RemoteEvent("clothing_bag_closed")]
-        public void ClothingBagClosed(Client sender, params object[] arguments)
+        public void ClothingBagClosed(Player sender, params object[] arguments)
         {
             sender.TriggerEvent("freezePlayer", false);
             sender.Position = NAPI.Data.GetEntityData(sender, "clothing_lastpos");
@@ -339,7 +339,7 @@ namespace mtgvrp.property_system.businesses
         }
 
         [RemoteEvent("clothing_buybag")]
-        public void ClothingBuyBag(Client sender, params object[] arguments)
+        public void ClothingBuyBag(Player sender, params object[] arguments)
         {
             var price = PropertyManager.Properties.Single(x => x.Id == sender.GetData<int>("clothing_id"))
                     .ItemPrices["8"];
@@ -404,7 +404,7 @@ namespace mtgvrp.property_system.businesses
             NAPI.Util.ConsoleOutput("Finished loading componentes into array for clothes.");
         }
 
-        public void ResetSkin(Client player)
+        public void ResetSkin(Player player)
         {
             Character c = player.GetCharacter();
             c.HasSkin = false;
@@ -415,7 +415,7 @@ namespace mtgvrp.property_system.businesses
         }
 
         [Command("buyclothes"), Help(HelpManager.CommandGroups.Bussiness, "Used inside a clothing store to buy clothes.", null)]
-        public void BuyClothes(Client player)
+        public void BuyClothes(Player player)
         {
             var biz = PropertyManager.IsAtPropertyInteraction(player);
             if (biz?.Type != PropertyManager.PropertyTypes.Clothing)
@@ -538,7 +538,7 @@ namespace mtgvrp.property_system.businesses
         }
 
         [Command("buybag"), Help(HelpManager.CommandGroups.General, "Used inside a clothing store to buy a bag.", null)]
-        public void Buybag(Client player)
+        public void Buybag(Player player)
         {
             var biz = PropertyManager.IsAtPropertyInteraction(player);
             if (biz?.Type != PropertyManager.PropertyTypes.Clothing)
@@ -566,7 +566,7 @@ namespace mtgvrp.property_system.businesses
         }
 
         [Command("buyskin"), Help(HelpManager.CommandGroups.General, "Buy a pedestrian skin as a VIP.", new[] { "Item", "New name" })]
-        public void buyskin_cmd(Client player, PedHash hash)
+        public void buyskin_cmd(Player player, PedHash hash)
         {
             Account account = player.GetAccount();
             var biz = PropertyManager.IsAtPropertyInteraction(player);
@@ -599,7 +599,7 @@ namespace mtgvrp.property_system.businesses
 
         }
 
-        public void setPlayerPedSkin(Client player, PedHash hash, int gender)
+        public void setPlayerPedSkin(Player player, PedHash hash, int gender)
         {
             Character c = player.GetCharacter();
             if (c.Model.Gender == Character.GenderMale)

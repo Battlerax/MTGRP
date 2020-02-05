@@ -74,7 +74,7 @@ namespace mtgvrp.dmv
         }
 
         [RemoteEvent("DMV_REGISTER_VEHICLE")]
-        public void DMVRegisterVehicle(Client player, params object[] arguments)
+        public void DMVRegisterVehicle(Player player, params object[] arguments)
         {
             var prop = PropertyManager.IsAtPropertyInteraction(player);
             if (prop?.Type != PropertyManager.PropertyTypes.DMV)
@@ -140,7 +140,7 @@ namespace mtgvrp.dmv
         }
 
         [RemoteEvent("DMV_TEST_FINISH")]
-        public void DMVTestFinish(Client player, params object[] arguments)
+        public void DMVTestFinish(Player player, params object[] arguments)
         {
             var c = player.GetCharacter();
             var isOnTime = DateTime.Now.Subtract(c.TimeStartedDmvTest) <= TimeSpan.FromMinutes(5);
@@ -206,7 +206,7 @@ namespace mtgvrp.dmv
         }
 
         [ServerEvent(Event.PlayerExitVehicle)]
-        public void API_onPlayerExitVehicle(Client player, Vehicle vehicle)
+        public void API_onPlayerExitVehicle(Player player, Vehicle vehicle)
         {
             var c = player.GetCharacter();
 
@@ -247,7 +247,7 @@ namespace mtgvrp.dmv
             NAPI.Util.ConsoleOutput("Spawned DMV Vehicles.");
         }
 
-        private void OnVehicleEngineToggle(Client player, Entity vehicle, bool state)
+        private void OnVehicleEngineToggle(Player player, Entity vehicle, bool state)
         {
             if (state == true)
             {
@@ -283,7 +283,7 @@ namespace mtgvrp.dmv
         }
 
         [Command("starttest"), Help(HelpManager.CommandGroups.Vehicles, "Starts driving test. (Must be at a DMV)")]
-        public void StartTest(Client player)
+        public void StartTest(Player player)
         {
             var prop = PropertyManager.IsAtPropertyInteraction(player);
             if (prop?.Type != PropertyManager.PropertyTypes.DMV)
@@ -327,7 +327,7 @@ namespace mtgvrp.dmv
         }
 
         [Command("registervehicle"), Help(HelpManager.CommandGroups.Vehicles, "Register your vehicle. (At DMV)")]
-        public void RegisterVehicle(Client player)
+        public void RegisterVehicle(Player player)
         {
             var prop = PropertyManager.IsAtPropertyInteraction(player);
             if (prop?.Type != PropertyManager.PropertyTypes.DMV)
@@ -355,7 +355,7 @@ namespace mtgvrp.dmv
         }
 
         [Command("showlicense"), Help(HelpManager.CommandGroups.Vehicles, "Show your driving license to someone.", "Id of target.")]
-        public void ShowLicense(Client player, string target)
+        public void ShowLicense(Player player, string target)
         {
             var targetPlayer = PlayerManager.ParseClient(target);
             if (targetPlayer == null)
@@ -387,7 +387,7 @@ namespace mtgvrp.dmv
         }
 
         [Command("showregistration", Alias = "showreg"), Help(HelpManager.CommandGroups.Vehicles, "Show your vehicles registeration to someone.", "Id of target.")]
-        public void ShowReg(Client player, string target)
+        public void ShowReg(Player player, string target)
         {
             var targetPlayer = PlayerManager.ParseClient(target);
             if (targetPlayer == null)

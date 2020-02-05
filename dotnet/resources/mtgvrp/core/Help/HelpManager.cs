@@ -110,7 +110,7 @@ namespace mtgvrp.core.Help
         }
 
         [Command("help"), Help(CommandGroups.General, "Shows the list of commands available.")]
-        public void Help_cmd(Client player)
+        public void Help_cmd(Player player)
         {
             if (!player.GetAccount().IsLoggedIn)
                 return;

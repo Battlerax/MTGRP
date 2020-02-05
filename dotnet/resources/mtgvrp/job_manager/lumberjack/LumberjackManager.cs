@@ -23,7 +23,7 @@ namespace mtgvrp.job_manager.lumberjack
         }
 
         [ServerEvent(Event.PlayerEnterVehicle)]
-        public void OnPlayerEnterVehicle(Client player, Vehicle vehicle, sbyte seat)
+        public void OnPlayerEnterVehicle(Player player, Vehicle vehicle, sbyte seat)
         {
             if(vehicle.GetVehicle() == null)
                 return;
@@ -65,7 +65,7 @@ namespace mtgvrp.job_manager.lumberjack
         }
 
         [ServerEvent(Event.PlayerExitVehicle)]
-        public void OnPlayerExitVehicle(Client player, Vehicle vehicle)
+        public void OnPlayerExitVehicle(Player player, Vehicle vehicle)
         {
             if (API.GetEntityModel(vehicle) == (int) VehicleHash.Flatbed && player.GetCharacter().JobOne.Type == JobManager.JobTypes.Lumberjack)
             {
@@ -105,7 +105,7 @@ namespace mtgvrp.job_manager.lumberjack
         }
 
         [RemoteEvent("lumberjack_hittree")]
-        public void LumberjackHittree(Client sender, params object[] arguments)
+        public void LumberjackHittree(Player sender, params object[] arguments)
         {
             var character = sender.GetCharacter();
             if (character.JobOne.Type == JobManager.JobTypes.Lumberjack)
@@ -165,7 +165,7 @@ namespace mtgvrp.job_manager.lumberjack
         }
 
         [RemoteEvent("TreePlaced")]
-        public void TreePlaced(Client sender, params object[] arguments)
+        public void TreePlaced(Player sender, params object[] arguments)
         {
             var tree = Tree.Trees.First(x => x.TreeObj == (Entity)arguments[0]);
             tree.TreePos = tree.TreeObj.Position;
@@ -173,7 +173,7 @@ namespace mtgvrp.job_manager.lumberjack
         }
 
         [Command("createtree"), Help(HelpManager.CommandGroups.LumberJob, "Creates a tree for lumberjack under you.")]
-        public void CreateTreeCmd(Client player)
+        public void CreateTreeCmd(Player player)
         {
             if (player.GetAccount().AdminLevel < 4)
                 return;
@@ -186,7 +186,7 @@ namespace mtgvrp.job_manager.lumberjack
         }
 
         [Command("deletetree"), Help(HelpManager.CommandGroups.LumberJob, "Delete the nearest lumberjack tree to you.")]
-        public void DeleteTreeCmd(Client player)
+        public void DeleteTreeCmd(Player player)
         {
             if (player.GetAccount().AdminLevel < 4)
                 return;
@@ -202,7 +202,7 @@ namespace mtgvrp.job_manager.lumberjack
         }
 
         [Command("pickupwood"), Help(HelpManager.CommandGroups.LumberJob, "Pick up the nearest processed wood to you from the ground to your truck.")]
-        public void PickupWood(Client player)
+        public void PickupWood(Player player)
         {
             var character = player.GetCharacter();
             if (character.JobOne.Type != JobManager.JobTypes.Lumberjack)
@@ -251,7 +251,7 @@ namespace mtgvrp.job_manager.lumberjack
         }
 
         [Command("sellwood"), Help(HelpManager.CommandGroups.LumberJob, "Sells the wood you currently have on the truck.")]
-        public void SellWoodCmd(Client player)
+        public void SellWoodCmd(Player player)
         {
             var character = player.GetCharacter();
             if (character.JobOne.Type != JobManager.JobTypes.Lumberjack)

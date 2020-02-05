@@ -16,7 +16,7 @@ namespace mtgvrp.group_manager.lspd
     public class Lspd : Script
     {
         [ServerEvent(Event.PlayerDisconnected)]
-        public void OnPlayerDisconnected(Client player, byte type, string reason)
+        public void OnPlayerDisconnected(Player player, byte type, string reason)
         {
             var character = player.GetCharacter();
             if (character == null) return;
@@ -43,7 +43,7 @@ namespace mtgvrp.group_manager.lspd
         }
 
         [RemoteEvent("LSPD_Menu_Change_Clothes")]
-        public void LSPDMenuChangeClothes(Client player, params object[] arguments)
+        public void LSPDMenuChangeClothes(Player player, params object[] arguments)
         {
             Character c = player.GetCharacter();
 
@@ -60,7 +60,7 @@ namespace mtgvrp.group_manager.lspd
         }
 
         [RemoteEvent("LSPD_Menu_Toggle_Duty")]
-        public void LSPDMenuToggleDuty(Client player, params object[] arguments)
+        public void LSPDMenuToggleDuty(Player player, params object[] arguments)
         {
             Character c = player.GetCharacter();
 
@@ -76,7 +76,7 @@ namespace mtgvrp.group_manager.lspd
         }
 
         [RemoteEvent("LSPD_Menu_Equip_Standard_Equipment")]
-        public void LSPDMenuEquipStandardEquipment(Client player, params object[] arguments)
+        public void LSPDMenuEquipStandardEquipment(Player player, params object[] arguments)
         {
             Character c = player.GetCharacter();
 
@@ -90,7 +90,7 @@ namespace mtgvrp.group_manager.lspd
         }
 
         [RemoteEvent("LSPD_Menu_Equip_SWAT_Equipment")]
-        public void LSPDMenuEquipSWATEquipment(Client player, params object[] arguments)
+        public void LSPDMenuEquipSWATEquipment(Player player, params object[] arguments)
         {
             Character c = player.GetCharacter();
 
@@ -104,7 +104,7 @@ namespace mtgvrp.group_manager.lspd
         }
 
         [Command("recordcrime", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Record a player's crime, adding them to the wanted list.", new[] { "The target player ID.", "The crime ID" })]
-        public void recordcrimes_cmd(Client player, string id, string type, string crimename, string jailTime, string fine)
+        public void recordcrimes_cmd(Player player, string id, string type, string crimename, string jailTime, string fine)
         {
             var receiver = PlayerManager.ParseClient(id);
 
@@ -130,7 +130,7 @@ namespace mtgvrp.group_manager.lspd
 
         /*
         [Command("recordcrime", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Record a player's crime, adding them to the wanted list.", new[] { "The target player ID.", "The crime ID" })]
-        public void recordcrimes_cmd(Client player, string id, string crimeid)
+        public void recordcrimes_cmd(Player player, string id, string crimeid)
         {
             var receiver = PlayerManager.ParseClient(id);
 
@@ -164,7 +164,7 @@ namespace mtgvrp.group_manager.lspd
         */
 
         [Command("showcriminalrecord", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Show the criminal record of a player.", new[] { "The target player ID." })]
-        public void criminalrecord_cmd(Client player, string id)
+        public void criminalrecord_cmd(Player player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
             if (receiver == null)
@@ -198,7 +198,7 @@ namespace mtgvrp.group_manager.lspd
         }
 
         [Command("listcrimes"), Help(HelpManager.CommandGroups.LSPD, "List the available crimes and their crime ID", null)]
-        public void listcrimes_cmd(Client player)
+        public void listcrimes_cmd(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -220,7 +220,7 @@ namespace mtgvrp.group_manager.lspd
         }
 
         [Command("createcrime", GreedyArg=true), Help(HelpManager.CommandGroups.LSPD, "Create a crime and add it to the crime list.", "The type of the crime", "The jail time in seconds", "The fine amount", "Crime name")]
-        public void createcrime_cmd(Client player, string type, int jailTime, int fine, string crimeName)
+        public void createcrime_cmd(Player player, string type, int jailTime, int fine, string crimeName)
         {
             Character character = player.GetCharacter();
 
@@ -242,7 +242,7 @@ namespace mtgvrp.group_manager.lspd
         }
 
         [Command("editcrime"), Help(HelpManager.CommandGroups.LSPD, "Edit a crime.", new[] { "Crime ID", "The crime type", "The crime name", "The jail time", "The fine for this crime" })]
-        public void editcrime_cmd(Client player, int id, string type, string crimeName, int jailTime, int fine)
+        public void editcrime_cmd(Player player, int id, string type, string crimeName, int jailTime, int fine)
         {
             Character character = player.GetCharacter();
 
@@ -265,7 +265,7 @@ namespace mtgvrp.group_manager.lspd
         }
 
         [Command("deletecrime"), Help(HelpManager.CommandGroups.LSPD, "Delete a crime by its ID.", new[] { "The target crime ID." })]
-        public void deletecrime_cmd(Client player, int id)
+        public void deletecrime_cmd(Player player, int id)
         {
             Character character = player.GetCharacter();
 
@@ -289,7 +289,7 @@ namespace mtgvrp.group_manager.lspd
         }
 
         [Command("wanted", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Show the wanted list.", null)]
-        public void wanted_cmd(Client player)
+        public void wanted_cmd(Player player)
         {
             Character character = player.GetCharacter();
             if (character.Group == Group.None || character.Group.CommandType != Group.CommandTypeLspd)
@@ -314,7 +314,7 @@ namespace mtgvrp.group_manager.lspd
 
 
         [Command("arrest", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Arrest a player after their crimes are recorded.", new[] { "The target player ID." })]
-        public void arrest_cmd(Client player, string id)
+        public void arrest_cmd(Player player, string id)
         {
 
             var receiver = PlayerManager.ParseClient(id);
@@ -372,9 +372,9 @@ namespace mtgvrp.group_manager.lspd
                 }
             }
 
-            API.SendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, receiverCharacter.Client, false);
+            API.SendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, receiverCharacter.Player, false);
             receiverCharacter.IsCuffed = false;
-            API.StopPlayerAnimation(receiverCharacter.Client);
+            API.StopPlayerAnimation(receiverCharacter.Player);
 
             NAPI.Notification.SendNotificationToPlayer(player, "You have arrested ~b~" + receiverCharacter.rp_name() + "~w~.");
             NAPI.Notification.SendNotificationToPlayer(receiver, "You have been arrested by ~b~" + character.rp_name() + "~w~.");
@@ -385,7 +385,7 @@ namespace mtgvrp.group_manager.lspd
         }
 
         [Command("release", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Release a player from prison.", new[] { "The target player ID." })]
-        public void release_cmd(Client player, string id)
+        public void release_cmd(Player player, string id)
         {
 
             var receiver = PlayerManager.ParseClient(id);
@@ -422,7 +422,7 @@ namespace mtgvrp.group_manager.lspd
         }
 
         [Command("givebadge"), Help(HelpManager.CommandGroups.LSPD, "Give a badge to a police officer.", new[] { "The target player ID.", "The badge number being given." })]
-        public void givebadge_cmd(Client player, string id, string number)
+        public void givebadge_cmd(Player player, string id, string number)
         {
             var receiver = PlayerManager.ParseClient(id);
 
@@ -466,7 +466,7 @@ namespace mtgvrp.group_manager.lspd
         }
 
         [Command("showbadge"), Help(HelpManager.CommandGroups.LSPD, "Show our police badge to a player.", new[] { "The target player ID." })]
-        public void showbadge_cmd(Client player, string id)
+        public void showbadge_cmd(Player player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
 
@@ -496,7 +496,7 @@ namespace mtgvrp.group_manager.lspd
         }
 
         [Command("cuff", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Handcuff a player.", new[] { "The target player ID." })]
-        public void cuff_cmd(Client player, string id)
+        public void cuff_cmd(Player player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
 
@@ -545,7 +545,7 @@ namespace mtgvrp.group_manager.lspd
 
 
         [Command("uncuff", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Remove handcuffs from a player.", new[] { "The target player ID." })]
-        public void uncuff_cmd(Client player, string id)
+        public void uncuff_cmd(Player player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
 
@@ -589,7 +589,7 @@ namespace mtgvrp.group_manager.lspd
         }
 
         [Command("frisk", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD | HelpManager.CommandGroups.General, "Frisk a player to show their inventory items.", new[] { "The target player ID." })]
-        public void frisk_cmd(Client player, string id)
+        public void frisk_cmd(Player player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
             if (receiver == null)
@@ -631,7 +631,7 @@ namespace mtgvrp.group_manager.lspd
         }
 
         [Command("beacon", Alias = "bc", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Deploy a backup beacon.", null)]
-        public void backupbeacon_cmd(Client player)
+        public void backupbeacon_cmd(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -653,7 +653,7 @@ namespace mtgvrp.group_manager.lspd
         }
 
         [Command("acceptbeacon", Alias = "ab", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Accept the recent backup beacon.", null)]
-        public void acceptbeacon_cmd(Client player)
+        public void acceptbeacon_cmd(Player player)
         {
             Character character = player.GetCharacter();
             var beaconCreator = player;
@@ -669,7 +669,7 @@ namespace mtgvrp.group_manager.lspd
                 int i = 0;
                 if (c.BeaconSet == true)
                 {
-                    beaconCreator = c.Client;
+                    beaconCreator = c.Player;
                     NAPI.Notification.SendNotificationToPlayer(player, "~b~Beacon accepted~w~. A waypoint has been added to your map.");
                     NAPI.ClientEvent.TriggerClientEvent(player, "update_beacon", NAPI.Entity.GetEntityPosition(beaconCreator));
                     return;
@@ -684,7 +684,7 @@ namespace mtgvrp.group_manager.lspd
         }
 
         [Command("megaphonetoggle", Alias = "mp", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Toggle the megaphone.", null)]
-        public void megaphonetog_cmd(Client player)
+        public void megaphonetog_cmd(Player player)
         {
             var playerPos = NAPI.Entity.GetEntityPosition(player);
             Character character = player.GetCharacter();
@@ -711,7 +711,7 @@ namespace mtgvrp.group_manager.lspd
 
 
         [Command("locker"), Help(HelpManager.CommandGroups.LSPD, "View the locker menu.", null)]
-        public void locker_cmd(Client player)
+        public void locker_cmd(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -732,7 +732,7 @@ namespace mtgvrp.group_manager.lspd
 
 
         [Command("ticket"), Help(HelpManager.CommandGroups.LSPD, "Give a player a ticket with a fine.", new[] { "The target player ID.", "Fine amount." })]
-        public void ticket_cmd(Client player, string id, int amount)
+        public void ticket_cmd(Player player, string id, int amount)
         {
             var target = PlayerManager.ParseClient(id);
             if (target == null)
@@ -767,7 +767,7 @@ namespace mtgvrp.group_manager.lspd
         }
 
         [Command("unpaidtickets", GreedyArg = false), Help(HelpManager.CommandGroups.General | HelpManager.CommandGroups.LSPD, "Check your own, or another player's unpaid tickets as a cop.", new[] { "The target player ID." })]
-        public void unpaidtickets_cmd(Client player, string id = null)
+        public void unpaidtickets_cmd(Player player, string id = null)
         {
             var target = PlayerManager.ParseClient(id);
             Character character = player.GetCharacter();
@@ -790,7 +790,7 @@ namespace mtgvrp.group_manager.lspd
         }
 
         [Command("acceptcopticket", GreedyArg = true), Help(HelpManager.CommandGroups.General, "Accept the cop ticket.", null)]
-        public void ticketaccept_cmd(Client player)
+        public void ticketaccept_cmd(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -812,7 +812,7 @@ namespace mtgvrp.group_manager.lspd
         }
 
         [Command("paycoptickets", GreedyArg = true), Help(HelpManager.CommandGroups.General, "Pay all current cop tickets.", null)]
-        public void paytickets_cmd(Client player)
+        public void paytickets_cmd(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -847,7 +847,7 @@ namespace mtgvrp.group_manager.lspd
         }
 
         [Command("deploy", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Deploy an LSPD object.", new[] { "The target object ID" })]
-        public void deploy_cmd(Client player, string objectid)
+        public void deploy_cmd(Player player, string objectid)
         {
             Character character = player.GetCharacter();
 
@@ -906,7 +906,7 @@ namespace mtgvrp.group_manager.lspd
 
 
         [Command("removelastobject", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Remove the last placed object.", null)]
-        public void removeobject_cmd(Client player)
+        public void removeobject_cmd(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -928,7 +928,7 @@ namespace mtgvrp.group_manager.lspd
         }
 
         [Command("removenearestobject")]
-        public void command_removenearestobject(Client player)
+        public void command_removenearestobject(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -981,7 +981,7 @@ namespace mtgvrp.group_manager.lspd
         }
 
         [Command("removeallobjects", GreedyArg = true), Help(HelpManager.CommandGroups.LSPD, "Remove all placed LSPD objects.", null)]
-        public void removeallobjects_cmd(Client player)
+        public void removeallobjects_cmd(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -1017,7 +1017,7 @@ namespace mtgvrp.group_manager.lspd
         }
 
         [Command("setlockerpos"), Help(HelpManager.CommandGroups.LSPD, "Set the locker position.", null)]
-        public void setlockerpos_cmd(Client player)
+        public void setlockerpos_cmd(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -1031,17 +1031,17 @@ namespace mtgvrp.group_manager.lspd
 
             if (character.Group.Locker == MarkerZone.None)
             {
-                character.Group.Locker = new MarkerZone(character.Client.Position, character.Client.Rotation,
-                    (int)character.Client.Dimension)
+                character.Group.Locker = new MarkerZone(character.Player.Position, character.Player.Rotation,
+                    (int)character.Player.Dimension)
                 { TextLabelText = "LSPD Locker Room~n~/locker" };
                 character.Group.Save();
                 character.Group.Locker.Create();
             }
             else
             {
-                character.Group.Locker.Location = character.Client.Position;
-                character.Group.Locker.Rotation = character.Client.Rotation;
-                character.Group.Locker.Dimension = (int)character.Client.Dimension;
+                character.Group.Locker.Location = character.Player.Position;
+                character.Group.Locker.Rotation = character.Player.Rotation;
+                character.Group.Locker.Dimension = (int)character.Player.Dimension;
                 character.Group.Locker.TextLabelText = "LSPD Locker Room~n~/locker";
                 character.Group.Locker.Refresh();
                 character.Group.Save();
@@ -1052,7 +1052,7 @@ namespace mtgvrp.group_manager.lspd
         }
 
         [Command("setfrontdeskpos"), Help(HelpManager.CommandGroups.LSPD, "Se the front desk position.", null)]
-        public void setfrontdeskpos_cmd(Client player)
+        public void setfrontdeskpos_cmd(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -1066,17 +1066,17 @@ namespace mtgvrp.group_manager.lspd
 
             if (character.Group.FrontDesk == MarkerZone.None)
             {
-                character.Group.FrontDesk = new MarkerZone(character.Client.Position, character.Client.Rotation,
-                    (int)character.Client.Dimension)
+                character.Group.FrontDesk = new MarkerZone(character.Player.Position, character.Player.Rotation,
+                    (int)character.Player.Dimension)
                 { TextLabelText = "LSPD Front Desk~n~/paycoptickets" };
                 character.Group.Save();
                 character.Group.FrontDesk.Create();
             }
             else
             {
-                character.Group.FrontDesk.Location = character.Client.Position;
-                character.Group.FrontDesk.Rotation = character.Client.Rotation;
-                character.Group.FrontDesk.Dimension = (int)character.Client.Dimension;
+                character.Group.FrontDesk.Location = character.Player.Position;
+                character.Group.FrontDesk.Rotation = character.Player.Rotation;
+                character.Group.FrontDesk.Dimension = (int)character.Player.Dimension;
                 character.Group.FrontDesk.TextLabelText = "LSPD Front Desk~n~/paycoptickets";
                 character.Group.FrontDesk.Refresh();
                 character.Group.Save();
@@ -1087,7 +1087,7 @@ namespace mtgvrp.group_manager.lspd
         }
 
         [Command("setarrestpos"), Help(HelpManager.CommandGroups.LSPD, "Set the arrest location.", null)]
-        public void setarrestpos_cmd(Client player)
+        public void setarrestpos_cmd(Player player)
 
         {
             Character character = player.GetCharacter();
@@ -1102,17 +1102,17 @@ namespace mtgvrp.group_manager.lspd
 
             if (character.Group.ArrestLocation == MarkerZone.None)
             {
-                character.Group.ArrestLocation = new MarkerZone(character.Client.Position, character.Client.Rotation,
-                        (int)character.Client.Dimension)
+                character.Group.ArrestLocation = new MarkerZone(character.Player.Position, character.Player.Rotation,
+                        (int)character.Player.Dimension)
                 { TextLabelText = "Arrest Location~n~/arrest" };
 
                 character.Group.ArrestLocation.Create();
             }
             else
             {
-                character.Group.ArrestLocation.Location = character.Client.Position;
-                character.Group.ArrestLocation.Rotation = character.Client.Rotation;
-                character.Group.ArrestLocation.Dimension = (int)character.Client.Dimension;
+                character.Group.ArrestLocation.Location = character.Player.Position;
+                character.Group.ArrestLocation.Rotation = character.Player.Rotation;
+                character.Group.ArrestLocation.Dimension = (int)character.Player.Dimension;
                 character.Group.ArrestLocation.TextLabelText = "Arrest Location~n~/arrest";
                 character.Group.ArrestLocation.Refresh();
             }
@@ -1120,7 +1120,7 @@ namespace mtgvrp.group_manager.lspd
             NAPI.Chat.SendChatMessageToPlayer(player, Color.White, "You have moved the LSPD arrest location.");
         }
 
-        public void GiveLspdEquipment(Client player, int type = 0)
+        public void GiveLspdEquipment(Player player, int type = 0)
         {
             WeaponManager.RemoveAllPlayerWeapons(player);
             Character character = player.GetCharacter();
@@ -1143,7 +1143,7 @@ namespace mtgvrp.group_manager.lspd
             API.SetPlayerArmor(player, 100);
         }
 
-        public void ResetTicket(Client player)
+        public void ResetTicket(Player player)
         {
             Character character = player.GetCharacter();
             character.SentTicket = false;
@@ -1151,24 +1151,24 @@ namespace mtgvrp.group_manager.lspd
         }
 
 
-        public void ResetBeacon(Client player)
+        public void ResetBeacon(Player player)
         {
             Character character = player.GetCharacter();
             character.BeaconSet = false;
             character.BeaconResetTimer.Stop();
         }
 
-        public static void SendToCops(Client player, string message)
+        public static void SendToCops(Player player, string message)
         {
             foreach(var p in PlayerManager.Players)
             {
                 if (p.Group.CommandType == Group.CommandTypeLspd)
                 {
-                    p.Client.SendChatMessage(message);
+                    p.Player.SendChatMessage(message);
                 }
             }
         }
-        public static void JailControl(Client player, int seconds)
+        public static void JailControl(Player player, int seconds)
         {
             Character character = player.GetCharacter();
 
@@ -1210,13 +1210,13 @@ namespace mtgvrp.group_manager.lspd
             character.JailTimer.Start();
         }
 
-        public static void UpdateTimer(Client player)
+        public static void UpdateTimer(Player player)
         {
             Character character = player.GetCharacter();
             character.JailTimeLeft -= 1000;
         }
 
-        public static void SetFree(Client player)
+        public static void SetFree(Player player)
         {
             Character character = player.GetCharacter();
             if (character.IsJailed == false)
@@ -1229,7 +1229,7 @@ namespace mtgvrp.group_manager.lspd
             API.Shared.SetEntityPosition(player, FreeJail);
             character.JailTimer.Stop();
             character.JailTimeLeftTimer.Stop();
-            API.Shared.SetEntityDimension(character.Client, 0);
+            API.Shared.SetEntityDimension(character.Player, 0);
 
         }
     }

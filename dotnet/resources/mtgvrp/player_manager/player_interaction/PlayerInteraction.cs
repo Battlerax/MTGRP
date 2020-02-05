@@ -19,7 +19,7 @@ namespace mtgvrp.player_manager.player_interaction
         }
 
         [RemoteEvent("cancel_following")]
-        public void CancelFollowing(Client player, params object[] arguments)
+        public void CancelFollowing(Player player, params object[] arguments)
         {
             Character character = player.GetCharacter();
 
@@ -36,12 +36,12 @@ namespace mtgvrp.player_manager.player_interaction
         }
 
         [RemoteEvent("player_interaction_menu")]
-        public void PlayerInteractionMenu(Client player, params object[] arguments)
+        public void PlayerInteractionMenu(Player player, params object[] arguments)
         {
             var option = Convert.ToString(arguments[0]);
             var interactHandle = (Entity)arguments[1];
 
-            Client interactClient = NAPI.Player.GetPlayerFromHandle(interactHandle);
+            Player interactClient = NAPI.Player.GetPlayerFromHandle(interactHandle);
             Character interactCharacter = interactClient.GetCharacter();
 
             Character character = player.GetCharacter();
@@ -76,7 +76,7 @@ namespace mtgvrp.player_manager.player_interaction
                                 return;
                             }
 
-                            if (player.Position.DistanceTo(interactCharacter.Client.Position) > 3)
+                            if (player.Position.DistanceTo(interactCharacter.Player.Position) > 3)
                             {
                                 NAPI.Chat.SendChatMessageToPlayer(player, Color.White,
                                     "You are too far away to handcuff that player.");
@@ -86,8 +86,8 @@ namespace mtgvrp.player_manager.player_interaction
                             API.GivePlayerWeapon(player, WeaponHash.Unarmed, 1);
                             API.SendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, interactHandle, true);
                             interactCharacter.IsCuffed = true;
-                            interactCharacter.Client.TriggerEvent("freezePlayer", true);
-                            API.PlayPlayerAnimation(interactCharacter.Client, (int)(1 << 0 | 1 << 4 | 1 << 5),
+                            interactCharacter.Player.TriggerEvent("freezePlayer", true);
+                            API.PlayPlayerAnimation(interactCharacter.Player, (int)(1 << 0 | 1 << 4 | 1 << 5),
                                 "mp_arresting", "idle");
 
                             ChatManager.RoleplayMessage(player,
@@ -96,17 +96,17 @@ namespace mtgvrp.player_manager.player_interaction
                         }
                         else
                         {
-                            if (player.Position.DistanceTo(interactCharacter.Client.Position) > 3)
+                            if (player.Position.DistanceTo(interactCharacter.Player.Position) > 3)
                             {
                                 NAPI.Chat.SendChatMessageToPlayer(player, Color.White,
                                     "You are too far away to unhandcuff that player.");
                                 return;
                             }
 
-                            interactCharacter.Client.TriggerEvent("freezePlayer", false);
+                            interactCharacter.Player.TriggerEvent("freezePlayer", false);
                             API.SendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, interactHandle, false);
                             interactCharacter.IsCuffed = false;
-                            API.StopPlayerAnimation(interactCharacter.Client);
+                            API.StopPlayerAnimation(interactCharacter.Player);
 
                             ChatManager.RoleplayMessage(player,
                                 "removes the handcuffs from " + interactCharacter.rp_name(), ChatManager.RoleplayMe);
@@ -116,7 +116,7 @@ namespace mtgvrp.player_manager.player_interaction
                     }
                 case "drag":
                     {
-                        if (player.Position.DistanceTo(interactCharacter.Client.Position) > 3)
+                        if (player.Position.DistanceTo(interactCharacter.Player.Position) > 3)
                         {
                             NAPI.Chat.SendChatMessageToPlayer(player, Color.White,
                                 "You are too far away from that player.");
@@ -153,7 +153,7 @@ namespace mtgvrp.player_manager.player_interaction
         }
 
         [Command("detain", GreedyArg = true), Help(HelpManager.CommandGroups.Vehicles, "Detain someone into your vehicle. (Must be inside the vehicle)", "The player id", "Seat number you'd like to detain to")]
-        public void DetainPlayer(Client player, string id, string seatNumber)
+        public void DetainPlayer(Player player, string id, string seatNumber)
         {
 
             var receiver = PlayerManager.ParseClient(id);
@@ -196,7 +196,7 @@ namespace mtgvrp.player_manager.player_interaction
         }
 
         [Command("eject", GreedyArg = true), Help(HelpManager.CommandGroups.Vehicles, "Eject someone from your vehicle.", "The player you'd like to kick out")]
-        public void ejectPlayer(Client player, string id)
+        public void ejectPlayer(Player player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
 
@@ -232,16 +232,16 @@ namespace mtgvrp.player_manager.player_interaction
  
         public void FollowPlayer(Character c, bool isDrag)
         {
-            API.SendNativeToAllPlayers(Hash.TASK_FOLLOW_TO_OFFSET_OF_ENTITY, c.Client,
-                                    c.FollowingPlayer.Client, -1.0, 0.0, 0.0, 1, 1050, 2, true);
+            API.SendNativeToAllPlayers(Hash.TASK_FOLLOW_TO_OFFSET_OF_ENTITY, c.Player,
+                                    c.FollowingPlayer.Player, -1.0, 0.0, 0.0, 1, 1050, 2, true);
             if (isDrag == false)
             {
-                NAPI.ClientEvent.TriggerClientEvent(c.Client, "player_interact_subtitle",
+                NAPI.ClientEvent.TriggerClientEvent(c.Player, "player_interact_subtitle",
                     "You are following " + c.FollowingPlayer.rp_name() + ". Press SPACE to stop following.");
             }
             else
             {
-                NAPI.ClientEvent.TriggerClientEvent(c.Client, "player_interact_subtitle",
+                NAPI.ClientEvent.TriggerClientEvent(c.Player, "player_interact_subtitle",
                     "You are being dragged by " + c.FollowingPlayer.rp_name() + ".");
             }
         }

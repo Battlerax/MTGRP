@@ -17,7 +17,7 @@ namespace mtgvrp.job_manager.garbageman
     public class Garbageman : Script
     {
         [ServerEvent(Event.PlayerDisconnected)]
-        public void OnPlayerDisconnected(Client player, byte type, string reason)
+        public void OnPlayerDisconnected(Player player, byte type, string reason)
         {
             var c = player.GetCharacter();
             if (c?.GarbageBag != null)
@@ -27,7 +27,7 @@ namespace mtgvrp.job_manager.garbageman
         }
 
         [RemoteEvent("garbage_throwbag")]
-        public void GarbageThrowBag(Client player, params object[] arguments)
+        public void GarbageThrowBag(Player player, params object[] arguments)
         {
             Character character = player.GetCharacter();
             API.DeleteEntity(character.GarbageBag);
@@ -66,7 +66,7 @@ namespace mtgvrp.job_manager.garbageman
         }
 
         [RemoteEvent("garbage_pickupbag")]
-        public void GarbagePickupBag(Client player, params object[] arguments)
+        public void GarbagePickupBag(Player player, params object[] arguments)
         {
             Character character = player.GetCharacter();
 
@@ -78,11 +78,11 @@ namespace mtgvrp.job_manager.garbageman
                 return;
             }
 
-            pickuptrash_e(character.Client);
+            pickuptrash_e(character.Player);
         }
 
         [ServerEvent(Event.PlayerEnterVehicle)]
-        public void OnPlayerEnterVehicle(Client player, Vehicle vehicle, sbyte seat)
+        public void OnPlayerEnterVehicle(Player player, Vehicle vehicle, sbyte seat)
         {
             Character character = player.GetCharacter();
             var veh = VehicleManager.GetVehFromNetHandle(vehicle);
@@ -166,13 +166,13 @@ namespace mtgvrp.job_manager.garbageman
             return randomProp;
         }
 
-        public static void UpdateTimer(Client player)
+        public static void UpdateTimer(Player player)
         {
             Character character = player.GetCharacter();
             character.GarbageTimeLeft -= 1000;
         }
 
-        public void RespawnGarbageTruck(Client player, vehicle_manager.GameVehicle vehicle)
+        public void RespawnGarbageTruck(Player player, vehicle_manager.GameVehicle vehicle)
         {
             vehicle.CustomRespawnTimer.Stop();
             vehicle.GarbageBags = 0;
@@ -192,7 +192,7 @@ namespace mtgvrp.job_manager.garbageman
             {
                 if (player?.JobOne?.Type == JobManager.JobTypes.Garbageman)
                 {
-                    API.Shared.SendPictureNotificationToPlayer(player.Client, message, "CHAR_PROPERTY_CAR_SCRAP_YARD", 
+                    API.Shared.SendPictureNotificationToPlayer(player.Player, message, "CHAR_PROPERTY_CAR_SCRAP_YARD", 
                         0, 1, "Los Santos Sanitations", "Garbage Notification");
                 }
             }
@@ -202,7 +202,7 @@ namespace mtgvrp.job_manager.garbageman
         //Commands
 
         [Command("unloadtrash"), Help(HelpManager.CommandGroups.GarbageJob, "Unloads your truck's garabge and get your payment!")]
-        public void unloadtrash_cmd(Client player)
+        public void unloadtrash_cmd(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -254,7 +254,7 @@ namespace mtgvrp.job_manager.garbageman
         }
 
         [Command("endtrash"), Help(HelpManager.CommandGroups.GarbageJob, "Ends your current trash job.")]
-        public void endtrash_cmd(Client player)
+        public void endtrash_cmd(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -285,7 +285,7 @@ namespace mtgvrp.job_manager.garbageman
         }
 
         [Command("pickuptrash"), Help(HelpManager.CommandGroups.GarbageJob, "Picks up trash from a garbage bin.")]
-        public void pickuptrash_cmd(Client player)
+        public void pickuptrash_cmd(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -334,7 +334,7 @@ namespace mtgvrp.job_manager.garbageman
             player.SendChatMessage("You are holding a garbage bag. Press LMB to throw it into the back of the garbage truck");
         }
 
-        public void pickuptrash_e(Client player)
+        public void pickuptrash_e(Player player)
         {
             Character character = player.GetCharacter();
 

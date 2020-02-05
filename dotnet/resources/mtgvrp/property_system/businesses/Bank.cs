@@ -14,7 +14,7 @@ namespace mtgvrp.property_system.businesses
     class Bank : Script
     {
         [Command("deposit"), Help(HelpManager.CommandGroups.General, "Command to use when putting money into your bank account.", new[] { "Amount" })]
-        public void deposit_cmd(Client player, int amount)
+        public void deposit_cmd(Player player, int amount)
         {
             var prop = PropertyManager.IsAtPropertyInteraction(player);
             if (prop == null || prop?.Type != PropertyManager.PropertyTypes.Bank)
@@ -39,7 +39,7 @@ namespace mtgvrp.property_system.businesses
         }
 
         [Command("withdraw"), Help(HelpManager.CommandGroups.General, "Command to use when taking money from your bank account.", new[] { "Amount" })]
-        public void withdraw_cmd(Client player, int amount)
+        public void withdraw_cmd(Player player, int amount)
         {
             var prop = PropertyManager.IsAtPropertyInteraction(player);
             if (prop == null || prop?.Type != PropertyManager.PropertyTypes.Bank)
@@ -64,7 +64,7 @@ namespace mtgvrp.property_system.businesses
         }
 
         [Command("wiretransfer"), Help(HelpManager.CommandGroups.General, "Command to transfer money from one account to another online players account.", new[] { "ID of target player.", "Amount." })]
-        public void wiretransfer_cmd(Client player, string id, int amount)
+        public void wiretransfer_cmd(Player player, string id, int amount)
         {
             var prop = PropertyManager.IsAtPropertyInteraction(player);
             if (prop == null || prop?.Type != PropertyManager.PropertyTypes.Bank)
@@ -73,7 +73,7 @@ namespace mtgvrp.property_system.businesses
                 return;
             }
 
-            Client target = PlayerManager.ParseClient(id);
+            Player target = PlayerManager.ParseClient(id);
             if (target == null)
             {
                 NAPI.Chat.SendChatMessageToPlayer(player, "That target doesn't exist.");
@@ -104,7 +104,7 @@ namespace mtgvrp.property_system.businesses
         }
 
         [Command("balance"), Help(HelpManager.CommandGroups.General, "Used to see your current bank balance.", null)]
-        public void balance_cmd(Client player)
+        public void balance_cmd(Player player)
         {
             var prop = PropertyManager.IsAtPropertyInteraction(player);
             if (prop == null || prop?.Type != PropertyManager.PropertyTypes.Bank)
@@ -118,9 +118,9 @@ namespace mtgvrp.property_system.businesses
         }
 
         [Command("givecheck"), Help(HelpManager.CommandGroups.General, "Hand another player a check, taking money from your bank.", new[] { "ID of target player.", "Amount" })]
-        public void GiveCheck_cmd(Client player, string id, int amount)
+        public void GiveCheck_cmd(Player player, string id, int amount)
         {
-            Client target = PlayerManager.ParseClient(id);
+            Player target = PlayerManager.ParseClient(id);
             if (target == null)
             {
                 NAPI.Chat.SendChatMessageToPlayer(player, "That target doesn't exist.");
@@ -163,7 +163,7 @@ namespace mtgvrp.property_system.businesses
         }
 
         [Command("redeemcheck"), Help(HelpManager.CommandGroups.General, "To cash in a check when at a bank.", null)]
-        public void Redeemcheck_cmd(Client player)
+        public void Redeemcheck_cmd(Player player)
         {
             var prop = PropertyManager.IsAtPropertyInteraction(player);
             if (prop == null || prop?.Type != PropertyManager.PropertyTypes.Bank)

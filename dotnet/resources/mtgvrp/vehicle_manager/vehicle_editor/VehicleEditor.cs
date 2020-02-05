@@ -20,7 +20,7 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
         }
 
         [RemoteEvent("vehicle_edit_change_spawn")]
-        public void VehicleEditChangeSpawn(Client player, params object[] arguments)
+        public void VehicleEditChangeSpawn(Player player, params object[] arguments)
         {
             GameVehicle veh = NAPI.Data.GetEntityData(player, "EDIT_VEH");
 
@@ -39,7 +39,7 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
         }
 
         [RemoteEvent("vehicle_edit_save")]
-        public void VehicleEditSave(Client player, params object[] arguments)
+        public void VehicleEditSave(Player player, params object[] arguments)
         {
             GameVehicle veh = NAPI.Data.GetEntityData(player, "EDIT_VEH");
 
@@ -120,14 +120,14 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
         }
 
         [RemoteEvent("cancel_veh_edit")]
-        public void CancelVehEdit(Client player, params object[] arguments)
+        public void CancelVehEdit(Player player, params object[] arguments)
         {
             NAPI.Data.ResetEntityData(player, "EDIT_VEH");
             NAPI.Chat.SendChatMessageToPlayer(player, "~r~Vehicle editing canceled.");
         }
 
         [RemoteEvent("edit_veh_delete")]
-        public void EditVehDelete(Client player, params object[] arguments)
+        public void EditVehDelete(Player player, params object[] arguments)
         {
             GameVehicle veh = NAPI.Data.GetEntityData(player, "EDIT_VEH");
 
@@ -145,7 +145,7 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
         }
 
         [RemoteEvent("vehicle_edit_respawn")]
-        public void VehicleEditRespawn(Client player, params object[] arguments)
+        public void VehicleEditRespawn(Player player, params object[] arguments)
         {
             GameVehicle veh = NAPI.Data.GetEntityData(player, "EDIT_VEH");
 
@@ -162,7 +162,7 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
         }
 
         [Command("editvehicle"), Help(HelpManager.CommandGroups.AdminLevel4, "Editing different stats of a vehicle", null)]
-        public void editvehicle_cmd(Client player)
+        public void editvehicle_cmd(Player player)
         {
             Account account = player.GetAccount();
             if (account.AdminLevel < 4)

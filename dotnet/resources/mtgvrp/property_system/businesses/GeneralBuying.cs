@@ -25,13 +25,13 @@ namespace mtgvrp.property_system.businesses
     public class GeneralBuying : Script
     {
         [RemoteEvent("property_exitbuy")]
-        public void PropertyExitBuy(Client sender, params object[] arguments)
+        public void PropertyExitBuy(Player sender, params object[] arguments)
         {
             sender.TriggerEvent("freezePlayer", false);
         }
 
         [RemoteEvent("property_buyitem")]
-        public void PropertyBuyItem(Client sender, params object[] arguments)
+        public void PropertyBuyItem(Player sender, params object[] arguments)
         {
             Character character = sender.GetCharacter();
             var prop = PropertyManager.IsAtPropertyInteraction(sender);
@@ -415,7 +415,7 @@ namespace mtgvrp.property_system.businesses
         }
 
         [Command("buy"), Help(HelpManager.CommandGroups.Bussiness, "Used inside businesses to buy items.", null)]
-        public void Buy(Client player)
+        public void Buy(Player player)
         {
             var prop = PropertyManager.IsAtPropertyInteraction(player);
             if (prop == null)

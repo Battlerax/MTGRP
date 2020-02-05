@@ -56,7 +56,7 @@ namespace mtgvrp.drugs_manager
         }
 
         [ServerEvent(Event.PlayerDisconnected)]
-        public void OnPlayerDisconnected(Client player, byte type, string reason)
+        public void OnPlayerDisconnected(Player player, byte type, string reason)
         {
             NAPI.ClientEvent.TriggerClientEvent(player, "clearAllEffects");
         }
@@ -71,7 +71,7 @@ namespace mtgvrp.drugs_manager
        
         private void ReducePlayerTempValues(object sender, ElapsedEventArgs e)
         {
-            foreach (Client c in NAPI.Pools.GetAllPlayers())
+            foreach (Player c in NAPI.Pools.GetAllPlayers())
             {
                 if(c == null) return;
 
@@ -112,7 +112,7 @@ namespace mtgvrp.drugs_manager
 
         [Command("sniffcoke", GreedyArg = true, Alias = "usecoke")]
         [Help(HelpManager.CommandGroups.General, "Sniff a line of coke.", "Amount of coke to sniff.")]
-        public void coke_cmd(Client sender, string amount)
+        public void coke_cmd(Player sender, string amount)
         {
             int cokeVal;
             var playerChar = sender.GetCharacter();
@@ -139,7 +139,7 @@ namespace mtgvrp.drugs_manager
 
         [Command("smokeweed", GreedyArg = true, Alias = "useweed")]
         [Help(HelpManager.CommandGroups.General, "Smoke some weed.", "Amount of weed to smoke.")]
-        public void weed_cmd(Client sender, string amount)
+        public void weed_cmd(Player sender, string amount)
         {
             int weedVal;
             var playerChar = sender.GetCharacter();
@@ -171,7 +171,7 @@ namespace mtgvrp.drugs_manager
 
         [Command("takespeed", GreedyArg = true, Alias = "usespeed")]
         [Help(HelpManager.CommandGroups.General, "Take a few pills of speed.", "Amount of speed to take.")]
-        public void speed_cmd(Client sender, string amount)
+        public void speed_cmd(Player sender, string amount)
         {
             int speedVal;
             var playerChar = sender.GetCharacter();
@@ -201,7 +201,7 @@ namespace mtgvrp.drugs_manager
 
         [Command("injectheroin", GreedyArg = true, Alias = "useheroin")]
         [Help(HelpManager.CommandGroups.General, "Inject some heroin.", "Amount of heroin to inject.")]
-        public void heroin_cmd(Client sender, string amount)
+        public void heroin_cmd(Player sender, string amount)
         {
             int heroinVal;
             var playerChar = sender.GetCharacter();
@@ -230,7 +230,7 @@ namespace mtgvrp.drugs_manager
 
         [Command("takemeth", GreedyArg = true, Alias = "usemeth")]
         [Help(HelpManager.CommandGroups.General, "Take some meth pills.", "Amount of meth to take.")]
-        public void meth_cmd(Client sender, string amount)
+        public void meth_cmd(Player sender, string amount)
         {
             int methVal;
             var playerChar = sender.GetCharacter();
@@ -251,30 +251,30 @@ namespace mtgvrp.drugs_manager
 
 
 
-        #region  Wipe Client Effects Calls
+        #region  Wipe Player Effects Calls
 
-        private void clearWeedEffect(Client sender)
+        private void clearWeedEffect(Player sender)
         {
             Character c = sender.GetCharacter();
             c.WeedTimer.Stop();
             NAPI.ClientEvent.TriggerClientEvent(sender, "clearWeed");
         }
 
-        private void clearHeroinEffect(Client sender)
+        private void clearHeroinEffect(Player sender)
         {
             Character c = sender.GetCharacter();
             c.HeroinTimer.Stop();
             NAPI.ClientEvent.TriggerClientEvent(sender, "clearHeroin");
         }
 
-        private void ClearSpeedEffect(Client sender)
+        private void ClearSpeedEffect(Player sender)
         {
             Character c = sender.GetCharacter();
             c.Speedtimer.Stop();
             NAPI.ClientEvent.TriggerClientEvent(sender, "clearSpeed");
         }
 
-        private void clearCocaineEffect(Client sender)
+        private void clearCocaineEffect(Player sender)
         {
             Character c = sender.GetCharacter();
             c.CocaineTimer.Stop();
@@ -291,7 +291,7 @@ namespace mtgvrp.drugs_manager
         
         [Command("dropcrate")]
         [Help(HelpManager.CommandGroups.AdminLevel5, "Drop a drug crate at your location.", "Type of Drug.","Amount of drug.")]
-        public void cmd_dropbox(Client sender, String drug, String amount)
+        public void cmd_dropbox(Player sender, String drug, String amount)
         {
             Account a = sender.GetAccount();
             int drugAmount;
@@ -368,7 +368,7 @@ namespace mtgvrp.drugs_manager
 
         [Command("deleteCrate")]
         [Help(HelpManager.CommandGroups.AdminLevel5, "Delete a drug crate at your location.", null)]
-        public void cmd_deleteCrate(Client sender)
+        public void cmd_deleteCrate(Player sender)
         {
             Account a = sender.GetAccount();
             if (a.AdminLevel < 5) return;
@@ -393,7 +393,7 @@ namespace mtgvrp.drugs_manager
         [Command("opencrate")]
         [Help(HelpManager.CommandGroups.General, "Open a drug crate at your location.", null)]
 
-        public void OpenCrate(Client sender)
+        public void OpenCrate(Player sender)
         {
 
             if (NAPI.Player.IsPlayerInAnyVehicle(sender))
@@ -421,7 +421,7 @@ namespace mtgvrp.drugs_manager
         [Command("prycrate")]
         [Help(HelpManager.CommandGroups.General, "Attempt to pry open a drug crate at your location.", null)]
 
-        public void PryCrate(Client sender)
+        public void PryCrate(Player sender)
         {
 
             if (NAPI.Player.IsPlayerInAnyVehicle(sender))
@@ -459,7 +459,7 @@ namespace mtgvrp.drugs_manager
         }
 
         [Command("alockcrate")]
-        public void cmd_lockcrate(Client sender)
+        public void cmd_lockcrate(Player sender)
         {
             if (sender.GetAccount().AdminLevel < 5) return;
 
@@ -481,7 +481,7 @@ namespace mtgvrp.drugs_manager
 
         [Command("aopencrate")]
         [Help(HelpManager.CommandGroups.AdminLevel5, "Force open a drug crate at your location.", null)]
-        public void cmd_aopencrate(Client sender)
+        public void cmd_aopencrate(Player sender)
         {
 
             Account a = sender.GetAccount();
@@ -516,7 +516,7 @@ namespace mtgvrp.drugs_manager
 
 
         // Creates the drop, adds it to the list and calls for the prop to be set on the floor.
-        public void SpawnDrop(Client sender, IInventoryItem drug)
+        public void SpawnDrop(Player sender, IInventoryItem drug)
         {
             var drop = new Airdrop(drug, NAPI.Entity.GetEntityPosition(sender));
             _airdrops.Add(drop);
@@ -544,7 +544,7 @@ namespace mtgvrp.drugs_manager
 
         
 
-        public void BoostArmor(Client sender, int amount)
+        public void BoostArmor(Player sender, int amount)
         {
             if (API.GetPlayerArmor(sender) + amount * ArmorMultipler > MaxArmor)
                 API.SetPlayerArmor(sender, MaxArmor);
@@ -552,7 +552,7 @@ namespace mtgvrp.drugs_manager
                 API.SetPlayerArmor(sender, API.GetPlayerArmor(sender) + amount * ArmorMultipler);
         }
 
-        public void BoostHealth(Client sender, int amount)
+        public void BoostHealth(Player sender, int amount)
         {
             if (API.GetPlayerHealth(sender) + amount * HealthMultipler > MaxHealth)
                 API.SetPlayerHealth(sender, MaxHealth);
@@ -561,7 +561,7 @@ namespace mtgvrp.drugs_manager
         }
 
 
-        public void TempBoostHealth(Client sender, int amount)
+        public void TempBoostHealth(Player sender, int amount)
         {
             Character c = sender.GetCharacter();
 
@@ -577,7 +577,7 @@ namespace mtgvrp.drugs_manager
         }
 
 
-        public void MaxArmourAndHealth(Client sender, int amount)
+        public void MaxArmourAndHealth(Player sender, int amount)
         {
             Character c = sender.GetCharacter();
             int tot = c.HeroinTolerance / HeroinDivider;
@@ -604,7 +604,7 @@ namespace mtgvrp.drugs_manager
         }
 
         [Command("tol")]
-        public void callTolRoll(Client sender)
+        public void callTolRoll(Player sender)
         {
             Character c = sender.GetCharacter();
             ToleranceEffectRoll(c);
@@ -619,39 +619,39 @@ namespace mtgvrp.drugs_manager
 
             if (effectRoll == 1)
             {
-                NAPI.Chat.SendChatMessageToPlayer(c.Client,"You manage to kick part of your tolerance. You should be more careful of heroin usage...");
+                NAPI.Chat.SendChatMessageToPlayer(c.Player,"You manage to kick part of your tolerance. You should be more careful of heroin usage...");
                 c.HeroinTolerance = 2;
                 return;
             }
             if (effectRoll > 1 && effectRoll < 6)
             {
-                NAPI.Chat.SendChatMessageToPlayer(c.Client,"You're really not feeling the effects anymore. Might be a good time to cutdown.");
+                NAPI.Chat.SendChatMessageToPlayer(c.Player,"You're really not feeling the effects anymore. Might be a good time to cutdown.");
                 c.HeroinTolerance = c.HeroinTolerance - 5;
                 return;
             }
             if (effectRoll >= 6 && effectRoll < 10)
             {
-                NAPI.Chat.SendChatMessageToPlayer(c.Client,"Your current usage limits are causing you serious pain.");
-                API.SetPlayerHealth(c.Client,API.GetPlayerHealth(c.Client) - 10);
-                if (c.Client == null)
+                NAPI.Chat.SendChatMessageToPlayer(c.Player,"Your current usage limits are causing you serious pain.");
+                API.SetPlayerHealth(c.Player,API.GetPlayerHealth(c.Player) - 10);
+                if (c.Player == null)
                 {
                     API.SendChatMessageToAll("lol null");
                 }
-                NAPI.ClientEvent.TriggerClientEvent(c.Client, "heroinVisual",LowerHeroinTripTime * 1000);       
+                NAPI.ClientEvent.TriggerClientEvent(c.Player, "heroinVisual",LowerHeroinTripTime * 1000);       
                 c.HeroinTimer = new Timer { Interval = LowerHeroinTripTime * 1000 };
-                c.HeroinTimer.Elapsed += delegate { clearHeroinEffect(c.Client); };
+                c.HeroinTimer.Elapsed += delegate { clearHeroinEffect(c.Player); };
                 c.HeroinTimer.Start();
 
                 return;
             }
             if (effectRoll == 10)
             {
-                NAPI.Chat.SendChatMessageToPlayer(c.Client,"Your body is unable to take the heroin anymore, and begins to breakdown.");
-                API.SetPlayerHealth(c.Client,1);
-                API.SetPlayerArmor(c.Client,0);
-                NAPI.ClientEvent.TriggerClientEvent(c.Client, "heroinVisual", HigherHeroinTripTime * 1000);
+                NAPI.Chat.SendChatMessageToPlayer(c.Player,"Your body is unable to take the heroin anymore, and begins to breakdown.");
+                API.SetPlayerHealth(c.Player,1);
+                API.SetPlayerArmor(c.Player,0);
+                NAPI.ClientEvent.TriggerClientEvent(c.Player, "heroinVisual", HigherHeroinTripTime * 1000);
                 c.HeroinTimer = new Timer { Interval = HigherHeroinTripTime * 1000 };
-                c.HeroinTimer.Elapsed += delegate { clearHeroinEffect(c.Client); };
+                c.HeroinTimer.Elapsed += delegate { clearHeroinEffect(c.Player); };
                 c.HeroinTimer.Start();
             }
         }
@@ -667,7 +667,7 @@ namespace mtgvrp.drugs_manager
             drop.prop = API.CreateObject(1885839156, drop.Loc, new Vector3());
         }
 
-        private Airdrop FindNearestAirdrop(Client sender, float bound = 5)
+        private Airdrop FindNearestAirdrop(Player sender, float bound = 5)
         {
             Airdrop drop = null;
             foreach (var a in _airdrops)

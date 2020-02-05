@@ -17,7 +17,7 @@ namespace mtgvrp.job_manager.delivery
     public class DeliveryManager : Script
     {
         [Command("getsupplies"), Help(HelpManager.CommandGroups.DeliveryJob, "Used to get supplies which you can later sell at a business.", new []{"The amount of supplies you'd like to buy."})]
-        public void GetSupplies(Client player, int amount)
+        public void GetSupplies(Player player, int amount)
         {
             Character c = player.GetCharacter();
             if (c.JobOne?.Type != JobManager.JobTypes.DeliveryMan)
@@ -47,7 +47,7 @@ namespace mtgvrp.job_manager.delivery
         }
 
         [Command("sellsupplies"), Help(HelpManager.CommandGroups.DeliveryJob, "Sell supplies to a business.", new []{"The amount of supplies you'd like to sell."})]
-        public void SellSupplies(Client player, int amount)
+        public void SellSupplies(Player player, int amount)
         {
             var prop = PropertyManager.IsAtPropertyInteraction(player);
             if (prop == null)

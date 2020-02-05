@@ -64,7 +64,7 @@ namespace mtgvrp.player_manager
         public string PlayerCrimes { get; set; }
 
         [BsonIgnore]
-        public Client Client { get; set; }
+        public Player Player { get; set; }
 
         [BsonIgnore]
         public GameVehicle LastVehicle { get; set; }
@@ -152,8 +152,8 @@ namespace mtgvrp.player_manager
             get { return _garbagetime; }
             set
             {
-                if (Client != null)
-                    API.Shared.TriggerClientEvent(Client, "update_garbage_time", value / 1000);
+                if (Player != null)
+                    API.Shared.TriggerClientEvent(Player, "update_garbage_time", value / 1000);
 
                 _garbagetime = value;
             }
@@ -257,7 +257,7 @@ namespace mtgvrp.player_manager
         public bool BeaconSet { get; set; }
         [BsonIgnore] public Timer BeaconTimer { get; set; }
         [BsonIgnore] public Timer BeaconResetTimer { get; set; }
-        public Client BeaconCreator { get; set; }
+        public Player BeaconCreator { get; set; }
 
 
         [BsonIgnore] public Timer aJailTimeLeftTimer { get; set; }
@@ -269,8 +269,8 @@ namespace mtgvrp.player_manager
             get => _time;
             set
             {
-                if(Client != null)
-                    API.Shared.TriggerClientEvent(Client,"update_jail_time",value/1000);
+                if(Player != null)
+                    API.Shared.TriggerClientEvent(Player,"update_jail_time",value/1000);
                 _time = value;
             }
         }
@@ -290,8 +290,8 @@ namespace mtgvrp.player_manager
             get { return _time; }
             set
             {
-                if (Client != null)
-                    API.Shared.TriggerClientEvent(Client, "update_jail_time", value/1000);
+                if (Player != null)
+                    API.Shared.TriggerClientEvent(Player, "update_jail_time", value/1000);
 
                 _time = value;
             }
@@ -393,7 +393,7 @@ namespace mtgvrp.player_manager
 
             Skin = PedHash.FreemodeMale01;
 
-            Client = null;
+            Player = null;
 
             LastVehicle = null;
 
@@ -438,13 +438,13 @@ namespace mtgvrp.player_manager
 
         public void Save()
         {
-            if (Client != null)
+            if (Player != null)
             {
-                Health = API.Shared.GetPlayerHealth(Client);
-                Armor = API.Shared.GetPlayerArmor(Client);
-                Skin = (PedHash) Client.Model;
-                LastPos = Client.Position;
-                LastRot = Client.Rotation;
+                Health = API.Shared.GetPlayerHealth(Player);
+                Armor = API.Shared.GetPlayerArmor(Player);
+                Skin = (PedHash) Player.Model;
+                LastPos = Player.Position;
+                LastRot = Player.Rotation;
 
                 GetTimePlayed(); //Update time played before save.
             }
@@ -491,129 +491,129 @@ namespace mtgvrp.player_manager
 
         public void update_ped()
         {
-            update_ped(Client);
+            update_ped(Player);
             foreach (var p in API.Shared.GetAllPlayers())
             {
                 if (p == null)
                     return;
 
-                if (p.Position.DistanceTo(Client.Position) <= 500f)
+                if (p.Position.DistanceTo(Player.Position) <= 500f)
                 {
                     update_ped(p);
                 }
             }
         }
 
-        public void update_ped(Client player)
+        public void update_ped(Player player)
         {
-            API.Shared.SendNativeToPlayer(player, Hash.SET_PED_HEAD_BLEND_DATA, Client, Model.FatherId,
+            API.Shared.SendNativeToPlayer(player, Hash.SET_PED_HEAD_BLEND_DATA, Player, Model.FatherId,
                 Model.MotherId, 0, Model.FatherId, Model.MotherId, 0, Model.ParentLean, Model.ParentLean, 0, false);
 
-            API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client, 2, Model.HairStyle, 0, 0);
-            API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client, 2, Model.HairStyle, 0, 0);
-            API.Shared.SendNativeToPlayer(player, Hash._SET_PED_HAIR_COLOR, Client, Model.HairColor);
+            API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Player, 2, Model.HairStyle, 0, 0);
+            API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Player, 2, Model.HairStyle, 0, 0);
+            API.Shared.SendNativeToPlayer(player, Hash._SET_PED_HAIR_COLOR, Player, Model.HairColor);
 
             //API.Shared.SendNativeToPlayer(player, Hash._SET_PED_EYE_COLOR, client, this.model.eye_color);
 
-            API.Shared.SendNativeToPlayer(player, Hash.SET_PED_HEAD_OVERLAY, Client, 2, Model.Eyebrows, 1.0f);
-            API.Shared.SendNativeToPlayer(player, Hash._SET_PED_HEAD_OVERLAY_COLOR, Client, 2, 1, Model.HairColor,
+            API.Shared.SendNativeToPlayer(player, Hash.SET_PED_HEAD_OVERLAY, Player, 2, Model.Eyebrows, 1.0f);
+            API.Shared.SendNativeToPlayer(player, Hash._SET_PED_HEAD_OVERLAY_COLOR, Player, 2, 1, Model.HairColor,
                 Model.HairColor);
 
-            API.Shared.SendNativeToPlayer(player, Hash.SET_PED_HEAD_OVERLAY, Client, 0, Model.Blemishes, 1.0f);
+            API.Shared.SendNativeToPlayer(player, Hash.SET_PED_HEAD_OVERLAY, Player, 0, Model.Blemishes, 1.0f);
 
-            API.Shared.SendNativeToPlayer(player, Hash.SET_PED_HEAD_OVERLAY, Client, 1, Model.FacialHair, 1.0f);
-            API.Shared.SendNativeToPlayer(player, Hash._SET_PED_HEAD_OVERLAY_COLOR, Client, 1, 1, Model.HairColor,
+            API.Shared.SendNativeToPlayer(player, Hash.SET_PED_HEAD_OVERLAY, Player, 1, Model.FacialHair, 1.0f);
+            API.Shared.SendNativeToPlayer(player, Hash._SET_PED_HEAD_OVERLAY_COLOR, Player, 1, 1, Model.HairColor,
                 Model.HairColor);
 
-            API.Shared.SendNativeToPlayer(player, Hash.SET_PED_HEAD_OVERLAY, Client, 3, Model.Ageing, 1.0f);
+            API.Shared.SendNativeToPlayer(player, Hash.SET_PED_HEAD_OVERLAY, Player, 3, Model.Ageing, 1.0f);
 
-            API.Shared.SendNativeToPlayer(player, Hash.SET_PED_HEAD_OVERLAY, Client, 8, Model.Lipstick, 1.0f);
-            API.Shared.SendNativeToPlayer(player, Hash._SET_PED_HEAD_OVERLAY_COLOR, Client, 8, 2, Model.LipstickColor,
+            API.Shared.SendNativeToPlayer(player, Hash.SET_PED_HEAD_OVERLAY, Player, 8, Model.Lipstick, 1.0f);
+            API.Shared.SendNativeToPlayer(player, Hash._SET_PED_HEAD_OVERLAY_COLOR, Player, 8, 2, Model.LipstickColor,
                 Model.LipstickColor);
 
-            API.Shared.SendNativeToPlayer(player, Hash.SET_PED_HEAD_OVERLAY, Client, 4, Model.Makeup, 1.0f);
-            API.Shared.SendNativeToPlayer(player, Hash._SET_PED_HEAD_OVERLAY_COLOR, Client, 4, 0, Model.MakeupColor,
+            API.Shared.SendNativeToPlayer(player, Hash.SET_PED_HEAD_OVERLAY, Player, 4, Model.Makeup, 1.0f);
+            API.Shared.SendNativeToPlayer(player, Hash._SET_PED_HEAD_OVERLAY_COLOR, Player, 4, 0, Model.MakeupColor,
                 Model.MakeupColor);
 
-            API.Shared.SendNativeToPlayer(player, Hash.SET_PED_HEAD_OVERLAY, Client, 5, Model.Blush, 1.0f);
-            API.Shared.SendNativeToPlayer(player, Hash._SET_PED_HEAD_OVERLAY_COLOR, Client, 5, 2, Model.BlushColor,
+            API.Shared.SendNativeToPlayer(player, Hash.SET_PED_HEAD_OVERLAY, Player, 5, Model.Blush, 1.0f);
+            API.Shared.SendNativeToPlayer(player, Hash._SET_PED_HEAD_OVERLAY_COLOR, Player, 5, 2, Model.BlushColor,
                 Model.BlushColor);
 
-            API.Shared.SendNativeToPlayer(player, Hash.SET_PED_HEAD_OVERLAY, Client, 6, Model.Complexion, 1.0f);
+            API.Shared.SendNativeToPlayer(player, Hash.SET_PED_HEAD_OVERLAY, Player, 6, Model.Complexion, 1.0f);
 
-            API.Shared.SendNativeToPlayer(player, Hash.SET_PED_HEAD_OVERLAY, Client, 7, Model.SunDamage, 1.0f);
+            API.Shared.SendNativeToPlayer(player, Hash.SET_PED_HEAD_OVERLAY, Player, 7, Model.SunDamage, 1.0f);
 
-            API.Shared.SendNativeToPlayer(player, Hash.SET_PED_HEAD_OVERLAY, Client, 9, Model.MolesFreckles, 1.0f);
+            API.Shared.SendNativeToPlayer(player, Hash.SET_PED_HEAD_OVERLAY, Player, 9, Model.MolesFreckles, 1.0f);
 
             if (IsOnGarbageRun == true)
             {
-                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client, 4, Model.Gender == GenderMale ? 36 : 35, 0, 0); //Garbage pants
-                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client, 8, Model.Gender == GenderMale ? 59 : 36, 0, 0); //Garbage vest
-                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client, 11, Model.Gender == GenderMale ? 56 : 49, 0, 0); //Garbage shirt
+                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Player, 4, Model.Gender == GenderMale ? 36 : 35, 0, 0); //Garbage pants
+                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Player, 8, Model.Gender == GenderMale ? 59 : 36, 0, 0); //Garbage vest
+                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Player, 11, Model.Gender == GenderMale ? 56 : 49, 0, 0); //Garbage shirt
 
-                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client, 6, Model.ShoeStyle, Model.ShoeVar - 1, 0); // Shoes
-                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client, 7, Model.AccessoryStyle, Model.AccessoryVar - 1, 0); // Accessories
-                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client, 3, 0, 0, 0); //Torso
+                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Player, 6, Model.ShoeStyle, Model.ShoeVar - 1, 0); // Shoes
+                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Player, 7, Model.AccessoryStyle, Model.AccessoryVar - 1, 0); // Accessories
+                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Player, 3, 0, 0, 0); //Torso
 
 
-                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_PROP_INDEX, Client, 1, 0, 0, true);
-                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_PROP_INDEX, Client, 2, Model.EarStyle,
+                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_PROP_INDEX, Player, 1, 0, 0, true);
+                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_PROP_INDEX, Player, 2, Model.EarStyle,
                     Model.Gender == GenderMale ? 33 : 0, 0, true);
             }
             else if(IsInPoliceUniform == true)
             {
-                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client, 4, Model.Gender == GenderMale ? 35 : 34, 0, 0); // Pants
-                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client, 6, 24, 0, 0); // Shoes
-                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client, 7, 0, 0, 0); // Accessories
-                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client, 8, Model.Gender == GenderMale ? 58 : 35, 0, 0); //undershirt
-                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client, 11, Model.Gender == GenderMale ? 55 : 48, 0, 0); //top
-                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client, 3, 0, 0, 0); //Torso
+                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Player, 4, Model.Gender == GenderMale ? 35 : 34, 0, 0); // Pants
+                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Player, 6, 24, 0, 0); // Shoes
+                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Player, 7, 0, 0, 0); // Accessories
+                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Player, 8, Model.Gender == GenderMale ? 58 : 35, 0, 0); //undershirt
+                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Player, 11, Model.Gender == GenderMale ? 55 : 48, 0, 0); //top
+                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Player, 3, 0, 0, 0); //Torso
 
                 //API.Shared.SetPlayerAccessory(client, 0, this.model.hat_style, this.model.hat_var - 1); // hats
                 //API.Shared.SetPlayerAccessory(client, 1, this.model.glasses_style, this.model.glasses_var - 1); // glasses
                 //API.Shared.SetPlayerAccessory(client, 2, this.model.ear_style, this.model.ear_var - 1); // earings
 
                 //Work around until setPlayerAccessory is fixed.
-                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_PROP_INDEX, Client, 0,
+                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_PROP_INDEX, Player, 0,
                     Model.Gender == GenderMale ? 46 : 45, 0, true);
-                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_PROP_INDEX, Client, 1, Model.Gender == GenderMale ? 0 : 12, 0, true);
-                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_PROP_INDEX, Client, 2, Model.EarStyle,
+                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_PROP_INDEX, Player, 1, Model.Gender == GenderMale ? 0 : 12, 0, true);
+                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_PROP_INDEX, Player, 2, Model.EarStyle,
                     Model.Gender == GenderMale ? 33 : 0, 0, true);
             }
             else if (HasSkin)
             {
-                API.Shared.SetPlayerSkin(Client, Skin);
+                API.Shared.SetPlayerSkin(Player, Skin);
             }
             else
             {
-                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client, 4, Model.PantsStyle, Model.PantsVar - 1, 0); // Pants
-                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client, 6, Model.ShoeStyle, Model.ShoeVar - 1, 0); // Shoes
-                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client, 7, Model.AccessoryStyle, Model.AccessoryVar - 1, 0); // Accessories
-                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client, 8, Model.UndershirtStyle, Model.UndershirtVar - 1, 0); //undershirt
-                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client, 11, Model.TopStyle, Model.TopVar - 1, 0); //top
-                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Client, 3, Model.TorsoStyle, Model.TorsoVar, 0); //Torso
+                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Player, 4, Model.PantsStyle, Model.PantsVar - 1, 0); // Pants
+                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Player, 6, Model.ShoeStyle, Model.ShoeVar - 1, 0); // Shoes
+                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Player, 7, Model.AccessoryStyle, Model.AccessoryVar - 1, 0); // Accessories
+                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Player, 8, Model.UndershirtStyle, Model.UndershirtVar - 1, 0); //undershirt
+                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Player, 11, Model.TopStyle, Model.TopVar - 1, 0); //top
+                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_COMPONENT_VARIATION, Player, 3, Model.TorsoStyle, Model.TorsoVar, 0); //Torso
 
                 //API.Shared.SetPlayerAccessory(client, 0, this.model.hat_style, this.model.hat_var - 1); // hats
                 //API.Shared.SetPlayerAccessory(client, 1, this.model.glasses_style, this.model.glasses_var - 1); // glasses
                 //API.Shared.SetPlayerAccessory(client, 2, this.model.ear_style, this.model.ear_var - 1); // earings
 
                 //Work around until setPlayerAccessory is fixed.
-                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_PROP_INDEX, Client, 0, Model.HatStyle,
+                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_PROP_INDEX, Player, 0, Model.HatStyle,
                     Model.HatVar - 1, true);
-                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_PROP_INDEX, Client, 1, Model.GlassesStyle,
+                API.Shared.SendNativeToPlayer(player, Hash.SET_PED_PROP_INDEX, Player, 1, Model.GlassesStyle,
                     Model.GlassesVar - 1, true);
 
                 if (Model.EarStyle == 255)
-                    API.Shared.SendNativeToPlayer(player, Hash.CLEAR_PED_PROP, Client, 2);
+                    API.Shared.SendNativeToPlayer(player, Hash.CLEAR_PED_PROP, Player, 2);
                 else
-                    API.Shared.SendNativeToPlayer(player, Hash.SET_PED_PROP_INDEX, Client, 2, Model.EarStyle,
+                    API.Shared.SendNativeToPlayer(player, Hash.SET_PED_PROP_INDEX, Player, 2, Model.EarStyle,
                     Model.EarVar - 1, true);
             }
         }
 
         public void update_nametag()
         {
-            API.Shared.SetPlayerNametag(Client, CharacterName + " (" + PlayerManager.GetPlayerId(this) + ")");
+            API.Shared.SetPlayerNametag(Player, CharacterName + " (" + PlayerManager.GetPlayerId(this) + ")");
         }
 
         public void StartTrackingTimePlayed()

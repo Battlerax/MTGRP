@@ -206,7 +206,7 @@ namespace mtgvrp.core
             }
         }
 
-        public void SetMarkerZoneRouteVisible(Client player, bool visible, int color)
+        public void SetMarkerZoneRouteVisible(Player player, bool visible, int color)
         {
             API.Shared.TriggerClientEvent(player, "setMarkerZoneRouteVisible", Blip, visible, color);
         }

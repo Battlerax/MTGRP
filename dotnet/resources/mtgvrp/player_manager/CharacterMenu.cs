@@ -43,7 +43,7 @@ namespace mtgvrp.player_manager
 
         public List<GameVehicle> SpawnedVehicles = new List<GameVehicle>();
 
-        public void SpawnCharacter(Client player)
+        public void SpawnCharacter(Player player)
         {
             Account acc = player.GetAccount();
             Character character = player.GetCharacter();
@@ -73,7 +73,7 @@ namespace mtgvrp.player_manager
         }
 
         [RemoteEvent("OnCharacterMenuSelect")]
-        public void OnCharacterMenuSelect(Client player, params object[] arguments)
+        public void OnCharacterMenuSelect(Player player, params object[] arguments)
         {
             Account account = player.GetAccount();
             var charName = (string)arguments[0];
@@ -110,7 +110,7 @@ namespace mtgvrp.player_manager
                 {
                     CharacterName = charName,
                     AccountId = account.Id.ToString(),
-                    Client = player,
+                    Player = player,
                 };
 
                 character.Insert();
@@ -157,7 +157,7 @@ namespace mtgvrp.player_manager
                 }
 
                 Character character = player.GetCharacter();
-                character.Client = player;
+                character.Player = player;
 
                 if (character.AccountId != account.Id.ToString())
                 {
@@ -208,9 +208,9 @@ namespace mtgvrp.player_manager
                 {
                     foreach (var p in PlayerManager.Players)
                     {
-                        if (p.Client.GetAccount().AdminLevel > 0)
+                        if (p.Player.GetAccount().AdminLevel > 0)
                         {
-                            p.Client.SendChatMessage($"Admin {account.AdminName} has signed in.");
+                            p.Player.SendChatMessage($"Admin {account.AdminName} has signed in.");
                         }
                     }
                 }
@@ -222,7 +222,7 @@ namespace mtgvrp.player_manager
 
                     if (character.Group.CommandType == Group.CommandTypeLspd)
                     {
-                        API.SetEntitySharedData(character.Client, "IsCop", true);
+                        API.SetEntitySharedData(character.Player, "IsCop", true);
                     }
                 }
 
@@ -246,7 +246,7 @@ namespace mtgvrp.player_manager
         }
 
         [RemoteEvent("change_parent_info")]
-        public void ChangeParentInfo(Client player, params object[] arguments)
+        public void ChangeParentInfo(Player player, params object[] arguments)
         {
             var fatherPed = (Entity)arguments[0];
             var motherPed = (Entity)arguments[1];
@@ -275,7 +275,7 @@ namespace mtgvrp.player_manager
         }
 
         [RemoteEvent("change_facial_features")]
-        public void ChangeFacialFeatures(Client player, params object[] arguments)
+        public void ChangeFacialFeatures(Player player, params object[] arguments)
         {
             Character character = player.GetCharacter();
 
@@ -301,7 +301,7 @@ namespace mtgvrp.player_manager
         }
 
         [RemoteEvent("change_clothes")]
-        public void ChangeClothes(Client player, params object[] arguments)
+        public void ChangeClothes(Player player, params object[] arguments)
         {
             Character character = player.GetCharacter();
 
@@ -395,7 +395,7 @@ namespace mtgvrp.player_manager
         }
 
         [RemoteEvent("finish_character_creation")]
-        public void FinishCharacterCreation(Client player, params object[] arguments)
+        public void FinishCharacterCreation(Player player, params object[] arguments)
         {
             Character character = player.GetCharacter();
             Account acc = player.GetAccount();
@@ -438,7 +438,7 @@ namespace mtgvrp.player_manager
         }
 
         [RemoteEvent("initialize_hair")]
-        public void InitializeHair(Client player, params object[] arguments)
+        public void InitializeHair(Player player, params object[] arguments)
         {
             List<string> hairstyleNames = new List<string>();
             List<int> hairstyleIds = new List<int>();
@@ -466,7 +466,7 @@ namespace mtgvrp.player_manager
         }
 
         [RemoteEvent("initiate_style_limits")]
-        public void InitializeStyleLimits(Client player, params object[] arguments)
+        public void InitializeStyleLimits(Player player, params object[] arguments)
         {
             Character cha = player.GetCharacter();
             NAPI.ClientEvent.TriggerClientEvent(player, "initialize_components", (cha.Model.Gender == Character.GenderMale ? Clothing.MaleComponents : Clothing.FemaleComponents));
@@ -474,7 +474,7 @@ namespace mtgvrp.player_manager
 
         // This stuff was commented out in the event handler, i just transferred them into events for now. idk. - austin
         /*[RemoteEvent("bus_driving_bridge")]
-        public void BusDrivingBridge(Client player, params object[] arguments)
+        public void BusDrivingBridge(Player player, params object[] arguments)
         {
             var vehicle = VehicleManager.CreateVehicle(VehicleHash.Bus, new Vector3(-276.1117, -2411.626, 59.68943), new Vector3(0, 0, 53.19402), "Unregistered", player.GetCharacter().Id, vehicle_manager.Vehicle.VehTypeTemp, 0, 0, API.GetEntityDimension(player));
             vehicle.Insert();
@@ -487,7 +487,7 @@ namespace mtgvrp.player_manager
         }
 
         [RemoteEvent("bus_driving_station")]
-        public void BusDrivingStation(Client player, params object[] arguments)
+        public void BusDrivingStation(Player player, params object[] arguments)
         {
             var vehicle = VehicleManager.CreateVehicle(VehicleHash.Bus, new Vector3(513.3119, -676.2706, 25.19653), new Vector3(0, 0, 85.25442), "Unregistered", player.GetCharacter().Id, vehicle_manager.Vehicle.VehTypeTemp, 0, 0, API.GetEntityDimension(player));
             vehicle.Insert();
@@ -500,7 +500,7 @@ namespace mtgvrp.player_manager
         }
 
         [RemoteEvent("player_exiting_bus")]
-        public void PlayerExitingBus(Client player, params object[] arguments)
+        public void PlayerExitingBus(Player player, params object[] arguments)
         {
             var vehicle = VehicleManager.CreateVehicle(VehicleHash.Bus, new Vector3(429.8345, -672.5932, 29.05217), new Vector3(0.9295838, 3.945374, 90.3828), "Unregistered", player.GetCharacter().Id, vehicle_manager.Vehicle.VehTypePerm, 0, 0, API.GetEntityDimension(player));
             vehicle.Insert();
@@ -513,7 +513,7 @@ namespace mtgvrp.player_manager
         }*/
 
         [RemoteEvent("finish_intro")]
-        public void FinishIntro(Client player, params object[] arguments)
+        public void FinishIntro(Player player, params object[] arguments)
         {
             //foreach (var veh in SpawnedVehicles) { veh.Despawn(); veh.Delete(); }
             SpawnCharacter(player);

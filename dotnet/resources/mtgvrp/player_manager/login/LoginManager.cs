@@ -24,7 +24,7 @@ namespace mtgvrp.player_manager.login
         }
 
         [RemoteEvent("create_admin_pin")]
-        public void CreateAdminPin(Client player, params object[] arguments)
+        public void CreateAdminPin(Player player, params object[] arguments)
         {
             var adminPin = Convert.ToString(arguments[0]);
 
@@ -51,7 +51,7 @@ namespace mtgvrp.player_manager.login
         }
 
         [RemoteEvent("admin_pin_check")]
-        public void AdminPinCheck(Client player, params object[] arguments)
+        public void AdminPinCheck(Player player, params object[] arguments)
         {
             var adminPin = Convert.ToString(arguments[0]);
 
@@ -78,7 +78,7 @@ namespace mtgvrp.player_manager.login
         }
 
         [RemoteEvent("attempt_login")]
-        public void AttemptLogin(Client player, params object[] arguments)
+        public void AttemptLogin(Player player, params object[] arguments)
         {
             var inputPass = (string)arguments[0];
 
@@ -202,7 +202,7 @@ namespace mtgvrp.player_manager.login
         }
 
         [ServerEvent(Event.PlayerConnected)]
-        public void OnPlayerConnected(Client player)
+        public void OnPlayerConnected(Player player)
         {
             DebugManager.DebugMessage("[LoginM] " + player.SocialClubName + " has connected to the server [NOT LOGGED IN]. (IP: " + player.Address + ")");
             LogManager.Log(LogManager.LogTypes.Connection, player.SocialClubName + " has connected to the server [NOT LOGGED IN]. (IP: " + player.Address + ")");
@@ -225,7 +225,7 @@ namespace mtgvrp.player_manager.login
         }
        
         [Command("login"), Help(HelpManager.CommandGroups.General, "Used to login.", "Your password")]
-        public void login_cmd(Client player, string inputPass)
+        public void login_cmd(Player player, string inputPass)
         {
             if (inputPass.Length < 8)
             {
@@ -315,7 +315,7 @@ namespace mtgvrp.player_manager.login
 
 
         [Command("register", GreedyArg =true), Help(HelpManager.CommandGroups.General, "Used to create an account", "Your desired password")]
-        public void register_cmd(Client player, string inputPass)
+        public void register_cmd(Player player, string inputPass)
         {
             if(inputPass.Length < 8)
             {
@@ -358,7 +358,7 @@ namespace mtgvrp.player_manager.login
         }
 
 
-        public static void prepare_character_menu(Client player)
+        public static void prepare_character_menu(Player player)
         {
             API.Shared.TriggerClientEvent(player, "hide_login_browser");
 

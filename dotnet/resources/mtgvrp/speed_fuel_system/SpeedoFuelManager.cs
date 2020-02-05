@@ -25,7 +25,7 @@ namespace mtgvrp.speed_fuel_system
         }
 
         [RemoteEvent("fuel_getvehiclefuel")]
-        public void FuelGetVehicleFuel(Client sender, params object[] arguments)
+        public void FuelGetVehicleFuel(Player sender, params object[] arguments)
         {
             
             if (NAPI.Player.IsPlayerInAnyVehicle(sender) && NAPI.Player.GetPlayerVehicleSeat(sender) == -1)
@@ -63,7 +63,7 @@ namespace mtgvrp.speed_fuel_system
         }
 
         [Command("togspeedo"), Help(HelpManager.CommandGroups.Vehicles, "Used to find your character statistics", null)]
-        public void TogSpeedo(Client player)
+        public void TogSpeedo(Player player)
         {
             Account a = player.GetAccount();
             a.IsSpeedoOn = !a.IsSpeedoOn;
@@ -77,7 +77,7 @@ namespace mtgvrp.speed_fuel_system
         }
 
         [Command("refuel"), Help(HelpManager.CommandGroups.Vehicles, "Command to refuel your vehicle from a gas station.", new[] { "Fuel amount wanted (out of 100)" })]
-        public void Refuel(Client player, int fuel = 0)
+        public void Refuel(Player player, int fuel = 0)
         {
             var prop = PropertyManager.IsAtPropertyInteraction(player);
             if (prop?.Type == PropertyManager.PropertyTypes.GasStation)
@@ -142,7 +142,7 @@ namespace mtgvrp.speed_fuel_system
         }
 
         [ServerEvent(Event.PlayerExitVehicle)]
-        public void OnPlayerExitVehicle(Client player, Vehicle vehicle)
+        public void OnPlayerExitVehicle(Player player, Vehicle vehicle)
         {
             if (NAPI.Data.HasEntityData(player, "FUELING_VEHICLE"))
             {
@@ -158,10 +158,10 @@ namespace mtgvrp.speed_fuel_system
         private void FuelVehTimer(object obj)
         {
             var t = (object[])obj;
-            FuelVeh((Client)t[0], (Vehicle)t[1]);
+            FuelVeh((Player)t[0], (Vehicle)t[1]);
         }
 
-        private void FuelVeh(Client playerEntity, Vehicle vehEntity)
+        private void FuelVeh(Player playerEntity, Vehicle vehEntity)
         {
             if (vehEntity.IsNull)
             {

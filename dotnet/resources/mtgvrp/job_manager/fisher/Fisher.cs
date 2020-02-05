@@ -38,7 +38,7 @@ namespace mtgvrp.job_manager.fisher
         }
 
         [RemoteEvent("caught_fish")]
-        public void CaughtFish(Client player, params object[] arguments)
+        public void CaughtFish(Player player, params object[] arguments)
         {
             Character c = player.GetCharacter();
 
@@ -86,7 +86,7 @@ namespace mtgvrp.job_manager.fisher
         }
 
         [RemoteEvent("snapped_rod")]
-        public void SnappedRod(Client player, params object[] arguments)
+        public void SnappedRod(Player player, params object[] arguments)
         {
             NAPI.Chat.SendChatMessageToPlayer(player, "You snapped your fishing rod!");
             InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(FishingRod), 1);
@@ -94,7 +94,7 @@ namespace mtgvrp.job_manager.fisher
         }
 
         [Command("fish"), Help(HelpManager.CommandGroups.FisherJob, "Pretty obvious, its to fish!")]
-        public void fish_cmd(Client player)
+        public void fish_cmd(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -155,7 +155,7 @@ namespace mtgvrp.job_manager.fisher
         }
 
         [Command("viewfish"), Help(HelpManager.CommandGroups.FisherJob, "View the fish in your inventory")]
-        public void viewfish_cmd(Client player)
+        public void viewfish_cmd(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -172,7 +172,7 @@ namespace mtgvrp.job_manager.fisher
         }
 
         [Command("sellfish"), Help(HelpManager.CommandGroups.FisherJob, "Sell the fish you currently have.")]
-        public void sellfish_cmd(Client player)
+        public void sellfish_cmd(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -219,9 +219,9 @@ namespace mtgvrp.job_manager.fisher
             c.CatchingFish = random_catch(boatFishing);
             c.PerfectCatchStrength = _random.Next(25, 95);
 
-            NAPI.Chat.SendChatMessageToPlayer(c.Client, Color.AdminOrange,
+            NAPI.Chat.SendChatMessageToPlayer(c.Player, Color.AdminOrange,
                 "* You begin to feel a fish tugging at your line! Control your reeling strength by tapping space bar.");
-            NAPI.ClientEvent.TriggerClientEvent(c.Client, "start_fishing", c.PerfectCatchStrength);
+            NAPI.ClientEvent.TriggerClientEvent(c.Player, "start_fishing", c.PerfectCatchStrength);
         }
 
         public Fish random_catch(bool inBoat)

@@ -18,7 +18,7 @@ namespace mtgvrp.job_manager.scuba
     class ScubaManager : Script
     {
         [RemoteEvent("SCUBA_ISUNDERWATER")]
-        public void ScubaIsUnderWater(Client player, params object[] arguments)
+        public void ScubaIsUnderWater(Player player, params object[] arguments)
         {
             var character = player.GetCharacter();
             var scubaitem = InventoryManager.DoesInventoryHaveItem<ScubaItem>(character);
@@ -179,7 +179,7 @@ namespace mtgvrp.job_manager.scuba
         private readonly List<GTANetworkAPI.Object> _treasureObjects = new List<GTANetworkAPI.Object>();
 
         [ServerEvent(Event.PlayerDisconnected)]
-        public void API_onPlayerDisconnected(Client player, byte type, string reason)
+        public void API_onPlayerDisconnected(Player player, byte type, string reason)
         {
             Character c = player.GetCharacter();
 
@@ -193,7 +193,7 @@ namespace mtgvrp.job_manager.scuba
         }
 
         [Command("pickuptreasure"), Help(HelpManager.CommandGroups.ScubaActivity, "Pickup a treasure you found in the ocean while diving.")]
-        public void Pickuptreasure(Client player)
+        public void Pickuptreasure(Player player)
         {
             var character = player.GetCharacter();
             if (!character.IsScubaDiving)
@@ -246,7 +246,7 @@ namespace mtgvrp.job_manager.scuba
         }
 
         [Command("togglescuba"), Help(HelpManager.CommandGroups.ScubaActivity, "Toggle your scuba kit on and off.")]
-        public void EquipScuba(Client player)
+        public void EquipScuba(Player player)
         {
             var character = player.GetCharacter();
             var item = InventoryManager.DoesInventoryHaveItem<ScubaItem>(character);
@@ -304,7 +304,7 @@ namespace mtgvrp.job_manager.scuba
                 "Oxygen Remaining: " + Math.Round((item[0].OxygenRemaining / ScubaItem.MaxOxygen) * 100f) + "%");
         }
 
-        public void RefreshScuba(Client player)
+        public void RefreshScuba(Player player)
         {
             var character = player.GetCharacter();
             var scubaitem = InventoryManager.DoesInventoryHaveItem<ScubaItem>(character);
@@ -326,7 +326,7 @@ namespace mtgvrp.job_manager.scuba
             NAPI.ClientEvent.TriggerClientEvent(player, "REQUEST_SCUBA_UNDERWATER");
         }
 
-        void CancelScuba(Client player)
+        void CancelScuba(Player player)
         {
             var character = player.GetCharacter();
 

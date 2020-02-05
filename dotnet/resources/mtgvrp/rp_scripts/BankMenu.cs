@@ -105,7 +105,7 @@ namespace mtgvrp.rp_scripts
 
         // Commands
         [Command("atm"), Help(HelpManager.CommandGroups.General, "Use this command near an atm to use it to withdraw money.", null)]
-        public void atm_cmd(Client player)
+        public void atm_cmd(Player player)
         {
             if (Atms.Any(x=> x.DistanceTo(player.Position) <= 5.0))
             {
@@ -117,7 +117,7 @@ namespace mtgvrp.rp_scripts
         }
 
         [RemoteEvent("BankMenuTrigger")]
-        public void BankMenuTrigger(Client player, params object[] arguments)
+        public void BankMenuTrigger(Player player, params object[] arguments)
         {
             // check to see if player has moved away from ATM
             if (Atms.Any(x => x.DistanceTo(player.Position) <= 5.0) == false)

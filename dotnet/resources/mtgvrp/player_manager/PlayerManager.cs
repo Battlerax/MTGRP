@@ -84,9 +84,9 @@ namespace mtgvrp.player_manager
         }
 
         [ServerEvent(Event.PlayerDamage)]
-        public void OnPlayerDamage(Client entity, float lossFirst, float lossSecond)
+        public void OnPlayerDamage(Player entity, float lossFirst, float lossSecond)
         {
-            Client player = NAPI.Player.GetPlayerFromHandle(entity);
+            Player player = NAPI.Player.GetPlayerFromHandle(entity);
             var character = player.GetCharacter();
             Account account = player.GetAccount();
             if (account == null)
@@ -102,7 +102,7 @@ namespace mtgvrp.player_manager
         }
 
         [ServerEvent(Event.PlayerDeath)]
-        public void OnPlayerDeath(Client player, Client entityKiller, uint weapon)
+        public void OnPlayerDeath(Player player, Player entityKiller, uint weapon)
         {
             if (player.GetAccount().AdminDuty)
             {
@@ -131,7 +131,7 @@ namespace mtgvrp.player_manager
                 InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(Money), 200);
             }
 
-            Client killer = NAPI.Player.GetPlayerFromHandle(entityKiller);
+            Player killer = NAPI.Player.GetPlayerFromHandle(entityKiller);
             if (killer != null)
             {
                 LogManager.Log(LogManager.LogTypes.Death, $"{character.CharacterName}[{player.SocialClubName}] has died. Killer: {killer.GetCharacter().rp_name()}[{killer.GetAccount().AccountName}]. Weapon: {((WeaponHash)weapon).ToString()}");
@@ -147,7 +147,7 @@ namespace mtgvrp.player_manager
         public static int taxationAmount = Properties.Settings.taxationamount;
 
         [RemoteEvent("update_ped_for_client")]
-        public void UpdatePedForClient(Client sender, params object[] arguments)
+        public void UpdatePedForClient(Player sender, params object[] arguments)
         {
             var player = (Entity)arguments[0];
             Character c = NAPI.Data.GetEntityData(player, "Character");
@@ -155,7 +155,7 @@ namespace mtgvrp.player_manager
         }
 
         [ServerEvent(Event.PlayerConnected)]
-        public void OnPlayerConnected(Client player)
+        public void OnPlayerConnected(Player player)
         {
             var account = new Account();
             account.AccountName = player.SocialClubName;
@@ -164,7 +164,7 @@ namespace mtgvrp.player_manager
         }
 
         [ServerEvent(Event.PlayerDisconnected)]
-        public void OnPlayerDisconnected(Client player, byte type, string reason)
+        public void OnPlayerDisconnected(Player player, byte type, string reason)
         {
             //Save data
             Character character = player.GetCharacter();
@@ -177,9 +177,9 @@ namespace mtgvrp.player_manager
                 {
                     foreach (var p in Players)
                     {
-                        if (p.Client.GetAccount().AdminLevel > 0)
+                        if (p.Player.GetAccount().AdminLevel > 0)
                         {
-                            p.Client.SendChatMessage($"Admin {account.AdminName} has left the server.");
+                            p.Player.SendChatMessage($"Admin {account.AdminName} has left the server.");
                         }
                     }
                 }
@@ -215,29 +215,29 @@ namespace mtgvrp.player_manager
             }
         }
 
-        public static Client GetPlayerByName(string name)
+        public static Player GetPlayerByName(string name)
         {
             if (name == null)
                 return null;
 
             foreach (var c in Players)
             {
-                if (c.Client.GetAccount().AdminName == null)
-                    c.Client.GetAccount().AdminName = "";
+                if (c.Player.GetAccount().AdminName == null)
+                    c.Player.GetAccount().AdminName = "";
 
                 if (c.CharacterName.Equals(name, StringComparison.OrdinalIgnoreCase) ||
-                    c.Client.GetAccount().AdminName.Equals(name, StringComparison.OrdinalIgnoreCase) ||
+                    c.Player.GetAccount().AdminName.Equals(name, StringComparison.OrdinalIgnoreCase) ||
                     c.CharacterName.StartsWith(name, StringComparison.OrdinalIgnoreCase) ||
-                    c.Client.GetAccount().AdminName.StartsWith(name, StringComparison.OrdinalIgnoreCase))
+                    c.Player.GetAccount().AdminName.StartsWith(name, StringComparison.OrdinalIgnoreCase))
                 {
-                    return c.Client;
+                    return c.Player;
                 }
             }
 
             return null;
         }
 
-        public static Client GetPlayerById(int id)
+        public static Player GetPlayerById(int id)
         {
             if (!_players.ContainsKey(id))
             {
@@ -246,7 +246,7 @@ namespace mtgvrp.player_manager
 
             var c = _players[id];
 
-            return c.Client ?? null;
+            return c.Player ?? null;
         }
 
         public static int GetPlayerId(Character c)
@@ -260,7 +260,7 @@ namespace mtgvrp.player_manager
             }
         }
 
-        public static Client ParseClient(string input)
+        public static Player ParseClient(string input)
         {
             var c = GetPlayerByName(input);
 
@@ -275,19 +275,19 @@ namespace mtgvrp.player_manager
             return c;
         }
 
-        public static string GetName(Client player)
+        public static string GetName(Player player)
         {
             Character c = player.GetCharacter();
             return c.CharacterName;
         }
 
-        public static string GetAdminName(Client player)
+        public static string GetAdminName(Player player)
         {
             Account account = player.GetAccount();
             return account.AdminName;
         }
 
-        public static int getVIPPaycheckBonus(Client player)
+        public static int getVIPPaycheckBonus(Player player)
         {
             Account account = player.GetAccount();
 
@@ -297,7 +297,7 @@ namespace mtgvrp.player_manager
             else { return 0; }
         }
 
-        public static int getFactionBonus(Client player)
+        public static int getFactionBonus(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -312,7 +312,7 @@ namespace mtgvrp.player_manager
 
         }
 
-        public static int CalculatePaycheck(Client player)
+        public static int CalculatePaycheck(Player player)
         {
             Character character = player.GetCharacter();
             return basepaycheck - (Properties.Settings.basepaycheck * Properties.Settings.taxationamount/100) + /*(Properties.Settings.basepaycheck * getVIPPaycheckBonus(player)/100) +*/ getFactionBonus(player) + character.BankBalance/1000;
@@ -321,7 +321,7 @@ namespace mtgvrp.player_manager
         private Timer _payCheckTimer;
         private void _payCheckTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            foreach (var player in Players.Select(x => x.Client))
+            foreach (var player in Players.Select(x => x.Player))
             {
                 Character character = player.GetCharacter();
                 if (!API.Shared.IsPlayerConnected(player))
@@ -364,7 +364,7 @@ namespace mtgvrp.player_manager
         }
 
         [Command("getid", GreedyArg = true, Alias = "id"), Help(HelpManager.CommandGroups.General, "Used to find the ID of specific player name.", new [] {"Name of the target character. (Partial name accepted)"})]
-        public void getid_cmd(Client sender, string playerName)
+        public void getid_cmd(Player sender, string playerName)
         {
             NAPI.Chat.SendChatMessageToPlayer(sender, Color.White, "----------- Searching for: " + playerName + " -----------");
             foreach(var c in Players)
@@ -378,7 +378,7 @@ namespace mtgvrp.player_manager
         }
 
         [Command("stats"), Help(HelpManager.CommandGroups.General, "Used to find your character statistics", new []{"ID of target character. <strong>[ADMIN ONLY]</strong>"})]          //Stats command
-        public void GetStatistics(Client sender, string id = null)
+        public void GetStatistics(Player sender, string id = null)
         {
             var receiver = PlayerManager.ParseClient(id);
             Character character = sender.GetCharacter();
@@ -402,7 +402,7 @@ namespace mtgvrp.player_manager
 
         //Show time and time until paycheck.
         [Command("time"), Help(HelpManager.CommandGroups.General, "Used to find the server time, in-game time, various cooldowns, etc.", null)]
-        public void CheckTime(Client player)
+        public void CheckTime(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -415,14 +415,14 @@ namespace mtgvrp.player_manager
         }
 
         [Command("dimreset"), Help(HelpManager.CommandGroups.General, "Reset your dimension.", null)]
-        public void dimreset_cmd(Client player)
+        public void dimreset_cmd(Player player)
         {
             NAPI.Entity.SetEntityDimension(player, 0);
             player.SendChatMessage("Dimension reset.");
         }
 
         [Command("attempt", GreedyArg = true), Help(HelpManager.CommandGroups.Roleplay, "Attempt to do something with a 50% chance of either success or fail.", "The attempt message")]
-        public void attempt_cmd(Client player, string message)
+        public void attempt_cmd(Player player, string message)
         {
             Character character = player.GetCharacter();
 
@@ -435,12 +435,12 @@ namespace mtgvrp.player_manager
         }
 
         //Show player stats (admins can show stats of other players).
-        public void ShowStats(Client sender)
+        public void ShowStats(Player sender)
         {
             ShowStats(sender, sender);
         }
  
-        public void ShowStats(Client sender, Client receiver)
+        public void ShowStats(Player sender, Player receiver)
         {
             Character character = receiver.GetCharacter();
             Account account = receiver.GetAccount();
@@ -475,7 +475,7 @@ namespace mtgvrp.player_manager
             }
         }
 
-        public static void ShowStats(Client sender, Character receiver, Account receiverAcc)
+        public static void ShowStats(Player sender, Character receiver, Account receiverAcc)
         {
             Account senderAccount = sender.GetAccount();
 

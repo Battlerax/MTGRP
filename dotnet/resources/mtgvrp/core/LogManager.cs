@@ -97,6 +97,6 @@ namespace mtgvrp.core
             }
         }
 
-        public static string GetLogName(Client player) => $"{player.GetCharacter().CharacterName}[{player.GetAccount().AccountName}]";
+        public static string GetLogName(Player player) => $"{player.GetCharacter().CharacterName}[{player.GetAccount().AccountName}]";
     }
 }

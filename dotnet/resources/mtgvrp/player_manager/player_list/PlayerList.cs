@@ -14,7 +14,7 @@ namespace mtgvrp.player_manager.player_list
         }
 
         [RemoteEvent("fetch_player_list")]
-        public void FetchPlayerList(Client player, params object[] arguments)
+        public void FetchPlayerList(Player player, params object[] arguments)
         {
             Account account = player.GetAccount();
             Character character = player.GetCharacter();
@@ -35,14 +35,14 @@ namespace mtgvrp.player_manager.player_list
             {
                 if (type == 1)
                 {
-                    Account a = c.Client.GetAccount();
+                    Account a = c.Player.GetAccount();
                     if (a.AdminDuty == false)
                         continue;
                 }
 
                 if (type == 2)
                 {
-                    Character a = c.Client.GetCharacter();
+                    Character a = c.Player.GetCharacter();
                     if (a.GroupId != character.GroupId)
                         continue;
                 }
@@ -54,25 +54,25 @@ namespace mtgvrp.player_manager.player_list
         }
 
         [RemoteEvent("player_list_pm")]
-        public void PlayerListPM(Client player, params object[] arguments)
+        public void PlayerListPM(Player player, params object[] arguments)
         {
             ChatManager.pm_cmd(player, Convert.ToString(arguments[0]), Convert.ToString(arguments[1]));
         }
 
         [RemoteEvent("player_list_teleport")]
-        public void PlayerListTeleport(Client player, params object[] arguments)
+        public void PlayerListTeleport(Player player, params object[] arguments)
         {
             AdminCommands.goto_cmd(player, Convert.ToString(arguments[0]));
         }
 
         [RemoteEvent("player_list_spectate")]
-        public void PlayerListSpectate(Client player, params object[] arguments)
+        public void PlayerListSpectate(Player player, params object[] arguments)
         {
             AdminCommands.spec_cmd(player, Convert.ToString(arguments[0]));
         }
 
         [RemoteEvent("player_list_kick")]
-        public void PlayerListKick(Client player, params object[] arguments)
+        public void PlayerListKick(Player player, params object[] arguments)
         {
             AdminCommands.kick_cmd(player, Convert.ToString(arguments[0]), "PlayerList");
         }

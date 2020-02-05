@@ -22,7 +22,7 @@ namespace mtgvrp.core.Discord
             }
 
             // first retrieve the interactivity module from the client
-            var interactivity = ctx.Client.GetInteractivityModule();
+            var interactivity = ctx.Player.GetInteractivityModule();
             var poll_options = options;
 
             // then let's present the poll
@@ -59,7 +59,7 @@ namespace mtgvrp.core.Discord
             }
 
             // first retrieve the interactivity module from the client
-            var interactivity = ctx.Client.GetInteractivityModule();
+            var interactivity = ctx.Player.GetInteractivityModule();
 
             // generate a code
             var codebytes = new byte[8];
@@ -94,10 +94,10 @@ namespace mtgvrp.core.Discord
             }
 
             // first retrieve the interactivity module from the client
-            var interactivity = ctx.Client.GetInteractivityModule();
+            var interactivity = ctx.Player.GetInteractivityModule();
 
             // specify the emoji
-            var emoji = DiscordEmoji.FromName(ctx.Client, ":point_up:");
+            var emoji = DiscordEmoji.FromName(ctx.Player, ":point_up:");
 
             // announce
             await ctx.RespondAsync($"React with {emoji} to quote a message!");
@@ -135,7 +135,7 @@ namespace mtgvrp.core.Discord
             }
 
             // first retrieve the interactivity module from the client
-            var interactivity = ctx.Client.GetInteractivityModule();
+            var interactivity = ctx.Player.GetInteractivityModule();
 
             // then wait for author's typing
             var chn = await interactivity.WaitForTypingChannelAsync(ctx.User, TimeSpan.FromSeconds(60));

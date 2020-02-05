@@ -108,7 +108,7 @@ namespace mtgvrp.vehicle_manager
         [BsonIgnore]
         public Entity Entity { get; private set; }
         [BsonIgnore]
-        private Client OwnerClient { get; set; }
+        private Player OwnerClient { get; set; }
         [BsonIgnore]
         public bool IsSpawned { get; set; }
 
@@ -221,7 +221,7 @@ namespace mtgvrp.vehicle_manager
             NAPI.Blip.SetBlipTransparency(Blip, 100);*/
 
             //Set owner detials.
-            OwnerClient = PlayerManager.Players.SingleOrDefault(x => x.Id == OwnerId)?.Client;
+            OwnerClient = PlayerManager.Players.SingleOrDefault(x => x.Id == OwnerId)?.Player;
             IsSpawned = true;
 
             if (OwnerId == 0 && GroupId == 0)

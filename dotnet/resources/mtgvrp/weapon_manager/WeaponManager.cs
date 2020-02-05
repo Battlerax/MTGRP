@@ -25,8 +25,8 @@ namespace mtgvrp.weapon_manager
         {
             foreach (Weapon weapon in InventoryManager.DoesInventoryHaveItem<Weapon>(e.Character))
             {
-                API.GivePlayerWeapon(e.Character.Client, weapon.WeaponHash, 9999);
-                API.SetPlayerWeaponTint(e.Character.Client, weapon.WeaponHash, weapon.WeaponTint);
+                API.GivePlayerWeapon(e.Character.Player, weapon.WeaponHash, 9999);
+                API.SetPlayerWeaponTint(e.Character.Player, weapon.WeaponHash, weapon.WeaponTint);
             }
         }
 
@@ -45,7 +45,7 @@ namespace mtgvrp.weapon_manager
                             InventoryManager.DeleteInventoryItem<Weapon>(chr, 1, x => x == w);
                         }
                     }
-                    API.RemovePlayerWeapon(chr.Client, item.WeaponHash);
+                    API.RemovePlayerWeapon(chr.Player, item.WeaponHash);
                 }
             }
         }
@@ -58,13 +58,13 @@ namespace mtgvrp.weapon_manager
                 {
                     Character chr = (Character)sender;
                     Weapon item = (Weapon)args.Item;
-                    API.Shared.GivePlayerWeapon(chr.Client, item.WeaponHash, 9999);
+                    API.Shared.GivePlayerWeapon(chr.Player, item.WeaponHash, 9999);
                 }
             }
         }
 
         // TODO: re-assess since this event died. (it can be done client-side if necessary)
-        private void API_onPlayerWeaponAmmoChange(Client player, WeaponHash weapon, int ammo)
+        private void API_onPlayerWeaponAmmoChange(Player player, WeaponHash weapon, int ammo)
         {
             if (ammo <= 1)
             {
@@ -73,7 +73,7 @@ namespace mtgvrp.weapon_manager
         }
 
         [ServerEvent(Event.PlayerWeaponSwitch)]
-        public void OnPlayerWeaponSwitch(Client player, WeaponHash weapon, WeaponHash newhash)
+        public void OnPlayerWeaponSwitch(Player player, WeaponHash weapon, WeaponHash newhash)
         {
             Character character = player.GetCharacter();
             Account playerAccount = player.GetAccount();
@@ -120,7 +120,7 @@ namespace mtgvrp.weapon_manager
 
         }
 
-        public static bool DoesPlayerHaveAWeapon(Client player)
+        public static bool DoesPlayerHaveAWeapon(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -129,7 +129,7 @@ namespace mtgvrp.weapon_manager
         }
 
 
-        public static bool DoesPlayerHaveWeapon(Client player, WeaponHash weapon)
+        public static bool DoesPlayerHaveWeapon(Player player, WeaponHash weapon)
         {
             Character character = player.GetCharacter();
 
@@ -144,7 +144,7 @@ namespace mtgvrp.weapon_manager
             return false;
         }
 
-        public static void CreateWeapon(Client player, WeaponHash weaponhash, WeaponTint weapontint = WeaponTint.Normal, 
+        public static void CreateWeapon(Player player, WeaponHash weaponhash, WeaponTint weapontint = WeaponTint.Normal, 
             bool isplayerweapon = false, bool isadminweapon = false, bool isgroupweapon = false)
         {
             Character character = player.GetCharacter();
@@ -156,7 +156,7 @@ namespace mtgvrp.weapon_manager
 
         }
 
-        public static void SetWeaponTint(Client player, WeaponHash weaponhash, WeaponTint weapontint)
+        public static void SetWeaponTint(Player player, WeaponHash weaponhash, WeaponTint weapontint)
         {
             Character character = player.GetCharacter();
 
@@ -170,7 +170,7 @@ namespace mtgvrp.weapon_manager
             }
         }
 
-        public static void SetWeaponComponent(Client player, WeaponHash weaponhash, WeaponComponent weaponcomponent)
+        public static void SetWeaponComponent(Player player, WeaponHash weaponhash, WeaponComponent weaponcomponent)
         {
             Character character = player.GetCharacter();
 
@@ -184,7 +184,7 @@ namespace mtgvrp.weapon_manager
             }
         }
 
-        public static void RemoveAllPlayerWeapons(Client player)
+        public static void RemoveAllPlayerWeapons(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -192,7 +192,7 @@ namespace mtgvrp.weapon_manager
             API.Shared.RemoveAllPlayerWeapons(player);
         }
 
-        public static void GivePlayerWeapon(Client player, Weapon weapon)
+        public static void GivePlayerWeapon(Player player, Weapon weapon)
         {
             Account account = player.GetAccount();
             Character character = player.GetCharacter();
@@ -206,7 +206,7 @@ namespace mtgvrp.weapon_manager
             InventoryManager.GiveInventoryItem(character, weapon, 1);
         }
 
-        public static Weapon GetCurrentWeapon(Client player)
+        public static Weapon GetCurrentWeapon(Player player)
         {
             Character character = player.GetCharacter();
 
@@ -222,7 +222,7 @@ namespace mtgvrp.weapon_manager
         }
 
         [Command("listweapons"), Help(HelpManager.CommandGroups.AdminLevel3, "Used to see what weapons a player has on them.", new[] { "ID of target player." })]
-        public void listweapons_cmd(Client player, string id)
+        public void listweapons_cmd(Player player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
             Account account = player.GetAccount();
@@ -245,7 +245,7 @@ namespace mtgvrp.weapon_manager
         }
 
         [Command("removeallweapons"), Help(HelpManager.CommandGroups.AdminLevel3, "Used to sremove all weapons from a player", new[] { "ID of target player." })]
-        public void removeallweapons_cmd(Client player, string id)
+        public void removeallweapons_cmd(Player player, string id)
         {
             var receiver = PlayerManager.ParseClient(id);
             Account account = player.GetAccount();

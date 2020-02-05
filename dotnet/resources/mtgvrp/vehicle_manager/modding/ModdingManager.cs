@@ -26,7 +26,7 @@ namespace mtgvrp.vehicle_manager.modding
     public class ModdingManager : Script
     {
         [RemoteEvent("MODDING_GETMODS")]
-        public void ModdingGetMods(Client sender, params object[] arguments)
+        public void ModdingGetMods(Player sender, params object[] arguments)
         {
             var modsList = new List<string[]>();
 
@@ -52,7 +52,7 @@ namespace mtgvrp.vehicle_manager.modding
         }
 
         [RemoteEvent("MODDING_EXITMENU")]
-        public void ModdingExitMenu(Client sender, params object[] arguments)
+        public void ModdingExitMenu(Player sender, params object[] arguments)
         {
             
             var Vehicle = sender.Vehicle;
@@ -66,7 +66,7 @@ namespace mtgvrp.vehicle_manager.modding
         }
 
         [RemoteEvent("MODDONG_PURCHASE_ITEMS")]
-        public void ModdingPurchaseItems(Client sender, params object[] arguments)
+        public void ModdingPurchaseItems(Player sender, params object[] arguments)
         {
             dynamic items = JsonConvert.DeserializeObject((string)arguments[0]);
             int allPrices = 0;
@@ -378,7 +378,7 @@ namespace mtgvrp.vehicle_manager.modding
         }
 
         [Command("modvehicle")]
-        public void ModVehicle(Client player)
+        public void ModVehicle(Player player)
         {
             var prop = PropertyManager.IsAtPropertyEntrance(player);
             if (prop?.Type != PropertyManager.PropertyTypes.ModdingShop || prop.OwnerId == 0)
@@ -437,7 +437,7 @@ namespace mtgvrp.vehicle_manager.modding
 
 
         [Command("toggleneon"), Help(HelpManager.CommandGroups.Vehicles, "Toggles the neon of your Vehicle on or off.")]
-        public void ToggleNeon(Client player, int slot = -1)
+        public void ToggleNeon(Player player, int slot = -1)
         {
 
             if (!player.IsInVehicle)

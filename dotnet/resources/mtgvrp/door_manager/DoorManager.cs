@@ -50,7 +50,7 @@ namespace mtgvrp.door_manager
         }
 
         [RemoteEvent("doormanager_createdoor")]
-        public void DoorManagerCreateDoor(Client sender, params object[] arguments)
+        public void DoorManagerCreateDoor(Player sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -67,7 +67,7 @@ namespace mtgvrp.door_manager
         }
 
         [RemoteEvent("doormanager_togglelock")]
-        public void DoorManagerToggleLock(Client sender, params object[] arguments)
+        public void DoorManagerToggleLock(Player sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -86,7 +86,7 @@ namespace mtgvrp.door_manager
         }
 
         [RemoteEvent("doormanager_changedesc")]
-        public void DoorManagerChangeDesc(Client sender, params object[] arguments)
+        public void DoorManagerChangeDesc(Player sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -105,7 +105,7 @@ namespace mtgvrp.door_manager
         }
 
         [RemoteEvent("doormanager_goto")]
-        public void DoorManagerGoto(Client sender, params object[] arguments)
+        public void DoorManagerGoto(Player sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -122,7 +122,7 @@ namespace mtgvrp.door_manager
         }
 
         [RemoteEvent("doormanager_delete")]
-        public void DoorManagerDelete(Client sender, params object[] arguments)
+        public void DoorManagerDelete(Player sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -139,7 +139,7 @@ namespace mtgvrp.door_manager
         }
 
         [RemoteEvent("doormanager_setgroup")]
-        public void DoorManagerSetGroup(Client sender, params object[] arguments)
+        public void DoorManagerSetGroup(Player sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -169,7 +169,7 @@ namespace mtgvrp.door_manager
         }
 
         [RemoteEvent("doormanager_setproperty")]
-        public void DoorManagerSetProperty(Client sender, params object[] arguments)
+        public void DoorManagerSetProperty(Player sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -199,7 +199,7 @@ namespace mtgvrp.door_manager
         }
 
         [RemoteEvent("doormanager_hide")]
-        public void DoorManagerHide(Client sender, params object[] arguments)
+        public void DoorManagerHide(Player sender, params object[] arguments)
         {
             if (sender.GetAccount().AdminLevel >= 5)
             {
@@ -220,7 +220,7 @@ namespace mtgvrp.door_manager
         }
 
         [RemoteEvent("doormanager_locknearestdoor")]
-        public void DoorManagerLockNearestDoor(Client sender, params object[] arguments)
+        public void DoorManagerLockNearestDoor(Player sender, params object[] arguments)
         {
             float distance = -1.0f;
             var cdoor = new Door(0, new Vector3(0, 0, 0), "NULL", false, false);
@@ -257,7 +257,7 @@ namespace mtgvrp.door_manager
         }
 
         [Command("managedoors"), Help(HelpManager.CommandGroups.AdminLevel5, "Manage all existing doors.")]
-        public void manage_doors(Client player)
+        public void manage_doors(Player player)
         {
             if (player.GetAccount().AdminLevel >= 5)
             {
@@ -267,7 +267,7 @@ namespace mtgvrp.door_manager
         }
 
         [Command("editdoor"), Help(HelpManager.CommandGroups.AdminLevel5, "Edit a door.", "Door id")]
-        public void edit_door(Client player, int id)
+        public void edit_door(Player player, int id)
         {
             if (player.GetAccount().AdminLevel >= 5)
             {
@@ -283,7 +283,7 @@ namespace mtgvrp.door_manager
 
         //Failsafe if the cursor doesn't work.
         [Command("createdoor", GreedyArg = true), Help(HelpManager.CommandGroups.AdminLevel5, "Create a door manually.", "The door object model", "X position", "Y position", "Z position", "Description of the door")]
-        public void create_door(Client player, int model, float x, float y, float z, string desc)
+        public void create_door(Player player, int model, float x, float y, float z, string desc)
         {
             if (player.GetAccount().AdminLevel >= 5)
             {
@@ -295,7 +295,7 @@ namespace mtgvrp.door_manager
             }
         }
 
-        public bool DoesPlayerHaveDoorAccess(Client client, Door d)
+        public bool DoesPlayerHaveDoorAccess(Player client, Door d)
         {
             Character c = client.GetCharacter();
             Account a = client.GetAccount();
@@ -306,7 +306,7 @@ namespace mtgvrp.door_manager
         }
 
         [Command("lockdoor"), Help(HelpManager.CommandGroups.AdminLevel5 | HelpManager.CommandGroups.GroupGeneral, "Locks a door.", "Door id")]
-        public void Lockdoor(Client player, int id)
+        public void Lockdoor(Player player, int id)
         {
             var door = Door.Doors.SingleOrDefault(x => x.Id == id);
             if (door == null)
@@ -341,7 +341,7 @@ namespace mtgvrp.door_manager
         }
 
         /*[Command("unlockdoor"), Help(HelpManager.CommandGroups.AdminLevel5 | HelpManager.CommandGroups.GroupGeneral, "Unlocks a door.", "Door id")]
-        public void Unlockdoor(Client player, int id)
+        public void Unlockdoor(Player player, int id)
         {
             var door = Door.Doors.SingleOrDefault(x => x.Id == id);
             if (door == null)
