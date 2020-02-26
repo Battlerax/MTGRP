@@ -279,7 +279,7 @@ namespace mtgvrp.vehicle_manager
 
             var filter = Builders<GameVehicle>.Filter.Eq("_id", Id);
 
-            if (DatabaseManager.VehicleTable.Find(filter).Count() > 0)
+            if (DatabaseManager.VehicleTable.Find(filter).CountDocuments() > 0)
             {
                 return true;
             }

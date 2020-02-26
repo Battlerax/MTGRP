@@ -468,7 +468,7 @@ namespace mtgvrp.player_manager
             {
                 NAPI.Chat.SendChatMessageToPlayer(sender, "~y~Admin:~y~");
                 NAPI.Chat.SendChatMessageToPlayer(sender,
-                    $"~h~Admin level:~h~ {account.AdminLevel} ~h~Admin name:~h~ {account.AdminName} ~h~Dimension:~h~ {API.GetEntityDimension(receiver)} ~h~Last IP:~h~ {account.LastIp}");
+                    $"~h~Admin level:~h~ {account.AdminLevel} ~h~Admin name:~h~ {account.AdminName} ~h~Dimension:~h~ {NAPI.Entity.GetEntityDimension(receiver)} ~h~Last IP:~h~ {account.LastIp}");
                 NAPI.Chat.SendChatMessageToPlayer(sender, $"~h~Current vehicle:~h~{playerveh} ~h~Last vehicle: ~h~ { character?.LastVehicle?.Id}");
                 NAPI.Chat.SendChatMessageToPlayer(sender,
                     $"~h~Social Club Name:~h~ {account.AccountName} ~h~Admin actions: {account.AdminActions}");

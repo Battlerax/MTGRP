@@ -11,7 +11,7 @@ namespace mtgvrp.core
         {
             _timer = new Timer((state) =>
             {
-                foreach (var player in API.GetAllPlayers())
+                foreach (var player in NAPI.Pools.GetAllPlayers())
                 {
                     if (player == null)
                         continue;

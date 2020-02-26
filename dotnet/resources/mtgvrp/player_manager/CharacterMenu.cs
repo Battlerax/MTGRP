@@ -52,7 +52,7 @@ namespace mtgvrp.player_manager
             character.update_ped();
             character.update_nametag();
             NAPI.Entity.SetEntityPosition(player, character.LastPos);
-            API.SetEntityRotation(player, character.LastRot);
+            NAPI.Entity.SetEntityRotation(player, character.LastRot);
             NAPI.Entity.SetEntityDimension(player, 0);
             player.TriggerEvent("freezePlayer", false);
             NAPI.Chat.SendChatMessageToPlayer(player,
@@ -121,7 +121,7 @@ namespace mtgvrp.player_manager
                 NAPI.Chat.SendChatMessageToPlayer(player, "Welcome to Los Santos, " + charName + "! Let's get started with what you look like!");
                 player.TriggerEvent("freezePlayer", true);
                 NAPI.Entity.SetEntityDimension(player, (uint)player.GetCharacter().Id + 1000);
-                API.SetEntitySharedData(player, "REG_DIMENSION", player.GetCharacter().Id + 1000);
+                NAPI.Data.SetEntitySharedData(player, "REG_DIMENSION", player.GetCharacter().Id + 1000);
                 character.Model.SetDefault();
                 NAPI.ClientEvent.TriggerClientEvent(player, "show_character_creation_menu");
             }
@@ -162,7 +162,7 @@ namespace mtgvrp.player_manager
                 if (character.AccountId != account.Id.ToString())
                 {
                     NAPI.Chat.SendChatMessageToPlayer(player, "~r~ ERROR: This character does not belong to this account!");
-                    API.KickPlayer(player);
+                    NAPI.Player.KickPlayer(player);
                     return;
                 }
 
@@ -172,7 +172,7 @@ namespace mtgvrp.player_manager
                     character.update_ped();
                     player.TriggerEvent("freezePlayer", true);
                     NAPI.Entity.SetEntityDimension(player, (uint)player.GetCharacter().Id + 1000);
-                    API.SetEntitySharedData(player, "REG_DIMENSION", player.GetCharacter().Id + 1000);
+                    NAPI.Data.SetEntitySharedData(player, "REG_DIMENSION", player.GetCharacter().Id + 1000);
                     character.Model.SetDefault();
                     NAPI.ClientEvent.TriggerClientEvent(player, "show_character_creation_menu");
                     return;
@@ -199,10 +199,10 @@ namespace mtgvrp.player_manager
                 }
 
                 NAPI.Entity.SetEntityPosition(player, character.LastPos);
-                API.SetEntityRotation(player, character.LastRot);
+                NAPI.Entity.SetEntityRotation(player, character.LastRot);
                 NAPI.Entity.SetEntityDimension(player, (uint)character.LastDimension);
-                API.SetPlayerHealth(player, character.Health);
-                API.SetPlayerArmor(player, character.Armor);
+                NAPI.Player.SetPlayerHealth(player, character.Health);
+                NAPI.Player.SetPlayerArmor(player, character.Armor);
 
                 if (account.AdminLevel > 0)
                 {
@@ -222,7 +222,7 @@ namespace mtgvrp.player_manager
 
                     if (character.Group.CommandType == Group.CommandTypeLspd)
                     {
-                        API.SetEntitySharedData(character.Player, "IsCop", true);
+                        NAPI.Data.SetEntitySharedData(character.Player, "IsCop", true);
                     }
                 }
 
@@ -236,7 +236,7 @@ namespace mtgvrp.player_manager
                     AdminCommands.aJailControl(player, character.aJailTimeLeft);
                 }
 
-                API.SetPlayerHealth(player, character.Health);
+                NAPI.Player.SetPlayerHealth(player, character.Health);
                 NAPI.Chat.SendChatMessageToPlayer(player, "You have successfully loaded your character: " + charName);
                 LogManager.Log(LogManager.LogTypes.Connection, player.SocialClubName + $" has loaded the character {character.CharacterName}. (IP: " + player.Address + ")");
 
@@ -255,8 +255,8 @@ namespace mtgvrp.player_manager
             var parentLean = (float)arguments[4];
             var gender = (int)arguments[5];
 
-            API.SendNativeToPlayer(player, Hash.SET_PED_HEAD_BLEND_DATA, fatherPed, fatherIntId, fatherIntId, 0, fatherIntId, fatherIntId, 0, 1.0, 1.0, 0, false);
-            API.SendNativeToPlayer(player, Hash.SET_PED_HEAD_BLEND_DATA, motherPed, motherIntId, motherIntId, 0, motherIntId, motherIntId, 0, 1.0, 1.0, 0, false);
+            player.TriggerEvent("CallNative", Hash.SET_PED_HEAD_BLEND_DATA, fatherPed, fatherIntId, fatherIntId, 0, fatherIntId, fatherIntId, 0, 1.0, 1.0, 0, false);
+            player.TriggerEvent("CallNative", Hash.SET_PED_HEAD_BLEND_DATA, motherPed, motherIntId, motherIntId, 0, motherIntId, motherIntId, 0, 1.0, 1.0, 0, false);
 
             Character character = player.GetCharacter();
 
@@ -430,7 +430,7 @@ namespace mtgvrp.player_manager
                 character.update_ped();
                 character.update_nametag();
                 NAPI.Entity.SetEntityPosition(player, character.LastPos);
-                API.SetEntityRotation(player, character.LastRot);
+                NAPI.Entity.SetEntityRotation(player, character.LastRot);
                 NAPI.Entity.SetEntityDimension(player, 0);
                 player.TriggerEvent("freezePlayer", false);
                 player.ResetData("REDOING_CHAR");
@@ -476,7 +476,7 @@ namespace mtgvrp.player_manager
         /*[RemoteEvent("bus_driving_bridge")]
         public void BusDrivingBridge(Player player, params object[] arguments)
         {
-            var vehicle = VehicleManager.CreateVehicle(VehicleHash.Bus, new Vector3(-276.1117, -2411.626, 59.68943), new Vector3(0, 0, 53.19402), "Unregistered", player.GetCharacter().Id, vehicle_manager.Vehicle.VehTypeTemp, 0, 0, API.GetEntityDimension(player));
+            var vehicle = VehicleManager.CreateVehicle(VehicleHash.Bus, new Vector3(-276.1117, -2411.626, 59.68943), new Vector3(0, 0, 53.19402), "Unregistered", player.GetCharacter().Id, vehicle_manager.Vehicle.VehTypeTemp, 0, 0, NAPI.Entity.GetEntityDimension(player));
             vehicle.Insert();
             VehicleManager.spawn_vehicle(vehicle);
             NAPI.Player.SetPlayerIntoVehicle(player, vehicle.Entity, -1);
@@ -489,7 +489,7 @@ namespace mtgvrp.player_manager
         [RemoteEvent("bus_driving_station")]
         public void BusDrivingStation(Player player, params object[] arguments)
         {
-            var vehicle = VehicleManager.CreateVehicle(VehicleHash.Bus, new Vector3(513.3119, -676.2706, 25.19653), new Vector3(0, 0, 85.25442), "Unregistered", player.GetCharacter().Id, vehicle_manager.Vehicle.VehTypeTemp, 0, 0, API.GetEntityDimension(player));
+            var vehicle = VehicleManager.CreateVehicle(VehicleHash.Bus, new Vector3(513.3119, -676.2706, 25.19653), new Vector3(0, 0, 85.25442), "Unregistered", player.GetCharacter().Id, vehicle_manager.Vehicle.VehTypeTemp, 0, 0, NAPI.Entity.GetEntityDimension(player));
             vehicle.Insert();
             VehicleManager.spawn_vehicle(vehicle);
             NAPI.Player.SetPlayerIntoVehicle(player, vehicle.Entity, -1);
@@ -502,7 +502,7 @@ namespace mtgvrp.player_manager
         [RemoteEvent("player_exiting_bus")]
         public void PlayerExitingBus(Player player, params object[] arguments)
         {
-            var vehicle = VehicleManager.CreateVehicle(VehicleHash.Bus, new Vector3(429.8345, -672.5932, 29.05217), new Vector3(0.9295838, 3.945374, 90.3828), "Unregistered", player.GetCharacter().Id, vehicle_manager.Vehicle.VehTypePerm, 0, 0, API.GetEntityDimension(player));
+            var vehicle = VehicleManager.CreateVehicle(VehicleHash.Bus, new Vector3(429.8345, -672.5932, 29.05217), new Vector3(0.9295838, 3.945374, 90.3828), "Unregistered", player.GetCharacter().Id, vehicle_manager.Vehicle.VehTypePerm, 0, 0, NAPI.Entity.GetEntityDimension(player));
             vehicle.Insert();
             VehicleManager.spawn_vehicle(vehicle);
             NAPI.Player.SetPlayerIntoVehicle(player, vehicle.Entity, -1);

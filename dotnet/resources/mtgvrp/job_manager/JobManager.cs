@@ -85,8 +85,8 @@ namespace mtgvrp.job_manager
                 if (seat == 0 && veh?.JobId != 0 && veh?.JobId != character.JobOneId && player.GetAccount().AdminDuty == false)
                 {
                     NAPI.Notification.SendPictureNotificationToPlayer(player, "This vehicle is only available to " + veh?.Job?.Name, "CHAR_BLOCKED", 0, 1, "Server", "~r~Vehicle Locked");
-                    //API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));
-                    Task.Delay(1000).ContinueWith(t => API.WarpPlayerOutOfVehicle(player)); // CONV NOTE: delay fixme
+                    //API.Delay(1000, true, () => NAPI.Player.WarpPlayerOutOfVehicle(player));
+                    Task.Delay(1000).ContinueWith(t => NAPI.Player.WarpPlayerOutOfVehicle(player)); // TODO: delay fixme
                 }
             }
         }
@@ -428,26 +428,26 @@ namespace mtgvrp.job_manager
                     topLeft.Add(new Vector3(width, height, 0.0f));
 
                 NAPI.Data.SetEntityData(player, "ZONE_MARKER_1",
-                    API.CreateMarker(0, topLeft, new Vector3(), new Vector3(), 1f, new GTANetworkAPI.Color(255, 255, 255, 0), false,
+                    NAPI.Marker.CreateMarker(0, topLeft, new Vector3(), new Vector3(), 1f, new GTANetworkAPI.Color(255, 255, 255, 0), false,
                         player.Dimension));
                 NAPI.Data.SetEntityData(player, "ZONE_MARKER_2",
-                    API.CreateMarker(0, topRight, new Vector3(), new Vector3(), 1f, new GTANetworkAPI.Color(255, 255, 255, 0), false,
+                    NAPI.Marker.CreateMarker(0, topRight, new Vector3(), new Vector3(), 1f, new GTANetworkAPI.Color(255, 255, 255, 0), false,
                         player.Dimension));
                 NAPI.Data.SetEntityData(player, "ZONE_MARKER_3",
-                    API.CreateMarker(0, bottomLeft, new Vector3(), new Vector3(),1f, new GTANetworkAPI.Color(255, 255, 255, 0), false,
+                    NAPI.Marker.CreateMarker(0, bottomLeft, new Vector3(), new Vector3(),1f, new GTANetworkAPI.Color(255, 255, 255, 0), false,
                         player.Dimension));
                 NAPI.Data.SetEntityData(player, "ZONE_MARKER_4",
-                    API.CreateMarker(0, bottomRight, new Vector3(), new Vector3(), 1f, new GTANetworkAPI.Color(255, 255, 255, 0), false,
+                    NAPI.Marker.CreateMarker(0, bottomRight, new Vector3(), new Vector3(), 1f, new GTANetworkAPI.Color(255, 255, 255, 0), false,
                         player.Dimension));
 
                 NAPI.Chat.SendChatMessageToPlayer(player, "Viewing zone " + zoneId + " of Job " + job.Id);
             }
             else
             {
-                API.DeleteEntity(NAPI.Data.GetEntityData(player, "ZONE_MARKER_1"));
-                API.DeleteEntity(NAPI.Data.GetEntityData(player, "ZONE_MARKER_2"));
-                API.DeleteEntity(NAPI.Data.GetEntityData(player, "ZONE_MARKER_3"));
-                API.DeleteEntity(NAPI.Data.GetEntityData(player, "ZONE_MARKER_4"));
+                NAPI.Entity.DeleteEntity(NAPI.Data.GetEntityData(player, "ZONE_MARKER_1"));
+                NAPI.Entity.DeleteEntity(NAPI.Data.GetEntityData(player, "ZONE_MARKER_2"));
+                NAPI.Entity.DeleteEntity(NAPI.Data.GetEntityData(player, "ZONE_MARKER_3"));
+                NAPI.Entity.DeleteEntity(NAPI.Data.GetEntityData(player, "ZONE_MARKER_4"));
                 NAPI.Data.ResetEntityData(player, "ZONE_MARKER_1");
                 NAPI.Data.ResetEntityData(player, "ZONE_MARKER_2");
                 NAPI.Data.ResetEntityData(player, "ZONE_MARKER_3");
@@ -573,7 +573,7 @@ namespace mtgvrp.job_manager
                 {
                     float width = j.JobZones[i].GetData<float>("Width");
                     float height = j.JobZones[i].GetData<float>("Height");
-                    j.JobZones[i] = API.Create2DColShape(j.JobZones[i].Position.X, j.JobZones[i].Position.Y, width, height);
+                    j.JobZones[i] = NAPI.ColShape.Create2DColShape(j.JobZones[i].Position.X, j.JobZones[i].Position.Y, width, height);
                     j.register_job_zone_events(i);  
                 }
 

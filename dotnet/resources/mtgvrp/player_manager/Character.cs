@@ -479,7 +479,7 @@ namespace mtgvrp.player_manager
         {
             var filter = Builders<Character>.Filter.Eq("CharacterName", name);
 
-            if (DatabaseManager.CharacterTable.Find(filter).Count() > 0)
+            if (DatabaseManager.CharacterTable.Find(filter).CountDocuments() > 0)
             {
                 return true;
             }
@@ -662,7 +662,7 @@ namespace mtgvrp.player_manager
         public long GetCrimesNumber()
         {
             var filter = Builders<CriminalRecord>.Filter.Eq("CharacterId", Id.ToString());
-            return DatabaseManager.CriminalRecordTable.Find(filter).Count();
+            return DatabaseManager.CriminalRecordTable.Find(filter).CountDocuments();
         }
 
         public int HasActiveCriminalRecord()

@@ -190,11 +190,9 @@ namespace mtgvrp.core
         public void Dice(Player player, string diceNo)
         {
             const int upperDiceLimit = 2;
-            int numOfDie;
-            int diceRoll;
             // Generate a random BEFORE the actual loop, same values are extremely likely when done inside of the loop, due to the seed being Sys time.
             Random roll = new Random();
-            if (Int32.TryParse(diceNo, out numOfDie))
+            if (Int32.TryParse(diceNo, out var numOfDie))
             {
                 if (numOfDie > upperDiceLimit || numOfDie < 1)
                 {
@@ -205,7 +203,7 @@ namespace mtgvrp.core
                 int[] diceArr = new int[numOfDie];
                 for (int x = 0; x <= numOfDie - 1; x++)
                 {
-                    diceRoll = roll.Next(1, 7);
+                    var diceRoll = roll.Next(1, 7);
                     diceArr[x] = diceRoll;
                 }
                 if(numOfDie == 1) RoleplayMessage(player, "has rolled a die and it lands on " + diceArr[0],RoleplayMe);
@@ -241,7 +239,7 @@ namespace mtgvrp.core
             }
 
             NewbieStatus = !NewbieStatus;
-            API.SendChatMessageToAll("Newbie chat has been toggled " + ((NewbieStatus == true) ? ("on") : ("off")) + " by an admin.");
+            NAPI.Chat.SendChatMessageToAll("Newbie chat has been toggled " + ((NewbieStatus == true) ? ("on") : ("off")) + " by an admin.");
             LogManager.Log(LogManager.LogTypes.AdminActions, player.GetAccount().AdminName + " has toggled newbie chat " + ((NewbieStatus == true) ? ("on") : ("off")) + ".");
             return;
         }
@@ -256,7 +254,7 @@ namespace mtgvrp.core
             }
 
             OocStatus = !OocStatus;
-            API.SendChatMessageToAll("OOC chat has been toggled " + ((OocStatus == true) ? ("on") : ("off")) + " by an admin.");
+            NAPI.Chat.SendChatMessageToAll("OOC chat has been toggled " + ((OocStatus == true) ? ("on") : ("off")) + " by an admin.");
             LogManager.Log(LogManager.LogTypes.AdminActions, player.GetAccount().AdminName + " has toggled ooc chat " + ((OocStatus == true) ? ("on") : ("off")) + ".");
             return;
         }
@@ -270,7 +268,7 @@ namespace mtgvrp.core
             }
 
             VipStatus = !VipStatus;
-            API.SendChatMessageToAll("VIP chat has been toggled " + ((VipStatus == true) ? ("on") : ("off")) + " by an admin.");
+            NAPI.Chat.SendChatMessageToAll("VIP chat has been toggled " + ((VipStatus == true) ? ("on") : ("off")) + " by an admin.");
             LogManager.Log(LogManager.LogTypes.AdminActions, player.GetAccount().AdminName + " has toggled VIP chat " + ((VipStatus == true) ? ("on") : ("off")) + ".");
             return;
         }
@@ -356,7 +354,7 @@ namespace mtgvrp.core
                 return;
             }
 
-            API.SendChatMessageToAll(Color.GlobalOoc, "[OOC] " + c.rp_name() + ": " + message);
+            NAPI.Chat.SendChatMessageToAll(Color.GlobalOoc, "[OOC] " + c.rp_name() + ": " + message);
             LogManager.Log(LogManager.LogTypes.OOCchat, "[OOC] " + c.CharacterName +$"[{account.AccountName}]" + ": " + message);
             if (account.AdminLevel == 0)
             {
@@ -395,7 +393,7 @@ namespace mtgvrp.core
 
             Character c = player.GetCharacter();
 
-            var players = API.GetAllPlayers();
+            var players = NAPI.Pools.GetAllPlayers();
             foreach(var p in players)
             {
                 if (p == null)
@@ -517,7 +515,7 @@ namespace mtgvrp.core
 
             if(account.AdminLevel > 0)
             {
-                foreach (var c in API.GetAllPlayers())
+                foreach (var c in NAPI.Pools.GetAllPlayers())
                 {
                     if (c == null)
                         continue;

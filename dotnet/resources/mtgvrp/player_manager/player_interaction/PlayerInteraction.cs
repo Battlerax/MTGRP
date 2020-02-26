@@ -83,11 +83,11 @@ namespace mtgvrp.player_manager.player_interaction
                                 return;
                             }
 
-                            API.GivePlayerWeapon(player, WeaponHash.Unarmed, 1);
+                            NAPI.Player.GivePlayerWeapon(player, WeaponHash.Unarmed, 1);
                             API.SendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, interactHandle, true);
                             interactCharacter.IsCuffed = true;
                             interactCharacter.Player.TriggerEvent("freezePlayer", true);
-                            API.PlayPlayerAnimation(interactCharacter.Player, (int)(1 << 0 | 1 << 4 | 1 << 5),
+                            NAPI.Player.PlayPlayerAnimation(interactCharacter.Player, (int)(1 << 0 | 1 << 4 | 1 << 5),
                                 "mp_arresting", "idle");
 
                             ChatManager.RoleplayMessage(player,
@@ -106,7 +106,7 @@ namespace mtgvrp.player_manager.player_interaction
                             interactCharacter.Player.TriggerEvent("freezePlayer", false);
                             API.SendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, interactHandle, false);
                             interactCharacter.IsCuffed = false;
-                            API.StopPlayerAnimation(interactCharacter.Player);
+                            NAPI.Player.StopPlayerAnimation(interactCharacter.Player);
 
                             ChatManager.RoleplayMessage(player,
                                 "removes the handcuffs from " + interactCharacter.rp_name(), ChatManager.RoleplayMe);
@@ -224,16 +224,18 @@ namespace mtgvrp.player_manager.player_interaction
                 return;
             }
 
-            //API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));
-            Task.Delay(1000).ContinueWith(t => API.WarpPlayerOutOfVehicle(player)); // CONV NOTE: delay fixme
+            //API.Delay(1000, true, () => NAPI.Player.WarpPlayerOutOfVehicle(player));
+            Task.Delay(1000).ContinueWith(t => NAPI.Player.WarpPlayerOutOfVehicle(player)); // TODO: delay fixme
             NAPI.Chat.SendChatMessageToPlayer(player, "You have ejected ~b~" + receiver.GetCharacter().rp_name() + "~w~ from your vehicle.");
             NAPI.Chat.SendChatMessageToPlayer(receiver, "~b~" + player.GetCharacter().rp_name() + "~w~ has ejected you from their vehicle.");
         }
  
         public void FollowPlayer(Character c, bool isDrag)
         {
-            API.SendNativeToAllPlayers(Hash.TASK_FOLLOW_TO_OFFSET_OF_ENTITY, c.Player,
-                                    c.FollowingPlayer.Player, -1.0, 0.0, 0.0, 1, 1050, 2, true);
+            /*API.SendNativeToAllPlayers(Hash.TASK_FOLLOW_TO_OFFSET_OF_ENTITY, c.Player,
+                                    c.FollowingPlayer.Player, -1.0, 0.0, 0.0, 1, 1050, 2, true);*/
+            //TODO: fix dragging
+
             if (isDrag == false)
             {
                 NAPI.ClientEvent.TriggerClientEvent(c.Player, "player_interact_subtitle",

@@ -221,8 +221,8 @@ namespace mtgvrp.mapping_manager
 
                 if (o.Type == MappingObject.ObjectType.CreateObject)
                 {
-                    //API.CreateObject(int model, Vector3 pos, Vector3 rot, int dimension = 0);
-                    mappingString += string.Format("API.CreateObject({0}, new Vector3({1}, {2}, {3}), new Vector3({4}, {5}, {6}, {7});\n", o.Model, o.Pos.X, o.Pos.Y, o.Pos.Z, o.Rot.X, o.Rot.Y, o.Rot.Z, editingRequest.Dimension);
+                    //NAPI.Object.CreateObject(int model, Vector3 pos, Vector3 rot, int dimension = 0);
+                    mappingString += string.Format("NAPI.Object.CreateObject({0}, new Vector3({1}, {2}, {3}), new Vector3({4}, {5}, {6}, {7});\n", o.Model, o.Pos.X, o.Pos.Y, o.Pos.Z, o.Rot.X, o.Rot.Y, o.Rot.Z, editingRequest.Dimension);
                 }
                 else
                 {
@@ -272,7 +272,7 @@ namespace mtgvrp.mapping_manager
         {
             List<MappingObject> objectList = new List<MappingObject>();
 
-            var objectPattern = @"API.CreateObject\s*\((?<model>-?[0-9]+)\s*,\s*new\s*Vector3\s*\(\s*(?<posX>-?[0-9.]*)\s*,\s*(?<posY>-?[0-9.]*)\s*,\s*(?<posZ>-?[0-9.]*)\)\s*,\s*new\s*Vector3\s*\(\s*(?<rotX>-?[0-9.]*)\s*,\s*(?<rotY>-?[0-9.]*)\s*,\s*(?<rotZ>-?[0-9.]*)\s*\)\s*\)";
+            var objectPattern = @"NAPI.Object.CreateObject\s*\((?<model>-?[0-9]+)\s*,\s*new\s*Vector3\s*\(\s*(?<posX>-?[0-9.]*)\s*,\s*(?<posY>-?[0-9.]*)\s*,\s*(?<posZ>-?[0-9.]*)\)\s*,\s*new\s*Vector3\s*\(\s*(?<rotX>-?[0-9.]*)\s*,\s*(?<rotY>-?[0-9.]*)\s*,\s*(?<rotZ>-?[0-9.]*)\s*\)\s*\)";
             var regex = new Regex(objectPattern);
             foreach(Match match in regex.Matches(input))
             {

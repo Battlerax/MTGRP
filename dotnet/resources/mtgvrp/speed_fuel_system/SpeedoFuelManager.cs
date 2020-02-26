@@ -51,13 +51,13 @@ namespace mtgvrp.speed_fuel_system
                 {
                     NAPI.Vehicle.SetVehicleEngineStatus(veh.Entity, false);
                     if (ocups.Count > 0)
-                        NAPI.Chat.SendChatMessageToPlayer(ocups[0], "~y~The vehicle fuel has finished.");
+                        NAPI.Chat.SendChatMessageToPlayer(NAPI.Player.GetPlayerFromHandle(ocups[0]), "~y~The vehicle fuel has finished.");
                 }
 
                 //Notify driver with loss of fuel.
                 if (ocups.Count > 0)
                 {
-                    NAPI.ClientEvent.TriggerClientEvent(ocups[0], "fuel_updatevalue", veh.Fuel);
+                    NAPI.ClientEvent.TriggerClientEvent(NAPI.Player.GetPlayerFromHandle(ocups[0]), "fuel_updatevalue", veh.Fuel);
                 }
             }
         }

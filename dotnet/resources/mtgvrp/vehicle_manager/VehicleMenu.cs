@@ -79,8 +79,8 @@ namespace mtgvrp.vehicle_manager
                 case "park":
 
                     var pos = NAPI.Entity.GetEntityPosition(vehicleHandle);
-                    var rot = API.GetEntityRotation(vehicleHandle);
-                    var dimension = API.GetEntityDimension(vehicleHandle);
+                    var rot = NAPI.Entity.GetEntityRotation(vehicleHandle);
+                    var dimension = NAPI.Entity.GetEntityDimension(vehicleHandle);
 
                     vehicle.SpawnPos = pos;
                     vehicle.SpawnRot = rot;

@@ -595,7 +595,7 @@ namespace mtgvrp.AdminSystem
                 NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
-            API.SetPlayerHealth(receiver, health);
+            NAPI.Player.SetPlayerHealth(receiver, health);
             NAPI.Chat.SendChatMessageToPlayer(player, "You have set Player ID: " + id + "'s health to " + health + ".");
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has set {GetLogName(receiver)} health to {health}");
@@ -617,7 +617,7 @@ namespace mtgvrp.AdminSystem
                 NAPI.Notification.SendNotificationToPlayer(player, "~r~ERROR:~w~ Invalid player entered.");
                 return;
             }
-            API.SetPlayerArmor(receiver, armour);
+            NAPI.Player.SetPlayerArmor(receiver, armour);
             NAPI.Chat.SendChatMessageToPlayer(player, "You have set Player ID: " + id + "'s armour to " + armour + ".");
             Log(LogTypes.AdminActions,
                 $"[/{MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(CommandAttribute), false)[0].CastTo<CommandAttribute>().CommandString}] Admin {account.AdminName} has set {GetLogName(receiver)} armour to {armour}");
@@ -647,7 +647,7 @@ namespace mtgvrp.AdminSystem
                 return;
             }
 
-            API.SetVehicleHealth(receiver.Entity, health);
+            NAPI.Vehicle.SetVehicleHealth(receiver.Entity, health);
             NAPI.Chat.SendChatMessageToPlayer(player,
                 "You have set Vehicle ID: " + receiver.Id + "'s health to " + health + ".");
             Log(LogTypes.AdminActions,
@@ -965,7 +965,7 @@ namespace mtgvrp.AdminSystem
         public void admins_cmd(Player player)
         {
             NAPI.Chat.SendChatMessageToPlayer(player, "=====ADMINS ONLINE NOW=====");
-            foreach (var c in API.GetAllPlayers())
+            foreach (var c in NAPI.Pools.GetAllPlayers())
             {
                 if (c == null)
                     continue;
@@ -1029,8 +1029,8 @@ namespace mtgvrp.AdminSystem
             else
             {
                 Vector3 CurrentPlayerPos = NAPI.Entity.GetEntityPosition(player);
-                Vector3 CurrentPlayerRot = API.GetEntityRotation(player);
-                uint playerDimension = API.GetEntityDimension(player);
+                Vector3 CurrentPlayerRot = NAPI.Entity.GetEntityRotation(player);
+                uint playerDimension = NAPI.Entity.GetEntityDimension(player);
                 NAPI.Chat.SendChatMessageToPlayer(player, "-----Current Position-----");
                 NAPI.Chat.SendChatMessageToPlayer(player,
                     "X: " + CurrentPlayerPos.X + " Y: " + CurrentPlayerPos.Y + " Z: " + CurrentPlayerPos.Z +
@@ -2230,7 +2230,7 @@ namespace mtgvrp.AdminSystem
 
             if (level > 0)
             {
-                foreach (var p in API.GetAllPlayers())
+                foreach (var p in NAPI.Pools.GetAllPlayers())
                 {
                     if (p == null)
                         continue;
@@ -2361,7 +2361,7 @@ namespace mtgvrp.AdminSystem
                 targetClient.SetData("REDOING_CHAR", true);
                 targetClient.TriggerEvent("freezePlayer", true);
                 NAPI.Entity.SetEntityDimension(targetClient, (uint)targetClient.GetCharacter().Id + 1000);
-                API.SetEntitySharedData(targetClient, "REG_DIMENSION", targetClient.GetCharacter().Id + 1000);
+                NAPI.Data.SetEntitySharedData(targetClient, "REG_DIMENSION", targetClient.GetCharacter().Id + 1000);
                 targetClient.GetCharacter().Model.SetDefault();
                 NAPI.ClientEvent.TriggerClientEvent(targetClient, "show_character_creation_menu");
             }

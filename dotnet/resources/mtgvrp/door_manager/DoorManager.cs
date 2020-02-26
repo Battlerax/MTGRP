@@ -25,14 +25,14 @@ namespace mtgvrp.door_manager
             {
                 door.RegisterDoor();
             }
-            NAPI.Util.ConsoleOutput("Loaded " + DatabaseManager.DoorsTable.Count(FilterDefinition<Door>.Empty) + " Doors");
+            NAPI.Util.ConsoleOutput("Loaded " + DatabaseManager.DoorsTable.CountDocuments(FilterDefinition<Door>.Empty) + " Doors");
 
             reloadDoorsTimer.Interval = 1000;
             reloadDoorsTimer.Elapsed += ReloadDoorsTimer_Elapsed;
             reloadDoorsTimer.Start();
         }
 
-        // CONV NOTE: fixme
+        // TODO: fixme
         private void ReloadDoorsTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             foreach (var door in Door.Doors)

@@ -426,7 +426,7 @@ namespace mtgvrp.vehicle_manager.modding
             NAPI.Data.SetEntityData(player, "ModLastPos", player.Position.Copy());
             NAPI.Data.SetEntityData(player, "MOD_ID", prop.Id);
             NAPI.Entity.SetEntityPosition(player.Vehicle, new Vector3(-335.8468, -138.2994, 38.43893));
-            API.SetEntityRotation(player.Vehicle, new Vector3(0.1579523, 0.0001232202, -84.06439));
+            NAPI.Entity.SetEntityRotation(player.Vehicle, new Vector3(0.1579523, 0.0001232202, -84.06439));
             NAPI.Entity.SetEntityDimension(player, (uint)player.GetCharacter().Id);
             NAPI.Entity.SetEntityDimension(player.Vehicle, (uint)player.GetCharacter().Id);
             
@@ -462,9 +462,9 @@ namespace mtgvrp.vehicle_manager.modding
                 return;
             }
 
-            // CONV NOTE: this use to take a slot?
-            var newState = !API.GetVehicleNeonState(player.Vehicle);
-            API.SetVehicleNeonState(player.Vehicle, newState);
+            // TODO: this use to take a slot?
+            var newState = !NAPI.Vehicle.GetVehicleNeonState(player.Vehicle);
+            NAPI.Vehicle.SetVehicleNeonState(player.Vehicle, newState);
             ChatManager.RoleplayMessage(player, newState ? "turns on the neon of his Vehicle." : "turns off the neon of his Vehicle.", ChatManager.RoleplayMe);
         }
     }

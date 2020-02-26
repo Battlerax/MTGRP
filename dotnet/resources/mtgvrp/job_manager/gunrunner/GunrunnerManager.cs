@@ -137,42 +137,42 @@ namespace mtgvrp.job_manager.gunrunner
         public void OnResourceStart()
         {
             #region Mapping
-            API.CreateObject(1670285818, new Vector3(-194.2142f, -739.0701f, 14.61313f), new Vector3(0f, 0f, 0f));
-            API.CreateObject(1437126442, new Vector3(-195.51f, -745.1301f, 16.07001f), new Vector3(0f, 0f, 0f));
-            API.CreateObject(519594446, new Vector3(-192.9201f, -745.1301f, 16.07001f), new Vector3(0f, 0f, 0f));
-            API.CreateObject(-1567006928, new Vector3(-194.25f, -733.72f, 14.81f), new Vector3(0f, 0f, 0f));
-            API.CreateObject(-1326449699, new Vector3(-195.11f, -734.58f, 14.8101f), new Vector3(1.001791E-05f, 5.008957E-06f, 89.99955f));
-            API.CreateObject(-483631019, new Vector3(-195.11f, -736.6801f, 14.8101f), new Vector3(1.00179E-05f, 5.008956E-06f, 89.99959f));
-            API.CreateObject(-483631019, new Vector3(-195.11f, -738.3901f, 14.8101f), new Vector3(1.00179E-05f, 5.008956E-06f, 89.99959f));
-            API.CreateObject(-1326449699, new Vector3(-195.11f, -740.48f, 14.8101f), new Vector3(1.001791E-05f, 5.008957E-06f, 89.99955f));
-            API.CreateObject(1140820728, new Vector3(-194.2499f, -733.5973f, 15.72415f), new Vector3(0f, 0f, 22.00001f));
-            API.CreateObject(1338930512, new Vector3(-194.1519f, -733.9401f, 15.72999f), new Vector3(0f, 0f, 14.99997f));
-            API.CreateObject(-286280212, new Vector3(-193.7473f, -733.8964f, 15.72f), new Vector3(0f, 0f, -9.000026f));
-            API.CreateObject(-1837476061, new Vector3(-195.2168f, -743.4985f, 14.81151f), new Vector3(1.00179E-05f, -5.008955E-06f, 133.749f));
-            API.CreateObject(1885839156, new Vector3(-195.0601f, -742.5001f, 14.81f), new Vector3(1.00179E-05f, 5.008957E-06f, 89.99943f));
-            API.CreateObject(305924745, new Vector3(-194.091f, -736.0001f, 17.25348f), new Vector3(1.00179E-05f, 5.008958E-06f, 89.99934f));
-            API.CreateObject(305924745, new Vector3(-194.091f, -739.0001f, 17.25348f), new Vector3(1.00179E-05f, 5.008958E-06f, 89.99934f));
-            API.CreateObject(305924745, new Vector3(-194.091f, -742.0001f, 17.25348f), new Vector3(1.00179E-05f, 5.008958E-06f, 89.99934f));
-            API.CreateObject(1609935604, new Vector3(-192.95f, -735.15f, 16.12f), new Vector3(1.001791E-05f, 5.008958E-06f, 89.99973f));
-            API.CreateObject(867556671, new Vector3(-194.0455f, -734.5662f, 14.81151f), new Vector3(0f, 0f, -172.0002f));
-            API.CreateObject(148141454, new Vector3(-194.64f, -733.9501f, 15.75f), new Vector3(1.00179E-05f, 5.008955E-06f, 24.50006f));
-            API.CreateObject(-1677239828, new Vector3(-195.28f, -737.5001f, 15.7223f), new Vector3(0f, 0f, 89.99936f));
-            API.CreateObject(-1774732668, new Vector3(-195.19f, -738.29f, 15.86f), new Vector3(1.001786E-05f, 5.008954E-06f, 89.99914f));
-            API.CreateObject(-1519426, new Vector3(-195.1801f, -736.8f, 15.7223f), new Vector3(0f, 0f, 89.99963f));
-            API.CreateObject(1234788901, new Vector3(-195.06f, -735.74f, 15.92f), new Vector3(1.001791E-05f, -5.008954E-06f, 104.2494f));
-            API.CreateObject(-1831680671, new Vector3(-195.41f, -739.09f, 16.62f), new Vector3(1.001789E-05f, 5.008953E-06f, -89.99973f));
-            API.CreateObject(-2117059320, new Vector3(-192.95f, -737.72f, 16.30798f), new Vector3(1.001791E-05f, 5.008957E-06f, -89.99963f));
-            API.CreateObject(1915724430, new Vector3(-195.06f, -744.9f, 14.81151f), new Vector3(1.001791E-05f, 5.008956E-06f, -89.99969f));
-            API.CreateObject(-836132965, new Vector3(-194.97f, -740.34f, 15.72f), new Vector3(1.00179E-05f, 5.008956E-06f, -89.99969f));
-            API.CreateObject(-483631019, new Vector3(-194.83f, -740.87f, 14.8101f), new Vector3(1.001784E-05f, 5.008952E-06f, -90.00054f));
-            API.CreateObject(-483631019, new Vector3(-194.8301f, -739.81f, 14.81f), new Vector3(1.001784E-05f, 5.008952E-06f, -90.00054f));
-            API.CreateObject(-671139745, new Vector3(-193.37f, -733.8f, 15.75f), new Vector3(1.00179E-05f, 5.008956E-06f, -96.5f));
-            API.CreateObject(-483631019, new Vector3(-195.289f, -741.33f, 14.8101f), new Vector3(1.001779E-05f, 5.008955E-06f, 179.9996f));
-            API.CreateObject(-483631019, new Vector3(-195.31f, -739.351f, 14.81f), new Vector3(1.001781E-05f, 5.008956E-06f, -0.0005550665f));
-            API.CreateObject(-455361602, new Vector3(-192.95f, -743.87f, 16.21f), new Vector3(1.001784E-05f, 5.008955E-06f, -179.999f));
-            API.CreateObject(-132789682, new Vector3(-193.42f, -733.24f, 15.84f), new Vector3(1.001787E-05f, 5.008954E-06f, -89.99982f));
-            API.CreateObject(-1543942490, new Vector3(-194.8968f, -734.1437f, 15.72411f), new Vector3(0f, 0f, -158.0002f));
-            API.CreateObject(1915724430, new Vector3(-193.52f, -744.9f, 14.81151f), new Vector3(1.001791E-05f, 5.008956E-06f, -89.99963f));
+            NAPI.Object.CreateObject(1670285818, new Vector3(-194.2142f, -739.0701f, 14.61313f), new Vector3(0f, 0f, 0f));
+            NAPI.Object.CreateObject(1437126442, new Vector3(-195.51f, -745.1301f, 16.07001f), new Vector3(0f, 0f, 0f));
+            NAPI.Object.CreateObject(519594446, new Vector3(-192.9201f, -745.1301f, 16.07001f), new Vector3(0f, 0f, 0f));
+            NAPI.Object.CreateObject(-1567006928, new Vector3(-194.25f, -733.72f, 14.81f), new Vector3(0f, 0f, 0f));
+            NAPI.Object.CreateObject(-1326449699, new Vector3(-195.11f, -734.58f, 14.8101f), new Vector3(1.001791E-05f, 5.008957E-06f, 89.99955f));
+            NAPI.Object.CreateObject(-483631019, new Vector3(-195.11f, -736.6801f, 14.8101f), new Vector3(1.00179E-05f, 5.008956E-06f, 89.99959f));
+            NAPI.Object.CreateObject(-483631019, new Vector3(-195.11f, -738.3901f, 14.8101f), new Vector3(1.00179E-05f, 5.008956E-06f, 89.99959f));
+            NAPI.Object.CreateObject(-1326449699, new Vector3(-195.11f, -740.48f, 14.8101f), new Vector3(1.001791E-05f, 5.008957E-06f, 89.99955f));
+            NAPI.Object.CreateObject(1140820728, new Vector3(-194.2499f, -733.5973f, 15.72415f), new Vector3(0f, 0f, 22.00001f));
+            NAPI.Object.CreateObject(1338930512, new Vector3(-194.1519f, -733.9401f, 15.72999f), new Vector3(0f, 0f, 14.99997f));
+            NAPI.Object.CreateObject(-286280212, new Vector3(-193.7473f, -733.8964f, 15.72f), new Vector3(0f, 0f, -9.000026f));
+            NAPI.Object.CreateObject(-1837476061, new Vector3(-195.2168f, -743.4985f, 14.81151f), new Vector3(1.00179E-05f, -5.008955E-06f, 133.749f));
+            NAPI.Object.CreateObject(1885839156, new Vector3(-195.0601f, -742.5001f, 14.81f), new Vector3(1.00179E-05f, 5.008957E-06f, 89.99943f));
+            NAPI.Object.CreateObject(305924745, new Vector3(-194.091f, -736.0001f, 17.25348f), new Vector3(1.00179E-05f, 5.008958E-06f, 89.99934f));
+            NAPI.Object.CreateObject(305924745, new Vector3(-194.091f, -739.0001f, 17.25348f), new Vector3(1.00179E-05f, 5.008958E-06f, 89.99934f));
+            NAPI.Object.CreateObject(305924745, new Vector3(-194.091f, -742.0001f, 17.25348f), new Vector3(1.00179E-05f, 5.008958E-06f, 89.99934f));
+            NAPI.Object.CreateObject(1609935604, new Vector3(-192.95f, -735.15f, 16.12f), new Vector3(1.001791E-05f, 5.008958E-06f, 89.99973f));
+            NAPI.Object.CreateObject(867556671, new Vector3(-194.0455f, -734.5662f, 14.81151f), new Vector3(0f, 0f, -172.0002f));
+            NAPI.Object.CreateObject(148141454, new Vector3(-194.64f, -733.9501f, 15.75f), new Vector3(1.00179E-05f, 5.008955E-06f, 24.50006f));
+            NAPI.Object.CreateObject(-1677239828, new Vector3(-195.28f, -737.5001f, 15.7223f), new Vector3(0f, 0f, 89.99936f));
+            NAPI.Object.CreateObject(-1774732668, new Vector3(-195.19f, -738.29f, 15.86f), new Vector3(1.001786E-05f, 5.008954E-06f, 89.99914f));
+            NAPI.Object.CreateObject(-1519426, new Vector3(-195.1801f, -736.8f, 15.7223f), new Vector3(0f, 0f, 89.99963f));
+            NAPI.Object.CreateObject(1234788901, new Vector3(-195.06f, -735.74f, 15.92f), new Vector3(1.001791E-05f, -5.008954E-06f, 104.2494f));
+            NAPI.Object.CreateObject(-1831680671, new Vector3(-195.41f, -739.09f, 16.62f), new Vector3(1.001789E-05f, 5.008953E-06f, -89.99973f));
+            NAPI.Object.CreateObject(-2117059320, new Vector3(-192.95f, -737.72f, 16.30798f), new Vector3(1.001791E-05f, 5.008957E-06f, -89.99963f));
+            NAPI.Object.CreateObject(1915724430, new Vector3(-195.06f, -744.9f, 14.81151f), new Vector3(1.001791E-05f, 5.008956E-06f, -89.99969f));
+            NAPI.Object.CreateObject(-836132965, new Vector3(-194.97f, -740.34f, 15.72f), new Vector3(1.00179E-05f, 5.008956E-06f, -89.99969f));
+            NAPI.Object.CreateObject(-483631019, new Vector3(-194.83f, -740.87f, 14.8101f), new Vector3(1.001784E-05f, 5.008952E-06f, -90.00054f));
+            NAPI.Object.CreateObject(-483631019, new Vector3(-194.8301f, -739.81f, 14.81f), new Vector3(1.001784E-05f, 5.008952E-06f, -90.00054f));
+            NAPI.Object.CreateObject(-671139745, new Vector3(-193.37f, -733.8f, 15.75f), new Vector3(1.00179E-05f, 5.008956E-06f, -96.5f));
+            NAPI.Object.CreateObject(-483631019, new Vector3(-195.289f, -741.33f, 14.8101f), new Vector3(1.001779E-05f, 5.008955E-06f, 179.9996f));
+            NAPI.Object.CreateObject(-483631019, new Vector3(-195.31f, -739.351f, 14.81f), new Vector3(1.001781E-05f, 5.008956E-06f, -0.0005550665f));
+            NAPI.Object.CreateObject(-455361602, new Vector3(-192.95f, -743.87f, 16.21f), new Vector3(1.001784E-05f, 5.008955E-06f, -179.999f));
+            NAPI.Object.CreateObject(-132789682, new Vector3(-193.42f, -733.24f, 15.84f), new Vector3(1.001787E-05f, 5.008954E-06f, -89.99982f));
+            NAPI.Object.CreateObject(-1543942490, new Vector3(-194.8968f, -734.1437f, 15.72411f), new Vector3(0f, 0f, -158.0002f));
+            NAPI.Object.CreateObject(1915724430, new Vector3(-193.52f, -744.9f, 14.81151f), new Vector3(1.001791E-05f, 5.008956E-06f, -89.99963f));
             #endregion
         }
 
@@ -263,7 +263,7 @@ namespace mtgvrp.job_manager.gunrunner
             var obj = (Entity)arguments[0];
             var c = player.GetCharacter();
             c.Container.Position = NAPI.Entity.GetEntityPosition(obj);
-            c.Container.Rotation = API.GetEntityRotation(obj);
+            c.Container.Rotation = NAPI.Entity.GetEntityRotation(obj);
             c.Container.Save();
         }
 
@@ -730,7 +730,7 @@ namespace mtgvrp.job_manager.gunrunner
                 // TODO : VERY DIRTY FIX - PATCH THIS OUT LATER!
                 if (item.WeaponHash == 0)
                 {
-                    API.SetPlayerArmor(player, 100);
+                    NAPI.Player.SetPlayerArmor(player, 100);
                     character.Renown -= RenownLossDrop;
                     character.WeaponsSold += 1;
                     player.SendChatMessage("You've opened your own weapon case as a gunrunner. You have lost some renown for doing so.");
@@ -746,7 +746,7 @@ namespace mtgvrp.job_manager.gunrunner
             InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(WeaponCase), 1);
             if (item.WeaponHash == 0)
             {
-                API.SetPlayerArmor(player, 100);
+                NAPI.Player.SetPlayerArmor(player, 100);
                 player.SendChatMessage($"Weapon case opened. The armour has been applied.");
 
                 return;

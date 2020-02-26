@@ -34,7 +34,7 @@ namespace mtgvrp.afk_system
 
         private void _afkTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            foreach (var p in API.GetAllPlayers())
+            foreach (var p in NAPI.Pools.GetAllPlayers())
             {
                 if(p == null)
                     continue;
@@ -53,7 +53,7 @@ namespace mtgvrp.afk_system
                     }
                     else if (c.AfkTimer >= KickInterval)
                     {
-                        API.KickPlayer(p, "AFK for longer than 10 minutes.");
+                        NAPI.Player.KickPlayer(p, "AFK for longer than 10 minutes.");
                     }
                 }
                 else

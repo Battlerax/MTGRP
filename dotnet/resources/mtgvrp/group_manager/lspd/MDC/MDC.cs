@@ -225,7 +225,7 @@ namespace mtgvrp.group_manager.lspd.MDC
             }
 
             NAPI.ClientEvent.TriggerClientEvent(player, "MDC_SHOW_VEHICLE_INFO", VehicleOwnership.returnCorrDisplayName(veh.VehModel),
-                veh.OwnerName, API.GetVehicleClassName(API.GetVehicleClass(veh.VehModel)));
+                veh.OwnerName, API.GetVehicleClassName(NAPI.Vehicle.GetVehicleClass(veh.VehModel)));
         }
 
         [RemoteEvent("MDC_RequestNextCrimesPage")]

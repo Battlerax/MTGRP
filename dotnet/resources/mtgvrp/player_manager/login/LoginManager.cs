@@ -114,7 +114,7 @@ namespace mtgvrp.player_manager.login
                     {
                         NAPI.Chat.SendChatMessageToPlayer(player, "~r~You are temp-banned from this server. You will be unbanned in " + (account.TempBanExpiration - DateTime.Now).TotalDays + " days.");
                         NAPI.Notification.SendNotificationToPlayer(player, "~r~You are temp-banned from this server. You will be unbanned in " + (account.TempBanExpiration - DateTime.Now).TotalDays + " days.");
-                        API.KickPlayer(player);
+                        NAPI.Player.KickPlayer(player);
                         AdminSystem.AdminCommands.SendtoAllAdmins(account.AccountName + "attempted to log in to a temp-banned account.");
                         return;
                     }
@@ -122,7 +122,7 @@ namespace mtgvrp.player_manager.login
                     {
                         NAPI.Chat.SendChatMessageToPlayer(player, "~r~You are banned from this server. Visit MT-Gaming.com to submit an unban appeal. ");
                         NAPI.Notification.SendNotificationToPlayer(player, "~r~You are banned from this server. Visit MT-Gaming.com to submit an unban appeal.");
-                        API.KickPlayer(player);
+                        NAPI.Player.KickPlayer(player);
                         AdminSystem.AdminCommands.SendtoAllAdmins(account.AccountName + "attempted to log in to a banned account.");
                         return;
                     }
@@ -208,7 +208,7 @@ namespace mtgvrp.player_manager.login
             LogManager.Log(LogManager.LogTypes.Connection, player.SocialClubName + " has connected to the server [NOT LOGGED IN]. (IP: " + player.Address + ")");
 
             Account account = player.GetAccount();
-            API.SetEntitySharedData(player, "REG_DIMENSION", 1000);
+            NAPI.Data.SetEntitySharedData(player, "REG_DIMENSION", 1000);
             NAPI.Entity.SetEntityDimension(player, 1000);
 
             if (account.is_registered())
@@ -262,7 +262,7 @@ namespace mtgvrp.player_manager.login
                 {
                     NAPI.Chat.SendChatMessageToPlayer(player, "~r~You are temp-banned from this server. You will be unbanned in " + (account.TempBanExpiration - DateTime.Now).TotalDays + " days.");
                     NAPI.Notification.SendNotificationToPlayer(player, "~r~You are temp-banned from this server. You will be unbanned in " + (account.TempBanExpiration - DateTime.Now).TotalDays + " days.");
-                    API.KickPlayer(player);
+                    NAPI.Player.KickPlayer(player);
                     AdminSystem.AdminCommands.SendtoAllAdmins(account.AccountName + "attempted to log in to a temp-banned account.");
                     return;
                 }
@@ -272,7 +272,7 @@ namespace mtgvrp.player_manager.login
                     NAPI.Chat.SendChatMessageToPlayer(player, account.BanReason);
                     NAPI.Notification.SendNotificationToPlayer(player, "~r~You are banned from this server for the following reason: ");
                     NAPI.Notification.SendNotificationToPlayer(player, account.BanReason);
-                    API.KickPlayer(player);
+                    NAPI.Player.KickPlayer(player);
                     AdminSystem.AdminCommands.SendtoAllAdmins(account.AccountName + "attempted to log in to a banned account.");
                     return;
                 }

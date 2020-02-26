@@ -110,14 +110,14 @@ namespace mtgvrp.core
           
             if (UseMarker)
             {
-                // CONV NOTE: SCALE IS NO LONGER VECTOR
+                // TODO: SCALE IS NO LONGER VECTOR
                 Marker = API.Shared.CreateMarker(MarkerType, Location, MarkerDirection, Rotation, MarkerScale.X,
                     new GTANetworkAPI.Color(MarkerColor[0], MarkerColor[1], MarkerColor[2], MarkerColor[3]), false, (uint)Dimension);
             }
 
             if (UseText)
             {
-                // CONV NOTE: did some shit to this
+                // TODO: did some shit to this
                 Label = API.Shared.CreateTextLabel(TextLabelText, Location, TextLabelRange, TextLabelSize, 1, new GTANetworkAPI.Color(1, 1, 1),
                     entitySeethrough: TextLabelSeeThrough, dimension: (uint)Dimension);
                 API.Shared.SetTextLabelColor(Label, TextLabelColor[1], TextLabelColor[2], TextLabelColor[3], TextLabelColor[0]);

@@ -57,8 +57,8 @@ namespace mtgvrp.job_manager.taxi
                 return;
             }
 
-            API.SetVehicleHealth(veh.Entity, 1000);
-            API.RepairVehicle(veh.Entity);
+            NAPI.Vehicle.SetVehicleHealth(veh.Entity, 1000);
+            NAPI.Vehicle.RepairVehicle(veh.Entity);
             InventoryManager.DeleteInventoryItem(character, typeof(EngineParts), 1);
             player.SendChatMessage("Vehicle repaired.");
             LogManager.Log(LogManager.LogTypes.Stats, $"[Vehicle] {character.CharacterName}[{player.GetAccount().AccountName}] has fixed vehicle #{veh.Id}.");
@@ -92,8 +92,8 @@ namespace mtgvrp.job_manager.taxi
                 return;
             }
 
-            API.SetVehiclePrimaryColor(NAPI.Player.GetPlayerVehicle(player), col1);
-            API.SetVehicleSecondaryColor(NAPI.Player.GetPlayerVehicle(player), col2);
+            NAPI.Vehicle.SetVehiclePrimaryColor(NAPI.Player.GetPlayerVehicle(player), col1);
+            NAPI.Vehicle.SetVehicleSecondaryColor(NAPI.Player.GetPlayerVehicle(player), col2);
             veh.VehMods[ModdingManager.PrimaryColorId.ToString()] = col1.ToString();
             veh.VehMods[ModdingManager.SecondryColorId.ToString()] = col2.ToString();
             veh.Save();

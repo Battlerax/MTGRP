@@ -25,7 +25,7 @@ namespace mtgvrp.weapon_manager
         {
             foreach (Weapon weapon in InventoryManager.DoesInventoryHaveItem<Weapon>(e.Character))
             {
-                API.GivePlayerWeapon(e.Character.Player, weapon.WeaponHash, 9999);
+                NAPI.Player.GivePlayerWeapon(e.Character.Player, weapon.WeaponHash, 9999);
                 API.SetPlayerWeaponTint(e.Character.Player, weapon.WeaponHash, weapon.WeaponTint);
             }
         }
@@ -45,7 +45,7 @@ namespace mtgvrp.weapon_manager
                             InventoryManager.DeleteInventoryItem<Weapon>(chr, 1, x => x == w);
                         }
                     }
-                    API.RemovePlayerWeapon(chr.Player, item.WeaponHash);
+                    NAPI.Player.RemovePlayerWeapon(chr.Player, item.WeaponHash);
                 }
             }
         }
@@ -68,7 +68,7 @@ namespace mtgvrp.weapon_manager
         {
             if (ammo <= 1)
             {
-                API.SetPlayerWeaponAmmo(player, weapon, 9999);
+                NAPI.Player.SetPlayerWeaponAmmo(player, weapon, 9999);
             }
         }
 
@@ -85,8 +85,8 @@ namespace mtgvrp.weapon_manager
 
             if (!DoesPlayerHaveWeapon(player, currentPlayerWeapon) && currentPlayerWeapon != WeaponHash.Unarmed && character.JobOne.Type != job_manager.JobManager.JobTypes.Fisher)
             {
-                API.RemovePlayerWeapon(player, currentPlayerWeapon);
-                foreach (var p in API.GetAllPlayers())
+                NAPI.Player.RemovePlayerWeapon(player, currentPlayerWeapon);
+                foreach (var p in NAPI.Pools.GetAllPlayers())
                 {
                     if (p == null)
                         continue;
@@ -102,7 +102,7 @@ namespace mtgvrp.weapon_manager
 
             if (character.IsTied || character.IsCuffed)
             {
-                API.GivePlayerWeapon(player, WeaponHash.Unarmed, 1);
+                NAPI.Player.GivePlayerWeapon(player, WeaponHash.Unarmed, 1);
                 return;
             }
             if (currentWeapon.GroupId != character.GroupId && character.GroupId != 0 && currentWeapon.IsGroupWeapon == true)

@@ -298,7 +298,7 @@ namespace mtgvrp.group_manager.lspd
                 return;
             }
 
-            var players = API.GetAllPlayers();
+            var players = NAPI.Pools.GetAllPlayers();
 
             NAPI.Chat.SendChatMessageToPlayer(player, "---------------------WANTED LIST---------------------");
 
@@ -374,7 +374,7 @@ namespace mtgvrp.group_manager.lspd
 
             API.SendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, receiverCharacter.Player, false);
             receiverCharacter.IsCuffed = false;
-            API.StopPlayerAnimation(receiverCharacter.Player);
+            NAPI.Player.StopPlayerAnimation(receiverCharacter.Player);
 
             NAPI.Notification.SendNotificationToPlayer(player, "You have arrested ~b~" + receiverCharacter.rp_name() + "~w~.");
             NAPI.Notification.SendNotificationToPlayer(receiver, "You have been arrested by ~b~" + character.rp_name() + "~w~.");
@@ -535,10 +535,10 @@ namespace mtgvrp.group_manager.lspd
                 return;
             }
 
-            API.GivePlayerWeapon(player, WeaponHash.Unarmed, 1);
+            NAPI.Player.GivePlayerWeapon(player, WeaponHash.Unarmed, 1);
             API.SendNativeToAllPlayers(Hash.SET_ENABLE_HANDCUFFS, receivercharacter, true);
             receivercharacter.IsCuffed = true;
-            API.PlayPlayerAnimation(receiver, (1 << 0 | 1 << 4 | 1 << 5), "mp_arresting", "idle");
+            NAPI.Player.PlayPlayerAnimation(receiver, (1 << 0 | 1 << 4 | 1 << 5), "mp_arresting", "idle");
             receiver.TriggerEvent("freezePlayer", true);
             ChatManager.RoleplayMessage(player, "places handcuffs onto " + receivercharacter.rp_name(), ChatManager.RoleplayMe);
         }
@@ -698,14 +698,14 @@ namespace mtgvrp.group_manager.lspd
             {
                 NAPI.Notification.SendNotificationToPlayer(player, "You are speaking through a megaphone", true);
                 NAPI.Data.SetEntityData(player, "MegaphoneStatus", true);
-                character.MegaPhoneObject = API.CreateObject(API.GetHashKey("prop_megaphone_01"), playerPos, new Vector3());
+                character.MegaPhoneObject = NAPI.Object.CreateObject(NAPI.Util.GetHashKey("prop_megaphone_01"), playerPos, new Vector3());
                 API.AttachEntityToEntity(character.MegaPhoneObject, player, "IK_R_Hand", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
                 return;
             }
             NAPI.Notification.SendNotificationToPlayer(player, "You are no longer speaking through a megaphone.");
             NAPI.Data.SetEntityData(player, "MegaphoneStatus", false);
-            if(character.MegaPhoneObject != null && API.DoesEntityExist(character.MegaPhoneObject))
-                API.DeleteEntity(character.MegaPhoneObject);
+            if(character.MegaPhoneObject != null && NAPI.Entity.DoesEntityExist(character.MegaPhoneObject))
+                NAPI.Entity.DeleteEntity(character.MegaPhoneObject);
             character.MegaPhoneObject = null;
         }
 
@@ -864,39 +864,39 @@ namespace mtgvrp.group_manager.lspd
                 NAPI.Chat.SendChatMessageToPlayer(player, "Deployable items are between 1-5");
             }
             var playerpos = NAPI.Entity.GetEntityPosition(player);
-            var playerrot = API.GetEntityRotation(player);
-            var playerDimension = API.GetEntityDimension(player);
+            var playerrot = NAPI.Entity.GetEntityRotation(player);
+            var playerDimension = NAPI.Entity.GetEntityDimension(player);
 
             switch (objectid)
             {
                 case "1":
                     {
-                        var item = API.CreateObject((int)API.GetHashKey("prop_mp_barrier_01"), playerpos - new Vector3(0, 0, 1f), new Quaternion(playerrot.X, playerrot.Y, playerrot.Z, 0), playerDimension);
+                        var item = NAPI.Object.CreateObject((int)NAPI.Util.GetHashKey("prop_mp_barrier_01"), playerpos - new Vector3(0, 0, 1f), new Quaternion(playerrot.X, playerrot.Y, playerrot.Z, 0), playerDimension);
                         Objects.AddLast(item);
                         break;
                     }
 
                 case "2":
                     {
-                        var item = API.CreateObject((int)API.GetHashKey("prop_barrier_wat_03b"), playerpos - new Vector3(0, 0, 1f), new Quaternion(playerrot.X, playerrot.Y, playerrot.Z, 0), playerDimension);
+                        var item = NAPI.Object.CreateObject((int)NAPI.Util.GetHashKey("prop_barrier_wat_03b"), playerpos - new Vector3(0, 0, 1f), new Quaternion(playerrot.X, playerrot.Y, playerrot.Z, 0), playerDimension);
                         Objects.AddLast(item);
                         break;
                     }
                 case "3":
                     {
-                        var item = API.CreateObject((int)API.GetHashKey("prop_barrier_work04a"), playerpos - new Vector3(0, 0, 1f), new Quaternion(playerrot.X, playerrot.Y, playerrot.Z, 0), playerDimension);
+                        var item = NAPI.Object.CreateObject((int)NAPI.Util.GetHashKey("prop_barrier_work04a"), playerpos - new Vector3(0, 0, 1f), new Quaternion(playerrot.X, playerrot.Y, playerrot.Z, 0), playerDimension);
                         Objects.AddLast(item);
                         break;
                     }
                 case "4":
                     {
-                        var item = API.CreateObject((int)API.GetHashKey("prop_mp_conc_barrier_01"), playerpos - new Vector3(0, 0, 1f), new Quaternion(playerrot.X, playerrot.Y, playerrot.Z, 0), playerDimension);
+                        var item = NAPI.Object.CreateObject((int)NAPI.Util.GetHashKey("prop_mp_conc_barrier_01"), playerpos - new Vector3(0, 0, 1f), new Quaternion(playerrot.X, playerrot.Y, playerrot.Z, 0), playerDimension);
                         Objects.AddLast(item);
                         break;
                     }
                 case "5":
                     {
-                        var item = API.CreateObject((int)API.GetHashKey("prop_barrier_work05"), playerpos - new Vector3(0, 0, 1f), new Quaternion(playerrot.X, playerrot.Y, playerrot.Z, 0), playerDimension);
+                        var item = NAPI.Object.CreateObject((int)NAPI.Util.GetHashKey("prop_barrier_work05"), playerpos - new Vector3(0, 0, 1f), new Quaternion(playerrot.X, playerrot.Y, playerrot.Z, 0), playerDimension);
                         Objects.AddLast(item);
                         break;
                     }
@@ -922,7 +922,7 @@ namespace mtgvrp.group_manager.lspd
                 return;
             }
 
-            API.DeleteEntity(Objects.Last());
+            NAPI.Entity.DeleteEntity(Objects.Last());
             Objects.RemoveLast();
             NAPI.Notification.SendNotificationToPlayer(player, "Object removed. There are now ~r~" + Objects.Count + "~w~ placed.");
         }
@@ -965,7 +965,7 @@ namespace mtgvrp.group_manager.lspd
             {
                 if(NAPI.Entity.GetEntityPosition(currentObject).DistanceTo(playerPos) <= 3.0f)
                 {
-                    API.DeleteEntity(currentObject);
+                    NAPI.Entity.DeleteEntity(currentObject);
                     Objects.Remove(currentObject);
                     NAPI.Notification.SendNotificationToPlayer(player, "Object removed. There are now ~r~" + Objects.Count + "~w~ placed.");
                 }
@@ -1001,7 +1001,7 @@ namespace mtgvrp.group_manager.lspd
 
             foreach (var i in Objects)
             {
-                API.DeleteEntity(i);
+                NAPI.Entity.DeleteEntity(i);
             }
 
             var node = Objects.First;
@@ -1139,8 +1139,8 @@ namespace mtgvrp.group_manager.lspd
                     WeaponManager.CreateWeapon(player, WeaponHash.Bzgas, WeaponTint.Normal, false, false, true);
                     break;
             }
-            API.SetPlayerHealth(player, 100);
-            API.SetPlayerArmor(player, 100);
+            NAPI.Player.SetPlayerHealth(player, 100);
+            NAPI.Player.SetPlayerArmor(player, 100);
         }
 
         public void ResetTicket(Player player)

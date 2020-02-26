@@ -31,8 +31,8 @@ namespace mtgvrp.vehicle_manager.vehicle_editor
             }
 
             veh.SpawnPos = NAPI.Entity.GetEntityPosition(veh.Entity);
-            veh.SpawnRot = API.GetEntityRotation(veh.Entity);
-            veh.SpawnDimension = (int)API.GetEntityDimension(veh.Entity);
+            veh.SpawnRot = NAPI.Entity.GetEntityRotation(veh.Entity);
+            veh.SpawnDimension = (int)NAPI.Entity.GetEntityDimension(veh.Entity);
             veh.Save();
 
             NAPI.Chat.SendChatMessageToPlayer(player, "Vehicle position spawn saved to current location.");

@@ -166,9 +166,9 @@ namespace mtgvrp.dmv
                     : $"* Vehicle Health: ~r~ {player.Vehicle.Health} / 999");
 
             VehicleManager.respawn_vehicle(player.Vehicle.GetVehicle());
-            // CONV NOTE: proper delay needed probably
-            //API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));
-            Task.Delay(1000).ContinueWith(t => API.WarpPlayerOutOfVehicle(player));
+            // TODO: proper delay needed probably
+            //API.Delay(1000, true, () => NAPI.Player.WarpPlayerOutOfVehicle(player));
+            Task.Delay(1000).ContinueWith(t => NAPI.Player.WarpPlayerOutOfVehicle(player));
 
             c.IsInDmvTest = false;
         }
@@ -193,7 +193,7 @@ namespace mtgvrp.dmv
             
             //Make sure plate doesn't exist.
             var filter = MongoDB.Driver.Builders<LicensePlate>.Filter.Eq(x => x.Plate, plate);
-            if (DatabaseManager.NumberPlatesTable.Count(filter) > 0)
+            if (DatabaseManager.NumberPlatesTable.CountDocuments(filter) > 0)
             {
                 goto RestartProcess; //Restart
             }
@@ -218,9 +218,9 @@ namespace mtgvrp.dmv
 
             if (player.HasData("DMV_VEHICLE"))
                 VehicleManager.respawn_vehicle(((Entity)player.GetData<Entity>("DMV_VEHICLE")).GetVehicle());
-            // CONV NOTE: proper delay needed probably
-            //API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));
-            Task.Delay(1000).ContinueWith(t => API.WarpPlayerOutOfVehicle(player));
+            // TODO: proper delay needed probably
+            //API.Delay(1000, true, () => NAPI.Player.WarpPlayerOutOfVehicle(player));
+            Task.Delay(1000).ContinueWith(t => NAPI.Player.WarpPlayerOutOfVehicle(player));
 
             player.ResetData("DMV_VEHICLE");
             c.IsInDmvTest = false;
@@ -272,9 +272,9 @@ namespace mtgvrp.dmv
                         {
                             NAPI.Chat.SendChatMessageToPlayer(player, "You haven't started the driving test.");
                             NAPI.Vehicle.SetVehicleEngineStatus(vehicle, false);
-                            // CONV NOTE: proper delay needed probably
-                            //API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));
-                            Task.Delay(1000).ContinueWith(t => API.WarpPlayerOutOfVehicle(player));
+                            // TODO: proper delay needed probably
+                            //API.Delay(1000, true, () => NAPI.Player.WarpPlayerOutOfVehicle(player));
+                            Task.Delay(1000).ContinueWith(t => NAPI.Player.WarpPlayerOutOfVehicle(player));
                         }
                     }
                 }

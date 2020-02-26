@@ -101,7 +101,7 @@ namespace mtgvrp.property_system
             {
                 int id = colshape.GetData<int>("property_entrance");
                 var property = Properties.SingleOrDefault(x => x.Id == id);
-                if(property.EntranceDimension != API.GetEntityDimension(entity))
+                if(property.EntranceDimension != NAPI.Entity.GetEntityDimension(entity))
                     return;
 
                 NAPI.Data.SetEntityData(entity, "at_interance_property_id", colshape.GetData<int>("property_entrance"));
@@ -111,7 +111,7 @@ namespace mtgvrp.property_system
             {
                 int id = colshape.GetData<int>("property_interaction");
                 var property = Properties.SingleOrDefault(x => x.Id == id);
-                if(property.InteractionDimension != API.GetEntityDimension(entity))
+                if(property.InteractionDimension != NAPI.Entity.GetEntityDimension(entity))
                     return;
 
                 NAPI.Data.SetEntityData(entity, "at_interaction_property_id", colshape.GetData<int>("property_interaction"));
@@ -121,7 +121,7 @@ namespace mtgvrp.property_system
             {
                 int id = colshape.GetData<int>("property_garbage");
                 var property = Properties.SingleOrDefault(x => x.Id == id);
-                if(property.GarbageDimension != API.GetEntityDimension(entity))
+                if(property.GarbageDimension != NAPI.Entity.GetEntityDimension(entity))
                     return;
                 
                 NAPI.Data.SetEntityData(entity, "at_garbage_property_id", colshape.GetData<int>("property_garbage"));
@@ -131,7 +131,7 @@ namespace mtgvrp.property_system
             {
                 int id = colshape.GetData<int>("property_exit");
                 var property = Properties.SingleOrDefault(x => x.Id == id);
-                if(property.TargetDimension != API.GetEntityDimension(entity))
+                if(property.TargetDimension != NAPI.Entity.GetEntityDimension(entity))
                     return;
 
                 NAPI.Data.SetEntityData(entity, "at_exit_property_id", colshape.GetData<int>("property_exit"));

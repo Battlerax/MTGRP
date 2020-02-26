@@ -78,7 +78,7 @@ namespace mtgvrp.door_manager
             Doors.Add(this);
         }
 
-        // CONV NOTE: fix this
+        // TODO: fix this
         public void RefreshDoor()
         {
             /*foreach (var person in Shape.GetAllEntities())

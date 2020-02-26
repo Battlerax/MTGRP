@@ -32,7 +32,7 @@ namespace mtgvrp.core
         private void playPlayerAnimationEx(Player player, int flag, string animDict, string animName)
         {
             NAPI.ClientEvent.TriggerClientEvent(player, "setPlayerIntoAnim");
-            API.PlayPlayerAnimation(player, flag, animDict, animName);
+            NAPI.Player.PlayPlayerAnimation(player, flag, animDict, animName);
         }
 
         [RemoteEvent("stopPlayerAnims")]
@@ -46,7 +46,7 @@ namespace mtgvrp.core
         {
             Character character = player.GetCharacter();
             if (character.IsCuffed || character.IsTied) { return; }
-            API.StopPlayerAnimation(player);
+            NAPI.Player.StopPlayerAnimation(player);
             //API.StopPedAnimation(player);
             character.AreHandsUp = false;
         }

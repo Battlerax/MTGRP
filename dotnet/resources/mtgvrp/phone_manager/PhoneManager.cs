@@ -36,7 +36,7 @@ namespace mtgvrp.phone_manager
             {
                 //Check if in DB.
                 var dbNumber = DatabaseManager.PhoneNumbersTable.Find(x => x.Number == item[0].PhoneNumber);
-                if (dbNumber.Count() > 0)
+                if (dbNumber.CountDocuments() > 0)
                 {
                     //Check if id isn't same.
                     if (dbNumber.First().PhoneId != item[0].Id)
@@ -189,7 +189,7 @@ namespace mtgvrp.phone_manager
 
             //Ready unread notification thing.
             var unreadMessages =
-                DatabaseManager.MessagesTable.Count(x => x.ToNumber == gnphone.PhoneNumber && x.IsRead == false).ToString();
+                DatabaseManager.MessagesTable.CountDocuments(x => x.ToNumber == gnphone.PhoneNumber && x.IsRead == false).ToString();
 
             NAPI.ClientEvent.TriggerClientEvent(sender, "phone_showNotifications", unreadMessages);
         }
@@ -704,7 +704,7 @@ namespace mtgvrp.phone_manager
         public static bool DoesNumberExist(string num)
         {
             var filter = Builders<PhoneNumber>.Filter.Eq(x => x.Number, num);
-            return DatabaseManager.PhoneNumbersTable.Find(filter).Count() > 0;
+            return DatabaseManager.PhoneNumbersTable.Find(filter).CountDocuments() > 0;
         }
 
         public static Character GetPlayerWithNumber(string number)

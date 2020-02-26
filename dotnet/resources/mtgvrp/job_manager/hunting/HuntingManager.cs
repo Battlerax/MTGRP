@@ -165,7 +165,7 @@ namespace mtgvrp.job_manager.hunting
                 return;
             }
 
-            if (!API.DoesEntityExistForPlayer(player, SpawnedAnimals[index].handle))
+            if (!NAPI.Entity.DoesEntityExistForPlayer(player, SpawnedAnimals[index].handle))
             {
                 NAPI.Chat.SendChatMessageToPlayer(player, "That animal doesn't exist for you.");
                 return;

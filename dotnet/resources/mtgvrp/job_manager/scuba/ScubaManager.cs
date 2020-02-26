@@ -46,7 +46,7 @@ namespace mtgvrp.job_manager.scuba
                 return;
             }
 
-            API.SendNativeToPlayer(player, Hash.SET_PED_MAX_TIME_UNDERWATER, player, 3600.0f);
+            player.TriggerEvent("CallNative", Hash.SET_PED_MAX_TIME_UNDERWATER, player, 3600.0f);
             NAPI.ClientEvent.TriggerClientEvent(player, "UPDATE_SCUBA_PERCENTAGE",
                 "Oxygen Remaining: " + Math.Round((scubaitem[0].OxygenRemaining / ScubaItem.MaxOxygen) * 100f) +
                 "%");
@@ -67,7 +67,7 @@ namespace mtgvrp.job_manager.scuba
                     goto reset;
                 }
 
-                _treasureObjects.Add(API.CreateObject(-994740387, _treasuresLocations[a][0], _treasuresLocations[a][1]));
+                _treasureObjects.Add(NAPI.Object.CreateObject(-994740387, _treasuresLocations[a][0], _treasuresLocations[a][1]));
             }
         }
 
@@ -242,7 +242,7 @@ namespace mtgvrp.job_manager.scuba
                 goto reset;
             }
 
-            _treasureObjects.Add(API.CreateObject(-994740387, _treasuresLocations[a][0], _treasuresLocations[a][1]));
+            _treasureObjects.Add(NAPI.Object.CreateObject(-994740387, _treasuresLocations[a][0], _treasuresLocations[a][1]));
         }
 
         [Command("togglescuba"), Help(HelpManager.CommandGroups.ScubaActivity, "Toggle your scuba kit on and off.")]
@@ -282,9 +282,9 @@ namespace mtgvrp.job_manager.scuba
             }
 
             //Create the objects for the player.
-            var head = API.CreateObject(239157435, player.Position, new Vector3());
+            var head = NAPI.Object.CreateObject(239157435, player.Position, new Vector3());
             API.AttachEntityToEntity(head, player, "SKEL_Head", new Vector3(0, 0, 0), new Vector3(180, 90, 0));
-            var tank = API.CreateObject(1593773001, player.Position, new Vector3());
+            var tank = NAPI.Object.CreateObject(1593773001, player.Position, new Vector3());
             API.AttachEntityToEntity(tank, player, "SKEL_Spine3", new Vector3(-0.3, -0.23, 0), new Vector3(180, 90, 0));
             NAPI.Data.SetEntityData(player, "SCUBA_TANK", tank);
             NAPI.Data.SetEntityData(player, "SCUBA_HEAD", head);
@@ -297,7 +297,7 @@ namespace mtgvrp.job_manager.scuba
                 new Timer(delegate { RefreshScuba(player); }, null, 1000, 1000));
 
             //Set the scuba state as true.
-            API.SendNativeToPlayer(player, Hash.SET_ENABLE_SCUBA, player, true);
+            player.TriggerEvent("CallNative", Hash.SET_ENABLE_SCUBA, player, true);
 
             //Show remaining oxygen.
             NAPI.ClientEvent.TriggerClientEvent(player, "UPDATE_SCUBA_PERCENTAGE",
@@ -341,13 +341,13 @@ namespace mtgvrp.job_manager.scuba
             //Remove clothes
             GTANetworkAPI.Object head = NAPI.Data.GetEntityData(player, "SCUBA_HEAD");
             GTANetworkAPI.Object tank = NAPI.Data.GetEntityData(player, "SCUBA_TANK");
-            if (head != null && API.DoesEntityExist(head))
+            if (head != null && NAPI.Entity.DoesEntityExist(head))
             {
                 head.Detach();
                 head.Delete();
                 NAPI.Data.ResetEntityData(player, "SCUBA_HEAD");
             }
-            if (tank != null && API.DoesEntityExist(tank))
+            if (tank != null && NAPI.Entity.DoesEntityExist(tank))
             {
                 tank.Detach();
                 tank.Delete();
@@ -355,7 +355,7 @@ namespace mtgvrp.job_manager.scuba
             }
 
             //Set scuba state
-            API.SendNativeToPlayer(player, Hash.SET_ENABLE_SCUBA, player, false);
+            player.TriggerEvent("CallNative", Hash.SET_ENABLE_SCUBA, player, false);
 
             //Remove exygen
             NAPI.ClientEvent.TriggerClientEvent(player, "UPDATE_SCUBA_PERCENTAGE", "none");
@@ -367,7 +367,7 @@ namespace mtgvrp.job_manager.scuba
             character.update_ped();
 
             //Set normal underwater time.
-            API.SendNativeToPlayer(player, Hash.SET_PED_MAX_TIME_UNDERWATER, player, 60.0f);
+            player.TriggerEvent("CallNative", Hash.SET_PED_MAX_TIME_UNDERWATER, player, 60.0f);
         }
     }
 }

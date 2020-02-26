@@ -546,18 +546,18 @@ namespace mtgvrp.drugs_manager
 
         public void BoostArmor(Player sender, int amount)
         {
-            if (API.GetPlayerArmor(sender) + amount * ArmorMultipler > MaxArmor)
-                API.SetPlayerArmor(sender, MaxArmor);
+            if (NAPI.Player.GetPlayerArmor(sender) + amount * ArmorMultipler > MaxArmor)
+                NAPI.Player.SetPlayerArmor(sender, MaxArmor);
             else
-                API.SetPlayerArmor(sender, API.GetPlayerArmor(sender) + amount * ArmorMultipler);
+                NAPI.Player.SetPlayerArmor(sender, NAPI.Player.GetPlayerArmor(sender) + amount * ArmorMultipler);
         }
 
         public void BoostHealth(Player sender, int amount)
         {
-            if (API.GetPlayerHealth(sender) + amount * HealthMultipler > MaxHealth)
-                API.SetPlayerHealth(sender, MaxHealth);
+            if (NAPI.Player.GetPlayerHealth(sender) + amount * HealthMultipler > MaxHealth)
+                NAPI.Player.SetPlayerHealth(sender, MaxHealth);
             else
-                API.SetPlayerHealth(sender, API.GetPlayerHealth(sender) + amount * HealthMultipler);
+                NAPI.Player.SetPlayerHealth(sender, NAPI.Player.GetPlayerHealth(sender) + amount * HealthMultipler);
         }
 
 
@@ -565,14 +565,14 @@ namespace mtgvrp.drugs_manager
         {
             Character c = sender.GetCharacter();
 
-            if (API.GetPlayerHealth(sender) + amount * TempHealthMultipler > MaxHealth)
+            if (NAPI.Player.GetPlayerHealth(sender) + amount * TempHealthMultipler > MaxHealth)
             {
-                c.TempHealth = MaxHealth - API.GetPlayerHealth(sender);
-                API.SetPlayerHealth(sender,MaxHealth);
+                c.TempHealth = MaxHealth - NAPI.Player.GetPlayerHealth(sender);
+                NAPI.Player.SetPlayerHealth(sender,MaxHealth);
                 return;
             }
 
-            API.SetPlayerHealth(sender,API.GetPlayerHealth(sender) + amount * TempHealthMultipler);
+            NAPI.Player.SetPlayerHealth(sender,NAPI.Player.GetPlayerHealth(sender) + amount * TempHealthMultipler);
             c.TempHealth = amount * TempHealthMultipler;
         }
 
@@ -587,8 +587,8 @@ namespace mtgvrp.drugs_manager
                 return;
             }
         
-            API.SetPlayerArmor(sender,100);
-            API.SetPlayerHealth(sender,100);
+            NAPI.Player.SetPlayerArmor(sender,100);
+            NAPI.Player.SetPlayerHealth(sender,100);
 
             if (c.HeroinTolerance > MaxPermittedToleranceLevel)
             {
@@ -632,10 +632,10 @@ namespace mtgvrp.drugs_manager
             if (effectRoll >= 6 && effectRoll < 10)
             {
                 NAPI.Chat.SendChatMessageToPlayer(c.Player,"Your current usage limits are causing you serious pain.");
-                API.SetPlayerHealth(c.Player,API.GetPlayerHealth(c.Player) - 10);
+                NAPI.Player.SetPlayerHealth(c.Player,NAPI.Player.GetPlayerHealth(c.Player) - 10);
                 if (c.Player == null)
                 {
-                    API.SendChatMessageToAll("lol null");
+                    Console.WriteLine("lol null");
                 }
                 NAPI.ClientEvent.TriggerClientEvent(c.Player, "heroinVisual",LowerHeroinTripTime * 1000);       
                 c.HeroinTimer = new Timer { Interval = LowerHeroinTripTime * 1000 };
@@ -647,8 +647,8 @@ namespace mtgvrp.drugs_manager
             if (effectRoll == 10)
             {
                 NAPI.Chat.SendChatMessageToPlayer(c.Player,"Your body is unable to take the heroin anymore, and begins to breakdown.");
-                API.SetPlayerHealth(c.Player,1);
-                API.SetPlayerArmor(c.Player,0);
+                NAPI.Player.SetPlayerHealth(c.Player,1);
+                NAPI.Player.SetPlayerArmor(c.Player,0);
                 NAPI.ClientEvent.TriggerClientEvent(c.Player, "heroinVisual", HigherHeroinTripTime * 1000);
                 c.HeroinTimer = new Timer { Interval = HigherHeroinTripTime * 1000 };
                 c.HeroinTimer.Elapsed += delegate { clearHeroinEffect(c.Player); };
@@ -664,7 +664,7 @@ namespace mtgvrp.drugs_manager
 
         public void PlaceAirDropProp(Airdrop drop, Vector3 loc)
         {
-            drop.prop = API.CreateObject(1885839156, drop.Loc, new Vector3());
+            drop.prop = NAPI.Object.CreateObject(1885839156, drop.Loc, new Vector3());
         }
 
         private Airdrop FindNearestAirdrop(Player sender, float bound = 5)

@@ -357,8 +357,8 @@ namespace mtgvrp.job_manager.trucker
 
                 if (character.TruckingStage != Character.TruckingStages.None)
                 {
-                    //API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));
-                    Task.Delay(1000).ContinueWith(t => API.WarpPlayerOutOfVehicle(player)); // CONV NOTE: delay fixme
+                    //API.Delay(1000, true, () => NAPI.Player.WarpPlayerOutOfVehicle(player));
+                    Task.Delay(1000).ContinueWith(t => NAPI.Player.WarpPlayerOutOfVehicle(player)); // TODO: delay fixme
                     return;
                 }
 
@@ -380,8 +380,8 @@ namespace mtgvrp.job_manager.trucker
             Entity veh = NAPI.Data.GetEntityData(player, "TRUCKER_VEHICLE");
 
             if (player.Vehicle != null && player.Vehicle == veh)
-                //API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));
-                Task.Delay(1000).ContinueWith(t => API.WarpPlayerOutOfVehicle(player)); // CONV NOTE: delay fixme
+                //API.Delay(1000, true, () => NAPI.Player.WarpPlayerOutOfVehicle(player));
+                Task.Delay(1000).ContinueWith(t => NAPI.Player.WarpPlayerOutOfVehicle(player)); // TODO: delay fixme
 
             if (!veh.IsNull)
             {

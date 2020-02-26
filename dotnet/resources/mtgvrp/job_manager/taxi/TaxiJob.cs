@@ -132,14 +132,14 @@ namespace mtgvrp.job_manager.taxi
                     if (veh.Driver.Player == player)
                     {
                         player.SendChatMessage("You cannot enter your own taxi.");
-                        API.WarpPlayerOutOfVehicle(player);
+                        NAPI.Player.WarpPlayerOutOfVehicle(player);
                         return;
                     }
                     if (veh.Driver == null)
                     {
                         NAPI.Chat.SendChatMessageToPlayer(player, Color.Yellow, "[TAXI] This taxi currently has no driver.");
-                        //API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));
-                        Task.Delay(1000).ContinueWith(t => API.WarpPlayerOutOfVehicle(player)); // CONV NOTE: delay fixme
+                        //API.Delay(1000, true, () => NAPI.Player.WarpPlayerOutOfVehicle(player));
+                        Task.Delay(1000).ContinueWith(t => NAPI.Player.WarpPlayerOutOfVehicle(player)); // TODO: delay fixme
                         return;
                     }
 
@@ -148,7 +148,7 @@ namespace mtgvrp.job_manager.taxi
                         /*if (!taxi_requests.Contains(character))
                         {
                             NAPI.Chat.SendChatMessageToPlayer(player, Color.Yellow, "[TAXI] You must have an active taxi request to ride in a taxi. ( /requesttaxi )");
-                            API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));;
+                            API.Delay(1000, true, () => NAPI.Player.WarpPlayerOutOfVehicle(player));;
                             return;
                         }
 

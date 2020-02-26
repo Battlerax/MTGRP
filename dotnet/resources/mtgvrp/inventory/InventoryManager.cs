@@ -816,7 +816,7 @@ namespace mtgvrp.inventory
             }
 
             //Create object and add to list.
-            var droppedObject = API.CreateObject(sendersItem[0].Object, player.Position, new Vector3());
+            var droppedObject = NAPI.Object.CreateObject(sendersItem[0].Object, player.Position, new Vector3());
             var itemaa = CloneItem(sendersItem[0], amount);
             _stashedItems.Add(droppedObject, new KeyValuePair<string[], IInventoryItem>(new []{character.CharacterName, player.GetAccount().AccountName}, itemaa));
             NAPI.ClientEvent.TriggerClientEvent(player, "PLACE_OBJECT_ON_GROUND_PROPERLY", droppedObject, "");
@@ -871,7 +871,7 @@ namespace mtgvrp.inventory
                         $"You have sucessfully taken ~g~{item.Amount}~w~ ~g~{item.LongName}~w~ from the stash.");
 
                     //Remove object and item from list.
-                    API.DeleteEntity(items.First().Key);
+                    NAPI.Entity.DeleteEntity(items.First().Key);
                     _stashedItems.Remove(items.First().Key);
 
                     //RP

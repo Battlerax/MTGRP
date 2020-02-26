@@ -67,7 +67,7 @@ namespace mtgvrp.group_manager.lsnn
                 IsBroadcasting = false;
                 NAPI.Chat.SendChatMessageToPlayer(player, "~p~The broadcast has been stopped.");
 
-                foreach (var c in API.GetAllPlayers())
+                foreach (var c in NAPI.Pools.GetAllPlayers())
                 {
                     if (c == null)
                         continue;
@@ -94,7 +94,7 @@ namespace mtgvrp.group_manager.lsnn
                 return;
             }
             NAPI.Chat.SendChatMessageToPlayer(player, "Broadcast started.");
-            API.SendChatMessageToAll("~p~" + character.rp_name() + " has started a broadcast. /watchbroadcast to tune in!");
+            NAPI.Chat.SendChatMessageToAll("~p~" + character.rp_name() + " has started a broadcast. /watchbroadcast to tune in!");
             IsBroadcasting = true;
 
         }
@@ -138,13 +138,13 @@ namespace mtgvrp.group_manager.lsnn
             }
 
             var pos = NAPI.Entity.GetEntityPosition(player);
-            var angle = API.GetEntityRotation(player).Z;
+            var angle = NAPI.Entity.GetEntityRotation(player).Z;
             CameraPosition = XyInFrontOfPoint(pos, angle, 1) - new Vector3(0, 0, 0.5);
-            CameraRotation = API.GetEntityRotation(player) + new Vector3(0, 0, 180);
-            CameraDimension = (int)API.GetEntityDimension(player);
+            CameraRotation = NAPI.Entity.GetEntityRotation(player) + new Vector3(0, 0, 180);
+            CameraDimension = (int)NAPI.Entity.GetEntityDimension(player);
             NAPI.Notification.SendNotificationToPlayer(player, "A camera has been placed on your position.");
             ChatManager.NearbyMessage(player, 10, "~p~" + character.rp_name() + " sets down a news camera");
-            API.CreateObject(API.GetHashKey("p_tv_cam_02_s"), CameraPosition, CameraRotation);
+            NAPI.Object.CreateObject(NAPI.Util.GetHashKey("p_tv_cam_02_s"), CameraPosition, CameraRotation);
             character.HasCamera = false;
             CameraSet = true;
         }
@@ -179,7 +179,7 @@ namespace mtgvrp.group_manager.lsnn
             {
                 if (IsBroadcasting == true)
                 {
-                    foreach (var c in API.GetAllPlayers())
+                    foreach (var c in NAPI.Pools.GetAllPlayers())
                     {
                         if (c == null)
                             continue;
@@ -212,7 +212,7 @@ namespace mtgvrp.group_manager.lsnn
             ChopperCamToggle = true;
             Chopper = NAPI.Player.GetPlayerVehicle(player);
             CameraPosition = NAPI.Entity.GetEntityPosition(Chopper) - new Vector3(0, 0, 3);
-            CameraRotation = API.GetEntityRotation(Chopper);
+            CameraRotation = NAPI.Entity.GetEntityRotation(Chopper);
             NAPI.Notification.SendNotificationToPlayer(player, "The chopper camera has been turned ~b~on~w~.");
             ChatManager.NearbyMessage(player, 10, "~p~" + character.rp_name() + " has turned on the chopper cam.");
             ChopperRotation = new Timer { Interval = 3000 };
@@ -239,7 +239,7 @@ namespace mtgvrp.group_manager.lsnn
 
             if (CameraSet == false)
             {
-                foreach (var p in API.GetAllPlayers())
+                foreach (var p in NAPI.Pools.GetAllPlayers())
                 {
                     if (p == null)
                         continue;
@@ -278,7 +278,7 @@ namespace mtgvrp.group_manager.lsnn
             var playerPos = NAPI.Entity.GetEntityPosition(player);
             NAPI.Notification.SendNotificationToPlayer(player, "You are carrying a camera.", true);
             ChatManager.NearbyMessage(player, 10, "~p~" + character.rp_name() + " picks up the news camera.");
-            API.DeletePlayerWorldProp(player, API.GetHashKey("p_tv_cam_02_s"), playerPos, 2.5f); // CONV NOTE: adjust radius value
+            NAPI.Player.DeletePlayerWorldProp(player, NAPI.Util.GetHashKey("p_tv_cam_02_s"), playerPos, 2.5f); // TODO: adjust radius value
             character.HasCamera = true;
             CameraPosition = new Vector3();
             CameraRotation = new Vector3();
@@ -332,7 +332,7 @@ namespace mtgvrp.group_manager.lsnn
 
             InventoryManager.GiveInventoryItem(haveLottoTickets[index], new Money(), character.Group.LottoSafe);
             NAPI.Chat.SendChatMessageToPlayer(player, "~p~ You pick a random name from the list of ticket owners..");
-            API.SendChatMessageToAll("~p~The winner of the lotto is ~y~" + haveLottoTickets[index].rp_name() + "~p~. They won " + character.Group.LottoSafe + "!");
+            NAPI.Chat.SendChatMessageToAll("~p~The winner of the lotto is ~y~" + haveLottoTickets[index].rp_name() + "~p~. They won " + character.Group.LottoSafe + "!");
 
         }
 
@@ -420,14 +420,14 @@ namespace mtgvrp.group_manager.lsnn
             {
                 NAPI.Notification.SendNotificationToPlayer(player, "You are speaking through a microphone.", true);
                 NAPI.Data.SetEntityData(player, "MicStatus", true);
-                character.MicObject = API.CreateObject(API.GetHashKey("p_ing_microphonel_01"), playerPos, new Vector3());
+                character.MicObject = NAPI.Object.CreateObject(NAPI.Util.GetHashKey("p_ing_microphonel_01"), playerPos, new Vector3());
                 API.AttachEntityToEntity(character.MicObject, player, "IK_R_Hand", new Vector3(0, 0, 0), new Vector3(0, 0, 0));
                 return;
             }
             NAPI.Notification.SendNotificationToPlayer(player, "You are no longer speaking through a microphone.");
             NAPI.Data.SetEntityData(player, "MicStatus", false);
-            if (character.MicObject != null && API.DoesEntityExist(character.MicObject))
-                API.DeleteEntity(character.MicObject);
+            if (character.MicObject != null && NAPI.Entity.DoesEntityExist(character.MicObject))
+                NAPI.Entity.DeleteEntity(character.MicObject);
             character.MicObject = null;
         }
 
@@ -482,7 +482,7 @@ namespace mtgvrp.group_manager.lsnn
 
         public void GetPositionInfrontOfEntity(Player player, double x, double y, double distance)
         {
-            var playerRot = API.GetEntityRotation(player);
+            var playerRot = NAPI.Entity.GetEntityRotation(player);
             x += (distance * Math.Sin(playerRot.Y));
             y += (distance * Math.Cos(playerRot.Y));
         }
@@ -500,12 +500,12 @@ namespace mtgvrp.group_manager.lsnn
         {
             Chopper = NAPI.Player.GetPlayerVehicle(player);
             CameraPosition = NAPI.Entity.GetEntityPosition(Chopper) - new Vector3(0, 0, 3);
-            CameraRotation = API.GetEntityRotation(Chopper);
+            CameraRotation = NAPI.Entity.GetEntityRotation(Chopper);
             var focusX = CameraPosition.X;
             var focusY = CameraPosition.Y;
             var focusZ = CameraPosition.Z;
 
-            foreach (var p in API.GetAllPlayers())
+            foreach (var p in NAPI.Pools.GetAllPlayers())
             {
                 if (p == null)
                     continue;

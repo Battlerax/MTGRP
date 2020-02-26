@@ -28,7 +28,7 @@ namespace mtgvrp.job_manager.lumberjack
             if(vehicle.GetVehicle() == null)
                 return;
 
-            if (API.GetEntityModel(vehicle) == (int)VehicleHash.Flatbed && player.GetCharacter().JobOne.Type == JobManager.JobTypes.Lumberjack)
+            if (NAPI.Entity.GetEntityModel(vehicle) == (int)VehicleHash.Flatbed && player.GetCharacter().JobOne.Type == JobManager.JobTypes.Lumberjack)
             {
                 GameVehicle veh = NAPI.Data.GetEntityData(vehicle, "Vehicle");
                 if (veh.Job?.Type != JobManager.JobTypes.Lumberjack)
@@ -47,8 +47,8 @@ namespace mtgvrp.job_manager.lumberjack
                     int id = NAPI.Data.GetEntityData(vehicle, "TREE_DRIVER");
                     if (id != player.GetCharacter().Id)
                     {
-                        //API.Delay(1000, true, () => API.WarpPlayerOutOfVehicle(player));
-                        Task.Delay(1000).ContinueWith(t => API.WarpPlayerOutOfVehicle(player)); // CONV NOTE: delay fixme
+                        //API.Delay(1000, true, () => NAPI.Player.WarpPlayerOutOfVehicle(player));
+                        Task.Delay(1000).ContinueWith(t => NAPI.Player.WarpPlayerOutOfVehicle(player)); // TODO: delay fixme
                         NAPI.Chat.SendChatMessageToPlayer(player, "This is not yours.");
                         return;
                     }
@@ -67,7 +67,7 @@ namespace mtgvrp.job_manager.lumberjack
         [ServerEvent(Event.PlayerExitVehicle)]
         public void OnPlayerExitVehicle(Player player, Vehicle vehicle)
         {
-            if (API.GetEntityModel(vehicle) == (int) VehicleHash.Flatbed && player.GetCharacter().JobOne.Type == JobManager.JobTypes.Lumberjack)
+            if (NAPI.Entity.GetEntityModel(vehicle) == (int) VehicleHash.Flatbed && player.GetCharacter().JobOne.Type == JobManager.JobTypes.Lumberjack)
             {
                 GameVehicle veh = NAPI.Data.GetEntityData(vehicle, "Vehicle");
                 if (veh.Job.Type != JobManager.JobTypes.Lumberjack)
@@ -119,13 +119,13 @@ namespace mtgvrp.job_manager.lumberjack
 
                     if (tree.CutPercentage >= 100)
                     {
-                        API.SetEntityRotation(tree.TreeObj, new Vector3(90 + tree.TreeRot.X, tree.TreeRot.Y, tree.TreeRot.Z));
+                        NAPI.Entity.SetEntityRotation(tree.TreeObj, new Vector3(90 + tree.TreeRot.X, tree.TreeRot.Y, tree.TreeRot.Z));
                         ChatManager.RoleplayMessage(sender, "A tree would fall over on the ground.",
                             ChatManager.RoleplayDo);
                         tree.Stage = Tree.Stages.Processing;
                     }
 
-                    API.PlayPlayerAnimation(sender, (int)(Animations.AnimationFlags.StopOnLastFrame | Animations.AnimationFlags.OnlyAnimateUpperBody), "melee@large_wpn@streamed_core", "ground_attack_0");
+                    NAPI.Player.PlayPlayerAnimation(sender, (int)(Animations.AnimationFlags.StopOnLastFrame | Animations.AnimationFlags.OnlyAnimateUpperBody), "melee@large_wpn@streamed_core", "ground_attack_0");
                     tree.UpdateTreeText();
 
                     var rnd = new Random();
@@ -134,7 +134,7 @@ namespace mtgvrp.job_manager.lumberjack
                         NAPI.Chat.SendChatMessageToPlayer(sender, "~r~* Your axe would break.");
                         InventoryManager.DeleteInventoryItem<Weapon>(character, 1,
                             x => x.CommandFriendlyName == "Hatchet");
-                        API.StopPlayerAnimation(sender);
+                        NAPI.Player.StopPlayerAnimation(sender);
                         //API.StopPedAnimation(sender);
                     }
                 }
@@ -148,7 +148,7 @@ namespace mtgvrp.job_manager.lumberjack
                         tree.UpdateAllTree();
                     }
 
-                    API.PlayPlayerAnimation(sender, (int)(Animations.AnimationFlags.StopOnLastFrame | Animations.AnimationFlags.OnlyAnimateUpperBody), "melee@large_wpn@streamed_core", "ground_attack_0");
+                    NAPI.Player.PlayPlayerAnimation(sender, (int)(Animations.AnimationFlags.StopOnLastFrame | Animations.AnimationFlags.OnlyAnimateUpperBody), "melee@large_wpn@streamed_core", "ground_attack_0");
                     tree.UpdateTreeText();
 
                     var rnd = new Random();
@@ -157,7 +157,7 @@ namespace mtgvrp.job_manager.lumberjack
                         NAPI.Chat.SendChatMessageToPlayer(sender, "~r~* Your axe would break.");
                         InventoryManager.DeleteInventoryItem<Weapon>(character, 1,
                             x => x.CommandFriendlyName == "Hatchet");
-                        API.StopPlayerAnimation(sender);
+                        NAPI.Player.StopPlayerAnimation(sender);
                         //API.StopPedAnimation(sender);
                     }
                 }
@@ -181,7 +181,7 @@ namespace mtgvrp.job_manager.lumberjack
             var tree = new Tree {Id = ObjectId.GenerateNewId(DateTime.Now), TreePos = player.Position, TreeRot = new Vector3()};
             tree.CreateTree();
             tree.Insert();
-            API.SetEntitySharedData(tree.TreeObj, "TargetObj", tree.Id.ToString());
+            NAPI.Data.SetEntitySharedData(tree.TreeObj, "TargetObj", tree.Id.ToString());
             NAPI.ClientEvent.TriggerClientEvent(player, "PLACE_OBJECT_ON_GROUND_PROPERLY", tree.TreeObj, "TreePlaced");
         }
 
@@ -211,7 +211,7 @@ namespace mtgvrp.job_manager.lumberjack
                 return;
             }
 
-            if (NAPI.Player.IsPlayerInAnyVehicle(player) && API.GetEntityModel(NAPI.Player.GetPlayerVehicle(player)) == (int)VehicleHash.Flatbed)
+            if (NAPI.Player.IsPlayerInAnyVehicle(player) && NAPI.Entity.GetEntityModel(NAPI.Player.GetPlayerVehicle(player)) == (int)VehicleHash.Flatbed)
             {
                 GameVehicle vehicle = NAPI.Data.GetEntityData(NAPI.Player.GetPlayerVehicle(player), "Vehicle");
                 if (vehicle.Job.Type != JobManager.JobTypes.Lumberjack)
@@ -266,7 +266,7 @@ namespace mtgvrp.job_manager.lumberjack
                 return;
             }
 
-            if (NAPI.Player.IsPlayerInAnyVehicle(player) && API.GetEntityModel(NAPI.Player.GetPlayerVehicle(player)) ==
+            if (NAPI.Player.IsPlayerInAnyVehicle(player) && NAPI.Entity.GetEntityModel(NAPI.Player.GetPlayerVehicle(player)) ==
                 (int) VehicleHash.Flatbed)
             {
                 Tree tree = NAPI.Data.GetEntityData(NAPI.Player.GetPlayerVehicle(player), "TREE_OBJ");
@@ -284,7 +284,7 @@ namespace mtgvrp.job_manager.lumberjack
 
                 GameVehicle vehicle = NAPI.Data.GetEntityData(NAPI.Player.GetPlayerVehicle(player), "Vehicle");
                 NAPI.Data.ResetEntityData(NAPI.Player.GetPlayerVehicle(player), "TREE_OBJ");
-                Task.Delay(1000).ContinueWith(t => API.WarpPlayerOutOfVehicle(player)); // CONV NOTE: delay fixme
+                Task.Delay(1000).ContinueWith(t => NAPI.Player.WarpPlayerOutOfVehicle(player)); // TODO: delay fixme
                 VehicleManager.respawn_vehicle(vehicle);
                 NAPI.Data.ResetEntityData(NAPI.Player.GetPlayerVehicle(player), "TREE_DRIVER");
                 NAPI.ClientEvent.TriggerClientEvent(player, "update_beacon", new Vector3());

@@ -102,7 +102,7 @@ namespace mtgvrp.player_manager
         {
             var filter = Builders<Account>.Filter.Eq("AccountName", AccountName);
 
-            if(DatabaseManager.AccountTable.Find(filter).Count() > 0)
+            if(DatabaseManager.AccountTable.Find(filter).CountDocuments() > 0)
             {
                 return true;
             }

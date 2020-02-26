@@ -52,12 +52,12 @@ namespace mtgvrp.job_manager.fisher
                 c.PerfectCatchStrength = 0;
 
                 NAPI.Chat.SendChatMessageToPlayer(player, Color.AdminOrange, "The fish managed to get away...");
-                API.StopPlayerAnimation(player);
+                NAPI.Player.StopPlayerAnimation(player);
             }
             else if (strengthDifference > 30)
             {
                 NAPI.Chat.SendChatMessageToPlayer(player, "You snapped your fishing rod!");
-                API.StopPlayerAnimation(player);
+                NAPI.Player.StopPlayerAnimation(player);
             }
             else
             {
@@ -65,7 +65,7 @@ namespace mtgvrp.job_manager.fisher
 
                 NAPI.Chat.SendChatMessageToPlayer(player, Color.White,
                     "You caught a " + c.CatchingFish.Name + " that weighs " + weight + " pounds. It is worth about $" + c.CatchingFish.calculate_value(weight));
-                API.StopPlayerAnimation(player);
+                NAPI.Player.StopPlayerAnimation(player);
 
                 var fish = (Fish)c.CatchingFish;
                 fish.ActualWeight = weight;
@@ -90,7 +90,7 @@ namespace mtgvrp.job_manager.fisher
         {
             NAPI.Chat.SendChatMessageToPlayer(player, "You snapped your fishing rod!");
             InventoryManager.DeleteInventoryItem(player.GetCharacter(), typeof(FishingRod), 1);
-            API.StopPlayerAnimation(player);
+            NAPI.Player.StopPlayerAnimation(player);
         }
 
         [Command("fish"), Help(HelpManager.CommandGroups.FisherJob, "Pretty obvious, its to fish!")]
@@ -130,7 +130,7 @@ namespace mtgvrp.job_manager.fisher
             {
                 isOnLastBoat = API.FetchNativeFromPlayer<bool>(player, Hash.IS_PED_ON_SPECIFIC_VEHICLE, player,
                     character.LastVehicle.Entity);
-                isLastVehicleBoat = API.GetVehicleClass(character.LastVehicle.VehModel) == 14;
+                isLastVehicleBoat = NAPI.Vehicle.GetVehicleClass(character.LastVehicle.VehModel) == 14;
             }
 
             if (character.IsInFishingZone == false && (isOnLastBoat == false || isLastVehicleBoat == false))
@@ -142,7 +142,7 @@ namespace mtgvrp.job_manager.fisher
             }
 
             character.NextFishTime = DateTime.Now.AddSeconds(5);
-            API.PlayPlayerScenario(player, "WORLD_HUMAN_STAND_FISHING");
+            NAPI.Player.PlayPlayerScenario(player, "WORLD_HUMAN_STAND_FISHING");
             ChatManager.RoleplayMessage(character, "casts out their fishing rod and begins to fish.",
                 ChatManager.RoleplayMe);
 

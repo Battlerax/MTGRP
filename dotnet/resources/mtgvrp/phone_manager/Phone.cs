@@ -135,7 +135,7 @@ namespace mtgvrp.phone_manager
         public static long GetMessageCount(string contact1, string contact2)
         {
             var filter = (Builders<PhoneMessage>.Filter.Eq(x => x.SenderNumber, contact1) & Builders<PhoneMessage>.Filter.Eq(x => x.ToNumber, contact2)) | (Builders<PhoneMessage>.Filter.Eq(x => x.SenderNumber, contact2) & Builders<PhoneMessage>.Filter.Eq(x => x.ToNumber, contact1));
-            return DatabaseManager.MessagesTable.Find(filter).Count();
+            return DatabaseManager.MessagesTable.Find(filter).CountDocuments();
         }
 
         public static void LogMessage(string from, string to, string message)
