@@ -4,6 +4,7 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading;
 using RAGE;
+using RAGE.NUI;
 
 namespace cs_packages
 {
@@ -29,7 +30,10 @@ namespace cs_packages
         public static string GetUserInput(string defaultText, int maxLength) //TODO: review this shit.
         {
             RAGE.Game.Misc.DisplayOnscreenKeyboard(1, "", "", defaultText, "", "", "", maxLength);
-            while (RAGE.Game.Misc.UpdateOnscreenKeyboard() != 1 && RAGE.Game.Misc.UpdateOnscreenKeyboard() != 2) { }
+            while (RAGE.Game.Misc.UpdateOnscreenKeyboard() != 1 && RAGE.Game.Misc.UpdateOnscreenKeyboard() != 2)
+            {
+                RAGE.Game.Utils.Wait(0);
+            }
             string ans = RAGE.Game.Misc.GetOnscreenKeyboardResult();
             return ans;
         }
