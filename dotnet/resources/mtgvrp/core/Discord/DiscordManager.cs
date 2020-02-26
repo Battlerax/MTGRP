@@ -36,7 +36,7 @@ namespace mtgvrp.core.Discord
             // Config
             var cfg = new DiscordConfiguration()
             {
-                Token = "MzMyMTI5ODk3MTEzODQ1NzYw.DD5qYQ.xEfmKaGANPkmF8tc7Q3m9n1DVgs",
+                Token = "", //TODO: make token load from file
                 TokenType = TokenType.Bot,
 
                 AutoReconnect = true,
